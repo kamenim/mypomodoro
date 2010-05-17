@@ -1,0 +1,6 @@
+#labels Featured
+This page is here to get feedback from myPomodoro users.
+<hr><h2>Feedback</h2><hr>
+Please join the [http://groups.google.com/group/mypomodoro myPomodoro Google Group] in order to start discussions, otherwise discussions started below will be deleted! Also, the issues tab should be used to post issues, enhancements, and/or feature requests.
+
+The Area below is for others to provide feedback that is not a discussion, issue, enhancement, and/or feature request to the development team with no more than 15 words.
