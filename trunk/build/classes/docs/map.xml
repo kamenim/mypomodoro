@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN" "http://java.sun.com/products/javahelp/map_2_0.dtd">
+<map version="2.0">
+    <mapID  target="install" url="content/install.html"/>
+    <mapID  target="download" url="content/download.html"/>
+    <mapID  target="sysreq" url="content/sysreq.html"/>
+    <mapID  target="rnotes" url="content/rnotes.html"/>
+    <mapID  target="issues" url="content/issues.html"/>
+    <mapID  target="about" url="content/about.html"/>
+    <mapID  target="more" url="content/more.html"/>
+    <mapID  target="overview" url="content/overview.html"/>
+    <mapID  target="start" url="content/start.html"/>
+    <mapID  target="mbn" url="content/mbn.html"/>
+    <mapID  target="ibn" url="content/ibn.html"/>
+    <mapID  target="ks" url="content/ks.html"/>
+    <mapID  target="cpanel" url="content/cpanel.html"/>
+    <mapID  target="alpanel" url="content/alpanel.html"/>
+    <mapID  target="mpanel" url="content/mpanel.html"/>
+    <mapID  target="tdlpanel" url="content/tdlpanel.html"/>
+    <mapID  target="rlpanel" url="content/rlpanel.html"/>
+    <mapID  target="help" url="content/help.html"/>
+    <mapID  target="create" url="content/create.html"/>
+    <mapID  target="transfer" url="content/transfer.html"/>
+    <mapID  target="delete" url="content/delete.html"/>
+    <mapID  target="handler" url="content/handler.html"/>
+    <mapID  target="void" url="content/void.html"/>
+    <mapID  target="unplanned" url="content/unplanned.html"/>
+    <mapID  target="alldelete" url="content/alldelete.html"/>
+</map>

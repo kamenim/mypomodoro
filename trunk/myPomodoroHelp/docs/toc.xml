@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+<toc version="2.0">
+    <tocitem text="Notes">
+        <tocitem text="Installation" target="install"/>
+        <tocitem text="Download" target="download"/>
+        <tocitem text="System Requirements" target="sysreq"/>
+        <tocitem text="Release Notes" target="rnotes"/>
+        <tocitem text="Known Issues" target="issues"/>
+    </tocitem>
+    <tocitem text="About">
+        <tocitem text="About myPomodoro" target="about"/>
+        <tocitem text="About The Pomodoro Technique" target="more"/>
+        <tocitem text="Overview" target="overview"/>
+    </tocitem>
+    <tocitem text="Layout">
+        <tocitem text="Start Screen" target="start"/>
+        <tocitem text="Menu-Based Navigation" target="mbn"/>
+        <tocitem text="Image-Based Navigation" target="ibn"/>
+        <tocitem text="Keyboard Shortcuts" target="ks"/>
+    </tocitem>
+    <tocitem text="Panels">
+        <tocitem text="Create" target="cpanel"/>
+        <tocitem text="Activity List" target="alpanel"/>
+        <tocitem text="Manager" target="mpanel"/>
+        <tocitem text="ToDo List" target="tdlpanel"/>
+        <tocitem text="Report List" target="rlpanel"/>
+        <tocitem text="Get Help" target="help"/>
+    </tocitem>
+    <tocitem text="Use">
+        <tocitem text="Creating Tasks" target="create"/>
+        <tocitem text="Transferring Tasks" target="transfer"/>
+        <tocitem text="Delete a Task" target="delete"/>
+        <tocitem text="Handle Interruptions" target="handler"/>
+        <tocitem text="Void a Task" target="void"/>
+        <tocitem text="Unplanned Tasks" target="unplanned"/>
+        <tocitem text="Deleting All Data" target="alldelete"/>
+    </tocitem>
+</toc>

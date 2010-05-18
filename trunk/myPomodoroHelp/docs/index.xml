@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
+<index version="2.0">
+    <indexitem text="Notes">
+        <indexitem text="Installation" target="install"/>
+        <indexitem text="Download" target="download"/>
+        <indexitem text="System Requirements" target="sysreq"/>
+        <indexitem text="Release Notes" target="rnotes"/>
+        <indexitem text="Known Issues" target="issues"/>
+    </indexitem>
+    <indexitem text="About">
+        <indexitem text="About myPomodoro" target="about"/>
+        <indexitem text="About The Pomodoro Technique" target="more"/>
+        <indexitem text="Overview" target="overview"/>
+    </indexitem>
+    <indexitem text="Layout">
+        <indexitem text="Start Screen" target="start"/>
+        <indexitem text="Menu-Based Navigation" target="mbn"/>
+        <indexitem text="Image-Based Navigation" target="ibn"/>
+        <indexitem text="Keyboard Shortcuts" target="ks"/>
+    </indexitem>
+    <indexitem text="Panels">
+        <indexitem text="Create" target="cpanel"/>
+        <indexitem text="Activity List" target="alpanel"/>
+        <indexitem text="Manager" target="mpanel"/>
+        <indexitem text="ToDo List" target="tdlpanel"/>
+        <indexitem text="Report List" target="rlpanel"/>
+        <indexitem text="Get Help" target="help"/>
+    </indexitem>
+    <indexitem text="Use">
+        <indexitem text="Creating Tasks" target="create"/>
+        <indexitem text="Transferring Tasks" target="transfer"/>
+        <indexitem text="Delete a Task" target="delete"/>
+        <indexitem text="Handle Interruptions" target="handler"/>
+        <indexitem text="Void a Task" target="void"/>
+        <indexitem text="Unplanned Tasks" target="unplanned"/>
+        <indexitem text="Deleting All Data" target="alldelete"/>
+    </indexitem>
+</index>
