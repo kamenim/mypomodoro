@@ -19,8 +19,6 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 
-import db.Database;
-
 /**
  * Main Application Starter
  * 
@@ -31,7 +29,6 @@ public class Main {
 	public static ManagerPanel generatePanel;
 	public static ToDoListPanel toDoListPanel;
 	public static ReportListPanel reportListPanel;
-	public static Database db;
 	public static ReentrantLock datalock = new ReentrantLock();
 
 	public static void updateView() {
@@ -65,7 +62,6 @@ public class Main {
 	public static void main(String[] args) throws FontFormatException,
 			IOException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, UnsupportedLookAndFeelException {
-		db = new Database();
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		Main.activitiesPanel = new ActivitiesPanel();
 		Main.generatePanel = new ManagerPanel();

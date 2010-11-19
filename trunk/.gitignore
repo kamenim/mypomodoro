@@ -1,2 +1,5 @@
 pomodoro.db
 target
+.classpath
+.project
+.settings
