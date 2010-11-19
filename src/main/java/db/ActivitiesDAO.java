@@ -95,7 +95,7 @@ public class ActivitiesDAO {
 		List<Activity> activities = new ArrayList<Activity>();
 		database.lock();
 		try {
-			ResultSet rs = Main.db
+			ResultSet rs = database
 					.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority DESC;");
 			try {
 				while (rs.next()) {

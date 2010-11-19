@@ -18,7 +18,7 @@ import org.mypomodoro.model.ToDoList;
  * 
  * @author Jordan
  */
-public class Database {
+class Database {
 	private Connection connection = null;
 	private Statement statement = null;
 
@@ -83,42 +83,7 @@ public class Database {
 		update(createTableSQL);
 	}
 
-	public void createTestData() {
-		new Thread(new Runnable() {
 
-			public void run() {
-				String[] authors = { "Brian", "Paul", "Bobby", "Jordan", "Rick" };
-				String[] place = { "GGC", "School", "Work", "Home", "Atlanta",
-						"Chicago", "Seattle", "Boston", "Baltimore",
-						"Philadelphia", "Los Angeles", "New York" };
-				String[] name = { "Write SD Project Essay",
-						"Finish Packaging Application", "Finish Application",
-						"Complete Testing" };
-				String[] description = {
-						"Address software project development,"
-								+ " expected issues, potential alternatives, risk management "
-								+ "and implementation and testing strategies.",
-						"Combine all jar files into a single executable jar",
-						"Post all source and executables on Google Project Hosting",
-						"Resolve most of the known bugs.",
-						"Preform manual testing of GUI" };
-				String[] type = { "Homework", "Work", "Testing", "Programming",
-						"Distribution" };
-				java.util.Random rand = new java.util.Random();
-				int alSize = 10;
-
-				// insert data into the activitylist
-				for (int i = 0; i < alSize; i++) {
-
-					Activity a = new Activity(place[rand.nextInt(12)],
-							authors[rand.nextInt(5)], name[rand.nextInt(4)],
-							description[rand.nextInt(5)],
-							type[rand.nextInt(5)], rand.nextInt(10));
-					a.databaseInsert();
-				}
-			}
-		}).start();
-	}
 
 	public void resetData() {
 		new Thread(new Runnable() {
