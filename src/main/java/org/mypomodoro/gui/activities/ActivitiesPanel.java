@@ -35,7 +35,6 @@ public class ActivitiesPanel extends JPanel {
 
 	JTable table = new JTable(getTableModel());
 
-	private boolean shouldRefresh = false;
 	private static final String[] columnNames = { "Date", "Name", "Type",
 			"Estpomo", "ID" };
 	public static final int ID_KEY = 4;
@@ -98,11 +97,7 @@ public class ActivitiesPanel extends JPanel {
 	}
 
 	public void refresh() {
-		if (shouldRefresh) {
-			shouldRefresh = false;
-			System.out.println("Update");
-			table.setModel(getTableModel());
-		}
+		table.setModel(getTableModel());
 	}
 
 	JTable getTable() {
