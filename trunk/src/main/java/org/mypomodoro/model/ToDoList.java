@@ -44,7 +44,7 @@ public class ToDoList extends AbstractActivities {
 
 	@Override
 	public void add(Activity act) {
-		act.setPriority(size() - 1);
+		act.setPriority(size());
 		super.add(act);
 	}
 

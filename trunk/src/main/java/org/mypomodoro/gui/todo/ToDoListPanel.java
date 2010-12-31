@@ -2,10 +2,8 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.IOException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -39,7 +37,7 @@ public class ToDoListPanel extends JPanel {
 		return pomodoro;
 	}
 
-	public ToDoListPanel() throws IOException, FontFormatException {
+	public ToDoListPanel() {
 		setBackground(Color.WHITE);
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -61,8 +59,7 @@ public class ToDoListPanel extends JPanel {
 		add(new TabPane(informationPanel, new InterruptPanel(toDoList)), gbc);
 	}
 
-	private void addTimerPanel(GridBagConstraints gbc) throws IOException,
-			FontFormatException {
+	private void addTimerPanel(GridBagConstraints gbc) {
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.weightx = .3;

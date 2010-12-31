@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,10 +25,15 @@ public class TimerPanel extends JPanel {
 	private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
 	private final GridBagConstraints gbc = new GridBagConstraints();
 
-	TimerPanel(Pomodoro pomodoro, JLabel pomodoroTimer)
-			throws java.io.IOException, FontFormatException {
-		pomodoroTimer.setFont(Font.createFont(Font.TRUETYPE_FONT, Main.class
-				.getResourceAsStream("/DS-DIGIB.TTF")));
+	TimerPanel(Pomodoro pomodoro, JLabel pomodoroTimer) {
+		try {
+			pomodoroTimer.setFont(Font.createFont(Font.TRUETYPE_FONT,
+					Main.class.getResourceAsStream("/DS-DIGIB.TTF")));
+		} catch (FontFormatException e) {
+			System.out.println("TrueType not supported " + e);
+		} catch (IOException e) {
+			System.out.println("TTF file not found " + e);
+		}
 		pomodoroTimer.setForeground(Color.DARK_GRAY);
 		setPreferredSize(PREFERED_SIZE);
 		setBackground(Color.WHITE);
