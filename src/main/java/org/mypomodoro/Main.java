@@ -1,14 +1,11 @@
 package org.mypomodoro;
 
 import java.awt.Dimension;
-import java.awt.FontFormatException;
 import java.awt.event.ComponentEvent;
-import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
@@ -25,10 +22,10 @@ import org.mypomodoro.model.ToDoList;
  * @author Brian Wetzel
  */
 public class Main {
-	public static ActivitiesPanel activitiesPanel;
-	public static ManagerPanel generatePanel;
-	public static ToDoListPanel toDoListPanel;
-	public static ReportListPanel reportListPanel;
+	public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
+	public static final ManagerPanel generatePanel = new ManagerPanel();;
+	public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
+	public static final ReportListPanel reportListPanel = new ReportListPanel();
 	public static ReentrantLock datalock = new ReentrantLock();
 
 	public static void updateView() {
@@ -54,20 +51,13 @@ public class Main {
 	/**
 	 * @param args
 	 *            the command line arguments
-	 * @throws UnsupportedLookAndFeelException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
 	 */
-	public static void main(String[] args) throws FontFormatException,
-			IOException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		Main.activitiesPanel = new ActivitiesPanel();
-		Main.generatePanel = new ManagerPanel();
-		Main.toDoListPanel = new ToDoListPanel();
-		Main.reportListPanel = new ReportListPanel();
-
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception ex) {
+			// Do nothing if the we cannot set a nice ui look and feel
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

@@ -12,6 +12,7 @@ import org.mypomodoro.gui.MyPomodoroView;
 
 //View Menu
 public class ViewMenu extends JMenu {
+
 	/**
 	 * 
 	 */

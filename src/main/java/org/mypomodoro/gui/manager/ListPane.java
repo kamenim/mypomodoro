@@ -100,6 +100,7 @@ public class ListPane extends JPanel implements ActivityInformation {
 
 	public void addActivity(Activity activity) {
 		list.add(activity);
+		System.out.println(activity.getPriority());
 		update();
 	}
 
