@@ -1,5 +1,8 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <!-- PROJECT DESCRIPTION -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mypomodoro</groupId>
     <artifactId>mypomodoro</artifactId>
@@ -7,31 +10,54 @@
     <version>1.0-SNAPSHOT</version>
     <name>mypomodoro</name>
     <url>http://maven.apache.org</url>
-    <properties>
-        <jdkTarget>1.6</jdkTarget>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
+    <!-- PROJECT DEVELOPERS -->
+    <developers>
+        <developer>
+            <id>iwebdevelop</id>
+            <name>Paul Barton</name>
+            <email>iwebdevelop@gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>nikolavp </id>
+            <name>Nikola Valentinov Petrov</name>
+            <email>nikolavp@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- PROJECT DEPENDENCIES -->
     <dependencies>
+        <!-- JavaHelp -->
         <dependency>
             <groupId>javax.help</groupId>
             <artifactId>javahelp</artifactId>
             <version>2.0.02</version>
         </dependency>
-
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- Xerial SQLite Driver -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
         </dependency>
-
     </dependencies>
+
+    <!-- BUILD CONFIGURATION -->
     <build>
         <plugins>
             <plugin>
@@ -48,33 +74,48 @@
             </plugin>
         </plugins>
     </build>
+
+        <!-- PROJECT PROPERTIES -->
+    <properties>
+        <jdkTarget>1.6</jdkTarget>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- PROJECT REPORTING -->
     <reporting>
         <plugins>
+            <!-- Cobertura Code Coverage Analysis -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.4</version>
             </plugin>
+            <!-- JavaDoc Technical Documentation -->
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
+            <!-- JXR Technical Reporting -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jxr-maven-plugin</artifactId>
             </plugin>
+            <!-- Tag List VIM Source Code Browser -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
             </plugin>
+            <!-- Changelog SCM Reporting -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>changelog-maven-plugin</artifactId>
             </plugin>
+            <!-- FindBugs Bug Analysis -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>2.0.1</version>
             </plugin>
+            <!-- PMD Code Analysis -->
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>2.3</version>
@@ -82,7 +123,6 @@
                     <targetJdk>${jdkTarget}</targetJdk>
                 </configuration>
             </plugin>
-
         </plugins>
     </reporting>
 
