@@ -28,7 +28,7 @@ public class TimerPanel extends JPanel {
 	TimerPanel(Pomodoro pomodoro, JLabel pomodoroTimer) {
 		try {
 			pomodoroTimer.setFont(Font.createFont(Font.TRUETYPE_FONT,
-					Main.class.getResourceAsStream("/DS-DIGIB.TTF")));
+					Main.class.getResourceAsStream("/TIMER.TTF")));
 		} catch (FontFormatException e) {
 			System.out.println("TrueType not supported " + e);
 		} catch (IOException e) {

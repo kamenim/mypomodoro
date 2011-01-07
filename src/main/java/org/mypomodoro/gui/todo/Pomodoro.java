@@ -23,7 +23,7 @@ public class Pomodoro {
 	private static final int MINUTES = 60 * SECOND;
 	private static final long POMODORO_LENGTH = 25 * MINUTES;
 	private static final long POMODORO_BREAK_LENGTH = 5 * MINUTES;
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("mm : ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
 
 	private final Timer pomodoroTimer;
 	private long pomodoroLength = POMODORO_LENGTH;
