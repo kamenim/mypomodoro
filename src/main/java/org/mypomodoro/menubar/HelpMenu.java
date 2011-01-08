@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
@@ -16,8 +14,6 @@ import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 
 public class HelpMenu extends JMenu {
-	private HelpSet hs;
-	private HelpBroker hb;
 	private static final long serialVersionUID = 1L;
 
 	private final MyPomodoroView view;
@@ -25,46 +21,29 @@ public class HelpMenu extends JMenu {
 	public HelpMenu(MyPomodoroView view) {
 		super("Help");
 		this.view = view;
-		add(new HelpMenuItem());
+		add(new HelpUserGuide());
 		add(new HelpPomodoroTechnique());
 		add(new HelpPomodoroCheatSheet());
 		add(new HelpPomodoroBook());
 	}
 
-	class HelpMenuItem extends JMenuItem {
+	class HelpUserGuide extends JMenuItem {
 		private static final long serialVersionUID = 1L;
 
-		public HelpMenuItem() {
-			super("Help System");
-			setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H,
-					ActionEvent.ALT_MASK));
+		public HelpUserGuide() {
+			super("Download User Guide");
 			addActionListener(new MenuItemListener());
 		}
 
-		class MenuItemListener implements ActionListener {
+        class MenuItemListener implements ActionListener {
 
-			public void actionPerformed(ActionEvent e) {
-				// Identify the location of the help set file
-				String pathToHS = "/docs/helpset.xml";
-				// Create a URL for the location of the help set
-				try {
-					URL hsURL = getClass().getResource(pathToHS);
-					hs = new HelpSet(null, hsURL);
-				} catch (Exception ee) {
-					ee.printStackTrace();
-					return;
-				}
-
-				// Create a HelpBroker object for manipulating the help
-				// set
-				hb = hs.createHelpBroker();
-				// Display help set
-				hb.setDisplayed(true);
-				// Sets Location relative to App
-				hb.setLocation(view.getLocation());
-			}
-		}
-	}
+            public void actionPerformed(ActionEvent e) {
+                final JTextField urlField = new JTextField(
+                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc.pdf");
+                BareBonesBrowserLaunch.openURL(urlField.getText().trim());
+            }
+        }
+    }
 
 	class HelpPomodoroTechnique extends JMenuItem {
 

@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
  * in the user's default browser.
  * Supports: Mac OS X, GNU/Linux, Unix, Windows XP/Vista/
  * Latest Version: http://www.centerkey.com/java/browser/
- * Author: Dem Pilafian
+ * @author Dem Pilafian
  * Public Domain Software -- Free to Use as You Like
  * @version 3.0, February 7, 2010
  */
@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 public class BareBonesBrowserLaunch {
 
     static final String[] browsers = {"google-chrome", "firefox", "opera",
-        "konqueror", "epiphany", "seamonkey", "galeon", "kazehakase", "mozilla"};
+        "konqueror", "epiphany", "safari", "seamonkey", "galeon", "kazehakase", "mozilla"};
     static final String errMsg = "Error attempting to launch web browser";
 
     /**

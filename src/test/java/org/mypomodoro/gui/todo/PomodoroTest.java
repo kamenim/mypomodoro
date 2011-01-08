@@ -28,9 +28,9 @@ public class PomodoroTest {
 
 	@Test
 	public void shouldUpdateTheLabelWithSecondsFormat() throws Exception {
-		assertEquals(label.getText(), "24 : 59");
+		assertEquals(label.getText(), "24:59");
 		Thread.sleep(1000);
-		assertEquals(label.getText(), "24 : 58");
+		assertEquals(label.getText(), "24:58");
 	}
 
 }
