@@ -36,7 +36,6 @@
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
-        <!-- JavaHelp -->
         <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
