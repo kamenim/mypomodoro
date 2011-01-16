@@ -2,25 +2,19 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.net.URL;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 
-import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 
 public class HelpMenu extends JMenu {
 	private static final long serialVersionUID = 1L;
 
-	private final MyPomodoroView view;
 	
-	public HelpMenu(MyPomodoroView view) {
+	public HelpMenu() {
 		super("Help");
-		this.view = view;
 		add(new HelpUserGuide());
 		add(new HelpPomodoroTechnique());
 		add(new HelpPomodoroCheatSheet());
