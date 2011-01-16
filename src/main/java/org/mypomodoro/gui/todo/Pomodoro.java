@@ -1,18 +1,24 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.mypomodoro.model.ToDoList;
 
 /**
  * This class keeps the logic for setting a timer for a pomodoro and and the
- * breaks after that after that.
+ * breaks after that.
  * 
  * @author nikolavp
  * 
@@ -47,7 +53,7 @@ public class Pomodoro {
 		pomodoroTimer = new Timer(SECOND, new UpdateAction());
 	}
 
-	private class UpdateAction implements ActionListener {
+	class UpdateAction implements ActionListener {
 
 		int i = 0;
 
@@ -57,6 +63,8 @@ public class Pomodoro {
 				time -= SECOND;
 				label.setText(sdf.format(time));
 			} else {
+				// TODO: Play a sound that is not a simple beep put something
+				// that will get attention
 				Toolkit.getDefaultToolkit().beep();
 				if (inPomodoro()) {
 					if (i > 3) {
@@ -80,11 +88,40 @@ public class Pomodoro {
 		}
 
 		private void goInShortBreak() {
+			breakAction(shortBreakLength);
 			time = shortBreakLength;
 		}
 
 		private void goInLongBreak() {
+			breakAction(longBreakLength);
 			time = longBreakLength;
+		}
+
+		void breakAction(final long breakLength) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("running");
+					GraphicsDevice defaultScreenDevice = GraphicsEnvironment
+							.getLocalGraphicsEnvironment()
+							.getDefaultScreenDevice();
+					JFrame window = new JFrame();
+					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					window.getContentPane().setBackground(Color.BLACK);
+					window.setUndecorated(true);
+					if (defaultScreenDevice.isFullScreenSupported()) {
+						try {
+							defaultScreenDevice.setFullScreenWindow(window);
+							JOptionPane.showMessageDialog(window,
+									"Time to rest for " + breakLength
+											+ "minutes");
+						} finally {
+							defaultScreenDevice.setFullScreenWindow(null);
+						}
+					}
+					window.setVisible(false);
+				}
+			});
 		}
 
 	}
