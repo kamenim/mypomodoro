@@ -1,11 +1,16 @@
 package org.mypomodoro.gui.todo;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import javax.swing.JLabel;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import org.mypomodoro.gui.todo.Pomodoro.UpdateAction;
 
 public class PomodoroTest {
 	private String beginingText;
@@ -31,6 +36,14 @@ public class PomodoroTest {
 		assertEquals(label.getText(), "24:59");
 		Thread.sleep(1000);
 		assertEquals(label.getText(), "24:58");
+	}
+
+	@Ignore
+	@Test
+	public void shouldShowFullScreen() throws Exception {
+		UpdateAction updateAction = pomodoro.new UpdateAction();
+		updateAction.breakAction(10);
+		Thread.sleep(2 * 1000);
 	}
 
 }
