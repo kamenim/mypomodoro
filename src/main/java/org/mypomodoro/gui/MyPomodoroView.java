@@ -87,7 +87,7 @@ public class MyPomodoroView extends JFrame {
 			add(new FileMenu(MyPomodoroView.this));
 			add(new ViewMenu(MyPomodoroView.this));
 			add(new TestMenu(MyPomodoroView.this));
-			add(new HelpMenu(MyPomodoroView.this));
+			add(new HelpMenu());
 		}
 	}
 
