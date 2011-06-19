@@ -1,22 +1,18 @@
 package org.mypomodoro.model;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Date;
 
 import db.ActivitiesDAO;
+import org.mypomodoro.gui.ControlPanel;
 
 /**
- * Activity Objects store all the required information about tasks in the
+ * Activity Objects stores all the required information about tasks in the
  * Pomodoro time management system.
  * 
  * @author Brian Wetzel
  */
-public class Activity implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Activity {
 	// ATTRIBUTES
 	/**
 	 * unique id number for the Activity (to be assigned by database) default is
@@ -92,7 +88,7 @@ public class Activity implements Serializable {
 	/**
 	 * Maximim number of pomodoros for an activity
 	 */
-	public static final int MAX_POMODOROS = 10;
+	public static final int MAX_POMODOROS = ControlPanel.preferences.getMaxNbPomPerActivity();
 
 	/**
 	 * Default Constructor
@@ -115,15 +111,22 @@ public class Activity implements Serializable {
 	 * @param type
 	 * @param estimatedPoms
 	 */
+    public Activity(String place, String author, String name,
+			String description, String type, int estimatedPoms, Date dateActivity) {
+        this(place, author, name, description, type, estimatedPoms, dateActivity, -1);
+    }
+    
 	public Activity(String place, String author, String name,
-			String description, String type, int estimatedPoms) {
+			String description, String type, int estimatedPoms, Date dateActivity, int activityId) {
 		this.place = place;
-		this.date = new java.util.Date();
+		this.date = new Date();
 		this.author = author;
 		this.name = name;
 		this.description = description;
 		this.type = type;
 		this.estimatedPoms = estimatedPoms;
+        this.date = dateActivity;
+        this.id = activityId>0?activityId:this.id;
 	}
 
 	public Activity(ResultSet rs) {
@@ -135,7 +138,7 @@ public class Activity implements Serializable {
 			this.notes = rs.getString("notes");
 			this.author = rs.getString("author");
 			this.place = rs.getString("place");
-			this.date = new java.util.Date(rs.getLong("date_added"));
+			this.date = new Date(rs.getLong("date_added"));
 			this.estimatedPoms = rs.getInt("estimated_poms");
 			this.actualPoms = rs.getInt("actual_poms");
 			this.isVoided = Boolean.valueOf(rs.getString("is_void"));
@@ -244,6 +247,11 @@ public class Activity implements Serializable {
 		databaseUpdate();
 	}
 
+    public void setEstimatedPoms(int estimatedPoms) {
+		this.estimatedPoms = estimatedPoms;
+		databaseUpdate();
+	}
+
 	public void incrementPoms() {
 		actualPoms++;
 		databaseUpdate();
@@ -264,9 +272,7 @@ public class Activity implements Serializable {
 	 * @return
 	 */
 	public boolean isValid() {
-		return !place.isEmpty() && !author.isEmpty() && !name.isEmpty()
-				&& !description.isEmpty() && !type.isEmpty()
-				&& validNumberOfPomodoros();
+          return !name.isEmpty() && validNumberOfPomodoros();
 	}
 
 	private boolean validNumberOfPomodoros() {
@@ -277,7 +283,7 @@ public class Activity implements Serializable {
 		ActivitiesDAO.getInstance().insert(this);
 	}
 
-	private void databaseUpdate() {
+	public void databaseUpdate() {
 		ActivitiesDAO.getInstance().update(this);
 	}
 }

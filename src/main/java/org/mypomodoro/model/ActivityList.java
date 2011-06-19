@@ -5,18 +5,12 @@ import org.mypomodoro.Main;
 import db.ActivitiesDAO;
 
 /**
- * 
+ *
  * @author Brian Wetzel
  */
 public class ActivityList extends AbstractActivities {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	// singleton object
-	private static ActivityList list = null;
+	private static ActivityList list = new ActivityList();
 
-	// constructor is private, use getList method
 	private ActivityList() {
 		refresh();
 	}
@@ -30,16 +24,22 @@ public class ActivityList extends AbstractActivities {
 	}
 
 	public static ActivityList getList() {
-		if (list == null)
-			list = new ActivityList();
 		return list;
+	}
+
+    public static int getListSize() {
+        return getList().size();
 	}
 
 	public void removeById(final int id) {
 		ActivitiesDAO.getInstance().removeById(id);
-		Main.updateLists();
-		Main.updateView();
+		update();
 	}
+
+    public void update() {
+        Main.updateLists();
+		Main.updateView();
+    }
 
 	@Override
 	public Activity currentActivity() {

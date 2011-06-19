@@ -1,32 +1,43 @@
 package org.mypomodoro.model;
 
+import org.mypomodoro.Main;
+
 import db.ActivitiesDAO;
 
 /**
- * 
+ *
  * @author Brian Wetzel
  */
 public class ReportList extends AbstractActivities {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static AbstractActivities list = new ReportList();
+	private static ReportList list = new ReportList();
 
-	public ReportList() {
+	private ReportList() {
 		refresh();
 	}
 
 	@Override
 	public void refresh() {
 		activities.clear();
-		for (Activity activity : ActivitiesDAO.getInstance()
-				.getCompletedActivities()) {
-			activities.add(activity);
+		for (Activity act : ActivitiesDAO.getInstance().getCompletedActivities()) {
+			activities.add(act);
 		}
 	}
 
-	public static AbstractActivities getList() {
+	public static ReportList getList() {
 		return list;
 	}
+
+    public static int getListSize() {
+		return getList().size();
+	}
+
+    public void removeById(final int id) {
+		ActivitiesDAO.getInstance().removeById(id);
+		update();
+	}
+
+    public void update() {
+        Main.updateLists();
+		Main.updateView();
+    }
 }

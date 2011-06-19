@@ -1,8 +1,12 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,44 +21,75 @@ import org.mypomodoro.model.ActivityList;
  * @author Brian Wetzel
  */
 public class CreatePanel extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
 	protected final JLabel validation = new JLabel("");
 	protected final SaveButton saveButton = new SaveButton(this);
+    protected GridBagConstraints gbc = new GridBagConstraints();
 
 	public CreatePanel() {
 		setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.weighty = 0.80;
-		c.fill = GridBagConstraints.BOTH;
-		add(inputFormPanel, c);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.NORTH;
-		c.weighty = 0.2;
-		add(saveButton, c);
-		validation.setForeground(Color.red);
-		c.gridy = 2;
-		add(validation, c);
+
+        addInputFormPanel();
+		addSaveButton();
+        addClearButton();
+        addValidation();
 	}
+
+    protected void addInputFormPanel() {
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+        gbc.weightx = 1.0;
+		gbc.weighty = 0.80;
+        gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.BOTH;
+		add(inputFormPanel, gbc);
+	}
+
+    protected void addSaveButton() {
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+        gbc.weightx = 0.5;
+		gbc.weighty = 0.1;
+        gbc.gridwidth = 1;
+		gbc.fill = GridBagConstraints.NONE;        
+		add(saveButton, gbc);
+	}
+
+    protected void addClearButton() {
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+			public void actionPerformed(ActionEvent e) {
+                clearForm();
+			}
+		});
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		gbc.weightx = 0.5;
+		gbc.weighty = 0.1;
+        gbc.gridwidth = 1;
+		gbc.fill = GridBagConstraints.NONE;
+		add(clearButton, gbc);
+	}
+
+    protected void addValidation() {
+		gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+		gbc.weighty = 0.1;
+        gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.NONE;
+		add(validation, gbc);
+    }
 
 	protected void validActivityAction(Activity newActivity) {
 		ActivityList.getList().add(newActivity);
-		newActivity.databaseInsert();
-		validation.setForeground(Color.green);
-		validation.setText("Activity Added.");
-		inputFormPanel.clearForm();
+		newActivity.databaseInsert();		
+        validation.setFont(new Font(validation.getFont().getName(),Font.BOLD,validation.getFont().getSize()));
+		validation.setText("Activity added to Activity List");
 	}
 
-	public final void saveActivity(Activity newActivity) {
+	public void saveActivity(Activity newActivity) {        
 		if (newActivity.isValid()) {
 			validActivityAction(newActivity);
 		} else {
@@ -64,11 +99,21 @@ public class CreatePanel extends JPanel {
 
 	protected void invalidActivityAction() {
 		validation.setForeground(Color.red);
-		validation.setText("Invalid Input.");
+        validation.setFont(new Font(validation.getFont().getName(),Font.BOLD,validation.getFont().getSize()));
+		validation.setText("Title is mandatory");
 	}
 
 	public ActivityInputForm getFormPanel() {
 		return inputFormPanel;
 	}
 
+    public void clearForm() {
+        inputFormPanel.setNameField("");
+        inputFormPanel.setEstimatedPomodoros(1);
+        inputFormPanel.setDescriptionField("");
+        inputFormPanel.setTypeField("");
+        inputFormPanel.setAuthorField("");
+        inputFormPanel.setPlaceField("");
+        validation.setText("");
+    }
 }

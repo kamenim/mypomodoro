@@ -18,7 +18,7 @@ import org.mypomodoro.model.ToDoList;
  * 
  * @author Jordan
  */
-class Database {
+public class Database {
 	private Connection connection = null;
 	private Statement statement = null;
 
@@ -26,8 +26,7 @@ class Database {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:pomodoro.db");
-			statement = connection.createStatement();
-			createTables();
+			statement = connection.createStatement();			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,7 +53,6 @@ class Database {
 		try {
 			statement.executeUpdate(sql);
 		} catch (SQLException e) {
-			System.out.println(sql);
 			e.printStackTrace();
 		}
 	}
@@ -67,12 +65,17 @@ class Database {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+        
 		return rs;
 	}
 
-	private void createTables() {
-		String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
+    public void init() {
+      createActivitiesTable();
+      createPreferencesTable();
+    }
+
+    public void createActivitiesTable() {
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
 				+ "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "name TEXT, "
 				+ "type TEXT, " + "description TEXT, " + "notes TEXT, "
 				+ "author TEXT, " + "place TEXT, " + "date_added INTEGER, "
@@ -81,16 +84,53 @@ class Database {
 				+ "is_unplanned TEXT, " + "num_interruptions INTEGER, "
 				+ "priority INTEGER" + ");";
 		update(createTableSQL);
-	}
+    }
 
+    public void createPreferencesTable() {
+        String createPreferencesTableSQL = "CREATE TABLE IF NOT EXISTS preferences ( "
+				+ "pom_length INTEGER DEFAULT 25, "
+				+ "short_break_length INTEGER DEFAULT 5, "
+                + "long_break_length INTEGER DEFAULT 20, "
+                + "max_nb_pom_per_activity INTEGER DEFAULT 5, "
+                + "max_nb_pom_per_day INTEGER DEFAULT 10, "
+                + "nb_pom_per_set INTEGER DEFAULT 4, "
+                + "ticking BOOLEAN DEFAULT 1, "
+				+ "ringing BOOLEAN DEFAULT 1" + ");";
+        update(createPreferencesTableSQL);
+        initPreferencesTable();
+    }
 
+    private void initPreferencesTable() {
+        String selectPreferencesSQL = "SELECT * FROM preferences;";
+        ResultSet rs = query(selectPreferencesSQL);
+        try {
+            if (rs != null && !rs.next()) { // make sure there is no row in the result set
+                String insertPreferencesSQL = "INSERT INTO preferences ("
+                        + "pom_length,short_break_length,long_break_length,"
+                        + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
+                        + "ticking,ringing) "
+                        + "VALUES ("
+                        + "25,5,20,5,10,4,1,1);";
+                update(insertPreferencesSQL);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 	public void resetData() {
 		new Thread(new Runnable() {
+            @Override
 			public void run() {
 				update("begin;");
 				update("DELETE from activities;");
-				update("commit;");
+				update("commit;");                
 				Main.updateLists();
 				Main.updateView();
 			}

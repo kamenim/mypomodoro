@@ -9,13 +9,11 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.create.CreatePanel;
 
 public class FileMenu extends JMenu {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private final MyPomodoroView view;
 
 	public FileMenu(final MyPomodoroView view) {
@@ -27,11 +25,6 @@ public class FileMenu extends JMenu {
 	}
 
 	public class CreateActivityItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public CreateActivityItem() {
 			super("New Activity");
 			setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
@@ -40,24 +33,26 @@ public class FileMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
-				view.setWindow(view.getCreatePanel());
+                MyIcon ii = view.getIconBar().getIcon(0);
+                view.getIconBar().highlightIcon(ii);
+				view.setWindow(ii.getPanel());
+                CreatePanel createPanel = view.getCreatePanel();
+                createPanel.clearForm();
+				view.setWindow(createPanel);
 			}
 		}
 	}
 
 	public class ExitItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ExitItem() {
 			super("Exit");
 			addActionListener(new MenuItemListener());
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
@@ -65,11 +60,6 @@ public class FileMenu extends JMenu {
 	}
 
 	class ControlPanelItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ControlPanelItem() {
 			super("Preferences");
 			// Adds Keyboard Shortcut Alt-P
@@ -79,11 +69,15 @@ public class FileMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
-				view.setWindow(new ControlPanel(view, view.getTodoListPanel()
-						.getPomodoro()));
+                MyIcon selectedIcon = view.getIconBar().getSelectedIcon();
+                if (selectedIcon != null) {
+                  view.getIconBar().unHighlightIcon(selectedIcon);
+                  view.setWindow(selectedIcon.getPanel());
+                }
+				view.setWindow(new ControlPanel());
 			}
 		}
 	}
-
 }

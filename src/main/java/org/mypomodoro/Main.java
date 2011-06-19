@@ -15,6 +15,8 @@ import org.mypomodoro.gui.todo.ToDoListPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.gui.ControlPanel;
+import db.Database;
 
 /**
  * Main Application Starter
@@ -22,8 +24,10 @@ import org.mypomodoro.model.ToDoList;
  * @author Brian Wetzel
  */
 public class Main {
+    public static final Database database = new Database();
+    public static ControlPanel controlPanel = new ControlPanel();
 	public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
-	public static final ManagerPanel generatePanel = new ManagerPanel();;
+	public static final ManagerPanel generatePanel = new ManagerPanel();
 	public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
 	public static final ReportListPanel reportListPanel = new ReportListPanel();
 	public static ReentrantLock datalock = new ReentrantLock();
@@ -31,12 +35,12 @@ public class Main {
 	public static void updateView() {
 		new Thread(new Runnable() {
 
+            @Override
 			public void run() {
 				activitiesPanel.refresh();
 				toDoListPanel.refresh();
 				generatePanel.refresh();
 				reportListPanel.refresh();
-
 			}
 
 		}).start();
@@ -61,9 +65,9 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				setUpAndShowGui();
+				setUpAndShowGui();                
 			}
-		});
+		});        
 	}
 
 	private static void setUpAndShowGui() {

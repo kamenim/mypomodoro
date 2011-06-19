@@ -6,14 +6,9 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
 public class MyPomodoroIconBar extends JPanel {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private final ArrayList<MyIcon> myIcons = new ArrayList<MyIcon>();
 
 	private MyIcon highlightedIcon;
@@ -25,12 +20,12 @@ public class MyPomodoroIconBar extends JPanel {
 				.getActivityListPanel()));
 		myIcons.add(MyIcon.getInstance(view, "Manager", "managerButton", view
 				.getGeneratePanel()));
-		myIcons.add(MyIcon.getInstance(view, "Todo", "todoButton", view
+		myIcons.add(MyIcon.getInstance(view, "ToDo", "todoButton", view
 				.getTodoListPanel()));
 		myIcons.add(MyIcon.getInstance(view, "Report", "reportButton", view
 				.getReportListPanel()));
 
-		setBorder(new BevelBorder(BevelBorder.RAISED));
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		setPreferredSize(new Dimension(getWidth(), 80));
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -52,8 +47,17 @@ public class MyPomodoroIconBar extends JPanel {
 		highlightedIcon = icon;
 	}
 
+    public void unHighlightIcon(MyIcon icon) {
+		if (highlightedIcon != null) {
+			highlightedIcon.unhighlight();
+		}
+	}
+
 	public MyIcon getSelectedIcon() {
 		return highlightedIcon;
 	}
 
+    public MyIcon getIcon(int i) {
+        return myIcons.get(i);
+    }
 }

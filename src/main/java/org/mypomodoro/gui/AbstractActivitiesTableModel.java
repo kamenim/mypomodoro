@@ -5,12 +5,8 @@ import javax.swing.table.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 
 public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	protected Object[][] tableData;
-	private final String[] columnNames;;
+	private final String[] columnNames;
 
 	public AbstractActivitiesTableModel(String[] fields,
 			AbstractActivities activities) {
@@ -63,6 +59,4 @@ public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
 		tableData[rowIndex][columnIndex] = aValue;
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
-
-	
 }

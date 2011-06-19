@@ -17,29 +17,23 @@ import javax.swing.JPanel;
 import org.mypomodoro.Main;
 
 public class TimerPanel extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
 	private final GridBagConstraints gbc = new GridBagConstraints();
 
-	TimerPanel(Pomodoro pomodoro, JLabel pomodoroTimer) {
+	TimerPanel(Pomodoro pomodoro, JLabel pomodoroTimerLabel) {
 		try {
-			pomodoroTimer.setFont(Font.createFont(Font.TRUETYPE_FONT,
+			pomodoroTimerLabel.setFont(Font.createFont(Font.TRUETYPE_FONT,
 					Main.class.getResourceAsStream("/TIMER.TTF")));
 		} catch (FontFormatException e) {
 			System.out.println("TrueType not supported " + e);
 		} catch (IOException e) {
 			System.out.println("TTF file not found " + e);
 		}
-		pomodoroTimer.setForeground(Color.DARK_GRAY);
+		pomodoroTimerLabel.setForeground(Color.DARK_GRAY);
 		setPreferredSize(PREFERED_SIZE);
-		setBackground(Color.WHITE);
 		setLayout(new GridBagLayout());
 
-		addPomodoroTimerLabel(pomodoroTimer, gbc);
+		addPomodoroTimerLabel(pomodoroTimerLabel, gbc);
 		addStartButton(pomodoro);
 	}
 
@@ -49,15 +43,16 @@ public class TimerPanel extends JPanel {
 		gbc.weighty = 0.165;
 		gbc.anchor = GridBagConstraints.SOUTH;
 		final JButton startButton = new JButton("Start");
-		startButton.setForeground(Color.green);
+        startButton.setBackground(Color.WHITE);
+		startButton.setForeground(Color.BLACK);
 		startButton.addActionListener(new ActionListener() {
+            @Override
 			public void actionPerformed(ActionEvent e) {
 				if ("Start".equals(startButton.getText())) {
 					pomodoro.start();
 					startButton.setText("Stop");
-				} else {
-					pomodoro.stop();
-					startButton.setText("Start");
+				} else if (pomodoro.stopWithWarning()){
+                    startButton.setText("Start");                    
 				}
 			}
 		});
@@ -65,15 +60,14 @@ public class TimerPanel extends JPanel {
 		add(startButton, gbc);
 	}
 
-	private void addPomodoroTimerLabel(JLabel pomodoroTimer,
+	private void addPomodoroTimerLabel(JLabel pomodoroTimerLabel,
 			GridBagConstraints gbc) {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weighty = .3;
 		gbc.anchor = GridBagConstraints.SOUTH;
-		pomodoroTimer.setFont(pomodoroTimer.getFont().deriveFont(40f));
-		add(pomodoroTimer, gbc);
+		pomodoroTimerLabel.setFont(pomodoroTimerLabel.getFont().deriveFont(40f));
+		add(pomodoroTimerLabel, gbc);
 	}
-
 }

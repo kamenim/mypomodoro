@@ -8,13 +8,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.gui.create.EditPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -28,50 +31,49 @@ import org.mypomodoro.model.ActivityList;
  * @author Brian Wetzel
  */
 public class ActivitiesPanel extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	JTable table = new JTable(getTableModel());
 
-	private static final String[] columnNames = { "Date", "Name", "Type",
-			"Estpomo", "ID" };
-	public static final int ID_KEY = 4;
+	private static final String[] columnNames = { "U", "Date", "Title", "Estimated Pomodoros", "Type", "ID" };
+	public static final int ID_KEY = 5;
 
 	public ActivitiesPanel() {
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		setBorder(new TitledBorder(new EtchedBorder(), "Activity List"));
+		setLayout(new GridBagLayout());		
+        init();
 
-		// Add the table
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        addActivitiesTable(gbc);
+		addTabPane(gbc);
+	}
+
+	private void addActivitiesTable(GridBagConstraints gbc) {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
+		gbc.weighty = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;        
 		add(new JScrollPane(table), gbc);
+	}
 
-		// Add the Control Panel
+    private void addTabPane(GridBagConstraints gbc) {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weighty = 0.2;
+		gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.BOTH;
 		JTabbedPane controlPane = new JTabbedPane();
+        DetailsPane detailsPane = new DetailsPane(table);
+		controlPane.add("Details", detailsPane);
+        EditPanel edit = new EditPanel();
+        JScrollPane editPane = new JScrollPane(edit);
+        controlPane.add("Edit", editPane);
 		add(controlPane, gbc);
 
-		DetailsPane detailsPane = new DetailsPane(table);
-		controlPane.add("Details", detailsPane);
-		controlPane.add("Create Task", new JScrollPane(new CreatePanel()));
-
 		showSelectedItemDetails(detailsPane);
+        showSelectedItemEdit(edit);
 	}
 
 	private static TableModel getTableModel() {
-		return new AbstractActivitiesTableModel(columnNames, ActivityList
-				.getList()) {
-			private static final long serialVersionUID = 1L;
-
+		return new AbstractActivitiesTableModel(columnNames, ActivityList.getList()) {
 			@Override
 			protected void populateData(AbstractActivities activities) {
 				int rowIndex = activities.size();
@@ -80,27 +82,62 @@ public class ActivitiesPanel extends JPanel {
 				Iterator<Activity> iterator = activities.iterator();
 				for (int i = 0; iterator.hasNext(); i++) {
 					Activity a = iterator.next();
-					tableData[i][0] = a.getDate();
-					tableData[i][1] = a.getName();
-					tableData[i][2] = a.getType();
+                    tableData[i][0] = a.isUnplanned();
+                    tableData[i][1] = a.getDate();
+					tableData[i][2] = a.getName();
 					tableData[i][3] = a.getEstimatedPoms();
-					tableData[i][4] = a.getId();
+					tableData[i][4] = a.getType();
+					tableData[i][5] = a.getId();
 				}
 			}
 		};
 	}
 
 	private void showSelectedItemDetails(final DetailsPane detailsPane) {
-		table.getSelectionModel().addListSelectionListener(
+      	table.getSelectionModel().addListSelectionListener(
 				new ActivityInformationTableListener(ActivityList.getList(),
 						table, detailsPane, ID_KEY));
 	}
 
-	public void refresh() {
-		table.setModel(getTableModel());
+    private void showSelectedItemEdit(final EditPanel editPane) {
+      	table.getSelectionModel().addListSelectionListener(
+				new ActivityEditTableListener(ActivityList.getList(),
+						table, editPane, ID_KEY));
 	}
 
-	JTable getTable() {
-		return table;
+	public void refresh() {
+        try {
+            table.setModel(getTableModel());
+        } catch (Exception e) {
+            // do nothing
+        }
+        init();
 	}
+
+    private void init() {
+        // Centre Estimated pomodoros column
+        DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(ID_KEY-2).setCellRenderer(dtcr);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // Set width of column Unplanned
+        table.getColumnModel().getColumn(0).setMaxWidth(30);
+        table.getColumnModel().getColumn(0).setMinWidth(30);
+        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        // Set width of column Date
+        table.getColumnModel().getColumn(1).setMaxWidth(80);
+        table.getColumnModel().getColumn(1).setMinWidth(80);
+        table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        // enable sorting
+        if (table.getModel().getRowCount() > 0) {
+            table.setAutoCreateRowSorter(true);
+        }
+        if (table.getModel().getRowCount() > 0) {
+            table.setRowSelectionInterval(0,0); // select first row            
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), "Activity List (" + ActivityList.getListSize() +")"));
+    }
 }

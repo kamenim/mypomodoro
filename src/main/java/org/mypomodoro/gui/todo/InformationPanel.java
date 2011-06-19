@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,19 +20,15 @@ import org.mypomodoro.model.Activity;
  * updated when the ToDo list is updated.
  */
 public class InformationPanel extends JPanel implements ActivityInformation {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private final JTextArea informationArea = new JTextArea();;
+	private final JTextArea informationArea = new JTextArea();
 	private final GridBagConstraints gbc = new GridBagConstraints();
 
 	public InformationPanel(ToDoListPanel panel) {
 		setLayout(new GridBagLayout());
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
 		addInformationArea();
 		addCompleteButton(panel);
-
 	}
 
 	private void addCompleteButton(final ToDoListPanel panel) {
@@ -39,10 +36,11 @@ public class InformationPanel extends JPanel implements ActivityInformation {
 		gbc.gridy = 0;
 		gbc.weightx = 0.1;
 		gbc.fill = GridBagConstraints.NONE;
-		JButton changeButton = new JButton("Task Complete");
+		JButton changeButton = new JButton("Complete");
 		changeButton.addActionListener(new ActionListener() {
+            @Override
 			public void actionPerformed(ActionEvent e) {
-				panel.completeTask();
+				panel.completeTaskWithWarning();
 			}
 		});
 		add(changeButton, gbc);
@@ -55,21 +53,32 @@ public class InformationPanel extends JPanel implements ActivityInformation {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
-		gbc.gridheight = GridBagConstraints.REMAINDER;
-		informationArea.setBorder(new EtchedBorder());
+		gbc.gridheight = GridBagConstraints.REMAINDER;		
 		informationArea.setEditable(false);
 		add(new JScrollPane(informationArea), gbc);
 	}
 
+    @Override
 	public void showInfo(Activity activity) {
-		String text = "Name: " + activity.getName() + "\nDescription:"
-				+ activity.getDescription() + "\nEstimated Pomodoros: "
-				+ activity.getEstimatedPoms() + "\nActual Pomodoros: "
-				+ activity.getActualPoms() + "\nInterruptions: "
-				+ activity.getNumInterruptions();
+		String pattern = "dd MMM yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        String activityDate = format.format(activity.getDate());
+        String text = "Date: ";
+        if (activity.isUnplanned()) {
+            text += "U [";
+        }
+		text += activityDate;
+        if (activity.isUnplanned()) {
+            text += "]";
+        }
+        text += "\nTitle: " + activity.getName()
+                + "\nEstimated Pomodoros: "	+ activity.getEstimatedPoms()                
+                + "\nReal Pomodoros: " + activity.getActualPoms()
+                + "\nExternal Interruptions: " + activity.getNumInterruptions();
 		informationArea.setText(text);
 	}
 
+    @Override
 	public void clearInfo() {
 		informationArea.setText("");
 	}

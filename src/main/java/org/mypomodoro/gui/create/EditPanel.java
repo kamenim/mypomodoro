@@ -1,18 +1,21 @@
-package org.mypomodoro.gui.todo;
+package org.mypomodoro.gui.create;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.mypomodoro.gui.create.CreatePanel;
+
+
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.model.ActivityList;
 
-public class InterruptPanel extends CreatePanel {
-	private final ToDoList todoList;
-
-    public InterruptPanel(ToDoList todoList) {
-        this.todoList = todoList;
+/**
+ * GUI for editing a new Activity and store to data layer.
+ *
+ * @author Phil Karoo
+ */
+public class EditPanel extends CreatePanel {
+	public EditPanel() {
         gbc = new GridBagConstraints();
 		setLayout(new GridBagLayout());
 
@@ -44,21 +47,13 @@ public class InterruptPanel extends CreatePanel {
     protected void addClearButton() {
 	}
 
-	@Override
-	protected void validActivityAction(Activity newActivity) {        
-		newActivity.setIsUnplanned(true);
+    @Override
+    protected void validActivityAction(Activity currentActivity) {        
+		currentActivity.databaseUpdate();
+        ActivityList.getList().update();
         JFrame window = new JFrame();
-        String title = "Unplanned activity";
-        String message = "Unplanned activity \"" + newActivity.getName() + "\" added to ";
-        if (inputFormPanel.isDateToday()) {
-            message += "ToDo List";
-            todoList.getList().add(newActivity); // Today unplanned activity
-            newActivity.databaseInsert();
-        } else {
-            message += "Activity List";
-            validation.setVisible(false);
-            super.validActivityAction(newActivity);
-        }        
+        String title = "Edit activity";
+        String message = "Activity \"" + currentActivity.getName() + "\" updated";
         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
 	}
 
@@ -68,5 +63,16 @@ public class InterruptPanel extends CreatePanel {
         String title = "Error";
         String message = "Title is mandatory";
         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+	}
+
+    public void fillOutInputForm(Activity activity) {
+        inputFormPanel.setPlaceField(activity.getPlace());
+        inputFormPanel.setAuthorField(activity.getAuthor());
+        inputFormPanel.setNameField(activity.getName());
+        inputFormPanel.setDescriptionField(activity.getDescription());
+        inputFormPanel.setTypeField(activity.getType());
+        inputFormPanel.setEstimatedPomodoros(activity.getEstimatedPoms());
+        inputFormPanel.setActivityId(activity.getId());
+        inputFormPanel.setDate(activity.getDate());
 	}
 }

@@ -7,16 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.mypomodoro.model.Activity;
 
 public class ControlPanel extends JPanel {
-	/**
-		 * 
-		 */
-	private static final long serialVersionUID = 1L;
-
 	private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
 	public ControlPanel(ListPane activitiesPane, ListPane todoPane) {
@@ -29,20 +26,15 @@ public class ControlPanel extends JPanel {
 		gbc.weightx = 1.0;
 		gbc.weighty = 0.0;
 		add(new MoveButton(">>>", activitiesPane, todoPane), gbc);
+        // Adding the remove button from todo to activities list
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 1.0;
-		gbc.weighty = 0.0;
-		// Adding the remove button from todo to activities list
+		gbc.weighty = 0.0;		
 		add(new MoveButton("<<<", todoPane, activitiesPane), gbc);
-	}
+	}    
 
 	class MoveButton extends JButton {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public MoveButton(String title, final ListPane from, final ListPane to) {
 			super(title);
 			setMinimumSize(BUTTON_SIZE);
@@ -52,8 +44,14 @@ public class ControlPanel extends JPanel {
 				public void actionPerformed(ActionEvent arg0) {
 					Activity activity = from.getSelectedActivity();
 					if (activity != null) {
-						from.removeActivity(activity);
-						to.addActivity(activity);
+                        if (!to.isMaxNbEstimatedPomReached(activity)) {
+                            from.removeActivity(activity);
+                            to.addActivity(activity);
+                        } else {
+                            JFrame window = new JFrame();
+                            String message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached!";
+                            JOptionPane.showMessageDialog(window,message);
+                        }
 					}
 				}
 			});

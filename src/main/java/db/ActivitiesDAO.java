@@ -9,15 +9,19 @@ import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
-	private final Database database;
-	private static final ActivitiesDAO instance = new ActivitiesDAO();
+    private final Database database = Main.database;
+	private static final ActivitiesDAO instance = new ActivitiesDAO();    
 
 	public static ActivitiesDAO getInstance() {
 		return instance;
 	}
 
 	ActivitiesDAO() {
-		database = new Database();
+        database.createActivitiesTable();
+	}
+
+    public void removeAll() {
+		database.resetData();
 	}
 
 	public void insert(Activity newActivity) {
@@ -63,6 +67,7 @@ public class ActivitiesDAO {
 				try {
 					rs.close();
 				} catch (SQLException e) {
+                    e.printStackTrace();
 				}
 			}
 		} finally {
@@ -80,10 +85,15 @@ public class ActivitiesDAO {
 			try {
 				while (rs.next()) {
 					activities.add(new Activity(rs));
-				}
-				rs.close();
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
+			}finally {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+                    e.printStackTrace();
+				}
 			}
 		} finally {
 			database.unlock();
@@ -101,9 +111,14 @@ public class ActivitiesDAO {
 				while (rs.next()) {
 					activities.add(new Activity(rs));
 				}
-				rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+                    e.printStackTrace();
+				}
 			}
 		} finally {
 			database.unlock();
@@ -120,10 +135,6 @@ public class ActivitiesDAO {
 			database.update("Commit;");
 			database.unlock();
 		}
-	}
-
-	public void removeAll() {
-		database.resetData();
 	}
 
 	public void update(Activity activity) {

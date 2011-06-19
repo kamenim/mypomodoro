@@ -23,9 +23,18 @@
             <timezone>-5</timezone>
         </developer>
         <developer>
-            <id>nikolavp </id>
+            <id>nikolavp</id>
             <name>Nikola Valentinov Petrov</name>
             <email>nikolavp@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>phil.karoo</id>
+            <name>Phil Karoo</name>
+            <email>phil.karoo@gmail.com</email>
             <roles>
                 <role>Developer</role>
                 <role>Committer</role>
@@ -48,6 +57,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
         </dependency>
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1.6.1</version>
+		</dependency>
     </dependencies>
 
     <!-- BUILD CONFIGURATION -->

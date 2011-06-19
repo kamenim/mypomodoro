@@ -7,13 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
 public class SplashScreen extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	public SplashScreen() {
 		setBackground(Color.white);
 		setLayout(new GridBagLayout());

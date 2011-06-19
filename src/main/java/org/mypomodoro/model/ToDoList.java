@@ -7,23 +7,8 @@ import db.ActivitiesDAO;
  * @author Brian Wetzel
  */
 public class ToDoList extends AbstractActivities {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static ToDoList list = new ToDoList();
 
-	/**
-	 * cannot add more pomodoros to a list than can be completed in 24hrs. This
-	 * is based on the estimated pomodoros. TODO: Use this field to by
-	 * calculating the estimated poms for every task when added to this list
-	 */
-	@SuppressWarnings("unused")
-	private static final int MAXIMUM_POMS = 40;
-
-	// singleton object
-	private static ToDoList list = null;
-
-	// constructor is private, use getList method
 	private ToDoList() {
 		refresh();
 	}
@@ -37,9 +22,11 @@ public class ToDoList extends AbstractActivities {
 	}
 
 	public static ToDoList getList() {
-		if (list == null)
-			list = new ToDoList();
 		return list;
+	}
+
+    public static int getListSize() {
+		return getList().size();
 	}
 
 	@Override
@@ -81,7 +68,7 @@ public class ToDoList extends AbstractActivities {
 
 	/**
 	 * Demote the Activity at the desired index, by storing the value to be
-	 * replaced into a buffer adn then switching the values. The root node
+	 * replaced into a buffer and then switching the values. The root node
 	 * cannot be changed.
 	 * 
 	 * @param index
@@ -100,12 +87,10 @@ public class ToDoList extends AbstractActivities {
 	public void complete() {
 		Activity activity = activities.remove(0);
 		activity.setIsCompleted(true);
-
 		for (int j = 0; j < (this.size() - 1); j++) {
 			Activity currentAct = activities.get(j);
 			currentAct.setPriority(j);
-		}
-
+		}        
 		ReportList.getList().add(activity);
 	}
 }
