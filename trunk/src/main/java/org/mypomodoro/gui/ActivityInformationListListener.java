@@ -23,5 +23,4 @@ public class ActivityInformationListListener implements ListSelectionListener {
 			information.clearInfo();
 		}
 	}
-
 }

@@ -22,8 +22,6 @@ import org.mypomodoro.menubar.ViewMenu;
  * @author Brian Wetzel
  */
 public class MyPomodoroView extends JFrame {
-	private static final long serialVersionUID = 1L;
-
 	public static final int FRAME_WIDTH = 480;
 	public static final int FRAME_HEIGHT = 600;
 	private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
@@ -78,16 +76,12 @@ public class MyPomodoroView extends JFrame {
 	}
 
 	class MyPomodoroMenuBar extends JMenuBar {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public MyPomodoroMenuBar() {
 			add(new FileMenu(MyPomodoroView.this));
 			add(new ViewMenu(MyPomodoroView.this));
 			add(new TestMenu(MyPomodoroView.this));
 			add(new HelpMenu());
+            setBorder(null);
 		}
 	}
 

@@ -8,11 +8,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.gui.reports.ReportListPanel;
+import org.mypomodoro.model.ReportList;
 
-public class DeleteButton extends JButton {
-	public DeleteButton(final JTable table) {
+/**
+ *
+ * @author Phil Karoo
+ */
+public class DeleteReportButton extends JButton {
+	public DeleteReportButton(final JTable table) {
 		super("Delete");
 		addActionListener(new ActionListener() {
             @Override
@@ -20,12 +24,12 @@ public class DeleteButton extends JButton {
 				int index = table.getSelectedRow();
 				if (index > -1) {
                     JFrame window = new JFrame();
-                    String title = "Delete activity";
-                    String message = "Are you sure to delete this activity?";
+                    String title = "Delete report";
+                    String message = "Are you sure to delete this report?";
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        int id = (Integer) table.getModel().getValueAt(index, ActivitiesPanel.ID_KEY);
-                        ActivityList.getList().removeById(id);
+                        int id = (Integer) table.getModel().getValueAt(index, ReportListPanel.ID_KEY);
+                        ReportList.getList().removeById(id);
                     }
                 }
 			}

@@ -10,12 +10,10 @@ import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
 
 import db.ActivitiesDAO;
+import java.util.Date;
+import org.mypomodoro.gui.ControlPanel;
 
 public class TestMenu extends JMenu {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	public TestMenu(final MyPomodoroView view) {
 		super("Data");
 		add(new ResetDataItem(view));
@@ -24,14 +22,10 @@ public class TestMenu extends JMenu {
 
 	// resets all the data files.
 	class ResetDataItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ResetDataItem(final MyPomodoroView view) {
 			super("Clear All Data");
 			addActionListener(new ActionListener() {
+                @Override
 				public void actionPerformed(ActionEvent e) {
 					ActivitiesDAO.getInstance().removeAll();
 					view.updateLists();
@@ -40,16 +34,11 @@ public class TestMenu extends JMenu {
 		}
 	}
 
-
 	class TestDataItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		private void createTestData() {
 			new Thread(new Runnable() {
 
+                @Override
 				public void run() {
 					String[] authors = { "Brian", "Paul", "Bobby", "Jordan",
 							"Rick" };
@@ -80,7 +69,8 @@ public class TestMenu extends JMenu {
 								authors[rand.nextInt(5)],
 								name[rand.nextInt(4)], description[rand
 										.nextInt(5)], type[rand.nextInt(5)],
-								rand.nextInt(10));
+								rand.nextInt(ControlPanel.preferences.getMaxNbPomPerActivity())+1,
+                                new Date()); // excluding 0 poms
 						a.databaseInsert();
 					}
 				}
@@ -90,6 +80,7 @@ public class TestMenu extends JMenu {
 		public TestDataItem(final MyPomodoroView view) {
 			super("Populate Test Data");
 			addActionListener(new ActionListener() {
+                @Override
 				public void actionPerformed(ActionEvent e) {
 					createTestData();
 					view.updateLists();

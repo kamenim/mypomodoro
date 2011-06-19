@@ -12,11 +12,6 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 
 public class MyIcon extends JLabel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private static ImageIcon getIcon(String path) {
 		return new ImageIcon(Main.class.getResource(path));
 	}
@@ -30,7 +25,7 @@ public class MyIcon extends JLabel {
 		return new MyIcon(view, text, onIcon, offIcon, p);
 	}
 
-	private final Dimension d = new Dimension(75, 75);
+	private final Dimension d = new Dimension(1000, 80);
 	private final JPanel panel;
 	private final ImageIcon on;
 	private final ImageIcon off;
@@ -49,28 +44,29 @@ public class MyIcon extends JLabel {
 		this.off = off;
 		this.on = on;
 		panel = p;
-
+        
 		setPreferredSize(d);
 		setMinimumSize(d);
 		setHorizontalTextPosition(JLabel.CENTER);
 		setVerticalTextPosition(JLabel.BOTTOM);
-		final JPanel panel = p;
+		//final JPanel panel = p;
 		addMouseListener(new MouseListener() {
+            @Override
 			public void mouseClicked(MouseEvent e) {
 			}
-
+            @Override
 			public void mousePressed(MouseEvent e) {
-				view.getIconBar().highlightIcon(MyIcon.this);
+				view.getIconBar().highlightIcon(MyIcon.this);                
 				view.setWindow(panel);
 			}
-
+            @Override
 			public void mouseReleased(MouseEvent e) {
 			}
-
+            @Override
 			public void mouseEntered(MouseEvent e) {
 				setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			}
-
+            @Override
 			public void mouseExited(MouseEvent e) {
 				setBorder(null);
 			}

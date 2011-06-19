@@ -7,16 +7,12 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import org.mypomodoro.gui.MyIcon;
 
 import org.mypomodoro.gui.MyPomodoroView;
 
 //View Menu
 public class ViewMenu extends JMenu {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private final MyPomodoroView view;
 
 	public ViewMenu(final MyPomodoroView view) {
@@ -29,11 +25,6 @@ public class ViewMenu extends JMenu {
 	}
 
 	class ActivityListItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ActivityListItem() {
 			super("Activity List");
 			// Adds Keyboard Shortcut Alt-A
@@ -43,19 +34,18 @@ public class ViewMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
 				view.updateLists();
+                MyIcon activityListIcon = view.getIconBar().getIcon(1);
+                view.getIconBar().highlightIcon(activityListIcon);
+				view.setWindow(activityListIcon.getPanel());
 				view.setWindow(view.getActivityListPanel());
 			}
 		}
 	}
 
 	class ReportListItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ReportListItem() {
 			super("Report List");
 			// Adds Keyboard Shortcut Alt-R
@@ -65,19 +55,18 @@ public class ViewMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
 				view.updateLists();
+                MyIcon reportListIcon = view.getIconBar().getIcon(4);
+                view.getIconBar().highlightIcon(reportListIcon);
+				view.setWindow(reportListIcon.getPanel());
 				view.setWindow(view.getReportListPanel());
 			}
 		}
 	}
 
 	class GenerateListItem extends JMenuItem {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public GenerateListItem() {
 			super("Manager");
 			// Adds Keyboard Shortcut Alt-M
@@ -87,21 +76,18 @@ public class ViewMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
 				view.updateLists();
+                MyIcon generateIcon = view.getIconBar().getIcon(2);
+                view.getIconBar().highlightIcon(generateIcon);
+				view.setWindow(generateIcon.getPanel());
 				view.setWindow(view.getGeneratePanel());
 			}
 		}
 	}
 
 	class ToDoListItem extends JMenuItem {
-		
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
 		public ToDoListItem() {
 			super("ToDo List");
 			// Adds Keyboard Shortcut Alt-T
@@ -111,9 +97,13 @@ public class ViewMenu extends JMenu {
 		}
 
 		class MenuItemListener implements ActionListener {
+            @Override
 			public void actionPerformed(ActionEvent e) {
-				view.setWindow(view.getToDoListPanel());
 				view.updateLists();
+                MyIcon toDoListIcon = view.getIconBar().getIcon(3);
+                view.getIconBar().highlightIcon(toDoListIcon);
+				view.setWindow(toDoListIcon.getPanel());
+                view.setWindow(view.getToDoListPanel());
 			}
 		}
 	}

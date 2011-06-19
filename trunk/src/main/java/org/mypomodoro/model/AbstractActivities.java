@@ -51,4 +51,11 @@ public abstract class AbstractActivities implements
 		}
 		return null;
 	}
+
+    public int getNbEstimatedPom() {
+        int nbEstimatedPom = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();)
+            nbEstimatedPom += it.next().getEstimatedPoms();
+        return nbEstimatedPom;
+    }
 }

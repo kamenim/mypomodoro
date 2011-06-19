@@ -1,13 +1,19 @@
 package org.mypomodoro.gui.reports;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Iterator;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -22,67 +28,129 @@ import org.mypomodoro.model.ReportList;
  * @author Brian Wetzel
  */
 public class ReportListPanel extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	// table for displaying completed activities
 	private final JTable table = new JTable(getTableModel());
-	// information panel for selected activities
-	private final InformationArea informationArea = new InformationArea();
-	private final static String[] columnNames = { "Date", "Name",
-			"Estimated Poms", "Actual Poms", "# Interruptions", "Unplanned",
-			"Voided", "ID" };
-	// static variable for selecting the id
-	public static final int ID = 7;
+
+	private final static String[] columnNames = { "U", "Date", "Title",
+			"Estimated Pomodoros", "Real Pomodoros", "External Interruptions", "ID" };
+	public static final int ID_KEY = 6;
 
 	public ReportListPanel() {
-		setLayout(new BorderLayout());
-		setBorder(new TitledBorder(new EtchedBorder(), "Report List"));
-		add(new JScrollPane(table), BorderLayout.NORTH);
-		add(new JScrollPane(informationArea), BorderLayout.SOUTH);
-		showInfoOnSelectionChange();
+        setLayout(new GridBagLayout());
+        init();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        addReportsTable(gbc);
+		addTabPane(gbc);
+	}
+
+    private void addReportsTable(GridBagConstraints gbc) {
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1.0;
+		gbc.weighty = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		add(new JScrollPane(table), gbc);
+	}
+
+    private void addTabPane(GridBagConstraints gbc) {
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.BOTH;
+		JTabbedPane controlPane = new JTabbedPane();
+        InformationArea informationArea = new InformationArea(table);
+		controlPane.add("Details", informationArea);
+        CommentPanel commentPanel = new CommentPanel(this);
+        controlPane.add("Comment", commentPanel);
+		add(controlPane, gbc);
+        
+		showSelectedItemDetails(informationArea);
+        showSelectedItemComment(commentPanel);
 	}
 
 	private static TableModel getTableModel() {
-		return new AbstractActivitiesTableModel(columnNames, ReportList
-				.getList()) {
-
-			/**
-					 * 
-					 */
-			private static final long serialVersionUID = 1L;
-
+		return new AbstractActivitiesTableModel(columnNames, ReportList.getList()) {
 			@Override
 			protected void populateData(AbstractActivities activities) {
-				AbstractActivities ac = ReportList.getList();
-				int rowIndex = ac.size();
+				int rowIndex = activities.size();
 				int colIndex = columnNames.length;
-				Iterator<Activity> iterator = ac.iterator();
 				tableData = new Object[rowIndex][colIndex];
-				for (int i = 0; i < ac.size() && iterator.hasNext(); i++) {
+				Iterator<Activity> iterator = activities.iterator();
+				for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
 					Activity currentActivity = iterator.next();
-					tableData[i][0] = currentActivity.getDate();
-					tableData[i][1] = currentActivity.getName();
-					tableData[i][2] = currentActivity.getEstimatedPoms();
-					tableData[i][3] = currentActivity.getActualPoms();
-					tableData[i][4] = currentActivity.getNumInterruptions();
-					tableData[i][5] = currentActivity.isUnplanned();
-					tableData[i][6] = currentActivity.isVoided();
-					tableData[i][7] = currentActivity.getId();
+                    tableData[i][0] = currentActivity.isUnplanned();
+					tableData[i][1] = currentActivity.getDate();
+					tableData[i][2] = currentActivity.getName();
+					tableData[i][3] = currentActivity.getEstimatedPoms();
+					tableData[i][4] = currentActivity.getActualPoms();
+					tableData[i][5] = currentActivity.getNumInterruptions();
+					tableData[i][6] = currentActivity.getId();
 				}
 			}
 
 		};
 	}
 
-	private void showInfoOnSelectionChange() {
+	private void showSelectedItemDetails(InformationArea informationArea) {
 		table.getSelectionModel().addListSelectionListener(
 				new ActivityInformationTableListener(ReportList.getList(),
-						table, informationArea, ID));
+						table, informationArea, ID_KEY));
+	}
+
+    private void showSelectedItemComment(CommentPanel commentPanel) {
+		table.getSelectionModel().addListSelectionListener(
+				new ActivityInformationTableListener(ReportList.getList(),
+						table, commentPanel, ID_KEY));
 	}
 
 	public void refresh() {
-		table.setModel(getTableModel());
+        try {
+            table.setModel(getTableModel());
+        } catch (Exception e) {
+            // do nothing
+        }
+        init();
 	}
+
+    private void init() {
+        // Centre Estimated, actual and interrupted pomodoros
+        DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(ID_KEY-3).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY-2).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY-1).setCellRenderer(dtcr);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // Set width of column Unplanned
+        table.getColumnModel().getColumn(0).setMaxWidth(30);
+        table.getColumnModel().getColumn(0).setMinWidth(30);
+        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        // Set width of column Date
+        table.getColumnModel().getColumn(1).setMaxWidth(80);
+        table.getColumnModel().getColumn(1).setMinWidth(80);
+        table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        // enable sorting
+        if (table.getModel().getRowCount() > 0) {
+            table.setAutoCreateRowSorter(true);
+        }
+        if (table.getModel().getRowCount() > 0) {
+            table.setRowSelectionInterval(0,0); // select first row
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), "Report List (" + ReportList.getListSize() +")"));
+    }
+
+    public void saveComment(String comment) {
+        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+        Activity selectedReport = ReportList.getList().getById(id);
+		if (selectedReport != null) {
+            selectedReport.setNotes(comment);
+            JFrame window = new JFrame();
+            String title = "Add comment";
+            String message = "Comment saved for report \"" + selectedReport.getName() + "\"";
+            JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        }
+    }
 }
