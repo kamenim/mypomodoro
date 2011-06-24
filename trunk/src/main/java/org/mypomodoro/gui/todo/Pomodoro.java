@@ -16,9 +16,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
-import org.mypomodoro.model.ToDoList;
-
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.model.Activity;
 
 /**
  * This class keeps the logic for setting a timer for a pomodoro and the
@@ -29,32 +28,40 @@ import org.mypomodoro.gui.ControlPanel;
  */
 public class Pomodoro {
 
-	private static final int SECOND = 1000;
-	private static final int MINUTES = 60 * SECOND;
-	private static final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private static final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
-    private static final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+	private final int SECOND = 1000;
+	private final int MINUTES = 60 * SECOND;
+	private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
 
 	private final Timer pomodoroTimer;
 	private long pomodoroLength = POMODORO_LENGTH;
 	private long shortBreakLength = POMODORO_BREAK_LENGTH;
 	private long longBreakLength = POMODORO_LONG_LENGTH;
 	private final JLabel label;
+    private final ToDoJList toDoJList;
+    private final InformationPanel informationPanel;
+    private final ToDoListPanel panel;
+    private TimerPanel timerPanel;
+    private Activity currentToDo;
 
 	private long time = pomodoroLength;
 	private boolean inpomodoro = false;
 
     private Clip clip;
 
-	public Pomodoro(JLabel pomodoroTimerLabel) {
-		this.label = pomodoroTimerLabel;
+	public Pomodoro(JLabel pomodoroTime, ToDoJList toDoJList, InformationPanel informationPanel, ToDoListPanel panel) {
+		label = pomodoroTime;
 		label.setText(sdf.format(pomodoroLength));
 		pomodoroTimer = new Timer(SECOND, new UpdateAction());
+        this.toDoJList = toDoJList;
+        this.informationPanel = informationPanel;
+        this.panel = panel;
 	}
 
 	public boolean stopWithWarning() {
-        if (inpomodoro) { // in pomodoro only, not during breaks
+        if (inpomodoro && currentToDo != null) { // in pomodoro only, not during breaks
             JFrame window = new JFrame();
             String title = "Void pomodoro";
             String message = "Are you sure to void this pomodoro?";
@@ -62,7 +69,7 @@ public class Pomodoro {
             message += "\n(you may now want to complete this ToDo or record an Unplanned activity)";
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                ToDoList.getList().currentActivity().incrementInter(); // increment external interruptions
+                currentToDo.incrementInter(); // increment external interruptions
                 stop();
             }
         } else {
@@ -77,11 +84,15 @@ public class Pomodoro {
         label.setText(sdf.format(pomodoroLength));
         inpomodoro = false;
         stopSound();
+        Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
+        if (currentToDo.equals(selectedToDo)) {
+            informationPanel.showInfo(currentToDo);
+        }
 	}
 
 	class UpdateAction implements ActionListener {
 
-		int nbPom = 1;
+		int pomSetNumber = 0;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -92,27 +103,32 @@ public class Pomodoro {
 				stopSound();
                 ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 if (inPomodoro()) {
-					if (nbPom > ControlPanel.preferences.getNbPomPerSet()) {
-						goInLongBreak();
-						nbPom = 1;
-					} else {
-                        // update real poms
-                        // ...
-                        // refresh details pane
-                        // ...
-                        // increment poms
-						nbPom++;
-						goInShortBreak();
-					}
-					inpomodoro = false;
-				} else {
-                    tick();
-                    // this allows using the timer with no activity on the list
-                    if (ToDoList.getList().currentActivity() != null) {
-                        ToDoList.getList().currentActivity().incrementPoms();
+                    // increment real poms
+                    currentToDo.incrementPoms();
+                    // refresh details pane
+                    Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
+                    if (currentToDo.equals(selectedToDo)) {
+                        informationPanel.showInfo(currentToDo);
                     }
-					inpomodoro = true;
-					goInPomodoro();
+                    // refresh icon label
+                    panel.setIconLabel();
+                    pomSetNumber++;                    
+                    if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
+                        goInLongBreak();
+                        pomSetNumber = 0;
+                    } else {
+                        goInShortBreak();
+                    }
+                    inpomodoro = false;                    
+				} else {
+                    if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                        stop();
+                        timerPanel.setStart();
+                    } else {
+                        tick();
+                        inpomodoro = true;
+                        goInPomodoro();
+                    }
 				}
 			}
 		}
@@ -197,8 +213,9 @@ public class Pomodoro {
 	}
 
 	public void start() {
-		pomodoroTimer.start();        
-		inpomodoro = true;
+        currentToDo = (Activity)toDoJList.getSelectedValue();        
+        pomodoroTimer.start();
+        inpomodoro = true;
         tick();
 	}
 
@@ -242,5 +259,21 @@ public class Pomodoro {
       if (clip != null) {
           clip.stop();
       }
+    }
+
+    public void setCurrentToDo(Activity toDo) {
+        currentToDo = toDo;
+    }
+
+    public Activity getCurrentToDo() {
+        return currentToDo;
+    }
+
+    public void setTimerPanel(TimerPanel timerPanel) {
+        this.timerPanel = timerPanel;
+    }
+
+    public boolean isCurrentToDoComplete() {
+        return currentToDo.getActualPoms() == currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms();
     }
 }

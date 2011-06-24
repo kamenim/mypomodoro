@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -14,7 +13,7 @@ import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
 
 /**
- * Panel to overestimate pomodoros' initial estimation
+ * Panel to overestimate initial estimation
  * 
  * @author Phil Karoo
  */

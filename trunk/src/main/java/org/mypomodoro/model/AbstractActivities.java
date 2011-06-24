@@ -12,14 +12,6 @@ public abstract class AbstractActivities implements
 		activities.add(activity);
 	}
 
-	public Activity currentActivity() {
-		if (activities.size() == 0) {
-			return null;
-		} else {
-			return activities.get(0);
-		}
-	}
-
 	public boolean isEmpty() {
 		return activities.isEmpty();
 	}
@@ -56,6 +48,15 @@ public abstract class AbstractActivities implements
         int nbEstimatedPom = 0;
         for (Iterator<Activity> it = iterator(); it.hasNext();)
             nbEstimatedPom += it.next().getEstimatedPoms();
+        return nbEstimatedPom;
+    }
+
+    public int getNbTotalEstimatedPom() {
+        int nbEstimatedPom = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            Activity a = it.next();
+            nbEstimatedPom += a.getEstimatedPoms() + a.getOverestimatedPoms();
+        }
         return nbEstimatedPom;
     }
 }

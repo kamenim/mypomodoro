@@ -40,12 +40,4 @@ public class ActivityList extends AbstractActivities {
         Main.updateLists();
 		Main.updateView();
     }
-
-	@Override
-	public Activity currentActivity() {
-		if (size() == 0) {
-			return null;
-		}
-		return activities.get(0);
-	}
 }

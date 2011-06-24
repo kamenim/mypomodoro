@@ -33,8 +33,8 @@ public class ActivitiesDAO {
 				+ newActivity.getPlace() + "', "
 				+ newActivity.getDate().getTime() + ", "
 				+ newActivity.getEstimatedPoms() + ", "
-				+ newActivity.getActualPoms() + ", " + "'"
-				+ String.valueOf(newActivity.isVoided()) + "', " + "'"
+				+ newActivity.getActualPoms() + ", "
+				+ newActivity.getOverestimatedPoms() + ", " + "'"
 				+ String.valueOf(newActivity.isCompleted()) + "', " + "'"
 				+ String.valueOf(newActivity.isUnplanned()) + "', "
 				+ newActivity.getNumInterruptions() + ", "
@@ -146,8 +146,8 @@ public class ActivitiesDAO {
 				+ activity.getPlace() + "', " + "date_added = "
 				+ activity.getDate().getTime() + ", " + "estimated_poms = "
 				+ activity.getEstimatedPoms() + ", " + "actual_poms = "
-				+ activity.getActualPoms() + ", " + "is_void = '"
-				+ String.valueOf(activity.isVoided()) + "', "
+				+ activity.getActualPoms() + ", " + "overestimated_poms = "
+				+ activity.getOverestimatedPoms() + ", "
 				+ "is_complete = '" + String.valueOf(activity.isCompleted())
 				+ "', " + "is_unplanned = '"
 				+ String.valueOf(activity.isUnplanned()) + "', "
@@ -163,6 +163,32 @@ public class ActivitiesDAO {
 		} finally {
 			database.unlock();
 		}
+	}
 
+    public Activity getActivityByNameAndDate(Activity newActivity) {
+		database.lock();
+		Activity activity = null;
+		try {
+			ResultSet rs = database.query("SELECT * FROM activities "
+					+ "WHERE priority = -1 AND is_complete = 'false'"
+                    + "AND name = '" + newActivity.getName() + "'"
+                    + "AND date_added = " + newActivity.getDate().getTime() + ";");
+			try {
+				while (rs.next()) {
+					activity = new Activity(rs);
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+                    e.printStackTrace();
+				}
+			}
+		} finally {
+			database.unlock();
+		}
+		return activity;
 	}
 }

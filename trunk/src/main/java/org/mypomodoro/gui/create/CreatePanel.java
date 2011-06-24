@@ -7,8 +7,10 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.mypomodoro.buttons.SaveButton;
@@ -89,12 +91,20 @@ public class CreatePanel extends JPanel {
 		validation.setText("Activity added to Activity List");
 	}
 
-	public void saveActivity(Activity newActivity) {        
-		if (newActivity.isValid()) {
-			validActivityAction(newActivity);
+	public void saveActivity(Activity newActivity) {
+		if (!newActivity.isValid()) {
+            invalidActivityAction();
+		} else if (newActivity.alreadyExists()) {
+            JFrame window = new JFrame();
+            String title = "";
+            String message = "An activity with the same date and title already exists. Proceed anyway?";
+            int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                validActivityAction(newActivity);
+            }       
 		} else {
-			invalidActivityAction();
-		}
+            validActivityAction(newActivity);
+        }
 	}
 
 	protected void invalidActivityAction() {

@@ -85,7 +85,11 @@ public class ActivitiesPanel extends JPanel {
                     tableData[i][0] = a.isUnplanned();
                     tableData[i][1] = a.getDate();
 					tableData[i][2] = a.getName();
-					tableData[i][3] = a.getEstimatedPoms();
+                    String poms = "" + a.getEstimatedPoms();
+                    if (a.getOverestimatedPoms() > 0) {
+                        poms +=  " + " + a.getOverestimatedPoms();
+                    }
+					tableData[i][3] = poms;
 					tableData[i][4] = a.getType();
 					tableData[i][5] = a.getId();
 				}

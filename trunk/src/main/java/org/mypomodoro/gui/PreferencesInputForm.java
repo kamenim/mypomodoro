@@ -42,7 +42,7 @@ public class PreferencesInputForm extends JPanel {
         longBreakSlider = new TimerValueSlider(controlPanel, 5, 45, ControlPanel.preferences.getLongBreakLength(), "Long Break Length: ", 15, 30, "minute");
         maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, 7, ControlPanel.preferences.getMaxNbPomPerActivity(), "Max nb pom/activity: ", 1, 5, "pomodoro");
         maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12, ControlPanel.preferences.getMaxNbPomPerDay(), "Max nb pom/day: ", 1, 10, "pomodoro");
-        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), "Max nb pom/set: ", 4, 4, "pomodoro");
+        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), "Nb pom/set: ", 4, 4, "pomodoro");
         tickingBox = new JCheckBox("ticking", ControlPanel.preferences.getTicking());
         ringingBox = new JCheckBox("ringing", ControlPanel.preferences.getRinging());
         

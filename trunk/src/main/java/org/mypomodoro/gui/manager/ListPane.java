@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -91,6 +92,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         }
         text += "\nTitle: " + аctivity.getName()
                 + "\nEstimated Pomodoros: "	+ аctivity.getEstimatedPoms();
+                if (аctivity.getOverestimatedPoms() > 0) {
+                    text +=  " + " + аctivity.getOverestimatedPoms();
+                }
 		informationArea.setText(text);
 	}
 
@@ -130,13 +134,8 @@ public class ListPane extends JPanel implements ActivityInformation {
         this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), "Details"));
     }
 
-    public boolean isMaxNbEstimatedPomReached(Activity activity) {
-        boolean limitReached = false;
-        int nbEstimatedPom = list.getNbEstimatedPom() + activity.getEstimatedPoms();
-        if ( nbEstimatedPom > ControlPanel.preferences.getMaxNbPomPerDay() &&
-                activity.getPriority() == -1 && !activity.isCompleted()) { // activities being added as ToDo activity
-            limitReached = true;
-        }
-        return limitReached;
+    public boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
+        int nbTotalEstimatedPom = list.getNbTotalEstimatedPom() + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
+        return nbTotalEstimatedPom > ControlPanel.preferences.getMaxNbPomPerDay();
     }
 }

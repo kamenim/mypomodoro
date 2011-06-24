@@ -73,7 +73,7 @@ public class ToDoList extends AbstractActivities {
 	 * 
 	 * @param index
 	 */
-	public void demote(int index) {
+	/*public void demote(int index) {
 		if (index < (this.size() - 1)) {
 			Activity higher = activities.get(index);
 			Activity lower = activities.get(index + 1);
@@ -92,5 +92,5 @@ public class ToDoList extends AbstractActivities {
 			currentAct.setPriority(j);
 		}        
 		ReportList.getList().add(activity);
-	}
+	}*/
 }
