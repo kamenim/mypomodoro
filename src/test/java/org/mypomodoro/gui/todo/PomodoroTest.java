@@ -38,4 +38,6 @@ public class PomodoroTest {
 		Thread.sleep(1000);
 		assertEquals(label.getText(), "24:58");
 	}
+ * 
+ */
 }
