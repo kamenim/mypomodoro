@@ -78,55 +78,55 @@ public class ActivityInputForm extends JPanel {
             items[i] = (i+1)+"";
         }
         estimatedPomodoros = new JComboBox(items);
-        add(estimatedPomodoros, c);
-        
-		// Description Label and TextArea
-		c.gridx = 0;
-		c.gridy = 3;
-		c.weighty = 0.5;
-		add(new FormLabel("Description:"), c);
-		c.gridx = 1;
-		c.gridy = 3;
-		c.weighty = 0.5;
-        descriptionField.setFont(this.getFont());
-		JScrollPane description = new JScrollPane(descriptionField);
-		description.setMinimumSize(TEXT_AREA_DIMENSION);
-		description.setPreferredSize(TEXT_AREA_DIMENSION);
-        description.setFont(getFont());        
-		add(description, c);		
+        add(estimatedPomodoros, c);		
                 
 		// Type Label and TextField
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 3;
 		c.weighty = 0.5;
 		add(new FormLabel("Type:"), c);
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy = 3;
 		c.weighty = 0.5;
 		addTextField(typeField, c);
 
         // Author Label and TextField
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 4;
 		c.weighty = 0.5;
 		add(new FormLabel("Author: "), c);
 		c.gridx = 1;
-		c.gridy = 5;
+		c.gridy = 4;
 		c.weighty = 0.5;
 		addTextField(authorField, c);
 
         // Place label and TextField
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 5;
 		c.weighty = 0.5;
 		c.weightx = 0.0;
 		add(new FormLabel("Place: "), c);
 		c.gridx = 1;
-		c.gridy = 6;
+		c.gridy = 5;
 		c.weighty = 0.5;
 		placeField.setMinimumSize(TEXT_FIELD_DIMENSION);
 		placeField.setPreferredSize(TEXT_FIELD_DIMENSION);
 		add(placeField, c);
+
+		// Description Label and TextArea
+		c.gridx = 0;
+		c.gridy = 6;
+		c.weighty = 0.5;
+		add(new FormLabel("Description:"), c);
+		c.gridx = 1;
+		c.gridy = 6;
+		c.weighty = 0.5;
+        descriptionField.setFont(this.getFont());
+		JScrollPane description = new JScrollPane(descriptionField);
+		description.setMinimumSize(TEXT_AREA_DIMENSION);
+		description.setPreferredSize(TEXT_AREA_DIMENSION);
+        description.setFont(getFont());
+		add(description, c);
 	}
 
 	private void addTextField(JTextField field, GridBagConstraints contraints) {
@@ -142,11 +142,11 @@ public class ActivityInputForm extends JPanel {
 	 * @return
 	 */
 	public Activity getActivityFromFields() {
-		String place = placeField.getText();
-		String author = authorField.getText();
-		String name = nameField.getText();
-		String description = descriptionField.getText();
-		String type = typeField.getText();
+		String place = placeField.getText().trim();
+		String author = authorField.getText().trim();
+		String name = nameField.getText().trim();
+		String description = descriptionField.getText().trim();
+		String type = typeField.getText().trim();
 		int estimatedPoms = estimatedPomodoros.getSelectedIndex()+1;
         Date dateActivity = datePicker.getDate();
 		

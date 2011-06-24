@@ -64,11 +64,14 @@ public class DetailsPane extends JPanel implements ActivityInformation {
             text += "]";
         }
         text += "\nTitle: " + activity.getName()
-				+ "\nEstimated Pomodoros: " + activity.getEstimatedPoms()
-				+ "\nDescription: " + activity.getDescription()
-				+ "\nType: " + activity.getType()
+				+ "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
+                if (activity.getOverestimatedPoms() > 0) {
+                    text +=  " + " + activity.getOverestimatedPoms();
+                }
+		text += "\nType: " + activity.getType()
                 + "\nAuthor: "	+ activity.getAuthor()
-                + "\nPlace: " + activity.getPlace();
+                + "\nPlace: " + activity.getPlace()
+				+ "\nDescription: " + activity.getDescription();
 		informationArea.setText(text);
 	}
 

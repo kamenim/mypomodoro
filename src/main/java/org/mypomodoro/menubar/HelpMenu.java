@@ -61,7 +61,7 @@ public class HelpMenu extends JMenu {
             @Override
 			public void actionPerformed(ActionEvent e) {
 				final JTextField urlField = new JTextField(
-						"http://www.pomodorotechnique.com/downloads/pomodoro_cheat_sheet.pdf");
+						"http://www.pomodorotechnique.com/resources/pomodoro_cheat_sheet.pdf");
 				BareBonesBrowserLaunch.openURL(urlField.getText()
 						.trim());
 			}
@@ -78,7 +78,7 @@ public class HelpMenu extends JMenu {
             @Override
 			public void actionPerformed(ActionEvent e) {
 				BareBonesBrowserLaunch
-						.openURL("http://www.pomodorotechnique.com/resources/cirillo/ThePomodoroTechnique_v1-3.pdf");
+						.openURL("http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf");
 			}
 		}
 	}

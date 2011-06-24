@@ -80,7 +80,7 @@ public class Database {
 				+ "type TEXT, " + "description TEXT, " + "notes TEXT, "
 				+ "author TEXT, " + "place TEXT, " + "date_added INTEGER, "
 				+ "estimated_poms INTEGER, " + "actual_poms INTEGER, "
-				+ "is_void TEXT, " + "is_complete TEXT, "
+				+ "overestimated_poms INTEGER, " + "is_complete TEXT, "
 				+ "is_unplanned TEXT, " + "num_interruptions INTEGER, "
 				+ "priority INTEGER" + ");";
 		update(createTableSQL);

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.Date;
 
 import db.ActivitiesDAO;
+import java.text.SimpleDateFormat;
 import org.mypomodoro.gui.ControlPanel;
 
 /**
@@ -65,9 +66,9 @@ public class Activity {
 	 */
 	private int actualPoms = 0;
 	/**
-	 * state of activity. has it been voided? default is not voided.
+	 * overestimated pomodoros for this task set by constructor
 	 */
-	private boolean isVoided = false;
+	private int overestimatedPoms;
 	/**
 	 * state of activity. is it unplanned (an interruption)? default is planned
 	 */
@@ -141,7 +142,7 @@ public class Activity {
 			this.date = new Date(rs.getLong("date_added"));
 			this.estimatedPoms = rs.getInt("estimated_poms");
 			this.actualPoms = rs.getInt("actual_poms");
-			this.isVoided = Boolean.valueOf(rs.getString("is_void"));
+			this.overestimatedPoms = rs.getInt("overestimated_poms");
 			this.isCompleted = Boolean.valueOf(rs.getString("is_complete"));
 			this.isUnplanned = Boolean.valueOf(rs.getString("is_unplanned"));
 			this.numInterruptions = rs.getInt("num_interruptions");
@@ -184,8 +185,8 @@ public class Activity {
 		return isUnplanned;
 	}
 
-	public boolean isVoided() {
-		return isVoided;
+	public int getOverestimatedPoms() {
+		return overestimatedPoms;
 	}
 
 	public String getName() {
@@ -232,11 +233,6 @@ public class Activity {
 		databaseUpdate();
 	}
 
-	public void setIsVoided(boolean isVoided) {
-		this.isVoided = isVoided;
-		databaseUpdate();
-	}
-
 	public void setNotes(String notes) {
 		this.notes = notes;
 		databaseUpdate();
@@ -252,6 +248,11 @@ public class Activity {
 		databaseUpdate();
 	}
 
+    public void setOverestimatedPoms(int overestimatedPoms) {
+		this.overestimatedPoms = overestimatedPoms;
+		databaseUpdate();
+	}
+
 	public void incrementPoms() {
 		actualPoms++;
 		databaseUpdate();
@@ -259,6 +260,11 @@ public class Activity {
 
 	public void incrementInter() {
 		numInterruptions++;
+		databaseUpdate();
+	}
+
+    public void setDate(Date date) {
+		this.date = date;
 		databaseUpdate();
 	}
 
@@ -272,7 +278,7 @@ public class Activity {
 	 * @return
 	 */
 	public boolean isValid() {
-          return !name.isEmpty() && validNumberOfPomodoros();
+        return !name.isEmpty() && validNumberOfPomodoros();
 	}
 
 	private boolean validNumberOfPomodoros() {
@@ -286,4 +292,18 @@ public class Activity {
 	public void databaseUpdate() {
 		ActivitiesDAO.getInstance().update(this);
 	}
+
+    public boolean alreadyExists() {
+        return ActivitiesDAO.getInstance().getActivityByNameAndDate(this) != null;
+    }
+
+    public boolean isDateToday() {
+        String dateActivityFormat = new SimpleDateFormat("dd/MM/yyyy").format(getDate());
+        String todayFormat = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        return dateActivityFormat.equalsIgnoreCase(todayFormat);
+    }
+
+    public boolean isActivity() {
+        return getPriority() == -1 && !isCompleted();
+    }
 }

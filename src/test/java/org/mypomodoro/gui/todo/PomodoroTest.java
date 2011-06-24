@@ -38,12 +38,4 @@ public class PomodoroTest {
 		Thread.sleep(1000);
 		assertEquals(label.getText(), "24:58");
 	}
-
-	@Ignore
-	@Test
-	public void shouldShowFullScreen() throws Exception {
-		UpdateAction updateAction = pomodoro.new UpdateAction();
-		updateAction.breakAction(10);
-		Thread.sleep(2 * 1000);
-	}*/
 }

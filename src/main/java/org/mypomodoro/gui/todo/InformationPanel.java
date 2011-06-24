@@ -72,9 +72,13 @@ public class InformationPanel extends JPanel implements ActivityInformation {
             text += "]";
         }
         text += "\nTitle: " + activity.getName()
-                + "\nEstimated Pomodoros: "	+ activity.getEstimatedPoms()                
-                + "\nReal Pomodoros: " + activity.getActualPoms()
-                + "\nExternal Interruptions: " + activity.getNumInterruptions();
+                + "\nEstimated Pomodoros: "	+ activity.getEstimatedPoms();
+                if (activity.getOverestimatedPoms() > 0) {
+                    text +=  " + " + activity.getOverestimatedPoms();
+                }
+		text += "\nReal Pomodoros: " + activity.getActualPoms()
+                + "\nExternal Interruptions: " + activity.getNumInterruptions()
+                + "\nDescription: " + activity.getDescription();
 		informationArea.setText(text);
 	}
 

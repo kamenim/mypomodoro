@@ -2,6 +2,7 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -30,9 +31,9 @@ import org.mypomodoro.model.ReportList;
 public class ReportListPanel extends JPanel {
 	private final JTable table = new JTable(getTableModel());
 
-	private final static String[] columnNames = { "U", "Date", "Title",
-			"Estimated Pomodoros", "Real Pomodoros", "External Interruptions", "ID" };
-	public static final int ID_KEY = 6;
+	private final static String[] columnNames = { "U", "Date", "Time", "Title",
+			"Estimated Pomodoros", "Real Pomodoros", "Difference", "Type", "ID" };
+	public static final int ID_KEY = 8;
 
 	public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -77,15 +78,23 @@ public class ReportListPanel extends JPanel {
 				int colIndex = columnNames.length;
 				tableData = new Object[rowIndex][colIndex];
 				Iterator<Activity> iterator = activities.iterator();
+                String pattern = "HH:mm";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
 				for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
 					Activity currentActivity = iterator.next();
                     tableData[i][0] = currentActivity.isUnplanned();
 					tableData[i][1] = currentActivity.getDate();
-					tableData[i][2] = currentActivity.getName();
-					tableData[i][3] = currentActivity.getEstimatedPoms();
-					tableData[i][4] = currentActivity.getActualPoms();
-					tableData[i][5] = currentActivity.getNumInterruptions();
-					tableData[i][6] = currentActivity.getId();
+                    tableData[i][2] = format.format(currentActivity.getDate());
+					tableData[i][3] = currentActivity.getName();
+                    String poms = "" + currentActivity.getEstimatedPoms();
+                    if (currentActivity.getOverestimatedPoms() > 0) {
+                        poms +=  " + " + currentActivity.getOverestimatedPoms();
+                    }
+					tableData[i][4] = poms;
+					tableData[i][5] = currentActivity.getActualPoms();
+                    tableData[i][6] = currentActivity.getActualPoms() - currentActivity.getEstimatedPoms() - currentActivity.getOverestimatedPoms();
+					tableData[i][7] = currentActivity.getType();
+					tableData[i][8] = currentActivity.getId();
 				}
 			}
 
@@ -117,9 +126,9 @@ public class ReportListPanel extends JPanel {
         // Centre Estimated, actual and interrupted pomodoros
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(ID_KEY-4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY-3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY-2).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY-1).setCellRenderer(dtcr);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
@@ -132,6 +141,10 @@ public class ReportListPanel extends JPanel {
         table.getColumnModel().getColumn(1).setMaxWidth(80);
         table.getColumnModel().getColumn(1).setMinWidth(80);
         table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        // Set width of column Time
+        table.getColumnModel().getColumn(2).setMaxWidth(40);
+        table.getColumnModel().getColumn(2).setMinWidth(40);
+        table.getColumnModel().getColumn(2).setPreferredWidth(40);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
