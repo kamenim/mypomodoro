@@ -32,6 +32,7 @@ public class PreferencesDAO {
                 ControlPanel.preferences.setNbPomPerSet(rs.getInt("nb_pom_per_set"));
                 ControlPanel.preferences.setTicking(rs.getInt("ticking") == 1 ? true : false);
                 ControlPanel.preferences.setRinging(rs.getInt("ringing") == 1 ? true : false);
+                ControlPanel.preferences.setLocale(rs.getString("locale"));
             }
             catch (Exception e) {
                 System.err.println(e);
@@ -59,7 +60,8 @@ public class PreferencesDAO {
                 + ", " + "max_nb_pom_per_day = " + ControlPanel.preferences.getMaxNbPomPerDay()
                 + ", " + "nb_pom_per_set = " + ControlPanel.preferences.getNbPomPerSet()
                 + ", " + "ticking = " + ( ControlPanel.preferences.getTicking() ? 1 : 0 )
-                + ", " + "ringing = " + ( ControlPanel.preferences.getRinging() ? 1 : 0 ) + ";";
+                + ", " + "ringing = " + ( ControlPanel.preferences.getRinging() ? 1 : 0 ) + ";"; 
+                //+ ", " + "locale = " + ControlPanel.preferences.getLocale() + ";";
         database.lock();
         try {
             database.update("begin;");
