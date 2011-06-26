@@ -53,6 +53,11 @@ public class Preferences {
      */
     public static final boolean RINGING = true;
     private boolean ringing = RINGING;
+    /**
+     * Locale
+     */
+    public static final String LOCALE = "en_US";
+    private String locale = LOCALE;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -86,6 +91,10 @@ public class Preferences {
     public boolean getRinging() {
         return ringing;
     }
+    
+    public String getLocale() {
+        return locale;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -118,6 +127,10 @@ public class Preferences {
 
     public void setRinging(boolean value) {
         ringing = value;
+    }
+    
+    public void setLocale(String value) {
+        locale = value;
     }
 
     public void refresh() {

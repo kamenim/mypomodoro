@@ -26,6 +26,7 @@ public class PreferencesInputForm extends JPanel {
     protected final TimerValueSlider nbPomPerSetSlider;
     protected final JCheckBox tickingBox;
     protected final JCheckBox ringingBox;
+    //protected final JComboBox localesComboBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(), "Preferences"));
@@ -45,6 +46,9 @@ public class PreferencesInputForm extends JPanel {
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), "Nb pom/set: ", 4, 4, "pomodoro");
         tickingBox = new JCheckBox("ticking", ControlPanel.preferences.getTicking());
         ringingBox = new JCheckBox("ringing", ControlPanel.preferences.getRinging());
+        //String locales[] = new String[1];        
+        //locales[0] = ControlPanel.preferences.getLocale();
+        //localesComboBox = new JComboBox(locales);
 
         tickingBox.addActionListener(new ActionListener() {
 
@@ -81,6 +85,8 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 6;
         add(tickingBox, gbc);
         gbc.gridy = 7;
-        add(ringingBox, gbc);
+        add(ringingBox, gbc);        
+        //gbc.gridy = 8;
+        //add(localesComboBox, gbc);
     }
 }
