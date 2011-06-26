@@ -11,27 +11,28 @@ import org.mypomodoro.model.ToDoList;
  * @author Brian Wetzel
  */
 public class ManagerPanel extends JPanel {
-	private final ToDoList toDoList = ToDoList.getList();
-	private final ActivityList activityList = ActivityList.getList();
-	private final ListPane todoPane;
-	private final ListPane activitiesPane;
 
-	public ManagerPanel() {
-		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		activitiesPane = new ListPane(activityList, "Activity List");
-		todoPane = new ListPane(toDoList, "ToDo List");        
+    private final ToDoList toDoList = ToDoList.getList();
+    private final ActivityList activityList = ActivityList.getList();
+    private final ListPane todoPane;
+    private final ListPane activitiesPane;
 
-		activitiesPane.addListMouseListener(new ListMoverMouseListener(
-				activitiesPane, todoPane));
-		todoPane.addListMouseListener(new ListMoverMouseListener(todoPane,
-				activitiesPane));
-		add(activitiesPane);
-		add(new ControlPanel(activitiesPane, todoPane));
-		add(todoPane);
-	}
+    public ManagerPanel() {
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        activitiesPane = new ListPane(activityList, "Activity List");
+        todoPane = new ListPane(toDoList, "ToDo List");
 
-	public void refresh() {
-		todoPane.update();
-		activitiesPane.update();
-	}   
+        activitiesPane.addListMouseListener(new ListMoverMouseListener(
+                activitiesPane, todoPane));
+        todoPane.addListMouseListener(new ListMoverMouseListener(todoPane,
+                activitiesPane));
+        add(activitiesPane);
+        add(new ControlPanel(activitiesPane, todoPane));
+        add(todoPane);
+    }
+
+    public void refresh() {
+        todoPane.update();
+        activitiesPane.update();
+    }
 }

@@ -9,7 +9,8 @@ import org.mypomodoro.model.Activity;
  * 
  */
 public interface ActivityInformation {
-	void showInfo(Activity activity);
 
-	void clearInfo();
+    void showInfo(Activity activity);
+
+    void clearInfo();
 }

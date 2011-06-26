@@ -13,31 +13,32 @@ import org.junit.Test;
 import org.mypomodoro.gui.todo.Pomodoro.UpdateAction;
 
 public class PomodoroTest {
-	private String beginingText;
-	private Pomodoro pomodoro;
-	private JLabel label;
 
-	@Before
-	public void setUpPomodoro() throws InterruptedException {
-		beginingText = "bla";
-		label = new JLabel(beginingText);
-		//pomodoro = new Pomodoro(label);
-		//pomodoro.start();
-		//Thread.sleep(1200);
-	}
+    private String beginingText;
+    private Pomodoro pomodoro;
+    private JLabel label;
 
-	@Test
-	public void shouldUpdateTheLabelEverySecond() {
-		//assertThat(label.getText(), not(equalTo(beginingText)));
-      assertEquals(label.getText(), beginingText);
-	}
-/*
-	@Test
-	public void shouldUpdateTheLabelWithSecondsFormat() throws Exception {
-		assertEquals(label.getText(), "24:59");
-		Thread.sleep(1000);
-		assertEquals(label.getText(), "24:58");
-	}
- * 
- */
+    @Before
+    public void setUpPomodoro() throws InterruptedException {
+        beginingText = "bla";
+        label = new JLabel(beginingText);
+        //pomodoro = new Pomodoro(label);
+        //pomodoro.start();
+        //Thread.sleep(1200);
+    }
+
+    @Test
+    public void shouldUpdateTheLabelEverySecond() {
+        //assertThat(label.getText(), not(equalTo(beginingText)));
+        assertEquals(label.getText(), beginingText);
+    }
+    /*
+    @Test
+    public void shouldUpdateTheLabelWithSecondsFormat() throws Exception {
+    assertEquals(label.getText(), "24:59");
+    Thread.sleep(1000);
+    assertEquals(label.getText(), "24:58");
+    }
+     * 
+     */
 }

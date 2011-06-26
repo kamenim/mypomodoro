@@ -16,26 +16,26 @@ import javax.swing.border.TitledBorder;
  * @author Phil Karoo
  */
 public class PreferencesInputForm extends JPanel {
-	private static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
 
+    private static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
     protected final TimerValueSlider pomodoroSlider;
-	protected final TimerValueSlider shortBreakSlider;
-	protected final TimerValueSlider longBreakSlider;
+    protected final TimerValueSlider shortBreakSlider;
+    protected final TimerValueSlider longBreakSlider;
     protected final TimerValueSlider maxNbPomPerActivitySlider;
     protected final TimerValueSlider maxNbPomPerDaySlider;
     protected final TimerValueSlider nbPomPerSetSlider;
     protected final JCheckBox tickingBox;
     protected final JCheckBox ringingBox;
 
-	public PreferencesInputForm(final ControlPanel controlPanel) {
-		setBorder(new TitledBorder(new EtchedBorder(), "Preferences"));
-		setMinimumSize(PANEL_DIMENSION);
-		setPreferredSize(PANEL_DIMENSION);
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+    public PreferencesInputForm(final ControlPanel controlPanel) {
+        setBorder(new TitledBorder(new EtchedBorder(), "Preferences"));
+        setMinimumSize(PANEL_DIMENSION);
+        setPreferredSize(PANEL_DIMENSION);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
 
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45, ControlPanel.preferences.getPomodoroLength(), "Pomodoro Length: ", 25, 30, "minute");
         shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10, ControlPanel.preferences.getShortBreakLength(), "Short Break Length: ", 3, 5, "minute");
@@ -45,40 +45,42 @@ public class PreferencesInputForm extends JPanel {
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), "Nb pom/set: ", 4, 4, "pomodoro");
         tickingBox = new JCheckBox("ticking", ControlPanel.preferences.getTicking());
         ringingBox = new JCheckBox("ringing", ControlPanel.preferences.getRinging());
-        
+
         tickingBox.addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent event) {
+            public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
-			}
-		});
+            }
+        });
         ringingBox.addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent event) {
+            public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
-			}
-		});
-        
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weighty = .5;
-		gbc.fill = GridBagConstraints.BOTH;
-		add(pomodoroSlider, gbc);
-		gbc.gridy = 1;
-		add(shortBreakSlider, gbc);
-		gbc.gridy = 2;
-		add(longBreakSlider, gbc);
-		gbc.gridy = 3;
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = .5;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(pomodoroSlider, gbc);
+        gbc.gridy = 1;
+        add(shortBreakSlider, gbc);
+        gbc.gridy = 2;
+        add(longBreakSlider, gbc);
+        gbc.gridy = 3;
         add(maxNbPomPerActivitySlider, gbc);
-		gbc.gridy = 4;
+        gbc.gridy = 4;
         add(maxNbPomPerDaySlider, gbc);
-		gbc.gridy = 5;
+        gbc.gridy = 5;
         add(nbPomPerSetSlider, gbc);
         gbc.gridy = 6;
         add(tickingBox, gbc);
         gbc.gridy = 7;
         add(ringingBox, gbc);
-	}
+    }
 }

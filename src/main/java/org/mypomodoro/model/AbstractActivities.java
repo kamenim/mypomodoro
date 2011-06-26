@@ -5,49 +5,51 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractActivities implements
-		Iterable<Activity> {
-	protected List<Activity> activities = new LinkedList<Activity>();
+        Iterable<Activity> {
 
-	public void add(Activity activity) {
-		activities.add(activity);
-	}
+    protected List<Activity> activities = new LinkedList<Activity>();
 
-	public boolean isEmpty() {
-		return activities.isEmpty();
-	}
+    public void add(Activity activity) {
+        activities.add(activity);
+    }
 
-	public abstract void refresh();
+    public boolean isEmpty() {
+        return activities.isEmpty();
+    }
 
-	public void remove(Activity activity) {
-		activities.remove(activity);
-	}
+    public abstract void refresh();
 
-	public int size() {
-		return activities.size();
-	}
+    public void remove(Activity activity) {
+        activities.remove(activity);
+    }
 
-	public Object[] toArray() {
-		return activities.toArray();
-	}
+    public int size() {
+        return activities.size();
+    }
 
-	@Override
-	public Iterator<Activity> iterator() {
-		return activities.iterator();
-	}
+    public Object[] toArray() {
+        return activities.toArray();
+    }
 
-	public Activity getById(int id) {
-		for (Activity activity : activities) {
-			if (activity.getId() == id) {
-				return activity;
-			}
-		}
-		return null;
-	}
+    @Override
+    public Iterator<Activity> iterator() {
+        return activities.iterator();
+    }
+
+    public Activity getById(int id) {
+        for (Activity activity : activities) {
+            if (activity.getId() == id) {
+                return activity;
+            }
+        }
+        return null;
+    }
 
     public int getNbEstimatedPom() {
         int nbEstimatedPom = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();)
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
             nbEstimatedPom += it.next().getEstimatedPoms();
+        }
         return nbEstimatedPom;
     }
 

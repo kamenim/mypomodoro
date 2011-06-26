@@ -12,13 +12,15 @@ import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.model.ActivityList;
 
 public class DeleteButton extends JButton {
-	public DeleteButton(final JTable table) {
-		super("Delete");
-		addActionListener(new ActionListener() {
+
+    public DeleteButton(final JTable table) {
+        super("Delete");
+        addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent e) {
-				int index = table.getSelectedRow();
-				if (index > -1) {
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+                if (index > -1) {
                     JFrame window = new JFrame();
                     String title = "Delete activity";
                     String message = "Are you sure to delete this activity?";
@@ -28,7 +30,7 @@ public class DeleteButton extends JButton {
                         ActivityList.getList().removeById(id);
                     }
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 }

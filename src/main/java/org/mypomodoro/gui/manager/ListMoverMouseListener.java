@@ -8,22 +8,25 @@ import javax.swing.JOptionPane;
 import org.mypomodoro.model.Activity;
 
 public class ListMoverMouseListener extends MouseAdapter {
-	private final ListPane from;
-	private final ListPane to;
-	public ListMoverMouseListener(ListPane from, ListPane to) {
-		this.from = from;
-		this.to = to;
-	}
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() >= 2) {
-			Activity selectedActivity = from.getSelectedActivity();
-			if (selectedActivity != null) {
+
+    private final ListPane from;
+    private final ListPane to;
+
+    public ListMoverMouseListener(ListPane from, ListPane to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() >= 2) {
+            Activity selectedActivity = from.getSelectedActivity();
+            if (selectedActivity != null) {
                 if (selectedActivity.isActivity()) {
                     if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
                         JFrame window = new JFrame();
                         String message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached!";
-                        JOptionPane.showMessageDialog(window,message);
+                        JOptionPane.showMessageDialog(window, message);
                     } else if (!selectedActivity.isDateToday()) {
                         JFrame window = new JFrame();
                         String title = "Add activity to ToDo list";
@@ -42,6 +45,6 @@ public class ListMoverMouseListener extends MouseAdapter {
                     to.addActivity(selectedActivity);
                 }
             }
-		}
-	}
+        }
+    }
 }

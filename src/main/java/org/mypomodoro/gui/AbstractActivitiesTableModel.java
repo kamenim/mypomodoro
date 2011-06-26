@@ -5,58 +5,60 @@ import javax.swing.table.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 
 public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
-	protected Object[][] tableData;
-	private final String[] columnNames;
 
-	public AbstractActivitiesTableModel(String[] fields,
-			AbstractActivities activities) {
-		this.columnNames = fields;
-		populateData(activities);
-	}
+    protected Object[][] tableData;
+    private final String[] columnNames;
 
-	/**
-	 * Populates the table from the database.
-	 * 
-	 * @param activities
-	 */
-	protected abstract void populateData(AbstractActivities activities);
+    public AbstractActivitiesTableModel(String[] fields,
+            AbstractActivities activities) {
+        this.columnNames = fields;
+        populateData(activities);
+    }
 
-	@Override
-	public int getRowCount() {
-		return tableData.length;
-	}
+    /**
+     * Populates the table from the database.
+     * 
+     * @param activities
+     */
+    protected abstract void populateData(AbstractActivities activities);
 
-	@Override
-	public int getColumnCount() {
-		return columnNames.length;
-	}
+    @Override
+    public int getRowCount() {
+        return tableData.length;
+    }
 
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (rowIndex >= 0)
-			return tableData[rowIndex][columnIndex];
-		else
-			return null;
-	}
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
 
-	@Override
-	public String getColumnName(int column) {
-		return columnNames[column];
-	}
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        if (rowIndex >= 0) {
+            return tableData[rowIndex][columnIndex];
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public Class<?> getColumnClass(int c) {
-		return getValueAt(0, c).getClass();
-	}
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
 
-	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return false;
-	}
+    @Override
+    public Class<?> getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
+    }
 
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		tableData[rowIndex][columnIndex] = aValue;
-		fireTableCellUpdated(rowIndex, columnIndex);
-	}
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        tableData[rowIndex][columnIndex] = aValue;
+        fireTableCellUpdated(rowIndex, columnIndex);
+    }
 }
