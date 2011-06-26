@@ -1,6 +1,6 @@
 package org.mypomodoro.model;
 
-import db.PreferencesDAO;
+import org.mypomodoro.db.PreferencesDAO;
 
 /**
  * Preference Object stores all user preferences.
@@ -12,122 +12,116 @@ public class Preferences {
     public Preferences() {
         refresh();
     }
-
-	// ATTRIBUTES
-	/**
-	 * Pomodoro length	 
-	 */
+    // ATTRIBUTES
+    /**
+     * Pomodoro length	 
+     */
     public static final int PLENGTH = 25;
-	private int pomodoroLength = PLENGTH;
+    private int pomodoroLength = PLENGTH;
     /**
-	 * Short break length	 
-	 */
+     * Short break length	 
+     */
     public static final int SBLENGTH = 5;
-	private int shortBreakLength = SBLENGTH;
+    private int shortBreakLength = SBLENGTH;
     /**
-	 * Long break length	 
-	 */
+     * Long break length	 
+     */
     public static final int LBLENGTH = 20;
-	private int longBreakLength = LBLENGTH;
-
+    private int longBreakLength = LBLENGTH;
     /**
-	 * Max nb pomodoros per activity
-	 */
+     * Max nb pomodoros per activity
+     */
     public static final int MNPPACTIVITY = 5;
-	private int maxNbPomPerActivity = MNPPACTIVITY;
-
+    private int maxNbPomPerActivity = MNPPACTIVITY;
     /**
-	 * Max nb pomodoros per day
-	 */
+     * Max nb pomodoros per day
+     */
     public static final int MNPPDAY = 10;
-	private int maxNbPomPerDay = MNPPDAY;
-
+    private int maxNbPomPerDay = MNPPDAY;
     /**
-	 * Nb pomodoros per set
-	 */
+     * Nb pomodoros per set
+     */
     public static final int NPPSet = 4;
-	private int nbPomPerSet = NPPSet;
-
+    private int nbPomPerSet = NPPSet;
     /**
-	 * Ticking
-	 */
+     * Ticking
+     */
     public static final boolean TICKING = true;
-	private boolean ticking = TICKING;
-
+    private boolean ticking = TICKING;
     /**
-	 * Ringing
-	 */
+     * Ringing
+     */
     public static final boolean RINGING = true;
-	private boolean ringing = RINGING;
+    private boolean ringing = RINGING;
 
     // GETTERS
-	public int getPomodoroLength() {
-		return pomodoroLength;
-	}
+    public int getPomodoroLength() {
+        return pomodoroLength;
+    }
 
     public int getShortBreakLength() {
-		return shortBreakLength;
-	}
+        return shortBreakLength;
+    }
 
     public int getLongBreakLength() {
-		return longBreakLength;
-	}
+        return longBreakLength;
+    }
 
     public int getMaxNbPomPerActivity() {
-		return maxNbPomPerActivity;
-	}
+        return maxNbPomPerActivity;
+    }
 
     public int getMaxNbPomPerDay() {
-		return maxNbPomPerDay;
-	}
+        return maxNbPomPerDay;
+    }
 
     public int getNbPomPerSet() {
-		return nbPomPerSet;
-	}
+        return nbPomPerSet;
+    }
 
     public boolean getTicking() {
-		return ticking;
-	}
+        return ticking;
+    }
 
     public boolean getRinging() {
-		return ringing;
-	}
+        return ringing;
+    }
 
     // SETTERS
-	public void setPomodoroLength(int value) {
-		pomodoroLength = value;
-	}
+    public void setPomodoroLength(int value) {
+        pomodoroLength = value;
+    }
 
     public void setShortBreakLength(int value) {
-		shortBreakLength = value;
-	}
+        shortBreakLength = value;
+    }
 
     public void setLongBreakLength(int value) {
-		longBreakLength = value;
-	}
+        longBreakLength = value;
+    }
 
     public void setMaxNbPomPerActivity(int value) {
-		maxNbPomPerActivity = value;
-	}
+        maxNbPomPerActivity = value;
+    }
 
     public void setMaxNbPomPerDay(int value) {
-		maxNbPomPerDay = value;
-	}
+        maxNbPomPerDay = value;
+    }
 
     public void setNbPomPerSet(int value) {
-		nbPomPerSet = value;
-	}
+        nbPomPerSet = value;
+    }
 
     public void setTicking(boolean value) {
-		ticking = value;
-	}
+        ticking = value;
+    }
 
     public void setRinging(boolean value) {
-		ringing = value;
-	}
+        ringing = value;
+    }
 
     public void refresh() {
-        PreferencesDAO.getInstance();        
+        PreferencesDAO.getInstance();
     }
 
     public void loadPreferences() {

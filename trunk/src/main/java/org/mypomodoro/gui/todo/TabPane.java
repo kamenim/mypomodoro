@@ -4,13 +4,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 class TabPane extends JTabbedPane {
-	public TabPane(InformationPanel informationPanel,
+
+    public TabPane(InformationPanel informationPanel,
             CommentPanel commentPanel,
             OverestimationPanel overestimationPanel,
-			InterruptPanel interruptPanel) {
-		add("Details", informationPanel);
+            InterruptPanel interruptPanel) {
+        add("Details", informationPanel);
         add("Comment", commentPanel);
         add("Overestimation", overestimationPanel);
-		add("Unplanned", new JScrollPane(interruptPanel));
-	}
+        add("Unplanned", new JScrollPane(interruptPanel));
+    }
 }

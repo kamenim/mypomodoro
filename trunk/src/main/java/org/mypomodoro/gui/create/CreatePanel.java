@@ -23,99 +23,101 @@ import org.mypomodoro.model.ActivityList;
  * @author Brian Wetzel
  */
 public class CreatePanel extends JPanel {
-	protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
-	protected final JLabel validation = new JLabel("");
-	protected final SaveButton saveButton = new SaveButton(this);
+
+    protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
+    protected final JLabel validation = new JLabel("");
+    protected final SaveButton saveButton = new SaveButton(this);
     protected GridBagConstraints gbc = new GridBagConstraints();
 
-	public CreatePanel() {
-		setLayout(new GridBagLayout());
+    public CreatePanel() {
+        setLayout(new GridBagLayout());
 
         addInputFormPanel();
-		addSaveButton();
+        addSaveButton();
         addClearButton();
         addValidation();
-	}
+    }
 
     protected void addInputFormPanel() {
-		gbc.gridx = 0;
-		gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
-		gbc.weighty = 0.80;
+        gbc.weighty = 0.80;
         gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.BOTH;
-		add(inputFormPanel, gbc);
-	}
+        gbc.fill = GridBagConstraints.BOTH;
+        add(inputFormPanel, gbc);
+    }
 
     protected void addSaveButton() {
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.weightx = 0.5;
-		gbc.weighty = 0.1;
+        gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;        
-		add(saveButton, gbc);
-	}
+        gbc.fill = GridBagConstraints.NONE;
+        add(saveButton, gbc);
+    }
 
     protected void addClearButton() {
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
-            @Override
-			public void actionPerformed(ActionEvent e) {
-                clearForm();
-			}
-		});
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.1;
-        gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		add(clearButton, gbc);
-	}
 
-    protected void addValidation() {
-		gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 1.0;
-		gbc.weighty = 0.1;
-        gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.NONE;
-		add(validation, gbc);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearForm();
+            }
+        });
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.1;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(clearButton, gbc);
     }
 
-	protected void validActivityAction(Activity newActivity) {
-		ActivityList.getList().add(newActivity);
-		newActivity.databaseInsert();		
-        validation.setFont(new Font(validation.getFont().getName(),Font.BOLD,validation.getFont().getSize()));
-		validation.setText("Activity added to Activity List");
-	}
+    protected void addValidation() {
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        add(validation, gbc);
+    }
 
-	public void saveActivity(Activity newActivity) {
-		if (!newActivity.isValid()) {
+    protected void validActivityAction(Activity newActivity) {
+        ActivityList.getList().add(newActivity);
+        newActivity.databaseInsert();
+        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+        validation.setText("Activity added to Activity List");
+    }
+
+    public void saveActivity(Activity newActivity) {
+        if (!newActivity.isValid()) {
             invalidActivityAction();
-		} else if (newActivity.alreadyExists()) {
+        } else if (newActivity.alreadyExists()) {
             JFrame window = new JFrame();
             String title = "";
             String message = "An activity with the same date and title already exists. Proceed anyway?";
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 validActivityAction(newActivity);
-            }       
-		} else {
+            }
+        } else {
             validActivityAction(newActivity);
         }
-	}
+    }
 
-	protected void invalidActivityAction() {
-		validation.setForeground(Color.red);
-        validation.setFont(new Font(validation.getFont().getName(),Font.BOLD,validation.getFont().getSize()));
-		validation.setText("Title is mandatory");
-	}
+    protected void invalidActivityAction() {
+        validation.setForeground(Color.red);
+        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+        validation.setText("Title is mandatory");
+    }
 
-	public ActivityInputForm getFormPanel() {
-		return inputFormPanel;
-	}
+    public ActivityInputForm getFormPanel() {
+        return inputFormPanel;
+    }
 
     public void clearForm() {
         inputFormPanel.setNameField("");

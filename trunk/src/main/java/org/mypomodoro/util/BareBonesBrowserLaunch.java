@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
  * Public Domain Software -- Free to Use as You Like
  * @version 3.0, February 7, 2010
  */
-
 public class BareBonesBrowserLaunch {
 
     static final String[] browsers = {"google-chrome", "firefox", "opera",
@@ -33,7 +32,8 @@ public class BareBonesBrowserLaunch {
                     new Object[]{java.net.URI.create(url)});
             //above code mimics:
             //   java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-        } catch (Exception ignore) {  //library not available or failed
+        }
+        catch (Exception ignore) {  //library not available or failed
             String osName = System.getProperty("os.name");
             try {
                 if (osName.startsWith("Mac OS")) {
@@ -58,7 +58,8 @@ public class BareBonesBrowserLaunch {
                         throw new Exception(Arrays.toString(browsers));
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 JOptionPane.showMessageDialog(null, errMsg + "\n" + e.toString());
             }
         }

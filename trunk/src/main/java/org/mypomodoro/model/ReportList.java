@@ -2,42 +2,43 @@ package org.mypomodoro.model;
 
 import org.mypomodoro.Main;
 
-import db.ActivitiesDAO;
+import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  *
  * @author Brian Wetzel
  */
 public class ReportList extends AbstractActivities {
-	private static ReportList list = new ReportList();
 
-	private ReportList() {
-		refresh();
-	}
+    private static ReportList list = new ReportList();
 
-	@Override
-	public void refresh() {
-		activities.clear();
-		for (Activity act : ActivitiesDAO.getInstance().getCompletedActivities()) {
-			activities.add(act);
-		}
-	}
+    private ReportList() {
+        refresh();
+    }
 
-	public static ReportList getList() {
-		return list;
-	}
+    @Override
+    public void refresh() {
+        activities.clear();
+        for (Activity act : ActivitiesDAO.getInstance().getCompletedActivities()) {
+            activities.add(act);
+        }
+    }
+
+    public static ReportList getList() {
+        return list;
+    }
 
     public static int getListSize() {
-		return getList().size();
-	}
+        return getList().size();
+    }
 
     public void removeById(final int id) {
-		ActivitiesDAO.getInstance().removeById(id);
-		update();
-	}
+        ActivitiesDAO.getInstance().removeById(id);
+        update();
+    }
 
     public void update() {
         Main.updateLists();
-		Main.updateView();
+        Main.updateView();
     }
 }

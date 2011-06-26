@@ -16,13 +16,15 @@ import org.mypomodoro.model.ReportList;
  * @author Phil Karoo
  */
 public class DeleteReportButton extends JButton {
-	public DeleteReportButton(final JTable table) {
-		super("Delete");
-		addActionListener(new ActionListener() {
+
+    public DeleteReportButton(final JTable table) {
+        super("Delete");
+        addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent e) {
-				int index = table.getSelectedRow();
-				if (index > -1) {
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+                if (index > -1) {
                     JFrame window = new JFrame();
                     String title = "Delete report";
                     String message = "Are you sure to delete this report?";
@@ -32,7 +34,7 @@ public class DeleteReportButton extends JButton {
                         ReportList.getList().removeById(id);
                     }
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 }

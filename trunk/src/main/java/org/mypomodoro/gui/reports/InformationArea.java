@@ -18,40 +18,41 @@ import org.mypomodoro.model.Activity;
  * Panel that displays information on the current Report
  *
  */
-public class InformationArea extends JPanel implements ActivityInformation {	
-    private final JTextArea informationArea = new JTextArea();
-	private final GridBagConstraints gbc = new GridBagConstraints();
+public class InformationArea extends JPanel implements ActivityInformation {
 
-	public InformationArea(JTable table) {
+    private final JTextArea informationArea = new JTextArea();
+    private final GridBagConstraints gbc = new GridBagConstraints();
+
+    public InformationArea(JTable table) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addInformationArea();
-		addDeleteButton(table);
-	}
+        addDeleteButton(table);
+    }
 
     private void addDeleteButton(JTable table) {
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 0.1;
-		gbc.fill = GridBagConstraints.NONE;
-		add(new DeleteReportButton(table), gbc);
-	}
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(new DeleteReportButton(table), gbc);
+    }
 
-	private void addInformationArea() {
-		// add the information area
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.gridheight = GridBagConstraints.REMAINDER;
-		informationArea.setEditable(false);
-		add(new JScrollPane(informationArea), gbc);
-	}
+    private void addInformationArea() {
+        // add the information area
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        informationArea.setEditable(false);
+        add(new JScrollPane(informationArea), gbc);
+    }
 
     @Override
-	public void showInfo(Activity activity) {
+    public void showInfo(Activity activity) {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
@@ -59,27 +60,27 @@ public class InformationArea extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "U [";
         }
-		text += activityDate;
+        text += activityDate;
         if (activity.isUnplanned()) {
             text += "]";
         }
         text += "\nTitle: " + activity.getName()
-				+ "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
-                if (activity.getOverestimatedPoms() > 0) {
-                    text +=  " + " + activity.getOverestimatedPoms();
-                }
-		text += "\nReal Pomodoros: " + activity.getActualPoms()
-                + "\nDifference: " + (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms())
+                + "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
+        if (activity.getOverestimatedPoms() > 0) {
+            text += " + " + activity.getOverestimatedPoms();
+        }
+        text += "\nReal Pomodoros: " + activity.getActualPoms()
+                + "\nDifference: " + ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() )
                 + "\nExternal Interruptions: " + activity.getNumInterruptions()
-				+ "\nType: " + activity.getType()
-                + "\nAuthor: "	+ activity.getAuthor()
+                + "\nType: " + activity.getType()
+                + "\nAuthor: " + activity.getAuthor()
                 + "\nPlace: " + activity.getPlace()
                 + "\nDescription: " + activity.getDescription();
         informationArea.setText(text);
-	}
+    }
 
     @Override
-	public void clearInfo() {
-		informationArea.setText("");
-	}
+    public void clearInfo() {
+        informationArea.setText("");
+    }
 }

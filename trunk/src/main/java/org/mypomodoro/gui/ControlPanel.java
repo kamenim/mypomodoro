@@ -14,58 +14,61 @@ import javax.swing.JLabel;
 import org.mypomodoro.model.Preferences;
 
 public class ControlPanel extends JPanel {
+
     public static Preferences preferences = new Preferences();
     private JLabel validation = new JLabel("");
     public JButton saveButton = new JButton("Save");
     public JButton resetButton = new JButton("Reset");
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel = new PreferencesInputForm(this);
-    
-	public ControlPanel() {
-        preferences.loadPreferences();
-        validation.setFont(new Font(validation.getFont().getName(),Font.BOLD,validation.getFont().getSize()));
 
-        setLayout(new GridBagLayout());		
+    public ControlPanel() {
+        preferences.loadPreferences();
+        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+
+        setLayout(new GridBagLayout());
         disableSaveButton();
 
         addPreferencesInputFormPanel();
-		addSaveButton();
+        addSaveButton();
         addResetButton();
         addValidation();
-	}
+    }
 
     protected void addPreferencesInputFormPanel() {
-		gbc.gridx = 0;
-		gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
-		gbc.weighty = 0.80;
+        gbc.weighty = 0.80;
         gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.BOTH;
-		add(preferencesInputFormPanel, gbc);
-	}
+        gbc.fill = GridBagConstraints.BOTH;
+        add(preferencesInputFormPanel, gbc);
+    }
 
     protected void addSaveButton() {
         saveButton.addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent event) {
-				updatePreferences();
+            public void actionPerformed(ActionEvent event) {
+                updatePreferences();
                 validation.setText("Preferences saved. Please restart myPomodoro.");
                 disableSaveButton();
-			}
-		});
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+            }
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.weightx = 0.5;
-		gbc.weighty = 0.1;
+        gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		add(saveButton, gbc);
-	}
+        gbc.fill = GridBagConstraints.NONE;
+        add(saveButton, gbc);
+    }
 
     protected void addResetButton() {
         resetButton.addActionListener(new ActionListener() {
+
             @Override
-			public void actionPerformed(ActionEvent event) {
+            public void actionPerformed(ActionEvent event) {
                 preferencesInputFormPanel.pomodoroSlider.setSliderValue(preferences.PLENGTH);
                 preferencesInputFormPanel.shortBreakSlider.setSliderValue(preferences.SBLENGTH);
                 preferencesInputFormPanel.longBreakSlider.setSliderValue(preferences.LBLENGTH);
@@ -77,25 +80,25 @@ public class ControlPanel extends JPanel {
                 updatePreferences();
                 validation.setText("Preferences reset. Please restart myPomodoro.");
                 disableSaveButton();
-			}
-		});
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.1;
+            }
+        });
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		add(resetButton, gbc);
-	}
+        gbc.fill = GridBagConstraints.NONE;
+        add(resetButton, gbc);
+    }
 
     protected void addValidation() {
-		gbc.gridx = 0;
+        gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.weightx = 1.0;
-		gbc.weighty = 0.1;
+        gbc.weighty = 0.1;
         gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.NONE;
-		add(validation, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+        add(validation, gbc);
     }
 
     public void disableSaveButton() {

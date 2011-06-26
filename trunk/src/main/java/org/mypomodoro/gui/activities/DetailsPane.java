@@ -19,64 +19,65 @@ import org.mypomodoro.model.Activity;
  * 
  */
 public class DetailsPane extends JPanel implements ActivityInformation {
-	private final JTextArea informationArea = new JTextArea();
-	private final GridBagConstraints gbc = new GridBagConstraints();
 
-	public DetailsPane(JTable table) {
-		setLayout(new GridBagLayout());
+    private final JTextArea informationArea = new JTextArea();
+    private final GridBagConstraints gbc = new GridBagConstraints();
+
+    public DetailsPane(JTable table) {
+        setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addInformationArea();
-		addDeleteButton(table);
-	}
+        addDeleteButton(table);
+    }
 
     private void addDeleteButton(JTable table) {
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 0.1;
-		gbc.fill = GridBagConstraints.NONE;
-		add(new DeleteButton(table), gbc);
-	}
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(new DeleteButton(table), gbc);
+    }
 
-	private void addInformationArea() {
-		// add the information area
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.gridheight = GridBagConstraints.REMAINDER;		
-		informationArea.setEditable(false);        
-		add(new JScrollPane(informationArea), gbc);
-	}
+    private void addInformationArea() {
+        // add the information area
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        informationArea.setEditable(false);
+        add(new JScrollPane(informationArea), gbc);
+    }
 
     @Override
-	public void showInfo(Activity activity) {
+    public void showInfo(Activity activity) {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
-		String text = "Date: ";
+        String text = "Date: ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
-		text += activityDate;
+        text += activityDate;
         if (activity.isUnplanned()) {
             text += "]";
         }
         text += "\nTitle: " + activity.getName()
-				+ "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
-                if (activity.getOverestimatedPoms() > 0) {
-                    text +=  " + " + activity.getOverestimatedPoms();
-                }
-		text += "\nType: " + activity.getType()
-                + "\nAuthor: "	+ activity.getAuthor()
+                + "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
+        if (activity.getOverestimatedPoms() > 0) {
+            text += " + " + activity.getOverestimatedPoms();
+        }
+        text += "\nType: " + activity.getType()
+                + "\nAuthor: " + activity.getAuthor()
                 + "\nPlace: " + activity.getPlace()
-				+ "\nDescription: " + activity.getDescription();
-		informationArea.setText(text);
-	}
+                + "\nDescription: " + activity.getDescription();
+        informationArea.setText(text);
+    }
 
     @Override
-	public void clearInfo() {
-		informationArea.setText("");
-	}
+    public void clearInfo() {
+        informationArea.setText("");
+    }
 }

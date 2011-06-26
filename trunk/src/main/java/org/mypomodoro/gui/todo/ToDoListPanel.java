@@ -32,25 +32,27 @@ import org.mypomodoro.util.CompoundIcon;
  * @author Brian Wetzel
  */
 public class ToDoListPanel extends JPanel {
-	private final ToDoList toDoList = ToDoList.getList();
-	private final ToDoJList toDoJList = new ToDoJList(toDoList);
-	private final JLabel pomodoroTime = new JLabel();
+
+    private final ToDoList toDoList = ToDoList.getList();
+    private final ToDoJList toDoJList = new ToDoJList(toDoList);
+    private final JLabel pomodoroTime = new JLabel();
     private final InformationPanel informationPanel = new InformationPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(pomodoroTime, toDoJList, informationPanel, this);
 
-	public Pomodoro getPomodoro() {
-		return pomodoro;
-	}
+    public Pomodoro getPomodoro() {
+        return pomodoro;
+    }
 
-	public ToDoListPanel() {
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-        
-		addTodoList(gbc);
-		addTimerPanel(gbc);
+    public ToDoListPanel() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        toDoJList.addListSelectionListener(new ListSelectionListener(){
+        addTodoList(gbc);
+        addTimerPanel(gbc);
+
+        toDoJList.addListSelectionListener(new ListSelectionListener() {
+
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 JList list = (JList) e.getSource();
@@ -58,101 +60,100 @@ public class ToDoListPanel extends JPanel {
                 if (!pomodoro.inPomodoro()) {
                     pomodoro.setCurrentToDo(selectedToDo);
                 }
-                  
+
             }
         });
-                
-		toDoJList.addListSelectionListener(new ToDoIconListListener(this, pomodoro));
-        addActivityPanel(gbc, iconLabel);
-        
-		toDoJList.addListSelectionListener(new ActivityInformationListListener(informationPanel));
+
+        toDoJList.addListSelectionListener(new ToDoIconListListener(this, pomodoro));
+        addToDoIconPanel(gbc, iconLabel);
+
+        toDoJList.addListSelectionListener(new ActivityInformationListListener(informationPanel));
         final CommentPanel commentPanel = new CommentPanel(this);
-		toDoJList.addListSelectionListener(new ActivityInformationListListener(commentPanel));
+        toDoJList.addListSelectionListener(new ActivityInformationListListener(commentPanel));
         final OverestimationPanel overestimationPanel = new OverestimationPanel(this);
-		addTabPane(gbc, informationPanel, commentPanel, overestimationPanel);
-	}
-
-	private void addTodoList(GridBagConstraints gbc) {
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.7;
-		gbc.weighty = 0.7;
-        gbc.gridheight = 2;
-		gbc.fill = GridBagConstraints.BOTH;
-		add(new JScrollPane(toDoJList), gbc);
-	}
-
-	private void addTimerPanel(GridBagConstraints gbc) {
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 0.3;
-		gbc.weighty = 0.6;
-        gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime);
-		add(wrapInBackgroundImage(timerPanel,
-				new ImageIcon(Main.class
-						.getResource("/images/myPomodoroIconNoTime250.png")),
-				JLabel.TOP, JLabel.LEADING), gbc);
-        pomodoro.setTimerPanel(timerPanel);
-	}
-
-    private void addActivityPanel(GridBagConstraints gbc, JLabel test) {
-        gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 0.3;
-		gbc.weighty = 0.1;
-        gbc.gridheight = 1;        
-		add(test, gbc);
+        addTabPane(gbc, informationPanel, commentPanel, overestimationPanel);
     }
 
-	private void addTabPane(GridBagConstraints gbc,
-			InformationPanel informationPanel, CommentPanel commentPanel, OverestimationPanel overestimationPanel) {
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 2;
+    private void addTodoList(GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.7;
+        gbc.weighty = 0.7;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(new JScrollPane(toDoJList), gbc);
+    }
+
+    private void addTimerPanel(GridBagConstraints gbc) {
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.3;
+        gbc.weighty = 0.6;
+        gbc.gridheight = 1;
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime);
+        add(wrapInBackgroundImage(timerPanel,
+                new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
+                JLabel.TOP, JLabel.LEADING), gbc);
+        pomodoro.setTimerPanel(timerPanel);
+    }
+
+    private void addToDoIconPanel(GridBagConstraints gbc, JLabel iconLabel) {
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;
+        add(iconLabel, gbc);
+    }
+
+    private void addTabPane(GridBagConstraints gbc,
+            InformationPanel informationPanel, CommentPanel commentPanel, OverestimationPanel overestimationPanel) {
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
         gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		add(new TabPane(informationPanel, commentPanel, overestimationPanel, new InterruptPanel(toDoList)), gbc);
-	}
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(new TabPane(informationPanel, commentPanel, overestimationPanel, new InterruptPanel(toDoList)), gbc);
+    }
 
-	public void refresh() {
-		toDoJList.update();        
-	}
+    public void refresh() {
+        toDoJList.update();
+    }
 
-	private static JPanel wrapInBackgroundImage(JComponent component,
-			Icon backgroundIcon, int verticalAlignment, int horizontalAlignment) {
+    private static JPanel wrapInBackgroundImage(JComponent component,
+            Icon backgroundIcon, int verticalAlignment, int horizontalAlignment) {
 
-		// make the passed in swing component transparent
-		component.setOpaque(false);
+        // make the passed in swing component transparent
+        component.setOpaque(false);
 
-		// create wrapper JPanel
-		JPanel backgroundPanel = new JPanel(new GridBagLayout());
-		//backgroundPanel.setBackground(Color.white);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		// add the passed in swing component first to ensure that it is in front
-		backgroundPanel.add(component, gbc);
+        // create wrapper JPanel
+        JPanel backgroundPanel = new JPanel(new GridBagLayout());
+        //backgroundPanel.setBackground(Color.white);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        // add the passed in swing component first to ensure that it is in front
+        backgroundPanel.add(component, gbc);
 
-		// create a label to paint the background image
-		JLabel backgroundImage = new JLabel(backgroundIcon);
+        // create a label to paint the background image
+        JLabel backgroundImage = new JLabel(backgroundIcon);
 
-		// set minimum and preferred sizes so that the size of the image
-		// does not affect the layout size
-		backgroundImage.setPreferredSize(new Dimension(250, 240));
-		backgroundImage.setMinimumSize(new Dimension(260, 250));
+        // set minimum and preferred sizes so that the size of the image
+        // does not affect the layout size
+        backgroundImage.setPreferredSize(new Dimension(250, 240));
+        backgroundImage.setMinimumSize(new Dimension(260, 250));
 
-		backgroundImage.setVerticalAlignment(verticalAlignment);
-		backgroundImage.setHorizontalAlignment(horizontalAlignment);
+        backgroundImage.setVerticalAlignment(verticalAlignment);
+        backgroundImage.setHorizontalAlignment(horizontalAlignment);
 
-		backgroundPanel.add(backgroundImage, gbc);
+        backgroundPanel.add(backgroundImage, gbc);
 
-		return backgroundPanel;
-	}
+        return backgroundPanel;
+    }
 
-	private void completeTask() {
-        Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
+    private void completeTask() {
+        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
         if (selectedToDo != null) {
             selectedToDo.setIsCompleted(true);
             selectedToDo.setDate(new Date()); // update date
@@ -162,11 +163,11 @@ public class ToDoListPanel extends JPanel {
             toDoJList.update();
             pomodoro.stop();
         }
-	}
+    }
 
-    public void completeTaskWithWarning() {        
+    public void completeTaskWithWarning() {
         if (!pomodoro.inPomodoro()) {
-            Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
+            Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
             if (selectedToDo != null) {
                 JFrame window = new JFrame();
                 if (selectedToDo.getActualPoms() <= 0) {
@@ -187,27 +188,27 @@ public class ToDoListPanel extends JPanel {
                 }
             }
         } else {
-          JFrame window = new JFrame();
-          String title = "Complete ToDo";
-          String message = "Please either stop or finish (recommended) the current pomodoro";
-          JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+            JFrame window = new JFrame();
+            String title = "Complete ToDo";
+            String message = "Please either stop or finish (recommended) the current pomodoro";
+            JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
-	}
+    }
 
     public void saveComment(String comment) {
-        Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
-		if (selectedToDo != null) {
+        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+        if (selectedToDo != null) {
             selectedToDo.setNotes(comment);
             JFrame window = new JFrame();
             String title = "Add comment";
             String message = "Comment saved for ToDo \"" + selectedToDo.getName() + "\"";
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
-        }              
+        }
     }
 
     public void saveOverestimation(int overestimatedPomodoros) {
-        Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
-		if (selectedToDo != null) {
+        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+        if (selectedToDo != null) {
             selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
             JFrame window = new JFrame();
             String title = "Overestimation";
@@ -215,13 +216,13 @@ public class ToDoListPanel extends JPanel {
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             informationPanel.showInfo(selectedToDo); // refresh info panel            
             if (pomodoro.getCurrentToDo().equals(selectedToDo)) { // refresh
-                setIconLabel();                
+                setIconLabel();
             }
         }
     }
 
     public void setIconLabel() {
-        Activity selectedToDo = (Activity)toDoJList.getSelectedValue();
+        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
         if (selectedToDo != null) {
             //iconLabel.setOpaque(true);
             //iconLabel.setBackground(Color.white);
@@ -232,7 +233,7 @@ public class ToDoListPanel extends JPanel {
             }
             Icon[] icons = new Icon[arraySize];
             // Estimated pomodoros
-            for (int i=0; i < selectedToDo.getEstimatedPoms(); i++) {
+            for (int i = 0; i < selectedToDo.getEstimatedPoms(); i++) {
                 if (i < selectedToDo.getActualPoms()) {
                     icons[i] = new ImageIcon(Main.class.getResource("/images/squareCross.png"));
                 } else {
@@ -244,8 +245,8 @@ public class ToDoListPanel extends JPanel {
                 // Plus symbol
                 icons[selectedToDo.getEstimatedPoms()] = new ImageIcon(Main.class.getResource("/images/plus.png"));
                 // Overestimated pomodoros
-                for (int i=selectedToDo.getEstimatedPoms()+1; i < arraySize; i++) {
-                    if (i < selectedToDo.getActualPoms()+1) {
+                for (int i = selectedToDo.getEstimatedPoms() + 1; i < arraySize; i++) {
+                    if (i < selectedToDo.getActualPoms() + 1) {
                         icons[i] = new ImageIcon(Main.class.getResource("/images/squareCross.png"));
                     } else {
                         icons[i] = new ImageIcon(Main.class.getResource("/images/square.png"));
