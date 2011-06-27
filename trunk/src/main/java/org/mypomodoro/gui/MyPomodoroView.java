@@ -25,7 +25,7 @@ public class MyPomodoroView extends JFrame {
 
     public static final int FRAME_WIDTH = 480;
     public static final int FRAME_HEIGHT = 600;
-    private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
+    private final ToDoListPanel toDoListPanel = Main.toDoListPanel; 
     private final CreatePanel createPanel = new CreatePanel();
     private final ManagerPanel generatePanel = Main.generatePanel;
     private final ReportListPanel reportListPanel = Main.reportListPanel;

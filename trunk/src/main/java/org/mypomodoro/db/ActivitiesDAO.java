@@ -10,7 +10,7 @@ import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
 
-    private final Database database;
+    private final Database database = Main.database;
     private static final ActivitiesDAO instance = new ActivitiesDAO();
 
     public static ActivitiesDAO getInstance() {
@@ -18,7 +18,6 @@ public class ActivitiesDAO {
     }
 
     ActivitiesDAO() {
-        database = new Database();
         database.createActivitiesTable();
     }
 
