@@ -157,14 +157,17 @@ public class ReportListPanel extends JPanel {
     }
 
     public void saveComment(String comment) {
-        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
-        Activity selectedReport = ReportList.getList().getById(id);
-        if (selectedReport != null) {
-            selectedReport.setNotes(comment);
-            JFrame window = new JFrame();
-            String title = "Add comment";
-            String message = "Comment saved for report \"" + selectedReport.getName() + "\"";
-            JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        int row = table.getSelectedRow();
+        if (row > -1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity selectedReport = ReportList.getList().getById(id);
+            if (selectedReport != null) {
+                selectedReport.setNotes(comment);
+                JFrame window = new JFrame();
+                String title = "Add comment";
+                String message = "Comment saved for report \"" + selectedReport.getName() + "\"";
+                JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+            }
         }
     }
 }

@@ -275,7 +275,7 @@ public class Activity {
      * to handle the interdependencies, but you would just create a new
      * expression instead of nesting if statements.
      * 
-     * @return
+     * @return true if valid
      */
     public boolean isValid() {
         return !name.isEmpty() && validNumberOfPomodoros();

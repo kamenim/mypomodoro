@@ -17,7 +17,7 @@ public class MyPomodoroIconBar extends JPanel {
         myIcons.add(MyIcon.getInstance(view, "Create", "createButton", view.getCreatePanel()));
         myIcons.add(MyIcon.getInstance(view, "Activity", "activityButton", view.getActivityListPanel()));
         myIcons.add(MyIcon.getInstance(view, "Manager", "managerButton", view.getGeneratePanel()));
-        myIcons.add(MyIcon.getInstance(view, "ToDo", "todoButton", view.getTodoListPanel()));
+        myIcons.add(MyIcon.getInstance(view, "ToDo", "todoButton", view.getToDoListPanel()));
         myIcons.add(MyIcon.getInstance(view, "Report", "reportButton", view.getReportListPanel()));
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));

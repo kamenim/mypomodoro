@@ -33,10 +33,6 @@ public class MyPomodoroView extends JFrame {
     private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
     private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
-    public ToDoListPanel getTodoListPanel() {
-        return toDoListPanel;
-    }
-
     public ToDoListPanel getToDoListPanel() {
         return toDoListPanel;
     }

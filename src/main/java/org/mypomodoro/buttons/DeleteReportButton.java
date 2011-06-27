@@ -23,14 +23,14 @@ public class DeleteReportButton extends JButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index > -1) {
+                int row = table.getSelectedRow();
+                if (row > -1) {
                     JFrame window = new JFrame();
                     String title = "Delete report";
                     String message = "Are you sure to delete this report?";
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        int id = (Integer) table.getModel().getValueAt(index, ReportListPanel.ID_KEY);
+                        int id = (Integer) table.getModel().getValueAt(row, ReportListPanel.ID_KEY);
                         ReportList.getList().removeById(id);
                     }
                 }

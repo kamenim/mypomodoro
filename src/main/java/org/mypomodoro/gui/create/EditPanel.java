@@ -49,21 +49,25 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(Activity currentActivity) {
-        currentActivity.databaseUpdate();
-        ActivityList.getList().update();
-        JFrame window = new JFrame();
-        String title = "Edit activity";
-        String message = "Activity \"" + currentActivity.getName() + "\" updated";
-        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+    protected void validActivityAction(Activity currentActivity) { 
+        if (ActivityList.getList().size() > 0) {
+            currentActivity.databaseUpdate();
+            ActivityList.getList().update();
+            JFrame window = new JFrame();
+            String title = "Edit activity";
+            String message = "Activity \"" + currentActivity.getName() + "\" updated";
+            JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        }
     }
 
     @Override
     protected void invalidActivityAction() {
-        JFrame window = new JFrame();
-        String title = "Error";
-        String message = "Title is mandatory";
-        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        if (ActivityList.getList().size() > 0) {
+            JFrame window = new JFrame();
+            String title = "Error";
+            String message = "Title is mandatory";
+            JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        }
     }
 
     public void fillOutInputForm(Activity activity) {

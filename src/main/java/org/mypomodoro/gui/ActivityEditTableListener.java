@@ -30,7 +30,6 @@ public class ActivityEditTableListener implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         int row = table.getSelectedRow();
-
         if (row >= 0) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
