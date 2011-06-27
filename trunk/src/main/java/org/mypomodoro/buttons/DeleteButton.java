@@ -19,14 +19,14 @@ public class DeleteButton extends JButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index > -1) {
+                int row = table.getSelectedRow();
+                if (row > -1) {
                     JFrame window = new JFrame();
                     String title = "Delete activity";
                     String message = "Are you sure to delete this activity?";
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        int id = (Integer) table.getModel().getValueAt(index, ActivitiesPanel.ID_KEY);
+                        int id = (Integer) table.getModel().getValueAt(row, ActivitiesPanel.ID_KEY);
                         ActivityList.getList().removeById(id);
                     }
                 }

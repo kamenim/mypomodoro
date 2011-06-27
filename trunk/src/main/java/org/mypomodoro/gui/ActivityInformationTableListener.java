@@ -25,13 +25,7 @@ public class ActivityInformationTableListener implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         int row = table.getSelectedRow();
-
-        /*
-         * Added check to handle when the row is deleted. This results in
-         * getSelectedRow() returning -1 Other uses should return a valid row
-         * number. This was added to prevent an out of range exception
-         */
-        if (row >= 0) {
+        if (row > -1) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
             if (activity != null) {

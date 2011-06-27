@@ -53,7 +53,6 @@ public class ToDoList extends AbstractActivities {
      * replaced into a buffer and then switching the values. The root node
      * cannote be changed.
      * 
-     * @param index
      */
     public void promote(Activity a) {
         int index = activities.indexOf(a);

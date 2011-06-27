@@ -8,7 +8,7 @@ import org.mypomodoro.gui.ControlPanel;
 
 public class PreferencesDAO {
 
-    private final Database database = Main.database;
+    private final Database database;
     private static final PreferencesDAO instance = new PreferencesDAO();
 
     public static PreferencesDAO getInstance() {
@@ -16,6 +16,7 @@ public class PreferencesDAO {
     }
 
     PreferencesDAO() {
+        database = new Database();
         database.createPreferencesTable();
     }
 

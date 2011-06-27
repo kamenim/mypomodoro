@@ -137,7 +137,7 @@ public class ActivityInputForm extends JPanel {
      * Returns a new activity from the class fields and null if there was an
      * error while parsing the fields
      * 
-     * @return
+     * @return activity
      */
     public Activity getActivityFromFields() {
         String place = placeField.getText().trim();
@@ -150,7 +150,6 @@ public class ActivityInputForm extends JPanel {
 
         return new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
-
     }
 
     public void clearForm() {
