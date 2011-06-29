@@ -31,7 +31,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc.pdf");
+                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc_1.1.pdf");
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }
