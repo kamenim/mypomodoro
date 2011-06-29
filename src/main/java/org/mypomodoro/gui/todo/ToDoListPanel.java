@@ -221,8 +221,7 @@ public class ToDoListPanel extends JPanel {
         }
     }
 
-    public void setIconLabel() {
-        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+    public void setIconLabel(Activity selectedToDo) {
         if (selectedToDo != null) {
             //iconLabel.setOpaque(true);
             //iconLabel.setBackground(Color.white);
@@ -261,5 +260,9 @@ public class ToDoListPanel extends JPanel {
             iconLabel.setText("");
             iconLabel.setIcon(null);
         }
+    }
+    
+    public void setIconLabel() {
+        setIconLabel((Activity) toDoJList.getSelectedValue());
     }
 }

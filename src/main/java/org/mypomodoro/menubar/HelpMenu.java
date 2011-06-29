@@ -40,7 +40,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroTechnique extends JMenuItem {
 
         public HelpPomodoroTechnique() {
-            super("The Pomodoro Technique Website");
+            super("The Pomodoro Technique® Website");
             addActionListener(new MenuItemListener());
         }
 
@@ -58,7 +58,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroCheatSheet extends JMenuItem {
 
         public HelpPomodoroCheatSheet() {
-            super("Download The Pomodoro Technique Cheat Sheet");
+            super("Download The Pomodoro Technique® Cheat Sheet");
             addActionListener(new MenuItemListener());
         }
 
@@ -76,7 +76,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroBook extends JMenuItem {
 
         public HelpPomodoroBook() {
-            super("Download The Pomodoro Technique Book");
+            super("Download The Pomodoro Technique® Book");
             addActionListener(new MenuItemListener());
         }
 

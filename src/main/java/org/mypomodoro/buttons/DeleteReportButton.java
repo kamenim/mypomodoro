@@ -30,7 +30,7 @@ public class DeleteReportButton extends JButton {
                     String message = "Are you sure to delete this report?";
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        int id = (Integer) table.getModel().getValueAt(row, ReportListPanel.ID_KEY);
+                        Integer id = (Integer) table.getModel().getValueAt(row, ReportListPanel.ID_KEY);
                         ReportList.getList().removeById(id);
                     }
                 }

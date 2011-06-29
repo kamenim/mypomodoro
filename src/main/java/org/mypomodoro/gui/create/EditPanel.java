@@ -49,7 +49,7 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(Activity currentActivity) { 
+    protected void validActivityAction(Activity currentActivity) {
         if (ActivityList.getList().size() > 0) {
             currentActivity.databaseUpdate();
             ActivityList.getList().update();
@@ -57,6 +57,16 @@ public class EditPanel extends CreatePanel {
             String title = "Edit activity";
             String message = "Activity \"" + currentActivity.getName() + "\" updated";
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        }
+    }
+
+    @Override
+    public void saveActivity(Activity newActivity) {
+        // no check for existing activities with same name and date
+        if (!newActivity.isValid()) {
+            invalidActivityAction();
+        } else {
+            validActivityAction(newActivity);
         }
     }
 
