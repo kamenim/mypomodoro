@@ -113,11 +113,11 @@ public class ActivitiesPanel extends JPanel {
     public void refresh() {
         try {
             table.setModel(getTableModel());
+            init();
         }
         catch (Exception e) {
             // do nothing
         }
-        init();
     }
 
     private void init() {

@@ -26,7 +26,7 @@ public class DeleteButton extends JButton {
                     String message = "Are you sure to delete this activity?";
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        int id = (Integer) table.getModel().getValueAt(row, ActivitiesPanel.ID_KEY);
+                        Integer id = (Integer) table.getModel().getValueAt(row, ActivitiesPanel.ID_KEY);
                         ActivityList.getList().removeById(id);
                     }
                 }

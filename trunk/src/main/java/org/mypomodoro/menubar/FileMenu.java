@@ -29,7 +29,7 @@ public class FileMenu extends JMenu {
 
         public CreateActivityItem() {
             super("New Activity");
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
             addActionListener(new MenuItemListener());
         }

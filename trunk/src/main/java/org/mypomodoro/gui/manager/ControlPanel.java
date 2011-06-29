@@ -50,8 +50,13 @@ public class ControlPanel extends JPanel {
                         if (selectedActivity.isActivity()) {
                             if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
                                 JFrame window = new JFrame();
-                                String message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached!";
-                                JOptionPane.showMessageDialog(window, message);
+                                String title = "Add activity to ToDo list";
+                                String message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached. Proceed anyway?";
+                                int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    from.removeActivity(selectedActivity);
+                                    to.addActivity(selectedActivity);
+                                }
                             } else if (!selectedActivity.isDateToday()) {
                                 JFrame window = new JFrame();
                                 String title = "Add activity to ToDo list";

@@ -64,13 +64,18 @@ public class InformationArea extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "]";
         }
+        pattern = "HH:mm";
+        format = new SimpleDateFormat(pattern);
+        String timeDate = format.format(activity.getDate());
+        text += " " + timeDate;
         text += "\nTitle: " + activity.getName()
                 + "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }
         text += "\nReal Pomodoros: " + activity.getActualPoms()
-                + "\nDifference: " + ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() )
+                + "\nDiff I: " + ( activity.getActualPoms() - activity.getEstimatedPoms() )
+                + "\nDiff II: " + ( activity.getOverestimatedPoms() > 0?activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms():"" )
                 + "\nExternal Interruptions: " + activity.getNumInterruptions()
                 + "\nType: " + activity.getType()
                 + "\nAuthor: " + activity.getAuthor()

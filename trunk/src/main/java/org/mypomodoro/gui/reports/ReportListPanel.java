@@ -32,8 +32,8 @@ public class ReportListPanel extends JPanel {
 
     private final JTable table = new JTable(getTableModel());
     private final static String[] columnNames = {"U", "Date", "Time", "Title",
-        "Estimated Pomodoros", "Real Pomodoros", "Difference", "Type", "ID"};
-    public static final int ID_KEY = 8;
+        "Estimated Pomodoros", "Real Pomodoros", "Diff I", "Diff II", "Type", "ID"};
+    public static final int ID_KEY = 9;
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -93,9 +93,10 @@ public class ReportListPanel extends JPanel {
                     }
                     tableData[i][4] = poms;
                     tableData[i][5] = currentActivity.getActualPoms();
-                    tableData[i][6] = currentActivity.getActualPoms() - currentActivity.getEstimatedPoms() - currentActivity.getOverestimatedPoms();
-                    tableData[i][7] = currentActivity.getType();
-                    tableData[i][8] = currentActivity.getId();
+                    tableData[i][6] = currentActivity.getActualPoms() - currentActivity.getEstimatedPoms();
+                    tableData[i][7] = currentActivity.getOverestimatedPoms() > 0?currentActivity.getActualPoms() - currentActivity.getEstimatedPoms() - currentActivity.getOverestimatedPoms():"";
+                    tableData[i][8] = currentActivity.getType();
+                    tableData[i][9] = currentActivity.getId();
                 }
             }
         };
@@ -116,17 +117,18 @@ public class ReportListPanel extends JPanel {
     public void refresh() {
         try {
             table.setModel(getTableModel());
+            init();
         }
         catch (Exception e) {
             // do nothing
         }
-        init();
     }
 
     private void init() {
         // Centre Estimated, actual and interrupted pomodoros
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
