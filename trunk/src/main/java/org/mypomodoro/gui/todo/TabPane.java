@@ -5,13 +5,10 @@ import javax.swing.JTabbedPane;
 
 class TabPane extends JTabbedPane {
 
-    public TabPane(InformationPanel informationPanel,
-            CommentPanel commentPanel,
-            OverestimationPanel overestimationPanel,
-            InterruptPanel interruptPanel) {
-        add("Details", informationPanel);
-        add("Comment", commentPanel);
-        add("Overestimation", overestimationPanel);
-        add("Unplanned", new JScrollPane(interruptPanel));
+    public TabPane(ToDoListPanel panel, UnplannedPanel unplannedPanel) {
+        add("Details", panel.getInformationPanel());
+        add("Comment", panel.getCommentPanel());
+        add("Overestimation", panel.getOverestimationPanel());
+        add("Unplanned", new JScrollPane(unplannedPanel));
     }
 }

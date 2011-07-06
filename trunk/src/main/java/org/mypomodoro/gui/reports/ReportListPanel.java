@@ -167,7 +167,7 @@ public class ReportListPanel extends JPanel {
                 selectedReport.setNotes(comment);
                 JFrame window = new JFrame();
                 String title = "Add comment";
-                String message = "Comment saved for report \"" + selectedReport.getName() + "\"";
+                String message = "Comment saved";
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
         }

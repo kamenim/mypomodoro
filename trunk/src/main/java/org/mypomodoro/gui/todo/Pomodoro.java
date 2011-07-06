@@ -30,7 +30,7 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;    
+    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
     private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
@@ -38,9 +38,7 @@ public class Pomodoro {
     private long pomodoroLength = POMODORO_LENGTH;
     private long shortBreakLength = POMODORO_BREAK_LENGTH;
     private long longBreakLength = POMODORO_LONG_LENGTH;
-    private final JLabel label;
-    private final ToDoJList toDoJList;
-    private final InformationPanel informationPanel;
+    private final JLabel pomodoroTime;
     private final ToDoListPanel panel;
     private TimerPanel timerPanel;
     private Activity currentToDo;
@@ -48,12 +46,10 @@ public class Pomodoro {
     private boolean inpomodoro = false;
     private Clip clip;
 
-    public Pomodoro(JLabel pomodoroTime, ToDoJList toDoJList, InformationPanel informationPanel, ToDoListPanel panel) {
-        label = pomodoroTime;
-        label.setText(sdf.format(pomodoroLength));
+    public Pomodoro(ToDoListPanel panel) {
+        pomodoroTime = panel.getPomodoroTime();
+        pomodoroTime.setText(sdf.format(pomodoroLength));
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
-        this.toDoJList = toDoJList;
-        this.informationPanel = informationPanel;
         this.panel = panel;
     }
 
@@ -62,11 +58,9 @@ public class Pomodoro {
             JFrame window = new JFrame();
             String title = "Void pomodoro";
             String message = "Are you sure to void this pomodoro?";
-            message += "\n(this will be considered as an external interruption)";
-            message += "\n(you may now want to complete this ToDo or record an Unplanned activity)";
+            message += "\n(please create an unplanned activity in order to record this interruption)";
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                currentToDo.incrementInter(); // increment external interruptions
                 stop();
             }
         } else {
@@ -78,13 +72,9 @@ public class Pomodoro {
     public void stop() {
         pomodoroTimer.stop();
         time = pomodoroLength;
-        label.setText(sdf.format(pomodoroLength));
+        pomodoroTime.setText(sdf.format(pomodoroLength));
         inpomodoro = false;
         stopSound();
-        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
-        if (currentToDo != null && currentToDo.equals(selectedToDo)) {
-            informationPanel.showInfo(currentToDo);
-        }
     }
 
     class UpdateAction implements ActionListener {
@@ -95,20 +85,21 @@ public class Pomodoro {
         public void actionPerformed(ActionEvent e) {
             if (time >= 1) {
                 time -= SECOND;
-                label.setText(sdf.format(time));
+                pomodoroTime.setText(sdf.format(time));
             } else {
                 stopSound();
                 ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
-                    // refresh details pane
-                    Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+                    // refresh icon label for the current ToDo                    
+                    ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo);
+                    Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
                     if (currentToDo.equals(selectedToDo)) {
-                        informationPanel.showInfo(currentToDo);
+                        ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), currentToDo);
+                        ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), currentToDo);
+                        ToDoIconLabel.showIconLabel(panel.getOverestimationPanel().getIconLabel(), currentToDo);
                     }
-                    // refresh icon label for the current ToDo
-                    panel.setIconLabel(currentToDo);                    
                     pomSetNumber++;
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
@@ -209,7 +200,7 @@ public class Pomodoro {
     }
 
     public void start() {
-        currentToDo = (Activity) toDoJList.getSelectedValue();
+        currentToDo = (Activity) panel.getToDoJList().getSelectedValue();
         pomodoroTimer.start();
         inpomodoro = true;
         tick();
@@ -268,6 +259,10 @@ public class Pomodoro {
 
     public void setTimerPanel(TimerPanel timerPanel) {
         this.timerPanel = timerPanel;
+    }
+    
+    public TimerPanel getTimerPanel() {
+        return timerPanel;
     }
 
     public boolean isCurrentToDoComplete() {

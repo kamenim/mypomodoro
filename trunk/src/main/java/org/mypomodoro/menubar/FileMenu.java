@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyIcon;
@@ -51,7 +52,7 @@ public class FileMenu extends JMenu {
     public class ExitItem extends JMenuItem {
 
         public ExitItem() {
-            super("Exit");
+            super(Main.labels.getString("FileMenu.Exit"));
             addActionListener(new MenuItemListener());
         }
 

@@ -1,5 +1,6 @@
 package org.mypomodoro.model;
 
+import java.util.Locale;
 import org.mypomodoro.db.PreferencesDAO;
 
 /**
@@ -56,8 +57,8 @@ public class Preferences {
     /**
      * Locale
      */
-    public static final String LOCALE = "en_US";
-    private String locale = LOCALE;
+    public static Locale LOCALE = new Locale("en","US");
+    private Locale locale = LOCALE;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -92,7 +93,7 @@ public class Preferences {
         return ringing;
     }
     
-    public String getLocale() {
+    public Locale getLocale() {
         return locale;
     }
 
@@ -129,7 +130,7 @@ public class Preferences {
         ringing = value;
     }
     
-    public void setLocale(String value) {
+    public void setLocale(Locale value) {
         locale = value;
     }
 

@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.ActivityInformation;
@@ -48,6 +49,9 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
+        // disable auto scrolling
+        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), gbc);
     }
 

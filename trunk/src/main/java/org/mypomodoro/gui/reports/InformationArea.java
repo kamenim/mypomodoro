@@ -9,6 +9,7 @@ import javax.swing.JTable;
 
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.DefaultCaret;
 import org.mypomodoro.buttons.DeleteReportButton;
 
 import org.mypomodoro.gui.ActivityInformation;
@@ -48,6 +49,9 @@ public class InformationArea extends JPanel implements ActivityInformation {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
+        // disable auto scrolling
+        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), gbc);
     }
 
@@ -75,7 +79,8 @@ public class InformationArea extends JPanel implements ActivityInformation {
         }
         text += "\nReal Pomodoros: " + activity.getActualPoms()
                 + "\nDiff I: " + ( activity.getActualPoms() - activity.getEstimatedPoms() )
-                + "\nDiff II: " + ( activity.getOverestimatedPoms() > 0?activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms():"" )
+                + "\nDiff II: " + ( activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "" )
+                + "\nInternal Interruptions: " + activity.getNumInternalInterruptions()
                 + "\nExternal Interruptions: " + activity.getNumInterruptions()
                 + "\nType: " + activity.getType()
                 + "\nAuthor: " + activity.getAuthor()

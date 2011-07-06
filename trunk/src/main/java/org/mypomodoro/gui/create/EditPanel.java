@@ -17,11 +17,6 @@ import org.mypomodoro.model.ActivityList;
 public class EditPanel extends CreatePanel {
 
     public EditPanel() {
-        gbc = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-
-        addInputFormPanel();
-        addSaveButton();
     }
 
     @Override
@@ -55,7 +50,7 @@ public class EditPanel extends CreatePanel {
             ActivityList.getList().update();
             JFrame window = new JFrame();
             String title = "Edit activity";
-            String message = "Activity \"" + currentActivity.getName() + "\" updated";
+            String message = "Activity updated";
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }

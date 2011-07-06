@@ -15,14 +15,14 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
-
 import org.mypomodoro.model.Activity;
 
 public class ActivityInputForm extends JPanel {
 
-    private static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
-    private static final Dimension TEXT_AREA_DIMENSION = new Dimension(300, 50);
-    private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(300, 25);
+    protected static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
+    protected static final Dimension TEXT_AREA_DIMENSION = new Dimension(300, 50);
+    protected static final Dimension TEXT_FIELD_DIMENSION = new Dimension(300, 25);
+    protected final GridBagConstraints c = new GridBagConstraints();
     protected final JTextField placeField = new JTextField();
     protected final JTextField authorField = new JTextField();
     protected final JTextField nameField = new JTextField();
@@ -30,46 +30,55 @@ public class ActivityInputForm extends JPanel {
     protected final JTextField typeField = new JTextField();
     protected JComboBox estimatedPomodoros = new JComboBox();
     protected final JXDatePicker datePicker = new JXDatePicker();
-    private int activityId = -1;
+    protected int activityId = -1;
 
     public ActivityInputForm() {
+        this(0);
+    }
+
+    public ActivityInputForm(int gridy) {
         setBorder(new TitledBorder(new EtchedBorder(), ""));
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
 
+        addForm(gridy);
+    }
+
+    protected final void addForm(int gridy) {
         final FormLabel dateLabel = new FormLabel("Date*: ");
         datePicker.setDate(new Date());
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(dateLabel, c);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(datePicker, c);
 
         // Name Label and Text Field
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(new FormLabel("Title*: "), c);
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = gridy;
         c.weighty = 0.5;
-        addTextField(nameField, c);
+        addTextField(nameField);
 
         // Estimated Poms Description and TextField
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(new FormLabel("Estimated Pomodoros*:"), c);
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = gridy;
         c.weighty = 0.5;
         String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
@@ -79,45 +88,49 @@ public class ActivityInputForm extends JPanel {
         add(estimatedPomodoros, c);
 
         // Type Label and TextField
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(new FormLabel("Type:"), c);
         c.gridx = 1;
-        c.gridy = 3;
+        c.gridy = gridy;
         c.weighty = 0.5;
-        addTextField(typeField, c);
+        addTextField(typeField);
 
         // Author Label and TextField
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(new FormLabel("Author: "), c);
         c.gridx = 1;
-        c.gridy = 4;
+        c.gridy = gridy;
         c.weighty = 0.5;
-        addTextField(authorField, c);
+        addTextField(authorField);
 
         // Place label and TextField
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = gridy;
         c.weighty = 0.5;
         c.weightx = 0.0;
         add(new FormLabel("Place: "), c);
         c.gridx = 1;
-        c.gridy = 5;
+        c.gridy = gridy;
         c.weighty = 0.5;
         placeField.setMinimumSize(TEXT_FIELD_DIMENSION);
         placeField.setPreferredSize(TEXT_FIELD_DIMENSION);
         add(placeField, c);
 
         // Description Label and TextArea
+        ++gridy;
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = gridy;
         c.weighty = 0.5;
         add(new FormLabel("Description:"), c);
         c.gridx = 1;
-        c.gridy = 6;
+        c.gridy = gridy;
         c.weighty = 0.5;
         descriptionField.setFont(this.getFont());
         JScrollPane description = new JScrollPane(descriptionField);
@@ -127,10 +140,10 @@ public class ActivityInputForm extends JPanel {
         add(description, c);
     }
 
-    private void addTextField(JTextField field, GridBagConstraints contraints) {
+    protected void addTextField(JTextField field) {
         field.setMinimumSize(TEXT_FIELD_DIMENSION);
         field.setPreferredSize(TEXT_FIELD_DIMENSION);
-        add(field, contraints);
+        add(field, c);
     }
 
     /**
