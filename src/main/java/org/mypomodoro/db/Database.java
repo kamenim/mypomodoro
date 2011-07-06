@@ -88,7 +88,8 @@ public class Database {
                 + "estimated_poms INTEGER, " + "actual_poms INTEGER, "
                 + "overestimated_poms INTEGER, " + "is_complete TEXT, "
                 + "is_unplanned TEXT, " + "num_interruptions INTEGER, "
-                + "priority INTEGER" + ");";
+                + "priority INTEGER, "
+                + "num_internal_interruptions INTEGER" + ");";
         update(createTableSQL);
     }
 

@@ -14,15 +14,15 @@ public class TimerValueSlider extends JPanel {
 
     private JSlider slider;
     private JLabel label = new JLabel();
+    private String text = "";
 
-    public TimerValueSlider(final ControlPanel controlPanel, int min, int max, int val, String name, final int recommendedMin, final int recommendedMax, final String text) {
+    public TimerValueSlider(final ControlPanel controlPanel, int min, int max, int val, String name, final int recommendedMin, final int recommendedMax, final int unit) {
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         add(new JLabel(name));
         c.gridx = 1;
-
         slider = new JSlider(min, max, val);
         setSliderColor(recommendedMin, recommendedMax);
         slider.addChangeListener(new ChangeListener() {
@@ -31,7 +31,12 @@ public class TimerValueSlider extends JPanel {
             public void stateChanged(ChangeEvent e) {
                 int sliderValue = getSliderValue();
                 setSliderColor(recommendedMin, recommendedMax);
-                label.setText(" " + sliderValue + " " + text + ( sliderValue > 1 ? "s" : "" ));
+                if (sliderValue == 1) {
+                    text = unit==0?"minute":"pomodoro";
+                } else {
+                    text = unit==0?"minutes":"pomodoros";
+                }
+                label.setText(" " + sliderValue + " " + text);
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
             }
@@ -39,7 +44,12 @@ public class TimerValueSlider extends JPanel {
         add(slider, c);
         c.gridx = 2;
         int sliderValue = slider.getValue();
-        label.setText(" " + sliderValue + " " + text + ( sliderValue > 1 ? "s" : "" ));
+        if (sliderValue == 1) {
+            text = unit==0?"minute":"pomodoro";
+        } else {
+            text = unit==0?"minutes":"pomodoros";
+        }
+        label.setText(" " + sliderValue + " " + text);
         add(label, c);
     }
 

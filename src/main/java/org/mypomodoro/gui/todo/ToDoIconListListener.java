@@ -12,20 +12,17 @@ import org.mypomodoro.model.Activity;
 public class ToDoIconListListener implements ListSelectionListener {
 
     private final ToDoListPanel panel;
-    private final Pomodoro pomodoro;
 
-    public ToDoIconListListener(ToDoListPanel panel, Pomodoro pomodoro) {
+    public ToDoIconListListener(ToDoListPanel panel) {
         this.panel = panel;
-        this.pomodoro = pomodoro;
     }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
         JList list = (JList) e.getSource();
         Activity selectedToDo = (Activity) list.getSelectedValue();
-        if (selectedToDo == null || 
-               (selectedToDo != null && !pomodoro.inPomodoro())) {
-            panel.setIconLabel(); // refresh ToDo Icon label when empty list OR no pomodoro in progress
+        if (selectedToDo != null && !panel.getPomodoro().inPomodoro()) {
+            ToDoIconLabel.showIconLabel(panel.getIconLabel(), selectedToDo); // refresh ToDo Icon label when no pomodoro in progress
         }
     }
 }

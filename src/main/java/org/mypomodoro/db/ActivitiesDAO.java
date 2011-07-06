@@ -39,7 +39,8 @@ public class ActivitiesDAO {
                 + String.valueOf(newActivity.isCompleted()) + "', " + "'"
                 + String.valueOf(newActivity.isUnplanned()) + "', "
                 + newActivity.getNumInterruptions() + ", "
-                + newActivity.getPriority() + ");";
+                + newActivity.getPriority() + ", "
+                + newActivity.getNumInternalInterruptions() + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -58,7 +59,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority = -1 AND is_complete = 'false';");
+                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY name;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -86,7 +87,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         database.lock();
         try {
-            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true';");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY name;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -114,7 +115,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         database.lock();
         try {
-            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority DESC;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY name;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -166,6 +167,7 @@ public class ActivitiesDAO {
                 + String.valueOf(activity.isUnplanned()) + "', "
                 + "num_interruptions = " + activity.getNumInterruptions()
                 + ", " + "priority = " + activity.getPriority()
+                + ", " + "num_internal_interruptions = " + activity.getNumInternalInterruptions()
                 + " WHERE id = " + activity.getId() + ";";
 
         database.lock();

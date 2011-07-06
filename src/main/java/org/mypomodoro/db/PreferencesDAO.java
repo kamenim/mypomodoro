@@ -2,6 +2,9 @@ package org.mypomodoro.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ControlPanel;
@@ -32,7 +35,20 @@ public class PreferencesDAO {
                 ControlPanel.preferences.setNbPomPerSet(rs.getInt("nb_pom_per_set"));
                 ControlPanel.preferences.setTicking(rs.getInt("ticking") == 1 ? true : false);
                 ControlPanel.preferences.setRinging(rs.getInt("ringing") == 1 ? true : false);
-                ControlPanel.preferences.setLocale(rs.getString("locale"));
+                String locale = rs.getString("locale");
+                String regularExpression = "[a-z]{2}_[A-Z]{2}_[a-zA-Z]+"; // locale with variant        
+                Pattern pat = Pattern.compile(regularExpression);
+                Matcher mat = pat.matcher(locale);
+                if (mat.find()) {
+                    ControlPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5), locale.substring(5)));
+                } else {
+                    regularExpression = "[a-z]{2}_[A-Z]{2}"; // locale without variant
+                    pat = Pattern.compile(regularExpression);
+                    mat = pat.matcher(locale);
+                    if (mat.find()) {
+                        ControlPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5)));
+                    }
+                }
             }
             catch (Exception e) {
                 System.err.println(e);
@@ -60,8 +76,8 @@ public class PreferencesDAO {
                 + ", " + "max_nb_pom_per_day = " + ControlPanel.preferences.getMaxNbPomPerDay()
                 + ", " + "nb_pom_per_set = " + ControlPanel.preferences.getNbPomPerSet()
                 + ", " + "ticking = " + ( ControlPanel.preferences.getTicking() ? 1 : 0 )
-                + ", " + "ringing = " + ( ControlPanel.preferences.getRinging() ? 1 : 0 ) + ";"; 
-                //+ ", " + "locale = " + ControlPanel.preferences.getLocale() + ";";
+                + ", " + "ringing = " + ( ControlPanel.preferences.getRinging() ? 1 : 0 )
+                + ", " + "locale = '" + ControlPanel.preferences.getLocale().toString() + "';";
         database.lock();
         try {
             database.update("begin;");

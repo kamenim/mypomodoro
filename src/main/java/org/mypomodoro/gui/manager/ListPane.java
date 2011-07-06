@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ActivityInformationListListener;
@@ -61,6 +62,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         c.weightx = 1.0;
         c.weighty = 0.2;
         informationArea.setEditable(false);
+        // disable auto scrolling
+        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), c);
     }
 

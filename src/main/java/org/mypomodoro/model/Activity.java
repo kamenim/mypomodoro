@@ -82,10 +82,13 @@ public class Activity {
      */
     private String notes = "";
     /**
-     * interruptions that occured during this task private ActivityCollection
-     * interruptions = new ActivityCollection(); number of interruptions
+     * External interruptions
      */
     private int numInterruptions = 0;
+    /**
+     * Internal interruptions
+     */
+    private int numInternalInterruptions = 0;
     /**
      * Maximim number of pomodoros for an activity
      */
@@ -147,6 +150,7 @@ public class Activity {
             this.isUnplanned = Boolean.valueOf(rs.getString("is_unplanned"));
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
+            this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
         }
         catch (Exception e) {
             System.err.println(e);
@@ -209,12 +213,13 @@ public class Activity {
     public String getType() {
         return type;
     }
-
-    /*
-     * public ActivityCollection getInterruptions() { return interruptions; }
-     */
+    
     public int getNumInterruptions() {
         return numInterruptions;
+    }
+    
+     public int getNumInternalInterruptions() {
+        return numInternalInterruptions;
     }
 
     // SETTERS
@@ -260,6 +265,11 @@ public class Activity {
 
     public void incrementInter() {
         numInterruptions++;
+        databaseUpdate();
+    }
+    
+    public void incrementInternalInter() {
+        numInternalInterruptions++;
         databaseUpdate();
     }
 

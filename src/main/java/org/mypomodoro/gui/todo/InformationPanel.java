@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
@@ -22,12 +24,14 @@ import org.mypomodoro.model.Activity;
 public class InformationPanel extends JPanel implements ActivityInformation {
 
     private final JTextArea informationArea = new JTextArea();
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public InformationPanel(ToDoListPanel panel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
+        addToDoIconPanel();
         addInformationArea();
         addCompleteButton(panel);
     }
@@ -36,6 +40,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
+        gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.NONE;
         JButton changeButton = new JButton("Complete");
         changeButton.addActionListener(new ActionListener() {
@@ -48,20 +53,34 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         add(changeButton, gbc);
     }
 
+    private void addToDoIconPanel() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;
+        add(iconLabel, gbc);
+    }
+
     private void addInformationArea() {
         // add the information area
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
+        // disable auto scrolling
+        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), gbc);
     }
 
     @Override
     public void showInfo(Activity activity) {
+        ToDoIconLabel.showIconLabel(iconLabel, activity);
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
@@ -73,19 +92,20 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "]";
         }
-        text += "\nTitle: " + activity.getName()
-                + "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
-        if (activity.getOverestimatedPoms() > 0) {
-            text += " + " + activity.getOverestimatedPoms();
-        }
-        text += "\nReal Pomodoros: " + activity.getActualPoms()
-                + "\nExternal Interruptions: " + activity.getNumInterruptions()
+        text += "\nType: " + activity.getType()
+                + "\nAuthor: " + activity.getAuthor()
+                + "\nPlace: " + activity.getPlace()
                 + "\nDescription: " + activity.getDescription();
         informationArea.setText(text);
     }
 
     @Override
     public void clearInfo() {
+        ToDoIconLabel.clearIconLabel(iconLabel);
         informationArea.setText("");
+    }
+
+    public JLabel getIconLabel() {
+        return iconLabel;
     }
 }

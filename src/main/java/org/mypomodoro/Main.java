@@ -2,6 +2,8 @@ package org.mypomodoro;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
@@ -32,6 +34,7 @@ public class Main {
     public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
     public static ReentrantLock datalock = new ReentrantLock();
+    public static ResourceBundle labels = ResourceBundle.getBundle("org.mypomodoro.labels.mypomodoro", new Locale(controlPanel.preferences.getLocale().getLanguage(), controlPanel.preferences.getLocale().getCountry(), controlPanel.preferences.getLocale().getVariant()));
 
     public static void updateView() {
         new Thread(new Runnable() {
