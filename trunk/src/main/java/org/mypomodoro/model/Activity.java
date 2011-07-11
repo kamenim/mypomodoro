@@ -213,12 +213,12 @@ public class Activity {
     public String getType() {
         return type;
     }
-    
+
     public int getNumInterruptions() {
         return numInterruptions;
     }
-    
-     public int getNumInternalInterruptions() {
+
+    public int getNumInternalInterruptions() {
         return numInternalInterruptions;
     }
 
@@ -267,7 +267,7 @@ public class Activity {
         numInterruptions++;
         databaseUpdate();
     }
-    
+
     public void incrementInternalInter() {
         numInternalInterruptions++;
         databaseUpdate();

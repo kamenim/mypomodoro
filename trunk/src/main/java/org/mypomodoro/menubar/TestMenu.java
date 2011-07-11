@@ -16,7 +16,7 @@ import org.mypomodoro.gui.ControlPanel;
 public class TestMenu extends JMenu {
 
     public TestMenu(final MyPomodoroView view) {
-        super("Data");
+        super(ControlPanel.labels.getString("MenuBar.Data"));
         add(new ResetDataItem(view));
         add(new TestDataItem(view));
     }
@@ -25,7 +25,7 @@ public class TestMenu extends JMenu {
     class ResetDataItem extends JMenuItem {
 
         public ResetDataItem(final MyPomodoroView view) {
-            super("Clear All Data");
+            super(ControlPanel.labels.getString("DataMenu.Clear All Data"));
             addActionListener(new ActionListener() {
 
                 @Override
@@ -81,7 +81,7 @@ public class TestMenu extends JMenu {
         }
 
         public TestDataItem(final MyPomodoroView view) {
-            super("Populate Test Data");
+            super(ControlPanel.labels.getString("DataMenu.Populate Test Data"));
             addActionListener(new ActionListener() {
 
                 @Override

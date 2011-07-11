@@ -3,6 +3,7 @@ package org.mypomodoro.gui.todo;
 import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -13,7 +14,7 @@ public class UnplannedPanel extends CreatePanel {
     private final ToDoListPanel panel;
 
     public UnplannedPanel(ToDoListPanel panel) {
-        this.panel = panel;        
+        this.panel = panel;
     }
 
     @Override
@@ -51,24 +52,24 @@ public class UnplannedPanel extends CreatePanel {
                 } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
                     panel.getPomodoro().getCurrentToDo().incrementInter();
                 }
-                if ((unplannedInputFormPanel.isSelectedInternalInterruption() || unplannedInputFormPanel.isSelectedExternalInterruption()) &&
-                        panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
+                if (( unplannedInputFormPanel.isSelectedInternalInterruption() || unplannedInputFormPanel.isSelectedExternalInterruption() )
+                        && panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
                     ToDoIconLabel.showIconLabel(panel.getIconLabel(), selectedToDo);
                     ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), selectedToDo);
-                    ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);                              
+                    ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);
                 }
             }
         }
         newActivity.setIsUnplanned(true);
         JFrame window = new JFrame();
-        String title = "Unplanned activity";
+        String title = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity");
         String message = "";
         if (unplannedInputFormPanel.isDateToday()) {
-            message = "Unplanned activity added to ToDo List";
+            message = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
             panel.getToDoList().add(newActivity); // Today unplanned activity
             newActivity.databaseInsert();
         } else {
-            message = "Unplanned activity added to Activity List";
+            message = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
             validation.setVisible(false);
             super.validActivityAction(newActivity);
         }
@@ -78,8 +79,8 @@ public class UnplannedPanel extends CreatePanel {
     @Override
     protected void invalidActivityAction() {
         JFrame window = new JFrame();
-        String title = "Error";
-        String message = "Title is mandatory";
+        String title = ControlPanel.labels.getString("Common.Error");
+        String message = ControlPanel.labels.getString("Common.Title is mandatory");
         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
     }
 

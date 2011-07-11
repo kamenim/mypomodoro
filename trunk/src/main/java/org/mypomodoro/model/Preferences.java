@@ -57,7 +57,7 @@ public class Preferences {
     /**
      * Locale
      */
-    public static Locale LOCALE = new Locale("en","US");
+    public static Locale LOCALE = new Locale("en", "US");
     private Locale locale = LOCALE;
 
     // GETTERS
@@ -92,7 +92,7 @@ public class Preferences {
     public boolean getRinging() {
         return ringing;
     }
-    
+
     public Locale getLocale() {
         return locale;
     }
@@ -129,7 +129,7 @@ public class Preferences {
     public void setRinging(boolean value) {
         ringing = value;
     }
-    
+
     public void setLocale(Locale value) {
         locale = value;
     }

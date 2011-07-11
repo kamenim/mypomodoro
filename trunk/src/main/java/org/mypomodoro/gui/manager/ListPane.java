@@ -86,7 +86,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(аctivity.getDate());
-        String text = "Date: ";
+        String text = ControlPanel.labels.getString("Common.Date") + ": ";
         if (аctivity.isUnplanned()) {
             text += "U [";
         }
@@ -94,8 +94,8 @@ public class ListPane extends JPanel implements ActivityInformation {
         if (аctivity.isUnplanned()) {
             text += "]";
         }
-        text += "\nTitle: " + аctivity.getName()
-                + "\nEstimated Pomodoros: " + аctivity.getEstimatedPoms();
+        text += "\n" + ControlPanel.labels.getString("Common.Title") + ": " + аctivity.getName()
+                + "\n" + ControlPanel.labels.getString("Common.Estimated Pomodoros") + ": " + аctivity.getEstimatedPoms();
         if (аctivity.getOverestimatedPoms() > 0) {
             text += " + " + аctivity.getOverestimatedPoms();
         }
@@ -135,7 +135,7 @@ public class ListPane extends JPanel implements ActivityInformation {
 
     public void init() {
         internalActivitiesList.setBorder(new TitledBorder(new EtchedBorder(), titleList + " (" + list.size() + ")"));
-        this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), "Details"));
+        this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("Common.Details")));
     }
 
     public boolean isMaxNbTotalEstimatedPomReached(Activity activity) {

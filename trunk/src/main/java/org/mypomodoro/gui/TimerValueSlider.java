@@ -32,9 +32,9 @@ public class TimerValueSlider extends JPanel {
                 int sliderValue = getSliderValue();
                 setSliderColor(recommendedMin, recommendedMax);
                 if (sliderValue == 1) {
-                    text = unit==0?"minute":"pomodoro";
+                    text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minute") : ControlPanel.labels.getString("PreferencesPanel.pomodoro");
                 } else {
-                    text = unit==0?"minutes":"pomodoros";
+                    text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minutes") : ControlPanel.labels.getString("PreferencesPanel.pomodoros");
                 }
                 label.setText(" " + sliderValue + " " + text);
                 controlPanel.enableSaveButton();
@@ -45,9 +45,9 @@ public class TimerValueSlider extends JPanel {
         c.gridx = 2;
         int sliderValue = slider.getValue();
         if (sliderValue == 1) {
-            text = unit==0?"minute":"pomodoro";
+            text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minute") : ControlPanel.labels.getString("PreferencesPanel.pomodoro");
         } else {
-            text = unit==0?"minutes":"pomodoros";
+            text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minutes") : ControlPanel.labels.getString("PreferencesPanel.pomodoros");
         }
         label.setText(" " + sliderValue + " " + text);
         add(label, c);

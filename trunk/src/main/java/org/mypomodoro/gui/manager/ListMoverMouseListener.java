@@ -2,10 +2,8 @@ package org.mypomodoro.gui.manager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import org.mypomodoro.model.Activity;
+import org.mypomodoro.buttons.MoveButton;
 
 public class ListMoverMouseListener extends MouseAdapter {
 
@@ -20,46 +18,7 @@ public class ListMoverMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() >= 2) {
-            Activity selectedActivity = from.getSelectedActivity();
-            if (selectedActivity != null) {
-                if (selectedActivity.isActivity()) { // Not ToDo
-                    if (!selectedActivity.isDateToday()) {
-                        JFrame window = new JFrame();
-                        String title = "Add activity to ToDo list";
-                        String message = "The date of this activity is not today. Proceed anyway?";
-                        int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                        if (reply == JOptionPane.YES_OPTION) {
-                            if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
-                                title = "Add activity to ToDo list";
-                                message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached. Proceed anyway?";
-                                reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                                if (reply == JOptionPane.YES_OPTION) {
-                                    from.removeActivity(selectedActivity);
-                                    to.addActivity(selectedActivity);
-                                }
-                            } else {
-                                from.removeActivity(selectedActivity);
-                                to.addActivity(selectedActivity);
-                            }
-                        }
-                    } else if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
-                        JFrame window = new JFrame();
-                        String title = "Add activity to ToDo list";
-                        String message = "Max nb of pomodoros per day (" + org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay() + ") reached. Proceed anyway?";
-                        int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                        if (reply == JOptionPane.YES_OPTION) {
-                            from.removeActivity(selectedActivity);
-                            to.addActivity(selectedActivity);
-                        }
-                    } else {
-                        from.removeActivity(selectedActivity);
-                        to.addActivity(selectedActivity);
-                    }
-                } else { // ToDo
-                    from.removeActivity(selectedActivity);
-                    to.addActivity(selectedActivity);
-                }
-            }
+            MoveButton.move(from, to);
         }
     }
 }

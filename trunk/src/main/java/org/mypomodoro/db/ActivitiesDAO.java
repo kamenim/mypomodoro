@@ -27,11 +27,11 @@ public class ActivitiesDAO {
 
     public void insert(Activity newActivity) {
         String insertSQL = "INSERT INTO activities VALUES ( " + "NULL, " + "'"
-                + newActivity.getName() + "', " + "'" + newActivity.getType()
-                + "', " + "'" + newActivity.getDescription() + "', " + "'"
-                + newActivity.getNotes() + "', " + "'"
-                + newActivity.getAuthor() + "', " + "'"
-                + newActivity.getPlace() + "', "
+                + newActivity.getName().replace("'", "''") + "', " + "'" + newActivity.getType().replace("'", "''")
+                + "', " + "'" + newActivity.getDescription().replace("'", "''") + "', " + "'"
+                + newActivity.getNotes().replace("'", "''") + "', " + "'"
+                + newActivity.getAuthor().replace("'", "''") + "', " + "'"
+                + newActivity.getPlace().replace("'", "''") + "', "
                 + newActivity.getDate().getTime() + ", "
                 + newActivity.getEstimatedPoms() + ", "
                 + newActivity.getActualPoms() + ", "
@@ -152,12 +152,12 @@ public class ActivitiesDAO {
     }
 
     public void update(Activity activity) {
-        String updateSQL = "UPDATE activities SET " + "name = '"
-                + activity.getName() + "', " + "type = '" + activity.getType()
-                + "', " + "description = '" + activity.getDescription() + "', "
-                + "notes = '" + activity.getNotes() + "', " + "author = '"
-                + activity.getAuthor() + "', " + "place = '"
-                + activity.getPlace() + "', " + "date_added = "
+        String updateSQL = "UPDATE activities SET " + "name = '"                
+                + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''")
+                + "', " + "description = '" + activity.getDescription().replace("'", "''") + "', "
+                + "notes = '" + activity.getNotes().replace("'", "''") + "', " + "author = '"
+                + activity.getAuthor().replace("'", "''") + "', " + "place = '"
+                + activity.getPlace().replace("'", "''") + "', " + "date_added = "
                 + activity.getDate().getTime() + ", " + "estimated_poms = "
                 + activity.getEstimatedPoms() + ", " + "actual_poms = "
                 + activity.getActualPoms() + ", " + "overestimated_poms = "
@@ -187,7 +187,7 @@ public class ActivitiesDAO {
         try {
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false'"
-                    + "AND name = '" + newActivity.getName() + "'"
+                    + "AND name = '" + newActivity.getName().replace("'", "''") + "'"
                     + "AND date_added = " + newActivity.getDate().getTime() + ";");
             try {
                 while (rs.next()) {
