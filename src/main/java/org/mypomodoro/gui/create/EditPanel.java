@@ -1,9 +1,9 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.mypomodoro.gui.ControlPanel;
 
 
 import org.mypomodoro.model.Activity;
@@ -49,8 +49,8 @@ public class EditPanel extends CreatePanel {
             currentActivity.databaseUpdate();
             ActivityList.getList().update();
             JFrame window = new JFrame();
-            String title = "Edit activity";
-            String message = "Activity updated";
+            String title = ControlPanel.labels.getString("ActivityListPanel.Edit activity");
+            String message = ControlPanel.labels.getString("ActivityListPanel.Activity updated");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }
@@ -69,8 +69,8 @@ public class EditPanel extends CreatePanel {
     protected void invalidActivityAction() {
         if (ActivityList.getList().size() > 0) {
             JFrame window = new JFrame();
-            String title = "Error";
-            String message = "Title is mandatory";
+            String title = ControlPanel.labels.getString("Common.Error");
+            String message = ControlPanel.labels.getString("Common.Title is mandatory");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }

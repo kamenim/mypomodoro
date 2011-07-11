@@ -15,6 +15,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -42,7 +43,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new JButton("Complete");
+        JButton changeButton = new JButton(ControlPanel.labels.getString("ToDoListPanel.Complete"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override
@@ -84,7 +85,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
-        String text = "Date: ";
+        String text = ControlPanel.labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
@@ -92,10 +93,10 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "]";
         }
-        text += "\nType: " + activity.getType()
-                + "\nAuthor: " + activity.getAuthor()
-                + "\nPlace: " + activity.getPlace()
-                + "\nDescription: " + activity.getDescription();
+        text += "\n" + ControlPanel.labels.getString("Common.Type") + ": " + activity.getType()
+                + "\n" + ControlPanel.labels.getString("Common.Author") + ": " + activity.getAuthor()
+                + "\n" + ControlPanel.labels.getString("Common.Place") + ": " + activity.getPlace()
+                + "\n" + ControlPanel.labels.getString("Common.Description") + ": " + activity.getDescription();
         informationArea.setText(text);
     }
 

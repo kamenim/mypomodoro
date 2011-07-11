@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -42,7 +43,7 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new JButton("Save");
+        JButton changeButton = new JButton(ControlPanel.labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override

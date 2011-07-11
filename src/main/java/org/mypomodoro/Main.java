@@ -19,6 +19,7 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.db.Database;
+import org.mypomodoro.util.Labels;
 
 /**
  * Main Application Starter
@@ -33,8 +34,7 @@ public class Main {
     public static final ManagerPanel generatePanel = new ManagerPanel();
     public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
-    public static ReentrantLock datalock = new ReentrantLock();
-    public static ResourceBundle labels = ResourceBundle.getBundle("org.mypomodoro.labels.mypomodoro", new Locale(controlPanel.preferences.getLocale().getLanguage(), controlPanel.preferences.getLocale().getCountry(), controlPanel.preferences.getLocale().getVariant()));
+    public static ReentrantLock datalock = new ReentrantLock();    
 
     public static void updateView() {
         new Thread(new Runnable() {

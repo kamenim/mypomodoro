@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyIcon;
@@ -19,7 +18,7 @@ public class FileMenu extends JMenu {
     private final MyPomodoroView view;
 
     public FileMenu(final MyPomodoroView view) {
-        super("File");
+        super(ControlPanel.labels.getString("MenuBar.File"));
         this.view = view;
         add(new ControlPanelItem());
         add(new CreateActivityItem());
@@ -29,7 +28,7 @@ public class FileMenu extends JMenu {
     public class CreateActivityItem extends JMenuItem {
 
         public CreateActivityItem() {
-            super("New Activity");
+            super(ControlPanel.labels.getString("FileMenu.New Activity"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
             addActionListener(new MenuItemListener());
@@ -52,7 +51,7 @@ public class FileMenu extends JMenu {
     public class ExitItem extends JMenuItem {
 
         public ExitItem() {
-            super(Main.labels.getString("FileMenu.Exit"));
+            super(ControlPanel.labels.getString("FileMenu.Exit"));
             addActionListener(new MenuItemListener());
         }
 
@@ -68,7 +67,7 @@ public class FileMenu extends JMenu {
     class ControlPanelItem extends JMenuItem {
 
         public ControlPanelItem() {
-            super("Preferences");
+            super(ControlPanel.labels.getString("FileMenu.Preferences"));
             // Adds Keyboard Shortcut Alt-P
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                     ActionEvent.ALT_MASK));

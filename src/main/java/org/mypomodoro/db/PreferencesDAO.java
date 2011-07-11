@@ -40,7 +40,7 @@ public class PreferencesDAO {
                 Pattern pat = Pattern.compile(regularExpression);
                 Matcher mat = pat.matcher(locale);
                 if (mat.find()) {
-                    ControlPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5), locale.substring(5)));
+                    ControlPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5), locale.substring(6)));
                 } else {
                     regularExpression = "[a-z]{2}_[A-Z]{2}"; // locale without variant
                     pat = Pattern.compile(regularExpression);

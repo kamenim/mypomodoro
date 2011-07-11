@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ActivityInformationListListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
@@ -49,7 +50,7 @@ public class ToDoListPanel extends JPanel {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                JList list = (JList) e.getSource();                
+                JList list = (JList) e.getSource();
                 if (list.isSelectionEmpty()) { // empty list                    
                     ToDoIconLabel.clearIconLabel(iconLabel);
                     if (pomodoro.inPomodoro()) {
@@ -60,7 +61,7 @@ public class ToDoListPanel extends JPanel {
                     Activity selectedToDo = (Activity) list.getSelectedValue();
                     if (!pomodoro.inPomodoro()) {
                         pomodoro.setCurrentToDo(selectedToDo);
-                    }    
+                    }
                 }
             }
         });
@@ -82,7 +83,7 @@ public class ToDoListPanel extends JPanel {
         gbc.weightx = 0.7;
         gbc.weighty = 0.7;
         gbc.gridheight = 2;
-        gbc.fill = GridBagConstraints.BOTH;        
+        gbc.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(toDoJList), gbc);
     }
 
@@ -172,26 +173,26 @@ public class ToDoListPanel extends JPanel {
             if (selectedToDo != null) {
                 JFrame window = new JFrame();
                 if (selectedToDo.getActualPoms() <= 0) {
-                    String title = "Complete ToDo";
-                    String message = "This ToDo has no finished (real) pomodoro. Complete anyway?";
+                    String title = ControlPanel.labels.getString("ToDoListPanel.Complete ToDo");
+                    String message = ControlPanel.labels.getString("ToDoListPanel.This ToDo has no finished pomodoro (real). Complete anyway?");
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         completeTask();
-                        title = "Complete ToDo";
-                        message = "ToDo moved to Report List";
+                        title = ControlPanel.labels.getString("ToDoListPanel.Complete ToDo");
+                        message = ControlPanel.labels.getString("ToDoListPanel.ToDo moved to Report List");
                         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
                     }
                 } else {
                     completeTask();
-                    String title = "Complete ToDo";
-                    String message = "ToDo moved to Report List";
+                    String title = ControlPanel.labels.getString("ToDoListPanel.Complete ToDo");
+                    String message = ControlPanel.labels.getString("ToDoListPanel.ToDo moved to Report List");
                     JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
                 }
             }
         } else {
             JFrame window = new JFrame();
-            String title = "Complete ToDo";
-            String message = "Please either stop or finish (recommended) the current pomodoro";
+            String title = ControlPanel.labels.getString("ToDoListPanel.Complete ToDo");
+            String message = ControlPanel.labels.getString("ToDoListPanel.Please either stop or finish the current pomodoro (recommended)");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }
@@ -201,8 +202,8 @@ public class ToDoListPanel extends JPanel {
         if (selectedToDo != null) {
             selectedToDo.setNotes(comment);
             JFrame window = new JFrame();
-            String title = "Add comment";
-            String message = "Comment saved";
+            String title = ControlPanel.labels.getString("Common.Add comment");
+            String message = ControlPanel.labels.getString("Common.Comment saved");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }
@@ -218,23 +219,23 @@ public class ToDoListPanel extends JPanel {
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
-    
+
     public InformationPanel getInformationPanel() {
         return informationPanel;
     }
-    
+
     public CommentPanel getCommentPanel() {
         return commentPanel;
     }
-    
+
     public OverestimationPanel getOverestimationPanel() {
         return overestimationPanel;
     }
-    
+
     public ToDoList getToDoList() {
         return toDoList;
     }
-    
+
     public JLabel getPomodoroTime() {
         return pomodoroTime;
     }

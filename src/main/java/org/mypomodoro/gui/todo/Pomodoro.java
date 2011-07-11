@@ -56,9 +56,9 @@ public class Pomodoro {
     public boolean stopWithWarning() {
         if (inpomodoro && currentToDo != null) { // in pomodoro only, not during breaks
             JFrame window = new JFrame();
-            String title = "Void pomodoro";
-            String message = "Are you sure to void this pomodoro?";
-            message += "\n(please create an unplanned activity in order to record this interruption)";
+            String title = ControlPanel.labels.getString("ToDoListPanel.Void pomodoro");
+            String message = ControlPanel.labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
+            message += "\n(" + ControlPanel.labels.getString("ToDoListPanel.please create an unplanned activity in order to record this interruption") + ")";
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 stop();

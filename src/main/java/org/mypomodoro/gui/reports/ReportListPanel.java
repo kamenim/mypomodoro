@@ -19,6 +19,7 @@ import javax.swing.table.TableModel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
@@ -31,8 +32,8 @@ import org.mypomodoro.model.ReportList;
 public class ReportListPanel extends JPanel {
 
     private final JTable table = new JTable(getTableModel());
-    private final static String[] columnNames = {"U", "Date", "Time", "Title",
-        "Estimated Pomodoros", "Real Pomodoros", "Diff I", "Diff II", "Type", "ID"};
+    private final static String[] columnNames = {"U", ControlPanel.labels.getString("Common.Date"), ControlPanel.labels.getString("ReportListPanel.Time"), ControlPanel.labels.getString("Common.Title"),
+        ControlPanel.labels.getString("ReportListPanel.Estimated"), ControlPanel.labels.getString("ReportListPanel.Real"), ControlPanel.labels.getString("ReportListPanel.Diff I"), ControlPanel.labels.getString("ReportListPanel.Diff II"), ControlPanel.labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 9;
 
     public ReportListPanel() {
@@ -61,9 +62,9 @@ public class ReportListPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane controlPane = new JTabbedPane();
         InformationArea informationArea = new InformationArea(table);
-        controlPane.add("Details", informationArea);
+        controlPane.add(ControlPanel.labels.getString("Common.Details"), informationArea);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add("Comment", commentPanel);
+        controlPane.add(ControlPanel.labels.getString("Common.Comment"), commentPanel);
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
@@ -155,7 +156,7 @@ public class ReportListPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0); // select first row
         }
-        setBorder(new TitledBorder(new EtchedBorder(), "Report List (" + ReportList.getListSize() + ")"));
+        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
     }
 
     public void saveComment(String comment) {
@@ -166,8 +167,8 @@ public class ReportListPanel extends JPanel {
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
                 JFrame window = new JFrame();
-                String title = "Add comment";
-                String message = "Comment saved";
+                String title = ControlPanel.labels.getString("Common.Add comment");
+                String message = ControlPanel.labels.getString("Common.Comment saved");
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
         }

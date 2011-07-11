@@ -6,24 +6,31 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import org.mypomodoro.model.Preferences;
+import org.mypomodoro.util.Labels;
 
 public class ControlPanel extends JPanel {
 
     public static Preferences preferences = new Preferences();
     private JLabel validation = new JLabel("");
-    public JButton saveButton = new JButton("Save");
-    public JButton resetButton = new JButton("Reset");
+    public static Labels labels;
+    public JButton saveButton;
+    public JButton resetButton;
     protected GridBagConstraints gbc = new GridBagConstraints();
-    protected final PreferencesInputForm preferencesInputFormPanel = new PreferencesInputForm(this);
+    protected final PreferencesInputForm preferencesInputFormPanel;
 
     public ControlPanel() {
         preferences.loadPreferences();
+        labels = new Labels(new Locale(preferences.getLocale().getLanguage(), preferences.getLocale().getCountry(), preferences.getLocale().getVariant()));
+        saveButton = new JButton(labels.getString("Common.Save"));
+        preferencesInputFormPanel = new PreferencesInputForm(this);
+        resetButton = new JButton(labels.getString("PreferencesPanel.Reset"));
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
 
         setLayout(new GridBagLayout());
@@ -51,7 +58,7 @@ public class ControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 updatePreferences();
-                validation.setText("Preferences saved. Please restart myPomodoro.");
+                validation.setText(labels.getString("PreferencesPanel.Preferences saved. Please restart myPomodoro."));
                 disableSaveButton();
             }
         });
@@ -64,7 +71,7 @@ public class ControlPanel extends JPanel {
         add(saveButton, gbc);
     }
 
-    protected void addResetButton() {
+    protected void addResetButton() { // values recommended by the Pomodoro Technique
         resetButton.addActionListener(new ActionListener() {
 
             @Override
@@ -77,8 +84,9 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.nbPomPerSetSlider.setSliderValue(preferences.NPPSet);
                 preferencesInputFormPanel.tickingBox.setSelected(true);
                 preferencesInputFormPanel.ringingBox.setSelected(true);
+                // no reset for locale
                 updatePreferences();
-                validation.setText("Preferences reset. Please restart myPomodoro.");
+                validation.setText(labels.getString("PreferencesPanel.Preferences reset. Please restart myPomodoro."));
                 disableSaveButton();
             }
         });
@@ -125,6 +133,7 @@ public class ControlPanel extends JPanel {
         preferences.setNbPomPerSet(preferencesInputFormPanel.nbPomPerSetSlider.getSliderValue());
         preferences.setTicking(preferencesInputFormPanel.tickingBox.isSelected());
         preferences.setRinging(preferencesInputFormPanel.ringingBox.isSelected());
+        preferences.setLocale(( (ItemLocale) preferencesInputFormPanel.localesComboBox.getSelectedItem() ).getLocale());
         preferences.updatePreferences();
     }
 }

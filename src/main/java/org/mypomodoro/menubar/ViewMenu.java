@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyIcon;
 
 import org.mypomodoro.gui.MyPomodoroView;
@@ -17,7 +18,7 @@ public class ViewMenu extends JMenu {
     private final MyPomodoroView view;
 
     public ViewMenu(final MyPomodoroView view) {
-        super("View");
+        super(ControlPanel.labels.getString("MenuBar.View"));
         this.view = view;
         add(new ActivityListItem());
         add(new GenerateListItem());
@@ -28,7 +29,7 @@ public class ViewMenu extends JMenu {
     class ActivityListItem extends JMenuItem {
 
         public ActivityListItem() {
-            super("Activity List");
+            super(ControlPanel.labels.getString("ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     ActionEvent.ALT_MASK));
@@ -51,7 +52,7 @@ public class ViewMenu extends JMenu {
     class ReportListItem extends JMenuItem {
 
         public ReportListItem() {
-            super("Report List");
+            super(ControlPanel.labels.getString("ViewMenu.Report List"));
             // Adds Keyboard Shortcut Alt-R
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                     ActionEvent.ALT_MASK));
@@ -74,7 +75,7 @@ public class ViewMenu extends JMenu {
     class GenerateListItem extends JMenuItem {
 
         public GenerateListItem() {
-            super("Manager");
+            super(ControlPanel.labels.getString("ViewMenu.Manager"));
             // Adds Keyboard Shortcut Alt-M
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     ActionEvent.ALT_MASK));
@@ -97,7 +98,7 @@ public class ViewMenu extends JMenu {
     class ToDoListItem extends JMenuItem {
 
         public ToDoListItem() {
-            super("ToDo List");
+            super(ControlPanel.labels.getString("ViewMenu.ToDo List"));
             // Adds Keyboard Shortcut Alt-T
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     ActionEvent.ALT_MASK));

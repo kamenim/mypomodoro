@@ -17,6 +17,7 @@ import javax.swing.table.TableModel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.EditPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -33,7 +34,7 @@ import org.mypomodoro.model.ActivityList;
 public class ActivitiesPanel extends JPanel {
 
     JTable table = new JTable(getTableModel());
-    private static final String[] columnNames = {"U", "Date", "Title", "Estimated Pomodoros", "Type", "ID"};
+    private static final String[] columnNames = {"U", ControlPanel.labels.getString("Common.Date"), ControlPanel.labels.getString("Common.Title"), ControlPanel.labels.getString("Common.Estimated Pomodoros"), ControlPanel.labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
 
     public ActivitiesPanel() {
@@ -62,10 +63,10 @@ public class ActivitiesPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane controlPane = new JTabbedPane();
         DetailsPane detailsPane = new DetailsPane(table);
-        controlPane.add("Details", detailsPane);
+        controlPane.add(ControlPanel.labels.getString("Common.Details"), detailsPane);
         EditPanel edit = new EditPanel();
         JScrollPane editPane = new JScrollPane(edit);
-        controlPane.add("Edit", editPane);
+        controlPane.add(ControlPanel.labels.getString("ActivityListPanel.Edit"), editPane);
         add(controlPane, gbc);
 
         showSelectedItemDetails(detailsPane);
@@ -144,6 +145,6 @@ public class ActivitiesPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0); // select first row            
         }
-        setBorder(new TitledBorder(new EtchedBorder(), "Activity List (" + ActivityList.getListSize() + ")"));
+        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ActivityListPanel.Activity List") + " (" + ActivityList.getListSize() + ")"));
     }
 }

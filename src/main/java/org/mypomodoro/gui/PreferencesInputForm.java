@@ -5,27 +5,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
 import java.util.Vector;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.Main;
 
 /**
  * 
@@ -45,7 +31,7 @@ public class PreferencesInputForm extends JPanel {
     protected final JComboBox localesComboBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
-        setBorder(new TitledBorder(new EtchedBorder(), "Preferences"));
+        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("PreferencesPanel.Preferences")));
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
@@ -53,17 +39,17 @@ public class PreferencesInputForm extends JPanel {
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.NORTH;
-        
+
         int unitMinute = 0;
         int unitPomodoro = 1;
-        pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45, ControlPanel.preferences.getPomodoroLength(), "Pomodoro Length: ", 25, 30, unitMinute);
-        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10, ControlPanel.preferences.getShortBreakLength(), "Short Break Length: ", 3, 5, unitMinute);
-        longBreakSlider = new TimerValueSlider(controlPanel, 5, 45, ControlPanel.preferences.getLongBreakLength(), "Long Break Length: ", 15, 30, unitMinute);
-        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, 7, ControlPanel.preferences.getMaxNbPomPerActivity(), "Max nb pom/activity: ", 1, 5, unitPomodoro);
-        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12, ControlPanel.preferences.getMaxNbPomPerDay(), "Max nb pom/day: ", 1, 10, unitPomodoro);
-        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), "Nb pom/set: ", 4, 4, unitPomodoro);
-        tickingBox = new JCheckBox("ticking", ControlPanel.preferences.getTicking());
-        ringingBox = new JCheckBox("ringing", ControlPanel.preferences.getRinging());
+        pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45, ControlPanel.preferences.getPomodoroLength(), ControlPanel.labels.getString("PreferencesPanel.Pomodoro Length") + ": ", 25, 30, unitMinute);
+        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10, ControlPanel.preferences.getShortBreakLength(), ControlPanel.labels.getString("PreferencesPanel.Short Break Length") + ": ", 3, 5, unitMinute);
+        longBreakSlider = new TimerValueSlider(controlPanel, 5, 45, ControlPanel.preferences.getLongBreakLength(), ControlPanel.labels.getString("PreferencesPanel.Long Break Length") + ": ", 15, 30, unitMinute);
+        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, 7, ControlPanel.preferences.getMaxNbPomPerActivity(), ControlPanel.labels.getString("PreferencesPanel.Max nb pom/activity") + ": ", 1, 5, unitPomodoro);
+        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12, ControlPanel.preferences.getMaxNbPomPerDay(), ControlPanel.labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1, 10, unitPomodoro);
+        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), ControlPanel.labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4, unitPomodoro);
+        tickingBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.ticking"), ControlPanel.preferences.getTicking());
+        ringingBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.ringing"), ControlPanel.preferences.getRinging());
         tickingBox.addActionListener(new ActionListener() {
 
             @Override
@@ -80,7 +66,21 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
-        localesComboBox = new JComboBox(getLocales());
+        Vector locales = ItemLocale.getLocalesFromPropertiesTitlefiles();
+        localesComboBox = new JComboBox(locales);
+        for (int i = 0; i < locales.size(); i++) {
+            if (( (ItemLocale) locales.get(i) ).getLocale().toString().equals(ControlPanel.preferences.getLocale().toString())) {
+                localesComboBox.setSelectedIndex(i);
+            }
+        }
+        localesComboBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+            }
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -98,131 +98,37 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 5;
         add(nbPomPerSetSlider, gbc);
         gbc.gridy = 6;
-        add(tickingBox, gbc);
+        gbc.gridwidth = 2;
+        addSounds(gbc);
         gbc.gridy = 7;
-        add(ringingBox, gbc);
-        gbc.gridy = 8;
-        add(localesComboBox, gbc);
+        gbc.gridwidth = 2;
+        addLocales(gbc);
     }
 
-    /**
-     * Browse directory labels for properties files and extract locales
-     * 
-     * @author Phil Karoo 
-     */
-    private Vector getLocales() {
-        Vector vLocales = new Vector();
-        try {
-            String propertiesFiles[] = getResourceListing(Main.class, "org/mypomodoro/labels/");
-            if (propertiesFiles.length > 0) {
-                String filePrefix = "mypomodoro_";
-                int filePrefixLength = filePrefix.length();
-                String fileExtension = ".properties";
-                int fileExtensionLength = fileExtension.length();
-                for (int i = 0; i < propertiesFiles.length; i++) {
-                    String regularExpression = filePrefix + "[a-z]{2}_[A-Z]{2}_[a-zA-Z]" + fileExtension; // with variant
-                    Pattern pat = Pattern.compile(regularExpression);
-                    Matcher mat = pat.matcher(propertiesFiles[i]);
-                    if (mat.find()) {
-                        Locale l = new Locale(propertiesFiles[i].substring(0 + filePrefixLength, 2 + filePrefixLength), propertiesFiles[i].substring(3 + filePrefixLength, 5 + filePrefixLength), propertiesFiles[i].substring(5 + filePrefixLength, propertiesFiles[i].length() - fileExtensionLength));
-                        vLocales.addElement(new ItemLocale(l.getLanguage() + "_" + l.getCountry() + "_" + l.getVariant(),l.getDisplayLanguage() + " (" + l.getDisplayCountry() + ")" + " (" + l.getVariant() + ")"));                        
-                    } else {
-                        regularExpression = filePrefix + "[a-z]{2}_[A-Z]{2}" + fileExtension; // without variant
-                        pat = Pattern.compile(regularExpression);
-                        mat = pat.matcher(propertiesFiles[i]);
-                        if (mat.find()) {
-                            Locale l = new Locale(propertiesFiles[i].substring(0 + filePrefixLength, 2 + filePrefixLength), propertiesFiles[i].substring(3 + filePrefixLength, 5 + filePrefixLength));
-                            vLocales.addElement(new ItemLocale(l.getLanguage() + "_" + l.getCountry(),l.getDisplayLanguage() + " (" + l.getDisplayCountry() + ")"));
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            // Do nothing
-        }
-        finally {
-            if (vLocales.isEmpty()) {
-                vLocales.addElement(new ItemLocale(ControlPanel.preferences.getLocale().getLanguage() + "_" + ControlPanel.preferences.getLocale().getCountry(),ControlPanel.preferences.getLocale().getDisplayLanguage() + " (" + ControlPanel.preferences.getLocale().getDisplayCountry() + ")"));                
-            }
-        }
-        return vLocales;
+    private void addSounds(GridBagConstraints gbc) {
+        JPanel sounds = new JPanel();
+        sounds.setLayout(new GridBagLayout());
+        GridBagConstraints gbcSounds = new GridBagConstraints();
+        gbcSounds.fill = GridBagConstraints.HORIZONTAL;
+        gbcSounds.anchor = GridBagConstraints.NORTH;
+        gbcSounds.gridx = 0;
+        gbcSounds.gridy = 0;
+        sounds.add(tickingBox, gbcSounds);
+        gbcSounds.gridx = 1;
+        gbcSounds.gridy = 0;
+        sounds.add(ringingBox, gbcSounds);
+        add(sounds, gbc);
     }
-    
-    private class ItemLocale
-    {
-        private String localeId;
-        private String localeText;
 
-        public ItemLocale(String localeId, String localeText)
-        {
-            this.localeId = localeId;
-            this.localeText = localeText;
-        }
-
-        public String getLocaleId()
-        {
-            return localeId;
-        }
-
-        public String getLocaleText()
-        {
-            return localeText;
-        }
-
-        public String toString()
-        {
-            return localeText;
-        }
-    }
-    
-    /**
-     * List directory contents for a resource folder. Not recursive.
-     * This is basically a brute-force implementation.
-     * Works for regular files and also JARs.
-     * 
-     * @author Greg Briggs
-     * @param clazz Any java class that lives in the same place as the resources you want.
-     * @param path Should end with "/", but not start with one.
-     * @return Just the name of each member item, not the full paths.
-     * @throws URISyntaxException 
-     * @throws IOException 
-     */
-    private String[] getResourceListing(Class clazz, String path) throws URISyntaxException, IOException {
-        URL dirURL = clazz.getClassLoader().getResource(path);
-        if (dirURL != null && dirURL.getProtocol().equals("file")) {
-            /* A file path: easy enough */
-            return new File(dirURL.toURI()).list();
-        }
-        if (dirURL == null) {
-            /* 
-             * In case of a jar file, we can't actually find a directory.
-             * Have to assume the same jar as clazz.
-             */
-            String me = clazz.getName().replace(".", "/") + ".class";
-            dirURL = clazz.getClassLoader().getResource(me);
-        }
-        if (dirURL.getProtocol().equals("jar")) {
-            /* A JAR path */
-            String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-            JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
-            Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-            Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
-            while (entries.hasMoreElements()) {
-                String name = entries.nextElement().getName();
-                if (name.startsWith(path)) { //filter according to the path
-                    String entry = name.substring(path.length());
-                    int checkSubdir = entry.indexOf("/");
-                    if (checkSubdir >= 0) {
-                        // if it is a subdirectory, we just return the directory name
-                        entry = entry.substring(0, checkSubdir);
-                    }
-                    result.add(entry);
-                }
-            }
-            return result.toArray(new String[result.size()]);
-        }
-
-        throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
+    private void addLocales(GridBagConstraints gbc) {
+        JPanel locales = new JPanel();
+        locales.setLayout(new GridBagLayout());
+        GridBagConstraints gbcLocales = new GridBagConstraints();
+        gbcLocales.fill = GridBagConstraints.HORIZONTAL;
+        gbcLocales.anchor = GridBagConstraints.NORTH;
+        gbcLocales.gridx = 0;
+        gbcLocales.gridy = 0;
+        locales.add(localesComboBox, gbcLocales);
+        add(locales, gbc);
     }
 }

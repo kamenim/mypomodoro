@@ -19,8 +19,8 @@ public class ManagerPanel extends JPanel {
 
     public ManagerPanel() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        activitiesPane = new ListPane(activityList, "Activity List");
-        todoPane = new ListPane(toDoList, "ToDo List");
+        activitiesPane = new ListPane(activityList, org.mypomodoro.gui.ControlPanel.labels.getString("ActivityListPanel.Activity List"));
+        todoPane = new ListPane(toDoList, org.mypomodoro.gui.ControlPanel.labels.getString("ToDoListPanel.ToDo List"));
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(
                 activitiesPane, todoPane));

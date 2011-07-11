@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -29,7 +30,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
 
     public OverestimationPanel(ToDoListPanel panel) {
         this.panel = panel;
-        
+
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
@@ -44,7 +45,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new JButton("Save");
+        JButton changeButton = new JButton(ControlPanel.labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override
@@ -54,7 +55,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         });
         add(changeButton, gbc);
     }
-    
+
     private void addToDoIconPanel() {
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -87,8 +88,8 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
             ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);
             ToDoIconLabel.showIconLabel(iconLabel, selectedToDo);
             JFrame window = new JFrame();
-            String title = "Overestimation";
-            String message = "Nb of estimated pomodoros increased by " + overestimatedPomodoros;
+            String title = ControlPanel.labels.getString("ToDoListPanel.Overestimation");
+            String message = ControlPanel.labels.getString("ToDoListPanel.Nb of estimated pomodoros increased by {0}", overestimatedPomodoros);
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }
@@ -102,7 +103,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
     public void clearInfo() {
         ToDoIconLabel.clearIconLabel(iconLabel);
     }
-    
+
     public JLabel getIconLabel() {
         return iconLabel;
     }

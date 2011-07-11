@@ -5,6 +5,7 @@ import java.awt.Font;
 import javax.swing.JList;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.model.ToDoList;
 
@@ -31,6 +32,6 @@ public class ToDoJList extends JList {
     }
 
     public void init() {
-        setBorder(new TitledBorder(new EtchedBorder(), "ToDo List (" + toDoList.getListSize() + ")"));
+        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ToDoListPanel.ToDo List") + " (" + toDoList.getListSize() + ")"));
     }
 }

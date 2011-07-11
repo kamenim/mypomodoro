@@ -13,6 +13,7 @@ import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -60,7 +61,7 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
-        String text = "Date: ";
+        String text = ControlPanel.labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
@@ -68,15 +69,15 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "]";
         }
-        text += "\nTitle: " + activity.getName()
-                + "\nEstimated Pomodoros: " + activity.getEstimatedPoms();
+        text += "\n" + ControlPanel.labels.getString("Common.Title") + ": " + activity.getName()
+                + "\n" + ControlPanel.labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }
-        text += "\nType: " + activity.getType()
-                + "\nAuthor: " + activity.getAuthor()
-                + "\nPlace: " + activity.getPlace()
-                + "\nDescription: " + activity.getDescription();
+        text += "\n" + ControlPanel.labels.getString("Common.Type") + ": " + activity.getType()
+                + "\n" + ControlPanel.labels.getString("Common.Author") + ": " + activity.getAuthor()
+                + "\n" + ControlPanel.labels.getString("Common.Place") + ": " + activity.getPlace()
+                + "\n" + ControlPanel.labels.getString("Common.Description") + ": " + activity.getDescription();
         informationArea.setText(text);
     }
 

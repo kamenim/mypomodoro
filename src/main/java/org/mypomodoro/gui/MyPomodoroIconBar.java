@@ -14,11 +14,11 @@ public class MyPomodoroIconBar extends JPanel {
     private MyIcon highlightedIcon;
 
     public MyPomodoroIconBar(MyPomodoroView view) {
-        myIcons.add(MyIcon.getInstance(view, "Create", "createButton", view.getCreatePanel()));
-        myIcons.add(MyIcon.getInstance(view, "Activity", "activityButton", view.getActivityListPanel()));
-        myIcons.add(MyIcon.getInstance(view, "Manager", "managerButton", view.getGeneratePanel()));
-        myIcons.add(MyIcon.getInstance(view, "ToDo", "todoButton", view.getToDoListPanel()));
-        myIcons.add(MyIcon.getInstance(view, "Report", "reportButton", view.getReportListPanel()));
+        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Create"), "createButton", view.getCreatePanel()));
+        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Activity"), "activityButton", view.getActivityListPanel()));
+        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Manager"), "managerButton", view.getGeneratePanel()));
+        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.ToDo"), "todoButton", view.getToDoListPanel()));
+        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Report"), "reportButton", view.getReportListPanel()));
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(getWidth(), 80));

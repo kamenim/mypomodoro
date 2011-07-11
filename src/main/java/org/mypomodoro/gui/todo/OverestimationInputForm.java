@@ -9,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.gui.ControlPanel;
 
 /**
  *
@@ -35,7 +36,7 @@ public class OverestimationInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        FormLabel label = new FormLabel("Overestimated Pomodoros*:");
+        FormLabel label = new FormLabel(ControlPanel.labels.getString("ToDoListPanel.Overestimated Pomodoros") + "*: ");
         label.setMinimumSize(LABEL_DIMENSION);
         label.setPreferredSize(LABEL_DIMENSION);
         add(label, c);
