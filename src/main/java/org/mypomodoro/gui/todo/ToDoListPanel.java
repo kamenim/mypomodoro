@@ -63,6 +63,7 @@ public class ToDoListPanel extends JPanel {
                         pomodoro.setCurrentToDo(selectedToDo);
                     }
                 }
+                toDoJList.setSelectedRowIndex();
             }
         });
 
@@ -162,7 +163,7 @@ public class ToDoListPanel extends JPanel {
             ReportList reportList = ReportList.getList();
             reportList.add(selectedToDo);
             toDoList.remove(selectedToDo);
-            toDoJList.update();
+            refresh();
             pomodoro.stop();
         }
     }

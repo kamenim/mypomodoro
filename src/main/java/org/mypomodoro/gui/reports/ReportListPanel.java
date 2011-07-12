@@ -14,6 +14,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -35,6 +37,7 @@ public class ReportListPanel extends JPanel {
     private final static String[] columnNames = {"U", ControlPanel.labels.getString("Common.Date"), ControlPanel.labels.getString("ReportListPanel.Time"), ControlPanel.labels.getString("Common.Title"),
         ControlPanel.labels.getString("ReportListPanel.Estimated"), ControlPanel.labels.getString("ReportListPanel.Real"), ControlPanel.labels.getString("ReportListPanel.Diff I"), ControlPanel.labels.getString("ReportListPanel.Diff II"), ControlPanel.labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 9;
+    private int selectedRowIndex = 0;
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -53,6 +56,8 @@ public class ReportListPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(table), gbc);
+
+        recordSelectedRowId();
     }
 
     private void addTabPane(GridBagConstraints gbc) {
@@ -95,12 +100,25 @@ public class ReportListPanel extends JPanel {
                     tableData[i][4] = poms;
                     tableData[i][5] = currentActivity.getActualPoms();
                     tableData[i][6] = currentActivity.getActualPoms() - currentActivity.getEstimatedPoms();
-                    tableData[i][7] = currentActivity.getOverestimatedPoms() > 0?currentActivity.getActualPoms() - currentActivity.getEstimatedPoms() - currentActivity.getOverestimatedPoms():"";
+                    tableData[i][7] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms() - currentActivity.getEstimatedPoms() - currentActivity.getOverestimatedPoms() : "";
                     tableData[i][8] = currentActivity.getType();
                     tableData[i][9] = currentActivity.getId();
                 }
             }
         };
+    }
+
+    private void recordSelectedRowId() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int row = table.getSelectedRow();
+                if (row > -1) {
+                    selectedRowIndex = row;
+                }
+            }
+        });
     }
 
     private void showSelectedItemDetails(InformationArea informationArea) {
@@ -118,11 +136,11 @@ public class ReportListPanel extends JPanel {
     public void refresh() {
         try {
             table.setModel(getTableModel());
-            init();
         }
         catch (Exception e) {
             // do nothing
         }
+        init();
     }
 
     private void init() {
@@ -154,7 +172,10 @@ public class ReportListPanel extends JPanel {
             table.setAutoCreateRowSorter(true);
         }
         if (table.getModel().getRowCount() > 0) {
-            table.setRowSelectionInterval(0, 0); // select first row
+            if (table.getModel().getRowCount() < selectedRowIndex + 1) {
+                selectedRowIndex = selectedRowIndex - 1;
+            }
+            table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
         setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
     }

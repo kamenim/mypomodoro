@@ -92,7 +92,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         newActivity.databaseInsert();
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(ControlPanel.labels.getString("CreatePanel.Activity added to Activity List"));
+        validation.setText(ControlPanel.labels.getString("CreatePanel.Activity {0} added to Activity List", newActivity.getName()));
     }
 
     public void saveActivity(Activity newActivity) {
@@ -100,7 +100,7 @@ public class CreatePanel extends JPanel {
             invalidActivityAction();
         } else if (newActivity.alreadyExists()) {
             JFrame window = new JFrame();
-            String title = "";
+            String title = ControlPanel.labels.getString("Common.Warning");
             String message = ControlPanel.labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
