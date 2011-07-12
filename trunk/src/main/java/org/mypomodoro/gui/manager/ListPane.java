@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
@@ -36,6 +38,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     private final JTextArea informationArea;
     private final AbstractActivities list;
     private final String titleList;
+    private int selectedRowIndex = 0;
     /**
      * width of list cells
      */
@@ -49,6 +52,14 @@ public class ListPane extends JPanel implements ActivityInformation {
         internalActivitiesList = new JList();
         setPreferredSize(PREFERED_SIZE);
         internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));
+
+        internalActivitiesList.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                setSelectedRowIndex();
+            }
+        });
 
         this.informationArea = new JTextArea();
         addActivitiesList();
@@ -118,9 +129,6 @@ public class ListPane extends JPanel implements ActivityInformation {
 
     public void update() {
         internalActivitiesList.setListData(list.toArray());
-        if (list.size() > 0) {
-            internalActivitiesList.setSelectedIndex(0);
-        }
         init();
     }
 
@@ -134,6 +142,12 @@ public class ListPane extends JPanel implements ActivityInformation {
     }
 
     public void init() {
+        if (list.size() > 0) {
+            if (list.size() < selectedRowIndex + 1) {
+                selectedRowIndex = selectedRowIndex - 1;
+            }
+            internalActivitiesList.setSelectedIndex(selectedRowIndex);
+        }
         internalActivitiesList.setBorder(new TitledBorder(new EtchedBorder(), titleList + " (" + list.size() + ")"));
         this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("Common.Details")));
     }
@@ -141,5 +155,12 @@ public class ListPane extends JPanel implements ActivityInformation {
     public boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
         int nbTotalEstimatedPom = list.getNbTotalEstimatedPom() + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
         return nbTotalEstimatedPom > ControlPanel.preferences.getMaxNbPomPerDay();
+    }
+
+    private void setSelectedRowIndex() {
+        int row = internalActivitiesList.getSelectedIndex();
+        if (row > -1) {
+            selectedRowIndex = row;
+        }
     }
 }

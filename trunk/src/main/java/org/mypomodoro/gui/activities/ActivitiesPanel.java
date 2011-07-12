@@ -11,6 +11,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -36,13 +38,14 @@ public class ActivitiesPanel extends JPanel {
     JTable table = new JTable(getTableModel());
     private static final String[] columnNames = {"U", ControlPanel.labels.getString("Common.Date"), ControlPanel.labels.getString("Common.Title"), ControlPanel.labels.getString("Common.Estimated Pomodoros"), ControlPanel.labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
+    private int selectedRowIndex = 0;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
-
+        
         addActivitiesTable(gbc);
         addTabPane(gbc);
     }
@@ -54,6 +57,8 @@ public class ActivitiesPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(table), gbc);
+        
+        recordSelectedRowId();
     }
 
     private void addTabPane(GridBagConstraints gbc) {
@@ -68,7 +73,7 @@ public class ActivitiesPanel extends JPanel {
         JScrollPane editPane = new JScrollPane(edit);
         controlPane.add(ControlPanel.labels.getString("ActivityListPanel.Edit"), editPane);
         add(controlPane, gbc);
-
+        
         showSelectedItemDetails(detailsPane);
         showSelectedItemEdit(edit);
     }
@@ -99,6 +104,19 @@ public class ActivitiesPanel extends JPanel {
         };
     }
 
+    private void recordSelectedRowId() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int row = table.getSelectedRow();
+                if (row > -1) {
+                    selectedRowIndex = row;
+                }
+            }
+        });
+    }
+
     private void showSelectedItemDetails(final DetailsPane detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),
@@ -114,11 +132,11 @@ public class ActivitiesPanel extends JPanel {
     public void refresh() {
         try {
             table.setModel(getTableModel());
-            init();
         }
         catch (Exception e) {
             // do nothing
         }
+        init();
     }
 
     private void init() {
@@ -143,7 +161,10 @@ public class ActivitiesPanel extends JPanel {
             table.setAutoCreateRowSorter(true);
         }
         if (table.getModel().getRowCount() > 0) {
-            table.setRowSelectionInterval(0, 0); // select first row            
+            if (table.getModel().getRowCount() < selectedRowIndex + 1) {
+                selectedRowIndex = selectedRowIndex - 1;
+            }
+            table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
         setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ActivityListPanel.Activity List") + " (" + ActivityList.getListSize() + ")"));
     }
