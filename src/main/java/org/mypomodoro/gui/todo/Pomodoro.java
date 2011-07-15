@@ -15,6 +15,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
@@ -76,7 +78,7 @@ public class Pomodoro {
         inpomodoro = false;
         Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
         if (selectedToDo != null) { // not empty list
-            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);        
+            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
         }
         stopSound();
     }
@@ -237,6 +239,18 @@ public class Pomodoro {
             try {
                 DataLine.Info info = new DataLine.Info(Clip.class, ain.getFormat());
                 clip = (Clip) AudioSystem.getLine(info);
+                clip.addLineListener(new LineListener() {
+
+                    @Override
+                    public void update(LineEvent event) {
+                        // flush the line buffer and close the line at the end of media or on explicit stop
+                        DataLine line = (DataLine) event.getSource();
+                        if (event.getType() == LineEvent.Type.STOP) {
+                            line.flush();
+                            line.close();
+                        }
+                    }
+                });
                 clip.open(ain);
                 clip.loop(continuously ? clip.LOOP_CONTINUOUSLY : 0);
                 clip.start();
@@ -253,6 +267,8 @@ public class Pomodoro {
     public void stopSound() {
         if (clip != null) {
             clip.stop();
+            // allow clip to be GCed
+            clip = null;
         }
     }
 
