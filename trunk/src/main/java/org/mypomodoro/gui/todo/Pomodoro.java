@@ -2,6 +2,9 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JFrame;
@@ -235,7 +238,7 @@ public class Pomodoro {
 
     public void playSound(InputStream is, boolean continuously) {
         try {
-            AudioInputStream ain = AudioSystem.getAudioInputStream(is);
+            AudioInputStream ain = AudioSystem.getAudioInputStream(getStreamWithMarkReset(is));
             try {
                 DataLine.Info info = new DataLine.Info(Clip.class, ain.getFormat());
                 clip = (Clip) AudioSystem.getLine(info);
@@ -290,5 +293,36 @@ public class Pomodoro {
 
     public boolean isCurrentToDoComplete() {
         return currentToDo.getActualPoms() == currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms();
+    }
+
+    private InputStream getStreamWithMarkReset(InputStream stream) throws IOException {
+        if (stream.markSupported()) {
+            return stream;
+        }
+        ByteArrayOutputStream output = null;
+        try {
+            output = new ByteArrayOutputStream(stream.available());
+            byte[] buf = new byte[2048];
+            int read;
+            while (( read = stream.read(buf) ) > 0) {
+                output.write(buf, 0, read);
+            }
+
+            return new ByteArrayInputStream(output.toByteArray());
+        }
+        finally {
+            try {
+                stream.close();
+            }
+            catch (IOException ignored) {
+            }
+            if (output != null) {
+                try {
+                    output.close();
+                }
+                catch (IOException ignored) {
+                }
+            }
+        }
     }
 }
