@@ -17,13 +17,17 @@ public class ControlPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
+        gbc.weighty = 0.5;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
         add(new MoveButton(">>>", activitiesPane, todoPane), gbc);
         // Adding the remove button from todo to activities list
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
+        gbc.weighty = 0.5;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
         add(new MoveButton("<<<", todoPane, activitiesPane), gbc);
     }
 }

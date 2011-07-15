@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
+import org.mypomodoro.buttons.DeleteAllReportButton;
 import org.mypomodoro.buttons.DeleteReportButton;
 
 import org.mypomodoro.gui.ActivityInformation;
@@ -31,14 +32,25 @@ public class InformationArea extends JPanel implements ActivityInformation {
 
         addInformationArea();
         addDeleteButton(table);
+        addAllDeleteButton(table);
     }
 
     private void addDeleteButton(JTable table) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridheight = 1;
+        //gbc.fill = GridBagConstraints.NONE;
         add(new DeleteReportButton(table), gbc);
+    }
+    
+    private void addAllDeleteButton(JTable table) {
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.1;
+        gbc.gridheight = 1;
+        //gbc.fill = GridBagConstraints.NONE;
+        add(new DeleteAllReportButton(table), gbc);
     }
 
     private void addInformationArea() {
@@ -48,7 +60,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.gridheight = 2;        
         informationArea.setEditable(false);
         // disable auto scrolling
         DefaultCaret caret = (DefaultCaret) informationArea.getCaret();

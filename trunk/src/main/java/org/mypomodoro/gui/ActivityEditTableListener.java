@@ -36,6 +36,8 @@ public class ActivityEditTableListener implements ListSelectionListener {
             if (activity != null) {
                 information.fillOutInputForm(activity);
             }
+        } else {
+            information.clearForm();
         }
     }
 }

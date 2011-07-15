@@ -74,6 +74,10 @@ public class Pomodoro {
         time = pomodoroLength;
         pomodoroTime.setText(sdf.format(pomodoroLength));
         inpomodoro = false;
+        Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
+        if (selectedToDo != null) { // not empty list
+            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);        
+        }
         stopSound();
     }
 
@@ -200,9 +204,12 @@ public class Pomodoro {
     }
 
     public void start() {
-        currentToDo = (Activity) panel.getToDoJList().getSelectedValue();
         pomodoroTimer.start();
         inpomodoro = true;
+        Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
+        if (selectedToDo != null) { // not empty list
+            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), currentToDo);
+        }
         tick();
     }
 
@@ -260,7 +267,7 @@ public class Pomodoro {
     public void setTimerPanel(TimerPanel timerPanel) {
         this.timerPanel = timerPanel;
     }
-    
+
     public TimerPanel getTimerPanel() {
         return timerPanel;
     }

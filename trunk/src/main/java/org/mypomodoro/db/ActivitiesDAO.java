@@ -152,7 +152,7 @@ public class ActivitiesDAO {
     }
 
     public void update(Activity activity) {
-        String updateSQL = "UPDATE activities SET " + "name = '"                
+        String updateSQL = "UPDATE activities SET " + "name = '"
                 + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''")
                 + "', " + "description = '" + activity.getDescription().replace("'", "''") + "', "
                 + "notes = '" + activity.getNotes().replace("'", "''") + "', " + "author = '"
@@ -210,5 +210,29 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activity;
+    }
+
+    public void removeAllCompletedActivities() {
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update("DELETE FROM activities WHERE is_complete = 'true';");
+        }
+        finally {
+            database.update("Commit;");
+            database.unlock();
+        }
+    }
+
+    public void removeAllActivities() {
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update("DELETE FROM activities WHERE priority = -1 AND is_complete = 'false';");
+        }
+        finally {
+            database.update("Commit;");
+            database.unlock();
+        }
     }
 }

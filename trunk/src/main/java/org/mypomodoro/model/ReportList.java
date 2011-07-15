@@ -41,4 +41,9 @@ public class ReportList extends AbstractActivities {
         Main.updateLists();
         Main.updateView();
     }
+    
+    public void removeAll() {
+        ActivitiesDAO.getInstance().removeAllCompletedActivities();
+        update();
+    }
 }
