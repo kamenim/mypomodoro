@@ -34,7 +34,7 @@ public class Main {
     public static final ManagerPanel generatePanel = new ManagerPanel();
     public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
-    public static ReentrantLock datalock = new ReentrantLock();    
+    public static ReentrantLock datalock = new ReentrantLock();
 
     public static void updateView() {
         new Thread(new Runnable() {
