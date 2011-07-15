@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.buttons.myButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ControlPanel;
@@ -44,8 +45,8 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new JButton(ControlPanel.labels.getString("Common.Save"));
+        //gbc.fill = GridBagConstraints.NONE;
+        JButton changeButton = new myButton(ControlPanel.labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override
@@ -87,6 +88,9 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
             ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), selectedToDo);
             ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);
             ToDoIconLabel.showIconLabel(iconLabel, selectedToDo);
+            if (panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
+                ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
+            }
             JFrame window = new JFrame();
             String title = ControlPanel.labels.getString("ToDoListPanel.Overestimation");
             String message = ControlPanel.labels.getString("ToDoListPanel.Nb of estimated pomodoros increased by {0}", overestimatedPomodoros);

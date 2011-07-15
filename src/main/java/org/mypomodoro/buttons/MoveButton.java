@@ -15,12 +15,12 @@ import org.mypomodoro.model.Activity;
  * 
  * @author p.caroux
  */
-public class MoveButton extends JButton {
+public class MoveButton extends myButton {
 
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
-    public MoveButton(String title, final ListPane from, final ListPane to) {
-        super(title);
+    public MoveButton(String label, final ListPane from, final ListPane to) {
+        super(label);
         setMinimumSize(BUTTON_SIZE);
         setPreferredSize(BUTTON_SIZE);
         addActionListener(new ActionListener() {

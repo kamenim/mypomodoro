@@ -39,6 +39,7 @@ public class ToDoListPanel extends JPanel {
     private final InformationPanel informationPanel = new InformationPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(this);
+    private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(this);
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -51,19 +52,20 @@ public class ToDoListPanel extends JPanel {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 JList list = (JList) e.getSource();
-                if (list.isSelectionEmpty()) { // empty list                    
+                Activity selectedToDo = (Activity) list.getSelectedValue();
+                if (selectedToDo != null) {
+                    if (!pomodoro.inPomodoro()) {
+                        pomodoro.setCurrentToDo(selectedToDo);
+                    }
+                    toDoJList.setSelectedRowIndex(selectedToDo.getId());
+                } else if (toDoList.size() == 0) { // empty list                    
                     ToDoIconLabel.clearIconLabel(iconLabel);
+                    unplannedPanel.clearForm();
                     if (pomodoro.inPomodoro()) {
                         pomodoro.stop();
                         pomodoro.getTimerPanel().setStart();
                     }
-                } else {
-                    Activity selectedToDo = (Activity) list.getSelectedValue();
-                    if (!pomodoro.inPomodoro()) {
-                        pomodoro.setCurrentToDo(selectedToDo);
-                    }
                 }
-                toDoJList.setSelectedRowIndex();
             }
         });
 
@@ -71,6 +73,7 @@ public class ToDoListPanel extends JPanel {
         toDoJList.addListSelectionListener(new ActivityInformationListListener(informationPanel));
         toDoJList.addListSelectionListener(new ActivityInformationListListener(commentPanel));
         toDoJList.addListSelectionListener(new ActivityInformationListListener(overestimationPanel));
+        toDoJList.addListSelectionListener(new ActivityInformationListListener(unplannedPanel));
 
         addTodoList();
         addTimerPanel();
@@ -117,7 +120,7 @@ public class ToDoListPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new TabPane(this, new UnplannedPanel(this)), gbc);
+        add(new TabPane(this, unplannedPanel), gbc);
     }
 
     public void refresh() {
@@ -163,14 +166,17 @@ public class ToDoListPanel extends JPanel {
             ReportList reportList = ReportList.getList();
             reportList.add(selectedToDo);
             toDoList.remove(selectedToDo);
+            if (pomodoro.inPomodoro() && pomodoro.getCurrentToDo().equals(selectedToDo)) {
+                pomodoro.stop();
+                pomodoro.getTimerPanel().setStart();
+            }
             refresh();
-            pomodoro.stop();
         }
     }
 
     public void completeTaskWithWarning() {
-        if (!pomodoro.inPomodoro()) {
-            Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+        Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
+        if (!pomodoro.inPomodoro() || !pomodoro.getCurrentToDo().equals(selectedToDo)) {
             if (selectedToDo != null) {
                 JFrame window = new JFrame();
                 if (selectedToDo.getActualPoms() <= 0) {
@@ -231,6 +237,10 @@ public class ToDoListPanel extends JPanel {
 
     public OverestimationPanel getOverestimationPanel() {
         return overestimationPanel;
+    }
+
+    public UnplannedPanel getUnplannedPanel() {
+        return unplannedPanel;
     }
 
     public ToDoList getToDoList() {

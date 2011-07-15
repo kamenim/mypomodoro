@@ -3,7 +3,6 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -12,7 +11,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.model.ActivityList;
 
-public class DeleteButton extends JButton {
+public class DeleteButton extends myButton {
 
     public DeleteButton(final JTable table) {
         super(ControlPanel.labels.getString("Common.Delete"));

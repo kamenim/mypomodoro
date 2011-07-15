@@ -54,7 +54,7 @@ public class ToDoList extends AbstractActivities {
      * cannote be changed.
      * 
      */
-    public void promote(Activity a) {
+    /*public void promote(Activity a) {
         int index = activities.indexOf(a);
         if (index > 0) {
             Activity lower = a;
@@ -64,7 +64,7 @@ public class ToDoList extends AbstractActivities {
             lower.setPriority(index - 1);
             higher.setPriority(index);
         }
-    }
+    }*/
     /**
      * Demote the Activity at the desired index, by storing the value to be
      * replaced into a buffer and then switching the values. The root node

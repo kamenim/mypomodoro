@@ -41,4 +41,9 @@ public class ActivityList extends AbstractActivities {
         Main.updateLists();
         Main.updateView();
     }
+    
+    public void removeAll() {
+        ActivitiesDAO.getInstance().removeAllActivities();
+        update();
+    }
 }

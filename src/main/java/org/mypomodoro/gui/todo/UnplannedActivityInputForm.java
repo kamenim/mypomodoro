@@ -39,4 +39,8 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
     public boolean isSelectedExternalInterruption() {
         return ( (String) interruptions.getSelectedItem() ).equals(external);
     }
+
+    public void setInterruption(int index) {
+        interruptions.setSelectedIndex(index);
+    }
 }

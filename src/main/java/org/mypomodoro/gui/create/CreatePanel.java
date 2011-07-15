@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.mypomodoro.buttons.SaveButton;
+import org.mypomodoro.buttons.myButton;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -56,12 +57,12 @@ public class CreatePanel extends JPanel {
         gbc.weightx = 0.5;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
+        //gbc.fill = GridBagConstraints.NONE;
         add(saveButton, gbc);
     }
 
     protected void addClearButton() {
-        JButton clearButton = new JButton(ControlPanel.labels.getString("CreatePanel.Clear"));
+        JButton clearButton = new myButton(ControlPanel.labels.getString("CreatePanel.Clear"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override
@@ -74,7 +75,7 @@ public class CreatePanel extends JPanel {
         gbc.weightx = 0.5;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
+        //gbc.fill = GridBagConstraints.NONE;
         add(clearButton, gbc);
     }
 

@@ -1,8 +1,11 @@
 package org.mypomodoro.gui.create;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import org.mypomodoro.gui.ControlPanel;
 
 
@@ -35,12 +38,18 @@ public class EditPanel extends CreatePanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        gbc.fill = GridBagConstraints.NONE;
+        //gbc.fill = GridBagConstraints.NONE;
+        //Border thickBorder = new LineBorder(Color.BLACK,1);
+        //saveButton.setBorder(thickBorder);
         add(saveButton, gbc);
     }
 
     @Override
     protected void addClearButton() {
+    }
+    
+    @Override
+    protected void addValidation() {    
     }
 
     @Override
