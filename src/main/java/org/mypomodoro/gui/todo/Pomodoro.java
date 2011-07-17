@@ -38,10 +38,8 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    //private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_LENGTH = 1 * MINUTES;
-    //private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = 1 * MINUTES;
+    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
