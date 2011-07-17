@@ -1,7 +1,9 @@
 package org.mypomodoro.menubar;
 
+import org.mypomodoro.menubar.help.AboutView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -18,6 +20,7 @@ public class HelpMenu extends JMenu {
         add(new HelpPomodoroTechnique());
         add(new HelpPomodoroCheatSheet());
         add(new HelpPomodoroBook());
+        add(new HelpAbout());
     }
 
     class HelpUserGuide extends JMenuItem {
@@ -86,6 +89,23 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BareBonesBrowserLaunch.openURL("http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf");
+            }
+        }
+    }
+
+    class HelpAbout extends JMenuItem {
+
+        public HelpAbout() {
+            super(ControlPanel.labels.getString("HelpMenu.About myPomodoro"));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AboutView frame = new AboutView(new JFrame(), ControlPanel.labels.getString("HelpMenu.About myPomodoro"));
+                frame.setVisible(true);
             }
         }
     }

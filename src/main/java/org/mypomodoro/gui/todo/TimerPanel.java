@@ -66,17 +66,19 @@ public class TimerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (pomodoro.isCurrentToDoComplete()) {
-                    JFrame window = new JFrame();
-                    String message = ControlPanel.labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
-                    message += "\n(" + ControlPanel.labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                    JOptionPane.showMessageDialog(window, message);
-                } else {
-                    if (ControlPanel.labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
-                        pomodoro.start();
-                        startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Stop"));
-                    } else if (pomodoro.stopWithWarning()) {
-                        startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Start"));
+                if (pomodoro.getCurrentToDo() != null) {
+                    if (pomodoro.isCurrentToDoComplete()) {
+                        JFrame window = new JFrame();
+                        String message = ControlPanel.labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
+                        message += "\n(" + ControlPanel.labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
+                        JOptionPane.showMessageDialog(window, message);
+                    } else {
+                        if (ControlPanel.labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+                            pomodoro.start();
+                            startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Stop"));
+                        } else if (pomodoro.stopWithWarning()) {
+                            startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Start"));
+                        }
                     }
                 }
             }

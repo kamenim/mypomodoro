@@ -86,6 +86,8 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.tickingBox.setSelected(true);
                 preferencesInputFormPanel.ringingBox.setSelected(true);
                 // no reset for locale
+                preferencesInputFormPanel.systemTrayBox.setSelected(true);
+                preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 updatePreferences();
                 validation.setText(labels.getString("PreferencesPanel.Preferences reset. Please restart myPomodoro."));
                 disableSaveButton();
@@ -135,6 +137,8 @@ public class ControlPanel extends JPanel {
         preferences.setTicking(preferencesInputFormPanel.tickingBox.isSelected());
         preferences.setRinging(preferencesInputFormPanel.ringingBox.isSelected());
         preferences.setLocale(( (ItemLocale) preferencesInputFormPanel.localesComboBox.getSelectedItem() ).getLocale());
+        preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
+        preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.updatePreferences();
     }
 }

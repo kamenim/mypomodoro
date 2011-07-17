@@ -18,12 +18,15 @@ public class DeleteAllButton extends myButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame window = new JFrame();
-                String title = ControlPanel.labels.getString("ActivityListPanel.Delete all activities");
-                String message = ControlPanel.labels.getString("ActivityListPanel.Are you sure to delete all activities?");
-                int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                if (reply == JOptionPane.YES_OPTION) {
-                    ActivityList.getList().removeAll();
+                int rowCount = table.getRowCount();
+                if (rowCount > 0) {
+                    JFrame window = new JFrame();
+                    String title = ControlPanel.labels.getString("ActivityListPanel.Delete all activities");
+                    String message = ControlPanel.labels.getString("ActivityListPanel.Are you sure to delete all activities?");
+                    int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        ActivityList.getList().removeAll();
+                    }
                 }
             }
         });

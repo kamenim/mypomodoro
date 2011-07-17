@@ -103,7 +103,9 @@ public class Database {
                 + "nb_pom_per_set INTEGER DEFAULT 4, "
                 + "ticking BOOLEAN DEFAULT 1, "
                 + "ringing BOOLEAN DEFAULT 1, " 
-                + "locale TEXT" + ");";
+                + "locale TEXT, "
+                + "system_tray BOOLEAN DEFAULT 1, "
+                + "system_tray_msg BOOLEAN DEFAULT 1" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
     }
@@ -116,9 +118,9 @@ public class Database {
                 String insertPreferencesSQL = "INSERT INTO preferences ("
                         + "pom_length,short_break_length,long_break_length,"
                         + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
-                        + "ticking,ringing,locale) "
+                        + "ticking,ringing,locale,system_tray,system_tray_msg) "
                         + "VALUES ("
-                        + "25,5,20,5,10,4,1,1,'en_US');";
+                        + "25,5,20,5,10,4,1,1,'en_US',1,1);";
                 update(insertPreferencesSQL);
             }
         }

@@ -59,6 +59,16 @@ public class Preferences {
      */
     public static Locale LOCALE = new Locale("en", "US");
     private Locale locale = LOCALE;
+    /**
+     * System tray
+     */
+    public static final boolean STRAY = true;
+    private boolean systemTray = STRAY;
+    /**
+     * System tray pop-up message
+     */
+    public static final boolean STRAYMSG = true;
+    private boolean systemTrayMessage = STRAYMSG;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -97,6 +107,14 @@ public class Preferences {
         return locale;
     }
 
+    public boolean getSystemTray() {
+        return systemTray;
+    }
+
+    public boolean getSystemTrayMessage() {
+        return systemTrayMessage;
+    }
+
     // SETTERS
     public void setPomodoroLength(int value) {
         pomodoroLength = value;
@@ -132,6 +150,14 @@ public class Preferences {
 
     public void setLocale(Locale value) {
         locale = value;
+    }
+
+    public void setSystemTray(boolean value) {
+        systemTray = value;
+    }
+
+    public void setSystemTrayMessage(boolean value) {
+        systemTrayMessage = value;
     }
 
     public void refresh() {

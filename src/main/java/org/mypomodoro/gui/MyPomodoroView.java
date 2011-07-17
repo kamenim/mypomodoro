@@ -2,6 +2,7 @@ package org.mypomodoro.gui;
 
 import java.awt.AWTException;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 
 import org.mypomodoro.Main;
@@ -32,6 +34,7 @@ public class MyPomodoroView extends JFrame {
 
     public static final int FRAME_WIDTH = 480;
     public static final int FRAME_HEIGHT = 600;
+    public static TrayIcon trayIcon;
     private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
     private final CreatePanel createPanel = new CreatePanel();
     private final ManagerPanel generatePanel = Main.generatePanel;
@@ -67,19 +70,33 @@ public class MyPomodoroView extends JFrame {
         setJMenuBar(menuBar);
         setWindow(new SplashScreen());
         setSize(FRAME_HEIGHT, FRAME_WIDTH);
-        if (isSystemTraySupported()) {
+        if (SystemTray.isSupported() && ControlPanel.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             SystemTray sysTray = SystemTray.getSystemTray();
             PopupMenu menu = new PopupMenu();
-            MenuItem open = new MenuItem(ControlPanel.labels.getString("SystemTrayMenu.OpenMyPomodoro"));
+            JLabel openLabel = new JLabel(ControlPanel.labels.getString("SystemTrayMenu.OpenMyPomodoro"));
+            MenuItem open = new MenuItem(openLabel.getText());
+            open.setFont(new Font(openLabel.getFont().getName(), Font.BOLD, openLabel.getFont().getSize()));
             open.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setVisible(true);
                 }
-            });
+            });            
             menu.add(open);
+            menu.addSeparator();
+            MenuItem preferences = new MenuItem(ControlPanel.labels.getString("PreferencesPanel.Preferences") + "...");
+            preferences.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setWindow(new ControlPanel());
+                    setVisible(true);
+                }
+            });
+            menu.add(preferences);
+            menu.addSeparator();
             MenuItem exit = new MenuItem(ControlPanel.labels.getString("SystemTrayMenu.ExitMyPomodoro"));
             exit.addActionListener(new ActionListener() {
 
@@ -88,14 +105,15 @@ public class MyPomodoroView extends JFrame {
                     System.exit(0);
                 }
             });
-            menu.add(exit);
-            TrayIcon trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "myPomodoro", menu);
+            menu.add(exit);            
+            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "", menu);
+            trayIcon.setImageAutoSize(true);
             try {
                 sysTray.add(trayIcon);
             }
             catch (AWTException e) {
-                // System tray not supported
-            }
+                // do nothing
+            }            
         }
     }
 
@@ -122,9 +140,5 @@ public class MyPomodoroView extends JFrame {
 
     public MyPomodoroIconBar getIconBar() {
         return iconBar;
-    }
-
-    private boolean isSystemTraySupported() {
-        return SystemTray.isSupported();
     }
 }

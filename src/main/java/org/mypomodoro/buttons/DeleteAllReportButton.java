@@ -22,12 +22,15 @@ public class DeleteAllReportButton extends myButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame window = new JFrame();
-                String title = ControlPanel.labels.getString("ReportListPanel.Delete all reports");
-                String message = ControlPanel.labels.getString("ReportListPanel.Are you sure to delete all reports?");
-                int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                if (reply == JOptionPane.YES_OPTION) {
-                    ReportList.getList().removeAll();
+                int rowCount = table.getRowCount();
+                if (rowCount > 0) {
+                    JFrame window = new JFrame();
+                    String title = ControlPanel.labels.getString("ReportListPanel.Delete all reports");
+                    String message = ControlPanel.labels.getString("ReportListPanel.Are you sure to delete all reports?");
+                    int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        ReportList.getList().removeAll();
+                    }
                 }
             }
         });
