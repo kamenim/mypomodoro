@@ -3,6 +3,7 @@ package org.mypomodoro.gui;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -29,6 +30,8 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox tickingBox;
     protected final JCheckBox ringingBox;
     protected final JComboBox localesComboBox;
+    protected final JCheckBox systemTrayBox;
+    protected final JCheckBox systemTrayMessageBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("PreferencesPanel.Preferences")));
@@ -81,6 +84,30 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
+        systemTrayBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.System Tray"), ControlPanel.preferences.getSystemTray());
+        systemTrayMessageBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.Popup message"), ControlPanel.preferences.getSystemTrayMessage());
+        systemTrayBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+                if (!systemTrayBox.isSelected()) {
+                    systemTrayMessageBox.setSelected(false);
+                }
+            }
+        });
+        systemTrayMessageBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+                if (systemTrayMessageBox.isSelected()) {
+                    systemTrayBox.setSelected(true);                    
+                }
+            }
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -103,6 +130,11 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 7;
         gbc.gridwidth = 2;
         addLocales(gbc);
+        if (SystemTray.isSupported()) {
+            gbc.gridy = 8;
+            gbc.gridwidth = 2;
+            addSystemTray(gbc);
+        }
     }
 
     private void addSounds(GridBagConstraints gbc) {
@@ -130,5 +162,20 @@ public class PreferencesInputForm extends JPanel {
         gbcLocales.gridy = 0;
         locales.add(localesComboBox, gbcLocales);
         add(locales, gbc);
+    }
+
+    private void addSystemTray(GridBagConstraints gbc) {
+        JPanel systemTray = new JPanel();
+        systemTray.setLayout(new GridBagLayout());
+        GridBagConstraints gbcSystemTray = new GridBagConstraints();
+        gbcSystemTray.fill = GridBagConstraints.HORIZONTAL;
+        gbcSystemTray.anchor = GridBagConstraints.NORTH;
+        gbcSystemTray.gridx = 0;
+        gbcSystemTray.gridy = 0;
+        systemTray.add(systemTrayBox, gbcSystemTray);
+        gbcSystemTray.gridx = 1;
+        gbcSystemTray.gridy = 0;
+        systemTray.add(systemTrayMessageBox, gbcSystemTray);
+        add(systemTray, gbc);
     }
 }

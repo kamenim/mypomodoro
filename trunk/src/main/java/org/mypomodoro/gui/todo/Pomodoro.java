@@ -1,5 +1,7 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -22,6 +24,7 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -35,8 +38,10 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    //private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    private final long POMODORO_LENGTH = 1 * MINUTES;
+    //private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    private final long POMODORO_BREAK_LENGTH = 1 * MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
@@ -59,7 +64,7 @@ public class Pomodoro {
     }
 
     public boolean stopWithWarning() {
-        if (inpomodoro && currentToDo != null) { // in pomodoro only, not during breaks
+        if (inpomodoro) { // in pomodoro only, not during breaks
             JFrame window = new JFrame();
             String title = ControlPanel.labels.getString("ToDoListPanel.Void pomodoro");
             String message = ControlPanel.labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
@@ -84,6 +89,9 @@ public class Pomodoro {
             ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
         }
         stopSound();
+        if (isSystemTrayMessage()) {
+            MyPomodoroView.trayIcon.displayMessage("", ControlPanel.labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
+        }
     }
 
     class UpdateAction implements ActionListener {
@@ -95,6 +103,9 @@ public class Pomodoro {
             if (time >= 1) {
                 time -= SECOND;
                 pomodoroTime.setText(sdf.format(time));
+                if (inPomodoro() && isSystemTrayMessage()) {
+                    MyPomodoroView.trayIcon.displayMessage("", sdf.format(time), TrayIcon.MessageType.NONE);
+                }
             } else {
                 stopSound();
                 ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
@@ -113,8 +124,14 @@ public class Pomodoro {
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
                         pomSetNumber = 0;
+                        if (isSystemTrayMessage()) {
+                            MyPomodoroView.trayIcon.displayMessage("", ControlPanel.labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                        }
                     } else {
                         goInShortBreak();
+                        if (isSystemTrayMessage()) {
+                            MyPomodoroView.trayIcon.displayMessage("", ControlPanel.labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                        }
                     }
                     inpomodoro = false;
                 } else {
@@ -307,7 +324,6 @@ public class Pomodoro {
             while (( read = stream.read(buf) ) > 0) {
                 output.write(buf, 0, read);
             }
-
             return new ByteArrayInputStream(output.toByteArray());
         }
         finally {
@@ -324,5 +340,9 @@ public class Pomodoro {
                 }
             }
         }
+    }
+
+    private boolean isSystemTrayMessage() {
+        return SystemTray.isSupported() && ControlPanel.preferences.getSystemTray() && ControlPanel.preferences.getSystemTrayMessage();
     }
 }

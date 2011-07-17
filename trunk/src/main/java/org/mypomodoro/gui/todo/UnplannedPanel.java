@@ -65,20 +65,22 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
 
     @Override
     protected void validActivityAction(Activity newActivity) {
-        if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
-            panel.getPomodoro().getCurrentToDo().incrementInternalInter();
-        } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
-            panel.getPomodoro().getCurrentToDo().incrementInter();
-        }
-        Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
-        if (selectedToDo != null) {
-            if (( unplannedInputFormPanel.isSelectedInternalInterruption() || unplannedInputFormPanel.isSelectedExternalInterruption() )) {
-                Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-                ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo.equals(selectedToDo) ? selectedToDo : currentToDo);
-                ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), selectedToDo);
-                ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);
-                ToDoIconLabel.showIconLabel(panel.getOverestimationPanel().getIconLabel(), selectedToDo);
-                ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo.equals(selectedToDo) ? selectedToDo : currentToDo);
+        if (panel.getPomodoro().getCurrentToDo() != null) {
+            if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
+                panel.getPomodoro().getCurrentToDo().incrementInternalInter();
+            } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
+                panel.getPomodoro().getCurrentToDo().incrementInter();
+            }
+            Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
+            if (selectedToDo != null) {
+                if (( unplannedInputFormPanel.isSelectedInternalInterruption() || unplannedInputFormPanel.isSelectedExternalInterruption() )) {
+                    Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+                    ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo.equals(selectedToDo) ? selectedToDo : currentToDo);
+                    ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), selectedToDo);
+                    ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);
+                    ToDoIconLabel.showIconLabel(panel.getOverestimationPanel().getIconLabel(), selectedToDo);
+                    ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo.equals(selectedToDo) ? selectedToDo : currentToDo);
+                }
             }
         }
         newActivity.setIsUnplanned(true);
@@ -126,7 +128,7 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
     public JLabel getIconLabel() {
         return iconLabel;
     }
-    
+
     @Override
     public void clearForm() {
         unplannedInputFormPanel.setInterruption(0);
