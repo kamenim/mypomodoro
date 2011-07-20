@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.buttons.myButton;
+import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ControlPanel;
@@ -46,7 +46,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new myButton(ControlPanel.labels.getString("Common.Save"));
+        JButton changeButton = new MyButton(ControlPanel.labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override

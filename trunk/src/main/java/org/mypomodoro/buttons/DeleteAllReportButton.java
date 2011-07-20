@@ -14,7 +14,7 @@ import org.mypomodoro.model.ReportList;
  *
  * @author Phil Karoo
  */
-public class DeleteAllReportButton extends myButton {
+public class DeleteAllReportButton extends MyButton {
 
     public DeleteAllReportButton(final JTable table) {
         super(ControlPanel.labels.getString("Common.DeleteAll"));

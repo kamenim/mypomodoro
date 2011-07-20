@@ -29,7 +29,8 @@ import org.mypomodoro.model.ToDoList;
  * pomodoro timer and a break timer, each looping into the other without
  * stopping.
  * 
- * @author Brian Wetzel
+ * @author Brian Wetzel 
+ * @author Phil Karoo
  */
 public class ToDoListPanel extends JPanel {
 

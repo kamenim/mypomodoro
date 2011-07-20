@@ -28,13 +28,15 @@ import org.mypomodoro.menubar.ViewMenu;
 /**
  * Application GUI for myPomodoro.
  * 
- * @author Brian Wetzel
+ * @author Brian Wetzel 
+ * @author Phil Karoo
  */
 public class MyPomodoroView extends JFrame {
 
     public static final int FRAME_WIDTH = 480;
     public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
+    public static final String MYPOMODORO_VERSION = "2.0";
     private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
     private final CreatePanel createPanel = new CreatePanel();
     private final ManagerPanel generatePanel = Main.generatePanel;
@@ -64,7 +66,7 @@ public class MyPomodoroView extends JFrame {
     }
 
     public MyPomodoroView() {
-        super("myPomodoro");
+        super("myPomodoro " + MYPOMODORO_VERSION);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(ImageIcons.MAIN_ICON.getImage());
         setJMenuBar(menuBar);
@@ -133,7 +135,7 @@ public class MyPomodoroView extends JFrame {
             add(new FileMenu(MyPomodoroView.this));
             add(new ViewMenu(MyPomodoroView.this));
             add(new TestMenu(MyPomodoroView.this));
-            add(new HelpMenu());
+            add(new HelpMenu(MyPomodoroView.this));
             setBorder(null);
         }
     }

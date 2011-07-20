@@ -29,7 +29,8 @@ import org.mypomodoro.model.ReportList;
 /**
  * GUI for viewing the Report List.
  * 
- * @author Brian Wetzel
+ * @author Brian Wetzel 
+ * @author Phil Karoo
  */
 public class ReportListPanel extends JPanel {
 

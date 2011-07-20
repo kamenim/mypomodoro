@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.mypomodoro.buttons.SaveButton;
-import org.mypomodoro.buttons.myButton;
+import org.mypomodoro.buttons.MyButton;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -23,7 +23,8 @@ import org.mypomodoro.model.ActivityList;
 /**
  * GUI for creating a new Activity and store to data layer.
  * 
- * @author Brian Wetzel
+ * @author Brian Wetzel 
+ * @author Phil Karoo
  */
 public class CreatePanel extends JPanel {
 
@@ -62,7 +63,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new myButton(ControlPanel.labels.getString("CreatePanel.Clear"));
+        JButton clearButton = new MyButton(ControlPanel.labels.getString("CreatePanel.Clear"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override

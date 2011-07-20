@@ -28,7 +28,8 @@ import org.mypomodoro.gui.ControlPanel;
  * This class just abstracts a JPanel for jlist and a information panel for the
  * items in the list.
  * 
- * @author nikolavp
+ * @author nikolavp 
+ * @author Phil Karoo
  * 
  */
 public class ListPane extends JPanel implements ActivityInformation {

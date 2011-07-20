@@ -11,7 +11,7 @@ import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import org.mypomodoro.buttons.myButton;
+import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.model.Preferences;
 import org.mypomodoro.util.Labels;
@@ -29,9 +29,9 @@ public class ControlPanel extends JPanel {
     public ControlPanel() {
         preferences.loadPreferences();
         labels = new Labels(new Locale(preferences.getLocale().getLanguage(), preferences.getLocale().getCountry(), preferences.getLocale().getVariant()));
-        saveButton = new myButton(labels.getString("Common.Save"));
+        saveButton = new MyButton(labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
-        resetButton = new myButton(labels.getString("PreferencesPanel.Reset"));
+        resetButton = new MyButton(labels.getString("PreferencesPanel.Reset"));
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
 
         setLayout(new GridBagLayout());
