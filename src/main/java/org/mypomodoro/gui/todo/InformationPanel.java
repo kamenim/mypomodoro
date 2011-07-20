@@ -13,7 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
-import org.mypomodoro.buttons.myButton;
+import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ControlPanel;
@@ -44,7 +44,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new myButton(ControlPanel.labels.getString("ToDoListPanel.Complete"));
+        JButton changeButton = new MyButton(ControlPanel.labels.getString("ToDoListPanel.Complete"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override

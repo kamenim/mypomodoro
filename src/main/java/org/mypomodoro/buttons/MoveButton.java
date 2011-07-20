@@ -12,10 +12,10 @@ import org.mypomodoro.model.Activity;
 
 /**
  * Move button
- * 
- * @author p.caroux
+ *   
+ * @author Phil Karoo
  */
-public class MoveButton extends myButton {
+public class MoveButton extends MyButton {
 
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 

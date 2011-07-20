@@ -31,7 +31,8 @@ import org.mypomodoro.model.Activity;
  * This class keeps the logic for setting a timer for a pomodoro and the
  * breaks after that.
  * 
- * @author nikolavp
+ * @author nikolavp 
+ * @author Phil Karoo
  * 
  */
 public class Pomodoro {

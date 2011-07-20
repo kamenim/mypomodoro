@@ -10,7 +10,7 @@ import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.model.ActivityList;
 
-public class DeleteAllButton extends myButton {
+public class DeleteAllButton extends MyButton {
 
     public DeleteAllButton(final JTable table) {
         super(ControlPanel.labels.getString("Common.DeleteAll"));

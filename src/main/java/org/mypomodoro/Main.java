@@ -1,9 +1,6 @@
 package org.mypomodoro;
 
-import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
@@ -19,12 +16,12 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.db.Database;
-import org.mypomodoro.util.Labels;
 
 /**
  * Main Application Starter
  * 
- * @author Brian Wetzel
+ * @author Brian Wetzel 
+ * @author Phil Karoo
  */
 public class Main {
 
@@ -78,10 +75,12 @@ public class Main {
     private static void setUpAndShowGui() {
         final MyPomodoroView gui = new MyPomodoroView();
         gui.setVisible(true);
+        /* Old fashion way to center the component onscreen
         Dimension screenSize = gui.getToolkit().getScreenSize();
         int w = (int) ( ( screenSize.getWidth() - gui.getSize().width ) / 2 );
         int h = (int) ( ( screenSize.getHeight() - gui.getSize().height ) / 2 );
-        gui.setLocation(w, h);
+        gui.setLocation(w, h);*/
+        gui.setLocationRelativeTo(null); // center the component onscreen 
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override

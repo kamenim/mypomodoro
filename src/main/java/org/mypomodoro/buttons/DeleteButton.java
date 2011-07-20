@@ -11,7 +11,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.model.ActivityList;
 
-public class DeleteButton extends myButton {
+public class DeleteButton extends MyButton {
 
     public DeleteButton(final JTable table) {
         super(ControlPanel.labels.getString("Common.Delete"));

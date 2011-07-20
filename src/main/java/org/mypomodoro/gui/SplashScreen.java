@@ -13,7 +13,7 @@ public class SplashScreen extends JPanel {
         setBackground(Color.white);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        JLabel title = new JLabel("myPomodoro");
+        JLabel title = new JLabel("");
         title.setFont(title.getFont().deriveFont(48f));
         title.setForeground(Color.red);
 

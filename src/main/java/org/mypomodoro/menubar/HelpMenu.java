@@ -1,6 +1,6 @@
 package org.mypomodoro.menubar;
 
-import org.mypomodoro.menubar.help.AboutView;
+import org.mypomodoro.menubar.help.AboutPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -11,11 +11,15 @@ import javax.swing.JTextField;
 import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.util.BareBonesBrowserLaunch;
+import org.mypomodoro.gui.MyPomodoroView;
 
 public class HelpMenu extends JMenu {
+    
+    private final MyPomodoroView view;
 
-    public HelpMenu() {
+    public HelpMenu(final MyPomodoroView view) {
         super(ControlPanel.labels.getString("MenuBar.Help"));
+        this.view = view;
         add(new HelpUserGuide());
         add(new HelpPomodoroTechnique());
         add(new HelpPomodoroCheatSheet());
@@ -104,8 +108,10 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AboutView frame = new AboutView(new JFrame(), ControlPanel.labels.getString("HelpMenu.About myPomodoro"));
-                frame.setVisible(true);
+                AboutPanel frame = new AboutPanel(new JFrame(), ControlPanel.labels.getString("HelpMenu.About myPomodoro"));
+                frame.setModal(true); // always on top                
+                frame.setLocationRelativeTo(view); // center component on top panel (MyPomodoroView)
+                frame.setVisible(true);               
             }
         }
     }
