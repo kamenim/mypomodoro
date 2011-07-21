@@ -67,19 +67,20 @@ public class TimerPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (pomodoro.getCurrentToDo() != null) {
-                    if (pomodoro.isCurrentToDoComplete()) {
-                        JFrame window = new JFrame();
-                        String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
-                        message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                        JOptionPane.showMessageDialog(window, message);
-                    } else {
-                        if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+                    if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+                        if (pomodoro.isCurrentToDoComplete()) {
+                            JFrame window = new JFrame();
+                            String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
+                            message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
+                            JOptionPane.showMessageDialog(window, message);
+                        } else {
                             pomodoro.start();
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
-                        } else if (pomodoro.stopWithWarning()) {
-                            startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         }
+                    } else if (pomodoro.stopWithWarning()) {
+                        startButton.setText(Labels.getString("ToDoListPanel.Start"));
                     }
+
                 }
             }
         });

@@ -62,10 +62,11 @@ public class ToDoListPanel extends JPanel {
                 } else if (toDoList.size() == 0) { // empty list                    
                     ToDoIconLabel.clearIconLabel(iconLabel);
                     unplannedPanel.clearForm();
-                    if (pomodoro.inPomodoro()) {
+                    if (pomodoro.inPomodoro()) { // completed or moved to Activity List
                         pomodoro.stop();
                         pomodoro.getTimerPanel().setStart();
                     }
+                    pomodoro.setCurrentToDo(null);
                 }
             }
         });

@@ -1,6 +1,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -73,7 +74,7 @@ public class Pomodoro {
             if (reply == JOptionPane.YES_OPTION) {
                 stop();
             }
-        } else {
+        } else { // breaks
             stop();
         }
         return !inpomodoro;
@@ -83,16 +84,17 @@ public class Pomodoro {
         pomodoroTimer.stop();
         time = pomodoroLength;
         pomodoroTime.setText(sdf.format(pomodoroLength));
-        inpomodoro = false;
         Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
         if (selectedToDo != null) { // not empty list
             ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
         }
         stopSound();
-        if (isSystemTray()) {
+        if (inPomodoro() && isSystemTray()) {
+            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
             MyPomodoroView.trayIcon.setToolTip(null);
             MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
+        inpomodoro = false;
     }
 
     class UpdateAction implements ActionListener {
@@ -112,10 +114,6 @@ public class Pomodoro {
             } else {
                 stopSound();
                 ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
-                if (isSystemTray()) {
-                    MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
-                    MyPomodoroView.trayIcon.setToolTip(null);
-                }
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
@@ -132,11 +130,13 @@ public class Pomodoro {
                         goInLongBreak();
                         pomSetNumber = 0;
                         if (isSystemTray()) {
+                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
                         }
                     } else {
                         goInShortBreak();
                         if (isSystemTray()) {
+                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
