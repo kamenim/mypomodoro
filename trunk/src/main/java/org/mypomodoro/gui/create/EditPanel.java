@@ -1,16 +1,13 @@
 package org.mypomodoro.gui.create;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import org.mypomodoro.gui.ControlPanel;
 
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.Labels;
 
 /**
  * GUI for editing a new Activity and store to data layer.
@@ -58,8 +55,8 @@ public class EditPanel extends CreatePanel {
             currentActivity.databaseUpdate();
             ActivityList.getList().update();
             JFrame window = new JFrame();
-            String title = ControlPanel.labels.getString("ActivityListPanel.Edit activity");
-            String message = ControlPanel.labels.getString("ActivityListPanel.Activity updated");
+            String title = Labels.getString("ActivityListPanel.Edit activity");
+            String message = Labels.getString("ActivityListPanel.Activity updated");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }
@@ -78,8 +75,8 @@ public class EditPanel extends CreatePanel {
     protected void invalidActivityAction() {
         if (ActivityList.getList().size() > 0) {
             JFrame window = new JFrame();
-            String title = ControlPanel.labels.getString("Common.Error");
-            String message = ControlPanel.labels.getString("Common.Title is mandatory");
+            String title = Labels.getString("Common.Error");
+            String message = Labels.getString("Common.Title is mandatory");
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
     }

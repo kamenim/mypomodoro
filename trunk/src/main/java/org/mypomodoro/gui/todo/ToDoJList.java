@@ -6,10 +6,10 @@ import java.util.Iterator;
 import javax.swing.JList;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.Labels;
 
 public class ToDoJList extends JList {
 
@@ -33,7 +33,7 @@ public class ToDoJList extends JList {
 
     public void init() {
         selectToDo();
-        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ToDoListPanel.ToDo List") + " (" + toDoList.getListSize() + ")"));
+        setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ToDoListPanel.ToDo List") + " (" + toDoList.getListSize() + ")"));
     }
 
     public void setSelectedRowIndex(int toDoId) {

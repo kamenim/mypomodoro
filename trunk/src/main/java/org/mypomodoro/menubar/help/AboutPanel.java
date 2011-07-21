@@ -22,6 +22,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
+import org.mypomodoro.util.Labels;
 
 /**
  * GUI for myPomodoro about menu.
@@ -96,7 +97,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 2;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        JButton checkButton = new JButton(ControlPanel.labels.getString("AboutPanel.Check for Updates"));
+        JButton checkButton = new JButton(Labels.getString("AboutPanel.Check for Updates"));
         checkButton.addActionListener(new ActionListener() {
 
             @Override
@@ -108,7 +109,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 3;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        String about = ControlPanel.labels.getString("AboutPanel.myPomodoro is a time management tool");
+        String about = Labels.getString("AboutPanel.myPomodoro is a time management tool");
         JTextArea aboutTextArea = new JTextArea();
         aboutTextArea.setEditable(false);
         aboutTextArea.setLineWrap(true);
@@ -121,7 +122,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 4;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        String credits = ControlPanel.labels.getString("AboutPanel.Credits");
+        String credits = Labels.getString("AboutPanel.Credits");
         JTextArea creditsTextArea = new JTextArea();
         creditsTextArea.setEditable(false);
         creditsTextArea.setLineWrap(true);
@@ -140,9 +141,9 @@ public class AboutPanel extends JDialog {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        String license = ControlPanel.labels.getString("AboutPanel.myPomodoro is open-source software");
-        license += "<br>" + ControlPanel.labels.getString("AboutPanel.All documentation and images are licensed");
-        license += "<br>" + ControlPanel.labels.getString("AboutPanel.Permissions beyond the scope of this license");
+        String license = Labels.getString("AboutPanel.myPomodoro is open-source software");
+        license += "<br>" + Labels.getString("AboutPanel.All documentation and images are licensed");
+        license += "<br>" + Labels.getString("AboutPanel.Permissions beyond the scope of this license");
         JEditorPane editorPane = new JEditorPane("text/html", license);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         editorPane.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize() - 4));

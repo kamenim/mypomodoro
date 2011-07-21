@@ -6,10 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 public class UnplannedPanel extends CreatePanel implements ActivityInformation {
 
@@ -85,14 +85,14 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
         }
         newActivity.setIsUnplanned(true);
         JFrame window = new JFrame();
-        String title = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity");
+        String title = Labels.getString("ToDoListPanel.Unplanned activity");
         String message = "";
         if (unplannedInputFormPanel.isDateToday()) {
-            message = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
+            message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
             panel.getToDoList().add(newActivity); // Today unplanned activity
             newActivity.databaseInsert();
         } else {
-            message = ControlPanel.labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
+            message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
             validation.setVisible(false);
             super.validActivityAction(newActivity);
         }
@@ -102,8 +102,8 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
     @Override
     protected void invalidActivityAction() {
         JFrame window = new JFrame();
-        String title = ControlPanel.labels.getString("Common.Error");
-        String message = ControlPanel.labels.getString("Common.Title is mandatory");
+        String title = Labels.getString("Common.Error");
+        String message = Labels.getString("Common.Title is mandatory");
         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
     }
 

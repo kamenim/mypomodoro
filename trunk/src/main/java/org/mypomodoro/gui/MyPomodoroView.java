@@ -2,16 +2,12 @@ package org.mypomodoro.gui;
 
 import java.awt.AWTException;
 import java.awt.Container;
-import java.awt.Font;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 
 import org.mypomodoro.Main;
@@ -75,47 +71,23 @@ public class MyPomodoroView extends JFrame {
         if (SystemTray.isSupported() && ControlPanel.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             SystemTray sysTray = SystemTray.getSystemTray();
-            PopupMenu menu = new PopupMenu();
-            JLabel openLabel = new JLabel(ControlPanel.labels.getString("SystemTrayMenu.OpenMyPomodoro"));
-            MenuItem open = new MenuItem(openLabel.getText());
-            open.setFont(new Font(openLabel.getFont().getName(), Font.BOLD, openLabel.getFont().getSize()));
-            open.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setVisible(true);
-                }
-            });            
-            menu.add(open);
-            menu.addSeparator();
-            MenuItem preferences = new MenuItem(ControlPanel.labels.getString("PreferencesPanel.Preferences") + "...");
-            preferences.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setWindow(new ControlPanel());
-                    setVisible(true);
-                }
-            });
-            menu.add(preferences);
-            menu.addSeparator();
-            MenuItem exit = new MenuItem(ControlPanel.labels.getString("SystemTrayMenu.ExitMyPomodoro"));
-            exit.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            });
-            menu.add(exit);            
-            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "", menu);
+            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "");
             trayIcon.setImageAutoSize(true);
+            trayIcon.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() > 0) { // single left click
+                        setVisible(!isVisible());
+                    }
+                }
+            });
             try {
                 sysTray.add(trayIcon);
             }
             catch (AWTException e) {
                 // do nothing
-            }            
+            }
         }
     }
 

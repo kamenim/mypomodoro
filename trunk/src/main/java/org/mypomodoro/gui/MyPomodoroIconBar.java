@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.util.Labels;
 
 public class MyPomodoroIconBar extends JPanel {
 
@@ -14,11 +15,11 @@ public class MyPomodoroIconBar extends JPanel {
     private MyIcon highlightedIcon;
 
     public MyPomodoroIconBar(MyPomodoroView view) {
-        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Create"), "createButton", view.getCreatePanel()));
-        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Activity"), "activityButton", view.getActivityListPanel()));
-        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Manager"), "managerButton", view.getGeneratePanel()));
-        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.ToDo"), "todoButton", view.getToDoListPanel()));
-        myIcons.add(MyIcon.getInstance(view, ControlPanel.labels.getString("IconBar.Report"), "reportButton", view.getReportListPanel()));
+        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.Create"), "createButton", view.getCreatePanel()));
+        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.Activity"), "activityButton", view.getActivityListPanel()));
+        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.Manager"), "managerButton", view.getGeneratePanel()));
+        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.ToDo"), "todoButton", view.getToDoListPanel()));
+        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.Report"), "reportButton", view.getReportListPanel()));
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(getWidth(), 80));

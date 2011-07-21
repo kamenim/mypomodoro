@@ -16,6 +16,7 @@ import javax.swing.border.TitledBorder;
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 public class ActivityInputForm extends JPanel {
 
@@ -49,7 +50,7 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected final void addForm(int gridy) {
-        final FormLabel dateLabel = new FormLabel(ControlPanel.labels.getString("Common.Date") + "*: ");
+        final FormLabel dateLabel = new FormLabel(Labels.getString("Common.Date") + "*: ");
         datePicker.setDate(new Date());
         c.gridx = 0;
         c.gridy = gridy;
@@ -65,7 +66,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Title") + "*: "), c);
+        add(new FormLabel(Labels.getString("Common.Title") + "*: "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -76,7 +77,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Estimated Pomodoros") + "*: "), c);
+        add(new FormLabel(Labels.getString("Common.Estimated Pomodoros") + "*: "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -92,7 +93,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Type") + ": "), c);
+        add(new FormLabel(Labels.getString("Common.Type") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -103,7 +104,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Author") + ": "), c);
+        add(new FormLabel(Labels.getString("Common.Author") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -115,7 +116,7 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         c.weightx = 0.0;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Place") + ": "), c);
+        add(new FormLabel(Labels.getString("Common.Place") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -128,7 +129,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("Common.Description") + ": "), c);
+        add(new FormLabel(Labels.getString("Common.Description") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;

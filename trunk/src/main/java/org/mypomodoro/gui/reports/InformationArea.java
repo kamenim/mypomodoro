@@ -14,8 +14,8 @@ import org.mypomodoro.buttons.DeleteAllReportButton;
 import org.mypomodoro.buttons.DeleteReportButton;
 
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Report
@@ -73,7 +73,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
-        String text = ControlPanel.labels.getString("Common.Date") + ": ";
+        String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
@@ -85,20 +85,20 @@ public class InformationArea extends JPanel implements ActivityInformation {
         format = new SimpleDateFormat(pattern);
         String timeDate = format.format(activity.getDate());
         text += " " + timeDate;
-        text += "\n" + ControlPanel.labels.getString("Common.Title") + ": " + activity.getName()
-                + "\n" + ControlPanel.labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
+        text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
+                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }
-        text += "\n" + ControlPanel.labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms()
-                + "\n" + ControlPanel.labels.getString("ReportListPanel.Diff I") + ": " + ( activity.getActualPoms() - activity.getEstimatedPoms() )
-                + "\n" + ControlPanel.labels.getString("ReportListPanel.Diff II") + ": " + ( activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "" )
-                + "\n" + ControlPanel.labels.getString("ReportListPanel.Internal Interruptions") + ": " + activity.getNumInternalInterruptions()
-                + "\n" + ControlPanel.labels.getString("ReportListPanel.External Interruptions") + ": " + activity.getNumInterruptions()
-                + "\n" + ControlPanel.labels.getString("Common.Type") + ": " + activity.getType()
-                + "\n" + ControlPanel.labels.getString("Common.Author") + ": " + activity.getAuthor()
-                + "\n" + ControlPanel.labels.getString("Common.Place") + ": " + activity.getPlace()
-                + "\n" + ControlPanel.labels.getString("Common.Description") + ": " + activity.getDescription();
+        text += "\n" + Labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms()
+                + "\n" + Labels.getString("ReportListPanel.Diff I") + ": " + ( activity.getActualPoms() - activity.getEstimatedPoms() )
+                + "\n" + Labels.getString("ReportListPanel.Diff II") + ": " + ( activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "" )
+                + "\n" + Labels.getString("ReportListPanel.Internal Interruptions") + ": " + activity.getNumInternalInterruptions()
+                + "\n" + Labels.getString("ReportListPanel.External Interruptions") + ": " + activity.getNumInterruptions()
+                + "\n" + Labels.getString("Common.Type") + ": " + activity.getType()
+                + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
+                + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace()
+                + "\n" + Labels.getString("Common.Description") + ": " + activity.getDescription();
         informationArea.setText(text);
     }
 

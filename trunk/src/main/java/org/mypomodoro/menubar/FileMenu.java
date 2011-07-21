@@ -12,13 +12,14 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.util.Labels;
 
 public class FileMenu extends JMenu {
 
     private final MyPomodoroView view;
 
     public FileMenu(final MyPomodoroView view) {
-        super(ControlPanel.labels.getString("MenuBar.File"));
+        super(Labels.getString("MenuBar.File"));
         this.view = view;
         add(new ControlPanelItem());
         add(new CreateActivityItem());
@@ -28,7 +29,7 @@ public class FileMenu extends JMenu {
     public class CreateActivityItem extends JMenuItem {
 
         public CreateActivityItem() {
-            super(ControlPanel.labels.getString("FileMenu.New Activity"));
+            super(Labels.getString("FileMenu.New Activity"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
             addActionListener(new MenuItemListener());
@@ -51,7 +52,7 @@ public class FileMenu extends JMenu {
     public class ExitItem extends JMenuItem {
 
         public ExitItem() {
-            super(ControlPanel.labels.getString("FileMenu.Exit"));
+            super(Labels.getString("FileMenu.Exit"));
             addActionListener(new MenuItemListener());
         }
 
@@ -67,7 +68,7 @@ public class FileMenu extends JMenu {
     class ControlPanelItem extends JMenuItem {
 
         public ControlPanelItem() {
-            super(ControlPanel.labels.getString("FileMenu.Preferences"));
+            super(Labels.getString("FileMenu.Preferences"));
             // Adds Keyboard Shortcut Alt-P
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                     ActionEvent.ALT_MASK));

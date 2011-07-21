@@ -2,13 +2,13 @@ package org.mypomodoro.gui.todo;
 
 import org.mypomodoro.gui.create.*;
 import javax.swing.JComboBox;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.util.Labels;
 
 public class UnplannedActivityInputForm extends ActivityInputForm {
 
     protected JComboBox interruptions = new JComboBox();
-    protected final String internal = ControlPanel.labels.getString("ToDoListPanel.Internal");
-    protected final String external = ControlPanel.labels.getString("ToDoListPanel.External");
+    protected final String internal = Labels.getString("ToDoListPanel.Internal");
+    protected final String external = Labels.getString("ToDoListPanel.External");
 
     public UnplannedActivityInputForm() {
         super(1);
@@ -20,7 +20,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        add(new FormLabel(ControlPanel.labels.getString("ToDoListPanel.Interruption") + ": "), c);
+        add(new FormLabel(Labels.getString("ToDoListPanel.Interruption") + ": "), c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;

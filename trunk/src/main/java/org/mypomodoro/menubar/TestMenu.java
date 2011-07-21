@@ -12,11 +12,12 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.db.ActivitiesDAO;
 import java.util.Date;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.util.Labels;
 
 public class TestMenu extends JMenu {
 
     public TestMenu(final MyPomodoroView view) {
-        super(ControlPanel.labels.getString("MenuBar.Data"));
+        super(Labels.getString("MenuBar.Data"));
         add(new ResetDataItem(view));
         add(new TestDataItem(view));
     }
@@ -25,7 +26,7 @@ public class TestMenu extends JMenu {
     class ResetDataItem extends JMenuItem {
 
         public ResetDataItem(final MyPomodoroView view) {
-            super(ControlPanel.labels.getString("DataMenu.Clear All Data"));
+            super(Labels.getString("DataMenu.Clear All Data"));
             addActionListener(new ActionListener() {
 
                 @Override
@@ -81,7 +82,7 @@ public class TestMenu extends JMenu {
         }
 
         public TestDataItem(final MyPomodoroView view) {
-            super(ControlPanel.labels.getString("DataMenu.Populate Test Data"));
+            super(Labels.getString("DataMenu.Populate Test Data"));
             addActionListener(new ActionListener() {
 
                 @Override

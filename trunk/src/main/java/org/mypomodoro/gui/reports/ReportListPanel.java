@@ -21,10 +21,10 @@ import javax.swing.table.TableModel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.Labels;
 
 /**
  * GUI for viewing the Report List.
@@ -35,8 +35,8 @@ import org.mypomodoro.model.ReportList;
 public class ReportListPanel extends JPanel {
 
     private final JTable table = new JTable(getTableModel());
-    private final static String[] columnNames = {"U", ControlPanel.labels.getString("Common.Date"), ControlPanel.labels.getString("ReportListPanel.Time"), ControlPanel.labels.getString("Common.Title"),
-        ControlPanel.labels.getString("ReportListPanel.Estimated"), ControlPanel.labels.getString("ReportListPanel.Real"), ControlPanel.labels.getString("ReportListPanel.Diff I"), ControlPanel.labels.getString("ReportListPanel.Diff II"), ControlPanel.labels.getString("Common.Type"), "ID"};
+    private final static String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("ReportListPanel.Time"), Labels.getString("Common.Title"),
+        Labels.getString("ReportListPanel.Estimated"), Labels.getString("ReportListPanel.Real"), Labels.getString("ReportListPanel.Diff I"), Labels.getString("ReportListPanel.Diff II"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 9;
     private int selectedRowIndex = 0;
 
@@ -68,9 +68,9 @@ public class ReportListPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane controlPane = new JTabbedPane();
         InformationArea informationArea = new InformationArea(table);
-        controlPane.add(ControlPanel.labels.getString("Common.Details"), informationArea);
+        controlPane.add(Labels.getString("Common.Details"), informationArea);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(ControlPanel.labels.getString("Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
@@ -178,7 +178,7 @@ public class ReportListPanel extends JPanel {
             }
             table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
-        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
+        setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
     }
 
     public void saveComment(String comment) {
@@ -189,8 +189,8 @@ public class ReportListPanel extends JPanel {
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
                 JFrame window = new JFrame();
-                String title = ControlPanel.labels.getString("Common.Add comment");
-                String message = ControlPanel.labels.getString("Common.Comment saved");
+                String title = Labels.getString("Common.Add comment");
+                String message = Labels.getString("Common.Comment saved");
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
         }

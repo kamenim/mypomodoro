@@ -6,14 +6,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.Labels;
 
 public class DeleteAllButton extends MyButton {
 
     public DeleteAllButton(final JTable table) {
-        super(ControlPanel.labels.getString("Common.DeleteAll"));
+        super(Labels.getString("Common.DeleteAll"));
         addActionListener(new ActionListener() {
 
             @Override
@@ -21,8 +21,8 @@ public class DeleteAllButton extends MyButton {
                 int rowCount = table.getRowCount();
                 if (rowCount > 0) {
                     JFrame window = new JFrame();
-                    String title = ControlPanel.labels.getString("ActivityListPanel.Delete all activities");
-                    String message = ControlPanel.labels.getString("ActivityListPanel.Are you sure to delete all activities?");
+                    String title = Labels.getString("ActivityListPanel.Delete all activities");
+                    String message = Labels.getString("ActivityListPanel.Are you sure to delete all activities?");
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivityList.getList().removeAll();
