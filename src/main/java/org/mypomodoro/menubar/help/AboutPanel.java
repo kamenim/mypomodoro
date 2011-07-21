@@ -1,13 +1,12 @@
 package org.mypomodoro.menubar.help;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -43,7 +42,7 @@ public class AboutPanel extends JDialog {
         setResizable(false);
 
         JPanel about = new JPanel();
-        about.setLayout(new BorderLayout());
+        about.setLayout(new GridBagLayout());
         about.setOpaque(true);
         add(about);
 
@@ -60,9 +59,8 @@ public class AboutPanel extends JDialog {
     private void addmyPomodoroImage() {
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.2;
         gbc.weighty = 1.0;
-        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
         JLabel backgroundImage = new JLabel(new ImageIcon(Main.class.getResource("/images/pomodoroTechniqueAbout.png")));
         JPanel panel = new JPanel();
@@ -74,31 +72,33 @@ public class AboutPanel extends JDialog {
     private void addAbout() {
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.weightx = 1.0;
+        gbc.weightx = 0.8;
         gbc.weighty = 1.0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;        
-        //JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        gbc.fill = GridBagConstraints.BOTH;
         JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS); // left alignment
+        panel.setLayout(layout);
         panel.setBackground(Color.WHITE);
-                
-        GridBagConstraints gbcpanel = new GridBagConstraints();        
+
+        GridBagConstraints gbcpanel = new GridBagConstraints();
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JLabel title = new JLabel("myPomodoro");
-        title.setFont(new Font(title.getFont().getName(), Font.BOLD, title.getFont().getSize() + 20));
+        title.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD, new JLabel().getFont().getSize() + 24));
         panel.add(title, gbcpanel);
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 1;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        panel.add(new JLabel(MyPomodoroView.MYPOMODORO_VERSION), gbcpanel);
+        JLabel version = new JLabel(MyPomodoroView.MYPOMODORO_VERSION);
+        version.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize() + 2));
+        panel.add(version, gbcpanel);
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 2;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        JButton checkButton = new JButton("Check for Updates");        
+        JButton checkButton = new JButton(ControlPanel.labels.getString("AboutPanel.Check for Updates"));
         checkButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/downloads/list");
@@ -108,28 +108,41 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 3;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        String about = "myPomodoro is a time management tool based upon the time management technique called the Pomodoro Technique® by Francesco Cirillo. The objectives of this software are to automate all the materials and methods used in the Pomodoro Technique®, which are otherwise preformed manually.";
-        JTextArea jTextArea = new JTextArea();
-        jTextArea.setEditable(false); 
-        jTextArea.setLineWrap(true); 
-        jTextArea.setWrapStyleWord(true);
-        jTextArea.setText(about);
-        jTextArea.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize()));
-        panel.add(jTextArea, gbcpanel);
-        
+        String about = ControlPanel.labels.getString("AboutPanel.myPomodoro is a time management tool");
+        JTextArea aboutTextArea = new JTextArea();
+        aboutTextArea.setEditable(false);
+        aboutTextArea.setLineWrap(true);
+        aboutTextArea.setWrapStyleWord(true);
+        aboutTextArea.setText(about);
+        aboutTextArea.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize()));
+        aboutTextArea.setOpaque(false);
+        aboutTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
+        panel.add(aboutTextArea, gbcpanel);
+        gbcpanel.gridx = 0;
+        gbcpanel.gridy = 4;
+        gbcpanel.fill = GridBagConstraints.BOTH;
+        String credits = ControlPanel.labels.getString("AboutPanel.Credits");
+        JTextArea creditsTextArea = new JTextArea();
+        creditsTextArea.setEditable(false);
+        creditsTextArea.setLineWrap(true);
+        creditsTextArea.setWrapStyleWord(true);
+        creditsTextArea.setText(credits);
+        creditsTextArea.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize()));
+        creditsTextArea.setOpaque(false);
+        creditsTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
+        panel.add(creditsTextArea, gbcpanel);
+
         add(panel, gbc);
     }
 
     private void addLicence() {
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        String license = "myPomodoro is open-source software, licensed under the <a href=\"http://www.gnu.org/licenses/lgpl.html\">GNU Lesser General Public License</a> (LGPL).";
-        license += "<br>All documentation and images are licensed under a <a href=\"http://creativecommons.org/licenses/by-nc-sa/3.0/us/\">Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States License</a>.";
-        license += "<br>Permissions beyond the scope of this license may be available at <a href=\"https://code.google.com/p/mypomodoro/\">https://code.google.com/p/mypomodoro/</a> by contacting one of the project owners.";
+        String license = ControlPanel.labels.getString("AboutPanel.myPomodoro is open-source software");
+        license += "<br>" + ControlPanel.labels.getString("AboutPanel.All documentation and images are licensed");
+        license += "<br>" + ControlPanel.labels.getString("AboutPanel.Permissions beyond the scope of this license");
         JEditorPane editorPane = new JEditorPane("text/html", license);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         editorPane.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize() - 4));
