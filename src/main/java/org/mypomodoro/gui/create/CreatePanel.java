@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.buttons.MyButton;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.Labels;
 
 /**
  * GUI for creating a new Activity and store to data layer.
@@ -63,7 +63,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new MyButton(ControlPanel.labels.getString("CreatePanel.Clear"));
+        JButton clearButton = new MyButton(Labels.getString("CreatePanel.Clear"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override
@@ -94,7 +94,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         newActivity.databaseInsert();
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(ControlPanel.labels.getString("CreatePanel.Activity {0} added to Activity List", newActivity.getName()));
+        validation.setText(Labels.getString("CreatePanel.Activity {0} added to Activity List", newActivity.getName()));
     }
 
     public void saveActivity(Activity newActivity) {
@@ -102,8 +102,8 @@ public class CreatePanel extends JPanel {
             invalidActivityAction();
         } else if (newActivity.alreadyExists()) {
             JFrame window = new JFrame();
-            String title = ControlPanel.labels.getString("Common.Warning");
-            String message = ControlPanel.labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
+            String title = Labels.getString("Common.Warning");
+            String message = Labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 validActivityAction(newActivity);
@@ -116,7 +116,7 @@ public class CreatePanel extends JPanel {
     protected void invalidActivityAction() {
         validation.setForeground(Color.red);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(ControlPanel.labels.getString("Common.Title is mandatory"));
+        validation.setText(Labels.getString("Common.Title is mandatory"));
     }
 
     public ActivityInputForm getFormPanel() {

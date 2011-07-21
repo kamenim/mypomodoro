@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.mypomodoro.util.Labels;
 
 public class TimerValueSlider extends JPanel {
 
@@ -32,9 +33,9 @@ public class TimerValueSlider extends JPanel {
                 int sliderValue = getSliderValue();
                 setSliderColor(recommendedMin, recommendedMax);
                 if (sliderValue == 1) {
-                    text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minute") : ControlPanel.labels.getString("PreferencesPanel.pomodoro");
+                    text = unit == 0 ? Labels.getString("PreferencesPanel.minute") : Labels.getString("PreferencesPanel.pomodoro");
                 } else {
-                    text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minutes") : ControlPanel.labels.getString("PreferencesPanel.pomodoros");
+                    text = unit == 0 ? Labels.getString("PreferencesPanel.minutes") : Labels.getString("PreferencesPanel.pomodoros");
                 }
                 label.setText(" " + sliderValue + " " + text);
                 controlPanel.enableSaveButton();
@@ -45,9 +46,9 @@ public class TimerValueSlider extends JPanel {
         c.gridx = 2;
         int sliderValue = slider.getValue();
         if (sliderValue == 1) {
-            text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minute") : ControlPanel.labels.getString("PreferencesPanel.pomodoro");
+            text = unit == 0 ? Labels.getString("PreferencesPanel.minute") : Labels.getString("PreferencesPanel.pomodoro");
         } else {
-            text = unit == 0 ? ControlPanel.labels.getString("PreferencesPanel.minutes") : ControlPanel.labels.getString("PreferencesPanel.pomodoros");
+            text = unit == 0 ? Labels.getString("PreferencesPanel.minutes") : Labels.getString("PreferencesPanel.pomodoros");
         }
         label.setText(" " + sliderValue + " " + text);
         add(label, c);

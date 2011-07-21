@@ -6,10 +6,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.Labels;
 
 /**
  *
@@ -18,7 +18,7 @@ import org.mypomodoro.model.ReportList;
 public class DeleteReportButton extends MyButton {
 
     public DeleteReportButton(final JTable table) {
-        super(ControlPanel.labels.getString("Common.Delete"));
+        super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
 
             @Override
@@ -26,8 +26,8 @@ public class DeleteReportButton extends MyButton {
                 int row = table.getSelectedRow();
                 if (row > -1) {
                     JFrame window = new JFrame();
-                    String title = ControlPanel.labels.getString("ReportListPanel.Delete report");
-                    String message = ControlPanel.labels.getString("ReportListPanel.Are you sure to delete this report?");
+                    String title = Labels.getString("ReportListPanel.Delete report");
+                    String message = Labels.getString("ReportListPanel.Are you sure to delete this report?");
                     int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         Integer id = (Integer) table.getModel().getValueAt(row, ReportListPanel.ID_KEY);

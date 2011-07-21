@@ -16,8 +16,8 @@ import javax.swing.text.DefaultCaret;
 import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Pomodoro...this should be
@@ -44,7 +44,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new MyButton(ControlPanel.labels.getString("ToDoListPanel.Complete"));
+        JButton changeButton = new MyButton(Labels.getString("ToDoListPanel.Complete"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override
@@ -86,7 +86,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(activity.getDate());
-        String text = ControlPanel.labels.getString("Common.Date") + ": ";
+        String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
@@ -94,10 +94,10 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         if (activity.isUnplanned()) {
             text += "]";
         }
-        text += "\n" + ControlPanel.labels.getString("Common.Type") + ": " + activity.getType()
-                + "\n" + ControlPanel.labels.getString("Common.Author") + ": " + activity.getAuthor()
-                + "\n" + ControlPanel.labels.getString("Common.Place") + ": " + activity.getPlace()
-                + "\n" + ControlPanel.labels.getString("Common.Description") + ": " + activity.getDescription();
+        text += "\n" + Labels.getString("Common.Type") + ": " + activity.getType()
+                + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
+                + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace()
+                + "\n" + Labels.getString("Common.Description") + ": " + activity.getDescription();
         informationArea.setText(text);
     }
 

@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.util.Labels;
 
 /**
  * 
@@ -31,10 +32,9 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox ringingBox;
     protected final JComboBox localesComboBox;
     protected final JCheckBox systemTrayBox;
-    protected final JCheckBox systemTrayMessageBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
-        setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("PreferencesPanel.Preferences")));
+        setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences")));
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
@@ -45,14 +45,14 @@ public class PreferencesInputForm extends JPanel {
 
         int unitMinute = 0;
         int unitPomodoro = 1;
-        pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45, ControlPanel.preferences.getPomodoroLength(), ControlPanel.labels.getString("PreferencesPanel.Pomodoro Length") + ": ", 25, 30, unitMinute);
-        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10, ControlPanel.preferences.getShortBreakLength(), ControlPanel.labels.getString("PreferencesPanel.Short Break Length") + ": ", 3, 5, unitMinute);
-        longBreakSlider = new TimerValueSlider(controlPanel, 5, 45, ControlPanel.preferences.getLongBreakLength(), ControlPanel.labels.getString("PreferencesPanel.Long Break Length") + ": ", 15, 30, unitMinute);
-        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, 7, ControlPanel.preferences.getMaxNbPomPerActivity(), ControlPanel.labels.getString("PreferencesPanel.Max nb pom/activity") + ": ", 1, 5, unitPomodoro);
-        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12, ControlPanel.preferences.getMaxNbPomPerDay(), ControlPanel.labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1, 10, unitPomodoro);
-        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), ControlPanel.labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4, unitPomodoro);
-        tickingBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.ticking"), ControlPanel.preferences.getTicking());
-        ringingBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.ringing"), ControlPanel.preferences.getRinging());
+        pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45, ControlPanel.preferences.getPomodoroLength(), Labels.getString("PreferencesPanel.Pomodoro Length") + ": ", 25, 30, unitMinute);
+        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10, ControlPanel.preferences.getShortBreakLength(), Labels.getString("PreferencesPanel.Short Break Length") + ": ", 3, 5, unitMinute);
+        longBreakSlider = new TimerValueSlider(controlPanel, 5, 45, ControlPanel.preferences.getLongBreakLength(), Labels.getString("PreferencesPanel.Long Break Length") + ": ", 15, 30, unitMinute);
+        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, 7, ControlPanel.preferences.getMaxNbPomPerActivity(), Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ", 1, 5, unitPomodoro);
+        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12, ControlPanel.preferences.getMaxNbPomPerDay(), Labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1, 10, unitPomodoro);
+        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5, ControlPanel.preferences.getNbPomPerSet(), Labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4, unitPomodoro);
+        tickingBox = new JCheckBox(Labels.getString("PreferencesPanel.ticking"), ControlPanel.preferences.getTicking());
+        ringingBox = new JCheckBox(Labels.getString("PreferencesPanel.ringing"), ControlPanel.preferences.getRinging());
         tickingBox.addActionListener(new ActionListener() {
 
             @Override
@@ -84,28 +84,13 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
-        systemTrayBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.System Tray"), ControlPanel.preferences.getSystemTray());
-        systemTrayMessageBox = new JCheckBox(ControlPanel.labels.getString("PreferencesPanel.Popup message"), ControlPanel.preferences.getSystemTrayMessage());
+        systemTrayBox = new JCheckBox(Labels.getString("PreferencesPanel.System Tray"), ControlPanel.preferences.getSystemTray());
         systemTrayBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
-                if (!systemTrayBox.isSelected()) {
-                    systemTrayMessageBox.setSelected(false);
-                }
-            }
-        });
-        systemTrayMessageBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                controlPanel.enableSaveButton();
-                controlPanel.clearValidation();
-                if (systemTrayMessageBox.isSelected()) {
-                    systemTrayBox.setSelected(true);                    
-                }
             }
         });
 
@@ -173,9 +158,6 @@ public class PreferencesInputForm extends JPanel {
         gbcSystemTray.gridx = 0;
         gbcSystemTray.gridy = 0;
         systemTray.add(systemTrayBox, gbcSystemTray);
-        gbcSystemTray.gridx = 1;
-        gbcSystemTray.gridy = 0;
-        systemTray.add(systemTrayMessageBox, gbcSystemTray);
         add(systemTray, gbc);
     }
 }

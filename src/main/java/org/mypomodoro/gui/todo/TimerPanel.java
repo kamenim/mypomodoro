@@ -17,13 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
 
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final JButton startButton = new JButton(ControlPanel.labels.getString("ToDoListPanel.Start"));
+    private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime) {
         try {
@@ -69,15 +69,15 @@ public class TimerPanel extends JPanel {
                 if (pomodoro.getCurrentToDo() != null) {
                     if (pomodoro.isCurrentToDoComplete()) {
                         JFrame window = new JFrame();
-                        String message = ControlPanel.labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
-                        message += "\n(" + ControlPanel.labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
+                        String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
+                        message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                         JOptionPane.showMessageDialog(window, message);
                     } else {
-                        if (ControlPanel.labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+                        if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
                             pomodoro.start();
-                            startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Stop"));
+                            startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                         } else if (pomodoro.stopWithWarning()) {
-                            startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Start"));
+                            startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         }
                     }
                 }
@@ -88,6 +88,6 @@ public class TimerPanel extends JPanel {
     }
 
     public void setStart() {
-        startButton.setText(ControlPanel.labels.getString("ToDoListPanel.Start"));
+        startButton.setText(Labels.getString("ToDoListPanel.Start"));
     }
 }
