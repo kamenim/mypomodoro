@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Iterator;
@@ -7,7 +8,6 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -15,6 +15,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -36,7 +40,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ActivitiesPanel extends JPanel {
 
-    JTable table = new JTable(getTableModel());
+    JXTable table = new JXTable(getTableModel());
     private static final String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("Common.Title"), Labels.getString("Common.Estimated Pomodoros"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
     private int selectedRowIndex = 0;
@@ -46,7 +50,7 @@ public class ActivitiesPanel extends JPanel {
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         addActivitiesTable(gbc);
         addTabPane(gbc);
     }
@@ -58,7 +62,7 @@ public class ActivitiesPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(table), gbc);
-        
+
         recordSelectedRowId();
     }
 
@@ -74,7 +78,7 @@ public class ActivitiesPanel extends JPanel {
         JScrollPane editPane = new JScrollPane(edit);
         controlPane.add(Labels.getString("ActivityListPanel.Edit"), editPane);
         add(controlPane, gbc);
-        
+
         showSelectedItemDetails(detailsPane);
         showSelectedItemEdit(edit);
     }
@@ -167,6 +171,8 @@ public class ActivitiesPanel extends JPanel {
             }
             table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
+        table.setColumnControlVisible(true); // add swingx button on upper right hand corner of the table
+        table.setHighlighters(HighlighterFactory.createSimpleStriping()); // add swingx row hightligher
         setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ActivityListPanel.Activity List") + " (" + ActivityList.getListSize() + ")"));
     }
 }
