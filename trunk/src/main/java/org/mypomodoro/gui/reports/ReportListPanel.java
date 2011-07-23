@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -18,6 +17,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -34,7 +35,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ReportListPanel extends JPanel {
 
-    private final JTable table = new JTable(getTableModel());
+    private final JXTable table = new JXTable(getTableModel());
     private final static String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("ReportListPanel.Time"), Labels.getString("Common.Title"),
         Labels.getString("ReportListPanel.Estimated"), Labels.getString("ReportListPanel.Real"), Labels.getString("ReportListPanel.Diff I"), Labels.getString("ReportListPanel.Diff II"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 9;
@@ -178,6 +179,8 @@ public class ReportListPanel extends JPanel {
             }
             table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
+        table.setColumnControlVisible(true); // add swingx button on upper right hand corner of the table
+        table.setHighlighters(HighlighterFactory.createSimpleStriping()); // add swingx row hightligher
         setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
     }
 
