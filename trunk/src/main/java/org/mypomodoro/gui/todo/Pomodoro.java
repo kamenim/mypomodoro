@@ -145,6 +145,8 @@ public class Pomodoro {
                     if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
+                        MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Complete"), TrayIcon.MessageType.NONE);
+                        MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Complete"));
                     } else {
                         tick();
                         inpomodoro = true;
