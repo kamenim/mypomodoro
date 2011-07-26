@@ -278,6 +278,11 @@ public class Activity {
         this.date = date;
         databaseUpdate();
     }
+    
+    public void setName(String name) {
+        this.name = name;
+        databaseUpdate();
+    }
 
     /**
      * Determines if the activity contains valid data. Stores an ArrayList of

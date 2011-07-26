@@ -34,7 +34,7 @@ public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if (rowIndex >= 0) {
+        if (rowIndex >= 0 && getRowCount() > 0) {
             return tableData[rowIndex][columnIndex];
         } else {
             return null;
@@ -48,7 +48,7 @@ public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
+        return getValueAt(0, c)!=null?getValueAt(0, c).getClass():null;
     }
 
     @Override
