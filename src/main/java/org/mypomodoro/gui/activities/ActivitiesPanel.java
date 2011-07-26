@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.activities;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Iterator;
@@ -8,17 +7,17 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.ColorHighlighter;
-import org.jdesktop.swingx.decorator.HighlightPredicate;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.mypomodoro.db.ActivitiesDAO;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -40,7 +39,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ActivitiesPanel extends JPanel {
 
-    JXTable table = new JXTable(getTableModel());
+    JTable table = new JTable(getTableModel());
     private static final String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("Common.Title"), Labels.getString("Common.Estimated Pomodoros"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
     private int selectedRowIndex = 0;
@@ -84,7 +83,7 @@ public class ActivitiesPanel extends JPanel {
     }
 
     private static TableModel getTableModel() {
-        return new AbstractActivitiesTableModel(columnNames, ActivityList.getList()) {
+        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(columnNames, ActivityList.getList()) {
 
             @Override
             protected void populateData(AbstractActivities activities) {
@@ -106,7 +105,35 @@ public class ActivitiesPanel extends JPanel {
                     tableData[i][5] = a.getId();
                 }
             }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                if (columnIndex == 2 || columnIndex == 4) { // Title, Type columns editable
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         };
+
+        tableModel.addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                TableModel model = (TableModel) e.getSource();
+                String columnName = model.getColumnName(column);
+                Object data = model.getValueAt(row, column);
+                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                if (columnName.equals(Labels.getString("Common.Title"))) {
+                    Activity aa = ActivitiesDAO.getInstance().getActivity(ID.intValue());
+                    aa.setName((String) data);
+                }
+            }
+        });
+
+        return tableModel;
     }
 
     private void recordSelectedRowId() {
@@ -171,8 +198,6 @@ public class ActivitiesPanel extends JPanel {
             }
             table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
         }
-        table.setColumnControlVisible(true); // add swingx button on upper right hand corner of the table
-        table.setHighlighters(HighlighterFactory.createSimpleStriping()); // add swingx row hightligher
         setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ActivityListPanel.Activity List") + " (" + ActivityList.getListSize() + ")"));
     }
 }

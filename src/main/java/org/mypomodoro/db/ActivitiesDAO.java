@@ -235,4 +235,34 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
+    
+    public Activity getActivity(int ID) {
+        database.lock();
+        Activity activity = null;
+        try {
+            ResultSet rs = database.query("SELECT * FROM activities "
+                    + "WHERE priority = -1 AND is_complete = 'false'"
+                    + "AND id = " + ID + ";");
+            try {
+                while (rs.next()) {
+                    activity = new Activity(rs);
+                }
+            }
+            catch (SQLException e) {
+                System.err.println(e);
+            }
+            finally {
+                try {
+                    rs.close();
+                }
+                catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        }
+        finally {
+            database.unlock();
+        }
+        return activity;
+    }
 }
