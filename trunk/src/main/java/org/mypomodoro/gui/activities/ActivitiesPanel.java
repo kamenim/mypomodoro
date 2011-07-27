@@ -108,7 +108,7 @@ public class ActivitiesPanel extends JPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex == 2 || columnIndex == 4) { // Title, Type columns editable
+                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) { // make Title and Type columns editable
                     return true;
                 } else {
                     return false;
@@ -126,10 +126,14 @@ public class ActivitiesPanel extends JPanel {
                 String columnName = model.getColumnName(column);
                 Object data = model.getValueAt(row, column);
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                if (columnName.equals(Labels.getString("Common.Title"))) {
-                    Activity aa = ActivitiesDAO.getInstance().getActivity(ID.intValue());
-                    aa.setName((String) data);
+                Activity act = ActivitiesDAO.getInstance().getActivity(ID.intValue());
+                String sData = (String) data;
+                if (columnName.equals(columnNames[ID_KEY - 3]) && sData.length() > 0) { // Title (cannot be empty)
+                    act.setName(sData);
+                } else if (columnName.equals(columnNames[ID_KEY - 1])) { // Type
+                    act.setType(sData);
                 }
+                ActivityList.getList().update(); // always refresh list
             }
         });
 

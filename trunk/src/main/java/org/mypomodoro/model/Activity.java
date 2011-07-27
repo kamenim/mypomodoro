@@ -283,6 +283,11 @@ public class Activity {
         this.name = name;
         databaseUpdate();
     }
+    
+    public void setType(String type) {
+        this.type = type;
+        databaseUpdate();
+    }
 
     /**
      * Determines if the activity contains valid data. Stores an ArrayList of

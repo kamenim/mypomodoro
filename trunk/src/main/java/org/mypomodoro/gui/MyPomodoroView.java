@@ -71,7 +71,7 @@ public class MyPomodoroView extends JFrame {
         if (SystemTray.isSupported() && ControlPanel.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             SystemTray sysTray = SystemTray.getSystemTray();
-            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "");
+            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "myPomodoro");
             trayIcon.setImageAutoSize(true);
             trayIcon.addMouseListener(new MouseAdapter() {
 
