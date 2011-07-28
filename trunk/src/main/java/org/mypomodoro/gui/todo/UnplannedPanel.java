@@ -85,7 +85,7 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
         }
         newActivity.setIsUnplanned(true);
         JFrame window = new JFrame();
-        String title = Labels.getString("ToDoListPanel.Unplanned activity");
+        String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message = "";
         if (unplannedInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
