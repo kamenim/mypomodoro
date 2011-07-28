@@ -92,7 +92,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
                 ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
             }
             JFrame window = new JFrame();
-            String title = Labels.getString("ToDoListPanel.Overestimation");
+            String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString("ToDoListPanel.Nb of estimated pomodoros increased by {0}", overestimatedPomodoros);
             JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
         }
