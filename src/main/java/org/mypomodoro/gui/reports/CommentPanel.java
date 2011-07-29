@@ -17,8 +17,8 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 /**
- * Panel that displays description on the current Pomodoro and
- * allows editing it as a comment
+ * Panel that displays comment on the current Report and
+ * allows editing it
  *
  * @author Phil Karoo
  */

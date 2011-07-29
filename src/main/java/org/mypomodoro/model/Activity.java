@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
 import java.text.SimpleDateFormat;
-import org.mypomodoro.gui.ControlPanel;
 
 /**
  * Activity Objects stores all the required information about tasks in the
@@ -90,10 +89,6 @@ public class Activity {
      * Internal interruptions
      */
     private int numInternalInterruptions = 0;
-    /**
-     * Maximim number of pomodoros for an activity
-     */
-    public static final int MAX_POMODOROS = ControlPanel.preferences.getMaxNbPomPerActivity();
 
     /**
      * Default Constructor
@@ -123,6 +118,11 @@ public class Activity {
 
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms, Date dateActivity, int activityId) {
+        this(place, author, name, description, type, estimatedPoms, dateActivity, false, activityId);
+    }
+
+    public Activity(String place, String author, String name,
+            String description, String type, int estimatedPoms, Date dateActivity, boolean isCompleted, int activityId) {
         this.place = place;
         this.date = new Date();
         this.author = author;
@@ -131,6 +131,7 @@ public class Activity {
         this.type = type;
         this.estimatedPoms = estimatedPoms;
         this.date = dateActivity;
+        this.isCompleted = isCompleted;
         this.id = activityId > 0 ? activityId : this.id;
     }
 
@@ -278,12 +279,12 @@ public class Activity {
         this.date = date;
         databaseUpdate();
     }
-    
+
     public void setName(String name) {
         this.name = name;
         databaseUpdate();
     }
-    
+
     public void setType(String type) {
         this.type = type;
         databaseUpdate();
@@ -299,11 +300,11 @@ public class Activity {
      * @return true if valid
      */
     public boolean isValid() {
-        return !name.isEmpty() && validNumberOfPomodoros();
+        return !name.isEmpty() && validNumberOfPomodoros() && date != null;
     }
 
     private boolean validNumberOfPomodoros() {
-        return this.estimatedPoms > 0 && this.estimatedPoms <= MAX_POMODOROS;
+        return estimatedPoms > 0;
     }
 
     public void databaseInsert() {

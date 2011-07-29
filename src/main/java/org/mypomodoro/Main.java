@@ -51,6 +51,10 @@ public class Main {
         ToDoList.getList().refresh();
         ReportList.getList().refresh();
     }
+    
+    public static void updateActivityList() {
+        ActivityList.getList().refresh();
+    }
 
     /**
      * @param args

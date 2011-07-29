@@ -44,9 +44,9 @@ public class EditPanel extends CreatePanel {
     @Override
     protected void addClearButton() {
     }
-    
+
     @Override
-    protected void addValidation() {    
+    protected void addValidation() {
     }
 
     @Override
@@ -81,6 +81,7 @@ public class EditPanel extends CreatePanel {
         }
     }
 
+    @Override
     public void fillOutInputForm(Activity activity) {
         inputFormPanel.setPlaceField(activity.getPlace());
         inputFormPanel.setAuthorField(activity.getAuthor());

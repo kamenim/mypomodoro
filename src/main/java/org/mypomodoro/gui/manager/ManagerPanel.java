@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.Labels;
 
 /**
  * 
@@ -20,8 +21,8 @@ public class ManagerPanel extends JPanel {
 
     public ManagerPanel() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        activitiesPane = new ListPane(activityList, org.mypomodoro.gui.ControlPanel.labels.getString("ActivityListPanel.Activity List"));
-        todoPane = new ListPane(toDoList, org.mypomodoro.gui.ControlPanel.labels.getString("ToDoListPanel.ToDo List"));
+        activitiesPane = new ListPane(activityList, Labels.getString("ActivityListPanel.Activity List"));
+        todoPane = new ListPane(toDoList, Labels.getString("ToDoListPanel.ToDo List"));
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(
                 activitiesPane, todoPane));

@@ -3,6 +3,8 @@ package org.mypomodoro.gui.activities;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Iterator;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,6 +44,7 @@ public class ActivitiesPanel extends JPanel {
     JTable table = new JTable(getTableModel());
     private static final String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("Common.Title"), Labels.getString("Common.Estimated Pomodoros"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
+    private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
 
     public ActivitiesPanel() {
@@ -75,11 +78,14 @@ public class ActivitiesPanel extends JPanel {
         controlPane.add(Labels.getString("Common.Details"), detailsPane);
         EditPanel edit = new EditPanel();
         JScrollPane editPane = new JScrollPane(edit);
-        controlPane.add(Labels.getString("ActivityListPanel.Edit"), editPane);
+        controlPane.add(Labels.getString("Common.Edit"), editPane);
+        CommentPanel commentPanel = new CommentPanel(this);
+        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         add(controlPane, gbc);
 
         showSelectedItemDetails(detailsPane);
         showSelectedItemEdit(edit);
+        showSelectedItemComment(commentPanel);
     }
 
     private static TableModel getTableModel() {
@@ -123,14 +129,14 @@ public class ActivitiesPanel extends JPanel {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 TableModel model = (TableModel) e.getSource();
-                String columnName = model.getColumnName(column);
+                //String columnName = model.getColumnName(column);
                 Object data = model.getValueAt(row, column);
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                 Activity act = ActivitiesDAO.getInstance().getActivity(ID.intValue());
                 String sData = (String) data;
-                if (columnName.equals(columnNames[ID_KEY - 3]) && sData.length() > 0) { // Title (cannot be empty)
+                if (column == ID_KEY - 3 && sData.length() > 0) { // Title (cannot be empty)
                     act.setName(sData);
-                } else if (columnName.equals(columnNames[ID_KEY - 1])) { // Type
+                } else if (column == ID_KEY - 1) { // Type
                     act.setType(sData);
                 }
                 ActivityList.getList().update(); // always refresh list
@@ -147,22 +153,29 @@ public class ActivitiesPanel extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
                 int row = table.getSelectedRow();
                 if (row > -1) {
+                    selectedActivityId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
                     selectedRowIndex = row;
                 }
             }
         });
     }
 
-    private void showSelectedItemDetails(final DetailsPane detailsPane) {
+    private void showSelectedItemDetails(DetailsPane detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),
                 table, detailsPane, ID_KEY));
     }
 
-    private void showSelectedItemEdit(final EditPanel editPane) {
+    private void showSelectedItemEdit(EditPanel editPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ActivityList.getList(),
                 table, editPane, ID_KEY));
+    }
+
+    private void showSelectedItemComment(CommentPanel commentPanel) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityInformationTableListener(ActivityList.getList(),
+                table, commentPanel, ID_KEY));
     }
 
     public void refresh() {
@@ -196,12 +209,45 @@ public class ActivitiesPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        if (table.getModel().getRowCount() > 0) {
-            if (table.getModel().getRowCount() < selectedRowIndex + 1) {
-                selectedRowIndex = selectedRowIndex - 1;
-            }
-            table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-        }
+        selectActivity();
         setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ActivityListPanel.Activity List") + " (" + ActivityList.getListSize() + ")"));
+    }
+
+    public void saveComment(String comment) {
+        int row = table.getSelectedRow();
+        if (row > -1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity selectedReport = ActivityList.getList().getById(id);
+            if (selectedReport != null) {
+                selectedReport.setNotes(comment);
+                JFrame window = new JFrame();
+                String title = Labels.getString("Common.Add comment");
+                String message = Labels.getString("Common.Comment saved");
+                JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+            }
+        }
+    }
+
+    private void selectActivity() {
+        int index = 0;
+        if (!ActivityList.getList().isEmpty()) {
+            if (ActivityList.getList().getById(selectedActivityId) == null) { // Activity deleted (removed from the list)
+                index = selectedRowIndex;
+                if (ActivityList.getList().getListSize() < selectedRowIndex + 1) { // Activity deleted (end of the list)
+                    --index;
+                }
+            } else if (selectedActivityId != 0) {
+                Iterator<Activity> iActivity = ActivityList.getList().iterator();
+                while (iActivity.hasNext()) {
+                    if (iActivity.next().getId() == selectedActivityId) {
+                        break;
+                    }
+                    index++;
+                }
+            }
+        }
+        if (!ActivityList.getList().isEmpty()) {
+            table.setRowSelectionInterval(index, index);
+        }
     }
 }

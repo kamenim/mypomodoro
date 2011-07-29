@@ -11,6 +11,8 @@ import org.mypomodoro.model.Activity;
 
 import org.mypomodoro.db.ActivitiesDAO;
 import java.util.Date;
+import javax.swing.JSeparator;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.util.Labels;
 
@@ -18,8 +20,9 @@ public class TestMenu extends JMenu {
 
     public TestMenu(final MyPomodoroView view) {
         super(Labels.getString("MenuBar.Data"));
-        add(new ResetDataItem(view));
         add(new TestDataItem(view));
+        add(new JSeparator());
+        add(new ResetDataItem(view));
     }
 
     // resets all the data files.
@@ -32,7 +35,7 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     ActivitiesDAO.getInstance().removeAll();
-                    view.updateLists();
+                    view.updateView();
                 }
             });
         }
@@ -88,7 +91,7 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    view.updateLists();
+                    Main.updateActivityList();
                 }
             });
         }

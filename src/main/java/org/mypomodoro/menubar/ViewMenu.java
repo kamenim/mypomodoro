@@ -40,7 +40,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateLists();
+                view.updateView();
                 MyIcon activityListIcon = view.getIconBar().getIcon(1);
                 view.getIconBar().highlightIcon(activityListIcon);
                 view.setWindow(activityListIcon.getPanel());
@@ -63,7 +63,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateLists();
+                view.updateView();
                 MyIcon reportListIcon = view.getIconBar().getIcon(4);
                 view.getIconBar().highlightIcon(reportListIcon);
                 view.setWindow(reportListIcon.getPanel());
@@ -86,7 +86,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateLists();
+                view.updateView();
                 MyIcon generateIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(generateIcon);
                 view.setWindow(generateIcon.getPanel());
@@ -109,7 +109,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateLists();
+                view.updateView();
                 MyIcon toDoListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(toDoListIcon);
                 view.setWindow(toDoListIcon.getPanel());

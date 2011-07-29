@@ -46,10 +46,27 @@ public class ActivityInputForm extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
 
+        // init estimated Pomodoros combo box
+        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+            items[i] = ( i + 1 ) + "";
+        }
+        estimatedPomodoros = new JComboBox(items);
+
         addForm(gridy);
     }
 
-    protected final void addForm(int gridy) {
+    protected void addForm(int gridy) {
+        addDate(gridy);
+        addName(++gridy);
+        addEstimatedPoms(++gridy);
+        addType(++gridy);
+        addAuthor(++gridy);
+        addPlace(++gridy);
+        addDescription(++gridy);
+    }
+
+    protected void addDate(int gridy) {
         final FormLabel dateLabel = new FormLabel(Labels.getString("Common.Date") + "*: ");
         datePicker.setDate(new Date());
         c.gridx = 0;
@@ -60,7 +77,9 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         add(datePicker, c);
+    }
 
+    protected void addName(int gridy) {
         // Name Label and Text Field
         ++gridy;
         c.gridx = 0;
@@ -71,7 +90,9 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         addTextField(nameField);
+    }
 
+    protected void addEstimatedPoms(int gridy) {
         // Estimated Poms Description and TextField
         ++gridy;
         c.gridx = 0;
@@ -81,13 +102,10 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
-        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = ( i + 1 ) + "";
-        }
-        estimatedPomodoros = new JComboBox(items);
         add(estimatedPomodoros, c);
+    }
 
+    protected void addType(int gridy) {
         // Type Label and TextField
         ++gridy;
         c.gridx = 0;
@@ -98,7 +116,9 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         addTextField(typeField);
+    }
 
+    protected void addAuthor(int gridy) {
         // Author Label and TextField
         ++gridy;
         c.gridx = 0;
@@ -109,7 +129,9 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         addTextField(authorField);
+    }
 
+    protected void addPlace(int gridy) {
         // Place label and TextField
         ++gridy;
         c.gridx = 0;
@@ -123,7 +145,9 @@ public class ActivityInputForm extends JPanel {
         placeField.setMinimumSize(TEXT_FIELD_DIMENSION);
         placeField.setPreferredSize(TEXT_FIELD_DIMENSION);
         add(placeField, c);
+    }
 
+    protected void addDescription(int gridy) {
         // Description Label and TextArea
         ++gridy;
         c.gridx = 0;
@@ -194,8 +218,8 @@ public class ActivityInputForm extends JPanel {
         estimatedPomodoros.setSelectedIndex(value - 1);
     }
 
-    public void setDate(Date dateActivity) {
-        datePicker.setDate(dateActivity);
+    public void setDate(Date value) {
+        datePicker.setDate(value);
     }
 
     public void setActivityId(int value) {
