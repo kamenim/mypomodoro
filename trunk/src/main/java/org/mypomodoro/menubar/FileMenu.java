@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import org.mypomodoro.gui.ControlPanel;
@@ -23,6 +24,7 @@ public class FileMenu extends JMenu {
         this.view = view;
         add(new ControlPanelItem());
         add(new CreateActivityItem());
+        add(new JSeparator());
         add(new ExitItem());
     }
 

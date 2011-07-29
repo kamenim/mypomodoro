@@ -7,30 +7,33 @@ import javax.swing.JFrame;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
     
     private final MyPomodoroView view;
 
     public HelpMenu(final MyPomodoroView view) {
-        super(ControlPanel.labels.getString("MenuBar.Help"));
+        super(Labels.getString("MenuBar.Help"));
         this.view = view;
         add(new HelpUserGuide());
         add(new HelpPomodoroTechnique());
         add(new HelpPomodoroCheatSheet());
         add(new HelpPomodoroBook());
+        add(new JSeparator());
         add(new HelpAbout());
     }
 
     class HelpUserGuide extends JMenuItem {
 
         public HelpUserGuide() {
-            super(ControlPanel.labels.getString("HelpMenu.Download User Guide"));
+            super(Labels.getString("HelpMenu.Download User Guide"));
             addActionListener(new MenuItemListener());
         }
 
@@ -39,7 +42,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc_1.1.pdf");
+                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc_" + MyPomodoroView.MYPOMODORO_VERSION + ".pdf");
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }
@@ -48,7 +51,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroTechnique extends JMenuItem {
 
         public HelpPomodoroTechnique() {
-            super(ControlPanel.labels.getString("HelpMenu.The Pomodoro Technique® Website"));
+            super(Labels.getString("HelpMenu.The Pomodoro Technique® Website"));
             addActionListener(new MenuItemListener());
         }
 
@@ -66,7 +69,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroCheatSheet extends JMenuItem {
 
         public HelpPomodoroCheatSheet() {
-            super(ControlPanel.labels.getString("HelpMenu.Download the Pomodoro Technique® Cheat Sheet"));
+            super(Labels.getString("HelpMenu.Download the Pomodoro Technique® Cheat Sheet"));
             addActionListener(new MenuItemListener());
         }
 
@@ -84,7 +87,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroBook extends JMenuItem {
 
         public HelpPomodoroBook() {
-            super(ControlPanel.labels.getString("HelpMenu.Download the Pomodoro Technique® Book"));
+            super(Labels.getString("HelpMenu.Download the Pomodoro Technique® Book"));
             addActionListener(new MenuItemListener());
         }
 
@@ -100,7 +103,7 @@ public class HelpMenu extends JMenu {
     class HelpAbout extends JMenuItem {
 
         public HelpAbout() {
-            super(ControlPanel.labels.getString("HelpMenu.About myPomodoro"));
+            super(Labels.getString("HelpMenu.About myPomodoro"));
             addActionListener(new MenuItemListener());
         }
 

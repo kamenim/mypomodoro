@@ -1,4 +1,4 @@
-package org.mypomodoro.gui.todo;
+package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -18,31 +17,28 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 /**
- * Panel that displays comment on the current ToDo and
+ * Panel that displays comment on the current Activity and
  * allows editing it
- * 
+ *
  * @author Phil Karoo
  */
 public class CommentPanel extends JPanel implements ActivityInformation {
 
     private final JTextArea commentArea = new JTextArea();
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CommentPanel(ToDoListPanel panel) {
+    public CommentPanel(ActivitiesPanel panel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        addToDoIconPanel();
         addCommentArea();
         addSaveButton(panel);
     }
 
-    private void addSaveButton(final ToDoListPanel panel) {
+    private void addSaveButton(final ActivitiesPanel panel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
         JButton changeButton = new MyButton(Labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
@@ -54,21 +50,11 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         });
         add(changeButton, gbc);
     }
-    
-    private void addToDoIconPanel() {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        add(iconLabel, gbc);
-    }
 
     private void addCommentArea() {
         // add the comment area
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -79,18 +65,11 @@ public class CommentPanel extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        ToDoIconLabel.showIconLabel(iconLabel, activity);
         String text = activity.getNotes();
         commentArea.setText(text);
     }
 
     @Override
     public void clearInfo() {
-        ToDoIconLabel.clearIconLabel(iconLabel);
-        commentArea.setText("");
-    }
-    
-    public JLabel getIconLabel() {
-        return iconLabel;
     }
 }

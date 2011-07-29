@@ -91,12 +91,12 @@ public class MyPomodoroView extends JFrame {
         }
     }
 
-    public void updateLists() {
+    public void updateView() {
         Main.updateView();
     }
 
-    public void setWindow(Container e) {
-        Main.updateView();
+    public final void setWindow(Container e) {
+        updateView();
         setContentPane(new WindowPanel(iconBar, e));
         menuBar.revalidate();
     }

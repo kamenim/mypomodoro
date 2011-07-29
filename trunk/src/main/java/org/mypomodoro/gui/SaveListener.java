@@ -8,17 +8,17 @@ import org.mypomodoro.model.Activity;
 
 public class SaveListener implements ActionListener {
 
-    private CreatePanel createPanel;
+    private CreatePanel panel;
 
     public SaveListener(CreatePanel panel) {
-        this.createPanel = panel;
+        this.panel = panel;
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        Activity newActivity = createPanel.getFormPanel().getActivityFromFields();
+        Activity newActivity = panel.getFormPanel().getActivityFromFields();
         if (newActivity != null) {
-            createPanel.saveActivity(newActivity);
+            panel.saveActivity(newActivity);
         }
     }
 }

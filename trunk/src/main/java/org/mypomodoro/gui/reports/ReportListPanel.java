@@ -16,10 +16,14 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import org.mypomodoro.db.ActivitiesDAO;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -38,6 +42,7 @@ public class ReportListPanel extends JPanel {
     private final static String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("ReportListPanel.Time"), Labels.getString("Common.Title"),
         Labels.getString("ReportListPanel.Estimated"), Labels.getString("ReportListPanel.Real"), Labels.getString("ReportListPanel.Diff I"), Labels.getString("ReportListPanel.Diff II"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 9;
+    private int selectedReportId = 0;
     private int selectedRowIndex = 0;
 
     public ReportListPanel() {
@@ -69,16 +74,20 @@ public class ReportListPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         InformationArea informationArea = new InformationArea(table);
         controlPane.add(Labels.getString("Common.Details"), informationArea);
+        EditPanel edit = new EditPanel();
+        JScrollPane editPane = new JScrollPane(edit);
+        controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
+        showSelectedItemEdit(edit);
         showSelectedItemComment(commentPanel);
     }
 
     private static TableModel getTableModel() {
-        return new AbstractActivitiesTableModel(columnNames, ReportList.getList()) {
+        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(columnNames, ReportList.getList()) {
 
             @Override
             protected void populateData(AbstractActivities activities) {
@@ -106,7 +115,38 @@ public class ReportListPanel extends JPanel {
                     tableData[i][9] = currentActivity.getId();
                 }
             }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) { // make Title and Type columns editable
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         };
+
+        tableModel.addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                TableModel model = (TableModel) e.getSource();
+                Object data = model.getValueAt(row, column);
+                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                Activity toDo = ActivitiesDAO.getInstance().getActivity(ID.intValue());
+                String sData = (String) data;
+                if (column == ID_KEY - 6 && sData.length() > 0) { // Title (cannot be empty)
+                    toDo.setName(sData);
+                } else if (column == ID_KEY - 1) { // Type
+                    toDo.setType(sData);
+                }
+                ReportList.getList().update(); // always refresh list
+            }
+        });
+
+        return tableModel;
     }
 
     private void recordSelectedRowId() {
@@ -116,6 +156,7 @@ public class ReportListPanel extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
                 int row = table.getSelectedRow();
                 if (row > -1) {
+                    selectedReportId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
                     selectedRowIndex = row;
                 }
             }
@@ -126,6 +167,12 @@ public class ReportListPanel extends JPanel {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
                 table, informationArea, ID_KEY));
+    }
+
+    private void showSelectedItemEdit(EditPanel editPane) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityEditTableListener(ReportList.getList(),
+                table, editPane, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
@@ -145,7 +192,7 @@ public class ReportListPanel extends JPanel {
     }
 
     private void init() {
-        // Centre Estimated, actual and interrupted pomodoros
+        // Centre Estimated, real, Diff I and Diff II columns
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
@@ -172,12 +219,7 @@ public class ReportListPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        if (table.getModel().getRowCount() > 0) {
-            if (table.getModel().getRowCount() < selectedRowIndex + 1) {
-                selectedRowIndex = selectedRowIndex - 1;
-            }
-            table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-        }
+        selectReport();
         setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Report List") + " (" + ReportList.getListSize() + ")"));
     }
 
@@ -193,6 +235,29 @@ public class ReportListPanel extends JPanel {
                 String message = Labels.getString("Common.Comment saved");
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
+        }
+    }
+
+    private void selectReport() {
+        int index = 0;
+        if (!ReportList.getList().isEmpty()) {
+            if (ReportList.getList().getById(selectedReportId) == null) { // Report deleted (removed from the list)
+                index = selectedRowIndex;
+                if (ReportList.getList().getListSize() < selectedRowIndex + 1) { // Report deleted (end of the list)
+                    --index;
+                }
+            } else if (selectedReportId != 0) {
+                Iterator<Activity> iReport = ReportList.getList().iterator();
+                while (iReport.hasNext()) {
+                    if (iReport.next().getId() == selectedReportId) {
+                        break;
+                    }
+                    index++;
+                }
+            }
+        }
+        if (!ReportList.getList().isEmpty()) {
+            table.setRowSelectionInterval(index, index);
         }
     }
 }

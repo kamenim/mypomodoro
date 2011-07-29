@@ -23,6 +23,7 @@ import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.util.Labels;
 
 /**
  * This class just abstracts a JPanel for jlist and a information panel for the
@@ -98,7 +99,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String activityDate = format.format(аctivity.getDate());
-        String text = ControlPanel.labels.getString("Common.Date") + ": ";
+        String text = Labels.getString("Common.Date") + ": ";
         if (аctivity.isUnplanned()) {
             text += "U [";
         }
@@ -106,8 +107,8 @@ public class ListPane extends JPanel implements ActivityInformation {
         if (аctivity.isUnplanned()) {
             text += "]";
         }
-        text += "\n" + ControlPanel.labels.getString("Common.Title") + ": " + аctivity.getName()
-                + "\n" + ControlPanel.labels.getString("Common.Estimated Pomodoros") + ": " + аctivity.getEstimatedPoms();
+        text += "\n" + Labels.getString("Common.Title") + ": " + аctivity.getName()
+                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + аctivity.getEstimatedPoms();
         if (аctivity.getOverestimatedPoms() > 0) {
             text += " + " + аctivity.getOverestimatedPoms();
         }
@@ -150,7 +151,7 @@ public class ListPane extends JPanel implements ActivityInformation {
             internalActivitiesList.setSelectedIndex(selectedRowIndex);
         }
         internalActivitiesList.setBorder(new TitledBorder(new EtchedBorder(), titleList + " (" + list.size() + ")"));
-        this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), ControlPanel.labels.getString("Common.Details")));
+        this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("Common.Details")));
     }
 
     public boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
