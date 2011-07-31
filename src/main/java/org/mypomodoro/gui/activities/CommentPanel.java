@@ -60,6 +60,8 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         commentArea.setEditable(true);
+        commentArea.setLineWrap(true);
+        commentArea.setWrapStyleWord(true);
         add(new JScrollPane(commentArea), gbc);
     }
 

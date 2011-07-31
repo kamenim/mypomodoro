@@ -91,10 +91,11 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
             panel.getToDoList().add(newActivity); // Today unplanned activity
             newActivity.databaseInsert();
+            clearForm();
         } else {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
             validation.setVisible(false);
-            super.validActivityAction(newActivity);
+            super.validActivityAction(newActivity);            
         }
         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
     }

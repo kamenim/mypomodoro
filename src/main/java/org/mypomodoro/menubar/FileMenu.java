@@ -3,6 +3,7 @@ package org.mypomodoro.menubar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -14,6 +15,7 @@ import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.Restart;
 
 public class FileMenu extends JMenu {
 
@@ -25,7 +27,33 @@ public class FileMenu extends JMenu {
         add(new ControlPanelItem());
         add(new CreateActivityItem());
         add(new JSeparator());
+        add(new RestartItem());
+        add(new JSeparator());
         add(new ExitItem());
+    }
+
+    class ControlPanelItem extends JMenuItem {
+
+        public ControlPanelItem() {
+            super(Labels.getString("FileMenu.Preferences"));
+            // Adds Keyboard Shortcut Alt-P
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+                    ActionEvent.ALT_MASK));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyIcon selectedIcon = view.getIconBar().getSelectedIcon();
+                if (selectedIcon != null) {
+                    view.getIconBar().unHighlightIcon(selectedIcon);
+                    view.setWindow(selectedIcon.getPanel());
+                }
+                view.setWindow(new ControlPanel());
+            }
+        }
     }
 
     public class CreateActivityItem extends JMenuItem {
@@ -51,6 +79,26 @@ public class FileMenu extends JMenu {
         }
     }
 
+    public class RestartItem extends JMenuItem {
+
+        public RestartItem() {
+            super(Labels.getString("Common.Restart"));
+            addActionListener(new RestartItemListener());
+        }
+
+        class RestartItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Restart.restartApplication(null);
+                }
+                catch (IOException ex) {
+                }
+            }
+        }
+    }
+
     public class ExitItem extends JMenuItem {
 
         public ExitItem() {
@@ -63,30 +111,6 @@ public class FileMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
-            }
-        }
-    }
-
-    class ControlPanelItem extends JMenuItem {
-
-        public ControlPanelItem() {
-            super(Labels.getString("FileMenu.Preferences"));
-            // Adds Keyboard Shortcut Alt-P
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                    ActionEvent.ALT_MASK));
-            addActionListener(new MenuItemListener());
-        }
-
-        class MenuItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MyIcon selectedIcon = view.getIconBar().getSelectedIcon();
-                if (selectedIcon != null) {
-                    view.getIconBar().unHighlightIcon(selectedIcon);
-                    view.setWindow(selectedIcon.getPanel());
-                }
-                view.setWindow(new ControlPanel());
             }
         }
     }

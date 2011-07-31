@@ -1,5 +1,6 @@
 package org.mypomodoro;
 
+import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -51,7 +52,7 @@ public class Main {
         ToDoList.getList().refresh();
         ReportList.getList().refresh();
     }
-    
+
     public static void updateActivityList() {
         ActivityList.getList().refresh();
     }
@@ -89,7 +90,11 @@ public class Main {
 
             @Override
             public void componentResized(ComponentEvent event) {
-                gui.setSize(Math.max(650, gui.getWidth()), Math.max(550, gui.getHeight()));
+                Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(677, gui.getHeight()));
+                Dimension mindGUI = new Dimension(800, 677);
+                gui.setMinimumSize(mindGUI);
+                gui.setPreferredSize(mindGUI);
+                gui.setSize(dGUI);
             }
         });
     }
