@@ -23,9 +23,9 @@ public class HelpMenu extends JMenu {
         super(Labels.getString("MenuBar.Help"));
         this.view = view;
         add(new HelpUserGuide());
-        add(new HelpPomodoroTechnique());
-        add(new HelpPomodoroCheatSheet());
-        add(new HelpPomodoroBook());
+        add(new HelpPomodoroMenu());        
+        add(new JSeparator());
+        add(new CheckUpdates());
         add(new JSeparator());
         add(new HelpAbout());
     }
@@ -47,11 +47,21 @@ public class HelpMenu extends JMenu {
             }
         }
     }
+    
+    class HelpPomodoroMenu extends JMenu {
+        
+        public HelpPomodoroMenu() {
+            super(Labels.getString("HelpMenu.The Pomodoro Technique"));
+            add(new HelpPomodoroTechnique());
+            add(new HelpPomodoroCheatSheet());
+            add(new HelpPomodoroBook());            
+        }
+    }
 
     class HelpPomodoroTechnique extends JMenuItem {
 
         public HelpPomodoroTechnique() {
-            super(Labels.getString("HelpMenu.The Pomodoro Technique® Website"));
+            super(Labels.getString("HelpMenu.The Pomodoro Technique Website"));
             addActionListener(new MenuItemListener());
         }
 
@@ -69,7 +79,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroCheatSheet extends JMenuItem {
 
         public HelpPomodoroCheatSheet() {
-            super(Labels.getString("HelpMenu.Download the Pomodoro Technique® Cheat Sheet"));
+            super(Labels.getString("HelpMenu.Download the Pomodoro Technique Cheat Sheet"));
             addActionListener(new MenuItemListener());
         }
 
@@ -87,7 +97,7 @@ public class HelpMenu extends JMenu {
     class HelpPomodoroBook extends JMenuItem {
 
         public HelpPomodoroBook() {
-            super(Labels.getString("HelpMenu.Download the Pomodoro Technique® Book"));
+            super(Labels.getString("HelpMenu.Download the Pomodoro Technique Book"));
             addActionListener(new MenuItemListener());
         }
 
@@ -96,6 +106,22 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BareBonesBrowserLaunch.openURL("http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf");
+            }
+        }
+    }
+    
+    class CheckUpdates extends JMenuItem {
+
+        public CheckUpdates() {
+            super(Labels.getString("AboutPanel.Check for Updates"));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/downloads/list");
             }
         }
     }

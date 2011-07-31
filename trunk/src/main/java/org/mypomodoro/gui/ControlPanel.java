@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import org.mypomodoro.buttons.MyButton;
+import org.mypomodoro.buttons.RestartButton;
 
 import org.mypomodoro.model.Preferences;
 import org.mypomodoro.util.Labels;
@@ -19,20 +20,23 @@ import org.mypomodoro.util.Labels;
 public class ControlPanel extends JPanel {
 
     public static Preferences preferences = new Preferences();
-    private JLabel validation = new JLabel("");
     public static Labels labels;
     public JButton saveButton;
     public JButton resetButton;
+    protected JLabel validation = new JLabel();
+    protected JPanel validPanel = new JPanel();
+    public JButton restartButton;
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel;
 
     public ControlPanel() {
         preferences.loadPreferences();
         labels = new Labels(new Locale(preferences.getLocale().getLanguage(), preferences.getLocale().getCountry(), preferences.getLocale().getVariant()));
-        saveButton = new MyButton(labels.getString("Common.Save"));
+        saveButton = new MyButton(Labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
-        resetButton = new MyButton(labels.getString("PreferencesPanel.Reset"));
-        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+        resetButton = new MyButton(Labels.getString("PreferencesPanel.Reset"));
+        restartButton = new RestartButton();
+        restartButton.setVisible(false);
 
         setLayout(new GridBagLayout());
         disableSaveButton();
@@ -58,8 +62,8 @@ public class ControlPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent event) {
+                setValidation(Labels.getString("PreferencesPanel.Preferences saved.") + " ");
                 updatePreferences();
-                validation.setText(labels.getString("PreferencesPanel.Preferences saved. Please restart myPomodoro."));
                 disableSaveButton();
             }
         });
@@ -87,8 +91,8 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.ringingBox.setSelected(true);
                 // no reset for locale
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
+                setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
                 updatePreferences();
-                validation.setText(labels.getString("PreferencesPanel.Preferences reset. Please restart myPomodoro."));
                 disableSaveButton();
             }
         });
@@ -108,7 +112,24 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
-        add(validation, gbc);
+        validation.setForeground(Color.black);
+        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));        
+        GridBagConstraints vgbc = new GridBagConstraints();
+        vgbc.gridx = 0;
+        vgbc.gridy = 0;
+        vgbc.fill = GridBagConstraints.NONE;
+        validPanel.add(validation, vgbc);
+        vgbc.gridx = 1;
+        vgbc.gridy = 0;
+        vgbc.fill = GridBagConstraints.NONE;
+        validPanel.add(restartButton, vgbc);
+        validPanel.setLayout(new GridBagLayout());
+        add(validPanel, gbc);
+    }
+
+    protected void setValidation(String validationText) {
+        validation.setText(validationText);
+        restartButton.setVisible(true);
     }
 
     public void disableSaveButton() {
@@ -124,6 +145,7 @@ public class ControlPanel extends JPanel {
 
     public void clearValidation() {
         validation.setText("");
+        restartButton.setVisible(false);
     }
 
     private void updatePreferences() {

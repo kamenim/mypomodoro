@@ -1,6 +1,7 @@
 package org.mypomodoro.menubar.help;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -148,7 +149,7 @@ public class AboutPanel extends JDialog {
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         editorPane.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, new JLabel().getFont().getSize() - 4));
         editorPane.setEditable(false);
-        editorPane.setOpaque(false);
+        editorPane.setOpaque(false);      
         editorPane.addHyperlinkListener(new HyperlinkListener() {
 
             @Override
@@ -158,8 +159,18 @@ public class AboutPanel extends JDialog {
                 }
             }
         });
+        
         JPanel panel = new JPanel();
-        panel.add(editorPane);
+        
+        // Wrap content!
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        
+        panel.add(editorPane, constraints);
         add(panel, gbc);
     }
 }

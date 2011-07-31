@@ -61,7 +61,9 @@ public class InformationArea extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = 2;        
-        informationArea.setEditable(false);
+        informationArea.setEditable(false);        
+        informationArea.setLineWrap(true);
+        informationArea.setWrapStyleWord(true);
         // disable auto scrolling
         DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
