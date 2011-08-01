@@ -34,6 +34,7 @@ public class ToDoList extends AbstractActivities {
     @Override
     public void add(Activity act) {
         act.setPriority(size());
+        act.databaseUpdate();
         super.add(act);
     }
 
@@ -42,10 +43,12 @@ public class ToDoList extends AbstractActivities {
         int index = activities.indexOf(a);
         activities.remove(a);
         a.setPriority(-1);
+        a.databaseUpdate();
 
         for (int j = index; j < size(); j++) {
             Activity currentAct = activities.get(j);
             currentAct.setPriority(j);
+            currentAct.databaseUpdate();
         }
     }
 
@@ -63,7 +66,9 @@ public class ToDoList extends AbstractActivities {
             activities.set(index - 1, lower);
             activities.set(index, higher);
             lower.setPriority(index - 1);
+            lower.databaseUpdate();
             higher.setPriority(index);
+            higher.databaseUpdate();
         }
     }*/
     /**
@@ -80,17 +85,9 @@ public class ToDoList extends AbstractActivities {
     activities.set(index, lower);
     activities.set(index + 1, higher);
     lower.setPriority(index);
+    lower.databaseUpdate();
     higher.setPriority(index + 1);
+    higher.databaseUpdate();
     }
-    }
-    
-    public void complete() {
-    Activity activity = activities.remove(0);
-    activity.setIsCompleted(true);
-    for (int j = 0; j < (this.size() - 1); j++) {
-    Activity currentAct = activities.get(j);
-    currentAct.setPriority(j);
-    }        
-    ReportList.getList().add(activity);
     }*/
 }

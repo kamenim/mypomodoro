@@ -20,7 +20,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
-import org.mypomodoro.db.ActivitiesDAO;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -135,12 +134,14 @@ public class ReportListPanel extends JPanel {
                 TableModel model = (TableModel) e.getSource();
                 Object data = model.getValueAt(row, column);
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                Activity toDo = ActivitiesDAO.getInstance().getActivity(ID.intValue());
+                Activity report = Activity.getActivity(ID.intValue());
                 String sData = (String) data;
                 if (column == ID_KEY - 6 && sData.length() > 0) { // Title (cannot be empty)
-                    toDo.setName(sData);
+                    report.setName(sData);
+                    report.databaseUpdate();
                 } else if (column == ID_KEY - 1) { // Type
-                    toDo.setType(sData);
+                    report.setType(sData);
+                    report.databaseUpdate();
                 }
                 ReportList.getList().update(); // always refresh list
             }
@@ -230,6 +231,7 @@ public class ReportListPanel extends JPanel {
             Activity selectedReport = ReportList.getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
+                selectedReport.databaseUpdate();
                 JFrame window = new JFrame();
                 String title = Labels.getString("Common.Add comment");
                 String message = Labels.getString("Common.Comment saved");

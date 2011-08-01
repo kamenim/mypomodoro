@@ -74,7 +74,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         c.gridy = 1;
         c.weightx = 1.0;
         c.weighty = 0.2;
-        informationArea.setEditable(false);        
+        informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         // disable auto scrolling
@@ -97,22 +97,22 @@ public class ListPane extends JPanel implements ActivityInformation {
     }
 
     @Override
-    public void showInfo(Activity аctivity) {
+    public void showInfo(Activity activity) {
         String pattern = "dd MMM yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String activityDate = format.format(аctivity.getDate());
+        String activityDate = format.format(activity.getDate());
         String text = Labels.getString("Common.Date") + ": ";
-        if (аctivity.isUnplanned()) {
+        if (activity.isUnplanned()) {
             text += "U [";
         }
         text += activityDate;
-        if (аctivity.isUnplanned()) {
+        if (activity.isUnplanned()) {
             text += "]";
         }
-        text += "\n" + Labels.getString("Common.Title") + ": " + аctivity.getName()
-                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + аctivity.getEstimatedPoms();
-        if (аctivity.getOverestimatedPoms() > 0) {
-            text += " + " + аctivity.getOverestimatedPoms();
+        text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
+                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
+        if (activity.getOverestimatedPoms() > 0) {
+            text += " + " + activity.getOverestimatedPoms();
         }
         informationArea.setText(text);
     }

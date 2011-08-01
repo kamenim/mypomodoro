@@ -59,7 +59,7 @@ public class Activity {
     /**
      * estimated pomodoros for this task set by constructor
      */
-    private int estimatedPoms;
+    private int estimatedPoms = 0;
     /**
      * actual pomodoros for this task default is 0 pomodoros
      * 
@@ -68,7 +68,7 @@ public class Activity {
     /**
      * overestimated pomodoros for this task set by constructor
      */
-    private int overestimatedPoms;
+    private int overestimatedPoms = 0;
     /**
      * state of activity. is it unplanned (an interruption)? default is planned
      */
@@ -110,6 +110,7 @@ public class Activity {
      * @param description
      * @param type
      * @param estimatedPoms
+     * @param dateActivity
      */
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms, Date dateActivity) {
@@ -118,11 +119,6 @@ public class Activity {
 
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms, Date dateActivity, int activityId) {
-        this(place, author, name, description, type, estimatedPoms, dateActivity, false, activityId);
-    }
-
-    public Activity(String place, String author, String name,
-            String description, String type, int estimatedPoms, Date dateActivity, boolean isCompleted, int activityId) {
         this.place = place;
         this.date = new Date();
         this.author = author;
@@ -131,7 +127,6 @@ public class Activity {
         this.type = type;
         this.estimatedPoms = estimatedPoms;
         this.date = dateActivity;
-        this.isCompleted = isCompleted;
         this.id = activityId > 0 ? activityId : this.id;
     }
 
@@ -225,69 +220,64 @@ public class Activity {
     }
 
     // SETTERS
-    public void setActualPoms(int actualPoms) {
-        this.actualPoms = actualPoms;
-        databaseUpdate();
-    }
-
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
-        databaseUpdate();
     }
 
     public void setIsUnplanned(boolean isUnplanned) {
         this.isUnplanned = isUnplanned;
-        databaseUpdate();
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
-        databaseUpdate();
     }
 
     public void setPriority(int priority) {
         this.priority = priority;
-        databaseUpdate();
     }
 
     public void setEstimatedPoms(int estimatedPoms) {
         this.estimatedPoms = estimatedPoms;
-        databaseUpdate();
     }
 
     public void setOverestimatedPoms(int overestimatedPoms) {
         this.overestimatedPoms = overestimatedPoms;
-        databaseUpdate();
     }
 
     public void incrementPoms() {
         actualPoms++;
-        databaseUpdate();
     }
 
     public void incrementInter() {
         numInterruptions++;
-        databaseUpdate();
     }
 
     public void incrementInternalInter() {
         numInternalInterruptions++;
-        databaseUpdate();
     }
 
     public void setDate(Date date) {
         this.date = date;
-        databaseUpdate();
     }
 
     public void setName(String name) {
         this.name = name;
-        databaseUpdate();
     }
 
     public void setType(String type) {
         this.type = type;
-        databaseUpdate();
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -325,7 +315,12 @@ public class Activity {
         return dateActivityFormat.equalsIgnoreCase(todayFormat);
     }
 
+    // Activity (not a ToDo nor a report)
     public boolean isActivity() {
         return getPriority() == -1 && !isCompleted();
+    }
+
+    public static Activity getActivity(int Id) {
+        return ActivitiesDAO.getInstance().getActivity(Id);
     }
 }

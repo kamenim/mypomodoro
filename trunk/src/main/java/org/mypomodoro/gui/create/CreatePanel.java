@@ -135,7 +135,7 @@ public class CreatePanel extends JPanel {
         inputFormPanel.setDate(new Date());
         validation.setText("");
     }
-
-    public void fillOutInputForm(Activity report) { // for editing only
+    
+    public void fillOutInputForm(Activity activity) {
     }
 }

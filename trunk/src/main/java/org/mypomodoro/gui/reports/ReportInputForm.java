@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.reports;
 
-import java.util.Date;
 import org.mypomodoro.gui.create.*;
 import org.mypomodoro.model.Activity;
 
@@ -19,21 +18,20 @@ public class ReportInputForm extends ActivityInputForm {
     }
 
     /**
-     * Returns a new report from the class fields and null if there was an
-     * error while parsing the fields
+     * Returns an updated report from the class fields
      * 
      * @return report
      */
+    @Override
     public Activity getActivityFromFields() {
-        String place = placeField.getText().trim();
-        String author = authorField.getText().trim();
-        String name = nameField.getText().trim();
-        String description = descriptionField.getText().trim();
-        String type = typeField.getText().trim();
-        int estimatedPoms = estimatedPomodoros.getSelectedIndex() + 1;
-        Date dateActivity = datePicker.getDate();
+        Activity report = Activity.getActivity(activityId);
 
-        return new Activity(place, author, name, description, type,
-                estimatedPoms, dateActivity, true, activityId);
+        report.setPlace(placeField.getText().trim());
+        report.setAuthor(authorField.getText().trim());
+        report.setName(nameField.getText().trim());
+        report.setDescription(descriptionField.getText().trim());
+        report.setType(typeField.getText().trim());
+
+        return report;
     }
 }

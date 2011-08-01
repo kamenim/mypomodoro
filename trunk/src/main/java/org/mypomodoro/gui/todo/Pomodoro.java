@@ -117,6 +117,7 @@ public class Pomodoro {
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
+                    currentToDo.databaseUpdate();
                     // refresh icon label for the current ToDo                    
                     ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo);
                     Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();

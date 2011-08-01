@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.manager;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -20,7 +21,9 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new MoveButton(">>>", activitiesPane, todoPane), gbc);
+        MoveButton mRight = new MoveButton(">>>", activitiesPane, todoPane);
+        mRight.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
+        add(mRight, gbc);
         // Adding the remove button from todo to activities list
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -28,6 +31,8 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new MoveButton("<<<", todoPane, activitiesPane), gbc);
+        MoveButton mLeft = new MoveButton("<<<", todoPane, activitiesPane);
+        mLeft.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
+        add(mLeft, gbc);
     }
 }
