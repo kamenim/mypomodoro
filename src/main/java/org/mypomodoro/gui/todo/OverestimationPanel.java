@@ -81,6 +81,7 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
         if (selectedToDo != null) {
             selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
+            selectedToDo.databaseUpdate();
             panel.getInformationPanel().showInfo(selectedToDo); // refresh info panel            
             if (panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
                 ToDoIconLabel.showIconLabel(panel.getIconLabel(), selectedToDo);

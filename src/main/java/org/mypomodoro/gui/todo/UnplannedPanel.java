@@ -65,16 +65,18 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
 
     @Override
     protected void validActivityAction(Activity newActivity) {
-        if (panel.getPomodoro().getCurrentToDo() != null) {
+        Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+        if (currentToDo != null) {
             if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
-                panel.getPomodoro().getCurrentToDo().incrementInternalInter();
+                currentToDo.incrementInternalInter();
+                currentToDo.databaseUpdate();
             } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
-                panel.getPomodoro().getCurrentToDo().incrementInter();
+                currentToDo.incrementInter();
+                currentToDo.databaseUpdate();
             }
             Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
             if (selectedToDo != null) {
                 if (( unplannedInputFormPanel.isSelectedInternalInterruption() || unplannedInputFormPanel.isSelectedExternalInterruption() )) {
-                    Activity currentToDo = panel.getPomodoro().getCurrentToDo();
                     ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo.equals(selectedToDo) ? selectedToDo : currentToDo);
                     ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), selectedToDo);
                     ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), selectedToDo);

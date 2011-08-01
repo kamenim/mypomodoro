@@ -19,12 +19,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
-import org.mypomodoro.db.ActivitiesDAO;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.create.EditPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -132,12 +130,14 @@ public class ActivitiesPanel extends JPanel {
                 //String columnName = model.getColumnName(column);
                 Object data = model.getValueAt(row, column);
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                Activity act = ActivitiesDAO.getInstance().getActivity(ID.intValue());
+                Activity act = Activity.getActivity(ID.intValue());
                 String sData = (String) data;
                 if (column == ID_KEY - 3 && sData.length() > 0) { // Title (cannot be empty)
                     act.setName(sData);
+                    act.databaseUpdate();
                 } else if (column == ID_KEY - 1) { // Type
                     act.setType(sData);
+                    act.databaseUpdate();
                 }
                 ActivityList.getList().update(); // always refresh list
             }
@@ -217,9 +217,10 @@ public class ActivitiesPanel extends JPanel {
         int row = table.getSelectedRow();
         if (row > -1) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity selectedReport = ActivityList.getList().getById(id);
-            if (selectedReport != null) {
-                selectedReport.setNotes(comment);
+            Activity selectedActivity = ActivityList.getList().getById(id);
+            if (selectedActivity != null) {
+                selectedActivity.setNotes(comment);
+                selectedActivity.databaseUpdate();
                 JFrame window = new JFrame();
                 String title = Labels.getString("Common.Add comment");
                 String message = Labels.getString("Common.Comment saved");

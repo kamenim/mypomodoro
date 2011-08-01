@@ -164,7 +164,8 @@ public class ToDoListPanel extends JPanel {
         Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
         if (selectedToDo != null) {
             selectedToDo.setIsCompleted(true);
-            selectedToDo.setDate(new Date()); // update date
+            selectedToDo.setDate(new Date());
+            selectedToDo.databaseUpdate();
             ReportList reportList = ReportList.getList();
             reportList.add(selectedToDo);
             toDoList.remove(selectedToDo);
@@ -210,6 +211,7 @@ public class ToDoListPanel extends JPanel {
         Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
         if (selectedToDo != null) {
             selectedToDo.setNotes(comment);
+            selectedToDo.databaseUpdate();
             JFrame window = new JFrame();
             String title = Labels.getString("Common.Add comment");
             String message = Labels.getString("Common.Comment saved");
