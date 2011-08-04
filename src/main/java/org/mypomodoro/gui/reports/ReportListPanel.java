@@ -24,6 +24,7 @@ import javax.swing.table.TableModel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
@@ -78,6 +79,8 @@ public class ReportListPanel extends JPanel {
         controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
+        ExportPanel exportPanel = new ExportPanel(ReportList.getList());
+        controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);

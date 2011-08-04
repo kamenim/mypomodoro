@@ -323,4 +323,39 @@ public class Activity {
     public static Activity getActivity(int Id) {
         return ActivitiesDAO.getInstance().getActivity(Id);
     }
+
+    public String[] toArray() {
+        return toArray("dd/MM/yyyy");
+    }
+
+    public String[] toArray(String datePattern) {
+        String[] attributes = new String[16];
+        attributes[0] = isUnplanned ? "1" : "0";
+        String pattern = datePattern;
+        SimpleDateFormat format = null;
+        try {
+            format = new SimpleDateFormat(pattern);
+        }
+        catch (Exception e) {
+            format = new SimpleDateFormat("dd/MM/yyyy");
+        }
+        attributes[1] = format.format(date);
+        pattern = "HH:mm";
+        format = new SimpleDateFormat(pattern);
+        attributes[2] = format.format(date);
+        attributes[3] = name;
+        attributes[4] = estimatedPoms + "";
+        attributes[5] = overestimatedPoms + "";
+        attributes[6] = actualPoms + "";
+        attributes[7] = ( actualPoms - estimatedPoms ) + "";
+        attributes[8] = overestimatedPoms > 0 ? ( actualPoms - estimatedPoms - overestimatedPoms ) + "" : "";
+        attributes[9] = numInternalInterruptions + "";
+        attributes[10] = numInterruptions + "";
+        attributes[11] = type;
+        attributes[12] = author;
+        attributes[13] = place;
+        attributes[14] = description;
+        attributes[15] = notes;
+        return attributes;
+    }
 }
