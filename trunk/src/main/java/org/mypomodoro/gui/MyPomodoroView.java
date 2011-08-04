@@ -29,8 +29,8 @@ import org.mypomodoro.menubar.ViewMenu;
  */
 public class MyPomodoroView extends JFrame {
 
-    public static final int FRAME_WIDTH = 800;
-    public static final int FRAME_HEIGHT = 677;
+    public static final int FRAME_WIDTH = 677;
+    public static final int FRAME_HEIGHT = 700;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "2.0";
     private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
