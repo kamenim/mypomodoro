@@ -1,15 +1,24 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <!-- DESCRIPTION -->
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mypomodoro</groupId>
+    
+    <!-- DESCRIPTION -->
+    <groupId>org.mypomodoro</groupId>
     <artifactId>myPomodoro</artifactId>
     <packaging>jar</packaging>
     <version>2.0</version>
-    <name>mypomodoro</name>
-    <url>http://maven.apache.org</url>
+    <name>myPomodoro</name>
+    <url>http://code.google.com/p/mypomodoro/</url>
+    
+    <!-- LICENSE INFO -->
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
 
     <!-- DEVELOPERS -->
     <developers>
@@ -151,8 +160,9 @@
                         <configuration>
                             <dontWrapJar>false</dontWrapJar>
                             <headerType>gui</headerType>
-                            <outfile>target/${project.artifactId}-${project.version}-jar-with-dependencies.exe</outfile>
+                            <outfile>target/${project.artifactId}-${project.version}.exe</outfile>
                             <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                            <icon>${basedir}/src/main/resources/icons/myPomodoroIcon.ico</icon>
                             <errTitle>myPomodoro</errTitle>
                             <jre>
                                 <minVersion>1.6.0</minVersion>
@@ -164,6 +174,26 @@
                                 <timeoutErr>false</timeoutErr>
                             </splash>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Jar Bundler Plugin //Creates Executable Wrapper for Mac OS X-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>osxappbundle-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <mainClass>org.mypomodoro.Main</mainClass>
+                    <iconFile>${basedir}/src/main/resources/icons/myPomodoroIcon.icns</iconFile>
+                    <jvmVersion>1.6+</jvmVersion>
+                    <dictionaryFile>${basedir}/src/main/resources/org/osxappbundle/properties/Info.plist.xml</dictionaryFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

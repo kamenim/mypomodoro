@@ -90,8 +90,8 @@ public class Main {
 
             @Override
             public void componentResized(ComponentEvent event) {
-                Dimension dGUI = new Dimension(Math.max(677, gui.getWidth()), Math.max(700, gui.getHeight()));
-                Dimension mindGUI = new Dimension(677, 700);
+                Dimension dGUI = new Dimension(Math.max(600, gui.getWidth()), Math.max(580, gui.getHeight()));
+                Dimension mindGUI = new Dimension(600, 580);
                 gui.setMinimumSize(mindGUI);
                 gui.setPreferredSize(mindGUI);
                 gui.setSize(dGUI);
