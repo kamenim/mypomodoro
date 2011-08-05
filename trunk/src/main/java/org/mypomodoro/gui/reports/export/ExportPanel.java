@@ -5,8 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.JButton;
@@ -14,6 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.gui.ActivityInformation;
@@ -31,6 +39,12 @@ public class ExportPanel extends JPanel implements ActivityInformation {
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final AbstractActivities activities;
+    private final String[] headerEntries = new String[]{"U", Labels.getString("Common.Date"), Labels.getString("ReportListPanel.Time"),
+        Labels.getString("Common.Title"), Labels.getString("ReportListPanel.Estimated"), Labels.getString("ReportListPanel.Overestimated"),
+        Labels.getString("ReportListPanel.Real"), Labels.getString("ReportListPanel.Diff I"), Labels.getString("ReportListPanel.Diff II"),
+        Labels.getString("ToDoListPanel.Internal"), Labels.getString("ToDoListPanel.External"),
+        Labels.getString("Common.Type"), Labels.getString("Common.Author"), Labels.getString("Common.Place"),
+        Labels.getString("Common.Description"), Labels.getString("Common.Comment")};
 
     public ExportPanel(AbstractActivities activities) {
         this.activities = activities;
@@ -75,33 +89,20 @@ public class ExportPanel extends JPanel implements ActivityInformation {
         add(exportInputForm, gbc);
     }
 
-    public void export() {
+    private void export() {
         if (activities.size() > 0) {
-            String fileName = exportInputForm.getFileName() + "." + exportInputForm.getFileFormat();
+
             try {
-                CSVWriter writer = new CSVWriter(new FileWriter(fileName), exportInputForm.getSeparator());                
+                String fileName = exportInputForm.getFileName() + "." + exportInputForm.getFileExtention();
                 Iterator<Activity> act = activities.iterator();
-                String[] entries = new String[]{};
-                // Header
-                if (exportInputForm.isHeaderSelected()) {
-                
-                    entries = new String[] {"U",Labels.getString("Common.Date"),Labels.getString("ReportListPanel.Time"),
-                                                    Labels.getString("Common.Title"),Labels.getString("ReportListPanel.Estimated"),Labels.getString("ReportListPanel.Overestimated"),
-                                                    Labels.getString("ReportListPanel.Real"),Labels.getString("ReportListPanel.Diff I"),Labels.getString("ReportListPanel.Diff II"),
-                                                    Labels.getString("ToDoListPanel.Internal"),Labels.getString("ToDoListPanel.External"),
-                                                    Labels.getString("Common.Type"),Labels.getString("Common.Author"),Labels.getString("Common.Place"),
-                                                    Labels.getString("Common.Description"),Labels.getString("Common.Comment")};
-                    writer.writeNext(entries);
+                if (exportInputForm.isFileCSVFormat()) {
+                    exportCSV(fileName, act);
+                } else if (exportInputForm.isFileExcelFormat()) {
+                    exportExcel(fileName, act);
                 }
-                // Data
-                while (act.hasNext()) {
-                    entries = act.next().toArray(exportInputForm.getDatePattern());
-                    writer.writeNext(entries);
-                }
-                writer.close();
                 JFrame window = new JFrame();
                 String title = Labels.getString("ReportListPanel.Export reports");
-                String message = Labels.getString("ReportListPanel.Reports exported to file {0}",fileName);
+                String message = Labels.getString("ReportListPanel.Reports exported to file {0}", fileName);
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
             catch (IOException ex) {
@@ -111,6 +112,71 @@ public class ExportPanel extends JPanel implements ActivityInformation {
                 JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
             }
         }
+    }
+
+    private void exportCSV(String fileName, Iterator<Activity> act) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter(fileName), exportInputForm.getSeparator());
+        // Header
+        if (exportInputForm.isHeaderSelected()) {
+            writer.writeNext(headerEntries);
+        }
+        // Data
+        while (act.hasNext()) {
+            String[] entries = act.next().toArray(exportInputForm.getDatePattern());
+            writer.writeNext(entries);
+        }
+        writer.close();
+    }
+
+    private void exportExcel(String fileName, Iterator<Activity> act) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet worksheet = workbook.createSheet();
+
+        int rowNb = 0;
+        // Header
+        if (exportInputForm.isHeaderSelected()) {
+            HSSFRow row = worksheet.createRow(rowNb);
+            for (int i = 0; i < headerEntries.length; i++) {
+                row.createCell(i).setCellValue(headerEntries[i]);
+            }
+            rowNb++;
+        }
+        // Data
+        while (act.hasNext()) {
+            Object[] entries = act.next().toRowArray();
+            HSSFRow row = worksheet.createRow(rowNb);
+            for (int i = 0; i < entries.length; i++) {
+                HSSFCell cell = row.createCell(i);
+                if (entries[i] instanceof Integer) {
+                    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue((Integer) entries[i]);
+                } else if (entries[i] instanceof Boolean) {
+                    cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
+                    cell.setCellValue((Boolean) entries[i]);
+                } else if (entries[i] instanceof Date) {
+                    HSSFCellStyle cellStyle = workbook.createCellStyle();
+                    cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat(exportInputForm.getDatePattern())); // no other pattern for dates
+                    cell.setCellStyle(cellStyle);
+                    //cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue((Date) entries[i]);
+                } else { // text
+                    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    cell.setCellValue((String) entries[i]);
+                }
+            }
+            rowNb++;
+        }
+
+        // index from 0,0... cell A1 is cell(0,0)
+
+        /*cellStyle = workbook.createCellStyle();
+        cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+        cellD1.setCellStyle(cellStyle);*/
+
+        workbook.write(fileOut);
+        fileOut.flush();
+        fileOut.close();
     }
 
     @Override

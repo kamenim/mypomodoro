@@ -342,7 +342,7 @@ public class Activity {
         attributes[1] = format.format(date);
         pattern = "HH:mm";
         format = new SimpleDateFormat(pattern);
-        attributes[2] = format.format(date);
+        attributes[2] = format.format(date); // time
         attributes[3] = name;
         attributes[4] = estimatedPoms + "";
         attributes[5] = overestimatedPoms + "";
@@ -351,6 +351,29 @@ public class Activity {
         attributes[8] = overestimatedPoms > 0 ? ( actualPoms - estimatedPoms - overestimatedPoms ) + "" : "";
         attributes[9] = numInternalInterruptions + "";
         attributes[10] = numInterruptions + "";
+        attributes[11] = type;
+        attributes[12] = author;
+        attributes[13] = place;
+        attributes[14] = description;
+        attributes[15] = notes;
+        return attributes;
+    }
+    
+    public Object[] toRowArray() {
+        Object[] attributes = new Object[16];
+        attributes[0] = isUnplanned ? true : false;
+        attributes[1] = date;
+        String pattern = "HH:mm";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        attributes[2] = format.format(date); // time
+        attributes[3] = name;
+        attributes[4] = estimatedPoms;
+        attributes[5] = overestimatedPoms;
+        attributes[6] = actualPoms;
+        attributes[7] = actualPoms - estimatedPoms;
+        attributes[8] = overestimatedPoms > 0 ? ( actualPoms - estimatedPoms - overestimatedPoms ) : "";
+        attributes[9] = numInternalInterruptions;
+        attributes[10] = numInterruptions;
         attributes[11] = type;
         attributes[12] = author;
         attributes[13] = place;

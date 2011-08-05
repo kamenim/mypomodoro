@@ -6,9 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -28,14 +28,19 @@ public class ExportInputForm extends JPanel {
     private JCheckBox headerCheckBox = new JCheckBox();
     private JTextField fileName = new JTextField();
     private JComboBox fileFormatComboBox = new JComboBox();
-    private JComboBox datePatternComboBox = new JComboBox();
+    private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
     private String defaultFileName = "myPomodoro";
+    private FileFormat CSVFormat = new FileFormat("CSV", FileFormat.CSVExtention);
+    private FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)", FileFormat.ExcelExtention);
     private Separator commaSeparator = new Separator(0, Labels.getString("ReportListPanel.Comma"), ',');
     private Separator tabSeparator = new Separator(1, Labels.getString("ReportListPanel.Tab"), '\t');
     private Separator semicolonSeparator = new Separator(2, Labels.getString("ReportListPanel.Semicolon"), ';');
     private Separator editableSeparator = new Separator(3, "", ',');
-    private PatternsPanel patternsPanel = new PatternsPanel();
+    private Patterns patterns = new Patterns();
+    private JPanel patternsPanel = new JPanel();
+    private String excelPatterns = "m/d/yy";
+    private JPanel excelPatternsPanel = new JPanel();
 
     public ExportInputForm() {
         setBorder(new TitledBorder(new EtchedBorder(), ""));
@@ -87,9 +92,27 @@ public class ExportInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 2;
         c.weighty = 0.5;
-        String fileFormats[] = new String[1];
-        fileFormats[0] = "CSV";
+        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat};
         fileFormatComboBox = new JComboBox(fileFormats);
+        fileFormatComboBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
+                if (selectedFormat.equals(ExcelFormat)) {
+                    patternsPanel.setVisible(false);
+                    separatorLabel.setVisible(false);
+                    separatorComboBox.setVisible(false);
+                    excelPatternsPanel.setVisible(true);
+
+                } else {
+                    patternsPanel.setVisible(true);
+                    separatorLabel.setVisible(true);
+                    separatorComboBox.setVisible(true);
+                    excelPatternsPanel.setVisible(false);
+                }
+            }
+        });
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         add(fileFormatComboBox, c);
@@ -105,11 +128,13 @@ public class ExportInputForm extends JPanel {
         c.gridy = 3;
         c.weighty = 0.5;
         addPaternsComboBox(c);
+        addExcelPaternsComboBox(c);
+        excelPatternsPanel.setVisible(false);
         // Separator
         c.gridx = 0;
         c.gridy = 4;
         c.weighty = 0.5;
-        FormLabel separatorLabel = new FormLabel(Labels.getString("ReportListPanel.Separator") + "*: ");
+        separatorLabel = new FormLabel(Labels.getString("ReportListPanel.Separator") + "*: ");
         fileFormatLabel.setMinimumSize(LABEL_DIMENSION);
         fileFormatLabel.setPreferredSize(LABEL_DIMENSION);
         add(separatorLabel, c);
@@ -159,25 +184,57 @@ public class ExportInputForm extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        patternsPanel.add(patternsPanel.getDatePatternsComboBox1(), gbc);
+        patternsPanel.add(patterns.getDatePatternsComboBox1(), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        patternsPanel.add(patternsPanel.getDateSeparatorComboBox1(), gbc);
+        patternsPanel.add(new JLabel("  "), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
-        patternsPanel.add(patternsPanel.getDatePatternsComboBox2(), gbc);
+        patternsPanel.add(patterns.getDateSeparatorComboBox1(), gbc);
         gbc.gridx = 3;
         gbc.gridy = 0;
-        patternsPanel.add(patternsPanel.getDateSeparatorComboBox2(), gbc);
+        patternsPanel.add(new JLabel("  "), gbc);
         gbc.gridx = 4;
         gbc.gridy = 0;
-        patternsPanel.add(patternsPanel.getDatePatternsComboBox3(), gbc);
+        patternsPanel.add(patterns.getDatePatternsComboBox2(), gbc);
+        gbc.gridx = 5;
+        gbc.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbc);
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        patternsPanel.add(patterns.getDateSeparatorComboBox2(), gbc);
+        gbc.gridx = 7;
+        gbc.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbc);
+        gbc.gridx = 8;
+        gbc.gridy = 0;
+        patternsPanel.add(patterns.getDatePatternsComboBox3(), gbc);
         add(patternsPanel, c);
 
     }
 
-    public String getFileFormat() {
-        return (String) fileFormatComboBox.getSelectedItem().toString().toLowerCase();
+    private void addExcelPaternsComboBox(GridBagConstraints c) {
+        excelPatternsPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        excelPatternsPanel.add(new JLabel(excelPatterns), gbc);
+        add(excelPatternsPanel, c);
+    }
+
+    public String getFileExtention() {
+        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).getExtention();
+    }
+
+    public boolean isFileCSVFormat() {
+        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).isCSVFormat();
+    }
+
+    public boolean isFileExcelFormat() {
+        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).isExcelFormat();
     }
 
     public String getFileName() {
@@ -185,7 +242,12 @@ public class ExportInputForm extends JPanel {
     }
 
     public String getDatePattern() {
-        return patternsPanel.getDatePattern();
+        FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
+        if (selectedFormat.equals(ExcelFormat)) {
+            return excelPatterns;
+        } else {
+            return patterns.getDatePattern();
+        }
     }
 
     public char getSeparator() {
@@ -206,6 +268,39 @@ public class ExportInputForm extends JPanel {
 
     public void initSeparatorComboBox() {
         separatorComboBox.setSelectedIndex(commaSeparator.getSeparatorIndex());
+    }
+
+    private class FileFormat {
+
+        public static final String CSVExtention = "csv";
+        public static final String ExcelExtention = "xls";
+        private String formatName;
+        private String extention;
+
+        public FileFormat() {
+        }
+
+        public FileFormat(String formatName, String extention) {
+            this.formatName = formatName;
+            this.extention = extention;
+        }
+
+        public String getExtention() {
+            return extention;
+        }
+
+        public boolean isCSVFormat() {
+            return extention.equals(CSVExtention);
+        }
+
+        public boolean isExcelFormat() {
+            return extention.equals(ExcelExtention);
+        }
+
+        @Override
+        public String toString() {
+            return formatName;
+        }
     }
 
     private class Separator {
@@ -249,9 +344,9 @@ public class ExportInputForm extends JPanel {
         }
     }
 
-    private class PatternsPanel extends JPanel {
+    private class Patterns {
 
-        private String datePatterns[] = new String[]{"yy", "yyy", "M", "MM", "MMM", "MMMM", "d", "dd"};
+        private String datePatterns[] = new String[]{"yy", "yyy", "m", "mm", "mmm", "mmmm", "d", "dd"};
         private String dateSeparators[] = new String[]{"/", "-", "."};
         private JComboBox datePatternsComboBox1 = new JComboBox(datePatterns);
         private JComboBox dateSeparatorComboBox1 = new JComboBox(dateSeparators);
@@ -259,10 +354,10 @@ public class ExportInputForm extends JPanel {
         private JComboBox dateSeparatorComboBox2 = new JComboBox(dateSeparators);
         private JComboBox datePatternsComboBox3 = new JComboBox(datePatterns);
 
-        public PatternsPanel() {
+        public Patterns() {
             datePatternsComboBox1.setSelectedIndex(0);
             datePatternsComboBox2.setSelectedIndex(2);
-            datePatternsComboBox3.setSelectedIndex(6);            
+            datePatternsComboBox3.setSelectedIndex(6);
         }
 
         public JComboBox getDatePatternsComboBox1() {
