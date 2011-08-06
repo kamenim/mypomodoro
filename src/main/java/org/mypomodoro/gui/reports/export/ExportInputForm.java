@@ -346,7 +346,7 @@ public class ExportInputForm extends JPanel {
 
     private class Patterns {
 
-        private String datePatterns[] = new String[]{"yy", "yyy", "m", "mm", "mmm", "mmmm", "d", "dd"};
+        private String datePatterns[] = new String[]{"yy", "yyy", "M", "MM", "MMM", "MMMM", "d", "dd"};
         private String dateSeparators[] = new String[]{"/", "-", "."};
         private JComboBox datePatternsComboBox1 = new JComboBox(datePatterns);
         private JComboBox dateSeparatorComboBox1 = new JComboBox(dateSeparators);

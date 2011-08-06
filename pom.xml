@@ -86,7 +86,7 @@
         <compileSource>1.6</compileSource>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    
     <!-- BUILD CONFIGURATION -->
     <build>
         <plugins>
@@ -176,29 +176,46 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Jar Bundler Plugin //Creates Executable Wrapper for Mac OS X-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <configuration>
-                    <mainClass>org.mypomodoro.Main</mainClass>
-                    <iconFile>${basedir}/src/main/resources/icons/myPomodoroIcon.icns</iconFile>
-                    <jvmVersion>1.6+</jvmVersion>
-                    <dictionaryFile>${basedir}/src/main/resources/org/osxappbundle/properties/Info.plist.xml</dictionaryFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            </plugin>            
         </plugins>
     </build>
+    
+    <!-- MAC OS PROFILES -->
+    <profiles>    
+        <profile>
+            <id>Mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Jar Bundler Plugin -->
+                    <!-- Creates Executable Wrapper for Mac OS X -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>osxappbundle-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <configuration>
+                            <mainClass>org.mypomodoro.Main</mainClass>
+                            <iconFile>${basedir}/src/main/resources/icons/myPomodoroIcon.icns</iconFile>
+                            <jvmVersion>1.6+</jvmVersion>
+                            <dictionaryFile>${basedir}/src/main/resources/org/osxappbundle/properties/Info.plist.xml</dictionaryFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>bundle</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <!-- REPORTING -->
     <reporting>
