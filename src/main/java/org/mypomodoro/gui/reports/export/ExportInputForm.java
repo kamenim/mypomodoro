@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -346,8 +347,8 @@ public class ExportInputForm extends JPanel {
 
     private class Patterns {
 
-        private String datePatterns[] = new String[]{"yy", "yyy", "M", "MM", "MMM", "MMMM", "d", "dd"};
-        private String dateSeparators[] = new String[]{"/", "-", "."};
+        private String datePatterns[] = new String[]{"d", "dd", "M", "MM", "MMM", "MMMM", "yy", "yyyy"};
+        private String dateSeparators[] = new String[]{" ", "/", "-", "."};
         private JComboBox datePatternsComboBox1 = new JComboBox(datePatterns);
         private JComboBox dateSeparatorComboBox1 = new JComboBox(dateSeparators);
         private JComboBox datePatternsComboBox2 = new JComboBox(datePatterns);
@@ -355,9 +356,15 @@ public class ExportInputForm extends JPanel {
         private JComboBox datePatternsComboBox3 = new JComboBox(datePatterns);
 
         public Patterns() {
-            datePatternsComboBox1.setSelectedIndex(0);
-            datePatternsComboBox2.setSelectedIndex(2);
-            datePatternsComboBox3.setSelectedIndex(6);
+            if (DateUtil.isUSLocale()) {
+                datePatternsComboBox1.setSelectedIndex(3);
+                datePatternsComboBox2.setSelectedIndex(0);
+                datePatternsComboBox3.setSelectedIndex(7);
+            } else {
+                datePatternsComboBox1.setSelectedIndex(0);
+                datePatternsComboBox2.setSelectedIndex(3);
+                datePatternsComboBox3.setSelectedIndex(7);
+            }
         }
 
         public JComboBox getDatePatternsComboBox1() {

@@ -15,6 +15,7 @@ import org.mypomodoro.buttons.DeleteReportButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -43,7 +44,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
         //gbc.fill = GridBagConstraints.NONE;
         add(new DeleteReportButton(table), gbc);
     }
-    
+
     private void addAllDeleteButton(JTable table) {
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -60,8 +61,8 @@ public class InformationArea extends JPanel implements ActivityInformation {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.gridheight = 2;        
-        informationArea.setEditable(false);        
+        gbc.gridheight = 2;
+        informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         // disable auto scrolling
@@ -72,21 +73,15 @@ public class InformationArea extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        String pattern = "dd MMM yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String activityDate = format.format(activity.getDate());
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
-        text += activityDate;
+        text += DateUtil.getFormatedDate(activity.getDate());
         if (activity.isUnplanned()) {
             text += "]";
         }
-        pattern = "HH:mm";
-        format = new SimpleDateFormat(pattern);
-        String timeDate = format.format(activity.getDate());
-        text += " " + timeDate;
+        text += " " + DateUtil.getFormatedTime(activity.getDate());
         text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
                 + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {

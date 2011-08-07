@@ -2,6 +2,7 @@ package org.mypomodoro.model;
 
 import java.util.Locale;
 import org.mypomodoro.db.PreferencesDAO;
+import org.mypomodoro.util.DateUtil;
 
 /**
  * Preference Object stores all user preferences.
@@ -57,7 +58,7 @@ public class Preferences {
     /**
      * Locale
      */
-    public static Locale LOCALE = new Locale("en", "US");
+    public static Locale LOCALE = DateUtil.US_LOCALE;
     private Locale locale = LOCALE;
     /**
      * System tray

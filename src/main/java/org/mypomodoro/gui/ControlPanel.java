@@ -15,12 +15,14 @@ import org.mypomodoro.buttons.MyButton;
 import org.mypomodoro.buttons.RestartButton;
 
 import org.mypomodoro.model.Preferences;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class ControlPanel extends JPanel {
 
     public static Preferences preferences = new Preferences();
     public static Labels labels;
+    public static DateUtil dateUtil;
     public JButton saveButton;
     public JButton resetButton;
     protected JLabel validation = new JLabel();
@@ -31,7 +33,9 @@ public class ControlPanel extends JPanel {
 
     public ControlPanel() {
         preferences.loadPreferences();
-        labels = new Labels(new Locale(preferences.getLocale().getLanguage(), preferences.getLocale().getCountry(), preferences.getLocale().getVariant()));
+        Locale locale = new Locale(preferences.getLocale().getLanguage(), preferences.getLocale().getCountry(), preferences.getLocale().getVariant());
+        labels = new Labels(locale);
+        dateUtil = new DateUtil(locale);
         saveButton = new MyButton(Labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
         resetButton = new MyButton(Labels.getString("PreferencesPanel.Reset"));
