@@ -72,7 +72,7 @@ public class PreferencesInputForm extends JPanel {
         Vector locales = ItemLocale.getLocalesFromPropertiesTitlefiles();
         localesComboBox = new JComboBox(locales);
         for (int i = 0; i < locales.size(); i++) {
-            if (( (ItemLocale) locales.get(i) ).getLocale().toString().equals(ControlPanel.preferences.getLocale().toString())) {
+            if (( (ItemLocale) locales.get(i) ).getLocale().equals(ControlPanel.preferences.getLocale())) {
                 localesComboBox.setSelectedIndex(i);
             }
         }
