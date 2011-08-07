@@ -3,7 +3,6 @@ package org.mypomodoro.gui.create;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JComboBox;
 
@@ -16,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class ActivityInputForm extends JPanel {
@@ -30,7 +30,7 @@ public class ActivityInputForm extends JPanel {
     protected final JTextArea descriptionField = new JTextArea();
     protected final JTextField typeField = new JTextField();
     protected JComboBox estimatedPomodoros = new JComboBox();
-    protected final JXDatePicker datePicker = new JXDatePicker();
+    protected final JXDatePicker datePicker = new JXDatePicker(Labels.getLocale());
     protected int activityId = -1;
 
     public ActivityInputForm() {
@@ -229,8 +229,8 @@ public class ActivityInputForm extends JPanel {
     }
 
     public boolean isDateToday() {
-        String datePickerFormat = new SimpleDateFormat("dd/MM/yyyy").format(datePicker.getDate());
-        String todayFormat = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        String datePickerFormat = DateUtil.getFormatedDate(datePicker.getDate());
+        String todayFormat = DateUtil.getFormatedDate(new Date());
         return datePickerFormat.equalsIgnoreCase(todayFormat);
     }
 }

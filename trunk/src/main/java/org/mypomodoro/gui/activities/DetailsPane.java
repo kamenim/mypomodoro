@@ -15,6 +15,7 @@ import org.mypomodoro.buttons.DeleteAllButton;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -43,7 +44,7 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         //gbc.fill = GridBagConstraints.NONE;
         add(new DeleteButton(table), gbc);
     }
-    
+
     private void addDeleteAllButton(JTable table) {
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -72,14 +73,11 @@ public class DetailsPane extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        String pattern = "dd MMM yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String activityDate = format.format(activity.getDate());
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
-        text += activityDate;
+        text += DateUtil.getFormatedDate(activity.getDate());
         if (activity.isUnplanned()) {
             text += "]";
         }

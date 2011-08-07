@@ -28,6 +28,7 @@ import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -97,13 +98,11 @@ public class ReportListPanel extends JPanel {
                 int colIndex = columnNames.length;
                 tableData = new Object[rowIndex][colIndex];
                 Iterator<Activity> iterator = activities.iterator();
-                String pattern = "HH:mm";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
                 for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
                     Activity currentActivity = iterator.next();
                     tableData[i][0] = currentActivity.isUnplanned();
-                    tableData[i][1] = currentActivity.getDate();
-                    tableData[i][2] = format.format(currentActivity.getDate());
+                    tableData[i][1] = DateUtil.getFormatedDate(currentActivity.getDate());
+                    tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
                     tableData[i][3] = currentActivity.getName();
                     String poms = "" + currentActivity.getEstimatedPoms();
                     if (currentActivity.getOverestimatedPoms() > 0) {
@@ -216,9 +215,9 @@ public class ReportListPanel extends JPanel {
         table.getColumnModel().getColumn(1).setMinWidth(80);
         table.getColumnModel().getColumn(1).setPreferredWidth(80);
         // Set width of column Time
-        table.getColumnModel().getColumn(2).setMaxWidth(40);
-        table.getColumnModel().getColumn(2).setMinWidth(40);
-        table.getColumnModel().getColumn(2).setPreferredWidth(40);
+        table.getColumnModel().getColumn(2).setMaxWidth(60);
+        table.getColumnModel().getColumn(2).setMinWidth(60);
+        table.getColumnModel().getColumn(2).setPreferredWidth(60);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);

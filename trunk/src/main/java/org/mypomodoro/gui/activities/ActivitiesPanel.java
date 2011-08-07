@@ -26,6 +26,7 @@ import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -98,7 +99,7 @@ public class ActivitiesPanel extends JPanel {
                 for (int i = 0; iterator.hasNext(); i++) {
                     Activity a = iterator.next();
                     tableData[i][0] = a.isUnplanned();
-                    tableData[i][1] = a.getDate();
+                    tableData[i][1] = DateUtil.getFormatedDate(a.getDate());
                     tableData[i][2] = a.getName();
                     String poms = "" + a.getEstimatedPoms();
                     if (a.getOverestimatedPoms() > 0) {

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
 import java.text.SimpleDateFormat;
+import org.mypomodoro.util.DateUtil;
 
 /**
  * Activity Objects stores all the required information about tasks in the
@@ -310,8 +311,8 @@ public class Activity {
     }
 
     public boolean isDateToday() {
-        String dateActivityFormat = new SimpleDateFormat("dd/MM/yyyy").format(getDate());
-        String todayFormat = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        String dateActivityFormat = DateUtil.getFormatedDate(getDate());
+        String todayFormat = DateUtil.getFormatedDate(new Date());
         return dateActivityFormat.equalsIgnoreCase(todayFormat);
     }
 
@@ -325,24 +326,14 @@ public class Activity {
     }
 
     public String[] toArray() {
-        return toArray("dd/MM/yyyy");
+        return toArray("dd MM yyyy");
     }
 
-    public String[] toArray(String datePattern) {
+    public String[] toArray(String pattern) {
         String[] attributes = new String[16];
         attributes[0] = isUnplanned ? "1" : "0";
-        String pattern = datePattern;
-        SimpleDateFormat format = null;
-        try {
-            format = new SimpleDateFormat(pattern);
-        }
-        catch (Exception e) {
-            format = new SimpleDateFormat("dd/MM/yyyy");
-        }
-        attributes[1] = format.format(date);
-        pattern = "HH:mm";
-        format = new SimpleDateFormat(pattern);
-        attributes[2] = format.format(date); // time
+        attributes[1] = DateUtil.getFormatedDate(date, pattern);
+        attributes[2] = DateUtil.getFormatedTime(date, pattern); // time
         attributes[3] = name;
         attributes[4] = estimatedPoms + "";
         attributes[5] = overestimatedPoms + "";
@@ -363,9 +354,7 @@ public class Activity {
         Object[] attributes = new Object[16];
         attributes[0] = isUnplanned ? true : false;
         attributes[1] = date;
-        String pattern = "HH:mm";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        attributes[2] = format.format(date); // time
+        attributes[2] = DateUtil.getFormatedTime(date); // time
         attributes[3] = name;
         attributes[4] = estimatedPoms;
         attributes[5] = overestimatedPoms;

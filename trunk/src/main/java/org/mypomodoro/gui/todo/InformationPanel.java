@@ -17,6 +17,7 @@ import org.mypomodoro.buttons.MyButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -73,7 +74,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        informationArea.setEditable(false);       
+        informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         // disable auto scrolling
@@ -85,14 +86,11 @@ public class InformationPanel extends JPanel implements ActivityInformation {
     @Override
     public void showInfo(Activity activity) {
         ToDoIconLabel.showIconLabel(iconLabel, activity);
-        String pattern = "dd MMM yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String activityDate = format.format(activity.getDate());
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
         }
-        text += activityDate;
+        text += DateUtil.getFormatedDate(activity.getDate());
         if (activity.isUnplanned()) {
             text += "]";
         }
