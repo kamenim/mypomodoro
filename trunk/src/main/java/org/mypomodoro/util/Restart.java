@@ -3,13 +3,15 @@ package org.mypomodoro.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URLDecoder;
 import java.util.List;
 import org.mypomodoro.Main;
 
 /**
  * Restart application
  * Code found at http://java.dzone.com/articles/programmatically-restart-java
- * Code modified to support non Hotspot VM implementation and EXE wrapper file
+ * Code modified to support non Hotspot VM implementation, EXE wrapper file
+ * Also, support for spaces and special characters in the path
  * 
  * @author Phil Karoo
  */
@@ -47,24 +49,23 @@ public class Restart {
             // program main and program arguments
             String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
             String pathFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            if (pathFile != null && pathFile.endsWith(".exe")) { // EXE wrapper
-                cmd.append("-jar " + new File(pathFile));
+            pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding                        
+
+            if (pathFile.endsWith(".exe")) { // EXE wrapper
+                cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
             } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
-                // program main is a jar
-                if (mainCommand[0].endsWith(".jar")) {
-                    // if it's a jar, add -jar mainJar
-                    cmd.append("-jar " + new File(mainCommand[0]).getPath());
-                } else {
-                    // else it's a .class, add the classpath and mainClass
+                if (pathFile.endsWith(".jar")) { // Jar file                   
+                    cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
+                } else { // Class file (running in IDE like Netbeans)
                     cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
-                }
-                // finally add program arguments
-                for (int i = 1; i < mainCommand.length; i++) {
-                    cmd.append(" ");
-                    cmd.append(mainCommand[i]);
+                    // Program arguments
+                    for (int i = 1; i < mainCommand.length; i++) {
+                        cmd.append(" ");
+                        cmd.append(mainCommand[i]);
+                    }
                 }
             } else { // Non Hotspot VM implementation
-                cmd.append("-jar " + new File(pathFile));
+                cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
             }
 
             // execute the command in a shutdown hook, to be sure that all the
