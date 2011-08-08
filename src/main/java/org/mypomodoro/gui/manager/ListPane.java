@@ -108,7 +108,7 @@ public class ListPane extends JPanel implements ActivityInformation {
             text += "]";
         }
         text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
-                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
+                + "\n" + Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }

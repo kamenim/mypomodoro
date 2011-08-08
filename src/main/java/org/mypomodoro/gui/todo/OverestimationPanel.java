@@ -82,7 +82,9 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         if (selectedToDo != null) {
             selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
             selectedToDo.databaseUpdate();
-            panel.getInformationPanel().showInfo(selectedToDo); // refresh info panel            
+            // refresh info panel
+            panel.getInformationPanel().showInfo(selectedToDo);
+            // refresh icon label
             if (panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
                 ToDoIconLabel.showIconLabel(panel.getIconLabel(), selectedToDo);
             }
@@ -92,6 +94,8 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
             if (panel.getPomodoro().getCurrentToDo().equals(selectedToDo)) {
                 ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
             }
+            // refresh remaining Pomodoros label
+            PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
             JFrame window = new JFrame();
             String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString("ToDoListPanel.Nb of estimated pomodoros increased by {0}", overestimatedPomodoros);

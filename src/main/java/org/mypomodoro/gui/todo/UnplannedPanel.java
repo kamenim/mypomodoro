@@ -85,7 +85,7 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
                 }
             }
         }
-        newActivity.setIsUnplanned(true);
+        newActivity.setIsUnplanned(true);        
         JFrame window = new JFrame();
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message = "";
@@ -94,6 +94,8 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
             panel.getToDoList().add(newActivity); // Today unplanned activity
             newActivity.databaseInsert();
             clearForm();
+            // refresh remaining Pomodoros label
+            PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
         } else {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
             validation.setVisible(false);
