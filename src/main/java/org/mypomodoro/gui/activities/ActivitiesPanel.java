@@ -41,7 +41,7 @@ import org.mypomodoro.util.Labels;
 public class ActivitiesPanel extends JPanel {
 
     JTable table = new JTable(getTableModel());
-    private static final String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("Common.Title"), Labels.getString("Common.Estimated Pomodoros"), Labels.getString("Common.Type"), "ID"};
+    private static final String[] columnNames = {"U", Labels.getString("Common.Date"), Labels.getString("Common.Title"), Labels.getString("Common.Estimated pomodoros"), Labels.getString("Common.Type"), "ID"};
     public static final int ID_KEY = 5;
     private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
