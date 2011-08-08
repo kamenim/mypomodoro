@@ -20,7 +20,7 @@ public class ReportList extends AbstractActivities {
     @Override
     public void refresh() {
         activities.clear();
-        for (Activity act : ActivitiesDAO.getInstance().getCompletedActivities()) {
+        for (Activity act : ActivitiesDAO.getInstance().getReports()) {
             activities.add(act);
         }
     }
@@ -44,7 +44,7 @@ public class ReportList extends AbstractActivities {
     }
 
     public void removeAll() {
-        ActivitiesDAO.getInstance().removeAllCompletedActivities();
+        ActivitiesDAO.getInstance().removeAllReports();
         update();
     }
 }

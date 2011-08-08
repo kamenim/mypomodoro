@@ -33,17 +33,61 @@ public class InformationPanel extends JPanel implements ActivityInformation {
     public InformationPanel(ToDoListPanel panel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-
-        addToDoIconPanel();
-        addInformationArea();
+        
+        addInformationPanel();                
         addCompleteButton(panel);
+        addCompleteAllButton(panel);
+    }
+    
+    private void addInformationPanel() {
+        JPanel infoPanel = new JPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridheight = 2;
+        
+        GridBagConstraints igbc = new GridBagConstraints();
+        infoPanel.setLayout(new GridBagLayout());
+        addToDoIconPanel(infoPanel,igbc);
+        addInformationArea(infoPanel,igbc);
+        
+        add(infoPanel, gbc);
+    }
+
+    private void addToDoIconPanel(JPanel infoPanel, GridBagConstraints igbc) {
+        igbc.gridx = 0;
+        igbc.gridy = 0;
+        igbc.fill = GridBagConstraints.BOTH;
+        igbc.weightx = 1.0;
+        igbc.weighty = 0.1;
+        igbc.gridheight = 1;
+        infoPanel.add(iconLabel, igbc);
+    }
+
+    private void addInformationArea(JPanel infoPanel, GridBagConstraints igbc) {
+        // add the information area
+        igbc.gridx = 0;
+        igbc.gridy = 1;
+        igbc.fill = GridBagConstraints.BOTH;
+        igbc.weightx = 1.0;
+        igbc.weighty = 1.0;
+        igbc.gridheight = GridBagConstraints.REMAINDER;
+        informationArea.setEditable(false);
+        informationArea.setLineWrap(true);
+        informationArea.setWrapStyleWord(true);
+        // disable auto scrolling
+        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        infoPanel.add(new JScrollPane(informationArea), igbc);
     }
 
     private void addCompleteButton(final ToDoListPanel panel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        gbc.gridheight = 2;
+        gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
         JButton changeButton = new MyButton(Labels.getString("ToDoListPanel.Complete"));
         changeButton.addActionListener(new ActionListener() {
@@ -56,31 +100,23 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         add(changeButton, gbc);
     }
 
-    private void addToDoIconPanel() {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        add(iconLabel, gbc);
-    }
-
-    private void addInformationArea() {
-        // add the information area
-        gbc.gridx = 0;
+    private void addCompleteAllButton(final ToDoListPanel panel) {
+        gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.gridheight = GridBagConstraints.REMAINDER;
-        informationArea.setEditable(false);
-        informationArea.setLineWrap(true);
-        informationArea.setWrapStyleWord(true);
-        // disable auto scrolling
-        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-        add(new JScrollPane(informationArea), gbc);
+        gbc.weightx = 0.1;
+        gbc.gridheight = 1;
+        //gbc.fill = GridBagConstraints.NONE;
+        JButton changeButton = new MyButton(Labels.getString("ToDoListPanel.Complete all"));
+        changeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!panel.getToDoList().isEmpty()) {
+                    panel.completeAllTasksWithWarning();
+                }
+            }
+        });
+        add(changeButton, gbc);
     }
 
     @Override

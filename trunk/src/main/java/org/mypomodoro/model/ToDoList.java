@@ -1,5 +1,6 @@
 package org.mypomodoro.model;
 
+import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -18,7 +19,7 @@ public class ToDoList extends AbstractActivities {
     @Override
     public void refresh() {
         activities.clear();
-        for (Activity act : ActivitiesDAO.getInstance().getTodoList()) {
+        for (Activity act : ActivitiesDAO.getInstance().getTODOs()) {
             activities.add(act);
         }
     }
@@ -50,6 +51,16 @@ public class ToDoList extends AbstractActivities {
             currentAct.setPriority(j);
             currentAct.databaseUpdate();
         }
+    }
+    
+    public void update() {
+        Main.updateLists();
+        Main.updateView();
+    }
+        
+    public void completeAll() {
+        ActivitiesDAO.getInstance().completeAllTODOs();
+        update();
     }
 
     /**

@@ -17,7 +17,7 @@ import org.mypomodoro.util.Labels;
 public class DeleteAllReportButton extends MyButton {
 
     public DeleteAllReportButton(final JTable table) {
-        super(Labels.getString("Common.DeleteAll"));
+        super(Labels.getString("Common.Delete all"));
         addActionListener(new ActionListener() {
 
             @Override

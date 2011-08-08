@@ -33,7 +33,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
 
         addInformationArea();
         addDeleteButton(table);
-        addAllDeleteButton(table);
+        addDeleteAllButton(table);
     }
 
     private void addDeleteButton(JTable table) {
@@ -45,7 +45,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
         add(new DeleteReportButton(table), gbc);
     }
 
-    private void addAllDeleteButton(JTable table) {
+    private void addDeleteAllButton(JTable table) {
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 0.1;
@@ -83,7 +83,7 @@ public class InformationArea extends JPanel implements ActivityInformation {
         }
         text += " " + DateUtil.getFormatedTime(activity.getDate());
         text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
-                + "\n" + Labels.getString("Common.Estimated Pomodoros") + ": " + activity.getEstimatedPoms();
+                + "\n" + Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms();
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }

@@ -41,8 +41,10 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    //private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    private final long POMODORO_LENGTH = MINUTES;
+    //private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    private final long POMODORO_BREAK_LENGTH = MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
@@ -126,6 +128,8 @@ public class Pomodoro {
                         ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), currentToDo);
                         ToDoIconLabel.showIconLabel(panel.getOverestimationPanel().getIconLabel(), currentToDo);
                     }
+                    // refresh remaining Pomodoros label
+                    PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
                     pomSetNumber++;
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
@@ -146,8 +150,8 @@ public class Pomodoro {
                     if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
-                        MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Complete"), TrayIcon.MessageType.NONE);
-                        MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Complete"));
+                        MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                        MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                     } else {
                         tick();
                         inpomodoro = true;

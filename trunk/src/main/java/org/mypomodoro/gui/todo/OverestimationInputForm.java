@@ -36,7 +36,7 @@ public class OverestimationInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        FormLabel label = new FormLabel(Labels.getString("ToDoListPanel.Overestimated Pomodoros") + "*: ");
+        FormLabel label = new FormLabel(Labels.getString("ToDoListPanel.Overestimated pomodoros") + "*: ");
         label.setMinimumSize(LABEL_DIMENSION);
         label.setPreferredSize(LABEL_DIMENSION);
         add(label, c);

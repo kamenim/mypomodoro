@@ -3,6 +3,7 @@ package org.mypomodoro.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.mypomodoro.Main;
@@ -54,10 +55,10 @@ public class ActivitiesDAO {
         Main.updateView();
     }
 
-    public Iterable<Activity> getActivities() {
-        database.lock();
+    public Iterable<Activity> getActivities() {        
         List<Activity> activities = new ArrayList<Activity>();
         try {
+            database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false' ORDER BY name;");
             try {
@@ -83,10 +84,10 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public Iterable<Activity> getCompletedActivities() {
-        List<Activity> activities = new ArrayList<Activity>();
-        database.lock();
+    public Iterable<Activity> getReports() {
+        List<Activity> activities = new ArrayList<Activity>();        
         try {
+            database.lock();
             ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY name;");
             try {
                 while (rs.next()) {
@@ -111,10 +112,10 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public Iterable<Activity> getTodoList() {
-        List<Activity> activities = new ArrayList<Activity>();
-        database.lock();
+    public Iterable<Activity> getTODOs() {
+        List<Activity> activities = new ArrayList<Activity>();        
         try {
+            database.lock();
             ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY name;");
             try {
                 while (rs.next()) {
@@ -151,7 +152,7 @@ public class ActivitiesDAO {
         }
     }
 
-    public void update(Activity activity) {
+    public void update(Activity activity) {                
         String updateSQL = "UPDATE activities SET " + "name = '"
                 + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''")
                 + "', " + "description = '" + activity.getDescription().replace("'", "''") + "', "
@@ -169,9 +170,8 @@ public class ActivitiesDAO {
                 + ", " + "priority = " + activity.getPriority()
                 + ", " + "num_internal_interruptions = " + activity.getNumInternalInterruptions()
                 + " WHERE id = " + activity.getId() + ";";
-
-        database.lock();
         try {
+            database.lock();
             database.update("begin;");
             database.update(updateSQL);
             database.update("commit;");
@@ -181,10 +181,10 @@ public class ActivitiesDAO {
         }
     }
 
-    public Activity getActivityByNameAndDate(Activity newActivity) {
-        database.lock();
+    public Activity getActivityByNameAndDate(Activity newActivity) {        
         Activity activity = null;
         try {
+            database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false'"
                     + "AND name = '" + newActivity.getName().replace("'", "''") + "'"
@@ -212,7 +212,7 @@ public class ActivitiesDAO {
         return activity;
     }
 
-    public void removeAllCompletedActivities() {
+    public void removeAllReports() {
         try {
             database.lock();
             database.update("begin;");
@@ -236,11 +236,11 @@ public class ActivitiesDAO {
         }
     }
 
-    // Activities, ToDOs and Reports
-    public Activity getActivity(int ID) {
-        database.lock();
+    // Activities, TODOs and Reports
+    public Activity getActivity(int ID) {        
         Activity activity = null;
         try {
+            database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE id = " + ID + ";");
             try {
@@ -264,5 +264,21 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activity;
+    }
+    
+    public void completeAllTODOs() {
+        String updateSQL = "UPDATE activities SET "
+                + "date_added = " + new Date().getTime() + ", "
+                + "is_complete = 'true'"                
+                + " WHERE priority > -1 AND is_complete = 'false';";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+        }
+        finally {
+            database.update("Commit;");
+            database.unlock();
+        }
     }
 }
