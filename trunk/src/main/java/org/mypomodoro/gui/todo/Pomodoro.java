@@ -41,8 +41,10 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    //private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    private final long POMODORO_LENGTH = MINUTES;
+    //private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
+    private final long POMODORO_BREAK_LENGTH = MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
@@ -56,6 +58,7 @@ public class Pomodoro {
     private long time = pomodoroLength;
     private boolean inpomodoro = false;
     private Clip clip;
+    private boolean isMute = false;
 
     public Pomodoro(ToDoListPanel panel) {
         pomodoroTime = panel.getPomodoroTime();
@@ -113,7 +116,9 @@ public class Pomodoro {
                 }
             } else {
                 stopSound();
-                ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
+                if (ControlPanel.preferences.getRinging() && !isMute) {
+                    ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
+                }
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
@@ -151,7 +156,9 @@ public class Pomodoro {
                         MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
                         MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                     } else {
-                        tick();
+                        if (ControlPanel.preferences.getTicking() && !isMute) {
+                            tick();
+                        }
                         inpomodoro = true;
                         goInPomodoro();
                     }
@@ -244,21 +251,17 @@ public class Pomodoro {
         if (selectedToDo != null) { // not empty list
             ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), currentToDo);
         }
-        tick();
+        if (ControlPanel.preferences.getTicking() && !isMute) {
+            tick();
+        }
     }
 
     public void tick() {
-        if (ControlPanel.preferences.getTicking()) {
-            InputStream is = Main.class.getResourceAsStream("/sounds/ticking.wav");
-            playSound(is, true);
-        }
+        playSound(Main.class.getResourceAsStream("/sounds/ticking.wav"), true);
     }
 
     public void ring() {
-        if (ControlPanel.preferences.getRinging()) {
-            InputStream is = Main.class.getResourceAsStream("/sounds/ringing.wav");
-            playSound(is);
-        }
+        playSound(Main.class.getResourceAsStream("/sounds/ringing.wav"));
     }
 
     public void playSound(InputStream is) {
@@ -356,5 +359,19 @@ public class Pomodoro {
 
     private boolean isSystemTray() {
         return SystemTray.isSupported() && ControlPanel.preferences.getSystemTray();
+    }
+
+    public void mute() {
+        if (inpomodoro) { // mute ticking
+            stopSound();
+        }
+        isMute = true;
+    }
+
+    public void unmute() {
+        if (inpomodoro) { // un-mute ticking
+            tick();
+        }
+        isMute = false;
     }
 }

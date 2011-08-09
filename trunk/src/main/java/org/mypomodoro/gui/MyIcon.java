@@ -48,8 +48,7 @@ public class MyIcon extends JLabel {
         setPreferredSize(d);
         setMinimumSize(d);
         setHorizontalTextPosition(JLabel.CENTER);
-        setVerticalTextPosition(JLabel.BOTTOM);
-        //final JPanel panel = p;
+        setVerticalTextPosition(JLabel.BOTTOM);        
         addMouseListener(new MouseListener() {
 
             @Override

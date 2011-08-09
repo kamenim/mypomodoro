@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,18 +8,20 @@ import java.util.Date;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.ActivityInformationListListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
@@ -105,6 +108,7 @@ public class ToDoListPanel extends JPanel {
         gbc.gridheight = 1;
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime);
         add(wrapInBackgroundImage(timerPanel,
+                new MuteButton(pomodoro),
                 new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
@@ -146,20 +150,34 @@ public class ToDoListPanel extends JPanel {
         PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel, toDoList);
     }
 
-    private JPanel wrapInBackgroundImage(JComponent component,
+    private JPanel wrapInBackgroundImage(TimerPanel timerPanel, MuteButton muteButton,
             Icon backgroundIcon, int verticalAlignment, int horizontalAlignment) {
 
         // make the passed in swing component transparent
-        component.setOpaque(false);
+        timerPanel.setOpaque(false);
 
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
-        //backgroundPanel.setBackground(Color.white);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        // add the passed in swing component first to ensure that it is in front
-        backgroundPanel.add(component, gbc);
+
+        if (ControlPanel.preferences.getTicking()) {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.anchor = GridBagConstraints.EAST;
+            muteButton.setOpaque(true);
+            muteButton.setBorder(new LineBorder(Color.BLACK, 2));
+            backgroundPanel.add(muteButton, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            // add the passed in swing component first to ensure that it is in front
+            backgroundPanel.add(timerPanel, gbc);
+        } else {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            // add the passed in swing component first to ensure that it is in front
+            backgroundPanel.add(timerPanel, gbc);
+        }
 
         // create a label to paint the background image
         JLabel backgroundImage = new JLabel(backgroundIcon);
