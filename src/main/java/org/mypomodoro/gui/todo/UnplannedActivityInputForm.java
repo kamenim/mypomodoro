@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import org.mypomodoro.gui.create.*;
 import javax.swing.JComboBox;
 import org.mypomodoro.util.Labels;
@@ -29,6 +30,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         items[1] = internal;
         items[2] = external;
         interruptions = new JComboBox(items);
+        interruptions.setBackground(Color.white);
         add(interruptions, c);
     }
 

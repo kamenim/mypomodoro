@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.create;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -102,6 +103,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
+        estimatedPomodoros.setBackground(Color.white);
         add(estimatedPomodoros, c);
     }
 

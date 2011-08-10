@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import org.mypomodoro.gui.create.*;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -50,6 +51,7 @@ public class OverestimationInputForm extends JPanel {
         overestimatedPomodoros = new JComboBox(items);
         overestimatedPomodoros.setMinimumSize(COMBO_BOX_DIMENSION);
         overestimatedPomodoros.setPreferredSize(COMBO_BOX_DIMENSION);
+        overestimatedPomodoros.setBackground(Color.white);
         add(overestimatedPomodoros, c);
     }
 

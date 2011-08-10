@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.reports.export;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import org.mypomodoro.gui.create.*;
 import java.awt.Dimension;
@@ -61,10 +62,10 @@ public class ExportInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
+        c.anchor = GridBagConstraints.WEST;
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
-        headerCheckBox.setMinimumSize(COMBO_BOX_DIMENSION);
-        headerCheckBox.setPreferredSize(COMBO_BOX_DIMENSION);
+        headerCheckBox.setBackground(Color.white);
         add(headerCheckBox, c);
         // File name
         c.gridx = 0;
@@ -116,6 +117,7 @@ public class ExportInputForm extends JPanel {
         });
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
+        fileFormatComboBox.setBackground(Color.white);
         add(fileFormatComboBox, c);
         // Date patterns
         c.gridx = 0;
@@ -174,6 +176,7 @@ public class ExportInputForm extends JPanel {
         });
         separatorComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
+        separatorComboBox.setBackground(Color.white);
         add(separatorComboBox, c);
     }
 
@@ -223,6 +226,7 @@ public class ExportInputForm extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         excelPatternsPanel.add(new JLabel(excelPatterns), gbc);
+        excelPatternsPanel.setBackground(Color.white);
         add(excelPatternsPanel, c);
     }
 
@@ -365,6 +369,11 @@ public class ExportInputForm extends JPanel {
                 datePatternsComboBox2.setSelectedIndex(3);
                 datePatternsComboBox3.setSelectedIndex(7);
             }
+            datePatternsComboBox1.setBackground(Color.white);
+            dateSeparatorComboBox1.setBackground(Color.white);
+            datePatternsComboBox2.setBackground(Color.white);
+            dateSeparatorComboBox2.setBackground(Color.white);
+            datePatternsComboBox3.setBackground(Color.white);
         }
 
         public JComboBox getDatePatternsComboBox1() {
