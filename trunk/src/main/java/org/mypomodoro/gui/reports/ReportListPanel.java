@@ -195,9 +195,11 @@ public class ReportListPanel extends JPanel {
     }
 
     private void init() {
-        // Centre Estimated, real, Diff I and Diff II columns
+        // Centre Date, time, estimated, real, Diff I and Diff II columns
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);

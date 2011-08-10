@@ -160,7 +160,7 @@ public class ToDoListPanel extends JPanel {
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        if (ControlPanel.preferences.getTicking()) {
+        if (ControlPanel.preferences.getTicking() || ControlPanel.preferences.getRinging()) {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.anchor = GridBagConstraints.EAST;
@@ -225,11 +225,16 @@ public class ToDoListPanel extends JPanel {
                         JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
                     }
                 } else {
-                    completeTask(selectedToDo);
-                    refresh();
                     String title = Labels.getString("ToDoListPanel.Complete ToDo");
-                    String message = Labels.getString("ToDoListPanel.ToDo moved to Report List");
-                    JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+                    String message = Labels.getString("ToDoListPanel.Are you sure to complete this ToDo?");
+                    int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        completeTask(selectedToDo);
+                        refresh();
+                        title = Labels.getString("ToDoListPanel.Complete ToDo");
+                        message = Labels.getString("ToDoListPanel.ToDo moved to Report List");
+                        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+                    }
                 }
             }
         } else {

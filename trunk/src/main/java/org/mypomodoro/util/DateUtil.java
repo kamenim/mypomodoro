@@ -24,9 +24,6 @@ public class DateUtil {
         return locale;
     }
 
-    /*public static SimpleDateFormat getSimpleDateFormat(String pattern) {
-    return new SimpleDateFormat(pattern, locale);
-    }*/
     public static String getFormatedDate(Date date) {
         String pattern = locale.equals(US_LOCALE) ? US_datePattern : "dd MMM yyyy";
         return getFormatedDate(date, pattern);

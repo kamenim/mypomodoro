@@ -7,6 +7,11 @@ import javax.swing.JButton;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
 
+/**
+ *  Mute sound button
+ * 
+ * @author Phil Karoo
+ */
 public class MuteButton extends JButton {
 
     private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource("/images/mute.png"));
