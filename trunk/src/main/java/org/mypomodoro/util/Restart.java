@@ -29,68 +29,70 @@ public class Restart {
      * @throws IOException
      */
     public static void restartApplication(Runnable runBeforeRestart) throws IOException {
-        try {
-            // java binary
-            String java = System.getProperty("java.home") + "/bin/java";
-            // vm arguments
-            List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-            StringBuffer vmArgsOneLine = new StringBuffer();
-            for (String arg : vmArguments) {
-                // if it's the agent argument : we ignore it otherwise the
-                // address of the old application and the new one will be in conflict
-                if (!arg.contains("-agentlib")) {
-                    vmArgsOneLine.append(arg);
-                    vmArgsOneLine.append(" ");
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
+            RestartMac restart = new RestartMac(0);
+        } else {
+            try {
+                // java binary
+                String java = System.getProperty("java.home") + "/bin/java";
+                // vm arguments
+                List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+                StringBuffer vmArgsOneLine = new StringBuffer();
+                for (String arg : vmArguments) {
+                    // if it's the agent argument : we ignore it otherwise the
+                    // address of the old application and the new one will be in conflict
+                    if (!arg.contains("-agentlib")) {
+                        vmArgsOneLine.append(arg);
+                        vmArgsOneLine.append(" ");
+                    }
                 }
-            }
-            // init the command to execute, add the vm args
-            final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine);
+                // init the command to execute, add the vm args
+                final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine);
 
-            // program main and program arguments
-            String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
-            String pathFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding                        
+                // program main and program arguments
+                String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
+                String pathFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding                        
 
-            if (pathFile.endsWith(".exe")) { // EXE wrapper
-                cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
-            } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
-                if (pathFile.endsWith(".jar")) { // Jar file                   
+                if (pathFile.endsWith(".exe")) { // EXE wrapper
                     cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
-                } else { // Class file (running in IDE like Netbeans)
-                    cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
-                    // Program arguments
-                    for (int i = 1; i < mainCommand.length; i++) {
-                        cmd.append(" ");
-                        cmd.append(mainCommand[i]);
+                } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
+                    if (pathFile.endsWith(".jar")) { // Jar file                   
+                        cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
+                    } else { // Class file (running in IDE like Netbeans)
+                        cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+                        // Program arguments
+                        for (int i = 1; i < mainCommand.length; i++) {
+                            cmd.append(" ");
+                            cmd.append(mainCommand[i]);
+                        }
                     }
+                } else { // Non Hotspot VM implementation
+                    cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
                 }
-            } else { // Non Hotspot VM implementation
-                cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
-            }
 
-            // execute the command in a shutdown hook, to be sure that all the
-            // resources have been disposed before restarting the application
-            Runtime.getRuntime().addShutdownHook(new Thread() {
+                // execute the command in a shutdown hook, to be sure that all the
+                // resources have been disposed before restarting the application
+                Runtime.getRuntime().addShutdownHook(new Thread() {
 
-                @Override
-                public void run() {
-                    try {
-                        Runtime.getRuntime().exec(cmd.toString());
+                    @Override
+                    public void run() {
+                        try {
+                            Runtime.getRuntime().exec(cmd.toString());
+                        } catch (IOException e) {
+                        }
                     }
-                    catch (IOException e) {
-                    }
+                });
+                // execute some custom code before restarting
+                if (runBeforeRestart != null) {
+                    runBeforeRestart.run();
                 }
-            });
-            // execute some custom code before restarting
-            if (runBeforeRestart != null) {
-                runBeforeRestart.run();
+                // exit
+                System.exit(0);
+            } catch (Exception e) {
+                // something went wrong
+                throw new IOException("Error while trying to restart the application", e);
             }
-            // exit
-            System.exit(0);
-        }
-        catch (Exception e) {
-            // something went wrong
-            throw new IOException("Error while trying to restart the application", e);
         }
     }
 }

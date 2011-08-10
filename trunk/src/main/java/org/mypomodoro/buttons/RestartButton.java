@@ -16,8 +16,7 @@ public class RestartButton extends MyButton {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Restart.restartApplication(null);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                 }
             }
         });

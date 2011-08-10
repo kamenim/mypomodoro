@@ -17,6 +17,7 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.db.Database;
+import org.mypomodoro.util.RestartMac;
 
 /**
  * Main Application Starter
@@ -64,6 +65,9 @@ public class Main {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            if(System.getProperty("os.name").toLowerCase().indexOf("mac") != -1){//deletes files created with RestartMac()
+                        RestartMac restart = new RestartMac(1);
+                    }
         }
         catch (Exception ex) {
             // Do nothing if the we cannot set a nice ui look and feel
@@ -90,8 +94,8 @@ public class Main {
 
             @Override
             public void componentResized(ComponentEvent event) {
-                Dimension dGUI = new Dimension(Math.max(600, gui.getWidth()), Math.max(580, gui.getHeight()));
-                Dimension mindGUI = new Dimension(600, 580);
+                Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
+                Dimension mindGUI = new Dimension(780, 580);
                 gui.setMinimumSize(mindGUI);
                 gui.setPreferredSize(mindGUI);
                 gui.setSize(dGUI);

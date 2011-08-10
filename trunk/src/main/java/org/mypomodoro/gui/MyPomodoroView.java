@@ -29,7 +29,7 @@ import org.mypomodoro.menubar.ViewMenu;
  */
 public class MyPomodoroView extends JFrame {
 
-    public static final int FRAME_WIDTH = 600;
+    public static final int FRAME_WIDTH = 780;
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "2.0";
