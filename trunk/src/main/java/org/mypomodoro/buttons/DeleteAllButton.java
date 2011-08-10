@@ -15,7 +15,6 @@ import org.mypomodoro.util.Labels;
  * 
  * @author Phil Karoo
  */
-
 public class DeleteAllButton extends MyButton {
 
     public DeleteAllButton(final JTable table) {
