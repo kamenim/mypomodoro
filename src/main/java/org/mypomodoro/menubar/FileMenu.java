@@ -84,7 +84,7 @@ public class FileMenu extends JMenu {
         public RestartItem() {
             super(Labels.getString("Common.Restart"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
-                    ActionEvent.ALT_MASK));
+                    ActionEvent.SHIFT_MASK));
             addActionListener(new RestartItemListener());
         }
 
