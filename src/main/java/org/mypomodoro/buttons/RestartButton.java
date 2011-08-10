@@ -6,6 +6,11 @@ import java.io.IOException;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.Restart;
 
+/**
+ *  Restart button
+ * 
+ * @author Phil Karoo
+ */
 public class RestartButton extends MyButton {
 
     public RestartButton() {

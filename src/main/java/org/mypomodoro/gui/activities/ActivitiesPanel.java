@@ -190,9 +190,10 @@ public class ActivitiesPanel extends JPanel {
     }
 
     private void init() {
-        // Centre Estimated pomodoros column
+        // Centre Date, estimated pomodoros column
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        dtcr.setHorizontalAlignment(SwingConstants.CENTER);        
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
