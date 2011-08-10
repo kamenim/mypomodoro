@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
@@ -67,7 +68,7 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         informationArea.setWrapStyleWord(true);
         // disable auto scrolling
         DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);        
         add(new JScrollPane(informationArea), gbc);
     }
 
