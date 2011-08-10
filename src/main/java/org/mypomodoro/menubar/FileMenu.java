@@ -83,6 +83,8 @@ public class FileMenu extends JMenu {
 
         public RestartItem() {
             super(Labels.getString("Common.Restart"));
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
+                    ActionEvent.ALT_MASK));
             addActionListener(new RestartItemListener());
         }
 
@@ -92,8 +94,7 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Restart.restartApplication(null);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                 }
             }
         }
@@ -103,6 +104,7 @@ public class FileMenu extends JMenu {
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
             addActionListener(new MenuItemListener());
         }
 
