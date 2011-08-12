@@ -89,8 +89,6 @@ public class MyPomodoroView extends JFrame {
                 // do nothing
             }
         }
-        //checkUpdates(); // thread
-        
     }
 
     public void updateView() {
@@ -116,23 +114,5 @@ public class MyPomodoroView extends JFrame {
 
     public MyPomodoroIconBar getIconBar() {
         return iconBar;
-    }
-    
-    private void checkUpdates() {        
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (null != null) {
-                    /*
-                    UpdatePanel frame = new UpdatePanel(new JFrame(), ControlPanel.labels.getString("Common.Update"));
-                    frame.setModal(true); // always on top                
-                    frame.setLocationRelativeTo(this); // center component on top panel (MyPomodoroView)
-                    frame.setVisible(true);
-                     */
-                }                
-            }
-        });        
-        thread.start();                                        
     }
 }
