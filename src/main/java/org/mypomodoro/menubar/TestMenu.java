@@ -2,22 +2,22 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
+import org.mypomodoro.Main;
+import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
-
-import org.mypomodoro.db.ActivitiesDAO;
-import java.util.Date;
-import javax.swing.JSeparator;
-import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.util.Labels;
 
 public class TestMenu extends JMenu {
-
+	private static final long serialVersionUID = 20110814L;
+	
     public TestMenu(final MyPomodoroView view) {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
@@ -27,7 +27,8 @@ public class TestMenu extends JMenu {
 
     // resets all the data files.
     class ResetDataItem extends JMenuItem {
-
+    	private static final long serialVersionUID = 20110814L;
+    	
         public ResetDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Clear All Data"));
             addActionListener(new ActionListener() {
@@ -42,7 +43,8 @@ public class TestMenu extends JMenu {
     }
 
     class TestDataItem extends JMenuItem {
-
+    	private static final long serialVersionUID = 20110814L;
+    	
         private void createTestData() {
             new Thread(new Runnable() {
 

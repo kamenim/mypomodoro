@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,8 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
-import org.mypomodoro.buttons.MyButton;
 
+import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
@@ -25,7 +24,8 @@ import org.mypomodoro.util.Labels;
  * updated when the ToDo list is updated.
  */
 public class InformationPanel extends JPanel implements ActivityInformation {
-
+	private static final long serialVersionUID = 20110814L;
+	
     private final JTextArea informationArea = new JTextArea();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -89,7 +89,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new MyButton(Labels.getString("ToDoListPanel.Complete"));
+        JButton changeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override
@@ -106,7 +106,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new MyButton(Labels.getString("ToDoListPanel.Complete all"));
+        JButton changeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete all"));
         changeButton.addActionListener(new ActionListener() {
 
             @Override

@@ -24,95 +24,98 @@ import org.mypomodoro.menubar.ViewMenu;
 /**
  * Application GUI for myPomodoro.
  * 
- * @author Brian Wetzel 
+ * @author Brian Wetzel
  * @author Phil Karoo
  */
 public class MyPomodoroView extends JFrame {
+	private static final long serialVersionUID = 20110814L;
 
-    public static final int FRAME_WIDTH = 780;
-    public static final int FRAME_HEIGHT = 580;
-    public static TrayIcon trayIcon;
-    public static final String MYPOMODORO_VERSION = "2.0";
-    private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
-    private final CreatePanel createPanel = new CreatePanel();
-    private final ManagerPanel generatePanel = Main.generatePanel;
-    private final ReportListPanel reportListPanel = Main.reportListPanel;
-    private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
-    private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
-    private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
+	public static final int FRAME_WIDTH = 780;
+	public static final int FRAME_HEIGHT = 580;
+	public static TrayIcon trayIcon;
+	public static final String MYPOMODORO_VERSION = "2.0";
+	private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
+	private final CreatePanel createPanel = new CreatePanel();
+	private final ManagerPanel generatePanel = Main.generatePanel;
+	private final ReportListPanel reportListPanel = Main.reportListPanel;
+	private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
+	private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
+	private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
-    public ToDoListPanel getToDoListPanel() {
-        return toDoListPanel;
-    }
+	public ToDoListPanel getToDoListPanel() {
+		return toDoListPanel;
+	}
 
-    public ManagerPanel getGeneratePanel() {
-        return generatePanel;
-    }
+	public ManagerPanel getGeneratePanel() {
+		return generatePanel;
+	}
 
-    public ActivitiesPanel getActivityListPanel() {
-        return activityListPanel;
-    }
+	public ActivitiesPanel getActivityListPanel() {
+		return activityListPanel;
+	}
 
-    public ReportListPanel getReportListPanel() {
-        return reportListPanel;
-    }
+	public ReportListPanel getReportListPanel() {
+		return reportListPanel;
+	}
 
-    public CreatePanel getCreatePanel() {
-        return createPanel;
-    }
+	public CreatePanel getCreatePanel() {
+		return createPanel;
+	}
 
-    public MyPomodoroView() {
-        super("myPomodoro " + MYPOMODORO_VERSION);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setIconImage(ImageIcons.MAIN_ICON.getImage());
-        setJMenuBar(menuBar);
-        setWindow(new SplashScreen());
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        if (SystemTray.isSupported() && ControlPanel.preferences.getSystemTray()) {
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            SystemTray sysTray = SystemTray.getSystemTray();
-            trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(), "myPomodoro");
-            trayIcon.setImageAutoSize(true);
-            trayIcon.addMouseListener(new MouseAdapter() {
+	public MyPomodoroView() {
+		super("myPomodoro " + MYPOMODORO_VERSION);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(ImageIcons.MAIN_ICON.getImage());
+		setJMenuBar(menuBar);
+		setWindow(new SplashScreen());
+		setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		if (SystemTray.isSupported()
+				&& ControlPanel.preferences.getSystemTray()) {
+			setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			SystemTray sysTray = SystemTray.getSystemTray();
+			trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(),
+					"myPomodoro");
+			trayIcon.setImageAutoSize(true);
+			trayIcon.addMouseListener(new MouseAdapter() {
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() > 0) { // single left click
-                        setVisible(!isVisible());
-                    }
-                }
-            });
-            try {
-                sysTray.add(trayIcon);
-            }
-            catch (AWTException e) {
-                // do nothing
-            }
-        }
-    }
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() > 0) { // single left click
+						setVisible(!isVisible());
+					}
+				}
+			});
+			try {
+				sysTray.add(trayIcon);
+			} catch (AWTException e) {
+				// do nothing
+			}
+		}
+	}
 
-    public void updateView() {
-        Main.updateView();
-    }
+	public void updateView() {
+		Main.updateView();
+	}
 
-    public final void setWindow(Container e) {
-        updateView();
-        setContentPane(new WindowPanel(iconBar, e));
-        menuBar.revalidate();
-    }
+	public final void setWindow(Container e) {
+		updateView();
+		setContentPane(new WindowPanel(iconBar, e));
+		menuBar.revalidate();
+	}
 
-    class MyPomodoroMenuBar extends JMenuBar {
+	class MyPomodoroMenuBar extends JMenuBar {
+		private static final long serialVersionUID = 20110814L;
 
-        public MyPomodoroMenuBar() {
-            add(new FileMenu(MyPomodoroView.this));
-            add(new ViewMenu(MyPomodoroView.this));
-            add(new TestMenu(MyPomodoroView.this));
-            add(new HelpMenu(MyPomodoroView.this));
-            setBorder(null);
-        }
-    }
+		public MyPomodoroMenuBar() {
+			add(new FileMenu(MyPomodoroView.this));
+			add(new ViewMenu(MyPomodoroView.this));
+			add(new TestMenu(MyPomodoroView.this));
+			add(new HelpMenu(MyPomodoroView.this));
+			setBorder(null);
+		}
+	}
 
-    public MyPomodoroIconBar getIconBar() {
-        return iconBar;
-    }
+	public MyPomodoroIconBar getIconBar() {
+		return iconBar;
+	}
 }

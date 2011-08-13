@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.URLDecoder;
 import java.util.List;
+
 import org.mypomodoro.Main;
 
 /**
@@ -30,7 +31,7 @@ public class Restart {
      */
     public static void restartApplication(Runnable runBeforeRestart) throws IOException {
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
-            RestartMac restart = new RestartMac(0);
+            new RestartMac(0);
         } else {
             try {
                 // java binary

@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class RestartMac {
 
     /* AppleScript */
-    private String restartScript = "tell application \"myPomodoro\" to quit\n"
+    private final String restartScript = "tell application \"myPomodoro\" to quit\n"
             + "tell application \"System Events\"\n"
             + "repeat until not (exists process \"myPomodoro\")\n"
             + "delay 0.2\n"
@@ -47,11 +47,14 @@ public class RestartMac {
     /* Compiles AppleScript to Application */
     private Process osacompile = null;
     /* Opens created Application */
-    private Process open = null;
+    @SuppressWarnings("unused")
+	private Process open = null;
     /* Deletes created Application */
-    private Process delete = null;
+    @SuppressWarnings("unused")
+	private Process delete = null;
     /* Arguments for Constructor */
-    private int argv;
+    @SuppressWarnings("unused")
+	private final int argv;
 
     /**
      * Restarts YourApplication.app on Mac OS X

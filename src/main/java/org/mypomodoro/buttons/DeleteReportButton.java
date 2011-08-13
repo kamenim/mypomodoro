@@ -12,30 +12,36 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
 
 /**
- *  Delete report button
+ * Delete report button
  * 
  * @author Phil Karoo
  */
-public class DeleteReportButton extends MyButton {
+public class DeleteReportButton extends AbstractPomodoroButton {
 
-    public DeleteReportButton(final JTable table) {
-        super(Labels.getString("Common.Delete"));
-        addActionListener(new ActionListener() {
+	private static final long serialVersionUID = 20110814L;
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = table.getSelectedRow();
-                if (row > -1) {
-                    JFrame window = new JFrame();
-                    String title = Labels.getString("ReportListPanel.Delete report");
-                    String message = Labels.getString("ReportListPanel.Are you sure to delete this report?");
-                    int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
-                    if (reply == JOptionPane.YES_OPTION) {
-                        Integer id = (Integer) table.getModel().getValueAt(row, ReportListPanel.ID_KEY);
-                        ReportList.getList().removeById(id);
-                    }
-                }
-            }
-        });
-    }
+	public DeleteReportButton(final JTable table) {
+		super(Labels.getString("Common.Delete"));
+		addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = table.getSelectedRow();
+				if (row > -1) {
+					JFrame window = new JFrame();
+					String title = Labels
+							.getString("ReportListPanel.Delete report");
+					String message = Labels
+							.getString("ReportListPanel.Are you sure to delete this report?");
+					int reply = JOptionPane.showConfirmDialog(window, message,
+							title, JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+						Integer id = (Integer) table.getModel().getValueAt(row,
+								ReportListPanel.ID_KEY);
+						ReportList.getList().removeById(id);
+					}
+				}
+			}
+		});
+	}
 }

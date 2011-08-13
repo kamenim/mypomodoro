@@ -7,15 +7,15 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.SaveButton;
-import org.mypomodoro.buttons.MyButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -27,7 +27,8 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  */
 public class CreatePanel extends JPanel {
-
+	private static final long serialVersionUID = 20110814L;
+	
     protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
     protected final JLabel validation = new JLabel("");
     protected final SaveButton saveButton = new SaveButton(this);
@@ -63,7 +64,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new MyButton(Labels.getString("CreatePanel.Clear"));
+        JButton clearButton = new AbstractPomodoroButton(Labels.getString("CreatePanel.Clear"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override

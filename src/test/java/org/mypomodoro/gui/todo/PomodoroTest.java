@@ -1,16 +1,11 @@
 package org.mypomodoro.gui.todo;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import javax.swing.JLabel;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mypomodoro.gui.todo.Pomodoro.UpdateAction;
 
 public class PomodoroTest {
 

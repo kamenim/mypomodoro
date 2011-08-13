@@ -7,22 +7,21 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.Timer;
-
-import org.mypomodoro.Main;
-import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -285,7 +284,7 @@ public class Pomodoro {
                     }
                 });
                 clip.open(ain);
-                clip.loop(continuously ? clip.LOOP_CONTINUOUSLY : 0);
+                clip.loop(continuously ? Clip.LOOP_CONTINUOUSLY : 0);
                 clip.start();
             }
             finally {

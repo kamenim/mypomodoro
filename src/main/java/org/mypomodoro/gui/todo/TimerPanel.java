@@ -20,7 +20,8 @@ import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
-
+	private static final long serialVersionUID = 20110814L;
+	
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
