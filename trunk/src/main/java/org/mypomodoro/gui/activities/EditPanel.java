@@ -1,11 +1,12 @@
 package org.mypomodoro.gui.activities;
 
-import org.mypomodoro.gui.create.*;
 import java.awt.GridBagConstraints;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-
+import org.mypomodoro.gui.create.ActivityInputForm;
+import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -16,6 +17,7 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  */
 public class EditPanel extends CreatePanel {
+	private static final long serialVersionUID = 20110814L;
 
     protected EditInputForm editInputForm;
 

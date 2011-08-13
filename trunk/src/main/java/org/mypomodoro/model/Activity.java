@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
-import java.text.SimpleDateFormat;
 import org.mypomodoro.util.DateUtil;
 
 /**

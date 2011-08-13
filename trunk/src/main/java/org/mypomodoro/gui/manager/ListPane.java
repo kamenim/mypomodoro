@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -19,10 +18,9 @@ import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ActivityInformationListListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -35,7 +33,8 @@ import org.mypomodoro.util.Labels;
  * 
  */
 public class ListPane extends JPanel implements ActivityInformation {
-
+	private static final long serialVersionUID = 20110814L;
+	
     private final GridBagConstraints c = new GridBagConstraints();
     private final JList internalActivitiesList;
     private final JTextArea informationArea;

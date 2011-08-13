@@ -2,17 +2,16 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.SimpleDateFormat;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.DefaultCaret;
+
 import org.mypomodoro.buttons.DeleteAllReportButton;
 import org.mypomodoro.buttons.DeleteReportButton;
-
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
@@ -23,7 +22,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class InformationArea extends JPanel implements ActivityInformation {
-
+	private static final long serialVersionUID = 20110814L;
+	
     private final JTextArea informationArea = new JTextArea();
     private final GridBagConstraints gbc = new GridBagConstraints();
 

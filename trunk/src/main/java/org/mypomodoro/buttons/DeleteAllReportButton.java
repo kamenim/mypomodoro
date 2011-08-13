@@ -15,8 +15,10 @@ import org.mypomodoro.util.Labels;
  * 
  * @author Phil Karoo
  */
-public class DeleteAllReportButton extends MyButton {
+public class DeleteAllReportButton extends AbstractPomodoroButton {
 
+	private static final long serialVersionUID = 20110814L;
+	
     public DeleteAllReportButton(final JTable table) {
         super(Labels.getString("Common.Delete all"));
         addActionListener(new ActionListener() {

@@ -2,8 +2,10 @@ package org.mypomodoro.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
 
@@ -13,6 +15,8 @@ import org.mypomodoro.gui.todo.Pomodoro;
  * @author Phil Karoo
  */
 public class MuteButton extends JButton {
+	
+	private static final long serialVersionUID = 20110814L;
 
     private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource("/images/mute.png"));
     private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource("/images/sound.png"));
