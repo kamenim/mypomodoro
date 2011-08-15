@@ -1,9 +1,7 @@
 package org.mypomodoro.gui.todo;
 
-import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.mypomodoro.model.Activity;
 
 /**
  *
@@ -19,10 +17,6 @@ public class ToDoIconListListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        JList list = (JList) e.getSource();
-        Activity selectedToDo = (Activity) list.getSelectedValue();
-        if (selectedToDo != null && !panel.getPomodoro().inPomodoro()) {
-            ToDoIconLabel.showIconLabel(panel.getIconLabel(), selectedToDo); // refresh ToDo Icon label when no pomodoro in progress
-        }
+        panel.refreshIconLabels();
     }
 }
