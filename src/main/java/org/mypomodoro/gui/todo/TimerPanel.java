@@ -16,17 +16,23 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
+    private JLabel pomodoroTime;
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime) {
+        this.pomodoroTime = pomodoroTime;
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
@@ -41,12 +47,11 @@ public class TimerPanel extends JPanel {
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 
-        addPomodoroTimerLabel(pomodoroTime, gbc);
+        addPomodoroTimerLabel();
         addStartButton(pomodoro);
     }
 
-    private void addPomodoroTimerLabel(JLabel pomodoroTime,
-            GridBagConstraints gbc) {
+    private void addPomodoroTimerLabel() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -59,10 +64,17 @@ public class TimerPanel extends JPanel {
     private void addStartButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.165;
         gbc.anchor = GridBagConstraints.SOUTH;
         startButton.setBackground(Color.WHITE);
         startButton.setForeground(Color.BLACK);
+        Border line = new LineBorder(Color.BLACK, 2);
+        Border margin = new EmptyBorder(5, 15, 5, 15);
+        Border compound = new CompoundBorder(line, margin);
+        startButton.setBorder(compound);
+        startButton.setFocusPainted(false); // removes borders around text
+        startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {
 
             @Override
@@ -77,19 +89,28 @@ public class TimerPanel extends JPanel {
                         } else {
                             pomodoro.start();
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
+                            startButton.setForeground(Color.RED);
+                            pomodoroTime.setForeground(Color.RED);
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
+                        startButton.setForeground(Color.BLACK);
+                        pomodoroTime.setForeground(Color.BLACK);
                     }
-
                 }
             }
         });
-        startButton.setFont(startButton.getFont().deriveFont(20f));
         add(startButton, gbc);
     }
 
     public void setStart() {
         startButton.setText(Labels.getString("ToDoListPanel.Start"));
+        startButton.setForeground(Color.BLACK);
+        pomodoroTime.setForeground(Color.BLACK);
+    }
+
+    public void setStartColor(Color color) {
+        startButton.setForeground(color);
+        pomodoroTime.setForeground(color);
     }
 }

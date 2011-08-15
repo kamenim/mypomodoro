@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -12,11 +13,16 @@ import org.mypomodoro.util.CompoundIcon;
  * @author Phil Karoo
  */
 public class ToDoIconLabel {
-    
+
     static public void showIconLabel(JLabel iconLabel, Activity activity) {
+        showIconLabel(iconLabel, activity, Color.BLACK);
+    }
+
+    static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {
         //iconLabel.setOpaque(true);
         //iconLabel.setBackground(Color.white);
         iconLabel.setText(activity.getName());
+        iconLabel.setForeground(color);
         int estimatedPoms = activity.getEstimatedPoms();
         int realPoms = activity.getActualPoms();
         int overestimatedPoms = activity.getOverestimatedPoms();
@@ -57,14 +63,14 @@ public class ToDoIconLabel {
         }
         // Internal interruption
         if (numInternalInterruptions > 0) {
-            for (int i = estimatedPoms+(overestimatedPoms>0?overestimatedPoms+plusSign:0); i < arraySize; i++) {                
-                icons[i] = new ImageIcon(Main.class.getResource("/images/quote.png"));                 
+            for (int i = estimatedPoms + ( overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0 ); i < arraySize; i++) {
+                icons[i] = new ImageIcon(Main.class.getResource("/images/quote.png"));
             }
         }
         // External interruption
         if (numExternalInterruptions > 0) {
-            for (int i = estimatedPoms+(overestimatedPoms>0?overestimatedPoms+plusSign:0)+numInternalInterruptions; i < arraySize; i++) {                
-                icons[i] = new ImageIcon(Main.class.getResource("/images/dash.png"));                 
+            for (int i = estimatedPoms + ( overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0 ) + numInternalInterruptions; i < arraySize; i++) {
+                icons[i] = new ImageIcon(Main.class.getResource("/images/dash.png"));
             }
         }
         CompoundIcon icon = new CompoundIcon(2, icons);

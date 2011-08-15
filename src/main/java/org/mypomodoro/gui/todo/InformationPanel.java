@@ -20,25 +20,29 @@ import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- * Panel that displays information on the current Pomodoro...this should be
- * updated when the ToDo list is updated.
+ * Panel that displays information on the selected Pomodoro
+ * 
+ * @author Phil Karoo
  */
 public class InformationPanel extends JPanel implements ActivityInformation {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private final JTextArea informationArea = new JTextArea();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    private final ToDoListPanel panel;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public InformationPanel(ToDoListPanel panel) {
+        this.panel = panel;
+
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        
-        addInformationPanel();                
-        addCompleteButton(panel);
-        addCompleteAllButton(panel);
+
+        addInformationPanel();
+        addCompleteButton();
+        addCompleteAllButton();
     }
-    
+
     private void addInformationPanel() {
         JPanel infoPanel = new JPanel();
         gbc.gridx = 0;
@@ -47,12 +51,12 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = 2;
-        
+
         GridBagConstraints igbc = new GridBagConstraints();
         infoPanel.setLayout(new GridBagLayout());
-        addToDoIconPanel(infoPanel,igbc);
-        addInformationArea(infoPanel,igbc);
-        
+        addToDoIconPanel(infoPanel, igbc);
+        addInformationArea(infoPanel, igbc);
+
         add(infoPanel, gbc);
     }
 
@@ -83,7 +87,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         infoPanel.add(new JScrollPane(informationArea), igbc);
     }
 
-    private void addCompleteButton(final ToDoListPanel panel) {
+    private void addCompleteButton() {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
@@ -100,7 +104,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         add(changeButton, gbc);
     }
 
-    private void addCompleteAllButton(final ToDoListPanel panel) {
+    private void addCompleteAllButton() {
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 0.1;
@@ -121,7 +125,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        ToDoIconLabel.showIconLabel(iconLabel, activity);
+        panel.refreshIconLabels();
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
@@ -139,7 +143,6 @@ public class InformationPanel extends JPanel implements ActivityInformation {
 
     @Override
     public void clearInfo() {
-        ToDoIconLabel.clearIconLabel(iconLabel);
         informationArea.setText("");
     }
 

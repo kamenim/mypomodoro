@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -40,9 +41,12 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
-    private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
+    //private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;    
+    //private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;    
+    //private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
+    private final long POMODORO_LENGTH = 10 * SECOND;
+    private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
+    private final long POMODORO_LONG_LENGTH = 10 * SECOND;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
     private long pomodoroLength = POMODORO_LENGTH;
@@ -64,6 +68,33 @@ public class Pomodoro {
         this.panel = panel;
     }
 
+    public void start() {
+        pomodoroTimer.start();
+        if (ControlPanel.preferences.getTicking() && !isMute) {
+            tick();
+        }
+        if (isSystemTray()) {
+            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+        }
+        inpomodoro = true;
+        panel.refreshIconLabels();
+    }
+
+    public void stop() {
+        pomodoroTimer.stop();
+        time = pomodoroLength;
+        pomodoroTime.setText(sdf.format(pomodoroLength));
+        stopSound();
+        if (inPomodoro() && isSystemTray()) {
+            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
+            MyPomodoroView.trayIcon.setToolTip(null);
+            MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+        }
+        inpomodoro = false;
+        panel.refreshIconLabels();
+    }
+
     public boolean stopWithWarning() {
         if (inpomodoro) { // in pomodoro only, not during breaks
             JFrame window = new JFrame();
@@ -78,23 +109,6 @@ public class Pomodoro {
             stop();
         }
         return !inpomodoro;
-    }
-
-    public void stop() {
-        pomodoroTimer.stop();
-        time = pomodoroLength;
-        pomodoroTime.setText(sdf.format(pomodoroLength));
-        Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
-        if (selectedToDo != null) { // not empty list
-            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), selectedToDo);
-        }
-        stopSound();
-        if (inPomodoro() && isSystemTray()) {
-            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
-            MyPomodoroView.trayIcon.setToolTip(null);
-            MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
-        }
-        inpomodoro = false;
     }
 
     class UpdateAction implements ActionListener {
@@ -120,14 +134,6 @@ public class Pomodoro {
                     // increment real poms
                     currentToDo.incrementPoms();
                     currentToDo.databaseUpdate();
-                    // refresh icon label for the current ToDo                    
-                    ToDoIconLabel.showIconLabel(panel.getIconLabel(), currentToDo);
-                    Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
-                    if (currentToDo.equals(selectedToDo)) {
-                        ToDoIconLabel.showIconLabel(panel.getInformationPanel().getIconLabel(), currentToDo);
-                        ToDoIconLabel.showIconLabel(panel.getCommentPanel().getIconLabel(), currentToDo);
-                        ToDoIconLabel.showIconLabel(panel.getOverestimationPanel().getIconLabel(), currentToDo);
-                    }
                     // refresh remaining Pomodoros label
                     PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
                     pomSetNumber++;
@@ -145,21 +151,30 @@ public class Pomodoro {
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
+                    timerPanel.setStartColor(Color.BLACK);                    
                     inpomodoro = false;
                 } else {
                     if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
-                        MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
-                        MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
+                        if (isSystemTray()) {
+                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
+                        }
                     } else {
                         if (ControlPanel.preferences.getTicking() && !isMute) {
                             tick();
                         }
+                        timerPanel.setStartColor(Color.RED);
                         inpomodoro = true;
+                        if (isSystemTray()) {
+                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                        }
                         goInPomodoro();
                     }
                 }
+                panel.refreshIconLabels();
             }
         }
 
@@ -168,41 +183,12 @@ public class Pomodoro {
         }
 
         private void goInShortBreak() {
-            //breakAction(shortBreakLength);
             time = shortBreakLength;
         }
 
         private void goInLongBreak() {
-            //breakAction(longBreakLength);
             time = longBreakLength;
         }
-
-        /*void breakAction(final long breakLength) {
-        SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-        System.out.println("running");
-        GraphicsDevice defaultScreenDevice = GraphicsEnvironment
-        .getLocalGraphicsEnvironment()
-        .getDefaultScreenDevice();
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.getContentPane().setBackground(Color.BLACK);
-        window.setUndecorated(true);
-        if (defaultScreenDevice.isFullScreenSupported()) {
-        try {
-        defaultScreenDevice.setFullScreenWindow(window);
-        JOptionPane.showMessageDialog(window,
-        "Time to rest for " + breakLength
-        + "minutes");
-        } finally {
-        defaultScreenDevice.setFullScreenWindow(null);
-        }
-        }
-        window.setVisible(false);
-        }
-        });
-        }*/
     }
 
     public void setLongBreak(long longBreakLength) {
@@ -239,18 +225,6 @@ public class Pomodoro {
 
     public boolean inPomodoro() {
         return inpomodoro;
-    }
-
-    public void start() {
-        pomodoroTimer.start();
-        inpomodoro = true;
-        Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
-        if (selectedToDo != null) { // not empty list
-            ToDoIconLabel.showIconLabel(panel.getUnplannedPanel().getIconLabel(), currentToDo);
-        }
-        if (ControlPanel.preferences.getTicking() && !isMute) {
-            tick();
-        }
     }
 
     public void tick() {
