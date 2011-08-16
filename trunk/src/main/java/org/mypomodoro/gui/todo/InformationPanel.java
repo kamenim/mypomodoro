@@ -93,15 +93,15 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete"));
-        changeButton.addActionListener(new ActionListener() {
+        JButton completeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete"));
+        completeButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.completeTaskWithWarning();
             }
         });
-        add(changeButton, gbc);
+        add(completeButton, gbc);
     }
 
     private void addCompleteAllButton() {
@@ -110,8 +110,8 @@ public class InformationPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete all"));
-        changeButton.addActionListener(new ActionListener() {
+        JButton completeAllButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete all"));
+        completeAllButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -120,7 +120,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
                 }
             }
         });
-        add(changeButton, gbc);
+        add(completeAllButton, gbc);
     }
 
     @Override
