@@ -25,6 +25,7 @@ public class HelpMenu extends JMenu {
         add(new HelpUserGuide());
         add(new HelpPomodoroMenu());        
         add(new JSeparator());
+        add(new ReportIssues());
         add(new CheckUpdates());
         add(new JSeparator());
         add(new HelpAbout());
@@ -111,6 +112,23 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BareBonesBrowserLaunch.openURL("http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf");
+            }
+        }
+    }
+    
+    class ReportIssues extends JMenuItem {
+    	private static final long serialVersionUID = 20110814L;
+    	
+        public ReportIssues() {
+            super(Labels.getString("HelpMenu.Report Issues"));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/issues/list");
             }
         }
     }
