@@ -39,7 +39,6 @@ public class ToDoListPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final ToDoList toDoList = ToDoList.getList();
-    private final ToDoJList toDoJList = new ToDoJList(toDoList);
     private final JLabel pomodoroTime = new JLabel();
     private final InformationPanel informationPanel = new InformationPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
@@ -48,6 +47,7 @@ public class ToDoListPanel extends JPanel {
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(this);
+    private final ToDoJList toDoJList = new ToDoJList(toDoList, pomodoro);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
 
@@ -66,7 +66,7 @@ public class ToDoListPanel extends JPanel {
                     }
                     toDoJList.setSelectedRowIndex(selectedToDo.getId());
                 } else if (toDoList.isEmpty()) { // empty list
-                    ToDoIconLabel.clearIconLabel(iconLabel);
+                    refreshIconLabels();
                     unplannedPanel.clearForm();
                     if (pomodoro.inPomodoro()) { // completed or moved to
                         // Activity List
@@ -114,7 +114,7 @@ public class ToDoListPanel extends JPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime);
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, toDoJList);
         add(wrapInBackgroundImage(
                 timerPanel,
                 new MuteButton(pomodoro),

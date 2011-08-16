@@ -1,10 +1,15 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Iterator;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
@@ -16,13 +21,16 @@ public class ToDoJList extends JList {
 
     private static final long serialVersionUID = 20110814L;
     private final ToDoList toDoList;
+    private Pomodoro pomodoro;
     private static final Dimension PREFERED_SIZE = new Dimension(250, 100);
     private int selectedToDoId = 0;
     private int selectedRowIndex = 0;
 
-    public ToDoJList(ToDoList toDoList) {
+    public ToDoJList(ToDoList toDoList, Pomodoro pomodoro) {
         super(toDoList.toArray());
         this.toDoList = toDoList;
+        this.pomodoro = pomodoro;
+        setCellRenderer(new cellRenderer());
         setPreferredSize(PREFERED_SIZE);
         setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));
         init();
@@ -71,5 +79,37 @@ public class ToDoJList extends JList {
             }
         }
         this.setSelectedIndex(index);
+    }
+
+    private class cellRenderer implements ListCellRenderer {
+
+        private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            Activity toDo = (Activity) value;
+            renderer.setText(toDo.getName());
+
+            if (isSelected) {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+            } else {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.PLAIN, renderer.getFont().getSize()));
+            }
+
+            if (pomodoro.inPomodoro()) {
+                Activity currentToDo = pomodoro.getCurrentToDo();
+                if (toDo.getId() == currentToDo.getId()) {
+                    renderer.setForeground(Color.RED);
+                } else {
+                    renderer.setForeground(Color.BLACK);
+                }
+            } else {
+                renderer.setForeground(Color.BLACK);
+            }
+
+            return renderer;
+        }
     }
 }
