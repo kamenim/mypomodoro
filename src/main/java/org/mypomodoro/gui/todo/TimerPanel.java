@@ -91,11 +91,19 @@ public class TimerPanel extends JPanel {
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                             startButton.setForeground(Color.RED);
                             pomodoroTime.setForeground(Color.RED);
+                            Border line = new LineBorder(Color.RED, 2);
+                            Border margin = new EmptyBorder(5, 15, 5, 15);
+                            Border compound = new CompoundBorder(line, margin);
+                            startButton.setBorder(compound);
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         startButton.setForeground(Color.BLACK);
                         pomodoroTime.setForeground(Color.BLACK);
+                        Border line = new LineBorder(Color.BLACK, 2);
+                        Border margin = new EmptyBorder(5, 15, 5, 15);
+                        Border compound = new CompoundBorder(line, margin);
+                        startButton.setBorder(compound);
                     }
                 }
             }
@@ -105,12 +113,15 @@ public class TimerPanel extends JPanel {
 
     public void setStart() {
         startButton.setText(Labels.getString("ToDoListPanel.Start"));
-        startButton.setForeground(Color.BLACK);
-        pomodoroTime.setForeground(Color.BLACK);
+        setStartColor(Color.BLACK);
     }
 
     public void setStartColor(Color color) {
         startButton.setForeground(color);
+        Border line = new LineBorder(color, 2);
+        Border margin = new EmptyBorder(5, 15, 5, 15);
+        Border compound = new CompoundBorder(line, margin);
+        startButton.setBorder(compound);
         pomodoroTime.setForeground(color);
     }
 }
