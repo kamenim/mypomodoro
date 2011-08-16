@@ -30,9 +30,11 @@ public class TimerPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
     private JLabel pomodoroTime;
+    private ToDoJList toDoJList;
 
-    TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime) {
+    TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoJList toDoJList) {
         this.pomodoroTime = pomodoroTime;
+        this.toDoJList = toDoJList;
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
@@ -90,20 +92,22 @@ public class TimerPanel extends JPanel {
                             pomodoro.start();
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                             startButton.setForeground(Color.RED);
-                            pomodoroTime.setForeground(Color.RED);
                             Border line = new LineBorder(Color.RED, 2);
                             Border margin = new EmptyBorder(5, 15, 5, 15);
                             Border compound = new CompoundBorder(line, margin);
                             startButton.setBorder(compound);
+                            pomodoroTime.setForeground(Color.RED);
+                            toDoJList.init(); // init list so the custom cell renderer can turn the title into red
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         startButton.setForeground(Color.BLACK);
-                        pomodoroTime.setForeground(Color.BLACK);
                         Border line = new LineBorder(Color.BLACK, 2);
                         Border margin = new EmptyBorder(5, 15, 5, 15);
                         Border compound = new CompoundBorder(line, margin);
                         startButton.setBorder(compound);
+                        pomodoroTime.setForeground(Color.BLACK);
+                        toDoJList.init(); // init list so the custom cell renderer can turn the title into black
                     }
                 }
             }

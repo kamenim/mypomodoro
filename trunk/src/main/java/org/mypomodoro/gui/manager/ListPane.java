@@ -1,15 +1,19 @@
 package org.mypomodoro.gui.manager;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -33,8 +37,8 @@ import org.mypomodoro.util.Labels;
  * 
  */
 public class ListPane extends JPanel implements ActivityInformation {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints c = new GridBagConstraints();
     private final JList internalActivitiesList;
     private final JTextArea informationArea;
@@ -54,6 +58,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         internalActivitiesList = new JList();
         setPreferredSize(PREFERED_SIZE);
         internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));
+        internalActivitiesList.setCellRenderer(new cellRenderer());
 
         internalActivitiesList.addListSelectionListener(new ListSelectionListener() {
 
@@ -165,6 +170,27 @@ public class ListPane extends JPanel implements ActivityInformation {
         int row = internalActivitiesList.getSelectedIndex();
         if (row > -1) {
             selectedRowIndex = row;
+        }
+    }
+
+    private class cellRenderer implements ListCellRenderer {
+
+        private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            Activity selectedToDo = (Activity) value;
+            renderer.setText(selectedToDo.getName());
+
+            if (isSelected) {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+            } else {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.PLAIN, renderer.getFont().getSize()));
+            }
+
+            return renderer;
         }
     }
 }

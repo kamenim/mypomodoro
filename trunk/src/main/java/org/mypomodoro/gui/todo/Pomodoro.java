@@ -153,7 +153,8 @@ public class Pomodoro {
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
-                    timerPanel.setStartColor(Color.BLACK);                    
+                    timerPanel.setStartColor(Color.BLACK);
+                    panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into black
                     inpomodoro = false;
                 } else {
                     if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
@@ -168,6 +169,7 @@ public class Pomodoro {
                             tick();
                         }
                         timerPanel.setStartColor(Color.RED);
+                        panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into red
                         inpomodoro = true;
                         if (isSystemTray()) {
                             MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
