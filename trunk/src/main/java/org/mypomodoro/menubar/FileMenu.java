@@ -18,8 +18,8 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.Restart;
 
 public class FileMenu extends JMenu {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private final MyPomodoroView view;
 
     public FileMenu(final MyPomodoroView view) {
@@ -34,8 +34,9 @@ public class FileMenu extends JMenu {
     }
 
     class ControlPanelItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ControlPanelItem() {
             super(Labels.getString("FileMenu.Preferences"));
             // Adds Keyboard Shortcut Alt-P
@@ -59,8 +60,9 @@ public class FileMenu extends JMenu {
     }
 
     public class CreateActivityItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public CreateActivityItem() {
             super(Labels.getString("FileMenu.New Activity"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
@@ -83,8 +85,9 @@ public class FileMenu extends JMenu {
     }
 
     public class RestartItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public RestartItem() {
             super(Labels.getString("Common.Restart"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
@@ -98,15 +101,17 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Restart.restartApplication(null);
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                 }
             }
         }
     }
 
     public class ExitItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));

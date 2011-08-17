@@ -18,30 +18,28 @@ import org.mypomodoro.util.Labels;
  */
 public class DeleteReportButton extends AbstractPomodoroButton {
 
-	private static final long serialVersionUID = 20110814L;
+    private static final long serialVersionUID = 20110814L;
 
-	public DeleteReportButton(final JTable table) {
-		super(Labels.getString("Common.Delete"));
-		addActionListener(new ActionListener() {
+    public DeleteReportButton(final JTable table) {
+        super(Labels.getString("Common.Delete"));
+        addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = table.getSelectedRow();
-				if (row > -1) {
-					JFrame window = new JFrame();
-					String title = Labels
-							.getString("ReportListPanel.Delete report");
-					String message = Labels
-							.getString("ReportListPanel.Are you sure to delete this report?");
-					int reply = JOptionPane.showConfirmDialog(window, message,
-							title, JOptionPane.YES_NO_OPTION);
-					if (reply == JOptionPane.YES_OPTION) {
-						Integer id = (Integer) table.getModel().getValueAt(row,
-								ReportListPanel.ID_KEY);
-						ReportList.getList().removeById(id);
-					}
-				}
-			}
-		});
-	}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = table.getSelectedRow();
+                if (row > -1) {
+                    JFrame window = new JFrame();
+                    String title = Labels.getString("ReportListPanel.Delete report");
+                    String message = Labels.getString("ReportListPanel.Are you sure to delete this report?");
+                    int reply = JOptionPane.showConfirmDialog(window, message,
+                            title, JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        Integer id = (Integer) table.getModel().getValueAt(row,
+                                ReportListPanel.ID_KEY);
+                        ReportList.getList().removeById(id);
+                    }
+                }
+            }
+        });
+    }
 }

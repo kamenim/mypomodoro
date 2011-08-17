@@ -48,13 +48,13 @@ public class RestartMac {
     private Process osacompile = null;
     /* Opens created Application */
     @SuppressWarnings("unused")
-	private Process open = null;
+    private Process open = null;
     /* Deletes created Application */
     @SuppressWarnings("unused")
-	private Process delete = null;
+    private Process delete = null;
     /* Arguments for Constructor */
     @SuppressWarnings("unused")
-	private final int argv;
+    private final int argv;
 
     /**
      * Restarts YourApplication.app on Mac OS X
@@ -80,7 +80,8 @@ public class RestartMac {
             BufferedWriter restartWriter = new BufferedWriter(new FileWriter(restartFile));
             restartWriter.write(restartScript);
             restartWriter.close();
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             System.err.format("IOException: %s%n", ioe);
         }
     }
@@ -93,9 +94,11 @@ public class RestartMac {
         try {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
-        } catch (InterruptedException ex) {
+        }
+        catch (InterruptedException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -106,7 +109,8 @@ public class RestartMac {
     private void openApp() {
         try {
             open = Runtime.getRuntime().exec(openString);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -126,7 +130,8 @@ public class RestartMac {
     private void deleteApp() {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

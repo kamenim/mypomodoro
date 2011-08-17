@@ -4,35 +4,36 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.model.Activity;
 
 public class ReportInputForm extends ActivityInputForm {
-	private static final long serialVersionUID = 20110814L;
 
-	public ReportInputForm() {
-	}
+    private static final long serialVersionUID = 20110814L;
 
-	@Override
-	protected void addForm(int gridy) {
-		addName(gridy);
-		addType(++gridy);
-		addAuthor(++gridy);
-		addPlace(++gridy);
-		addDescription(++gridy);
-	}
+    public ReportInputForm() {
+    }
 
-	/**
-	 * Returns an updated report from the class fields
-	 * 
-	 * @return report
-	 */
-	@Override
-	public Activity getActivityFromFields() {
-		Activity report = Activity.getActivity(activityId);
+    @Override
+    protected void addForm(int gridy) {
+        addName(gridy);
+        addType(++gridy);
+        addAuthor(++gridy);
+        addPlace(++gridy);
+        addDescription(++gridy);
+    }
 
-		report.setPlace(placeField.getText().trim());
-		report.setAuthor(authorField.getText().trim());
-		report.setName(nameField.getText().trim());
-		report.setDescription(descriptionField.getText().trim());
-		report.setType(typeField.getText().trim());
+    /**
+     * Returns an updated report from the class fields
+     * 
+     * @return report
+     */
+    @Override
+    public Activity getActivityFromFields() {
+        Activity report = Activity.getActivity(activityId);
 
-		return report;
-	}
+        report.setPlace(placeField.getText().trim());
+        report.setAuthor(authorField.getText().trim());
+        report.setName(nameField.getText().trim());
+        report.setDescription(descriptionField.getText().trim());
+        report.setType(typeField.getText().trim());
+
+        return report;
+    }
 }

@@ -37,11 +37,11 @@ public class Labels {
             return '!' + key + '!';
         }
     }
-    
+
     public static Locale getLocale() {
         return resource_bundle.getLocale();
     }
-    
+
     public static SimpleDateFormat getSimpleDateFormat(String pattern) {
         return new SimpleDateFormat(pattern, resource_bundle.getLocale());
     }

@@ -14,19 +14,20 @@ import org.mypomodoro.util.Restart;
  */
 public class RestartButton extends AbstractPomodoroButton {
 
-	private static final long serialVersionUID = 20110814L;
+    private static final long serialVersionUID = 20110814L;
 
-	public RestartButton() {
-		super(Labels.getString("Common.Restart"));
-		addActionListener(new ActionListener() {
+    public RestartButton() {
+        super(Labels.getString("Common.Restart"));
+        addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Restart.restartApplication(null);
-				} catch (IOException ex) {
-				}
-			}
-		});
-	}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Restart.restartApplication(null);
+                }
+                catch (IOException ex) {
+                }
+            }
+        });
+    }
 }

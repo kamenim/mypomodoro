@@ -16,8 +16,9 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 public class TestMenu extends JMenu {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
+
     public TestMenu(final MyPomodoroView view) {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
@@ -27,8 +28,9 @@ public class TestMenu extends JMenu {
 
     // resets all the data files.
     class ResetDataItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ResetDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Clear All Data"));
             addActionListener(new ActionListener() {
@@ -43,8 +45,9 @@ public class TestMenu extends JMenu {
     }
 
     class TestDataItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         private void createTestData() {
             new Thread(new Runnable() {
 

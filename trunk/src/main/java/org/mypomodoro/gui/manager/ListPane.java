@@ -57,8 +57,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         setLayout(new GridBagLayout());
         internalActivitiesList = new JList();
         setPreferredSize(PREFERED_SIZE);
-        internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));
-        internalActivitiesList.setCellRenderer(new cellRenderer());
+        internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));        
 
         internalActivitiesList.addListSelectionListener(new ListSelectionListener() {
 
@@ -170,27 +169,6 @@ public class ListPane extends JPanel implements ActivityInformation {
         int row = internalActivitiesList.getSelectedIndex();
         if (row > -1) {
             selectedRowIndex = row;
-        }
-    }
-
-    private class cellRenderer implements ListCellRenderer {
-
-        private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-            Activity selectedToDo = (Activity) value;
-            renderer.setText(selectedToDo.getName());
-
-            if (isSelected) {
-                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
-            } else {
-                renderer.setFont(new Font(renderer.getFont().getName(), Font.PLAIN, renderer.getFont().getSize()));
-            }
-
-            return renderer;
         }
     }
 }

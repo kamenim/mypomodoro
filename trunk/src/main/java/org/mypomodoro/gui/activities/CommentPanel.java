@@ -22,57 +22,57 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  */
 public class CommentPanel extends JPanel implements ActivityInformation {
-	private static final long serialVersionUID = 20110814L;
 
-	private final JTextArea commentArea = new JTextArea();
-	private final GridBagConstraints gbc = new GridBagConstraints();
+    private static final long serialVersionUID = 20110814L;
+    private final JTextArea commentArea = new JTextArea();
+    private final GridBagConstraints gbc = new GridBagConstraints();
 
-	public CommentPanel(ActivitiesPanel panel) {
-		setLayout(new GridBagLayout());
-		setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+    public CommentPanel(ActivitiesPanel panel) {
+        setLayout(new GridBagLayout());
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-		addCommentArea();
-		addSaveButton(panel);
-	}
+        addCommentArea();
+        addSaveButton(panel);
+    }
 
-	private void addSaveButton(final ActivitiesPanel panel) {
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 0.1;
-		// gbc.fill = GridBagConstraints.NONE;
-		JButton changeButton = new AbstractPomodoroButton(
-				Labels.getString("Common.Save"));
-		changeButton.addActionListener(new ActionListener() {
+    private void addSaveButton(final ActivitiesPanel panel) {
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        // gbc.fill = GridBagConstraints.NONE;
+        JButton changeButton = new AbstractPomodoroButton(
+                Labels.getString("Common.Save"));
+        changeButton.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				panel.saveComment(commentArea.getText());
-			}
-		});
-		add(changeButton, gbc);
-	}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.saveComment(commentArea.getText());
+            }
+        });
+        add(changeButton, gbc);
+    }
 
-	private void addCommentArea() {
-		// add the comment area
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.gridheight = GridBagConstraints.REMAINDER;
-		commentArea.setEditable(true);
-		commentArea.setLineWrap(true);
-		commentArea.setWrapStyleWord(true);
-		add(new JScrollPane(commentArea), gbc);
-	}
+    private void addCommentArea() {
+        // add the comment area
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        commentArea.setEditable(true);
+        commentArea.setLineWrap(true);
+        commentArea.setWrapStyleWord(true);
+        add(new JScrollPane(commentArea), gbc);
+    }
 
-	@Override
-	public void showInfo(Activity activity) {
-		String text = activity.getNotes();
-		commentArea.setText(text);
-	}
+    @Override
+    public void showInfo(Activity activity) {
+        String text = activity.getNotes();
+        commentArea.setText(text);
+    }
 
-	@Override
-	public void clearInfo() {
-	}
+    @Override
+    public void clearInfo() {
+    }
 }

@@ -19,9 +19,9 @@ public class PomodorosRemainingLabel {
         Iterator<Activity> iToDo = toDoList.iterator();
         while (iToDo.hasNext()) {
             Activity toDo = iToDo.next();
-            int Pomodoros = toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();            
+            int Pomodoros = toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             if (Pomodoros > 0) {
-                remainingPomodoros += Pomodoros;                
+                remainingPomodoros += Pomodoros;
             } else {
                 completedPomodoros++;
             }
@@ -29,6 +29,6 @@ public class PomodorosRemainingLabel {
         if (!toDoList.isEmpty()) {
             label = Labels.getString("ToDoListPanel.{0} pomodoros remaining, {1} finished ToDo", remainingPomodoros, completedPomodoros);
         }
-        remainPomodorosLabel.setText("  " + label);        
+        remainPomodorosLabel.setText("  " + label);
     }
 }

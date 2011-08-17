@@ -18,9 +18,8 @@ import org.mypomodoro.util.Labels;
  */
 public class DeleteButton extends AbstractPomodoroButton {
 
-	private static final long serialVersionUID = 20110814L;
+    private static final long serialVersionUID = 20110814L;
 
-	
     public DeleteButton(final JTable table) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {

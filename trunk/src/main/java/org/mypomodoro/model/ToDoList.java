@@ -52,17 +52,16 @@ public class ToDoList extends AbstractActivities {
             currentAct.databaseUpdate();
         }
     }
-    
+
     public void update() {
         Main.updateLists();
         Main.updateView();
     }
-        
+
     public void completeAll() {
         ActivitiesDAO.getInstance().completeAllTODOs();
         update();
     }
-
     /**
      * Promote the Activity at the desired index, by storing the value to be
      * replaced into a buffer and then switching the values. The root node
@@ -70,17 +69,17 @@ public class ToDoList extends AbstractActivities {
      * 
      */
     /*public void promote(Activity a) {
-        int index = activities.indexOf(a);
-        if (index > 0) {
-            Activity lower = a;
-            Activity higher = activities.get(index - 1);
-            activities.set(index - 1, lower);
-            activities.set(index, higher);
-            lower.setPriority(index - 1);
-            lower.databaseUpdate();
-            higher.setPriority(index);
-            higher.databaseUpdate();
-        }
+    int index = activities.indexOf(a);
+    if (index > 0) {
+    Activity lower = a;
+    Activity higher = activities.get(index - 1);
+    activities.set(index - 1, lower);
+    activities.set(index, higher);
+    lower.setPriority(index - 1);
+    lower.databaseUpdate();
+    higher.setPriority(index);
+    higher.databaseUpdate();
+    }
     }*/
     /**
      * Demote the Activity at the desired index, by storing the value to be

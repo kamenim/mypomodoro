@@ -14,8 +14,8 @@ import org.mypomodoro.util.Labels;
 
 //View Menu
 public class ViewMenu extends JMenu {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private final MyPomodoroView view;
 
     public ViewMenu(final MyPomodoroView view) {
@@ -28,8 +28,9 @@ public class ViewMenu extends JMenu {
     }
 
     class ActivityListItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ActivityListItem() {
             super(Labels.getString("ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
@@ -52,8 +53,9 @@ public class ViewMenu extends JMenu {
     }
 
     class ReportListItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ReportListItem() {
             super(Labels.getString("ViewMenu.Report List"));
             // Adds Keyboard Shortcut Alt-R
@@ -76,8 +78,9 @@ public class ViewMenu extends JMenu {
     }
 
     class GenerateListItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public GenerateListItem() {
             super(Labels.getString("ViewMenu.Manager"));
             // Adds Keyboard Shortcut Alt-M
@@ -100,8 +103,9 @@ public class ViewMenu extends JMenu {
     }
 
     class ToDoListItem extends JMenuItem {
-    	private static final long serialVersionUID = 20110814L;
-    	
+
+        private static final long serialVersionUID = 20110814L;
+
         public ToDoListItem() {
             super(Labels.getString("ViewMenu.ToDo List"));
             // Adds Keyboard Shortcut Alt-T

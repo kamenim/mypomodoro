@@ -1,11 +1,14 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -27,8 +30,8 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  */
 public class CreatePanel extends JPanel {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
     protected final JLabel validation = new JLabel("");
     protected final SaveButton saveButton = new SaveButton(this);
@@ -50,6 +53,17 @@ public class CreatePanel extends JPanel {
         gbc.weighty = 0.80;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
+        Component[] fields = inputFormPanel.getComponents();
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    enableSaveButton();
+                    clearValidation(); // clear validation message when clicking on text fields
+                }
+            });
+        }
         add(inputFormPanel, gbc);
     }
 
@@ -60,6 +74,7 @@ public class CreatePanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         //gbc.fill = GridBagConstraints.NONE;
+        disableSaveButton();
         add(saveButton, gbc);
     }
 
@@ -69,6 +84,7 @@ public class CreatePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                disableSaveButton();
                 clearForm();
             }
         });
@@ -88,6 +104,7 @@ public class CreatePanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
+        validation.setVisible(false);
         add(validation, gbc);
     }
 
@@ -97,12 +114,13 @@ public class CreatePanel extends JPanel {
         clearForm();
         validation.setForeground(Color.black);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(Labels.getString("CreatePanel.Activity {0} added to Activity List", newActivity.getName()));
+        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List", newActivity.getName()));
     }
 
     public void saveActivity(Activity newActivity) {
         if (!newActivity.isValid()) {
             invalidActivityAction();
+            validation.setVisible(true);
         } else if (newActivity.alreadyExists()) {
             JFrame window = new JFrame();
             String title = Labels.getString("Common.Warning");
@@ -110,9 +128,11 @@ public class CreatePanel extends JPanel {
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 validActivityAction(newActivity);
+                validation.setVisible(true);
             }
         } else {
             validActivityAction(newActivity);
+            validation.setVisible(true);
         }
     }
 
@@ -134,9 +154,25 @@ public class CreatePanel extends JPanel {
         inputFormPanel.setAuthorField("");
         inputFormPanel.setPlaceField("");
         inputFormPanel.setDate(new Date());
-        validation.setText("");
+        clearValidation();
     }
-    
+
     public void fillOutInputForm(Activity activity) {
+    }
+
+    private void clearValidation() {
+        validation.setText("");
+        validation.setVisible(false);
+    }
+
+    private void enableSaveButton() {
+        saveButton.setEnabled(true);
+        saveButton.setForeground(Color.black);
+    }
+
+    public void disableSaveButton() {
+        saveButton.setEnabled(false);
+        saveButton.setOpaque(false);
+        saveButton.setForeground(Color.GRAY);
     }
 }
