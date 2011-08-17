@@ -49,7 +49,7 @@ public class Database {
             }
         }
         catch (SQLException e) {
-            System.err.println(e);            
+            System.err.println(e);
         }
     }
 
@@ -59,7 +59,7 @@ public class Database {
             statement.executeUpdate(sql);
         }
         catch (SQLException e) {
-           System.err.println(e);
+            System.err.println(e);
         }
     }
 
@@ -103,9 +103,9 @@ public class Database {
                 + "max_nb_pom_per_day INTEGER DEFAULT 10, "
                 + "nb_pom_per_set INTEGER DEFAULT 4, "
                 + "ticking BOOLEAN DEFAULT 1, "
-                + "ringing BOOLEAN DEFAULT 1, " 
+                + "ringing BOOLEAN DEFAULT 1, "
                 + "locale TEXT, "
-                + "system_tray BOOLEAN DEFAULT 1, "                
+                + "system_tray BOOLEAN DEFAULT 1, "
                 + "system_tray_msg BOOLEAN DEFAULT 1" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
@@ -126,7 +126,7 @@ public class Database {
             }
         }
         catch (SQLException e) {
-           System.err.println(e);
+            System.err.println(e);
         }
         finally {
             try {
@@ -174,7 +174,6 @@ public class Database {
             System.out.println(iterator.next());
         }
     }
-    
     private final ReentrantLock lock = new ReentrantLock();
 
     public void lock() {

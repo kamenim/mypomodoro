@@ -80,7 +80,8 @@ public class Restart {
                     public void run() {
                         try {
                             Runtime.getRuntime().exec(cmd.toString());
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e) {
                         }
                     }
                 });
@@ -90,7 +91,8 @@ public class Restart {
                 }
                 // exit
                 System.exit(0);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // something went wrong
                 throw new IOException("Error while trying to restart the application", e);
             }

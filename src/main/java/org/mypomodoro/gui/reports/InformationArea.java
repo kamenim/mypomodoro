@@ -22,8 +22,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class InformationArea extends JPanel implements ActivityInformation {
-	private static final long serialVersionUID = 20110814L;
-	
+
+    private static final long serialVersionUID = 20110814L;
     private final JTextArea informationArea = new JTextArea();
     private final GridBagConstraints gbc = new GridBagConstraints();
 

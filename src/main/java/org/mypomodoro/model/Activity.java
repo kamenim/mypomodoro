@@ -348,7 +348,7 @@ public class Activity {
         attributes[15] = notes;
         return attributes;
     }
-    
+
     public Object[] toRowArray() {
         Object[] attributes = new Object[16];
         attributes[0] = isUnplanned ? true : false;

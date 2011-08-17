@@ -111,7 +111,7 @@ public class Preferences {
     public boolean getSystemTray() {
         return systemTray;
     }
-    
+
     public boolean getSystemTrayMessage() {
         return systemTrayMessage;
     }

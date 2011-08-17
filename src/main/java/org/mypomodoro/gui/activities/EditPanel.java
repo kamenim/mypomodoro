@@ -17,8 +17,8 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  */
 public class EditPanel extends CreatePanel {
-	private static final long serialVersionUID = 20110814L;
 
+    private static final long serialVersionUID = 20110814L;
     protected EditInputForm editInputForm;
 
     public EditPanel() {

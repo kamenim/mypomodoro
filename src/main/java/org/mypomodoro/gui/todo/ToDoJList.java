@@ -56,16 +56,11 @@ public class ToDoJList extends JList {
     private void selectToDo() {
         int index = 0;
         if (!toDoList.isEmpty()) {
-            if (toDoList.getById(selectedToDoId) == null) { // ToDo completed
-                // (removed from the
-                // list)
+            // ToDo completed (removed from the list)
+            if (toDoList.getById(selectedToDoId) == null) {
                 index = selectedRowIndex;
-                if (ToDoList.getListSize() < selectedRowIndex + 1) { // ToDo
-                    // completed
-                    // (end
-                    // of
-                    // the
-                    // list)
+                // ToDo completed (end of the list)
+                if (ToDoList.getListSize() < selectedRowIndex + 1) {
                     --index;
                 }
             } else if (selectedToDoId != 0) {
@@ -92,20 +87,18 @@ public class ToDoJList extends JList {
             Activity toDo = (Activity) value;
             renderer.setText(toDo.getName());
 
-            if (isSelected) {
-                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
-            } else {
-                renderer.setFont(new Font(renderer.getFont().getName(), Font.PLAIN, renderer.getFont().getSize()));
-            }
-
+            Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
-                Activity currentToDo = pomodoro.getCurrentToDo();
                 if (toDo.getId() == currentToDo.getId()) {
                     renderer.setForeground(Color.RED);
+                    renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
                 } else {
                     renderer.setForeground(Color.BLACK);
                 }
             } else {
+                if (currentToDo != null && toDo.getId() == currentToDo.getId()) {
+                    renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+                }
                 renderer.setForeground(Color.BLACK);
             }
 

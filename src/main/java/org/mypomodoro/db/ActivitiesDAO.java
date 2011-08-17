@@ -55,7 +55,7 @@ public class ActivitiesDAO {
         Main.updateView();
     }
 
-    public Iterable<Activity> getActivities() {        
+    public Iterable<Activity> getActivities() {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
@@ -85,7 +85,7 @@ public class ActivitiesDAO {
     }
 
     public Iterable<Activity> getReports() {
-        List<Activity> activities = new ArrayList<Activity>();        
+        List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY name;");
@@ -113,7 +113,7 @@ public class ActivitiesDAO {
     }
 
     public Iterable<Activity> getTODOs() {
-        List<Activity> activities = new ArrayList<Activity>();        
+        List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY name;");
@@ -152,7 +152,7 @@ public class ActivitiesDAO {
         }
     }
 
-    public void update(Activity activity) {                
+    public void update(Activity activity) {
         String updateSQL = "UPDATE activities SET " + "name = '"
                 + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''")
                 + "', " + "description = '" + activity.getDescription().replace("'", "''") + "', "
@@ -181,7 +181,7 @@ public class ActivitiesDAO {
         }
     }
 
-    public Activity getActivityByNameAndDate(Activity newActivity) {        
+    public Activity getActivityByNameAndDate(Activity newActivity) {
         Activity activity = null;
         try {
             database.lock();
@@ -237,7 +237,7 @@ public class ActivitiesDAO {
     }
 
     // Activities, TODOs and Reports
-    public Activity getActivity(int ID) {        
+    public Activity getActivity(int ID) {
         Activity activity = null;
         try {
             database.lock();
@@ -265,11 +265,11 @@ public class ActivitiesDAO {
         }
         return activity;
     }
-    
+
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
                 + "date_added = " + new Date().getTime() + ", "
-                + "is_complete = 'true'"                
+                + "is_complete = 'true'"
                 + " WHERE priority > -1 AND is_complete = 'false';";
         try {
             database.lock();

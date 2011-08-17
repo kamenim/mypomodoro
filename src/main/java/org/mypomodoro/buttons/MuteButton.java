@@ -15,9 +15,8 @@ import org.mypomodoro.gui.todo.Pomodoro;
  * @author Phil Karoo
  */
 public class MuteButton extends JButton {
-	
-	private static final long serialVersionUID = 20110814L;
 
+    private static final long serialVersionUID = 20110814L;
     private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource("/images/mute.png"));
     private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource("/images/sound.png"));
     private boolean isMuteIcon = true;

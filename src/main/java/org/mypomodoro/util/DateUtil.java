@@ -43,7 +43,7 @@ public class DateUtil {
         return new SimpleDateFormat(pattern, locale).format(date);
 
     }
-    
+
     public static boolean isUSLocale() {
         return locale.equals(US_LOCALE);
     }
