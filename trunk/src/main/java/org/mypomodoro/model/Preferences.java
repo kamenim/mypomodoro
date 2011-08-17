@@ -65,6 +65,11 @@ public class Preferences {
      */
     public static final boolean STRAY = true;
     private boolean systemTray = STRAY;
+    /**
+     * System tray pop-up message
+     */
+    public static final boolean STRAYMSG = true;
+    private boolean systemTrayMessage = STRAYMSG;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -106,6 +111,10 @@ public class Preferences {
     public boolean getSystemTray() {
         return systemTray;
     }
+    
+    public boolean getSystemTrayMessage() {
+        return systemTrayMessage;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -146,6 +155,10 @@ public class Preferences {
 
     public void setSystemTray(boolean value) {
         systemTray = value;
+    }
+
+    public void setSystemTrayMessage(boolean value) {
+        systemTrayMessage = value;
     }
 
     public void refresh() {
