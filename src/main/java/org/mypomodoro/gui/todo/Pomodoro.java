@@ -41,14 +41,13 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;    
+    /*private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;    
     private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;    
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
-    /* Test
+    Test*/
     private final long POMODORO_LENGTH = 10 * SECOND;
     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
-    private final long POMODORO_LONG_LENGTH = 10 * SECOND;    
-     */
+    private final long POMODORO_LONG_LENGTH = 10 * SECOND;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
     private long pomodoroLength = POMODORO_LENGTH;
@@ -76,7 +75,9 @@ public class Pomodoro {
             tick();
         }
         if (isSystemTray()) {
-            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+            if (isSystemTrayMessage()) {
+                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+            }
             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
@@ -89,8 +90,10 @@ public class Pomodoro {
         pomodoroTime.setText(sdf.format(pomodoroLength));
         stopSound();
         if (inPomodoro() && isSystemTray()) {
-            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
-            MyPomodoroView.trayIcon.setToolTip(null);
+            if (isSystemTrayMessage()) {
+                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
+            }
+            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Stopped"));
             MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
@@ -143,13 +146,17 @@ public class Pomodoro {
                         goInLongBreak();
                         pomSetNumber = 0;
                         if (isSystemTray()) {
-                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                            if (isSystemTrayMessage()) {
+                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                            }
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
                         }
                     } else {
                         goInShortBreak();
                         if (isSystemTray()) {
-                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                            if (isSystemTrayMessage()) {
+                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                            }
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
@@ -161,7 +168,9 @@ public class Pomodoro {
                         stop();
                         timerPanel.setStart();
                         if (isSystemTray()) {
-                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                            if (isSystemTrayMessage()) {
+                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                            }
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                         }
                     } else {
@@ -172,7 +181,9 @@ public class Pomodoro {
                         panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into red
                         inpomodoro = true;
                         if (isSystemTray()) {
-                            MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                            if (isSystemTrayMessage()) {
+                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                            }
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
@@ -334,6 +345,10 @@ public class Pomodoro {
 
     private boolean isSystemTray() {
         return SystemTray.isSupported() && ControlPanel.preferences.getSystemTray();
+    }
+
+    private boolean isSystemTrayMessage() {
+        return SystemTray.isSupported() && ControlPanel.preferences.getSystemTrayMessage();
     }
 
     public void mute() {

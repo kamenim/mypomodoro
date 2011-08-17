@@ -107,6 +107,7 @@ public class ControlPanel extends JPanel {
 				preferencesInputFormPanel.ringingBox.setSelected(true);
 				// no reset for locale
 				preferencesInputFormPanel.systemTrayBox.setSelected(true);
+                                preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
 				setValidation(Labels
 						.getString("PreferencesPanel.Preferences reset.") + " ");
 				updatePreferences();
@@ -192,6 +193,8 @@ public class ControlPanel extends JPanel {
 						.getSelectedItem()).getLocale());
 		preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox
 				.isSelected());
+                preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox
+                                .isSelected());
 		preferences.updatePreferences();
 	}
 }
