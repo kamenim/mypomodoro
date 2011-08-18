@@ -115,9 +115,9 @@ public class ExportPanel extends JPanel implements ActivityInformation {
                     exportExcel(fileName, act);
                 }
                 JFrame window = new JFrame();
-                String title = Labels.getString("ReportListPanel.Export reports");
+                String title = Labels.getString("ReportListPanel.Export");
                 String message = Labels.getString(
-                        "ReportListPanel.Reports exported to file {0}",
+                        "ReportListPanel.Data exported to file {0}",
                         fileName);
                 JOptionPane.showConfirmDialog(window, message, title,
                         JOptionPane.DEFAULT_OPTION);
@@ -191,14 +191,6 @@ public class ExportPanel extends JPanel implements ActivityInformation {
             }
             rowNb++;
         }
-
-        // index from 0,0... cell A1 is cell(0,0)
-
-        /*
-         * cellStyle = workbook.createCellStyle();
-         * cellStyle.setDataFormat(HSSFDataFormat
-         * .getBuiltinFormat("m/d/yy h:mm")); cellD1.setCellStyle(cellStyle);
-         */
 
         workbook.write(fileOut);
         fileOut.flush();

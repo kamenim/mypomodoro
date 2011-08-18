@@ -36,12 +36,10 @@ public class DateUtil {
     public static String getFormatedTime(Date date) {
         String pattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         return getFormatedTime(date, pattern);
-
     }
 
     public static String getFormatedTime(Date date, String pattern) {
         return new SimpleDateFormat(pattern, locale).format(date);
-
     }
 
     public static boolean isUSLocale() {
