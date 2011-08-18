@@ -332,7 +332,7 @@ public class Activity {
         String[] attributes = new String[16];
         attributes[0] = isUnplanned ? "1" : "0";
         attributes[1] = DateUtil.getFormatedDate(date, pattern);
-        attributes[2] = DateUtil.getFormatedTime(date, pattern); // time
+        attributes[2] = DateUtil.getFormatedTime(date); // time
         attributes[3] = name;
         attributes[4] = estimatedPoms + "";
         attributes[5] = overestimatedPoms + "";
