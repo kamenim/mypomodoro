@@ -1,7 +1,6 @@
 package org.mypomodoro.util;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -40,9 +39,5 @@ public class Labels {
 
     public static Locale getLocale() {
         return resource_bundle.getLocale();
-    }
-
-    public static SimpleDateFormat getSimpleDateFormat(String pattern) {
-        return new SimpleDateFormat(pattern, resource_bundle.getLocale());
     }
 }

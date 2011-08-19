@@ -91,6 +91,8 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
             // refresh remaining Pomodoros label
             PomodorosRemainingLabel.showRemainPomodoros(
                     panel.getPomodorosRemainingLabel(), panel.getToDoList());
+            // reset overestimation form
+            overestimationInputFormPanel.reset();
             JFrame window = new JFrame();
             String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString(

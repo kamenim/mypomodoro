@@ -369,4 +369,8 @@ public class Activity {
         attributes[15] = notes;
         return attributes;
     }
+    
+    public boolean isComplete() {
+        return actualPoms == estimatedPoms + overestimatedPoms;
+    }
 }

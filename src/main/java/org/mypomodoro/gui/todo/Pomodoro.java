@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.todo;
 
-import java.awt.Color;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -27,6 +26,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -41,13 +41,13 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
+    /*private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
     private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
-    /*Test
+    Test*/
     private final long POMODORO_LENGTH = 10 * SECOND;
     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
-    private final long POMODORO_LONG_LENGTH = 10 * SECOND;*/
+    private final long POMODORO_LONG_LENGTH = 10 * SECOND;
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
     private long pomodoroLength = POMODORO_LENGTH;
@@ -160,11 +160,11 @@ public class Pomodoro {
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
-                    timerPanel.setStartColor(Color.BLACK);
+                    timerPanel.setStartColor(ColorUtil.BLACK);
                     panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into black
                     inpomodoro = false;
                 } else {
-                    if (isCurrentToDoComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    if (currentToDo.isComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
                         if (isSystemTray()) {
@@ -177,7 +177,7 @@ public class Pomodoro {
                         if (ControlPanel.preferences.getTicking() && !isMute) {
                             tick();
                         }
-                        timerPanel.setStartColor(Color.RED);
+                        timerPanel.setStartColor(ColorUtil.RED);
                         panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into red
                         inpomodoro = true;
                         if (isSystemTray()) {
@@ -307,10 +307,6 @@ public class Pomodoro {
 
     public TimerPanel getTimerPanel() {
         return timerPanel;
-    }
-
-    public boolean isCurrentToDoComplete() {
-        return currentToDo.getActualPoms() == currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms();
     }
 
     private InputStream getStreamWithMarkReset(InputStream stream) throws IOException {

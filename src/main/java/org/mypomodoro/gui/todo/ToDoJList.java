@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 public class ToDoJList extends JList {
@@ -85,21 +86,28 @@ public class ToDoJList extends JList {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             Activity toDo = (Activity) value;
-            renderer.setText(toDo.getName());
+            renderer.setText(toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms()+toDo.getOverestimatedPoms()) + ")");
 
             Activity currentToDo = pomodoro.getCurrentToDo();
+            if (isSelected) {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+            }
             if (pomodoro.inPomodoro()) {
                 if (toDo.getId() == currentToDo.getId()) {
-                    renderer.setForeground(Color.RED);
-                    renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+                    renderer.setForeground(ColorUtil.RED);
                 } else {
-                    renderer.setForeground(Color.BLACK);
+                    if (toDo.isComplete()) {
+                        renderer.setForeground(ColorUtil.GREEN);
+                    } else {
+                        renderer.setForeground(ColorUtil.BLACK);
+                    }
                 }
             } else {
-                if (currentToDo != null && toDo.getId() == currentToDo.getId()) {
-                    renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+                if (toDo.isComplete()) {
+                    renderer.setForeground(ColorUtil.GREEN);
+                } else {
+                    renderer.setForeground(ColorUtil.BLACK);
                 }
-                renderer.setForeground(Color.BLACK);
             }
 
             return renderer;
