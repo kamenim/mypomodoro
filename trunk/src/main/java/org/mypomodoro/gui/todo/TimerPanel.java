@@ -21,6 +21,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import org.mypomodoro.Main;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
@@ -70,8 +71,8 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.165;
         gbc.anchor = GridBagConstraints.SOUTH;
         startButton.setBackground(Color.WHITE);
-        startButton.setForeground(Color.BLACK);
-        Border line = new LineBorder(Color.BLACK, 2);
+        startButton.setForeground(ColorUtil.BLACK);
+        Border line = new LineBorder(ColorUtil.BLACK, 2);
         Border margin = new EmptyBorder(5, 15, 5, 15);
         Border compound = new CompoundBorder(line, margin);
         startButton.setBorder(compound);
@@ -83,7 +84,7 @@ public class TimerPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (pomodoro.getCurrentToDo() != null) {
                     if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
-                        if (pomodoro.isCurrentToDoComplete()) {
+                        if (pomodoro.getCurrentToDo().isComplete()) {
                             JFrame window = new JFrame();
                             String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
                             message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
@@ -91,22 +92,22 @@ public class TimerPanel extends JPanel {
                         } else {
                             pomodoro.start();
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
-                            startButton.setForeground(Color.RED);
-                            Border line = new LineBorder(Color.RED, 2);
+                            startButton.setForeground(ColorUtil.RED);
+                            Border line = new LineBorder(ColorUtil.RED, 2);
                             Border margin = new EmptyBorder(5, 15, 5, 15);
                             Border compound = new CompoundBorder(line, margin);
                             startButton.setBorder(compound);
-                            pomodoroTime.setForeground(Color.RED);
+                            pomodoroTime.setForeground(ColorUtil.RED);
                             toDoJList.init(); // init list so the custom cell renderer can turn the title into red
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
-                        startButton.setForeground(Color.BLACK);
-                        Border line = new LineBorder(Color.BLACK, 2);
+                        startButton.setForeground(ColorUtil.BLACK);
+                        Border line = new LineBorder(ColorUtil.BLACK, 2);
                         Border margin = new EmptyBorder(5, 15, 5, 15);
                         Border compound = new CompoundBorder(line, margin);
                         startButton.setBorder(compound);
-                        pomodoroTime.setForeground(Color.BLACK);
+                        pomodoroTime.setForeground(ColorUtil.BLACK);
                         toDoJList.init(); // init list so the custom cell renderer can turn the title into black
                     }
                 }
@@ -117,7 +118,7 @@ public class TimerPanel extends JPanel {
 
     public void setStart() {
         startButton.setText(Labels.getString("ToDoListPanel.Start"));
-        setStartColor(Color.BLACK);
+        setStartColor(ColorUtil.BLACK);
     }
 
     public void setStartColor(Color color) {

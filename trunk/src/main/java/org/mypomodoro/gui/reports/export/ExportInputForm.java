@@ -164,16 +164,8 @@ public class ExportInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Separator selectedSeparator = new Separator();
-                if (separatorComboBox.getSelectedItem() instanceof String) { // editable
-                    // field
-                    // has
-                    // been
-                    // edited
-                    // and
-                    // has
-                    // become
-                    // a
-                    // String
+                // editable field has been edited and has become a String
+                if (separatorComboBox.getSelectedItem() instanceof String) {
                     String separatorText = (String) separatorComboBox.getSelectedItem();
                     if (separatorText.length() > 0) {
                         char[] sepArray = separatorText.toCharArray();

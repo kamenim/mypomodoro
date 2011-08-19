@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.model.Preferences;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -123,7 +124,7 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
-        validation.setForeground(Color.black);
+        validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD,
                 validation.getFont().getSize()));
         GridBagConstraints vgbc = new GridBagConstraints();
@@ -153,7 +154,7 @@ public class ControlPanel extends JPanel {
 
     public void enableSaveButton() {
         saveButton.setEnabled(true);
-        saveButton.setForeground(Color.black);
+        saveButton.setForeground(ColorUtil.BLACK);
     }
 
     public void clearValidation() {

@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CompoundIcon;
 
 /**
@@ -15,7 +16,7 @@ import org.mypomodoro.util.CompoundIcon;
 public class ToDoIconLabel {
 
     static public void showIconLabel(JLabel iconLabel, Activity activity) {
-        showIconLabel(iconLabel, activity, Color.BLACK);
+        showIconLabel(iconLabel, activity, ColorUtil.BLACK);
     }
 
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {

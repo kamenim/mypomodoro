@@ -21,6 +21,7 @@ import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -112,7 +113,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         newActivity.databaseInsert();
         clearForm();
-        validation.setForeground(Color.black);
+        validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
         validation.setText(Labels.getString("CreatePanel.Activity added to Activity List", newActivity.getName()));
     }
@@ -137,7 +138,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void invalidActivityAction() {
-        validation.setForeground(Color.red);
+        validation.setForeground(ColorUtil.RED);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
         validation.setText(Labels.getString("Common.Title is mandatory"));
     }
@@ -167,7 +168,7 @@ public class CreatePanel extends JPanel {
 
     private void enableSaveButton() {
         saveButton.setEnabled(true);
-        saveButton.setForeground(Color.black);
+        saveButton.setForeground(ColorUtil.BLACK);
     }
 
     public void disableSaveButton() {

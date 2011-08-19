@@ -62,4 +62,8 @@ public class OverestimationInputForm extends JPanel {
     public JComboBox getOverestimationPomodoros() {
         return overestimatedPomodoros;
     }
+    
+    public void reset() {
+        overestimatedPomodoros.setSelectedIndex(0);
+    }
 }
