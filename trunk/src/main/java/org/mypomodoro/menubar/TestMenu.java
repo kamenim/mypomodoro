@@ -2,6 +2,7 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JMenu;
@@ -75,6 +76,15 @@ public class TestMenu extends JMenu {
                     java.util.Random rand = new java.util.Random();
                     int alSize = 10;
 
+                    Date date = new Date();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.MILLISECOND, 0);
+                    Date currentDateAtMidnight = cal.getTime();
+
                     // insert data into the activitylist
                     for (int i = 0; i < alSize; i++) {
 
@@ -82,7 +92,7 @@ public class TestMenu extends JMenu {
                                 authors[rand.nextInt(5)],
                                 name[rand.nextInt(4)], description[rand.nextInt(5)], type[rand.nextInt(5)],
                                 rand.nextInt(ControlPanel.preferences.getMaxNbPomPerActivity()) + 1,
-                                new Date()); // excluding 0 poms
+                                currentDateAtMidnight);
                         a.databaseInsert();
                     }
                 }

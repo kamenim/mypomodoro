@@ -13,7 +13,7 @@ public class SplashScreen extends JPanel {
     private static final long serialVersionUID = 20110814L;
 
     public SplashScreen() {
-        setBackground(Color.white);
+        setBackground(ColorUtil.WHITE);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         JLabel title = new JLabel("");

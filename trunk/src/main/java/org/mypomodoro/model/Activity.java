@@ -102,7 +102,7 @@ public class Activity {
     }
 
     /**
-     * Constructor for Activity. date attribute is stored as new Date().
+     * Constructor for Activity
      * 
      * @param place
      * @param author
@@ -120,13 +120,62 @@ public class Activity {
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms, Date dateActivity, int activityId) {
         this.place = place;
-        this.date = new Date();
         this.author = author;
         this.name = name;
         this.description = description;
         this.type = type;
         this.estimatedPoms = estimatedPoms;
         this.date = dateActivity;
+        this.id = activityId > 0 ? activityId : this.id;
+    }
+
+    /**
+     * Constructor for Activity
+     * 
+     * @param place
+     * @param author
+     * @param name
+     * @param description
+     * @param type
+     * @param estimatedPoms
+     * @param dateActivity
+     * @param unplanned
+     * @param overestimatedPoms
+     * @param actualPoms (real)
+     * @param internalInterruptions
+     * @param externalInterruptions
+     * @param notes (comment)
+     */
+    public Activity(String place, String author, String name,
+            String description, String type, int estimatedPoms, 
+            Date dateActivity, int overestimatedPoms, int actualPoms,
+            int internalInterruptions, int externalInterruptions, String notes,
+            boolean unplanned, boolean completed) {
+        this(place, author, name, description, type, estimatedPoms, 
+                dateActivity, overestimatedPoms, actualPoms,
+                internalInterruptions, externalInterruptions, notes, 
+                unplanned, completed, -1);
+    }
+
+    public Activity(String place, String author, String name,
+            String description, String type, int estimatedPoms,
+            Date dateActivity, int overestimatedPoms, int actualPoms,
+            int internalInterruptions, int externalInterruptions, String notes, 
+            boolean unplanned, boolean completed, int activityId) {
+        this.place = place;
+        this.author = author;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.estimatedPoms = estimatedPoms;
+        this.date = dateActivity;
+        this.overestimatedPoms = overestimatedPoms;
+        this.actualPoms = actualPoms;
+        this.numInternalInterruptions = internalInterruptions;
+        this.numInterruptions = externalInterruptions;
+        this.notes = notes;
+        this.isUnplanned = unplanned;
+        this.isCompleted = completed;
         this.id = activityId > 0 ? activityId : this.id;
     }
 
@@ -315,7 +364,7 @@ public class Activity {
         return dateActivityFormat.equalsIgnoreCase(todayFormat);
     }
 
-    // Activity (not a ToDo nor a report)
+    // Activity (not a ToDo nor a Report)
     public boolean isActivity() {
         return getPriority() == -1 && !isCompleted();
     }
@@ -369,8 +418,8 @@ public class Activity {
         attributes[15] = notes;
         return attributes;
     }
-    
-    public boolean isComplete() {
+
+    public boolean isFinished() {
         return actualPoms == estimatedPoms + overestimatedPoms;
     }
 }

@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.reports.export;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,10 +15,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
+ * Export form
  * 
  * @author Phil Karoo
  */
@@ -27,10 +28,10 @@ public class ExportInputForm extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
-    private static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
+    protected static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private JCheckBox headerCheckBox = new JCheckBox();
-    private JTextField fileName = new JTextField();
+    protected JTextField fileName = new JTextField();
     private JComboBox fileFormatComboBox = new JComboBox();
     private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
@@ -73,25 +74,10 @@ public class ExportInputForm extends JPanel {
         c.anchor = GridBagConstraints.WEST;
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
-        headerCheckBox.setBackground(Color.white);
+        headerCheckBox.setBackground(ColorUtil.WHITE);
         add(headerCheckBox, c);
         // File name
-        c.gridx = 0;
-        c.gridy = 1;
-        c.weighty = 0.5;
-        FormLabel fileNamelabel = new FormLabel(
-                Labels.getString("ReportListPanel.File name") + "*: ");
-        fileNamelabel.setMinimumSize(LABEL_DIMENSION);
-        fileNamelabel.setPreferredSize(LABEL_DIMENSION);
-        add(fileNamelabel, c);
-        c.gridx = 1;
-        c.gridy = 1;
-        c.weighty = 0.5;
-        fileName = new JTextField();
-        fileName.setText(defaultFileName);
-        fileName.setMinimumSize(COMBO_BOX_DIMENSION);
-        fileName.setPreferredSize(COMBO_BOX_DIMENSION);
-        add(fileName, c);
+        addFileField(c);        
         // File formats
         c.gridx = 0;
         c.gridy = 2;
@@ -127,7 +113,7 @@ public class ExportInputForm extends JPanel {
         });
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
-        fileFormatComboBox.setBackground(Color.white);
+        fileFormatComboBox.setBackground(ColorUtil.WHITE);
         add(fileFormatComboBox, c);
         // Date patterns
         c.gridx = 0;
@@ -190,7 +176,7 @@ public class ExportInputForm extends JPanel {
         });
         separatorComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
-        separatorComboBox.setBackground(Color.white);
+        separatorComboBox.setBackground(ColorUtil.WHITE);
         add(separatorComboBox, c);
     }
 
@@ -240,7 +226,7 @@ public class ExportInputForm extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         excelPatternsPanel.add(new JLabel(excelPatterns), gbc);
-        excelPatternsPanel.setBackground(Color.white);
+        excelPatternsPanel.setBackground(ColorUtil.WHITE);
         add(excelPatternsPanel, c);
     }
 
@@ -388,11 +374,11 @@ public class ExportInputForm extends JPanel {
                 datePatternsComboBox2.setSelectedIndex(3);
                 datePatternsComboBox3.setSelectedIndex(7);
             }
-            datePatternsComboBox1.setBackground(Color.white);
-            dateSeparatorComboBox1.setBackground(Color.white);
-            datePatternsComboBox2.setBackground(Color.white);
-            dateSeparatorComboBox2.setBackground(Color.white);
-            datePatternsComboBox3.setBackground(Color.white);
+            datePatternsComboBox1.setBackground(ColorUtil.WHITE);
+            dateSeparatorComboBox1.setBackground(ColorUtil.WHITE);
+            datePatternsComboBox2.setBackground(ColorUtil.WHITE);
+            dateSeparatorComboBox2.setBackground(ColorUtil.WHITE);
+            datePatternsComboBox3.setBackground(ColorUtil.WHITE);
         }
 
         public JComboBox getDatePatternsComboBox1() {
@@ -422,5 +408,24 @@ public class ExportInputForm extends JPanel {
                     + dateSeparatorComboBox2.getSelectedItem().toString()
                     + datePatternsComboBox3.getSelectedItem().toString();
         }
+    }
+    
+    protected void addFileField(GridBagConstraints c) {
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weighty = 0.5;
+        FormLabel fileNamelabel = new FormLabel(
+                Labels.getString("ReportListPanel.File name") + "*: ");
+        fileNamelabel.setMinimumSize(LABEL_DIMENSION);
+        fileNamelabel.setPreferredSize(LABEL_DIMENSION);
+        add(fileNamelabel, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        c.weighty = 0.5;
+        fileName = new JTextField();
+        fileName.setText(defaultFileName);
+        fileName.setMinimumSize(COMBO_BOX_DIMENSION);
+        fileName.setPreferredSize(COMBO_BOX_DIMENSION);
+        add(fileName, c);
     }
 }

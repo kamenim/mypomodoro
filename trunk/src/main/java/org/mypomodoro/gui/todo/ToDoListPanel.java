@@ -360,7 +360,7 @@ public class ToDoListPanel extends JPanel {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 if (selectedToDo.getId() != currentToDo.getId()) {
-                    if (selectedToDo.isComplete()) {
+                    if (selectedToDo.isFinished()) {
                         ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
                         ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
                         ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
@@ -376,7 +376,7 @@ public class ToDoListPanel extends JPanel {
                 }
             } else {
                 if (currentToDo != null && selectedToDo.getId() != currentToDo.getId()) {
-                    if (currentToDo.isComplete()) {
+                    if (currentToDo.isFinished()) {
                         ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.GREEN);
                         ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.GREEN);
                     } else {
@@ -384,7 +384,7 @@ public class ToDoListPanel extends JPanel {
                         ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo);
                     }
                 } else {
-                    if (selectedToDo.isComplete()) {
+                    if (selectedToDo.isFinished()) {
                         ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, ColorUtil.GREEN);
                         ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
                     } else {
@@ -392,7 +392,7 @@ public class ToDoListPanel extends JPanel {
                         ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo);
                     }
                 }
-                if (selectedToDo.isComplete()) {
+                if (selectedToDo.isFinished()) {
                     ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);

@@ -1,6 +1,8 @@
 package org.mypomodoro.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -44,5 +46,16 @@ public class DateUtil {
 
     public static boolean isUSLocale() {
         return locale.equals(US_LOCALE);
+    }
+
+    /*
+     * Converts a string into a date
+     * 
+     * @param formatedDateTime string with date and time (eg "13/05/2000 12:46")
+     * @param datePattern pattern of the date (eg dd/MM/yyy)
+     */
+    public static Date getDate(String formatedDateTime, String datePattern) throws ParseException  {
+        String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
+        return new SimpleDateFormat(datePattern + " " + timePattern).parse(formatedDateTime);
     }
 }
