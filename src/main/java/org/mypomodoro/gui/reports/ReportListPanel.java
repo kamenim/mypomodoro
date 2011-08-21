@@ -24,6 +24,7 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.reports.export.ExportPanel;
+import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
@@ -86,7 +87,9 @@ public class ReportListPanel extends JPanel {
         JScrollPane editPane = new JScrollPane(edit);
         controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString("Common.Comment"), commentPanel);        
+        ImportPanel importPanel = new ImportPanel();
+        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
@@ -133,12 +136,8 @@ public class ReportListPanel extends JPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) { // make
-                    // Title
-                    // and
-                    // Type
-                    // columns
-                    // editable
+                // make Title and Type columns editable
+                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {                    
                     return true;
                 } else {
                     return false;
@@ -273,19 +272,11 @@ public class ReportListPanel extends JPanel {
     private void selectReport() {
         int index = 0;
         if (!ReportList.getList().isEmpty()) {
-            if (ReportList.getList().getById(selectedReportId) == null) { // Report
-                // deleted
-                // (removed
-                // from
-                // the
-                // list)
+            // Report deleted (removed from the list)
+            if (ReportList.getList().getById(selectedReportId) == null) {                
                 index = selectedRowIndex;
-                if (ReportList.getListSize() < selectedRowIndex + 1) { // Report
-                    // deleted
-                    // (end
-                    // of
-                    // the
-                    // list)
+                // Report deleted (end of the list)
+                if (ReportList.getListSize() < selectedRowIndex + 1) {                   
                     --index;
                 }
             } else if (selectedReportId != 0) {

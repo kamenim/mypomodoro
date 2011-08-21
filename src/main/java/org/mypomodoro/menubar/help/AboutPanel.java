@@ -1,6 +1,5 @@
 package org.mypomodoro.menubar.help;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,6 +22,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -69,7 +69,7 @@ public class AboutPanel extends JDialog {
                 Main.class.getResource("/images/pomodoroTechniqueAbout.png")));
         JPanel panel = new JPanel();
         panel.add(backgroundImage);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(ColorUtil.WHITE);
         add(panel, gbc);
     }
 
@@ -83,7 +83,7 @@ public class AboutPanel extends JDialog {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS); // left
         // alignment
         panel.setLayout(layout);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(ColorUtil.WHITE);
 
         GridBagConstraints gbcpanel = new GridBagConstraints();
         gbcpanel.gridx = 0;

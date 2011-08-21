@@ -21,7 +21,7 @@ public class ToDoIconLabel {
 
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {
         //iconLabel.setOpaque(true);
-        //iconLabel.setBackground(Color.white);
+        //iconLabel.setBackground(ColorUtil.WHITE);
         iconLabel.setText(activity.getName());
         iconLabel.setForeground(color);
         int estimatedPoms = activity.getEstimatedPoms();

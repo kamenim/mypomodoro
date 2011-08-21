@@ -164,7 +164,7 @@ public class Pomodoro {
                     panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into black
                     inpomodoro = false;
                 } else {
-                    if (currentToDo.isComplete()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    if (currentToDo.isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
                         if (isSystemTray()) {

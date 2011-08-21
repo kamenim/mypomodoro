@@ -23,11 +23,11 @@ import javax.swing.table.TableModel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.activities.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -86,7 +86,8 @@ public class ActivitiesPanel extends JPanel {
         controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
-        add(controlPane, gbc);
+        ImportPanel importPanel = new ImportPanel();
+        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);

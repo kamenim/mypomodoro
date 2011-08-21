@@ -104,7 +104,6 @@ public class ExportPanel extends JPanel implements ActivityInformation {
 
     private void export() {
         if (activities.size() > 0) {
-
             try {
                 String fileName = exportInputForm.getFileName() + "."
                         + exportInputForm.getFileExtention();

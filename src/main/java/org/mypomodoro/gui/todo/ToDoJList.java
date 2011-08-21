@@ -96,14 +96,14 @@ public class ToDoJList extends JList {
                 if (toDo.getId() == currentToDo.getId()) {
                     renderer.setForeground(ColorUtil.RED);
                 } else {
-                    if (toDo.isComplete()) {
+                    if (toDo.isFinished()) {
                         renderer.setForeground(ColorUtil.GREEN);
                     } else {
                         renderer.setForeground(ColorUtil.BLACK);
                     }
                 }
             } else {
-                if (toDo.isComplete()) {
+                if (toDo.isFinished()) {
                     renderer.setForeground(ColorUtil.GREEN);
                 } else {
                     renderer.setForeground(ColorUtil.BLACK);

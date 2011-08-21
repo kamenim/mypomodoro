@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.create;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,6 +16,7 @@ import javax.swing.border.TitledBorder;
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -110,7 +110,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        estimatedPomodoros.setBackground(Color.white);
+        estimatedPomodoros.setBackground(ColorUtil.WHITE);
         add(estimatedPomodoros, c);
     }
 
