@@ -86,10 +86,6 @@ public class ToDoListPanel extends JPanel {
                 informationPanel));
         toDoJList.addListSelectionListener(new ActivityInformationListListener(
                 commentPanel));
-        toDoJList.addListSelectionListener(new ActivityInformationListListener(
-                overestimationPanel));
-        toDoJList.addListSelectionListener(new ActivityInformationListListener(
-                unplannedPanel));
 
         addTodoList();
         addTimerPanel();

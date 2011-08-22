@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -22,7 +21,7 @@ import org.mypomodoro.util.Labels;
  * 
  * @author Phil Karoo
  */
-public class OverestimationPanel extends JPanel implements ActivityInformation {
+public class OverestimationPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final OverestimationInputForm overestimationInputFormPanel = new OverestimationInputForm();
@@ -84,6 +83,8 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
         if (selectedToDo != null) {
             selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
             selectedToDo.databaseUpdate();
+            // refresh ToDo list
+            panel.getToDoJList().init();
             // refresh info panel
             panel.getInformationPanel().showInfo(selectedToDo);
             // refresh icon label
@@ -101,15 +102,6 @@ public class OverestimationPanel extends JPanel implements ActivityInformation {
             JOptionPane.showConfirmDialog(window, message, title,
                     JOptionPane.DEFAULT_OPTION);
         }
-    }
-
-    @Override
-    public void showInfo(Activity activity) {
-        panel.refreshIconLabels();
-    }
-
-    @Override
-    public void clearInfo() {
     }
 
     public JLabel getIconLabel() {
