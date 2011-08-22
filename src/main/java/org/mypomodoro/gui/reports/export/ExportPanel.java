@@ -23,7 +23,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -35,7 +34,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  * 
  * @author Phil Karoo
  */
-public class ExportPanel extends JPanel implements ActivityInformation {
+public class ExportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final ExportInputForm exportInputForm = new ExportInputForm();
@@ -79,11 +78,12 @@ public class ExportPanel extends JPanel implements ActivityInformation {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Make sure the file name is set
                 if (exportInputForm.getFileName().length() == 0) {
                     exportInputForm.initFileName();
                 }
-                if (exportInputForm.getEditableSeparatorText().length() == 0) { // editable
-                    // field
+                // When selected, make sur the editable field is set
+                if (exportInputForm.getEditableSeparatorText().length() == 0) {
                     exportInputForm.initSeparatorComboBox();
                 }
                 export();
@@ -194,13 +194,5 @@ public class ExportPanel extends JPanel implements ActivityInformation {
         workbook.write(fileOut);
         fileOut.flush();
         fileOut.close();
-    }
-
-    @Override
-    public void showInfo(Activity activity) {
-    }
-
-    @Override
-    public void clearInfo() {
     }
 }

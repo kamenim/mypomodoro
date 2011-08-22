@@ -5,9 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 
+import java.io.FileWriter;
 import java.io.InputStream;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,29 +20,23 @@ import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
 
 /**
- * Panel to export reports
+ * Panel to import reports
  * 
  * @author Phil Karoo
  */
-public class ImportPanel extends JPanel implements ActivityInformation {
+public class ImportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final ImportInputForm importInputForm = new ImportInputForm();
-    private final GridBagConstraints gbc = new GridBagConstraints();   
+    private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public ImportPanel() {       
+    public ImportPanel() {
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -85,106 +81,172 @@ public class ImportPanel extends JPanel implements ActivityInformation {
     }
 
     private void importData() {
-            try {
-                String fileName = importInputForm.getFileName(); // path
-                if (importInputForm.isFileCSVFormat()) {
-                    importCSV(fileName);
-                } else if (importInputForm.isFileExcelFormat()) {
-                    importExcel(fileName);
-                }
-                JFrame window = new JFrame();
-                String title = Labels.getString("ReportListPanel.Import");
-                String message = Labels.getString(
-                        "ReportListPanel.Data imported",
-                        fileName);
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+        try {
+            String fileName = importInputForm.getFileName(); // path
+            if (importInputForm.isFileCSVFormat()) {
+                importCSV(fileName);
+            } else if (importInputForm.isFileExcelFormat()) {
+                importExcel(fileName);
             }
-            catch (Exception ex) {
-                JFrame window = new JFrame();
-                String title = Labels.getString("Common.Error");
-                String message = Labels.getString("ReportListPanel.Import failed. See error log.");
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
-            }
-        
+            JFrame window = new JFrame();
+            String title = Labels.getString("ReportListPanel.Import");
+            String message = Labels.getString(
+                    "ReportListPanel.Data imported",
+                    fileName);
+            JOptionPane.showConfirmDialog(window, message, title,
+                    JOptionPane.DEFAULT_OPTION);
+        }
+        catch (Exception ex) {
+            JFrame window = new JFrame();
+            String title = Labels.getString("Common.Error");
+            String message = Labels.getString("ReportListPanel.Import failed. See error log.");
+            JOptionPane.showConfirmDialog(window, message, title,
+                    JOptionPane.DEFAULT_OPTION);
+            writeErrorFile(ex.getMessage());
+        }
+    }
+
+    private void writeErrorFile(String error) {
+        try {
+            FileWriter fstream = new FileWriter("error.txt");
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(error);
+            out.close();
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
     }
 
     private void importCSV(String fileName) throws Exception {
-        CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(),'\"',importInputForm.isHeaderSelected()?1:0);
-        String[] nextLine;
-        while (( nextLine = reader.readNext() ) != null) {
-            insertData(nextLine);
+        CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
+        String[] line;
+        while (( line = reader.readNext() ) != null) {
+            line[1] = line[1] + " " + line[2]; // pre-formated date + time
+            insertData(line);
         }
-    }    
+    }
 
     private void importExcel(String fileName) throws Exception {
         InputStream myxls = new FileInputStream(fileName);
         HSSFWorkbook book = new HSSFWorkbook(myxls);
-        FormulaEvaluator eval =
-                book.getCreationHelper().createFormulaEvaluator();
+        //FormulaEvaluator eval = book.getCreationHelper().createFormulaEvaluator();
         HSSFSheet sheet = book.getSheetAt(0);
-        for (Row row : sheet) {
-            for (Cell cell : row) {
-                //printCell(cell, eval);
-                //System.out.print("; ");
-            }
-            //System.out.println();
+        if (importInputForm.isHeaderSelected()) {
+            sheet.removeRow(sheet.getRow(0));
         }
+        for (Row row : sheet) {
+            String[] line = new String[16];
+            int i = 0;
+            for (Cell cell : row) {
+                switch (i) {
+                    case 0:
+                        line[0] = cell.getBooleanCellValue() ? "1" : "0"; // Unplanned                        
+                        break;
+                    case 1:
+                        line[1] = cell.getStringCellValue(); // Date
+                        break;
+                    case 2:
+                        line[2] = cell.getStringCellValue(); // Time
+                        break;
+                    case 3:
+                        line[3] = cell.getStringCellValue(); // Name
+                        break;
+                    case 4:
+                        line[4] = cell.getNumericCellValue() + ""; // Estimated
+                        break;
+                    case 5:
+                        line[5] = cell.getNumericCellValue() + ""; // Overestimated
+                        break;
+                    case 6:
+                        line[6] = cell.getNumericCellValue() + ""; // Reals
+                        break;
+                    case 7:
+                        line[7] = ""; // Diff I
+                        break;
+                    case 8:
+                        line[8] = ""; // Diff II
+                        break;
+                    case 9:
+                        line[9] = cell.getNumericCellValue() + ""; // Internal
+                        break;
+                    case 10:
+                        line[10] = cell.getNumericCellValue() + ""; // External
+                        break;
+                    case 11:
+                        line[11] = cell.getStringCellValue(); // Type
+                        break;
+                    case 12:
+                        line[12] = cell.getStringCellValue(); // Author
+                        break;
+                    case 13:
+                        line[13] = cell.getStringCellValue(); // Place
+                        break;
+                    case 14:
+                        line[14] = cell.getStringCellValue(); // Description
+                        break;
+                    case 15:
+                        line[15] = cell.getStringCellValue(); // Comment
+                        break;
+                }
+                i++;
+                //printCell(cell, eval);              
+            }
+            //insertData(line);
+        }
+
         myxls.close();
     }
 
     /*private static void printCell(Cell cell, FormulaEvaluator eval) {
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_BLANK:
-                System.out.print("EMPTY");
-                break;
-            case Cell.CELL_TYPE_STRING:
-                System.out.print(cell.getStringCellValue());
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    System.out.print(cell.getDateCellValue());
-                } else {
-                    System.out.print(cell.getNumericCellValue());
-                }
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                System.out.print(cell.getBooleanCellValue());
-                break;
-            case Cell.CELL_TYPE_FORMULA:
-                System.out.print(cell.getCellFormula());
-                CellValue cellValue = eval.evaluate(cell);
-                switch (cellValue.getCellType()) {
-                    case Cell.CELL_TYPE_NUMERIC:
-                        double v = cellValue.getNumberValue();
-                        if (DateUtil.isCellDateFormatted(cell)) {
-                            System.out.print(" = "
-                                    + DateUtil.getJavaDate(v, true));
-                        } else {
-                            System.out.print(" = " + v);
-                        }
-                        break;
-                }
-                break;
-            default:
-                System.out.print("DEFAULT");
-        }
+    switch (cell.getCellType()) {
+    case Cell.CELL_TYPE_BLANK:
+    System.out.print("EMPTY");
+    break;
+    case Cell.CELL_TYPE_STRING:
+    System.out.print(cell.getStringCellValue());
+    break;
+    case Cell.CELL_TYPE_NUMERIC:
+    if (DateUtil.isCellDateFormatted(cell)) {
+    System.out.print(cell.getDateCellValue());
+    } else {
+    System.out.print(cell.getNumericCellValue());
+    }
+    break;
+    case Cell.CELL_TYPE_BOOLEAN:
+    System.out.print(cell.getBooleanCellValue());
+    break;
+    case Cell.CELL_TYPE_FORMULA:
+    System.out.print(cell.getCellFormula());
+    CellValue cellValue = eval.evaluate(cell);
+    switch (cellValue.getCellType()) {
+    case Cell.CELL_TYPE_NUMERIC:
+    double v = cellValue.getNumberValue();
+    if (DateUtil.isCellDateFormatted(cell)) {
+    System.out.print(" = "
+    + DateUtil.getJavaDate(v, true));
+    } else {
+    System.out.print(" = " + v);
+    }
+    break;
+    }
+    break;
+    default:
+    System.out.print("DEFAULT");
+    }
     }*/
-    
     protected void insertData(String[] line) throws Exception {
-        Activity newReport = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]), 
-                org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
-                Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15], 
-                line[0].equals("0")?false:true, true);
+        insertData(line, true);
+    }
+
+    /*
+     * @param isCompleted = true for reports; false for activities
+     */
+    protected void insertData(String[] line, boolean isCompleted) throws Exception {
+        Activity newReport = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
+                org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
+                Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
+                line[0].equals("0") ? false : true, isCompleted);
         newReport.databaseInsert();
-    }
-
-    @Override
-    public void showInfo(Activity activity) {
-    }
-
-    @Override
-    public void clearInfo() {
     }
 }
