@@ -20,6 +20,9 @@ import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.model.Activity;
@@ -102,7 +105,7 @@ public class ImportPanel extends JPanel {
             String message = Labels.getString("ReportListPanel.Import failed. See error log.");
             JOptionPane.showConfirmDialog(window, message, title,
                     JOptionPane.DEFAULT_OPTION);
-            writeErrorFile(ex.getMessage());
+            writeErrorFile(ex.toString());
         }
     }
 
@@ -130,7 +133,7 @@ public class ImportPanel extends JPanel {
     private void importExcel(String fileName) throws Exception {
         InputStream myxls = new FileInputStream(fileName);
         HSSFWorkbook book = new HSSFWorkbook(myxls);
-        //FormulaEvaluator eval = book.getCreationHelper().createFormulaEvaluator();
+        FormulaEvaluator eval = book.getCreationHelper().createFormulaEvaluator();
         HSSFSheet sheet = book.getSheetAt(0);
         if (importInputForm.isHeaderSelected()) {
             sheet.removeRow(sheet.getRow(0));
@@ -139,102 +142,91 @@ public class ImportPanel extends JPanel {
             String[] line = new String[16];
             int i = 0;
             for (Cell cell : row) {
-                switch (i) {
-                    case 0:
-                        line[0] = cell.getBooleanCellValue() ? "1" : "0"; // Unplanned                        
-                        break;
-                    case 1:
-                        line[1] = cell.getStringCellValue(); // Date
-                        break;
-                    case 2:
-                        line[2] = cell.getStringCellValue(); // Time
-                        break;
-                    case 3:
-                        line[3] = cell.getStringCellValue(); // Name
-                        break;
-                    case 4:
-                        line[4] = cell.getNumericCellValue() + ""; // Estimated
-                        break;
-                    case 5:
-                        line[5] = cell.getNumericCellValue() + ""; // Overestimated
-                        break;
-                    case 6:
-                        line[6] = cell.getNumericCellValue() + ""; // Reals
-                        break;
-                    case 7:
-                        line[7] = ""; // Diff I
-                        break;
-                    case 8:
-                        line[8] = ""; // Diff II
-                        break;
-                    case 9:
-                        line[9] = cell.getNumericCellValue() + ""; // Internal
-                        break;
-                    case 10:
-                        line[10] = cell.getNumericCellValue() + ""; // External
-                        break;
-                    case 11:
-                        line[11] = cell.getStringCellValue(); // Type
-                        break;
-                    case 12:
-                        line[12] = cell.getStringCellValue(); // Author
-                        break;
-                    case 13:
-                        line[13] = cell.getStringCellValue(); // Place
-                        break;
-                    case 14:
-                        line[14] = cell.getStringCellValue(); // Description
-                        break;
-                    case 15:
-                        line[15] = cell.getStringCellValue(); // Comment
+                line[i] = getCellContent(cell, eval);
+                i++;             
+            }
+            insertData(line);
+        }
+        myxls.close();
+    }
+    
+    private String getCellContent(Cell cell, FormulaEvaluator eval) {
+        String value = "";
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_BLANK:                
+                break;
+            case Cell.CELL_TYPE_STRING:
+                value = cell.getStringCellValue();
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    value = cell.getDateCellValue() + "";                  
+                } else {
+                    value = (int)cell.getNumericCellValue() + "";
+                }
+                break;
+            case Cell.CELL_TYPE_BOOLEAN:
+                value = cell.getBooleanCellValue() ? "1" : "0";
+                break;
+            /*case Cell.CELL_TYPE_FORMULA:
+                System.out.print(cell.getCellFormula());
+                CellValue cellValue = eval.evaluate(cell);
+                switch (cellValue.getCellType()) {
+                    case Cell.CELL_TYPE_NUMERIC:
+                        double v = cellValue.getNumberValue();
+                        if (DateUtil.isCellDateFormatted(cell)) {
+                            System.out.print(" = "
+                                    + DateUtil.getJavaDate(v, true));
+                        } else {
+                            System.out.print(" = " + v);
+                        }
                         break;
                 }
-                i++;
-                //printCell(cell, eval);              
-            }
-            //insertData(line);
+                break;*/
+            default:
+                value = "";
         }
-
-        myxls.close();
+        return value;
     }
 
     /*private static void printCell(Cell cell, FormulaEvaluator eval) {
-    switch (cell.getCellType()) {
-    case Cell.CELL_TYPE_BLANK:
-    System.out.print("EMPTY");
-    break;
-    case Cell.CELL_TYPE_STRING:
-    System.out.print(cell.getStringCellValue());
-    break;
-    case Cell.CELL_TYPE_NUMERIC:
-    if (DateUtil.isCellDateFormatted(cell)) {
-    System.out.print(cell.getDateCellValue());
-    } else {
-    System.out.print(cell.getNumericCellValue());
-    }
-    break;
-    case Cell.CELL_TYPE_BOOLEAN:
-    System.out.print(cell.getBooleanCellValue());
-    break;
-    case Cell.CELL_TYPE_FORMULA:
-    System.out.print(cell.getCellFormula());
-    CellValue cellValue = eval.evaluate(cell);
-    switch (cellValue.getCellType()) {
-    case Cell.CELL_TYPE_NUMERIC:
-    double v = cellValue.getNumberValue();
-    if (DateUtil.isCellDateFormatted(cell)) {
-    System.out.print(" = "
-    + DateUtil.getJavaDate(v, true));
-    } else {
-    System.out.print(" = " + v);
-    }
-    break;
-    }
-    break;
-    default:
-    System.out.print("DEFAULT");
-    }
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_BLANK:
+                System.out.print("EMPTY");
+                break;
+            case Cell.CELL_TYPE_STRING:
+                System.out.print(cell.getStringCellValue());
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    System.out.print(cell.getDateCellValue());
+                } else {
+                    System.out.print(cell.getNumericCellValue());
+                }
+                break;
+            case Cell.CELL_TYPE_BOOLEAN:
+                System.out.print(cell.getBooleanCellValue());
+                break;
+            case Cell.CELL_TYPE_FORMULA:
+                System.out.print(cell.getCellFormula());
+                CellValue cellValue = eval.evaluate(cell);
+                switch (cellValue.getCellType()) {
+                    case Cell.CELL_TYPE_NUMERIC:
+                        double v = cellValue.getNumberValue();
+                        if (DateUtil.isCellDateFormatted(cell)) {
+                            System.out.print(" = "
+                                    + DateUtil.getJavaDate(v, true));
+                        } else {
+                            System.out.print(" = " + v);
+                        }
+                        break;
+                }
+                break;
+            default:
+                System.out.print("DEFAULT");
+        }
     }*/
+
     protected void insertData(String[] line) throws Exception {
         insertData(line, true);
     }

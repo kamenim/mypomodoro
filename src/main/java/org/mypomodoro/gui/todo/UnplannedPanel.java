@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -18,7 +17,7 @@ import org.mypomodoro.util.Labels;
  * 
  * @author Phil Karoo
  */
-public class UnplannedPanel extends CreatePanel implements ActivityInformation {
+public class UnplannedPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
     protected UnplannedActivityInputForm unplannedInputFormPanel;
@@ -117,15 +116,6 @@ public class UnplannedPanel extends CreatePanel implements ActivityInformation {
     @Override
     public ActivityInputForm getFormPanel() {
         return unplannedInputFormPanel;
-    }
-
-    @Override
-    public void showInfo(Activity activity) {
-        panel.refreshIconLabels();
-    }
-
-    @Override
-    public void clearInfo() {
     }
 
     public JLabel getIconLabel() {
