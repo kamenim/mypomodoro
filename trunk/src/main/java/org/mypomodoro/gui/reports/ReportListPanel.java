@@ -2,6 +2,9 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -87,7 +90,7 @@ public class ReportListPanel extends JPanel {
         JScrollPane editPane = new JScrollPane(edit);
         controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString("Common.Comment"), commentPanel);        
+        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel();
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
@@ -137,7 +140,7 @@ public class ReportListPanel extends JPanel {
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 // make Title and Type columns editable
-                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {                    
+                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
                     return true;
                 } else {
                     return false;
@@ -156,9 +159,8 @@ public class ReportListPanel extends JPanel {
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                 Activity report = Activity.getActivity(ID.intValue());
                 String sData = (String) data;
-                if (column == ID_KEY - 6 && sData.length() > 0) { // Title
-                    // (cannot
-                    // be empty)
+                // Title cannot be empty
+                if (column == ID_KEY - 6 && sData.length() > 0) {
                     report.setName(sData);
                     report.databaseUpdate();
                 } else if (column == ID_KEY - 1) { // Type
@@ -245,6 +247,22 @@ public class ReportListPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
+        // Add tooltip for Title and Type colums 
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                int rowIndex = table.rowAtPoint(p);
+                int columnIndex = table.columnAtPoint(p);
+                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
+                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                    if (value != null && value.length() > 0) {
+                        table.setToolTipText(value);
+                    }
+                }
+            }
+        });
         selectReport();
         setBorder(new TitledBorder(new EtchedBorder(),
                 Labels.getString("ReportListPanel.Report List") + " ("
@@ -273,10 +291,10 @@ public class ReportListPanel extends JPanel {
         int index = 0;
         if (!ReportList.getList().isEmpty()) {
             // Report deleted (removed from the list)
-            if (ReportList.getList().getById(selectedReportId) == null) {                
+            if (ReportList.getList().getById(selectedReportId) == null) {
                 index = selectedRowIndex;
                 // Report deleted (end of the list)
-                if (ReportList.getListSize() < selectedRowIndex + 1) {                   
+                if (ReportList.getListSize() < selectedRowIndex + 1) {
                     --index;
                 }
             } else if (selectedReportId != 0) {

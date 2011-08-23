@@ -28,8 +28,6 @@ public class FileMenu extends JMenu {
         add(new ControlPanelItem());
         add(new CreateActivityItem());
         add(new JSeparator());
-        add(new RestartItem());
-        add(new JSeparator());
         add(new ExitItem());
     }
 
@@ -80,30 +78,6 @@ public class FileMenu extends JMenu {
                 CreatePanel createPanel = view.getCreatePanel();
                 createPanel.clearForm();
                 view.setWindow(createPanel);
-            }
-        }
-    }
-
-    public class RestartItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
-
-        public RestartItem() {
-            super(Labels.getString("Common.Restart"));
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
-                    ActionEvent.SHIFT_MASK));
-            addActionListener(new RestartItemListener());
-        }
-
-        class RestartItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Restart.restartApplication(null);
-                }
-                catch (IOException ex) {
-                }
             }
         }
     }
