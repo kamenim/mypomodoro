@@ -2,6 +2,9 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -23,7 +26,7 @@ import javax.swing.table.TableModel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.activities.export.ImportPanel;
+import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -86,7 +89,7 @@ public class ActivitiesPanel extends JPanel {
         controlPane.add(Labels.getString("Common.Edit"), editPane);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
-        ImportPanel importPanel = new ImportPanel();
+        ImportPanel importPanel = new ImportPanel(true);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
@@ -143,7 +146,6 @@ public class ActivitiesPanel extends JPanel {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 TableModel model = (TableModel) e.getSource();
-                // String columnName = model.getColumnName(column);
                 Object data = model.getValueAt(row, column);
                 Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                 Activity act = Activity.getActivity(ID.intValue());
@@ -228,6 +230,22 @@ public class ActivitiesPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
+        // Add tooltip for Title and Type colums 
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                int rowIndex = table.rowAtPoint(p);
+                int columnIndex = table.columnAtPoint(p);
+                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
+                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                    if (value != null && value.length() > 0) {
+                        table.setToolTipText(value);
+                    }
+                }
+            }
+        });
         selectActivity();
         setBorder(new TitledBorder(new EtchedBorder(),
                 Labels.getString("ActivityListPanel.Activity List") + " ("

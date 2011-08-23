@@ -176,11 +176,9 @@ public class ExportPanel extends JPanel {
                     cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
                     cell.setCellValue((Boolean) entries[i]);
                 } else if (entries[i] instanceof Date) {
-                    HSSFCellStyle cellStyle = workbook.createCellStyle();
-                    // one pattern allowed only: m/d/yy
+                    HSSFCellStyle cellStyle = workbook.createCellStyle();                    
                     cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat(exportInputForm.getDatePattern()));                    
                     cell.setCellStyle(cellStyle);
-                    //cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                     cell.setCellValue((String) entries[i]);
                 } else { // text
                     cell.setCellType(HSSFCell.CELL_TYPE_STRING);

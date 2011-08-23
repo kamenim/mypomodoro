@@ -21,8 +21,8 @@ import org.mypomodoro.util.Labels;
  */
 public class ImportInputForm extends ExportInputForm {
 
-    private FileDialog fc;
-    
+    private FileDialog fileDialog;
+
     @Override
     protected void addFileField(GridBagConstraints c) {
         c.gridx = 0;
@@ -40,7 +40,7 @@ public class ImportInputForm extends ExportInputForm {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;       
+        gbc.fill = GridBagConstraints.NONE;
         fileName.setMinimumSize(LABEL_DIMENSION);
         fileName.setPreferredSize(LABEL_DIMENSION);
         fileName.setEditable(false);
@@ -54,9 +54,9 @@ public class ImportInputForm extends ExportInputForm {
         fileChooserPanel.add(new JLabel(" "), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;        
+        gbc.fill = GridBagConstraints.NONE;
         JDialog d = new JDialog();
-        fc = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
+        fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
         Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
         browseButton.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize()));
@@ -64,10 +64,11 @@ public class ImportInputForm extends ExportInputForm {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                fc.setVisible(true);
-                String path = fc.getDirectory() + fc.getFile();
-                if (path != null) {
-                    fileName.setText(path);
+                fileDialog.setVisible(true);
+                String directory = fileDialog.getDirectory();
+                String file = fileDialog.getFile();
+                if (directory != null && file != null) {
+                    fileName.setText(directory + file);
                 }
             }
         });

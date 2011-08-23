@@ -111,7 +111,7 @@ public class CreatePanel extends JPanel {
 
     protected void validActivityAction(Activity newActivity) {
         ActivityList.getList().add(newActivity);
-        newActivity.databaseInsert();
+        newActivity.databaseInsert();        
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
@@ -122,6 +122,7 @@ public class CreatePanel extends JPanel {
         if (!newActivity.isValid()) {
             invalidActivityAction();
             validation.setVisible(true);
+            disableSaveButton();
         } else if (newActivity.alreadyExists()) {
             JFrame window = new JFrame();
             String title = Labels.getString("Common.Warning");
@@ -130,10 +131,12 @@ public class CreatePanel extends JPanel {
             if (reply == JOptionPane.YES_OPTION) {
                 validActivityAction(newActivity);
                 validation.setVisible(true);
+                disableSaveButton();
             }
         } else {
             validActivityAction(newActivity);
             validation.setVisible(true);
+            disableSaveButton();
         }
     }
 
