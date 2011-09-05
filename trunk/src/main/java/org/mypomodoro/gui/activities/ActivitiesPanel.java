@@ -240,9 +240,8 @@ public class ActivitiesPanel extends JPanel {
                 int columnIndex = table.columnAtPoint(p);
                 if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
-                    if (value != null && value.length() > 0) {
-                        table.setToolTipText(value);
-                    }
+                    value = value.length() > 0 ? value : null;
+                    table.setToolTipText(value);                    
                 }
             }
         });

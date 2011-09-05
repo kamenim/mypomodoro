@@ -135,7 +135,15 @@ public class ControlPanel extends JPanel {
         vgbc.gridx = 1;
         vgbc.gridy = 0;
         vgbc.fill = GridBagConstraints.NONE;
-        validPanel.add(restartButton, vgbc);
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { // no restart button for Mac OS (does not work - see RestartMac classe)
+            JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
+            restartLabel.setForeground(ColorUtil.BLACK);
+            restartLabel.setFont(new Font(restartLabel.getFont().getName(), Font.BOLD,
+                restartLabel.getFont().getSize()));
+            validPanel.add(restartLabel, vgbc);
+        } else {
+            validPanel.add(restartButton, vgbc);
+        }
         validPanel.setLayout(new GridBagLayout());
         validPanel.setVisible(false);
         add(validPanel, gbc);

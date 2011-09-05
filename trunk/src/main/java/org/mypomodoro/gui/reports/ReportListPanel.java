@@ -257,16 +257,33 @@ public class ReportListPanel extends JPanel {
                 int columnIndex = table.columnAtPoint(p);
                 if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
-                    if (value != null && value.length() > 0) {
-                        table.setToolTipText(value);
-                    }
+                    value = value.length() > 0 ? value : null;
+                    table.setToolTipText(value);
                 }
             }
         });
         selectReport();
-        setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString("ReportListPanel.Report List") + " ("
-                + ReportList.getListSize() + ")"));
+        String title = Labels.getString("ReportListPanel.Report List") + " ("
+                + ReportList.getListSize() + ")";
+        if (ReportList.getListSize() > 0) {
+            title += " - " + Labels.getString("ReportListPanel.Accuracy") + " : " + getAccuracy() + "%";
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), title));
+    }
+    
+    private int getAccuracy() {
+        int accuracy = 0;
+        Iterator<Activity> act = ReportList.getList().iterator();
+        int estover = 0;
+        int real = 0;
+        Activity activity = null;
+        while (act.hasNext()) {
+            activity = act.next();
+            estover += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
+            real += activity.getActualPoms();
+        }
+        accuracy = Math.round(( (float) real / (float) estover ) * 100);
+        return accuracy;
     }
 
     public void saveComment(String comment) {
