@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
+import java.util.Date;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -138,6 +139,7 @@ public class Pomodoro {
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
+                    currentToDo.setDate(new Date());
                     currentToDo.databaseUpdate();
                     // refresh remaining Pomodoros label
                     PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());

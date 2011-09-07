@@ -35,7 +35,7 @@ public class ExportInputForm extends JPanel {
     private JComboBox fileFormatComboBox = new JComboBox();
     private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
-    private final String defaultFileName = "myPomodoro";
+    protected String defaultFileName = "myPomodoro";
     private final FileFormat CSVFormat = new FileFormat("CSV",
             FileFormat.CSVExtention);
     private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
@@ -49,6 +49,8 @@ public class ExportInputForm extends JPanel {
     private final Separator editableSeparator = new Separator(3, "", ',');
     private final Patterns patterns = new Patterns();
     private final JPanel patternsPanel = new JPanel();
+    private FormLabel datePatternLabel = new FormLabel("");
+    // Unique pattern supported by Apache POI
     private final String excelPatterns = "m/d/yy";
     private final JPanel excelPatternsPanel = new JPanel();
 
@@ -77,7 +79,7 @@ public class ExportInputForm extends JPanel {
         headerCheckBox.setBackground(ColorUtil.WHITE);
         add(headerCheckBox, c);
         // File name
-        addFileField(c);        
+        addFileField(c);
         // File formats
         c.gridx = 0;
         c.gridy = 2;
@@ -101,7 +103,8 @@ public class ExportInputForm extends JPanel {
                     patternsPanel.setVisible(false);
                     separatorLabel.setVisible(false);
                     separatorComboBox.setVisible(false);
-                    excelPatternsPanel.setVisible(true);
+                    datePatternLabel.setVisible(false);
+                    excelPatternsPanel.setVisible(false);
 
                 } else {
                     patternsPanel.setVisible(true);
@@ -119,7 +122,7 @@ public class ExportInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 3;
         c.weighty = 0.5;
-        FormLabel datePatternLabel = new FormLabel(
+        datePatternLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Date pattern") + "*: ");
         datePatternLabel.setMinimumSize(LABEL_DIMENSION);
         datePatternLabel.setPreferredSize(LABEL_DIMENSION);
@@ -268,7 +271,7 @@ public class ExportInputForm extends JPanel {
     }
 
     public void initFileName() {
-        this.fileName.setText(defaultFileName);
+        fileName.setText(defaultFileName);
     }
 
     public void initSeparatorComboBox() {
@@ -409,7 +412,7 @@ public class ExportInputForm extends JPanel {
                     + datePatternsComboBox3.getSelectedItem().toString();
         }
     }
-    
+
     protected void addFileField(GridBagConstraints c) {
         c.gridx = 0;
         c.gridy = 1;

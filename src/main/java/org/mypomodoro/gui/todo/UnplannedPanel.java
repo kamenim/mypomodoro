@@ -1,6 +1,9 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -37,6 +40,7 @@ public class UnplannedPanel extends CreatePanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
+        disableSaveButton();
         add(saveButton, gbc);
     }
 
@@ -59,6 +63,16 @@ public class UnplannedPanel extends CreatePanel {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         unplannedInputFormPanel = new UnplannedActivityInputForm();
+        Component[] fields = unplannedInputFormPanel.getComponents();
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    enableSaveButton();
+                }
+            });
+        }
         add(unplannedInputFormPanel, gbc);
     }
 
@@ -109,8 +123,7 @@ public class UnplannedPanel extends CreatePanel {
         JFrame window = new JFrame();
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(window, message, title,
-                JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
     }
 
     @Override

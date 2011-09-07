@@ -48,7 +48,7 @@ public class ImportPanel extends JPanel {
         addImportInputForm();
         addImportButton();
     }
-    
+
     public ImportPanel(boolean importActivities) {
         this();
         this.importReports = !importActivities;
@@ -90,28 +90,30 @@ public class ImportPanel extends JPanel {
     }
 
     private void importData() {
-        try {
-            String fileName = importInputForm.getFileName(); // path
-            if (importInputForm.isFileCSVFormat()) {
-                importCSV(fileName);
-            } else if (importInputForm.isFileExcelFormat()) {
-                importExcel(fileName);
+        String filePath = importInputForm.getFileName(); // path
+        if (filePath != null && filePath.length() > 0) {
+            try {
+                if (importInputForm.isFileCSVFormat()) {
+                    importCSV(filePath);
+                } else if (importInputForm.isFileExcelFormat()) {
+                    importExcel(filePath);
+                }
+                JFrame window = new JFrame();
+                String title = Labels.getString("ReportListPanel.Import");
+                String message = Labels.getString(
+                        "ReportListPanel.Data imported",
+                        filePath);
+                JOptionPane.showConfirmDialog(window, message, title,
+                        JOptionPane.DEFAULT_OPTION);
             }
-            JFrame window = new JFrame();
-            String title = Labels.getString("ReportListPanel.Import");
-            String message = Labels.getString(
-                    "ReportListPanel.Data imported",
-                    fileName);
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
-        }
-        catch (Exception ex) {
-            JFrame window = new JFrame();
-            String title = Labels.getString("Common.Error");
-            String message = Labels.getString("ReportListPanel.Import failed. See error log.");
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
-            writeErrorFile(ex.toString());
+            catch (Exception ex) {
+                JFrame window = new JFrame();
+                String title = Labels.getString("Common.Error");
+                String message = Labels.getString("ReportListPanel.Import failed. See error log.");
+                JOptionPane.showConfirmDialog(window, message, title,
+                        JOptionPane.DEFAULT_OPTION);
+                writeErrorFile(ex.toString());
+            }
         }
     }
 
@@ -166,7 +168,7 @@ public class ImportPanel extends JPanel {
             case Cell.CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     CellValue cellValue = eval.evaluate(cell);
-                    value = org.mypomodoro.util.DateUtil.getFormatedDate(DateUtil.getJavaDate(cellValue.getNumberValue(), true), importInputForm.getDatePattern());                
+                    value = org.mypomodoro.util.DateUtil.getFormatedDate(DateUtil.getJavaDate(cellValue.getNumberValue(), true), importInputForm.getDatePattern());
                 } else {
                     value = (int) cell.getNumericCellValue() + "";
                 }

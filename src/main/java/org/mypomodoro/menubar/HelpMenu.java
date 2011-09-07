@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.menubar.help.AboutPanel;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
@@ -116,7 +117,11 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BareBonesBrowserLaunch.openURL("http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf");
+                String url = "http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf";
+                if (DateUtil.getLocale().getLanguage().equals("it")) {
+                    url = "http://www.pomodorotechnique.com/resources/ThePomodoroTechnique-ITA_v1-3.pdf";
+                }
+                BareBonesBrowserLaunch.openURL(url);
             }
         }
     }
