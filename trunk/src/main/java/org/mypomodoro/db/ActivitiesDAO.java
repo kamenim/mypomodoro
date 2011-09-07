@@ -268,7 +268,6 @@ public class ActivitiesDAO {
 
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
-                + "date_added = " + new Date().getTime() + ", "
                 + "is_complete = 'true'"
                 + " WHERE priority > -1 AND is_complete = 'false';";
         try {

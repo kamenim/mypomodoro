@@ -210,7 +210,6 @@ public class ToDoListPanel extends JPanel {
 
     private void completeTask(Activity selectedToDo) {
         selectedToDo.setIsCompleted(true);
-        selectedToDo.setDate(new Date());
         selectedToDo.databaseUpdate();
         ReportList reportList = ReportList.getList();
         reportList.add(selectedToDo);
@@ -236,10 +235,6 @@ public class ToDoListPanel extends JPanel {
                     if (reply == JOptionPane.YES_OPTION) {
                         completeTask(selectedToDo);
                         refresh();
-                        title = Labels.getString("ToDoListPanel.Complete ToDo");
-                        message = Labels.getString("ToDoListPanel.ToDo moved to Report List");
-                        JOptionPane.showConfirmDialog(window, message, title,
-                                JOptionPane.DEFAULT_OPTION);
                     }
                 } else {
                     String title = Labels.getString("ToDoListPanel.Complete ToDo");
@@ -249,10 +244,6 @@ public class ToDoListPanel extends JPanel {
                     if (reply == JOptionPane.YES_OPTION) {
                         completeTask(selectedToDo);
                         refresh();
-                        title = Labels.getString("ToDoListPanel.Complete ToDo");
-                        message = Labels.getString("ToDoListPanel.ToDo moved to Report List");
-                        JOptionPane.showConfirmDialog(window, message, title,
-                                JOptionPane.DEFAULT_OPTION);
                     }
                 }
             }

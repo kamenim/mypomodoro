@@ -126,15 +126,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
     @Override
     public void showInfo(Activity activity) {
         panel.refreshIconLabels();
-        String text = Labels.getString("Common.Date") + ": ";
-        if (activity.isUnplanned()) {
-            text += "U [";
-        }
-        text += DateUtil.getFormatedDate(activity.getDate());
-        if (activity.isUnplanned()) {
-            text += "]";
-        }
-        text += "\n" + Labels.getString("Common.Type") + ": " + activity.getType()
+        String text = Labels.getString("Common.Type") + ": " + activity.getType()
                 + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
                 + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace()
                 + "\n" + Labels.getString("Common.Description") + ": " + activity.getDescription();

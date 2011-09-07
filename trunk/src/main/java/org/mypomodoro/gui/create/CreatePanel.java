@@ -39,7 +39,7 @@ public class CreatePanel extends JPanel {
     protected GridBagConstraints gbc = new GridBagConstraints();
 
     public CreatePanel() {
-        setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());        
 
         addInputFormPanel();
         addSaveButton();
@@ -129,14 +129,14 @@ public class CreatePanel extends JPanel {
             String message = Labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
             int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
+                disableSaveButton();
                 validActivityAction(newActivity);
                 validation.setVisible(true);
-                disableSaveButton();
             }
         } else {
+            disableSaveButton();
             validActivityAction(newActivity);
             validation.setVisible(true);
-            disableSaveButton();
         }
     }
 
@@ -169,8 +169,9 @@ public class CreatePanel extends JPanel {
         validation.setVisible(false);
     }
 
-    private void enableSaveButton() {
+    public void enableSaveButton() {
         saveButton.setEnabled(true);
+        saveButton.setOpaque(true);
         saveButton.setForeground(ColorUtil.BLACK);
     }
 

@@ -22,6 +22,10 @@ import org.mypomodoro.util.Labels;
 public class ImportInputForm extends ExportInputForm {
 
     private FileDialog fileDialog;
+    
+    public ImportInputForm() {
+        defaultFileName = "";
+    }
 
     @Override
     protected void addFileField(GridBagConstraints c) {
