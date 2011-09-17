@@ -3,7 +3,6 @@ package org.mypomodoro.gui.todo;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Date;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;

@@ -1,19 +1,15 @@
 package org.mypomodoro.gui.manager;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -141,7 +137,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     }
 
     public void addActivity(Activity activity) {
-        list.add(activity);
+        list.add(activity);        
         update();
     }
 
