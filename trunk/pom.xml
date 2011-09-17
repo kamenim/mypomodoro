@@ -145,43 +145,57 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1.2</version>
             </plugin>
-            <!-- Launch4j plugin -->
-            <plugin>
-                <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
-                <artifactId>launch4j-plugin</artifactId>
-                <version>1.5.0.0</version>
-                <executions>
-                    <execution>
-                        <id>launch4j</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <dontWrapJar>false</dontWrapJar>
-                            <headerType>gui</headerType>
-                            <outfile>target/${project.artifactId}-${project.version}.exe</outfile>
-                            <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
-                            <icon>${basedir}/src/main/resources/icons/myPomodoroIcon.ico</icon>
-                            <errTitle>myPomodoro</errTitle>
-                            <jre>
-                                <minVersion>1.6.0</minVersion>
-                            </jre>
-                            <splash>
-                                <file>${basedir}/src/main/resources/images/splash_pomodoroTechnique128_EXE.bmp</file>
-                                <waitForWindow>true</waitForWindow>
-                                <timeout>60</timeout>
-                                <timeoutErr>false</timeoutErr>
-                            </splash>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>            
         </plugins>
     </build>
     
-    <!-- MAC OS PROFILES -->
-    <profiles>    
+    <!-- OS PROFILES -->
+    <profiles>
+        <!-- WINDOWS OS PROFILE -->
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <!-- Launch4j plugin -->
+                <plugins>
+                    <plugin>
+                        <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+                        <artifactId>launch4j-plugin</artifactId>
+                        <version>1.5.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>launch4j</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>launch4j</goal>
+                                </goals>
+                                <configuration>
+                                    <dontWrapJar>false</dontWrapJar>
+                                    <headerType>gui</headerType>
+                                    <outfile>target/${project.artifactId}-${project.version}.exe</outfile>
+                                    <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                                    <icon>${basedir}/src/main/resources/icons/myPomodoroIcon.ico</icon>
+                                    <errTitle>myPomodoro</errTitle>
+                                    <jre>
+                                        <minVersion>1.6.0</minVersion>
+                                    </jre>
+                                    <splash>
+                                        <file>${basedir}/src/main/resources/images/splash_pomodoroTechnique128_EXE.bmp</file>
+                                        <waitForWindow>true</waitForWindow>
+                                        <timeout>60</timeout>
+                                        <timeoutErr>false</timeoutErr>
+                                    </splash>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- MAC OS PROFILE -->
         <profile>
             <id>Mac</id>
             <activation>
