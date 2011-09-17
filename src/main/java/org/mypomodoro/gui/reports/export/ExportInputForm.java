@@ -110,6 +110,7 @@ public class ExportInputForm extends JPanel {
                     patternsPanel.setVisible(true);
                     separatorLabel.setVisible(true);
                     separatorComboBox.setVisible(true);
+                    datePatternLabel.setVisible(true);
                     excelPatternsPanel.setVisible(false);
                 }
             }
