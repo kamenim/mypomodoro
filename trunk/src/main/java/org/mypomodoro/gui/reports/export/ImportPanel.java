@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -86,7 +87,7 @@ public class ImportPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(importInputForm, gbc);
+        add(new JScrollPane(importInputForm), gbc);
     }
 
     private void importData() {

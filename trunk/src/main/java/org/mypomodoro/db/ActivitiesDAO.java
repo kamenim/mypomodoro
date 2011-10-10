@@ -3,10 +3,10 @@ package org.mypomodoro.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.create.TypeList;
 import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
@@ -175,6 +175,7 @@ public class ActivitiesDAO {
             database.update("begin;");
             database.update(updateSQL);
             database.update("commit;");
+            TypeList.addType(activity.getType());
         }
         finally {
             database.unlock();
@@ -279,5 +280,33 @@ public class ActivitiesDAO {
             database.update("Commit;");
             database.unlock();
         }
+    }
+    
+    public ArrayList<String> getTypes() {
+        ArrayList<String> types = new ArrayList<String>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities");
+            try {
+                while (rs.next()) {
+                    types.add(rs.getString("type"));
+                }
+            }
+            catch (SQLException e) {
+                System.err.println(e);
+            }
+            finally {
+                try {
+                    rs.close();
+                }
+                catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        }
+        finally {
+            database.unlock();
+        }
+        return types;
     }
 }

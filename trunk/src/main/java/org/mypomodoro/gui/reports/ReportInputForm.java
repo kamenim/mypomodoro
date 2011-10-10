@@ -32,7 +32,7 @@ public class ReportInputForm extends ActivityInputForm {
         report.setAuthor(authorField.getText().trim());
         report.setName(nameField.getText().trim());
         report.setDescription(descriptionField.getText().trim());
-        report.setType(typeField.getText().trim());
+        report.setType(((String)types.getSelectedItem()).trim());
 
         return report;
     }

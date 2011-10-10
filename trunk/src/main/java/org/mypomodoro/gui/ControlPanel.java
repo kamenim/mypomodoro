@@ -42,7 +42,7 @@ public class ControlPanel extends JPanel {
         saveButton = new AbstractPomodoroButton(Labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
         resetButton = new AbstractPomodoroButton(
-                Labels.getString("PreferencesPanel.Reset"));
+                Labels.getString("Common.Reset"));
         restartButton = new RestartButton();
         restartButton.setVisible(false);
 

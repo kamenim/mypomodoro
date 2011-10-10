@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -46,6 +47,7 @@ import org.mypomodoro.util.Labels;
 public class ActivitiesPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     JTable table = new JTable(getTableModel());
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"), Labels.getString("Common.Title"),
@@ -82,11 +84,12 @@ public class ActivitiesPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane controlPane = new JTabbedPane();
+        controlPane.setMinimumSize(PANE_DIMENSION);
+        controlPane.setPreferredSize(PANE_DIMENSION);
         DetailsPane detailsPane = new DetailsPane(table);
         controlPane.add(Labels.getString("Common.Details"), detailsPane);
-        EditPanel edit = new EditPanel();
-        JScrollPane editPane = new JScrollPane(edit);
-        controlPane.add(Labels.getString("Common.Edit"), editPane);
+        EditPanel editPanel = new EditPanel();
+        controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(true);
@@ -96,7 +99,7 @@ public class ActivitiesPanel extends JPanel {
         add(controlPane, gbc);
 
         showSelectedItemDetails(detailsPane);
-        showSelectedItemEdit(edit);
+        showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
     }
 

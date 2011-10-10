@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import javax.swing.JScrollPane;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -73,7 +74,7 @@ public class UnplannedPanel extends CreatePanel {
                 }
             });
         }
-        add(unplannedInputFormPanel, gbc);
+        add(new JScrollPane(unplannedInputFormPanel), gbc);
     }
 
     @Override
@@ -139,9 +140,9 @@ public class UnplannedPanel extends CreatePanel {
     public void clearForm() {
         unplannedInputFormPanel.setInterruption(0);
         unplannedInputFormPanel.setNameField("");
-        unplannedInputFormPanel.setEstimatedPomodoros(1);
+        unplannedInputFormPanel.setEstimatedPomodoro(1);
         unplannedInputFormPanel.setDescriptionField("");
-        unplannedInputFormPanel.setTypeField("");
+        unplannedInputFormPanel.setType(0);
         unplannedInputFormPanel.setAuthorField("");
         unplannedInputFormPanel.setPlaceField("");
         unplannedInputFormPanel.setDate(new Date());

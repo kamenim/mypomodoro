@@ -23,7 +23,7 @@ public class EditInputForm extends ActivityInputForm {
         activity.setAuthor(authorField.getText().trim());
         activity.setName(nameField.getText().trim());
         activity.setDescription(descriptionField.getText().trim());
-        activity.setType(typeField.getText().trim());
+        activity.setType(((String)types.getSelectedItem()).trim());
         activity.setEstimatedPoms(estimatedPomodoros.getSelectedIndex() + 1);
         activity.setDate(datePicker.getDate());
 

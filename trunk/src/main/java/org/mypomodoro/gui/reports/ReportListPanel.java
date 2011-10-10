@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.reports;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -26,6 +27,8 @@ import javax.swing.table.TableModel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.reports.burndownchart.BurndownChartInputPanel;
+import org.mypomodoro.gui.reports.burndownchart.BurndownChartPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.AbstractActivities;
@@ -43,6 +46,7 @@ import org.mypomodoro.util.Labels;
 public class ReportListPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private final JTable table = new JTable(getTableModel());
     private final static String[] columnNames = {"U",
         Labels.getString("Common.Date"),
@@ -84,21 +88,29 @@ public class ReportListPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane controlPane = new JTabbedPane();
+        controlPane.setMinimumSize(PANE_DIMENSION);
+        controlPane.setPreferredSize(PANE_DIMENSION);
         InformationArea informationArea = new InformationArea(table);
         controlPane.add(Labels.getString("Common.Details"), informationArea);
-        EditPanel edit = new EditPanel();
-        JScrollPane editPane = new JScrollPane(edit);
-        controlPane.add(Labels.getString("Common.Edit"), editPane);
+        EditPanel editPanel = new EditPanel();
+        controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString("Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel();
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        JTabbedPane burdownChartPane = new JTabbedPane();
+        BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
+        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
+        BurndownChartPanel burndownChart = new BurndownChartPanel(this);        
+        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
+
+        controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
-        showSelectedItemEdit(edit);
+        showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
     }
 
@@ -270,7 +282,7 @@ public class ReportListPanel extends JPanel {
         }
         setBorder(new TitledBorder(new EtchedBorder(), title));
     }
-    
+
     private int getAccuracy() {
         int accuracy = 0;
         Iterator<Activity> act = ReportList.getList().iterator();

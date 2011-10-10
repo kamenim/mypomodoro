@@ -80,7 +80,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new AbstractPomodoroButton(Labels.getString("CreatePanel.Clear"));
+        JButton clearButton = new AbstractPomodoroButton(Labels.getString("Common.Reset"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override
@@ -111,11 +111,11 @@ public class CreatePanel extends JPanel {
 
     protected void validActivityAction(Activity newActivity) {
         ActivityList.getList().add(newActivity);
-        newActivity.databaseInsert();        
+        newActivity.databaseInsert();             
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List", newActivity.getName()));
+        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List"));        
     }
 
     public void saveActivity(Activity newActivity) {
@@ -152,9 +152,9 @@ public class CreatePanel extends JPanel {
 
     public void clearForm() {
         inputFormPanel.setNameField("");
-        inputFormPanel.setEstimatedPomodoros(1);
-        inputFormPanel.setDescriptionField("");
-        inputFormPanel.setTypeField("");
+        inputFormPanel.setEstimatedPomodoro(1);
+        inputFormPanel.setDescriptionField("");        
+        inputFormPanel.setType(0);
         inputFormPanel.setAuthorField("");
         inputFormPanel.setPlaceField("");
         inputFormPanel.setDate(new Date());
