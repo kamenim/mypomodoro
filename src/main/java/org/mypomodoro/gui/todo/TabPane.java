@@ -13,6 +13,6 @@ class TabPane extends JTabbedPane {
         add(Labels.getString("Common.Details"), panel.getInformationPanel());
         add(Labels.getString("Common.Comment"), panel.getCommentPanel());
         add(Labels.getString("ToDoListPanel.Overestimation"), panel.getOverestimationPanel());
-        add(Labels.getString("ToDoListPanel.Unplanned"), new JScrollPane(unplannedPanel));
+        add(Labels.getString("ToDoListPanel.Unplanned"), unplannedPanel);
     }
 }

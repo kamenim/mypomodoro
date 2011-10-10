@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import javax.swing.JScrollPane;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -33,7 +34,7 @@ public class EditPanel extends CreatePanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         reportInputForm = new ReportInputForm();
-        add(reportInputForm, gbc);
+        add(new JScrollPane(reportInputForm), gbc);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class EditPanel extends CreatePanel {
     public void clearForm() {
         reportInputForm.setNameField("");
         reportInputForm.setDescriptionField("");
-        reportInputForm.setTypeField("");
+        //reportInputForm.setTypeField("");
         reportInputForm.setAuthorField("");
         reportInputForm.setPlaceField("");
     }

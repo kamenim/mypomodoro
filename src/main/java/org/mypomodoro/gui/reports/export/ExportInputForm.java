@@ -1,8 +1,11 @@
 package org.mypomodoro.gui.reports.export;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +18,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -27,7 +31,6 @@ import org.mypomodoro.util.Labels;
 public class ExportInputForm extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private JCheckBox headerCheckBox = new JCheckBox();
@@ -53,11 +56,10 @@ public class ExportInputForm extends JPanel {
     // Unique pattern supported by Apache POI
     private final String excelPatterns = "m/d/yy";
     private final JPanel excelPatternsPanel = new JPanel();
+    //private final JPanel columnsPanel = new JPanel();
 
     public ExportInputForm() {
         setBorder(new TitledBorder(new EtchedBorder(), ""));
-        setMinimumSize(PANEL_DIMENSION);
-        setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -182,7 +184,55 @@ public class ExportInputForm extends JPanel {
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setBackground(ColorUtil.WHITE);
         add(separatorComboBox, c);
+        // Columns
+        /*c.gridx = 0;
+        c.gridy = 5;
+        c.weighty = 0.5;
+        c.gridwidth = 2;
+        addColumnsComboBoxes(c);*/
     }
+
+    /*private void addColumnsComboBoxes(GridBagConstraints c) {
+        int numberColumns = new Columns().getLength() - 1;
+        int numberComboBoxPerLine = 6;
+        columnsPanel.setLayout(new GridLayout(Math.round((float) numberColumns / (float) numberComboBoxPerLine), numberComboBoxPerLine));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
+
+        for (int i = 0; i < numberColumns; i++) {
+            gbc.gridx = i;
+            gbc.gridy = 0;
+            JComboBox cb = new Columns().getColumnsComboBox();
+            cb.setSelectedIndex(i);
+            columnsPanel.add(cb, gbc);
+        }
+
+        final Component[] comboBoxes = columnsPanel.getComponents();
+        for (int i = 0; i < comboBoxes.length; i++) {
+            final int index = i;
+            final JComboBox cb = (JComboBox) comboBoxes[i];
+            cb.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (cb.getSelectedItem().toString().length() == 0) { // empty field
+                        for (int j = index + 1; j < comboBoxes.length; j++) {
+                            JComboBox cb1 = (JComboBox) comboBoxes[j];
+                            cb1.setSelectedIndex(comboBoxes.length); // empty field selected
+                            cb1.setEnabled(false);
+                        }
+                    } else {
+                        if (index + 1 < comboBoxes.length) { // Enable field next to the right
+                            JComboBox cb1 = (JComboBox) comboBoxes[index + 1];
+                            cb1.setEnabled(true);
+                        }
+                    }
+                }
+            });
+        }
+        add(columnsPanel, c);
+    }*/
 
     private void addPaternsComboBox(GridBagConstraints c) {
         patternsPanel.setLayout(new GridBagLayout());
@@ -431,5 +481,121 @@ public class ExportInputForm extends JPanel {
         fileName.setMinimumSize(COMBO_BOX_DIMENSION);
         fileName.setPreferredSize(COMBO_BOX_DIMENSION);
         add(fileName, c);
+    }
+
+    private class Column {
+
+        private int columnIndex;
+        private String columnText;
+
+        public Column() {
+        }
+
+        public Column(int columnIndex, String columnText) {
+            this.columnIndex = columnIndex;
+            this.columnText = columnText;
+        }
+
+        public int getcolumnIndex() {
+            return columnIndex;
+        }
+
+        public String getcolumnText() {
+            return columnText;
+        }
+
+        @Override
+        public String toString() {
+            return columnText;
+        }
+    }
+
+    private class Columns {
+
+        private final String[] headerEntries = new String[]{"U",
+            Labels.getString("Common.Date"),
+            Labels.getString("ReportListPanel.Time"),
+            Labels.getString("Common.Title"),
+            Labels.getString("ReportListPanel.Estimated"),
+            Labels.getString("ReportListPanel.Overestimated"),
+            Labels.getString("ReportListPanel.Real"),
+            Labels.getString("ReportListPanel.Diff I"),
+            Labels.getString("ReportListPanel.Diff II"),
+            Labels.getString("ToDoListPanel.Internal"),
+            Labels.getString("ToDoListPanel.External"),
+            Labels.getString("Common.Type"), Labels.getString("Common.Author"),
+            Labels.getString("Common.Place"),
+            Labels.getString("Common.Description"),
+            Labels.getString("Common.Comment"),
+            ""};
+        private JComboBox columnsComboBox = new JComboBox();
+
+        public Columns() {
+            Object[] columns = new Object[headerEntries.length];
+            for (int i = 0; i < headerEntries.length; i++) {
+                columns[i] = new Column(i, headerEntries[i]);
+            }
+            columnsComboBox = new JComboBox(columns);
+            columnsComboBox.setBackground(ColorUtil.WHITE);
+            columnsComboBox.setFont(new Font(columnsComboBox.getFont().getName(), Font.PLAIN,
+                    columnsComboBox.getFont().getSize() - 2));
+        }
+
+        public JComboBox getColumnsComboBox() {
+            return columnsComboBox;
+        }
+
+        public int getLength() {
+            return headerEntries.length;
+        }
+    }
+
+    public static class activityToArray {
+
+        public static String[] toArray(Activity activity) {
+            return toArray(activity, "dd MM yyyy");
+        }
+
+        public static String[] toArray(Activity activity, String datePattern) {
+            String[] attributes = new String[16];
+            attributes[0] = activity.isUnplanned() ? "1" : "0";
+            attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
+            attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
+            attributes[3] = activity.getName();
+            attributes[4] = activity.getEstimatedPoms() + "";
+            attributes[5] = activity.getOverestimatedPoms() + "";
+            attributes[6] = activity.getActualPoms() + "";
+            attributes[7] = ( activity.getActualPoms() - activity.getEstimatedPoms() ) + "";
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() ) + "" : "";
+            attributes[9] = activity.getNumInternalInterruptions() + "";
+            attributes[10] = activity.getNumInterruptions() + "";
+            attributes[11] = activity.getType();
+            attributes[12] = activity.getAuthor();
+            attributes[13] = activity.getPlace();
+            attributes[14] = activity.getDescription();
+            attributes[15] = activity.getNotes();
+            return attributes;
+        }
+
+        public static Object[] toRowArray(Activity activity) {
+            Object[] attributes = new Object[16];
+            attributes[0] = activity.isUnplanned() ? true : false;
+            attributes[1] = activity.getDate();
+            attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
+            attributes[3] = activity.getName();
+            attributes[4] = activity.getEstimatedPoms();
+            attributes[5] = activity.getOverestimatedPoms();
+            attributes[6] = activity.getActualPoms();
+            attributes[7] = activity.getActualPoms() - activity.getEstimatedPoms();
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() ) : "";
+            attributes[9] = activity.getNumInternalInterruptions();
+            attributes[10] = activity.getNumInterruptions();
+            attributes[11] = activity.getType();
+            attributes[12] = activity.getAuthor();
+            attributes[13] = activity.getPlace();
+            attributes[14] = activity.getDescription();
+            attributes[15] = activity.getNotes();
+            return attributes;
+        }
     }
 }

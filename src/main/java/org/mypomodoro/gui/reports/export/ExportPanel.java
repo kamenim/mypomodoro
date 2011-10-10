@@ -28,6 +28,8 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import javax.swing.JScrollPane;
+import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 
 /**
  * Panel to export reports
@@ -99,7 +101,8 @@ public class ExportPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(exportInputForm, gbc);
+        exportInputForm.setPreferredSize(null);
+        add(new JScrollPane(exportInputForm), gbc);
     }
 
     private void export() {
@@ -141,7 +144,7 @@ public class ExportPanel extends JPanel {
         }
         // Data
         while (act.hasNext()) {
-            String[] entries = act.next().toArray(
+            String[] entries = activityToArray.toArray(act.next(),
                     exportInputForm.getDatePattern());
             writer.writeNext(entries);
         }
@@ -165,7 +168,7 @@ public class ExportPanel extends JPanel {
         }
         // Data
         while (act.hasNext()) {
-            Object[] entries = act.next().toRowArray();
+            Object[] entries = activityToArray.toRowArray(act.next());
             HSSFRow row = worksheet.createRow(rowNb);
             for (int i = 0; i < entries.length; i++) {
                 HSSFCell cell = row.createCell(i);

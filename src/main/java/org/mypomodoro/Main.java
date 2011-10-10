@@ -11,6 +11,7 @@ import org.mypomodoro.db.Database;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.create.TypeList;
 import org.mypomodoro.gui.manager.ManagerPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.todo.ToDoListPanel;
@@ -65,17 +66,15 @@ public class Main {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {// deletes
-                // files
-                // created
-                // with
-                // RestartMac()
+            if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+                // deletes files created with RestartMac()
                 new RestartMac(1);
             }
         }
         catch (Exception ex) {
-            // Do nothing if the we cannot set a nice ui look and feel
+            // Do nothing if we cannot set a nice ui look and feel
         }
+        initTypes();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -84,12 +83,23 @@ public class Main {
             }
         });
     }
+    
+    private static void initTypes() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                TypeList.initTypes();
+            }
+        }).start();
+    }
 
     private static void setUpAndShowGui() {
         final MyPomodoroView gui = new MyPomodoroView();
         gui.setVisible(true);
         /*
-         * Old fashion way to center the component onscreen Dimension screenSize
+         * Old fashion way to center the component onscreen 
+         * Dimension screenSize
          * = gui.getToolkit().getScreenSize(); int w = (int) ( (
          * screenSize.getWidth() - gui.getSize().width ) / 2 ); int h = (int) (
          * ( screenSize.getHeight() - gui.getSize().height ) / 2 );
