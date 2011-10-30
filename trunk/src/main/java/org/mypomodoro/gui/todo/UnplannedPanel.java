@@ -142,7 +142,7 @@ public class UnplannedPanel extends CreatePanel {
         unplannedInputFormPanel.setNameField("");
         unplannedInputFormPanel.setEstimatedPomodoro(1);
         unplannedInputFormPanel.setDescriptionField("");
-        unplannedInputFormPanel.setType(0);
+        unplannedInputFormPanel.setTypeField("");
         unplannedInputFormPanel.setAuthorField("");
         unplannedInputFormPanel.setPlaceField("");
         unplannedInputFormPanel.setDate(new Date());

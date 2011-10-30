@@ -19,11 +19,17 @@ public class EditInputForm extends ActivityInputForm {
     public Activity getActivityFromFields() {
         Activity activity = Activity.getActivity(activityId);
 
-        activity.setPlace(placeField.getText().trim());
-        activity.setAuthor(authorField.getText().trim());
         activity.setName(nameField.getText().trim());
         activity.setDescription(descriptionField.getText().trim());
-        activity.setType(((String)types.getSelectedItem()).trim());
+        String type = (String) types.getSelectedItem();
+        type = type != null ? type.trim() : "";
+        activity.setType(type);
+        String author = (String) authors.getSelectedItem();
+        author = author != null ? author.trim() : "";
+        activity.setAuthor(author);
+        String place = (String) places.getSelectedItem();
+        place = place != null ? place.trim() : "";
+        activity.setPlace(place);
         activity.setEstimatedPoms(estimatedPomodoros.getSelectedIndex() + 1);
         activity.setDate(datePicker.getDate());
 

@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.create.TypeList;
+import org.mypomodoro.gui.create.list.AuthorList;
+import org.mypomodoro.gui.create.list.PlaceList;
+import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.util.DateUtil;
 
 /**
@@ -148,20 +150,20 @@ public class Activity {
      * @param notes (comment)
      */
     public Activity(String place, String author, String name,
-            String description, String type, int estimatedPoms, 
+            String description, String type, int estimatedPoms,
             Date dateActivity, int overestimatedPoms, int actualPoms,
             int internalInterruptions, int externalInterruptions, String notes,
             boolean unplanned, boolean completed) {
-        this(place, author, name, description, type, estimatedPoms, 
+        this(place, author, name, description, type, estimatedPoms,
                 dateActivity, overestimatedPoms, actualPoms,
-                internalInterruptions, externalInterruptions, notes, 
+                internalInterruptions, externalInterruptions, notes,
                 unplanned, completed, -1);
     }
 
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms,
             Date dateActivity, int overestimatedPoms, int actualPoms,
-            int internalInterruptions, int externalInterruptions, String notes, 
+            int internalInterruptions, int externalInterruptions, String notes,
             boolean unplanned, boolean completed, int activityId) {
         this.place = place;
         this.author = author;
@@ -348,13 +350,19 @@ public class Activity {
     }
 
     public void databaseInsert() {
-        ActivitiesDAO.getInstance().insert(this);        
-        TypeList.addType(getType()); 
+        ActivitiesDAO.getInstance().insert(this);
+        // update lists
+        TypeList.addType(getType());
+        AuthorList.addAuthor(getAuthor());
+        PlaceList.addPlace(getPlace());
     }
 
     public void databaseUpdate() {
-        ActivitiesDAO.getInstance().update(this);        
-        TypeList.addType(getType()); 
+        ActivitiesDAO.getInstance().update(this);
+        // update lists
+        TypeList.addType(getType());
+        AuthorList.addAuthor(getAuthor());
+        PlaceList.addPlace(getPlace());
     }
 
     public boolean alreadyExists() {
@@ -375,7 +383,7 @@ public class Activity {
     public static Activity getActivity(int Id) {
         return ActivitiesDAO.getInstance().getActivity(Id);
     }
-    
+
     public boolean isFinished() {
         return actualPoms == estimatedPoms + overestimatedPoms;
     }

@@ -11,7 +11,9 @@ import org.mypomodoro.db.Database;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.create.TypeList;
+import org.mypomodoro.gui.create.list.AuthorList;
+import org.mypomodoro.gui.create.list.PlaceList;
+import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.manager.ManagerPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.todo.ToDoListPanel;
@@ -74,7 +76,7 @@ public class Main {
         catch (Exception ex) {
             // Do nothing if we cannot set a nice ui look and feel
         }
-        initTypes();
+        initLists();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -83,13 +85,15 @@ public class Main {
             }
         });
     }
-    
-    private static void initTypes() {
+
+    private static void initLists() {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 TypeList.initTypes();
+                AuthorList.initAuthors();
+                PlaceList.initPlaces();
             }
         }).start();
     }

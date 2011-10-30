@@ -28,11 +28,17 @@ public class ReportInputForm extends ActivityInputForm {
     public Activity getActivityFromFields() {
         Activity report = Activity.getActivity(activityId);
 
-        report.setPlace(placeField.getText().trim());
-        report.setAuthor(authorField.getText().trim());
         report.setName(nameField.getText().trim());
         report.setDescription(descriptionField.getText().trim());
-        report.setType(((String)types.getSelectedItem()).trim());
+        String type = (String) types.getSelectedItem();
+        type = type != null ? type.trim() : "";
+        report.setType(type);
+        String author = (String) authors.getSelectedItem();
+        author = author != null ? author.trim() : "";
+        report.setAuthor(author);
+        String place = (String) places.getSelectedItem();
+        place = place != null ? place.trim() : "";
+        report.setPlace(place);
 
         return report;
     }
