@@ -1,17 +1,13 @@
 package org.mypomodoro.gui.create;
 
-import java.awt.Component;
+import org.mypomodoro.gui.create.list.TypeComboBox;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -19,10 +15,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.create.list.AuthorComboBox;
+import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
@@ -36,15 +32,15 @@ public class ActivityInputForm extends JPanel {
     protected static final Dimension TEXT_FIELD_DIMENSION = new Dimension(300, 25);
     protected static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     protected final GridBagConstraints c = new GridBagConstraints();
-    protected final JTextField placeField = new JTextField();
-    protected final JTextField authorField = new JTextField();
     protected final JTextField nameField = new JTextField();
     protected final JTextArea descriptionField = new JTextArea();
     protected JComboBox estimatedPomodoros = new JComboBox();
+    protected JComboBox types = new JComboBox();
+    protected JComboBox authors = new JComboBox();
+    protected JComboBox places = new JComboBox();
     protected final JXDatePicker datePicker = new JXDatePicker(
             Labels.getLocale());
     protected int activityId = -1;
-    protected JComboBox types = new JComboBox(TypeList.getTypes().toArray());
 
     public ActivityInputForm() {
         this(0);
@@ -58,37 +54,6 @@ public class ActivityInputForm extends JPanel {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
-
-        // init estimated Pomodoros combo box
-        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
-        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = ( i + 1 ) + "";
-        }
-        estimatedPomodoros = new JComboBox(items);
-        // dynamically populate the combo box
-        final ComboboxToolTipRenderer renderer = new ComboboxToolTipRenderer();
-        types.setRenderer(renderer);
-        types.addPopupMenuListener(new PopupMenuListener() {
-
-            @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                types.removeAllItems();
-                for (String type : TypeList.getTypes()) {
-                    types.addItem(type);
-                }
-                renderer.setTooltips((ArrayList) TypeList.getTypes());
-            }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-            }
-
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {
-            }
-        });
-        types.setEditable(true);
-        types.setFont(new Font(types.getFont().getName(), Font.PLAIN, types.getFont().getSize()));
 
         addForm(gridy);
     }
@@ -131,6 +96,12 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected void addEstimatedPoms(int gridy) {
+        // init estimated Pomodoros combo box
+        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+            items[i] = ( i + 1 ) + "";
+        }
+        estimatedPomodoros = new JComboBox(items);
         // Estimated Poms Description and TextField
         ++gridy;
         c.gridx = 0;
@@ -146,7 +117,8 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected void addType(int gridy) {
-        // Type Label and Combo box
+        types = new TypeComboBox();
+        // Type Label and Combo box        
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
@@ -158,12 +130,14 @@ public class ActivityInputForm extends JPanel {
         types.setBackground(ColorUtil.WHITE);
         types.setMinimumSize(COMBO_BOX_DIMENSION);
         types.setPreferredSize(COMBO_BOX_DIMENSION);
+        types.setEditable(true);
+        types.setFont(new Font(types.getFont().getName(), Font.PLAIN, types.getFont().getSize()));
         add(types, c);
-
     }
 
     protected void addAuthor(int gridy) {
-        // Author Label and TextField
+        authors = new AuthorComboBox();
+        // Author Label and Combo box
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
@@ -172,11 +146,17 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        addTextField(authorField);
+        authors.setBackground(ColorUtil.WHITE);
+        authors.setMinimumSize(COMBO_BOX_DIMENSION);
+        authors.setPreferredSize(COMBO_BOX_DIMENSION);
+        authors.setEditable(true);
+        authors.setFont(new Font(authors.getFont().getName(), Font.PLAIN, authors.getFont().getSize()));
+        add(authors, c);
     }
 
     protected void addPlace(int gridy) {
-        // Place label and TextField
+        places = new PlaceComboBox();
+        // Place label and Combo box
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
@@ -186,9 +166,12 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        placeField.setMinimumSize(TEXT_FIELD_DIMENSION);
-        placeField.setPreferredSize(TEXT_FIELD_DIMENSION);
-        add(placeField, c);
+        places.setBackground(ColorUtil.WHITE);
+        places.setMinimumSize(COMBO_BOX_DIMENSION);
+        places.setPreferredSize(COMBO_BOX_DIMENSION);
+        places.setEditable(true);
+        places.setFont(new Font(places.getFont().getName(), Font.PLAIN, places.getFont().getSize()));
+        add(places, c);
     }
 
     protected void addDescription(int gridy) {
@@ -224,11 +207,14 @@ public class ActivityInputForm extends JPanel {
      * @return activity
      */
     public Activity getActivityFromFields() {
-        String place = placeField.getText().trim();
-        String author = authorField.getText().trim();
         String name = nameField.getText().trim();
         String description = descriptionField.getText().trim();
-        String type = ( (String) types.getSelectedItem() ).trim();
+        String type = (String) types.getSelectedItem();
+        type = type != null ? type.trim() : "";
+        String author = (String) authors.getSelectedItem();
+        author = author != null ? author.trim() : "";
+        String place = (String) places.getSelectedItem();
+        place = place != null ? place.trim() : "";
         int estimatedPoms = estimatedPomodoros.getSelectedIndex() + 1;
         Date dateActivity = datePicker.getDate();
 
@@ -239,14 +225,6 @@ public class ActivityInputForm extends JPanel {
     /*
      * Setters
      */
-    public void setPlaceField(String value) {
-        placeField.setText(value);
-    }
-
-    public void setAuthorField(String value) {
-        authorField.setText(value);
-    }
-
     public void setNameField(String value) {
         nameField.setText(value);
     }
@@ -261,6 +239,22 @@ public class ActivityInputForm extends JPanel {
 
     public void setType(int index) {
         types.setSelectedIndex(index);
+    }
+    
+    public void setAuthorField(String author) {
+        authors.setSelectedItem(author);
+    }
+
+    public void setAuthor(int index) {
+        authors.setSelectedIndex(index);
+    }
+    
+    public void setPlaceField(String place) {
+        places.setSelectedItem(place);
+    }
+
+    public void setPlace(int index) {
+        places.setSelectedIndex(index);
     }
 
     public void setEstimatedPomodoro(int value) {
@@ -280,27 +274,5 @@ public class ActivityInputForm extends JPanel {
         String datePickerFormat = DateUtil.getFormatedDate(datePicker.getDate());
         String todayFormat = DateUtil.getFormatedDate(new Date());
         return datePickerFormat.equalsIgnoreCase(todayFormat);
-    }
-
-    public class ComboboxToolTipRenderer extends DefaultListCellRenderer {
-
-        ArrayList tooltips;
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
-
-            JComponent comp = (JComponent) super.getListCellRendererComponent(list,
-                    value, index, isSelected, cellHasFocus);
-
-            if (-1 < index && null != value && null != tooltips) {
-                list.setToolTipText((String) tooltips.get(index));
-            }
-            return comp;
-        }
-
-        public void setTooltips(ArrayList tooltips) {
-            this.tooltips = tooltips;
-        }
     }
 }

@@ -106,7 +106,7 @@ public class EditPanel extends CreatePanel {
     public void clearForm() {
         reportInputForm.setNameField("");
         reportInputForm.setDescriptionField("");
-        //reportInputForm.setTypeField("");
+        reportInputForm.setTypeField("");
         reportInputForm.setAuthorField("");
         reportInputForm.setPlaceField("");
     }

@@ -154,7 +154,7 @@ public class CreatePanel extends JPanel {
         inputFormPanel.setNameField("");
         inputFormPanel.setEstimatedPomodoro(1);
         inputFormPanel.setDescriptionField("");        
-        inputFormPanel.setType(0);
+        inputFormPanel.setTypeField("");
         inputFormPanel.setAuthorField("");
         inputFormPanel.setPlaceField("");
         inputFormPanel.setDate(new Date());

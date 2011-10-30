@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.create.TypeList;
+import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;

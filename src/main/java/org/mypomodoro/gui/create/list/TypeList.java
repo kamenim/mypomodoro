@@ -1,4 +1,4 @@
-package org.mypomodoro.gui.create;
+package org.mypomodoro.gui.create.list;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,6 @@ public class TypeList {
     }
 
     public static List<String> getTypes() {
-        addType("");
         if (types.size() > 1) {
             Collections.sort(types);
         }

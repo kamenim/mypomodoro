@@ -8,7 +8,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.gui.reports.ReportListPanel;
 
 /**
- * Panel that displays Agile-like burndown chart
+ * Panel that displays a burndown chart
  * 
  * @author Phil Karoo
  */
