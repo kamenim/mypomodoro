@@ -180,8 +180,6 @@ public class ToDoListPanel extends JPanel {
 
             gbc.gridx = 0;
             gbc.gridy = 1;
-            // add the passed in swing component first to ensure that it is in
-            // front
             backgroundPanel.add(timerPanel, gbc);
         } else {
             gbc.gridx = 0;

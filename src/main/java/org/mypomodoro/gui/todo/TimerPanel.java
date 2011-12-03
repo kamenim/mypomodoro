@@ -21,6 +21,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.TimeMinusButton;
+import org.mypomodoro.buttons.TimePlusButton;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -50,12 +52,28 @@ public class TimerPanel extends JPanel {
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 
+        addTimePlusButton(pomodoro);
         addPomodoroTimerLabel();
+        addTimeMinusButton(pomodoro);
         addStartButton(pomodoro);
     }
 
-    private void addPomodoroTimerLabel() {
+    private void addTimePlusButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.1;
+        gbc.weighty = 0.3;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        TimePlusButton timePlus = new TimePlusButton(pomodoro);
+        timePlus.setBackground(ColorUtil.WHITE);
+        timePlus.setOpaque(true);
+        timePlus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        add(timePlus, gbc);
+    }
+
+    private void addPomodoroTimerLabel() {
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.3;
@@ -64,11 +82,26 @@ public class TimerPanel extends JPanel {
         add(pomodoroTime, gbc);
     }
 
+    private void addTimeMinusButton(final Pomodoro pomodoro) {
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.1;
+        gbc.weighty = 0.3;
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
+        TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
+        timeMinus.setBackground(ColorUtil.WHITE);
+        timeMinus.setOpaque(true);
+        timeMinus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        add(timeMinus, gbc);
+    }
+
     private void addStartButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.165;
+        gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.SOUTH;
         startButton.setBackground(ColorUtil.WHITE);
         startButton.setForeground(ColorUtil.BLACK);
