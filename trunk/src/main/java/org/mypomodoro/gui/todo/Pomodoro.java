@@ -41,10 +41,10 @@ import org.mypomodoro.util.Labels;
 public class Pomodoro {
 
     private final int SECOND = 1000;
-    private final int MINUTES = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTES;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTES;
-    private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTES;
+    private final int MINUTE = 60 * SECOND;
+    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTE;
+    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTE;
+    private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTE;
     /*Test
     private final long POMODORO_LENGTH = 10 * SECOND;
     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
@@ -52,6 +52,7 @@ public class Pomodoro {
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
     private long pomodoroLength = POMODORO_LENGTH;
+    private long tmpPomodoroLength = POMODORO_LENGTH;
     private long shortBreakLength = POMODORO_BREAK_LENGTH;
     private long longBreakLength = POMODORO_LONG_LENGTH;
     private final JLabel pomodoroTime;
@@ -88,6 +89,7 @@ public class Pomodoro {
     public void stop() {
         pomodoroTimer.stop();
         time = pomodoroLength;
+        tmpPomodoroLength = pomodoroLength;
         pomodoroTime.setText(sdf.format(pomodoroLength));
         stopSound();
         if (inPomodoro() && isSystemTray()) {
@@ -125,12 +127,7 @@ public class Pomodoro {
         public void actionPerformed(ActionEvent e) {
             if (time >= 1) {
                 time -= SECOND;
-                pomodoroTime.setText(sdf.format(time));
-                if (inPomodoro() && isSystemTray()) {
-                    MyPomodoroView.trayIcon.setToolTip(sdf.format(time));
-                    int progressiveTrayIndex = (int) ( (double) ( ( pomodoroLength - time ) ) / (double) pomodoroLength * 8 );
-                    MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON_PROGRESSIVE[progressiveTrayIndex].getImage());
-                }
+                refreshTime();
             } else {
                 stopSound();
                 if (ControlPanel.preferences.getRinging() && !isMute) {
@@ -197,6 +194,7 @@ public class Pomodoro {
 
         private void goInPomodoro() {
             time = pomodoroLength;
+            tmpPomodoroLength = pomodoroLength;
         }
 
         private void goInShortBreak() {
@@ -361,5 +359,38 @@ public class Pomodoro {
             tick();
         }
         isMute = false;
+    }
+
+    /*
+     * increateTime
+     * 
+     * Increase time by one minute
+     */
+    public void increaseTime() {
+        time += MINUTE;
+        tmpPomodoroLength += MINUTE;
+        refreshTime();
+    }
+
+    /*
+     * decreateTime
+     * 
+     * Decrease time by one minute
+     */
+    public void decreaseTime() {
+        if (time > MINUTE) {
+            time -= MINUTE;
+            tmpPomodoroLength -= MINUTE;
+            refreshTime();
+        }
+    }
+
+    private synchronized void refreshTime() {
+        pomodoroTime.setText(sdf.format(time));
+        if (inPomodoro() && isSystemTray()) {
+            MyPomodoroView.trayIcon.setToolTip(sdf.format(time));
+            int progressiveTrayIndex = (int) ( (double) ( ( tmpPomodoroLength - time ) ) / (double) tmpPomodoroLength * 8 );
+            MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON_PROGRESSIVE[progressiveTrayIndex].getImage());
+        }
     }
 }
