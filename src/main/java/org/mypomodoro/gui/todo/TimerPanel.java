@@ -52,24 +52,25 @@ public class TimerPanel extends JPanel {
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 
-        addTimePlusButton(pomodoro);
-        addPomodoroTimerLabel();
+        
         addTimeMinusButton(pomodoro);
+        addPomodoroTimerLabel();
+        addTimePlusButton(pomodoro);
         addStartButton(pomodoro);
     }
 
-    private void addTimePlusButton(final Pomodoro pomodoro) {
+    private void addTimeMinusButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHEAST;
-        TimePlusButton timePlus = new TimePlusButton(pomodoro);
-        timePlus.setBackground(ColorUtil.WHITE);
-        timePlus.setOpaque(true);
-        timePlus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
-        add(timePlus, gbc);
+        TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
+        timeMinus.setBackground(ColorUtil.WHITE);
+        timeMinus.setOpaque(true);
+        timeMinus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        add(timeMinus, gbc);
     }
 
     private void addPomodoroTimerLabel() {
@@ -82,18 +83,18 @@ public class TimerPanel extends JPanel {
         add(pomodoroTime, gbc);
     }
 
-    private void addTimeMinusButton(final Pomodoro pomodoro) {
+    private void addTimePlusButton(final Pomodoro pomodoro) {
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
-        TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
-        timeMinus.setBackground(ColorUtil.WHITE);
-        timeMinus.setOpaque(true);
-        timeMinus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
-        add(timeMinus, gbc);
+        TimePlusButton timePlus = new TimePlusButton(pomodoro);
+        timePlus.setBackground(ColorUtil.WHITE);
+        timePlus.setOpaque(true);
+        timePlus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        add(timePlus, gbc);
     }
 
     private void addStartButton(final Pomodoro pomodoro) {
