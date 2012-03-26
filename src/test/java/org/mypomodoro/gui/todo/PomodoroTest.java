@@ -12,6 +12,7 @@ public class PomodoroTest {
     private String beginingText;
     private Pomodoro pomodoro;
     private JLabel label;
+	
 
     @Before
     public void setUpPomodoro() throws InterruptedException {
