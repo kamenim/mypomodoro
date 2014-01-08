@@ -53,7 +53,7 @@ public class PreferencesInputForm extends JPanel {
                 ControlPanel.preferences.getPomodoroLength(),
                 Labels.getString("PreferencesPanel.Pomodoro Length") + ": ",
                 25, 30, unitMinute);
-        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 10,
+        shortBreakSlider = new TimerValueSlider(controlPanel, 1, 15,
                 ControlPanel.preferences.getShortBreakLength(),
                 Labels.getString("PreferencesPanel.Short Break Length") + ": ",
                 3, 5, unitMinute);
