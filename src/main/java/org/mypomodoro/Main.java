@@ -39,7 +39,7 @@ public class Main {
     public static ReentrantLock datalock = new ReentrantLock();
 
     public static void updateView() {
-        new Thread(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -48,7 +48,7 @@ public class Main {
                 generatePanel.refresh();
                 reportListPanel.refresh();
             }
-        }).start();
+        });
     }
 
     public static void updateLists() {
@@ -87,7 +87,7 @@ public class Main {
     }
 
     private static void initLists() {
-        new Thread(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -95,14 +95,14 @@ public class Main {
                 AuthorList.initAuthors();
                 PlaceList.initPlaces();
             }
-        }).start();
+        });
     }
 
     private static void setUpAndShowGui() {
         final MyPomodoroView gui = new MyPomodoroView();
         gui.setVisible(true);
         /*
-         * Old fashion way to center the component onscreen 
+         * Old fashion way to center the component onscreen
          * Dimension screenSize
          * = gui.getToolkit().getScreenSize(); int w = (int) ( (
          * screenSize.getWidth() - gui.getSize().width ) / 2 ); int h = (int) (

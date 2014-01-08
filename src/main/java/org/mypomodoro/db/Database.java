@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.swing.SwingUtilities;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
@@ -139,7 +140,7 @@ public class Database {
     }
 
     public void resetData() {
-        new Thread(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -149,7 +150,7 @@ public class Database {
                 Main.updateLists();
                 Main.updateView();
             }
-        }).start();
+        });
 
     }
 
