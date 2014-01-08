@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
@@ -50,7 +51,7 @@ public class TestMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         private void createTestData() {
-            new Thread(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
@@ -96,7 +97,7 @@ public class TestMenu extends JMenu {
                         a.databaseInsert();
                     }
                 }
-            }).start();
+            });
         }
 
         public TestDataItem(final MyPomodoroView view) {
