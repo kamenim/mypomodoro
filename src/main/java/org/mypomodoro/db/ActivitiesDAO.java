@@ -87,7 +87,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY name;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_added DESC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
