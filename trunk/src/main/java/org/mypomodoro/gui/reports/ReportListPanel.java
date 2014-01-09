@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -129,7 +130,7 @@ public class ReportListPanel extends JPanel {
                 for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
                     Activity currentActivity = iterator.next();
                     tableData[i][0] = currentActivity.isUnplanned();
-                    tableData[i][1] = DateUtil.getFormatedDate(currentActivity.getDate());
+                    tableData[i][1] = currentActivity.getDate(); // date formated via custom renderer (DateRenderer)
                     tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
                     tableData[i][3] = currentActivity.getName();
                     String poms = "" + currentActivity.getEstimatedPoms();
@@ -228,14 +229,20 @@ public class ReportListPanel extends JPanel {
         }
         init();
     }
+    
+    static class DateRenderer extends DefaultTableCellRenderer {    
+        public void setValue(Object value) {
+            setText((value == null) ? "" : DateUtil.getFormatedDate((Date)value));
+        }
+    }
 
     private void init() {
         // Centre Date, time, estimated, real, Diff I and Diff II columns
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
+        dtcr.setHorizontalAlignment(SwingConstants.CENTER);        
+        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // estimated
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
@@ -257,8 +264,9 @@ public class ReportListPanel extends JPanel {
         table.getColumnModel().getColumn(2).setPreferredWidth(60);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
+            table.setAutoCreateRowSorter(true);            
         }
+        
         // Add tooltip for Title and Type colums 
         table.addMouseMotionListener(new MouseMotionAdapter() {
 
