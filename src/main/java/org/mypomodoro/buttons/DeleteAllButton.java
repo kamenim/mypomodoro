@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -26,11 +27,10 @@ public class DeleteAllButton extends AbstractPomodoroButton {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int rowCount = table.getRowCount();
-                if (rowCount > 0) {
-                    JFrame window = new JFrame();
+                if (rowCount > 0) {                    
                     String title = Labels.getString("ActivityListPanel.Delete all activities");
                     String message = Labels.getString("ActivityListPanel.Are you sure to delete all activities?");
-                    int reply = JOptionPane.showConfirmDialog(window, message,
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                             title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivityList.getList().removeAll();

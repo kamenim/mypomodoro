@@ -23,6 +23,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -263,11 +264,10 @@ public class ActivitiesPanel extends JPanel {
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
                 selectedActivity.databaseUpdate();
-                JFrame window = new JFrame();
                 String title = Labels.getString("Common.Add comment");
                 String message = Labels.getString("Common.Comment saved");
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

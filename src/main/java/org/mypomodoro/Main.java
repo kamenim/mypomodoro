@@ -37,6 +37,7 @@ public class Main {
     public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
     public static ReentrantLock datalock = new ReentrantLock();
+    public static final MyPomodoroView gui = new MyPomodoroView();
 
     public static void updateView() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -99,8 +100,6 @@ public class Main {
     }
 
     private static void setUpAndShowGui() {
-        final MyPomodoroView gui = new MyPomodoroView();
-        gui.setVisible(true);
         /*
          * Old fashion way to center the component onscreen
          * Dimension screenSize
@@ -109,7 +108,13 @@ public class Main {
          * ( screenSize.getHeight() - gui.getSize().height ) / 2 );
          * gui.setLocation(w, h);
          */
+        gui.pack();
         gui.setLocationRelativeTo(null); // center the component onscreen
+        gui.setVisible(true);
+        if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
+            gui.setAlwaysOnTop(true);
+        }        
+        
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override

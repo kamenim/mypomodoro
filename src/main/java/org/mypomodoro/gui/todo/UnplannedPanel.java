@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import javax.swing.JScrollPane;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -99,7 +100,6 @@ public class UnplannedPanel extends CreatePanel {
         }
         panel.refreshIconLabels();
         newActivity.setIsUnplanned(true);
-        JFrame window = new JFrame();
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message = "";
         if (unplannedInputFormPanel.isDateToday()) {
@@ -115,16 +115,15 @@ public class UnplannedPanel extends CreatePanel {
             validation.setVisible(false);
             super.validActivityAction(newActivity);
         }
-        JOptionPane.showConfirmDialog(window, message, title,
-                JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     protected void invalidActivityAction() {
-        JFrame window = new JFrame();
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override

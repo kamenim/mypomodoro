@@ -38,7 +38,7 @@ public class AboutPanel extends JDialog {
     public static final int FRAME_HEIGHT = 360;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public AboutPanel(JFrame frame, String str) {
+    public AboutPanel(JDialog frame, String str) {
         super(frame, str);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setIconImage(ImageIcons.MAIN_ICON.getImage());

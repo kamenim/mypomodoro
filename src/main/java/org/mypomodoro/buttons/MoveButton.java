@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.manager.ListPane;
 import org.mypomodoro.model.Activity;
@@ -39,10 +40,9 @@ public class MoveButton extends AbstractPomodoroButton {
         if (selectedActivity != null) {
             if (selectedActivity.isActivity()) { // Not ToDo
                 if (!selectedActivity.isDateToday()) {
-                    JFrame window = new JFrame();
                     String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                     String message = Labels.getString("ManagerListPanel.The date of this activity is not today. Proceed anyway?");
-                    int reply = JOptionPane.showConfirmDialog(window, message,
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                             title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
@@ -50,7 +50,7 @@ public class MoveButton extends AbstractPomodoroButton {
                             message = Labels.getString(
                                     "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                                     org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
-                            reply = JOptionPane.showConfirmDialog(window,
+                            reply = JOptionPane.showConfirmDialog(Main.gui,
                                     message, title, JOptionPane.YES_NO_OPTION);
                             if (reply == JOptionPane.YES_OPTION) {
                                 from.removeActivity(selectedActivity);
@@ -61,13 +61,12 @@ public class MoveButton extends AbstractPomodoroButton {
                             to.addActivity(selectedActivity);
                         }
                     }
-                } else if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {
-                    JFrame window = new JFrame();
+                } else if (to.isMaxNbTotalEstimatedPomReached(selectedActivity)) {                    
                     String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                     String message = Labels.getString(
                             "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                             org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
-                    int reply = JOptionPane.showConfirmDialog(window, message,
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                             title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         from.removeActivity(selectedActivity);

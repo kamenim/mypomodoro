@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.model.Activity;
@@ -93,14 +94,13 @@ public class OverestimationPanel extends JPanel {
             PomodorosRemainingLabel.showRemainPomodoros(
                     panel.getPomodorosRemainingLabel(), panel.getToDoList());
             // reset overestimation form
-            overestimationInputFormPanel.reset();
-            JFrame window = new JFrame();
+            overestimationInputFormPanel.reset();            
             String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString(
                     "ToDoListPanel.Nb of estimated pomodoros increased by {0}",
                     overestimatedPomodoros);
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

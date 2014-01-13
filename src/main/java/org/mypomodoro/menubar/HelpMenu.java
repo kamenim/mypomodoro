@@ -3,11 +3,13 @@ package org.mypomodoro.menubar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.menubar.help.AboutPanel;
@@ -17,12 +19,10 @@ import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
 
-    private static final long serialVersionUID = 20110814L;
-    private final MyPomodoroView view;
+    private static final long serialVersionUID = 20110814L;    
 
     public HelpMenu(final MyPomodoroView view) {
-        super(Labels.getString("MenuBar.Help"));
-        this.view = view;
+        super(Labels.getString("MenuBar.Help"));        
         add(new HelpUserGuide());
         add(new HelpPomodoroMenu());
         add(new JSeparator());
@@ -175,10 +175,14 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AboutPanel frame = new AboutPanel(new JFrame(), Labels.getString("HelpMenu.About myPomodoro"));
-                frame.setModal(true); // always on top                
-                frame.setLocationRelativeTo(view); // center component on top panel (MyPomodoroView)
-                frame.setVisible(true);
+                AboutPanel dialog = new AboutPanel(new JDialog(), Labels.getString("HelpMenu.About myPomodoro"));
+                dialog.pack();
+                dialog.setLocationRelativeTo(Main.gui); // center component on top panel (gui)
+                dialog.setVisible(true);
+                dialog.setModal(true); // modal except when Main.gui is set to be always on top (won't work)
+                if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
+                    dialog.setAlwaysOnTop(true);
+                }
             }
         }
     }

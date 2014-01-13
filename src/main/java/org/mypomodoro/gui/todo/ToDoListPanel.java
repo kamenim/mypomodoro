@@ -112,7 +112,7 @@ public class ToDoListPanel extends JPanel {
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, toDoJList);
         add(wrapInBackgroundImage(
                 timerPanel,
-                new MuteButton(pomodoro),
+                ControlPanel.preferences.getTicking()?new MuteButton(pomodoro):new MuteButton(pomodoro, false),
                 new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
@@ -223,11 +223,10 @@ public class ToDoListPanel extends JPanel {
         if (!pomodoro.inPomodoro()
                 || pomodoro.getCurrentToDo().getId() != selectedToDo.getId()) {
             if (selectedToDo != null) {
-                JFrame window = new JFrame();
                 if (selectedToDo.getActualPoms() <= 0) {
                     String title = Labels.getString("ToDoListPanel.Complete ToDo");
                     String message = Labels.getString("ToDoListPanel.This ToDo has no finished pomodoro (real). Complete anyway?");
-                    int reply = JOptionPane.showConfirmDialog(window, message,
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                             title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         completeTask(selectedToDo);
@@ -236,7 +235,7 @@ public class ToDoListPanel extends JPanel {
                 } else {
                     String title = Labels.getString("ToDoListPanel.Complete ToDo");
                     String message = Labels.getString("ToDoListPanel.Are you sure to complete this ToDo?");
-                    int reply = JOptionPane.showConfirmDialog(window, message,
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                             title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         completeTask(selectedToDo);
@@ -245,11 +244,10 @@ public class ToDoListPanel extends JPanel {
                 }
             }
         } else {
-            JFrame window = new JFrame();
             String title = Labels.getString("ToDoListPanel.Complete ToDo");
             String message = Labels.getString("ToDoListPanel.Please either stop or finish the current pomodoro (recommended)");
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -262,10 +260,9 @@ public class ToDoListPanel extends JPanel {
 
     public void completeAllTasksWithWarning() {
         if (!pomodoro.inPomodoro()) {
-            JFrame window = new JFrame();
             String title = Labels.getString("ToDoListPanel.Complete ALL ToDo");
             String message = Labels.getString("ToDoListPanel.Are you sure to complete ALL ToDo?");
-            int reply = JOptionPane.showConfirmDialog(window, message, title,
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                     JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 completeAllTasks();
@@ -275,11 +272,10 @@ public class ToDoListPanel extends JPanel {
                         pomodorosRemainingLabel, toDoList);
             }
         } else {
-            JFrame window = new JFrame();
             String title = Labels.getString("ToDoListPanel.Complete ToDo");
             String message = Labels.getString("ToDoListPanel.Please either stop or finish the current pomodoro (recommended)");
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -288,11 +284,10 @@ public class ToDoListPanel extends JPanel {
         if (selectedToDo != null) {
             selectedToDo.setNotes(comment);
             selectedToDo.databaseUpdate();
-            JFrame window = new JFrame();
             String title = Labels.getString("Common.Add comment");
             String message = Labels.getString("Common.Comment saved");
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

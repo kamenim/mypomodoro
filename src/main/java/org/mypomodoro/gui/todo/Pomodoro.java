@@ -31,12 +31,12 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- * This class keeps the logic for setting a timer for a pomodoro and the
- * breaks after that.
- * 
- * @author nikolavp 
+ * This class keeps the logic for setting a timer for a pomodoro and the breaks
+ * after that.
+ *
+ * @author nikolavp
  * @author Phil Karoo
- * 
+ *
  */
 public class Pomodoro {
 
@@ -46,9 +46,9 @@ public class Pomodoro {
     private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTE;
     private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTE;
     /*Test
-    private final long POMODORO_LENGTH = 10 * SECOND;
-    private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
-    private final long POMODORO_LONG_LENGTH = 10 * SECOND;*/
+     private final long POMODORO_LENGTH = 10 * SECOND;
+     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
+     private final long POMODORO_LONG_LENGTH = 10 * SECOND;*/
     private final SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
     private final Timer pomodoroTimer;
     private long pomodoroLength = POMODORO_LENGTH;
@@ -104,12 +104,11 @@ public class Pomodoro {
     }
 
     public boolean stopWithWarning() {
-        if (inpomodoro) { // in pomodoro only, not during breaks
-            JFrame window = new JFrame();
+        if (inpomodoro) { // in pomodoro only, not during breaks            
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
             message += "\n(" + Labels.getString("ToDoListPanel.please create an unplanned activity in order to record this interruption") + ")";
-            int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 stop();
             }
@@ -128,6 +127,7 @@ public class Pomodoro {
             if (time >= 1) {
                 time -= SECOND;
                 refreshTime();
+                popupTime();
             } else {
                 stopSound();
                 if (ControlPanel.preferences.getRinging() && !isMute) {
@@ -275,12 +275,10 @@ public class Pomodoro {
                 clip.open(ain);
                 clip.loop(continuously ? Clip.LOOP_CONTINUOUSLY : 0);
                 clip.start();
-            }
-            finally {
+            } finally {
                 ain.close();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // no sound
         }
     }
@@ -318,22 +316,19 @@ public class Pomodoro {
             output = new ByteArrayOutputStream(stream.available());
             byte[] buf = new byte[2048];
             int read;
-            while (( read = stream.read(buf) ) > 0) {
+            while ((read = stream.read(buf)) > 0) {
                 output.write(buf, 0, read);
             }
             return new ByteArrayInputStream(output.toByteArray());
-        }
-        finally {
+        } finally {
             try {
                 stream.close();
-            }
-            catch (IOException ignored) {
+            } catch (IOException ignored) {
             }
             if (output != null) {
                 try {
                     output.close();
-                }
-                catch (IOException ignored) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -367,9 +362,11 @@ public class Pomodoro {
      * Increase time by one minute
      */
     public void increaseTime() {
-        time += MINUTE;
-        tmpPomodoroLength += MINUTE;
-        refreshTime();
+        if (time < 59 * MINUTE) {
+            time += MINUTE;
+            tmpPomodoroLength += MINUTE;
+            refreshTime();
+        }
     }
 
     /*
@@ -386,11 +383,26 @@ public class Pomodoro {
     }
 
     private synchronized void refreshTime() {
-        pomodoroTime.setText(sdf.format(time));
+        String now = sdf.format(time);
+        pomodoroTime.setText(now);
         if (inPomodoro() && isSystemTray()) {
-            MyPomodoroView.trayIcon.setToolTip(sdf.format(time));
-            int progressiveTrayIndex = (int) ( (double) ( ( tmpPomodoroLength - time ) ) / (double) tmpPomodoroLength * 8 );
+            MyPomodoroView.trayIcon.setToolTip(now);
+            int progressiveTrayIndex = (int) ((double) ((tmpPomodoroLength - time)) / (double) tmpPomodoroLength * 8);
             MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON_PROGRESSIVE[progressiveTrayIndex].getImage());
+        }
+    }
+
+    // display popup message every 10 minutes
+    private void popupTime() {
+        String now = sdf.format(time);
+        int tenMinutes = 10 * MINUTE;
+        if (inPomodoro() && isSystemTray()
+                && isSystemTrayMessage()) {
+            for (int i = tenMinutes; i < tmpPomodoroLength; i = i+tenMinutes) {
+                if (time == i) {
+                    MyPomodoroView.trayIcon.displayMessage("", now, TrayIcon.MessageType.NONE);
+                }
+            }
         }
     }
 }

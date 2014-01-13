@@ -25,6 +25,7 @@ public class ToDoJList extends JList {
     private static final Dimension PREFERED_SIZE = new Dimension(250, 100);
     private int selectedToDoId = 0;
     private int selectedRowIndex = 0;
+    final private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
     public ToDoJList(ToDoList toDoList, Pomodoro pomodoro) {
         super(toDoList.toArray());
@@ -77,8 +78,6 @@ public class ToDoJList extends JList {
     }
 
     private class cellRenderer implements ListCellRenderer {
-
-        private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

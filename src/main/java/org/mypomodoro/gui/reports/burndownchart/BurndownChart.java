@@ -27,6 +27,7 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 /** 
@@ -219,11 +220,10 @@ public class BurndownChart extends JPanel {
             ChartUtilities.saveChartAsPNG(new File(fileName), chart, imageWidth, imageHeight);
         }
         catch (IOException ex) {
-            JFrame window = new JFrame();
             String title = Labels.getString("Common.Error");
             String message = Labels.getString("ReportListPanel.Chart.Image creation failed");
-            JOptionPane.showConfirmDialog(window, message, title,
-                    JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
         }
     }
 }
