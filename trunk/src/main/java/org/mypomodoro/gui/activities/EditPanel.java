@@ -1,13 +1,14 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
+import javax.swing.JDialog;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -58,10 +59,16 @@ public class EditPanel extends CreatePanel {
     protected void validActivityAction(Activity currentActivity) {
         currentActivity.databaseUpdate();
         ActivityList.getList().update();
-        JFrame window = new JFrame();
+        /*JDialog window = new JDialog();        
+        
+        window.pack();
+        window.setLocationRelativeTo(Main.gui);
+        window.setVisible(true);*/
+        
+        
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
-        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);        
     }
 
     @Override
@@ -77,11 +84,10 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {
-        JFrame window = new JFrame();
+    protected void invalidActivityAction() {        
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(window, message, title, JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override

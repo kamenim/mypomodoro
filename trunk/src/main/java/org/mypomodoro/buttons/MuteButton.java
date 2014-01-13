@@ -21,8 +21,14 @@ public class MuteButton extends JButton {
     private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource("/images/sound.png"));
     private boolean isMuteIcon = true;
 
-    public MuteButton(final Pomodoro pomodoro) {
-        setMuteIcon();
+    public MuteButton(final Pomodoro pomodoro, boolean mute) {
+        if (mute) {
+            setMuteIcon();
+        } else {
+            setSoundIcon();
+            isMuteIcon = false;
+        }
+        
         addActionListener(new ActionListener() {
 
             @Override
@@ -38,6 +44,10 @@ public class MuteButton extends JButton {
                 }
             }
         });
+    }
+    
+    public MuteButton(final Pomodoro pomodoro) {
+        this(pomodoro, true);
     }
 
     private void setSoundIcon() {

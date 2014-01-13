@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -98,21 +99,19 @@ public class ImportPanel extends JPanel {
                     importCSV(filePath);
                 } else if (importInputForm.isFileExcelFormat()) {
                     importExcel(filePath);
-                }
-                JFrame window = new JFrame();
+                }                
                 String title = Labels.getString("ReportListPanel.Import");
                 String message = Labels.getString(
                         "ReportListPanel.Data imported",
                         filePath);
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
             catch (Exception ex) {
-                JFrame window = new JFrame();
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Import failed. See error log.");
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
                 writeErrorFile(ex.toString());
             }
         }

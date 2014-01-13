@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.SaveButton;
@@ -123,11 +124,10 @@ public class CreatePanel extends JPanel {
             invalidActivityAction();
             validation.setVisible(true);
             disableSaveButton();
-        } else if (newActivity.alreadyExists()) {
-            JFrame window = new JFrame();
+        } else if (newActivity.alreadyExists()) {            
             String title = Labels.getString("Common.Warning");
             String message = Labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
-            int reply = JOptionPane.showConfirmDialog(window, message, title, JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 disableSaveButton();
                 validActivityAction(newActivity);

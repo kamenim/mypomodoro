@@ -14,6 +14,7 @@ public class Preferences {
     public Preferences() {
         refresh();
     }
+    
     // ATTRIBUTES
     /**
      * Pomodoro length	 
@@ -70,6 +71,11 @@ public class Preferences {
      */
     public static final boolean STRAYMSG = true;
     private boolean systemTrayMessage = STRAYMSG;
+    /**
+     * Always on top
+     */
+    public static final boolean ALWAYS = false;
+    private boolean alwaysOnTop = ALWAYS;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -115,6 +121,10 @@ public class Preferences {
     public boolean getSystemTrayMessage() {
         return systemTrayMessage;
     }
+    
+    public boolean getAlwaysOnTop() {
+        return alwaysOnTop;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -159,6 +169,10 @@ public class Preferences {
 
     public void setSystemTrayMessage(boolean value) {
         systemTrayMessage = value;
+    }
+    
+    public void setAlwaysOnTop(boolean value) {
+        alwaysOnTop = value;
     }
 
     public void refresh() {

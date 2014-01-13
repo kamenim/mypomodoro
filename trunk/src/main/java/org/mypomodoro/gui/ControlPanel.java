@@ -182,6 +182,7 @@ public class ControlPanel extends JPanel {
         preferences.setLocale(( (ItemLocale) preferencesInputFormPanel.localesComboBox.getSelectedItem() ).getLocale());
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
+        preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
         preferences.updatePreferences();
     }
 }

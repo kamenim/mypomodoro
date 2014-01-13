@@ -17,7 +17,7 @@ import javax.swing.border.TitledBorder;
 import org.mypomodoro.util.Labels;
 
 /**
- * 
+ *
  * @author Phil Karoo
  */
 public class PreferencesInputForm extends JPanel {
@@ -35,6 +35,7 @@ public class PreferencesInputForm extends JPanel {
     protected final JComboBox localesComboBox;
     protected final JCheckBox systemTrayBox;
     protected final JCheckBox systemTrayMessageBox;
+    protected final JCheckBox alwaysOnTopBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(),
@@ -142,7 +143,17 @@ public class PreferencesInputForm extends JPanel {
                 }
             }
         });
+        alwaysOnTopBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Always On Top"),
+                ControlPanel.preferences.getAlwaysOnTop());
+        alwaysOnTopBox.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+            }
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -165,11 +176,14 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 7;
         gbc.gridwidth = 2;
         addLocales(gbc);
+        gbc.gridy = 8;
+        gbc.gridwidth = 2;
         if (SystemTray.isSupported()) {
-            gbc.gridy = 8;
-            gbc.gridwidth = 2;
             addSystemTray(gbc);
         }
+        gbc.gridy = 9;
+        gbc.gridwidth = 2;
+        addAlwaysOnTop(gbc);
     }
 
     private void addSounds(GridBagConstraints gbc) {
@@ -212,5 +226,17 @@ public class PreferencesInputForm extends JPanel {
         gbcSystemTray.gridy = 0;
         systemTray.add(systemTrayMessageBox, gbcSystemTray);
         add(systemTray, gbc);
+    }
+
+    private void addAlwaysOnTop(GridBagConstraints gbc) {
+        JPanel alwaysOnTop = new JPanel();
+        alwaysOnTop.setLayout(new GridBagLayout());
+        GridBagConstraints gbcAlwaysOnTop = new GridBagConstraints();
+        gbcAlwaysOnTop.fill = GridBagConstraints.HORIZONTAL;
+        gbcAlwaysOnTop.anchor = GridBagConstraints.NORTH;
+        gbcAlwaysOnTop.gridx = 0;
+        gbcAlwaysOnTop.gridy = 0;
+        alwaysOnTop.add(alwaysOnTopBox, gbcAlwaysOnTop);
+        add(alwaysOnTop, gbc);
     }
 }

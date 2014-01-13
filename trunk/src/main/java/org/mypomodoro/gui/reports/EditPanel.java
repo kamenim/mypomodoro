@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import javax.swing.JScrollPane;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -59,11 +60,10 @@ public class EditPanel extends CreatePanel {
     protected void validActivityAction(Activity currentReport) {
         currentReport.databaseUpdate();
         ReportList.getList().update();
-        JFrame window = new JFrame();
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
-        JOptionPane.showConfirmDialog(window, message, title,
-                JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
@@ -79,12 +79,11 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {
-        JFrame window = new JFrame();
+    protected void invalidActivityAction() {        
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(window, message, title,
-                JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override

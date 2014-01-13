@@ -10,6 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyIcon;
@@ -96,10 +97,9 @@ public class FileMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame window = new JFrame();
-                String title = Labels.getString("FileMenu.Exit myPomodoro");
-                String message = Labels.getString("FileMenu.Are you sure you want to exit myPomodoro?");
-                int reply = JOptionPane.showConfirmDialog(window, message,
+                String title = Labels.getString("FileMenu.Exit");
+                String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
+                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                         title, JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.YES_OPTION) {
                     System.exit(0);

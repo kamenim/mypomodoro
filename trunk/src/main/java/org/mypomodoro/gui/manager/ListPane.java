@@ -1,15 +1,19 @@
 package org.mypomodoro.gui.manager;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -19,18 +23,20 @@ import javax.swing.text.DefaultCaret;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ActivityInformationListListener;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.todo.ToDoJList;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * This class just abstracts a JPanel for jlist and a information panel for the
  * items in the list.
- * 
- * @author nikolavp 
+ *
+ * @author nikolavp
  * @author Phil Karoo
- * 
+ *
  */
 public class ListPane extends JPanel implements ActivityInformation {
 
@@ -41,9 +47,9 @@ public class ListPane extends JPanel implements ActivityInformation {
     private final AbstractActivities list;
     private final String titleList;
     private int selectedRowIndex = 0;
-    /**
-     * width of list cells
-     */
+    final private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+    // width of list cells
     public static final int CELL_WIDTH = 250;
     private static final Dimension PREFERED_SIZE = new Dimension(250, 100);
 
@@ -52,8 +58,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         titleList = title;
         setLayout(new GridBagLayout());
         internalActivitiesList = new JList();
+        internalActivitiesList.setCellRenderer(new cellRenderer());
         setPreferredSize(PREFERED_SIZE);
-        internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));        
+        internalActivitiesList.setFont(new Font(this.getFont().getName(), Font.PLAIN, this.getFont().getSize()));
 
         internalActivitiesList.addListSelectionListener(new ListSelectionListener() {
 
@@ -66,7 +73,6 @@ public class ListPane extends JPanel implements ActivityInformation {
         this.informationArea = new JTextArea();
         addActivitiesList();
         addInformationArea();
-
     }
 
     private void addInformationArea() {
@@ -137,7 +143,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     }
 
     public void addActivity(Activity activity) {
-        list.add(activity);        
+        list.add(activity);
         update();
     }
 
@@ -165,6 +171,28 @@ public class ListPane extends JPanel implements ActivityInformation {
         int row = internalActivitiesList.getSelectedIndex();
         if (row > -1) {
             selectedRowIndex = row;
+        }
+    }
+
+    private class cellRenderer implements ListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            Activity toDo = (Activity) value;
+            renderer.setText(toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms() + toDo.getOverestimatedPoms()) + ")");
+
+            if (isSelected) {
+                renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
+            }
+            if (toDo.isFinished()) {
+                renderer.setForeground(ColorUtil.GREEN);
+            } else {
+                renderer.setForeground(ColorUtil.BLACK);
+            }
+
+            return renderer;
         }
     }
 }

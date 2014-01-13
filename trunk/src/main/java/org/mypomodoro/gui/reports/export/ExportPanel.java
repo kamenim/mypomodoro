@@ -29,6 +29,7 @@ import org.mypomodoro.util.Labels;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import javax.swing.JScrollPane;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 
 /**
@@ -116,20 +117,18 @@ public class ExportPanel extends JPanel {
                 } else if (exportInputForm.isFileExcelFormat()) {
                     exportExcel(fileName, act);
                 }
-                JFrame window = new JFrame();
                 String title = Labels.getString("ReportListPanel.Export");
                 String message = Labels.getString(
                         "ReportListPanel.Data exported to file {0}",
                         fileName);
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
             catch (IOException ex) {
-                JFrame window = new JFrame();
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Export failed");
-                JOptionPane.showConfirmDialog(window, message, title,
-                        JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
             }
         }
     }

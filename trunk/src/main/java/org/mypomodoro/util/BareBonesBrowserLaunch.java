@@ -3,6 +3,7 @@ package org.mypomodoro.util;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
+import org.mypomodoro.Main;
 
 /**
  * Bare Bones Browser Launch for Java
@@ -60,7 +61,7 @@ public class BareBonesBrowserLaunch {
                 }
             }
             catch (Exception e) {
-                JOptionPane.showMessageDialog(null, errMsg + "\n" + e.toString());
+                JOptionPane.showMessageDialog(Main.gui, errMsg + "\n" + e.toString());
             }
         }
     }
