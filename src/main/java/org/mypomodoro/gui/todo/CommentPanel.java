@@ -85,7 +85,7 @@ public class CommentPanel extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        panel.refreshIconLabels();
+        //panel.refreshIconLabels();
         String text = activity.getNotes();
         commentArea.setText(text);
     }

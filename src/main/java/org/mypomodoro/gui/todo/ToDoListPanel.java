@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.ColorUIResource;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.MuteButton;
@@ -30,7 +31,7 @@ import org.mypomodoro.util.Labels;
  * Panel that keeps that time, and does all the stuff with the ToDo List. Uses a
  * pomodoro timer and a break timer, each looping into the other without
  * stopping.
- * 
+ *
  * @author Brian Wetzel
  * @author Phil Karoo
  */
@@ -100,6 +101,7 @@ public class ToDoListPanel extends JPanel {
         gbc.weighty = 0.7;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
+        toDoJList.setPreferredSize(null); // mandatory to activate the scroll bar
         add(new JScrollPane(toDoJList), gbc);
     }
 
@@ -112,7 +114,7 @@ public class ToDoListPanel extends JPanel {
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, toDoJList);
         add(wrapInBackgroundImage(
                 timerPanel,
-                ControlPanel.preferences.getTicking()?new MuteButton(pomodoro):new MuteButton(pomodoro, false),
+                ControlPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
@@ -125,7 +127,6 @@ public class ToDoListPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
         add(pomodorosRemainingLabel, gbc);
-
         PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel,
                 toDoList);
     }
@@ -339,15 +340,9 @@ public class ToDoListPanel extends JPanel {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 if (selectedToDo.getId() != currentToDo.getId()) {
-                    if (selectedToDo.isFinished()) {
-                        ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                        ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                        ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                    } else {
-                        ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo);
-                        ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo);
-                        ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo);
-                    }
+                    ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                 } else {
                     ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
@@ -355,13 +350,8 @@ public class ToDoListPanel extends JPanel {
                 }
             } else {
                 if (currentToDo != null && selectedToDo.getId() != currentToDo.getId()) {
-                    if (currentToDo.isFinished()) {
-                        ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.GREEN);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.GREEN);
-                    } else {
-                        ToDoIconLabel.showIconLabel(iconLabel, currentToDo);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo);
-                    }
+                    ToDoIconLabel.showIconLabel(iconLabel, currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                 } else {
                     if (selectedToDo.isFinished()) {
                         ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, ColorUtil.GREEN);
@@ -371,15 +361,9 @@ public class ToDoListPanel extends JPanel {
                         ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo);
                     }
                 }
-                if (selectedToDo.isFinished()) {
-                    ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                } else {
-                    ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo);
-                }
+                ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
             }
         } else { // empty list
             ToDoIconLabel.clearIconLabel(iconLabel);

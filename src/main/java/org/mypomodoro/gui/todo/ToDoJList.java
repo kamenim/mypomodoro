@@ -84,7 +84,7 @@ public class ToDoJList extends JList {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             Activity toDo = (Activity) value;
-            renderer.setText(toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms()+toDo.getOverestimatedPoms()) + ")");
+            renderer.setText((toDo.isUnplanned()?"(" + "U" + ") ":"") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms()+toDo.getOverestimatedPoms()) + ")");
 
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (isSelected) {
@@ -107,7 +107,6 @@ public class ToDoJList extends JList {
                     renderer.setForeground(ColorUtil.BLACK);
                 }
             }
-
             return renderer;
         }
     }

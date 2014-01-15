@@ -125,7 +125,7 @@ public class InformationPanel extends JPanel implements ActivityInformation {
 
     @Override
     public void showInfo(Activity activity) {
-        panel.refreshIconLabels();
+        //panel.refreshIconLabels();
         String text = Labels.getString("Common.Type") + ": " + activity.getType()
                 + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
                 + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace()
