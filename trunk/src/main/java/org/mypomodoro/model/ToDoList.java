@@ -41,16 +41,9 @@ public class ToDoList extends AbstractActivities {
 
     @Override
     public void remove(Activity a) {
-        int index = activities.indexOf(a);
         activities.remove(a);
         a.setPriority(-1);
         a.databaseUpdate();
-
-        for (int j = index; j < size(); j++) {
-            Activity currentAct = activities.get(j);
-            currentAct.setPriority(j);
-            currentAct.databaseUpdate();
-        }
     }
 
     public void update() {

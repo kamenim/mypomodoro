@@ -88,6 +88,7 @@ public class UnplannedPanel extends CreatePanel {
 
     @Override
     protected void validActivityAction(Activity newActivity) {
+        // Interruptions : update current/running pomodoro
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
         if (currentToDo != null) {
             if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
@@ -98,7 +99,7 @@ public class UnplannedPanel extends CreatePanel {
                 currentToDo.databaseUpdate();
             }
         }
-        panel.refreshIconLabels();
+        //panel.refreshIconLabels();
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message = "";

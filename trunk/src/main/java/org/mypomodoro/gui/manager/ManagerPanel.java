@@ -22,10 +22,11 @@ public class ManagerPanel extends JPanel {
 
     public ManagerPanel() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        
         activitiesPane = new ListPane(activityList,
                 Labels.getString("ActivityListPanel.Activity List"));
         todoPane = new ListPane(toDoList,
-                Labels.getString("ToDoListPanel.ToDo List"));
+                Labels.getString("ToDoListPanel.ToDo List"));        
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(
                 activitiesPane, todoPane));
