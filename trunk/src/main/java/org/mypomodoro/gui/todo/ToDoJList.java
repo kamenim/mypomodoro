@@ -41,6 +41,14 @@ public class ToDoJList extends JList {
         setListData(toDoList.toArray());
         init();
     }
+    
+    public void refresh() {
+        toDoList.refresh();
+    }
+    
+    public ToDoList getToDoList() {
+        return toDoList;
+    }
 
     public void init() {
         selectToDo();

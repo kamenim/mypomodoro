@@ -117,9 +117,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }
-        text += "\n" + Labels.getString("Common.Type") + ": " + activity.getType()
-                + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
-                + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace();
+        text += "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty()?"-":activity.getType())
+                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty()?"-":activity.getAuthor())
+                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty()?"-":activity.getPlace());
         informationArea.setText(text);
     }
 

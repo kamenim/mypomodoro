@@ -2,6 +2,7 @@ package org.mypomodoro.gui.todo;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.mypomodoro.model.Activity;
 
 /**
  *

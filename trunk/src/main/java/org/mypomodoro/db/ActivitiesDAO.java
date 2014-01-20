@@ -59,7 +59,7 @@ public class ActivitiesDAO {
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY name;");
+                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY date_added ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -115,7 +115,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY date_added ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));

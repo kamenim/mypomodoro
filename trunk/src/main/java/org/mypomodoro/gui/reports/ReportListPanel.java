@@ -102,13 +102,13 @@ public class ReportListPanel extends JPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        JTabbedPane burdownChartPane = new JTabbedPane();
+        /*JTabbedPane burdownChartPane = new JTabbedPane();
         BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
         BurndownChartPanel burndownChart = new BurndownChartPanel(this);        
         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
 
-        controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);
+        controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);*/
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
