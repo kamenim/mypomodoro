@@ -18,8 +18,9 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 /**
- * Panel that allows creating unplanned activities and adding interruptions to the current ToDo
- * 
+ * Panel that allows creating unplanned activities and adding interruptions to
+ * the current ToDo
+ *
  * @author Phil Karoo
  */
 public class UnplannedPanel extends CreatePanel {
@@ -99,15 +100,17 @@ public class UnplannedPanel extends CreatePanel {
                 currentToDo.databaseUpdate();
             }
         }
-        //panel.refreshIconLabels();
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message = "";
         if (unplannedInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
-            panel.getToDoList().add(newActivity); // Today unplanned activity
+            // Today unplanned interruption/activity
+            panel.getToDoList().add(newActivity);             
             newActivity.databaseInsert();
             clearForm();
+            // refresh icon label
+            panel.refreshIconLabels();
             // refresh remaining Pomodoros label
             PomodorosRemainingLabel.showRemainPomodoros(
                     panel.getPomodorosRemainingLabel(), panel.getToDoList());

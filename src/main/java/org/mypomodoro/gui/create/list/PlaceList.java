@@ -26,7 +26,7 @@ public class PlaceList {
     }
 
     public static void addPlace(String place) {
-        if (!places.contains(place)) {
+        if (place.trim().length() > 0 && !places.contains(place)) {
             places.add(place);
         }
     }

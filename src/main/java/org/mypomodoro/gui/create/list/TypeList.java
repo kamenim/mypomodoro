@@ -26,7 +26,7 @@ public class TypeList {
     }
 
     public static void addType(String type) {
-        if (!types.contains(type)) {
+        if (type.trim().length() > 0 && !types.contains(type)) {
             types.add(type);
         }
     }

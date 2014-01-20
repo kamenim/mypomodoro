@@ -92,10 +92,10 @@ public class InformationArea extends JPanel implements ActivityInformation {
                 + "\n" + Labels.getString("ReportListPanel.Diff II") + ": " + ( activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "" )
                 + "\n" + Labels.getString("ReportListPanel.Internal Interruptions") + ": " + activity.getNumInternalInterruptions()
                 + "\n" + Labels.getString("ReportListPanel.External Interruptions") + ": " + activity.getNumInterruptions()
-                + "\n" + Labels.getString("Common.Type") + ": " + activity.getType()
-                + "\n" + Labels.getString("Common.Author") + ": " + activity.getAuthor()
-                + "\n" + Labels.getString("Common.Place") + ": " + activity.getPlace()
-                + "\n" + Labels.getString("Common.Description") + ": " + activity.getDescription();
+                + "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty()?"-":activity.getType())
+                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty()?"-":activity.getAuthor())
+                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty()?"-":activity.getPlace())
+                + "\n" + Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty()?"-":activity.getDescription());
         informationArea.setText(text);
     }
 

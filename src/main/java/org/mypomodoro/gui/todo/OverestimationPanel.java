@@ -19,7 +19,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Panel that allows overestimating the number of pomodoros of the current ToDo
- * 
+ *
  * @author Phil Karoo
  */
 public class OverestimationPanel extends JPanel {
@@ -82,19 +82,25 @@ public class OverestimationPanel extends JPanel {
     public void saveOverestimation(int overestimatedPomodoros) {
         Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
         if (selectedToDo != null) {
-            selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
-            selectedToDo.databaseUpdate();
+            // Overestimation : update current/running pomodoro
+            Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+            if (currentToDo != null && selectedToDo.getId() == currentToDo.getId()) {
+                currentToDo.setOverestimatedPoms(currentToDo.getOverestimatedPoms() + overestimatedPomodoros);
+                currentToDo.databaseUpdate();
+            } else {
+                selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
+                selectedToDo.databaseUpdate();
+            }
             // refresh ToDo list
-            panel.getToDoJList().init();
-            // refresh info panel
-            panel.getInformationPanel().showInfo(selectedToDo);
+            panel.getToDoJList().refresh();
+            panel.getToDoJList().update();
             // refresh icon label
             panel.refreshIconLabels();
             // refresh remaining Pomodoros label
             PomodorosRemainingLabel.showRemainPomodoros(
-                    panel.getPomodorosRemainingLabel(), panel.getToDoList());
+                    panel.getPomodorosRemainingLabel(), panel.getToDoJList().getToDoList());
             // reset overestimation form
-            overestimationInputFormPanel.reset();            
+            overestimationInputFormPanel.reset();
             String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString(
                     "ToDoListPanel.Nb of estimated pomodoros increased by {0}",

@@ -52,7 +52,6 @@ public class TimerPanel extends JPanel {
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 
-        
         addTimeMinusButton(pomodoro);
         addPomodoroTimerLabel();
         addTimePlusButton(pomodoro);

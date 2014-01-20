@@ -26,7 +26,7 @@ public class AuthorList {
     }
 
     public static void addAuthor(String author) {
-        if (!authors.contains(author)) {
+        if (author.trim().length() > 0 && !authors.contains(author)) {
             authors.add(author);
         }
     }

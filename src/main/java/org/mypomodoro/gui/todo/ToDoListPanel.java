@@ -332,9 +332,9 @@ public class ToDoListPanel extends JPanel {
         return pomodoroTime;
     }
 
-    public void refreshIconLabels() {
+    public void refreshIconLabels() {        
         Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
-        if (selectedToDo != null) {
+        if (selectedToDo != null) { // list not empty
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED);
@@ -352,18 +352,19 @@ public class ToDoListPanel extends JPanel {
                 if (currentToDo != null && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconLabel.showIconLabel(iconLabel, currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                } else if (currentToDo != null) {
+                    ToDoIconLabel.showIconLabel(iconLabel, currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                 } else {
-                    if (selectedToDo.isFinished()) {
-                        ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, ColorUtil.GREEN);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, ColorUtil.GREEN);
-                    } else {
-                        ToDoIconLabel.showIconLabel(iconLabel, selectedToDo);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo);
-                    }
+                    ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                 }
-                ToDoIconLabel.showIconLabel(informationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
             }
         } else { // empty list
             ToDoIconLabel.clearIconLabel(iconLabel);

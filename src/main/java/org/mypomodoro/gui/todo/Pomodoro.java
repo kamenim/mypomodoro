@@ -138,6 +138,7 @@ public class Pomodoro {
                     currentToDo.incrementPoms();
                     currentToDo.setDate(new Date());
                     currentToDo.databaseUpdate();
+                    //panel.getToDoList().update(); // this is necessary in case an interruption is added to the list during the pom
                     // refresh remaining Pomodoros label
                     PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
                     pomSetNumber++;

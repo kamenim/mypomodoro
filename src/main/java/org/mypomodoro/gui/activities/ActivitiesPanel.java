@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -119,7 +120,8 @@ public class ActivitiesPanel extends JPanel {
                 for (int i = 0; iterator.hasNext(); i++) {
                     Activity a = iterator.next();
                     tableData[i][0] = a.isUnplanned();
-                    tableData[i][1] = DateUtil.getFormatedDate(a.getDate());
+                    //tableData[i][1] = DateUtil.getFormatedDate(a.getDate());
+                    tableData[i][1] = a.getDate();
                     tableData[i][2] = a.getName();
                     String poms = "" + a.getEstimatedPoms();
                     if (a.getOverestimatedPoms() > 0) {
@@ -211,12 +213,18 @@ public class ActivitiesPanel extends JPanel {
         }
         init();
     }
+    
+    static class DateRenderer extends DefaultTableCellRenderer {    
+        public void setValue(Object value) {
+            setText((value == null) ? "" : DateUtil.getFormatedDate((Date)value));
+        }
+    }
 
     private void init() {
         // Centre Date, estimated pomodoros column
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new DateRenderer()); // date (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
