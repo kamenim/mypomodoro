@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -15,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.ColorUIResource;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.MuteButton;
@@ -151,6 +149,8 @@ public class ToDoListPanel extends JPanel {
     }
 
     public void refresh() {
+        // refresh list
+        toDoJList.refresh();
         toDoJList.update();
         // refresh icon labels
         refreshIconLabels();

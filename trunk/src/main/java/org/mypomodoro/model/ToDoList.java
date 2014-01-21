@@ -10,14 +10,14 @@ import org.mypomodoro.db.ActivitiesDAO;
  */
 public class ToDoList extends AbstractActivities {
 
-    private static ToDoList list = new ToDoList();
+    final private static ToDoList list = new ToDoList();
 
     private ToDoList() {
         refresh();
     }
 
     @Override
-    public void refresh() {
+    final public void refresh() {
         activities.clear();
         for (Activity act : ActivitiesDAO.getInstance().getTODOs()) {
             activities.add(act);

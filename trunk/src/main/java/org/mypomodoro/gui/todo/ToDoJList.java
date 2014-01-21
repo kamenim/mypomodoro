@@ -20,8 +20,8 @@ import org.mypomodoro.util.Labels;
 public class ToDoJList extends JList {
 
     private static final long serialVersionUID = 20110814L;
-    private final ToDoList toDoList;
-    private Pomodoro pomodoro;
+    final private ToDoList toDoList;
+    final private Pomodoro pomodoro;
     private static final Dimension PREFERED_SIZE = new Dimension(250, 100);
     private int selectedToDoId = 0;
     private int selectedRowIndex = 0;
@@ -50,7 +50,7 @@ public class ToDoJList extends JList {
         return toDoList;
     }
 
-    public void init() {
+    final public void init() {
         selectToDo();
         setBorder(new TitledBorder(new EtchedBorder(),
                 Labels.getString("ToDoListPanel.ToDo List") + " ("
