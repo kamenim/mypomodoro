@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import org.mypomodoro.Main;
@@ -14,7 +13,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.menubar.help.AboutPanel;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
@@ -57,9 +55,8 @@ public class HelpMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public HelpPomodoroMenu() {
-            super(Labels.getString("HelpMenu.The Pomodoro Technique"));
+            super(Labels.getString("HelpMenu.Pomodoro Technique"));
             add(new HelpPomodoroTechnique());
-            add(new HelpPomodoroCheatSheet());
             add(new HelpPomodoroBook());
         }
     }
@@ -69,7 +66,7 @@ public class HelpMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public HelpPomodoroTechnique() {
-            super(Labels.getString("HelpMenu.The Pomodoro Technique Website"));
+            super(Labels.getString("HelpMenu.Pomodoro Technique Official Website"));
             addActionListener(new MenuItemListener());
         }
 
@@ -84,32 +81,12 @@ public class HelpMenu extends JMenu {
         }
     }
 
-    class HelpPomodoroCheatSheet extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
-
-        public HelpPomodoroCheatSheet() {
-            super(Labels.getString("HelpMenu.Download the Pomodoro Technique Cheat Sheet"));
-            addActionListener(new MenuItemListener());
-        }
-
-        class MenuItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final JTextField urlField = new JTextField(
-                        "http://www.pomodorotechnique.com/resources/pomodoro_cheat_sheet.pdf");
-                BareBonesBrowserLaunch.openURL(urlField.getText().trim());
-            }
-        }
-    }
-
     class HelpPomodoroBook extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
 
         public HelpPomodoroBook() {
-            super(Labels.getString("HelpMenu.Download the Pomodoro Technique Book"));
+            super(Labels.getString("HelpMenu.Pomodoro Technique Official Book"));
             addActionListener(new MenuItemListener());
         }
 
@@ -117,10 +94,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String url = "http://www.pomodorotechnique.com/resources/ThePomodoroTechnique_v1-3.pdf";
-                if (DateUtil.getLocale().getLanguage().equals("it")) {
-                    url = "http://www.pomodorotechnique.com/resources/ThePomodoroTechnique-ITA_v1-3.pdf";
-                }
+                String url = "http://pomodorotechnique.com/book";                
                 BareBonesBrowserLaunch.openURL(url);
             }
         }

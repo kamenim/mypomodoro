@@ -17,7 +17,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -138,9 +137,6 @@ public class Pomodoro {
                     currentToDo.incrementPoms();
                     currentToDo.setDate(new Date());
                     currentToDo.databaseUpdate();
-                    //panel.getToDoList().update(); // this is necessary in case an interruption is added to the list during the pom
-                    // refresh remaining Pomodoros label
-                    PomodorosRemainingLabel.showRemainPomodoros(panel.getPomodorosRemainingLabel(), panel.getToDoList());
                     pomSetNumber++;
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
@@ -161,7 +157,6 @@ public class Pomodoro {
                         }
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
-                    panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into black
                     inpomodoro = false;
                 } else {
                     if (currentToDo.isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
@@ -178,7 +173,6 @@ public class Pomodoro {
                             tick();
                         }
                         timerPanel.setStartColor(ColorUtil.RED);
-                        panel.getToDoJList().init(); // init list so the custom cell renderer can turn the title into red
                         inpomodoro = true;
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
@@ -189,7 +183,7 @@ public class Pomodoro {
                         goInPomodoro();
                     }
                 }
-                panel.refreshIconLabels();
+                panel.refresh();
             }
         }
 
@@ -393,13 +387,14 @@ public class Pomodoro {
         }
     }
 
-    // display popup message every 10 minutes
+    // display popup message every 10 minutes at 05:00, 15:00, 25:00
     private void popupTime() {
         String now = sdf.format(time);
         int tenMinutes = 10 * MINUTE;
+        int fiveMinutes = 5 * MINUTE;
         if (inPomodoro() && isSystemTray()
                 && isSystemTrayMessage()) {
-            for (int i = tenMinutes; i < tmpPomodoroLength; i = i+tenMinutes) {
+            for (int i = fiveMinutes; i < tmpPomodoroLength; i = i+tenMinutes) {
                 if (time == i) {
                     MyPomodoroView.trayIcon.displayMessage("", now, TrayIcon.MessageType.NONE);
                 }

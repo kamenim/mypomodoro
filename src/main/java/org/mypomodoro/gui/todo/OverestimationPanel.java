@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -91,16 +90,8 @@ public class OverestimationPanel extends JPanel {
                 selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
                 selectedToDo.databaseUpdate();
             }
-            // refresh ToDo list
-            panel.getToDoJList().refresh();
-            panel.getToDoJList().update();
-            // refresh icon label
-            panel.refreshIconLabels();
-            // refresh remaining Pomodoros label
-            PomodorosRemainingLabel.showRemainPomodoros(
-                    panel.getPomodorosRemainingLabel(), panel.getToDoJList().getToDoList());
-            // reset overestimation form
             overestimationInputFormPanel.reset();
+            panel.refresh();
             String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
             String message = Labels.getString(
                     "ToDoListPanel.Nb of estimated pomodoros increased by {0}",

@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -102,18 +101,14 @@ public class UnplannedPanel extends CreatePanel {
         }
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
-        String message = "";
+        String message;
         if (unplannedInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
             // Today unplanned interruption/activity
             panel.getToDoList().add(newActivity);             
             newActivity.databaseInsert();
             clearForm();
-            // refresh icon label
-            panel.refreshIconLabels();
-            // refresh remaining Pomodoros label
-            PomodorosRemainingLabel.showRemainPomodoros(
-                    panel.getPomodorosRemainingLabel(), panel.getToDoList());
+            panel.refresh();
         } else {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
             validation.setVisible(false);
