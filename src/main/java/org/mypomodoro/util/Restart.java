@@ -9,23 +9,24 @@ import java.util.List;
 import org.mypomodoro.Main;
 
 /**
- * Restart application
- * Code found at http://java.dzone.com/articles/programmatically-restart-java
- * Code modified to support non Hotspot VM implementation, EXE wrapper file
- * Also, support for spaces and special characters in the path
- * 
+ * Restart application Code found at
+ * http://java.dzone.com/articles/programmatically-restart-java Code modified to
+ * support non Hotspot VM implementation, EXE wrapper file Also, support for
+ * spaces and special characters in the path
+ *
  * @author Phil Karoo
  */
 public class Restart {
 
-    /** 
-     * Sun property pointing the main class and its arguments. 
-     * Might not be defined on non Hotspot VM implementations.
+    /**
+     * Sun property pointing the main class and its arguments. Might not be
+     * defined on non Hotspot VM implementations.
      */
     public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
     /**
      * Restart the current Java application
+     *
      * @param runBeforeRestart some custom code to be run before restarting
      * @throws IOException
      */
@@ -80,8 +81,7 @@ public class Restart {
                     public void run() {
                         try {
                             Runtime.getRuntime().exec(cmd.toString());
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                         }
                     }
                 });
@@ -91,8 +91,7 @@ public class Restart {
                 }
                 // exit
                 System.exit(0);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // something went wrong
                 throw new IOException("Error while trying to restart the application", e);
             }

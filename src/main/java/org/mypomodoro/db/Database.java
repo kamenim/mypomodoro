@@ -16,8 +16,8 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 
 /**
- * 
- * @author Jordan 
+ *
+ * @author Jordan
  * @author Phil Karoo
  */
 public class Database {
@@ -31,8 +31,7 @@ public class Database {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:pomodoro.db");
             statement = connection.createStatement();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e);
         }
     }
@@ -48,8 +47,7 @@ public class Database {
             if (!connection.isClosed()) {
                 connection.close();
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println(e);
         }
     }
@@ -58,8 +56,7 @@ public class Database {
 
         try {
             statement.executeUpdate(sql);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println(e);
         }
     }
@@ -69,8 +66,7 @@ public class Database {
 
         try {
             rs = statement.executeQuery(sql);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e);
         }
 
@@ -126,15 +122,12 @@ public class Database {
                         + "25,5,20,5,10,4,1,1,'en_US',1,1,0);";
                 update(insertPreferencesSQL);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println(e);
-        }
-        finally {
+        } finally {
             try {
                 rs.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
             }
         }

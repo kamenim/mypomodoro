@@ -23,7 +23,7 @@ import org.mypomodoro.menubar.ViewMenu;
 
 /**
  * Application GUI for myPomodoro.
- * 
+ *
  * @author Brian Wetzel
  * @author Phil Karoo
  */
@@ -87,8 +87,7 @@ public class MyPomodoroView extends JFrame {
             });
             try {
                 sysTray.add(trayIcon);
-            }
-            catch (AWTException e) {
+            } catch (AWTException e) {
                 // do nothing
             }
         }

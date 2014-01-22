@@ -35,7 +35,7 @@ public class MoveButton extends AbstractPomodoroButton {
         });
     }
 
-    public static void move(final ListPane from, final ListPane to) {        
+    public static void move(final ListPane from, final ListPane to) {
         List<Activity> selectedActivities = from.getSelectedActivities();
         boolean alreadyAgreed = false;
         for (Activity selectedActivity : selectedActivities) {
@@ -67,7 +67,7 @@ public class MoveButton extends AbstractPomodoroButton {
                     }
                 }
                 from.removeActivity(selectedActivity);
-                to.addActivity(selectedActivity);                
+                to.addActivity(selectedActivity);
             }
         }
     }

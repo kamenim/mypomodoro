@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.todo;
 
-
 import javax.swing.JComboBox;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
@@ -40,11 +39,11 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
     }
 
     public boolean isSelectedInternalInterruption() {
-        return ( (String) interruptions.getSelectedItem() ).equals(internal);
+        return ((String) interruptions.getSelectedItem()).equals(internal);
     }
 
     public boolean isSelectedExternalInterruption() {
-        return ( (String) interruptions.getSelectedItem() ).equals(external);
+        return ((String) interruptions.getSelectedItem()).equals(external);
     }
 
     public void setInterruption(int index) {

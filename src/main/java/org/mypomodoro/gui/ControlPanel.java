@@ -139,7 +139,7 @@ public class ControlPanel extends JPanel {
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
             restartLabel.setForeground(ColorUtil.BLACK);
             restartLabel.setFont(new Font(restartLabel.getFont().getName(), Font.BOLD,
-                restartLabel.getFont().getSize()));
+                    restartLabel.getFont().getSize()));
             validPanel.add(restartLabel, vgbc);
         } else {
             validPanel.add(restartButton, vgbc);
@@ -179,7 +179,7 @@ public class ControlPanel extends JPanel {
         preferences.setNbPomPerSet(preferencesInputFormPanel.nbPomPerSetSlider.getSliderValue());
         preferences.setTicking(preferencesInputFormPanel.tickingBox.isSelected());
         preferences.setRinging(preferencesInputFormPanel.ringingBox.isSelected());
-        preferences.setLocale(( (ItemLocale) preferencesInputFormPanel.localesComboBox.getSelectedItem() ).getLocale());
+        preferences.setLocale(((ItemLocale) preferencesInputFormPanel.localesComboBox.getSelectedItem()).getLocale());
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());

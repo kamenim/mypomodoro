@@ -34,7 +34,7 @@ import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 
 /**
  * Panel to export reports
- * 
+ *
  * @author Phil Karoo
  */
 public class ExportPanel extends JPanel {
@@ -123,8 +123,7 @@ public class ExportPanel extends JPanel {
                         fileName);
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Export failed");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,

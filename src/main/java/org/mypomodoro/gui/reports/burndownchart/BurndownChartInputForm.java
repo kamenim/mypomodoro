@@ -30,7 +30,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Export form
- * 
+ *
  * @author Phil Karoo
  */
 public class BurndownChartInputForm extends JPanel {
@@ -141,7 +141,7 @@ public class BurndownChartInputForm extends JPanel {
 
     private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
         cTypePanels.gridx = 0;
-        cTypePanels.gridy = gridY;        
+        cTypePanels.gridy = gridY;
         cTypePanels.anchor = GridBagConstraints.WEST;
         JPanel typePanel = new JPanel();
         typePanel.setLayout(new GridBagLayout());
@@ -160,14 +160,14 @@ public class BurndownChartInputForm extends JPanel {
         if (gridY == 0) {
             cTypePanel.gridwidth = 2;
         }
-        JButton plus = new JButton("+");        
+        JButton plus = new JButton("+");
         /*plus.addMouseListener(new MouseAdapter() {
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    addTypesPanels(cTypePanels, gridY + 1);
-                }
-            });*/
+         @Override
+         public void mouseClicked(MouseEvent e) {
+         addTypesPanels(cTypePanels, gridY + 1);
+         }
+         });*/
         plus.addActionListener(new ActionListener() {
 
             @Override
@@ -185,7 +185,7 @@ public class BurndownChartInputForm extends JPanel {
             minus.addActionListener(new ActionListener() {
 
                 @Override
-                public void actionPerformed(ActionEvent e) {                    
+                public void actionPerformed(ActionEvent e) {
                     typePanelList.get(gridY).setVisible(false);
                     typePanelList.remove(gridY);
                     types.remove(gridY);
@@ -467,15 +467,15 @@ public class BurndownChartInputForm extends JPanel {
     }
 
     public String getImageExtention() {
-        return ( (ImageFormat) imageFormatComboBox.getSelectedItem() ).getExtention();
+        return ((ImageFormat) imageFormatComboBox.getSelectedItem()).getExtention();
     }
 
     public boolean isFilePNGFormat() {
-        return ( (ImageFormat) imageFormatComboBox.getSelectedItem() ).isPNGFormat();
+        return ((ImageFormat) imageFormatComboBox.getSelectedItem()).isPNGFormat();
     }
 
     public boolean isFileJPGFormat() {
-        return ( (ImageFormat) imageFormatComboBox.getSelectedItem() ).isJPGFormat();
+        return ((ImageFormat) imageFormatComboBox.getSelectedItem()).isJPGFormat();
     }
 
     public String getImageName() {

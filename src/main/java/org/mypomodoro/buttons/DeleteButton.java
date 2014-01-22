@@ -13,8 +13,8 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 
 /**
- *  Delete activity button
- * 
+ * Delete activity button
+ *
  * @author Phil Karoo
  */
 public class DeleteButton extends AbstractPomodoroButton {

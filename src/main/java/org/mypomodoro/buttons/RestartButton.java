@@ -9,7 +9,7 @@ import org.mypomodoro.util.Restart;
 
 /**
  * Restart button
- * 
+ *
  * @author Phil Karoo
  */
 public class RestartButton extends AbstractPomodoroButton {
@@ -24,8 +24,7 @@ public class RestartButton extends AbstractPomodoroButton {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Restart.restartApplication(null);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                 }
             }
         });

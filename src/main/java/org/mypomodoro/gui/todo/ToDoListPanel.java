@@ -332,7 +332,7 @@ public class ToDoListPanel extends JPanel {
         return pomodoroTime;
     }
 
-    public void refreshIconLabels() {        
+    public void refreshIconLabels() {
         Activity selectedToDo = (Activity) toDoJList.getSelectedValue();
         if (selectedToDo != null) { // list not empty
             Activity currentToDo = pomodoro.getCurrentToDo();

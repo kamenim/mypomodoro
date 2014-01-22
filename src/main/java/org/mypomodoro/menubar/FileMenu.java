@@ -96,13 +96,13 @@ public class FileMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = Labels.getString("FileMenu.Exit");
+                String title = Labels.getString("FileMenu.Exit myPomodoro");
                 String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
                 int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                         title, JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.YES_OPTION) {
                     System.exit(0);
-                }                
+                }
             }
         }
     }

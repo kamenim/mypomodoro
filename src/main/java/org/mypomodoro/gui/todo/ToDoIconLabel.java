@@ -64,13 +64,13 @@ public class ToDoIconLabel {
         }
         // Internal interruption
         if (numInternalInterruptions > 0) {
-            for (int i = estimatedPoms + ( overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0 ); i < arraySize; i++) {
+            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0); i < arraySize; i++) {
                 icons[i] = new ImageIcon(Main.class.getResource("/images/quote.png"));
             }
         }
         // External interruption
         if (numExternalInterruptions > 0) {
-            for (int i = estimatedPoms + ( overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0 ) + numInternalInterruptions; i < arraySize; i++) {
+            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0) + numInternalInterruptions; i < arraySize; i++) {
                 icons[i] = new ImageIcon(Main.class.getResource("/images/dash.png"));
             }
         }

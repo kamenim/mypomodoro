@@ -30,11 +30,12 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
-/** 
+/**
  * Agile-like burndown chart
- * 
- * Code examples (JFreeChart) : http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
- * 
+ *
+ * Code examples (JFreeChart) :
+ * http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
+ *
  * @author Phil Karoo
  */
 public class BurndownChart extends JPanel {
@@ -127,7 +128,7 @@ public class BurndownChart extends JPanel {
                 true, // include legend
                 true, // tooltips
                 false // urls
-                );
+        );
         chart.setBackgroundPaint(Color.WHITE);
         LegendTitle legend = chart.getLegend();
         legend.setItemFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
@@ -166,8 +167,8 @@ public class BurndownChart extends JPanel {
         renderer.setDrawOutlines(false);
         renderer.setSeriesStroke(
                 0, new BasicStroke(
-                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                        1.0f, new float[]{10.0f, 6.0f}, 0.0f));
         renderer.setSeriesPaint(0, Color.BLACK);
 
         // Add the custom bar layered renderer to plot
@@ -218,8 +219,7 @@ public class BurndownChart extends JPanel {
         int imageHeight = 600;
         try {
             ChartUtilities.saveChartAsPNG(new File(fileName), chart, imageWidth, imageHeight);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             String title = Labels.getString("Common.Error");
             String message = Labels.getString("ReportListPanel.Chart.Image creation failed");
             JOptionPane.showConfirmDialog(Main.gui, message, title,

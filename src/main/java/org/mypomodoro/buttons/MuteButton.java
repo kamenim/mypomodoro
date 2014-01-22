@@ -10,8 +10,8 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
 
 /**
- *  Mute sound button
- * 
+ * Mute sound button
+ *
  * @author Phil Karoo
  */
 public class MuteButton extends JButton {
@@ -28,7 +28,7 @@ public class MuteButton extends JButton {
             setSoundIcon();
             isMuteIcon = false;
         }
-        
+
         addActionListener(new ActionListener() {
 
             @Override
@@ -45,7 +45,7 @@ public class MuteButton extends JButton {
             }
         });
     }
-    
+
     public MuteButton(final Pomodoro pomodoro) {
         this(pomodoro, true);
     }

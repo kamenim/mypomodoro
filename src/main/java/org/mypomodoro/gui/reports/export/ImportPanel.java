@@ -32,7 +32,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Panel to import reports
- * 
+ *
  * @author Phil Karoo
  */
 public class ImportPanel extends JPanel {
@@ -99,15 +99,14 @@ public class ImportPanel extends JPanel {
                     importCSV(filePath);
                 } else if (importInputForm.isFileExcelFormat()) {
                     importExcel(filePath);
-                }                
+                }
                 String title = Labels.getString("ReportListPanel.Import");
                 String message = Labels.getString(
                         "ReportListPanel.Data imported",
                         filePath);
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Import failed. See error log.");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -123,8 +122,7 @@ public class ImportPanel extends JPanel {
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(error);
             out.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Do nothing
         }
     }
@@ -132,7 +130,7 @@ public class ImportPanel extends JPanel {
     private void importCSV(String fileName) throws Exception {
         CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
         String[] line;
-        while (( line = reader.readNext() ) != null) {
+        while ((line = reader.readNext()) != null) {
             insertData(line);
         }
     }

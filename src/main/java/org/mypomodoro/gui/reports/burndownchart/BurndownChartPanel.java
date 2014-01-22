@@ -9,7 +9,7 @@ import org.mypomodoro.gui.reports.ReportListPanel;
 
 /**
  * Panel that displays a burndown chart
- * 
+ *
  * @author Phil Karoo
  */
 public class BurndownChartPanel extends JPanel {

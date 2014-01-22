@@ -19,7 +19,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Pomodoro
- * 
+ *
  */
 public class DetailsPane extends JPanel implements ActivityInformation {
 
@@ -89,11 +89,11 @@ public class DetailsPane extends JPanel implements ActivityInformation {
             text += " + " + activity.getOverestimatedPoms();
         }
         text += "\n" + Labels.getString("Common.Type") + ": "
-                + (activity.getType().isEmpty()?"-":activity.getType()) + "\n" + Labels.getString("Common.Author")
-                + ": " + (activity.getAuthor().isEmpty()?"-":activity.getAuthor()) + "\n"
-                + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty()?"-":activity.getPlace())
+                + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n" + Labels.getString("Common.Author")
+                + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n"
+                + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
                 + "\n" + Labels.getString("Common.Description") + ": "
-                + (activity.getDescription().isEmpty()?"-":activity.getDescription());
+                + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
         informationArea.setText(text);
     }
 

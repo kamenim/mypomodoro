@@ -6,7 +6,7 @@ import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  *
- * @author Brian Wetzel 
+ * @author Brian Wetzel
  * @author Phil Karoo
  */
 public class ReportList extends AbstractActivities {

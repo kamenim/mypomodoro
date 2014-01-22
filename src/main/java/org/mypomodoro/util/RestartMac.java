@@ -8,15 +8,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class Restarts Java Bundled Native Mac Applications with the .app extension
- * To use put the following where you want to call a restart:
+ * This class Restarts Java Bundled Native Mac Applications with the .app
+ * extension To use put the following where you want to call a restart:
  * <pre>
  *      RestartMac restart = new RestartMac(0);
- * </pre>
- * Then put the following in your main() method to delete the files created:
+ * </pre> Then put the following in your main() method to delete the files
+ * created:
  * <pre>
  *      RestartMac restart = new RestartMac(1);
  * </pre>
+ *
  * @author Paul Barton
  */
 public class RestartMac {
@@ -58,7 +59,8 @@ public class RestartMac {
 
     /**
      * Restarts YourApplication.app on Mac OS X
-     * @param argc 
+     *
+     * @param argc
      */
     public RestartMac(int argv) {
         this.argv = argv;
@@ -80,8 +82,7 @@ public class RestartMac {
             BufferedWriter restartWriter = new BufferedWriter(new FileWriter(restartFile));
             restartWriter.write(restartScript);
             restartWriter.close();
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             System.err.format("IOException: %s%n", ioe);
         }
     }
@@ -94,11 +95,9 @@ public class RestartMac {
         try {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
-        }
-        catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -109,8 +108,7 @@ public class RestartMac {
     private void openApp() {
         try {
             open = Runtime.getRuntime().exec(openString);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -130,8 +128,7 @@ public class RestartMac {
     private void deleteApp() {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

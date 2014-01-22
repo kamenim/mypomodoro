@@ -46,8 +46,7 @@ public class ActivitiesDAO {
             database.update("begin;");
             database.update(insertSQL);
             database.update("commit;");
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         Main.updateLists();
@@ -64,20 +63,16 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return activities;
@@ -92,20 +87,16 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return activities;
@@ -120,20 +111,16 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return activities;
@@ -144,8 +131,7 @@ public class ActivitiesDAO {
             database.lock();
             database.update("begin;");
             database.update("DELETE FROM activities WHERE id=" + id + ";");
-        }
-        finally {
+        } finally {
             database.update("Commit;");
             database.unlock();
         }
@@ -174,8 +160,7 @@ public class ActivitiesDAO {
             database.update("begin;");
             database.update(updateSQL);
             database.update("commit;");
-        }
-        finally {
+        } finally {
             database.unlock();
         }
     }
@@ -192,20 +177,16 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activity = new Activity(rs);
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return activity;
@@ -216,8 +197,7 @@ public class ActivitiesDAO {
             database.lock();
             database.update("begin;");
             database.update("DELETE FROM activities WHERE is_complete = 'true';");
-        }
-        finally {
+        } finally {
             database.update("Commit;");
             database.unlock();
         }
@@ -228,8 +208,7 @@ public class ActivitiesDAO {
             database.lock();
             database.update("begin;");
             database.update("DELETE FROM activities WHERE priority = -1 AND is_complete = 'false';");
-        }
-        finally {
+        } finally {
             database.update("Commit;");
             database.unlock();
         }
@@ -246,20 +225,16 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activity = new Activity(rs);
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return activity;
@@ -273,8 +248,7 @@ public class ActivitiesDAO {
             database.lock();
             database.update("begin;");
             database.update(updateSQL);
-        }
-        finally {
+        } finally {
             database.update("Commit;");
             database.unlock();
         }
@@ -292,20 +266,16 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return types;
@@ -323,20 +293,16 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return types;
@@ -354,20 +320,16 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
-            }
-            finally {
+            } finally {
                 try {
                     rs.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.err.println(e);
                 }
             }
-        }
-        finally {
+        } finally {
             database.unlock();
         }
         return types;

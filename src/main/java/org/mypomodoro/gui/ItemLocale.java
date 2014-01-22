@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.mypomodoro.Main;
 
 /**
- * 
+ *
  * @author Phil Karoo
  */
 public class ItemLocale {
@@ -68,12 +68,12 @@ public class ItemLocale {
                         Locale l = new Locale(propertiesFiles[i].substring(
                                 0 + filePrefixLength, 2 + filePrefixLength),
                                 propertiesFiles[i].substring(
-                                3 + filePrefixLength,
-                                5 + filePrefixLength),
+                                        3 + filePrefixLength,
+                                        5 + filePrefixLength),
                                 propertiesFiles[i].substring(
-                                6 + filePrefixLength,
-                                propertiesFiles[i].length()
-                                - fileExtensionLength));
+                                        6 + filePrefixLength,
+                                        propertiesFiles[i].length()
+                                        - fileExtensionLength));
                         vLocales.add(new ItemLocale(l, l.getDisplayLanguage()
                                 + " (" + l.getDisplayCountry() + ")" + " ("
                                 + l.getVariant() + ")"));
@@ -85,11 +85,11 @@ public class ItemLocale {
                         if (mat.find()) {
                             Locale l = new Locale(
                                     propertiesFiles[i].substring(
-                                    0 + filePrefixLength,
-                                    2 + filePrefixLength),
+                                            0 + filePrefixLength,
+                                            2 + filePrefixLength),
                                     propertiesFiles[i].substring(
-                                    3 + filePrefixLength,
-                                    5 + filePrefixLength));
+                                            3 + filePrefixLength,
+                                            5 + filePrefixLength));
                             vLocales.add(new ItemLocale(l, l.getDisplayLanguage()
                                     + " ("
                                     + l.getDisplayCountry() + ")"));
@@ -97,11 +97,9 @@ public class ItemLocale {
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Do nothing
-        }
-        finally {
+        } finally {
             if (vLocales.isEmpty()) {
                 vLocales.add(new ItemLocale(ControlPanel.preferences.getLocale(), ControlPanel.preferences.getLocale().getDisplayLanguage()
                         + " ("
@@ -115,13 +113,11 @@ public class ItemLocale {
      * List directory contents for a resource folder. Not recursive. This is
      * basically a brute-force implementation. Works for regular files and also
      * JARs.
-     * 
+     *
      * @author Greg Briggs
-     * @param clazz
-     *            Any java class that lives in the same place as the resources
-     *            you want.
-     * @param path
-     *            Should end with "/", but not start with one.
+     * @param clazz Any java class that lives in the same place as the resources
+     * you want.
+     * @param path Should end with "/", but not start with one.
      * @return Just the name of each member item, not the full paths.
      * @throws URISyntaxException
      * @throws IOException

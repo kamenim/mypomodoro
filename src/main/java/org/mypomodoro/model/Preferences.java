@@ -6,7 +6,7 @@ import org.mypomodoro.util.DateUtil;
 
 /**
  * Preference Object stores all user preferences.
- * 
+ *
  * @author Phil Karoo
  */
 public class Preferences {
@@ -14,20 +14,20 @@ public class Preferences {
     public Preferences() {
         refresh();
     }
-    
+
     // ATTRIBUTES
     /**
-     * Pomodoro length	 
+     * Pomodoro length
      */
     public static final int PLENGTH = 25;
     private int pomodoroLength = PLENGTH;
     /**
-     * Short break length	 
+     * Short break length
      */
     public static final int SBLENGTH = 5;
     private int shortBreakLength = SBLENGTH;
     /**
-     * Long break length	 
+     * Long break length
      */
     public static final int LBLENGTH = 20;
     private int longBreakLength = LBLENGTH;
@@ -121,7 +121,7 @@ public class Preferences {
     public boolean getSystemTrayMessage() {
         return systemTrayMessage;
     }
-    
+
     public boolean getAlwaysOnTop() {
         return alwaysOnTop;
     }
@@ -170,7 +170,7 @@ public class Preferences {
     public void setSystemTrayMessage(boolean value) {
         systemTrayMessage = value;
     }
-    
+
     public void setAlwaysOnTop(boolean value) {
         alwaysOnTop = value;
     }

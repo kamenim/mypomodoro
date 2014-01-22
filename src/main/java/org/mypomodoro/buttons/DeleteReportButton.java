@@ -14,7 +14,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Delete report button
- * 
+ *
  * @author Phil Karoo
  */
 public class DeleteReportButton extends AbstractPomodoroButton {

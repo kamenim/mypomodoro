@@ -15,7 +15,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * GUI for editing an existing report and store to data layer.
- * 
+ *
  * @author Phil Karoo
  */
 public class EditPanel extends CreatePanel {
@@ -79,7 +79,7 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {        
+    protected void invalidActivityAction() {
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
         JOptionPane.showConfirmDialog(Main.gui, message, title,
