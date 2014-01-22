@@ -5,7 +5,7 @@
     <key>CFBundleName</key>
     <string>${bundleName}</string>
     <key>CFBundleVersion</key>
-    <string>2.0</string>
+    <string>2.1</string>
     <key>CFBundleAllowMixedLocalizations</key>
     <string>true</string>
     <key>CFBundleExecutable</key>
@@ -27,18 +27,18 @@
       <key>JVMVersion</key>
       <string>${jvmVersion}</string>
       <key>ClassPath</key>
-      ${classpath}
+      <string>${classpath}</string>
       <key>VMOptions</key>
       <string>-Xmx512m -Xms128m</string>
       <key>Properties</key>
-            <dict>
-                <key>apple.laf.useScreenMenuBar</key>
-                <string>true</string>
-                <key>apple.awt.textantialiasing</key>
-                <string>true</string>
-                <key>apple.awt.showGrowBox</key>
-                <string>true</string>
-            </dict>
+      <dict>
+        <key>apple.laf.useScreenMenuBar</key>
+        <string>true</string>
+        <key>apple.awt.textantialiasing</key>
+        <string>true</string>
+        <key>apple.awt.showGrowBox</key>
+        <string>true</string>
+      </dict>
     </dict>
   </dict>
 </plist>

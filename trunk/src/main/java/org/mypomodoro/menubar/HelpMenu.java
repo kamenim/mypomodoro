@@ -17,10 +17,10 @@ import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
 
-    private static final long serialVersionUID = 20110814L;    
+    private static final long serialVersionUID = 20110814L;
 
     public HelpMenu(final MyPomodoroView view) {
-        super(Labels.getString("MenuBar.Help"));        
+        super(Labels.getString("MenuBar.Help"));
         add(new HelpUserGuide());
         add(new HelpPomodoroMenu());
         add(new JSeparator());
@@ -94,7 +94,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String url = "http://pomodorotechnique.com/book";                
+                String url = "http://pomodorotechnique.com/book";
                 BareBonesBrowserLaunch.openURL(url);
             }
         }
@@ -141,7 +141,7 @@ public class HelpMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public HelpAbout() {
-            super(Labels.getString("HelpMenu.About myPomodoro"));
+            super(Labels.getString("HelpMenu.About"));
             addActionListener(new MenuItemListener());
         }
 
@@ -150,10 +150,12 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AboutPanel dialog = new AboutPanel(new JDialog(), Labels.getString("HelpMenu.About myPomodoro"));
+                if (!org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
+                    dialog.setModal(true); // modal except when Main.gui is set to be always on top (won't work)
+                }
                 dialog.pack();
                 dialog.setLocationRelativeTo(Main.gui); // center component on top panel (gui)
                 dialog.setVisible(true);
-                dialog.setModal(true); // modal except when Main.gui is set to be always on top (won't work)
                 if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
                     dialog.setAlwaysOnTop(true);
                 }

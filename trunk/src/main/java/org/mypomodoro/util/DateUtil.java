@@ -54,7 +54,7 @@ public class DateUtil {
      * @param formatedDateTime string with date and time (eg "13/05/2000 12:46")
      * @param datePattern pattern of the date (eg dd/MM/yyy)
      */
-    public static Date getDate(String formatedDateTime, String datePattern) throws ParseException  {
+    public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         return new SimpleDateFormat(datePattern + " " + timePattern).parse(formatedDateTime);
     }

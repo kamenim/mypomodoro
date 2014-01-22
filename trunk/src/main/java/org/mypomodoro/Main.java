@@ -24,7 +24,7 @@ import org.mypomodoro.util.RestartMac;
 
 /**
  * Main Application Starter
- * 
+ *
  * @author Brian Wetzel
  * @author Phil Karoo
  */
@@ -63,8 +63,7 @@ public class Main {
     }
 
     /**
-     * @param args
-     *            the command line arguments
+     * @param args the command line arguments
      */
     public static void main(String[] args) {
         try {
@@ -73,8 +72,7 @@ public class Main {
                 // deletes files created with RestartMac()
                 new RestartMac(1);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             // Do nothing if we cannot set a nice ui look and feel
         }
         initLists();
@@ -113,8 +111,8 @@ public class Main {
         gui.setVisible(true);
         if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
             gui.setAlwaysOnTop(true);
-        }        
-        
+        }
+
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override

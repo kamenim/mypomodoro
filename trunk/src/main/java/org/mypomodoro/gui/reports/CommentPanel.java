@@ -18,7 +18,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays comment on the current Report and allows editing it
- * 
+ *
  * @author Phil Karoo
  */
 public class CommentPanel extends JPanel implements ActivityInformation {

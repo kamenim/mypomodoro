@@ -16,7 +16,7 @@ import javax.swing.border.EtchedBorder;
 
 /**
  * Panel to generate burndown charts
- * 
+ *
  * @author Phil Karoo
  */
 public class BurndownChartInputPanel extends JPanel {

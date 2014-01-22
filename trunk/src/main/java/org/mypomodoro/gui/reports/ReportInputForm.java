@@ -21,7 +21,7 @@ public class ReportInputForm extends ActivityInputForm {
 
     /**
      * Returns an updated report from the class fields
-     * 
+     *
      * @return report
      */
     @Override

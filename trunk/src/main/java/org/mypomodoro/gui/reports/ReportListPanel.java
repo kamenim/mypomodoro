@@ -41,7 +41,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * GUI for viewing the Report List.
- * 
+ *
  * @author Brian Wetzel
  * @author Phil Karoo
  */
@@ -103,12 +103,12 @@ public class ReportListPanel extends JPanel {
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         /*JTabbedPane burdownChartPane = new JTabbedPane();
-        BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
-        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
-        BurndownChartPanel burndownChart = new BurndownChartPanel(this);        
-        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
+         BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
+         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
+         BurndownChartPanel burndownChart = new BurndownChartPanel(this);        
+         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
 
-        controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);*/
+         controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);*/
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
@@ -120,47 +120,47 @@ public class ReportListPanel extends JPanel {
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(
                 columnNames, ReportList.getList()) {
 
-            private static final long serialVersionUID = 20110814L;
+                    private static final long serialVersionUID = 20110814L;
 
-            @Override
-            protected void populateData(AbstractActivities activities) {
-                int rowIndex = activities.size();
-                int colIndex = columnNames.length;
-                tableData = new Object[rowIndex][colIndex];
-                Iterator<Activity> iterator = activities.iterator();
-                for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
-                    Activity currentActivity = iterator.next();
-                    tableData[i][0] = currentActivity.isUnplanned();
-                    tableData[i][1] = currentActivity.getDate(); // date formated via custom renderer (DateRenderer)
-                    tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
-                    tableData[i][3] = currentActivity.getName();
-                    String poms = "" + currentActivity.getEstimatedPoms();
-                    if (currentActivity.getOverestimatedPoms() > 0) {
-                        poms += " + " + currentActivity.getOverestimatedPoms();
-                    }
-                    tableData[i][4] = poms;
-                    tableData[i][5] = currentActivity.getActualPoms();
-                    tableData[i][6] = currentActivity.getActualPoms()
+                    @Override
+                    protected void populateData(AbstractActivities activities) {
+                        int rowIndex = activities.size();
+                        int colIndex = columnNames.length;
+                        tableData = new Object[rowIndex][colIndex];
+                        Iterator<Activity> iterator = activities.iterator();
+                        for (int i = 0; i < activities.size() && iterator.hasNext(); i++) {
+                            Activity currentActivity = iterator.next();
+                            tableData[i][0] = currentActivity.isUnplanned();
+                            tableData[i][1] = currentActivity.getDate(); // date formated via custom renderer (DateRenderer)
+                            tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
+                            tableData[i][3] = currentActivity.getName();
+                            String poms = "" + currentActivity.getEstimatedPoms();
+                            if (currentActivity.getOverestimatedPoms() > 0) {
+                                poms += " + " + currentActivity.getOverestimatedPoms();
+                            }
+                            tableData[i][4] = poms;
+                            tableData[i][5] = currentActivity.getActualPoms();
+                            tableData[i][6] = currentActivity.getActualPoms()
                             - currentActivity.getEstimatedPoms();
-                    tableData[i][7] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
+                            tableData[i][7] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
                             - currentActivity.getEstimatedPoms()
                             - currentActivity.getOverestimatedPoms()
                             : "";
-                    tableData[i][8] = currentActivity.getType();
-                    tableData[i][9] = currentActivity.getId();
-                }
-            }
+                            tableData[i][8] = currentActivity.getType();
+                            tableData[i][9] = currentActivity.getId();
+                        }
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                // make Title and Type columns editable
-                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        // make Title and Type columns editable
+                        if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         tableModel.addTableModelListener(new TableModelListener() {
 
@@ -206,41 +206,41 @@ public class ReportListPanel extends JPanel {
     private void showSelectedItemDetails(InformationArea informationArea) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
-                table, informationArea, ID_KEY));
+                        table, informationArea, ID_KEY));
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ReportList.getList(), table,
-                editPane, ID_KEY));
+                        editPane, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
-                table, commentPanel, ID_KEY));
+                        table, commentPanel, ID_KEY));
     }
 
     public void refresh() {
         try {
             table.setModel(getTableModel());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // do nothing
         }
         init();
     }
-    
-    static class DateRenderer extends DefaultTableCellRenderer {    
+
+    static class DateRenderer extends DefaultTableCellRenderer {
+
         public void setValue(Object value) {
-            setText((value == null) ? "" : DateUtil.getFormatedDate((Date)value));
+            setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
         }
     }
 
     private void init() {
         // Centre Date, time, estimated, real, Diff I and Diff II columns
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);        
+        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
         table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // estimated
@@ -265,9 +265,9 @@ public class ReportListPanel extends JPanel {
         table.getColumnModel().getColumn(2).setPreferredWidth(60);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);            
+            table.setAutoCreateRowSorter(true);
         }
-        
+
         // Add tooltip for Title and Type colums 
         table.addMouseMotionListener(new MouseMotionAdapter() {
 
@@ -303,7 +303,7 @@ public class ReportListPanel extends JPanel {
             estover += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
             real += activity.getActualPoms();
         }
-        accuracy = Math.round(( (float) real / (float) estover ) * 100);
+        accuracy = Math.round(((float) real / (float) estover) * 100);
         return accuracy;
     }
 
@@ -315,7 +315,7 @@ public class ReportListPanel extends JPanel {
             Activity selectedReport = ReportList.getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
-                selectedReport.databaseUpdate();                
+                selectedReport.databaseUpdate();
                 String title = Labels.getString("Common.Add comment");
                 String message = Labels.getString("Common.Comment saved");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,

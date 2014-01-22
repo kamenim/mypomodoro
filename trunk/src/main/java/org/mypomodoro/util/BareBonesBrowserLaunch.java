@@ -6,13 +6,12 @@ import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 
 /**
- * Bare Bones Browser Launch for Java
- * Utility class to open a web page from a Swing application
- * in the user's default browser.
- * Supports: Mac OS X, GNU/Linux, Unix, Windows XP/Vista/
- * Latest Version: http://www.centerkey.com/java/browser/
- * @author Dem Pilafian
- * Public Domain Software -- Free to Use as You Like
+ * Bare Bones Browser Launch for Java Utility class to open a web page from a
+ * Swing application in the user's default browser. Supports: Mac OS X,
+ * GNU/Linux, Unix, Windows XP/Vista/ Latest Version:
+ * http://www.centerkey.com/java/browser/
+ *
+ * @author Dem Pilafian Public Domain Software -- Free to Use as You Like
  * @version 3.0, February 7, 2010
  */
 public class BareBonesBrowserLaunch {
@@ -23,7 +22,9 @@ public class BareBonesBrowserLaunch {
 
     /**
      * Opens the specified web page in the user's default browser
-     * @param url A web address (URL) of a web page (ex: "http://www.google.com/")
+     *
+     * @param url A web address (URL) of a web page (ex:
+     * "http://www.google.com/")
      */
     public static void openURL(String url) {
         try {  //attempt to use Desktop library from JDK 1.6+ (even if on 1.5)
@@ -33,14 +34,13 @@ public class BareBonesBrowserLaunch {
                     new Object[]{java.net.URI.create(url)});
             //above code mimics:
             //   java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-        }
-        catch (Exception ignore) {  //library not available or failed
+        } catch (Exception ignore) {  //library not available or failed
             String osName = System.getProperty("os.name");
             try {
                 if (osName.startsWith("Mac OS")) {
                     Class.forName("com.apple.eio.FileManager").getDeclaredMethod(
                             "openURL", new Class[]{String.class}).invoke(null,
-                            new Object[]{url});
+                                    new Object[]{url});
                 } else if (osName.startsWith("Windows")) {
                     Runtime.getRuntime().exec(
                             "rundll32 url.dll,FileProtocolHandler " + url);
@@ -59,8 +59,7 @@ public class BareBonesBrowserLaunch {
                         throw new Exception(Arrays.toString(browsers));
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(Main.gui, errMsg + "\n" + e.toString());
             }
         }

@@ -117,9 +117,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         if (activity.getOverestimatedPoms() > 0) {
             text += " + " + activity.getOverestimatedPoms();
         }
-        text += "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty()?"-":activity.getType())
-                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty()?"-":activity.getAuthor())
-                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty()?"-":activity.getPlace());
+        text += "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
+                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
+                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace());
         informationArea.setText(text);
     }
 
@@ -136,7 +136,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     public Activity getSelectedActivity() {
         return (Activity) internalActivitiesList.getSelectedValue();
     }
-    
+
     public List<Activity> getSelectedActivities() {
         return internalActivitiesList.getSelectedValuesList();
     }
@@ -185,7 +185,7 @@ public class ListPane extends JPanel implements ActivityInformation {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             Activity toDo = (Activity) value;
-            renderer.setText((toDo.isUnplanned()?"(" + "U" + ") ":"") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms() + toDo.getOverestimatedPoms()) + ")");
+            renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms() + toDo.getOverestimatedPoms()) + ")");
 
             if (isSelected) {
                 renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));

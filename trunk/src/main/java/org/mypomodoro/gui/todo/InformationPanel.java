@@ -21,7 +21,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the selected Pomodoro
- * 
+ *
  * @author Phil Karoo
  */
 public class InformationPanel extends JPanel implements ActivityInformation {
@@ -126,10 +126,10 @@ public class InformationPanel extends JPanel implements ActivityInformation {
     @Override
     public void showInfo(Activity activity) {
         //panel.refreshIconLabels();
-        String text = Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty()?"-":activity.getType())
-                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty()?"-":activity.getAuthor())
-                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty()?"-":activity.getPlace())
-                + "\n" + Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty()?"-":activity.getDescription());
+        String text = Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
+                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
+                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
+                + "\n" + Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
         informationArea.setText(text);
     }
 

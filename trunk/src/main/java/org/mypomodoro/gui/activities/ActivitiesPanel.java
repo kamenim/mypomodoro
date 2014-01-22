@@ -9,7 +9,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,7 +41,7 @@ import org.mypomodoro.util.Labels;
  * now it uses a TableModel to build the JTable. Table Listeners can be added to
  * save cell edits to the ActivityCollection which can then be saved to the data
  * layer.
- * 
+ *
  * @author Brian Wetzel
  * @author Phil Karoo
  */
@@ -109,41 +108,40 @@ public class ActivitiesPanel extends JPanel {
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(
                 columnNames, ActivityList.getList()) {
 
-            private static final long serialVersionUID = 20110814L;
+                    private static final long serialVersionUID = 20110814L;
 
-            @Override
-            protected void populateData(AbstractActivities activities) {
-                int rowIndex = activities.size();
-                int colIndex = columnNames.length;
-                tableData = new Object[rowIndex][colIndex];
-                Iterator<Activity> iterator = activities.iterator();
-                for (int i = 0; iterator.hasNext(); i++) {
-                    Activity a = iterator.next();
-                    tableData[i][0] = a.isUnplanned();
-                    //tableData[i][1] = DateUtil.getFormatedDate(a.getDate());
-                    tableData[i][1] = a.getDate();
-                    tableData[i][2] = a.getName();
-                    String poms = "" + a.getEstimatedPoms();
-                    if (a.getOverestimatedPoms() > 0) {
-                        poms += " + " + a.getOverestimatedPoms();
+                    @Override
+                    protected void populateData(AbstractActivities activities) {
+                        int rowIndex = activities.size();
+                        int colIndex = columnNames.length;
+                        tableData = new Object[rowIndex][colIndex];
+                        Iterator<Activity> iterator = activities.iterator();
+                        for (int i = 0; iterator.hasNext(); i++) {
+                            Activity a = iterator.next();
+                            tableData[i][0] = a.isUnplanned();
+                            tableData[i][1] = a.getDate();
+                            tableData[i][2] = a.getName();
+                            String poms = "" + a.getEstimatedPoms();
+                            if (a.getOverestimatedPoms() > 0) {
+                                poms += " + " + a.getOverestimatedPoms();
+                            }
+                            tableData[i][3] = poms;
+                            tableData[i][4] = a.getType();
+                            tableData[i][5] = a.getId();
+                        }
                     }
-                    tableData[i][3] = poms;
-                    tableData[i][4] = a.getType();
-                    tableData[i][5] = a.getId();
-                }
-            }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                // Make the tilte and type colums editable
-                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
-                    // editable
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        // Make the title and type colums editable
+                        if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
+                            // editable
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
 
         tableModel.addTableModelListener(new TableModelListener() {
 
@@ -189,34 +187,34 @@ public class ActivitiesPanel extends JPanel {
     private void showSelectedItemDetails(DetailsPane detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),
-                table, detailsPane, ID_KEY));
+                        table, detailsPane, ID_KEY));
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ActivityList.getList(), table,
-                editPane, ID_KEY));
+                        editPane, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),
-                table, commentPanel, ID_KEY));
+                        table, commentPanel, ID_KEY));
     }
 
     public void refresh() {
         try {
             table.setModel(getTableModel());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // do nothing
         }
         init();
     }
-    
-    static class DateRenderer extends DefaultTableCellRenderer {    
+
+    static class DateRenderer extends DefaultTableCellRenderer {
+
         public void setValue(Object value) {
-            setText((value == null) ? "" : DateUtil.getFormatedDate((Date)value));
+            setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
         }
     }
 
@@ -253,7 +251,7 @@ public class ActivitiesPanel extends JPanel {
                 if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
                     value = value.length() > 0 ? value : null;
-                    table.setToolTipText(value);                    
+                    table.setToolTipText(value);
                 }
             }
         });

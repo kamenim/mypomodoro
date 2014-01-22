@@ -12,7 +12,7 @@ public class EditInputForm extends ActivityInputForm {
 
     /**
      * Returns an updated activity from the class fields
-     * 
+     *
      * @return activity
      */
     @Override

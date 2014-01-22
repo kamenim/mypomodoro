@@ -14,7 +14,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- * 
+ *
  * @author Phil Karoo
  */
 public class OverestimationInputForm extends JPanel {
@@ -50,7 +50,7 @@ public class OverestimationInputForm extends JPanel {
         c.weighty = 0.5;
         String items[] = new String[5];
         for (int i = 0; i < items.length; i++) {
-            items[i] = "+ " + ( i + 1 );
+            items[i] = "+ " + (i + 1);
         }
         overestimatedPomodoros = new JComboBox(items);
         overestimatedPomodoros.setMinimumSize(COMBO_BOX_DIMENSION);
@@ -62,7 +62,7 @@ public class OverestimationInputForm extends JPanel {
     public JComboBox getOverestimationPomodoros() {
         return overestimatedPomodoros;
     }
-    
+
     public void reset() {
         overestimatedPomodoros.setSelectedIndex(0);
     }

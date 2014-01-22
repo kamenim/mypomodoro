@@ -12,8 +12,8 @@ import org.mypomodoro.util.DateUtil;
 /**
  * Activity Objects stores all the required information about tasks in the
  * Pomodoro time management system.
- * 
- * @author Brian Wetzel 
+ *
+ * @author Brian Wetzel
  * @author Phil Karoo
  */
 public class Activity {
@@ -22,7 +22,7 @@ public class Activity {
     /**
      * unique id number for the Activity (to be assigned by database) default is
      * flagged (unset)
-     * 
+     *
      */
     private int id = -1;
     /**
@@ -32,7 +32,7 @@ public class Activity {
     /**
      * date the activity is entered into database set by Java in constructor
      * (not needed in GUI)
-     * 
+     *
      */
     private Date date;
     /**
@@ -42,7 +42,7 @@ public class Activity {
     private String author;
     /**
      * name of the activity. set by constructor
-     * 
+     *
      */
     private String name;
     /**
@@ -51,12 +51,12 @@ public class Activity {
     private String description;
     /**
      * type of activity / set by constructor
-     * 
+     *
      */
     private String type;
     /**
      * ToDo priority for this activity default = flag (no priority)
-     * 
+     *
      */
     private int priority = -1;
     /**
@@ -65,7 +65,7 @@ public class Activity {
     private int estimatedPoms = 0;
     /**
      * actual pomodoros for this task default is 0 pomodoros
-     * 
+     *
      */
     private int actualPoms = 0;
     /**
@@ -106,7 +106,7 @@ public class Activity {
 
     /**
      * Constructor for Activity
-     * 
+     *
      * @param place
      * @param author
      * @param name
@@ -134,7 +134,7 @@ public class Activity {
 
     /**
      * Constructor for Activity
-     * 
+     *
      * @param place
      * @param author
      * @param name
@@ -200,8 +200,7 @@ public class Activity {
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
             this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e);
         }
     }
@@ -338,7 +337,7 @@ public class Activity {
      * easier to add new validation requirements. This may not be the best way
      * to handle the interdependencies, but you would just create a new
      * expression instead of nesting if statements.
-     * 
+     *
      * @return true if valid
      */
     public boolean isValid() {

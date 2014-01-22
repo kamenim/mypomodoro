@@ -99,7 +99,7 @@ public class ActivityInputForm extends JPanel {
         // init estimated Pomodoros combo box
         String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = ( i + 1 ) + "";
+            items[i] = (i + 1) + "";
         }
         estimatedPomodoros = new JComboBox(items);
         // Estimated Poms Description and TextField
@@ -203,7 +203,7 @@ public class ActivityInputForm extends JPanel {
     /**
      * Returns a new activity from the class fields and null if there was an
      * error while parsing the fields
-     * 
+     *
      * @return activity
      */
     public Activity getActivityFromFields() {
@@ -240,7 +240,7 @@ public class ActivityInputForm extends JPanel {
     public void setType(int index) {
         types.setSelectedIndex(index);
     }
-    
+
     public void setAuthorField(String author) {
         authors.setSelectedItem(author);
     }
@@ -248,7 +248,7 @@ public class ActivityInputForm extends JPanel {
     public void setAuthor(int index) {
         authors.setSelectedIndex(index);
     }
-    
+
     public void setPlaceField(String place) {
         places.setSelectedItem(place);
     }

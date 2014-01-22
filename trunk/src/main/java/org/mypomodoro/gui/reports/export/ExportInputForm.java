@@ -25,7 +25,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Export form
- * 
+ *
  * @author Phil Karoo
  */
 public class ExportInputForm extends JPanel {
@@ -186,54 +186,53 @@ public class ExportInputForm extends JPanel {
         add(separatorComboBox, c);
         // Columns
         /*c.gridx = 0;
-        c.gridy = 5;
-        c.weighty = 0.5;
-        c.gridwidth = 2;
-        addColumnsComboBoxes(c);*/
+         c.gridy = 5;
+         c.weighty = 0.5;
+         c.gridwidth = 2;
+         addColumnsComboBoxes(c);*/
     }
 
     /*private void addColumnsComboBoxes(GridBagConstraints c) {
-        int numberColumns = new Columns().getLength() - 1;
-        int numberComboBoxPerLine = 6;
-        columnsPanel.setLayout(new GridLayout(Math.round((float) numberColumns / (float) numberComboBoxPerLine), numberComboBoxPerLine));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTH;
+     int numberColumns = new Columns().getLength() - 1;
+     int numberComboBoxPerLine = 6;
+     columnsPanel.setLayout(new GridLayout(Math.round((float) numberColumns / (float) numberComboBoxPerLine), numberComboBoxPerLine));
+     GridBagConstraints gbc = new GridBagConstraints();
+     gbc.fill = GridBagConstraints.HORIZONTAL;
+     gbc.anchor = GridBagConstraints.NORTH;
 
-        for (int i = 0; i < numberColumns; i++) {
-            gbc.gridx = i;
-            gbc.gridy = 0;
-            JComboBox cb = new Columns().getColumnsComboBox();
-            cb.setSelectedIndex(i);
-            columnsPanel.add(cb, gbc);
-        }
+     for (int i = 0; i < numberColumns; i++) {
+     gbc.gridx = i;
+     gbc.gridy = 0;
+     JComboBox cb = new Columns().getColumnsComboBox();
+     cb.setSelectedIndex(i);
+     columnsPanel.add(cb, gbc);
+     }
 
-        final Component[] comboBoxes = columnsPanel.getComponents();
-        for (int i = 0; i < comboBoxes.length; i++) {
-            final int index = i;
-            final JComboBox cb = (JComboBox) comboBoxes[i];
-            cb.addActionListener(new ActionListener() {
+     final Component[] comboBoxes = columnsPanel.getComponents();
+     for (int i = 0; i < comboBoxes.length; i++) {
+     final int index = i;
+     final JComboBox cb = (JComboBox) comboBoxes[i];
+     cb.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (cb.getSelectedItem().toString().length() == 0) { // empty field
-                        for (int j = index + 1; j < comboBoxes.length; j++) {
-                            JComboBox cb1 = (JComboBox) comboBoxes[j];
-                            cb1.setSelectedIndex(comboBoxes.length); // empty field selected
-                            cb1.setEnabled(false);
-                        }
-                    } else {
-                        if (index + 1 < comboBoxes.length) { // Enable field next to the right
-                            JComboBox cb1 = (JComboBox) comboBoxes[index + 1];
-                            cb1.setEnabled(true);
-                        }
-                    }
-                }
-            });
-        }
-        add(columnsPanel, c);
-    }*/
-
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     if (cb.getSelectedItem().toString().length() == 0) { // empty field
+     for (int j = index + 1; j < comboBoxes.length; j++) {
+     JComboBox cb1 = (JComboBox) comboBoxes[j];
+     cb1.setSelectedIndex(comboBoxes.length); // empty field selected
+     cb1.setEnabled(false);
+     }
+     } else {
+     if (index + 1 < comboBoxes.length) { // Enable field next to the right
+     JComboBox cb1 = (JComboBox) comboBoxes[index + 1];
+     cb1.setEnabled(true);
+     }
+     }
+     }
+     });
+     }
+     add(columnsPanel, c);
+     }*/
     private void addPaternsComboBox(GridBagConstraints c) {
         patternsPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -285,15 +284,15 @@ public class ExportInputForm extends JPanel {
     }
 
     public String getFileExtention() {
-        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).getExtention();
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).getExtention();
     }
 
     public boolean isFileCSVFormat() {
-        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).isCSVFormat();
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).isCSVFormat();
     }
 
     public boolean isFileExcelFormat() {
-        return ( (FileFormat) fileFormatComboBox.getSelectedItem() ).isExcelFormat();
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelFormat();
     }
 
     public String getFileName() {
@@ -310,7 +309,7 @@ public class ExportInputForm extends JPanel {
     }
 
     public char getSeparator() {
-        return ( (Separator) separatorComboBox.getSelectedItem() ).getSeparator();
+        return ((Separator) separatorComboBox.getSelectedItem()).getSeparator();
     }
 
     public String getEditableSeparatorText() {
@@ -565,8 +564,8 @@ public class ExportInputForm extends JPanel {
             attributes[4] = activity.getEstimatedPoms() + "";
             attributes[5] = activity.getOverestimatedPoms() + "";
             attributes[6] = activity.getActualPoms() + "";
-            attributes[7] = ( activity.getActualPoms() - activity.getEstimatedPoms() ) + "";
-            attributes[8] = activity.getOverestimatedPoms() > 0 ? ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() ) + "" : "";
+            attributes[7] = (activity.getActualPoms() - activity.getEstimatedPoms()) + "";
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : "";
             attributes[9] = activity.getNumInternalInterruptions() + "";
             attributes[10] = activity.getNumInterruptions() + "";
             attributes[11] = activity.getType();
@@ -587,7 +586,7 @@ public class ExportInputForm extends JPanel {
             attributes[5] = activity.getOverestimatedPoms();
             attributes[6] = activity.getActualPoms();
             attributes[7] = activity.getActualPoms() - activity.getEstimatedPoms();
-            attributes[8] = activity.getOverestimatedPoms() > 0 ? ( activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() ) : "";
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) : "";
             attributes[9] = activity.getNumInternalInterruptions();
             attributes[10] = activity.getNumInterruptions();
             attributes[11] = activity.getType();

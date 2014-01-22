@@ -16,13 +16,13 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Import form
- * 
+ *
  * @author Phil Karoo
  */
 public class ImportInputForm extends ExportInputForm {
 
     private FileDialog fileDialog;
-    
+
     public ImportInputForm() {
         defaultFileName = "";
     }

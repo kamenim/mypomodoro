@@ -18,7 +18,7 @@ public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
 
     /**
      * Populates the table from the database.
-     * 
+     *
      * @param activities
      */
     protected abstract void populateData(AbstractActivities activities);

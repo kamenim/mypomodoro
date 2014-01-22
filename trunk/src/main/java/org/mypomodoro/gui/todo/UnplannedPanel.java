@@ -105,7 +105,7 @@ public class UnplannedPanel extends CreatePanel {
         if (unplannedInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
             // Today unplanned interruption/activity
-            panel.getToDoList().add(newActivity);             
+            panel.getToDoList().add(newActivity);
             newActivity.databaseInsert();
             clearForm();
             panel.refresh();

@@ -41,11 +41,9 @@ public class TimerPanel extends JPanel {
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
-        }
-        catch (FontFormatException e) {
+        } catch (FontFormatException e) {
             System.err.println("TrueType not supported " + e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("TTF file not found " + e);
         }
         pomodoroTime.setForeground(Color.DARK_GRAY);
@@ -117,7 +115,7 @@ public class TimerPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (pomodoro.getCurrentToDo() != null) {
                     if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
-                        if (pomodoro.getCurrentToDo().isFinished()) {                            
+                        if (pomodoro.getCurrentToDo().isFinished()) {
                             String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done.");
                             message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                             JOptionPane.showMessageDialog(Main.gui, message);

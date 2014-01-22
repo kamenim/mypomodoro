@@ -27,8 +27,8 @@ import org.mypomodoro.util.Labels;
 
 /**
  * GUI for creating a new Activity and store to data layer.
- * 
- * @author Brian Wetzel 
+ *
+ * @author Brian Wetzel
  * @author Phil Karoo
  */
 public class CreatePanel extends JPanel {
@@ -40,7 +40,7 @@ public class CreatePanel extends JPanel {
     protected GridBagConstraints gbc = new GridBagConstraints();
 
     public CreatePanel() {
-        setLayout(new GridBagLayout());        
+        setLayout(new GridBagLayout());
 
         addInputFormPanel();
         addSaveButton();
@@ -112,11 +112,11 @@ public class CreatePanel extends JPanel {
 
     protected void validActivityAction(Activity newActivity) {
         ActivityList.getList().add(newActivity);
-        newActivity.databaseInsert();             
+        newActivity.databaseInsert();
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List"));        
+        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List"));
     }
 
     public void saveActivity(Activity newActivity) {
@@ -124,7 +124,7 @@ public class CreatePanel extends JPanel {
             invalidActivityAction();
             validation.setVisible(true);
             disableSaveButton();
-        } else if (newActivity.alreadyExists()) {            
+        } else if (newActivity.alreadyExists()) {
             String title = Labels.getString("Common.Warning");
             String message = Labels.getString("CreatePanel.An activity with the same date and title already exists. Proceed anyway?");
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
@@ -153,7 +153,7 @@ public class CreatePanel extends JPanel {
     public void clearForm() {
         inputFormPanel.setNameField("");
         inputFormPanel.setEstimatedPomodoro(1);
-        inputFormPanel.setDescriptionField("");        
+        inputFormPanel.setDescriptionField("");
         inputFormPanel.setTypeField("");
         inputFormPanel.setAuthorField("");
         inputFormPanel.setPlaceField("");

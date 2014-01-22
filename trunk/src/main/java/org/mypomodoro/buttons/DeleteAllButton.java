@@ -13,7 +13,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Delete all activities button
- * 
+ *
  * @author Phil Karoo
  */
 public class DeleteAllButton extends AbstractPomodoroButton {
@@ -27,7 +27,7 @@ public class DeleteAllButton extends AbstractPomodoroButton {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int rowCount = table.getRowCount();
-                if (rowCount > 0) {                    
+                if (rowCount > 0) {
                     String title = Labels.getString("ActivityListPanel.Delete all activities");
                     String message = Labels.getString("ActivityListPanel.Are you sure to delete all activities?");
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message,

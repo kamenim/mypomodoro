@@ -13,7 +13,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Delete all reports button
- * 
+ *
  * @author Phil Karoo
  */
 public class DeleteAllReportButton extends AbstractPomodoroButton {

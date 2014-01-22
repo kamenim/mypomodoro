@@ -394,7 +394,7 @@ public class Pomodoro {
         int fiveMinutes = 5 * MINUTE;
         if (inPomodoro() && isSystemTray()
                 && isSystemTrayMessage()) {
-            for (int i = fiveMinutes; i < tmpPomodoroLength; i = i+tenMinutes) {
+            for (int i = fiveMinutes; i < tmpPomodoroLength; i = i + tenMinutes) {
                 if (time == i) {
                     MyPomodoroView.trayIcon.displayMessage("", now, TrayIcon.MessageType.NONE);
                 }

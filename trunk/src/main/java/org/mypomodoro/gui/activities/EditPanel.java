@@ -61,14 +61,13 @@ public class EditPanel extends CreatePanel {
         ActivityList.getList().update();
         /*JDialog window = new JDialog();        
         
-        window.pack();
-        window.setLocationRelativeTo(Main.gui);
-        window.setVisible(true);*/
-        
-        
+         window.pack();
+         window.setLocationRelativeTo(Main.gui);
+         window.setVisible(true);*/
+
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);        
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {        
+    protected void invalidActivityAction() {
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
