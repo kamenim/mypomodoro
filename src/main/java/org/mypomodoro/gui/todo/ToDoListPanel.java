@@ -43,6 +43,7 @@ public class ToDoListPanel extends JPanel {
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(
             this);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
+    private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(this);
     private final ToDoJList toDoJList = new ToDoJList(toDoList, pomodoro);
@@ -84,6 +85,8 @@ public class ToDoListPanel extends JPanel {
                 informationPanel));
         toDoJList.addListSelectionListener(new ActivityInformationListListener(
                 commentPanel));
+        toDoJList.addListSelectionListener(new ToDoMergingListListener(
+                mergingPanel, pomodoro));
 
         addTodoList();
         addTimerPanel();
@@ -322,6 +325,10 @@ public class ToDoListPanel extends JPanel {
 
     public UnplannedPanel getUnplannedPanel() {
         return unplannedPanel;
+    }
+
+    public MergingPanel getMergingPanel() {
+        return mergingPanel;
     }
 
     public ToDoList getToDoList() {

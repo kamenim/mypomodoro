@@ -12,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -56,8 +55,8 @@ public class CreatePanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         Component[] fields = inputFormPanel.getComponents();
-        for (int i = 0; i < fields.length; i++) {
-            fields[i].addMouseListener(new MouseAdapter() {
+        for (Component field : fields) {
+            field.addMouseListener(new MouseAdapter() {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -69,6 +68,7 @@ public class CreatePanel extends JPanel {
         add(inputFormPanel, gbc);
     }
 
+    // Add listener on type text field (Title)
     protected void addSaveButton() {
         gbc.gridx = 0;
         gbc.gridy = 1;
