@@ -8,7 +8,7 @@ import org.mypomodoro.model.Activity;
 
 public class SaveListener implements ActionListener {
 
-    private CreatePanel panel;
+    final private CreatePanel panel;
 
     public SaveListener(CreatePanel panel) {
         this.panel = panel;

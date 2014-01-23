@@ -109,7 +109,7 @@ public class AboutPanel extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/downloads/list");
+                BareBonesBrowserLaunch.openURL("http://sourceforge.net/projects/mypomodoro/files");
             }
         });
         panel.add(checkButton, gbcpanel);

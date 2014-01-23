@@ -9,13 +9,13 @@
     <packaging>jar</packaging>
     <version>2.1</version>
     <name>myPomodoro</name>
-    <url>http://code.google.com/p/mypomodoro/</url>
+    <url>http://sourceforge.net/projects/mypomodoro/</url>
     
     <!-- LICENSE INFO -->
     <licenses>
         <license>
-            <name>GNU Lesser General Public License</name>
-            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <name>GNU General Public License version 3.0 (GPLv3)</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
             <distribution>manual</distribution>
         </license>
     </licenses>
@@ -23,32 +23,10 @@
     <!-- DEVELOPERS -->
     <developers>
         <developer>
-            <id>iwebdevelop</id>
-            <name>Paul Barton</name>
-            <email>iwebdevelop@gmail.com</email>
-            <roles>
-                <role>Owner</role>
-                <role>Developer</role>
-            </roles>
-            <timezone>-5</timezone>
-        </developer>
-        <developer>
-            <id>nikolavp</id>
-            <name>Nikola Valentinov Petrov</name>
-            <email>nikolavp@gmail.com</email>
-            <roles>
-                <role>Developer</role>
-                <role>Committer</role>
-            </roles>
-        </developer>
-        <developer>
             <id>phil.karoo</id>
             <name>Phil Karoo</name>
-            <email>phil.karoo@gmail.com</email>
             <roles>
                 <role>Owner</role>
-                <role>Developer</role>
-                <role>Committer</role>
             </roles>
         </developer>
     </developers>

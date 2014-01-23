@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
@@ -187,6 +188,9 @@ public class ActivityInputForm extends JPanel {
         descriptionField.setFont(this.getFont());
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
+        // disable auto scrolling on description field
+        DefaultCaret caret = (DefaultCaret) descriptionField.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);

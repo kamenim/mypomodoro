@@ -44,7 +44,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://mypomodoro.googlecode.com/files/myPomodoro_User_Doc_" + MyPomodoroView.MYPOMODORO_VERSION + ".pdf");
+                        "http://sourceforge.net/projects/mypomodoro/files/myPomodoro%20" + MyPomodoroView.MYPOMODORO_VERSION);
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }
@@ -113,7 +113,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/issues/list");
+                BareBonesBrowserLaunch.openURL("http://sourceforge.net/p/mypomodoro/tickets");
             }
         }
     }
@@ -131,7 +131,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BareBonesBrowserLaunch.openURL("https://code.google.com/p/mypomodoro/downloads/list");
+                BareBonesBrowserLaunch.openURL("http://sourceforge.net/projects/mypomodoro/files");
             }
         }
     }

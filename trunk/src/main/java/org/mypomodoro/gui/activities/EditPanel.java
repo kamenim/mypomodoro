@@ -1,9 +1,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
-import javax.swing.JDialog;
-
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 
@@ -59,12 +56,6 @@ public class EditPanel extends CreatePanel {
     protected void validActivityAction(Activity currentActivity) {
         currentActivity.databaseUpdate();
         ActivityList.getList().update();
-        /*JDialog window = new JDialog();        
-        
-         window.pack();
-         window.setLocationRelativeTo(Main.gui);
-         window.setVisible(true);*/
-
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);

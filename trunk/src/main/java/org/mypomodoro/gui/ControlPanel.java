@@ -102,6 +102,7 @@ public class ControlPanel extends JPanel {
                 // no reset for locale
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
+                preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
                 updatePreferences();
                 disableSaveButton();
