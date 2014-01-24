@@ -32,9 +32,8 @@ public class ToDoMergingListListener implements ListSelectionListener {
         }
         if (selectedTodos.size() > 1) {
             mergingPanel.displaySelectedToDos(selectedTodos);
-        } else {
+        } else if (selectedTodos.size() == 1) {
             mergingPanel.clearForm();
-            mergingPanel.disableSaveButton();
         }
     }
 }

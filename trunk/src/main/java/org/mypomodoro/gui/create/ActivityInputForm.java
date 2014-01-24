@@ -225,6 +225,13 @@ public class ActivityInputForm extends JPanel {
         return new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
     }
+    
+    /*
+     * Getters
+     */
+    public JTextField getNameField() {
+        return nameField;
+    }
 
     /*
      * Setters

@@ -10,7 +10,7 @@ import org.mypomodoro.model.Activity;
 public class MergingActivityInputForm extends ActivityInputForm {
 
     private static final long serialVersionUID = 20110814L;
-    protected JTextArea toDosListTextArea = new JTextArea();
+    private final JTextArea toDosListTextArea = new JTextArea();
 
     public MergingActivityInputForm() {
         super(1);
@@ -50,5 +50,9 @@ public class MergingActivityInputForm extends ActivityInputForm {
                 descriptionField.append(selectedToDo.getName() + ":\n" + selectedToDo.getDescription() + "\n\n");
             }
         }
+    }
+    
+    public JTextArea getToDosListTextArea() {
+        return toDosListTextArea;
     }
 }

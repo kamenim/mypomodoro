@@ -1,15 +1,14 @@
 package org.mypomodoro.gui.todo;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import javax.swing.JScrollPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -25,7 +24,7 @@ import org.mypomodoro.util.Labels;
 public class UnplannedPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
-    protected UnplannedActivityInputForm unplannedInputFormPanel;
+    private UnplannedActivityInputForm unplannedInputFormPanel;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final ToDoListPanel panel;
 
@@ -54,16 +53,25 @@ public class UnplannedPanel extends CreatePanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         unplannedInputFormPanel = new UnplannedActivityInputForm();
-        Component[] fields = unplannedInputFormPanel.getComponents();
-        for (Component field : fields) {
-            field.addMouseListener(new MouseAdapter() {
+        unplannedInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    enableSaveButton();
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                enableSaveButton();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if (unplannedInputFormPanel.getNameField().getText().length() == 0) {
+                    disableSaveButton();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                enableSaveButton();
+            }
+        });
         add(new JScrollPane(unplannedInputFormPanel), gbc);
     }
 
@@ -103,7 +111,7 @@ public class UnplannedPanel extends CreatePanel {
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message;
         if (unplannedInputFormPanel.isDateToday()) {
-            message = Labels.getString("ToDoListPanel.Unplanned activity added to ToDo List");
+            message = Labels.getString("ToDoListPanel.Unplanned ToDo added to ToDo List");
             // Today unplanned interruption/activity
             panel.getToDoList().add(newActivity);
             newActivity.databaseInsert();
