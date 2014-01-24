@@ -113,10 +113,17 @@ public class MergingPanel extends CreatePanel {
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Merge ToDos");
         String message;
-        // Delete selected ToDos
+        StringBuilder comments = new StringBuilder();
         for (Activity deleteToDo : selectedToDos) {
+            if (deleteToDo.getNotes() != null && deleteToDo.getNotes().length() > 0) {
+                comments.append(deleteToDo.getName());
+                comments.append(":\n");
+                comments.append(deleteToDo.getNotes());
+                comments.append("\n\n");
+            }
             ActivityList.getList().removeById(deleteToDo.getId());
         }
+        newActivity.setNotes(comments.toString());
         if (mergingInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned ToDo added to ToDo List");
             // Today unplanned merge activity
