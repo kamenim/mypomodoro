@@ -1,20 +1,19 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
@@ -54,21 +53,30 @@ public class CreatePanel extends JPanel {
         gbc.weighty = 0.80;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        Component[] fields = inputFormPanel.getComponents();
-        for (Component field : fields) {
-            field.addMouseListener(new MouseAdapter() {
+        inputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    enableSaveButton();
-                    clearValidation(); // clear validation message when clicking on text fields
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                enableSaveButton();
+                clearValidation(); // clear validation message (if any)
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if (inputFormPanel.getNameField().getText().length() == 0) {
+                    disableSaveButton();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                enableSaveButton();
+                clearValidation(); // clear validation message (if any)
+            }
+        });
         add(inputFormPanel, gbc);
     }
-
-    // Add listener on type text field (Title)
+    
     protected void addSaveButton() {
         gbc.gridx = 0;
         gbc.gridy = 1;

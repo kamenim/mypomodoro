@@ -2,6 +2,8 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
@@ -18,7 +20,7 @@ import org.mypomodoro.util.Labels;
 public class EditPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
-    protected EditInputForm editInputForm;
+    private EditInputForm editInputForm;
 
     public EditPanel() {
     }
@@ -32,6 +34,25 @@ public class EditPanel extends CreatePanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         editInputForm = new EditInputForm();
+        editInputForm.getNameField().getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                enableSaveButton();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if (editInputForm.getNameField().getText().length() == 0) {
+                    disableSaveButton();
+                }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                enableSaveButton();
+            }
+        });
         add(editInputForm, gbc);
     }
 
