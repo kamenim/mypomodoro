@@ -33,7 +33,7 @@ public class MyPomodoroView extends JFrame {
     public static final int FRAME_WIDTH = 780;
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
-    public static final String MYPOMODORO_VERSION = "2.1";
+    public static final String MYPOMODORO_VERSION = "2.1.1";
     private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
     private final CreatePanel createPanel = new CreatePanel();
     private final ManagerPanel generatePanel = Main.generatePanel;

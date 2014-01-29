@@ -188,9 +188,6 @@ public class ActivityInputForm extends JPanel {
         descriptionField.setFont(this.getFont());
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
-        // disable auto scrolling on description field
-        DefaultCaret caret = (DefaultCaret) descriptionField.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);
@@ -242,6 +239,8 @@ public class ActivityInputForm extends JPanel {
 
     public void setDescriptionField(String value) {
         descriptionField.setText(value);
+        // disable auto scrolling
+        descriptionField.setCaretPosition(0);
     }
 
     public void setTypeField(String type) {

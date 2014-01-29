@@ -65,9 +65,6 @@ public class DetailsPane extends JPanel implements ActivityInformation {
         informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
-        // disable auto scrolling
-        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), gbc);
     }
 
@@ -94,7 +91,9 @@ public class DetailsPane extends JPanel implements ActivityInformation {
                 + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
                 + "\n" + Labels.getString("Common.Description") + ": "
                 + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
-        informationArea.setText(text);
+        informationArea.setText(text);        
+        // disable auto scrolling
+        informationArea.setCaretPosition(0);
     }
 
     @Override
