@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -19,7 +20,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ActivityInformationListListener;
@@ -136,8 +136,13 @@ public class ListPane extends JPanel implements ActivityInformation {
         return (Activity) internalActivitiesList.getSelectedValue();
     }
 
-    public List<Activity> getSelectedActivities() {
-        return internalActivitiesList.getSelectedValuesList();
+    public List<Activity> getSelectedActivities() {   
+        // jdk 6
+        Object objectArray[] = internalActivitiesList.getSelectedValues();
+        Activity[] activityArray = Arrays.copyOf(objectArray, objectArray.length, Activity[].class);        
+        return Arrays.asList(activityArray);        
+        // same thing with jdk7 
+        //return internalActivitiesList.getSelectedValuesList(); // only jdk7 and beyond
     }
 
     public void update() {
