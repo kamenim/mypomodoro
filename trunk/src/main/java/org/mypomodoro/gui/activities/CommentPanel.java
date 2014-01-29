@@ -60,9 +60,6 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        // disable auto scrolling (THIS WONT WORK : writting in the area work work anymore)
-        //DefaultCaret caret = (DefaultCaret) toDosListTextArea.getCaret();
-        //caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         commentArea.setEditable(true);
         commentArea.setLineWrap(true);
         commentArea.setWrapStyleWord(true);
@@ -73,6 +70,8 @@ public class CommentPanel extends JPanel implements ActivityInformation {
     public void showInfo(Activity activity) {
         String text = activity.getNotes();
         commentArea.setText(text);
+        // disable auto scrolling
+        commentArea.setCaretPosition(0);
     }
 
     @Override

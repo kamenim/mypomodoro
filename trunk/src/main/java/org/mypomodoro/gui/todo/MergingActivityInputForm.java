@@ -27,9 +27,6 @@ public class MergingActivityInputForm extends ActivityInputForm {
         toDosListTextArea.setLineWrap(true);
         toDosListTextArea.setWrapStyleWord(true);
         toDosListTextArea.setEditable(false);
-        // disable auto scrolling
-        DefaultCaret caret = (DefaultCaret) toDosListTextArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         JScrollPane listTextArea = new JScrollPane(toDosListTextArea);
         listTextArea.setMinimumSize(TEXT_AREA_DIMENSION);
         listTextArea.setPreferredSize(TEXT_AREA_DIMENSION);
@@ -39,6 +36,8 @@ public class MergingActivityInputForm extends ActivityInputForm {
 
     public void setToDoListTextArea(String value) {
         toDosListTextArea.setText(value);
+        // disable auto scrolling
+        toDosListTextArea.setCaretPosition(0);
     }
 
     public void displaySelectedToDos(List<Activity> selectedToDos) {

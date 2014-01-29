@@ -83,9 +83,6 @@ public class ListPane extends JPanel implements ActivityInformation {
         informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
-        // disable auto scrolling
-        DefaultCaret caret = (DefaultCaret) informationArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         add(new JScrollPane(informationArea), c);
     }
 
@@ -121,6 +118,8 @@ public class ListPane extends JPanel implements ActivityInformation {
                 + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
                 + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace());
         informationArea.setText(text);
+        // disable auto scrolling
+        informationArea.setCaretPosition(0);
     }
 
     @Override

@@ -70,6 +70,8 @@ public class CommentPanel extends JPanel implements ActivityInformation {
     public void showInfo(Activity activity) {
         String text = activity.getNotes();
         commentArea.setText(text);
+        // disable auto scrolling
+        commentArea.setCaretPosition(0);
     }
 
     @Override
