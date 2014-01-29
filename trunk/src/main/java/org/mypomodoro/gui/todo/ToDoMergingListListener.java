@@ -1,5 +1,8 @@
 package org.mypomodoro.gui.todo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
@@ -20,13 +23,21 @@ public class ToDoMergingListListener implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         JList list = (JList) e.getSource();
-        List<Activity> selectedTodos = list.getSelectedValuesList();
+        // jdk 6
+        Object objectArray[] = list.getSelectedValues();
+        Activity[] selectedTodosArray = Arrays.copyOf(objectArray, objectArray.length, Activity[].class);
+        List<Activity> selectedTodos = new ArrayList<Activity>();
+        selectedTodos.addAll(Arrays.asList(selectedTodosArray)); // this way, selectedTodos doesn't have a fixed size and therefore objects may be removed while iterating        
+        // same thing with jdk7
+        //List<Activity> selectedTodos = list.getSelectedValuesList();
+
         if (selectedTodos.size() > 1) {
-            for (Activity selectedToDo : selectedTodos) {
-                if (selectedToDo != null) {
-                    if (pomodoro.inPomodoro() && selectedToDo.getId() == pomodoro.getCurrentToDo().getId()) {
-                        selectedTodos.remove(selectedToDo);
-                    }
+            for (Iterator<Activity> iter = selectedTodos.iterator(); iter.hasNext();) {
+                Activity selectedToDo = iter.next();
+                // excluding current running task and finished task
+                if ((pomodoro.inPomodoro() && selectedToDo.getId() == pomodoro.getCurrentToDo().getId())
+                        || selectedToDo.isFinished()) {
+                    iter.remove(); // this will modify the list selectedTodos too
                 }
             }
         }

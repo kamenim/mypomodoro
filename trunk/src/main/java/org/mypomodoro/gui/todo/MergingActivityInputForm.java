@@ -3,7 +3,6 @@ package org.mypomodoro.gui.todo;
 import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.DefaultCaret;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.model.Activity;
 
@@ -49,6 +48,9 @@ public class MergingActivityInputForm extends ActivityInputForm {
                 descriptionField.append(selectedToDo.getName() + ":\n" + selectedToDo.getDescription() + "\n\n");
             }
         }
+        // disable auto scrolling
+        toDosListTextArea.setCaretPosition(0);
+        descriptionField.setCaretPosition(0);
     }
     
     public JTextArea getToDosListTextArea() {
