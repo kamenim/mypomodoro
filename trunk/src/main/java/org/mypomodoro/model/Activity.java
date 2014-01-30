@@ -1,6 +1,7 @@
 package org.mypomodoro.model;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
@@ -142,12 +143,13 @@ public class Activity {
      * @param type
      * @param estimatedPoms
      * @param dateActivity
-     * @param unplanned
      * @param overestimatedPoms
      * @param actualPoms (real)
      * @param internalInterruptions
      * @param externalInterruptions
      * @param notes (comment)
+     * @param unplanned
+     * @param completed
      */
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms,
@@ -200,7 +202,7 @@ public class Activity {
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
             this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println(e);
         }
     }
@@ -289,6 +291,10 @@ public class Activity {
 
     public void setEstimatedPoms(int estimatedPoms) {
         this.estimatedPoms = estimatedPoms;
+    }
+
+    public void setActualPoms(int actualPoms) {
+        this.actualPoms = actualPoms;
     }
 
     public void setOverestimatedPoms(int overestimatedPoms) {

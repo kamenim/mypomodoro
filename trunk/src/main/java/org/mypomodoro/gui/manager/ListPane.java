@@ -136,13 +136,13 @@ public class ListPane extends JPanel implements ActivityInformation {
         return (Activity) internalActivitiesList.getSelectedValue();
     }
 
-    public List<Activity> getSelectedActivities() {   
+    public List<Activity> getSelectedActivities() {
         // jdk 6
         Object objectArray[] = internalActivitiesList.getSelectedValues();
-        Activity[] activityArray = Arrays.copyOf(objectArray, objectArray.length, Activity[].class);        
-        return Arrays.asList(activityArray);        
-        // same thing with jdk7 
-        //return internalActivitiesList.getSelectedValuesList(); // only jdk7 and beyond
+        Activity[] activityArray = Arrays.copyOf(objectArray, objectArray.length, Activity[].class);
+        return Arrays.asList(activityArray);
+        // jdk7 
+        //return internalActivitiesList.getSelectedValuesList();
     }
 
     public void update() {
@@ -182,7 +182,7 @@ public class ListPane extends JPanel implements ActivityInformation {
         }
     }
 
-    private class cellRenderer implements ListCellRenderer {
+    public class cellRenderer implements ListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

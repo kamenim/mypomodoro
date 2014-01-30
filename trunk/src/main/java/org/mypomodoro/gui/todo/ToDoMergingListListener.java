@@ -28,7 +28,7 @@ public class ToDoMergingListListener implements ListSelectionListener {
         Activity[] selectedTodosArray = Arrays.copyOf(objectArray, objectArray.length, Activity[].class);
         List<Activity> selectedTodos = new ArrayList<Activity>();
         selectedTodos.addAll(Arrays.asList(selectedTodosArray)); // this way, selectedTodos doesn't have a fixed size and therefore objects may be removed while iterating        
-        // same thing with jdk7
+        // jdk7
         //List<Activity> selectedTodos = list.getSelectedValuesList();
 
         if (selectedTodos.size() > 1) {

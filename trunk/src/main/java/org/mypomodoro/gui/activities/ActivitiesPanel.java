@@ -1,6 +1,8 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -8,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.Iterator;
+import javax.swing.JLabel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -211,19 +214,40 @@ public class ActivitiesPanel extends JPanel {
         init();
     }
 
+    static class CustomTableRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            return renderer;
+        }
+    }
+
     static class DateRenderer extends DefaultTableCellRenderer {
 
-        public void setValue(Object value) {
-            setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+            return renderer;
         }
     }
 
     private void init() {
-        // Centre Date, estimated pomodoros column
-        DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
+        DateRenderer dd = new DateRenderer();
+        // set custom render for dates
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dd); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
