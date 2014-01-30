@@ -91,7 +91,7 @@ public class DetailsPane extends JPanel implements ActivityInformation {
                 + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
                 + "\n" + Labels.getString("Common.Description") + ": "
                 + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
-        informationArea.setText(text);        
+        informationArea.setText(text);
         // disable auto scrolling
         informationArea.setCaretPosition(0);
     }

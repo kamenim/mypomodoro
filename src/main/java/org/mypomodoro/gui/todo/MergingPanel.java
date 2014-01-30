@@ -2,6 +2,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -114,7 +115,9 @@ public class MergingPanel extends CreatePanel {
         String title = Labels.getString("ToDoListPanel.Merge ToDos");
         String message;
         StringBuilder comments = new StringBuilder();
+        int actualPoms = 0;
         for (Activity deleteToDo : selectedToDos) {
+            // aggregate comments
             if (deleteToDo.getNotes() != null && deleteToDo.getNotes().length() > 0) {
                 comments.append(deleteToDo.getName());
                 comments.append(":\n");
@@ -122,13 +125,23 @@ public class MergingPanel extends CreatePanel {
                 comments.append("\n\n");
             }
             ActivityList.getList().removeById(deleteToDo.getId());
+            actualPoms += deleteToDo.getActualPoms();
         }
+        // set comment
         newActivity.setNotes(comments.toString());
+        // set estimate
+        // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)
+        if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
+            newActivity.setEstimatedPoms(actualPoms + 1);
+        }
+        if (actualPoms > 0) {
+            newActivity.setActualPoms(actualPoms);
+        }
         if (mergingInputFormPanel.isDateToday()) {
             message = Labels.getString("ToDoListPanel.Unplanned ToDo added to ToDo List");
             // Today unplanned merge activity
             panel.getToDoList().add(newActivity);
-            newActivity.databaseInsert();         
+            newActivity.databaseInsert();
             clearForm();
         } else {
             message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
@@ -136,7 +149,7 @@ public class MergingPanel extends CreatePanel {
             selectedToDos = null;
             mergingInputFormPanel.setToDoListTextArea("");
             super.validActivityAction(newActivity); // validation and clear form
-        }        
+        }
         JOptionPane.showConfirmDialog(Main.gui, message, title,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         panel.refresh();
@@ -148,7 +161,7 @@ public class MergingPanel extends CreatePanel {
         String message = Labels.getString("Common.Title is mandatory");
         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
     }
-    
+
     @Override
     public ActivityInputForm getFormPanel() {
         return mergingInputFormPanel;

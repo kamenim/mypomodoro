@@ -1,20 +1,25 @@
 package org.mypomodoro.gui.reports;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
-
-import javax.swing.JFrame;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -23,19 +28,20 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.reports.burndownchart.BurndownChartInputPanel;
-import org.mypomodoro.gui.reports.burndownchart.BurndownChartPanel;
+import org.mypomodoro.gui.manager.ListPane;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -151,14 +157,10 @@ public class ReportListPanel extends JPanel {
                         }
                     }
 
+                    // make Title and Type columns editable
                     @Override
                     public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        // make Title and Type columns editable
-                        if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1;
                     }
                 };
 
@@ -184,7 +186,6 @@ public class ReportListPanel extends JPanel {
                 ReportList.getList().update(); // always refresh list
             }
         });
-
         return tableModel;
     }
 
@@ -230,23 +231,43 @@ public class ReportListPanel extends JPanel {
         init();
     }
 
-    static class DateRenderer extends DefaultTableCellRenderer {
+    static class CustomTableRenderer extends DefaultTableCellRenderer {
 
-        public void setValue(Object value) {
-            setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            return renderer;
+        }
+    }
+
+    static class DateRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+            return renderer;
         }
     }
 
     private void init() {
-        // Centre Date, time, estimated, real, Diff I and Diff II columns
-        DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
+        // set custom render for dates
         table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // title        
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // estimated
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr); // type
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
@@ -293,17 +314,16 @@ public class ReportListPanel extends JPanel {
     }
 
     private int getAccuracy() {
-        int accuracy = 0;
         Iterator<Activity> act = ReportList.getList().iterator();
         int estover = 0;
         int real = 0;
-        Activity activity = null;
+        Activity activity;
         while (act.hasNext()) {
             activity = act.next();
             estover += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
             real += activity.getActualPoms();
         }
-        accuracy = Math.round(((float) real / (float) estover) * 100);
+        int accuracy = Math.round(((float) real / (float) estover) * 100);
         return accuracy;
     }
 

@@ -14,7 +14,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultCaret;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
@@ -222,7 +221,7 @@ public class ActivityInputForm extends JPanel {
         return new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
     }
-    
+
     /*
      * Getters
      */

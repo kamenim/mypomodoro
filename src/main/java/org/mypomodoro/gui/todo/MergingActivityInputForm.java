@@ -52,7 +52,7 @@ public class MergingActivityInputForm extends ActivityInputForm {
         toDosListTextArea.setCaretPosition(0);
         descriptionField.setCaretPosition(0);
     }
-    
+
     public JTextArea getToDosListTextArea() {
         return toDosListTextArea;
     }

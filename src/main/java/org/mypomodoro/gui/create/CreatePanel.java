@@ -76,7 +76,7 @@ public class CreatePanel extends JPanel {
         });
         add(inputFormPanel, gbc);
     }
-    
+
     protected void addSaveButton() {
         gbc.gridx = 0;
         gbc.gridy = 1;
