@@ -19,14 +19,14 @@ public class MyPomodoroIconBar extends JPanel {
     public MyPomodoroIconBar(MyPomodoroView view) {
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Create"), "createButton",
-                view.getCreatePanel()));
+                view.getCreatePanel()));        
         myIcons.add(MyIcon.getInstance(view,
-                Labels.getString("IconBar.Activity"), "activityButton",
+                Labels.getString(ControlPanel.preferences.getAgileMode()?"IconBar.Agile.Backlog":"IconBar.Activity"), "activityButton",
                 view.getActivityListPanel()));
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Manager"), "managerButton",
                 view.getGeneratePanel()));
-        myIcons.add(MyIcon.getInstance(view, Labels.getString("IconBar.ToDo"),
+        myIcons.add(MyIcon.getInstance(view, Labels.getString(ControlPanel.preferences.getAgileMode()?"IconBar.Agile.Iteration":"IconBar.ToDo"),
                 "todoButton", view.getToDoListPanel()));
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Report"), "reportButton",

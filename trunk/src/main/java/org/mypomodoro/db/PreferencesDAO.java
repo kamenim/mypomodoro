@@ -52,6 +52,7 @@ public class PreferencesDAO {
                 ControlPanel.preferences.setSystemTray(rs.getInt("system_tray") == 1 ? true : false);
                 ControlPanel.preferences.setSystemTrayMessage(rs.getInt("system_tray_msg") == 1 ? true : false);
                 ControlPanel.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1 ? true : false);
+                ControlPanel.preferences.setAgileMode(rs.getInt("agile_mode") == 1 ? true : false);
             } catch (Exception e) {
                 System.err.println(e);
             } finally {
@@ -79,7 +80,8 @@ public class PreferencesDAO {
                 + ", " + "locale = '" + ControlPanel.preferences.getLocale().toString() + "'"
                 + ", " + "system_tray = " + (ControlPanel.preferences.getSystemTray() ? 1 : 0)
                 + ", " + "system_tray_msg = " + (ControlPanel.preferences.getSystemTrayMessage() ? 1 : 0)
-                + ", " + "always_on_top = " + (ControlPanel.preferences.getAlwaysOnTop() ? 1 : 0) + ";";
+                + ", " + "always_on_top = " + (ControlPanel.preferences.getAlwaysOnTop() ? 1 : 0)
+                + ", " + "agile_mode = " + (ControlPanel.preferences.getAgileMode() ? 1 : 0) + ";";
         database.lock();
         try {
             database.update("begin;");

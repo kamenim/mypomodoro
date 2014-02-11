@@ -2,7 +2,6 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;

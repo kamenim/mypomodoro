@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
@@ -391,5 +392,10 @@ public class Activity {
 
     public boolean isFinished() {
         return actualPoms == estimatedPoms + overestimatedPoms;
+    }
+    
+    public boolean isStory() {
+        return ControlPanel.preferences.getAgileMode() && 
+                (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
     }
 }

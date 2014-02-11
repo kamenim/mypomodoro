@@ -30,6 +30,7 @@ import org.mypomodoro.util.Labels;
 import au.com.bytecode.opencsv.CSVWriter;
 import javax.swing.JScrollPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 
 /**
@@ -57,7 +58,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Type"), Labels.getString("Common.Author"),
         Labels.getString("Common.Place"),
         Labels.getString("Common.Description"),
-        Labels.getString("Common.Comment")};
+        Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment")};
 
     public ExportPanel(AbstractActivities activities) {
         this.activities = activities;

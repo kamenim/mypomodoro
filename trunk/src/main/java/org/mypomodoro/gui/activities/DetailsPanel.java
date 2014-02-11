@@ -2,17 +2,14 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.buttons.DeleteAllButton;
 import org.mypomodoro.buttons.DeleteButton;
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -21,13 +18,12 @@ import org.mypomodoro.util.Labels;
  * Panel that displays information on the current Pomodoro
  *
  */
-public class DetailsPane extends JPanel implements ActivityInformation {
+public class DetailsPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JTextArea informationArea = new JTextArea();
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public DetailsPane(JTable table) {
+    public DetailsPanel(JTable table) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
@@ -69,7 +65,7 @@ public class DetailsPane extends JPanel implements ActivityInformation {
     }
 
     @Override
-    public void showInfo(Activity activity) {
+    public void selectInfo(Activity activity) {
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
@@ -90,14 +86,9 @@ public class DetailsPane extends JPanel implements ActivityInformation {
                 + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n"
                 + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
                 + "\n" + Labels.getString("Common.Description") + ": "
-                + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
-        informationArea.setText(text);
+                + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());       
+        //informationArea.setText(text);
         // disable auto scrolling
-        informationArea.setCaretPosition(0);
-    }
-
-    @Override
-    public void clearInfo() {
-        informationArea.setText("");
+        //informationArea.setCaretPosition(0);
     }
 }

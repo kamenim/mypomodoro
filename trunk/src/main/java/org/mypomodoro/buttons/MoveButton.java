@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.gui.manager.ListPane;
+import org.mypomodoro.gui.manager.ListPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -22,7 +22,7 @@ public class MoveButton extends AbstractPomodoroButton {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
-    public MoveButton(String label, final ListPane from, final ListPane to) {
+    public MoveButton(String label, final ListPanel from, final ListPanel to) {
         super(label);
         setMinimumSize(BUTTON_SIZE);
         setPreferredSize(BUTTON_SIZE);
@@ -35,7 +35,7 @@ public class MoveButton extends AbstractPomodoroButton {
         });
     }
 
-    public static void move(final ListPane from, final ListPane to) {
+    public static void move(final ListPanel from, final ListPanel to) {
         List<Activity> selectedActivities = from.getSelectedActivities();
         boolean alreadyAgreed = false;
         for (Activity selectedActivity : selectedActivities) {

@@ -11,6 +11,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -53,7 +54,7 @@ public class ToDoJList extends JList {
     final public void init() {
         selectToDo();
         setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString("ToDoListPanel.ToDo List") + " ("
+                Labels.getString(ControlPanel.preferences.getAgileMode()?"ToDoListPanel.Agile.Iteration":"ToDoListPanel.ToDo List") + " ("
                 + ToDoList.getListSize() + ")"));
     }
 

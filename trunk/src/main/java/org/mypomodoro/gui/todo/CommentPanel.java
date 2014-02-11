@@ -7,13 +7,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -22,10 +20,9 @@ import org.mypomodoro.util.Labels;
  *
  * @author Phil Karoo
  */
-public class CommentPanel extends JPanel implements ActivityInformation {
+public class CommentPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JTextArea commentArea = new JTextArea();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final ToDoListPanel panel;
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -53,7 +50,7 @@ public class CommentPanel extends JPanel implements ActivityInformation {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.saveComment(commentArea.getText());
+                panel.saveComment(informationArea.getText());
             }
         });
         add(changeButton, gbc);
@@ -77,23 +74,16 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        commentArea.setEditable(true);
-        commentArea.setLineWrap(true);
-        commentArea.setWrapStyleWord(true);
-        add(new JScrollPane(commentArea), gbc);
+        informationArea.setEditable(true);
+        informationArea.setLineWrap(true);
+        informationArea.setWrapStyleWord(true);
+        add(new JScrollPane(informationArea), gbc);
     }
 
     @Override
-    public void showInfo(Activity activity) {
-        String text = activity.getNotes();
-        commentArea.setText(text);
-        // disable auto scrolling
-        commentArea.setCaretPosition(0);
-    }
-
-    @Override
-    public void clearInfo() {
-        commentArea.setText("");
+    public void selectInfo(Activity activity) {
+        textArray.clear();
+        textArray.add(activity.getNotes());
     }
 
     public JLabel getIconLabel() {

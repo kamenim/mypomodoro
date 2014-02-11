@@ -35,7 +35,8 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.manager.ListPane;
+import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.manager.ListPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.AbstractActivities;
@@ -98,12 +99,12 @@ public class ReportListPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        InformationArea informationArea = new InformationArea(table);
+        InformationPanel informationArea = new InformationPanel(table);
         controlPane.add(Labels.getString("Common.Details"), informationArea);
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel();
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
@@ -204,7 +205,7 @@ public class ReportListPanel extends JPanel {
                 });
     }
 
-    private void showSelectedItemDetails(InformationArea informationArea) {
+    private void showSelectedItemDetails(InformationPanel informationArea) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
                         table, informationArea, ID_KEY));
