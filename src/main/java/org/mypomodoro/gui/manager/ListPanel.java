@@ -12,18 +12,16 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ActivityInformationListListener;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
@@ -38,12 +36,11 @@ import org.mypomodoro.util.Labels;
  * @author Phil Karoo
  *
  */
-public class ListPane extends JPanel implements ActivityInformation {
+public class ListPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints c = new GridBagConstraints();
     private final JList internalActivitiesList;
-    private final JTextArea informationArea;
     private final AbstractActivities list;
     private final String titleList;
     private int selectedRowIndex = 0;
@@ -53,7 +50,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     public static final int CELL_WIDTH = 250;
     private static final Dimension PREFERED_SIZE = new Dimension(250, 100);
 
-    public ListPane(AbstractActivities list, String title) {
+    public ListPanel(AbstractActivities list, String title) {
         this.list = list;
         titleList = title;
         setLayout(new GridBagLayout());
@@ -70,7 +67,7 @@ public class ListPane extends JPanel implements ActivityInformation {
             }
         });
 
-        this.informationArea = new JTextArea();
+        //informationArea = new JTextArea(); ???
         addActivitiesList();
         addInformationArea();
     }
@@ -100,7 +97,7 @@ public class ListPane extends JPanel implements ActivityInformation {
     }
 
     @Override
-    public void showInfo(Activity activity) {
+    public void selectInfo(Activity activity) {
         String text = Labels.getString("Common.Date") + ": ";
         if (activity.isUnplanned()) {
             text += "U [";
@@ -117,14 +114,9 @@ public class ListPane extends JPanel implements ActivityInformation {
         text += "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
                 + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
                 + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace());
-        informationArea.setText(text);
+        //informationArea.setText(text);
         // disable auto scrolling
-        informationArea.setCaretPosition(0);
-    }
-
-    @Override
-    public void clearInfo() {
-        informationArea.setText("");
+        //informationArea.setCaretPosition(0);
     }
 
     public void removeActivity(Activity activity) {

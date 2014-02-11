@@ -7,10 +7,10 @@ import org.mypomodoro.buttons.MoveButton;
 
 public class ListMoverMouseListener extends MouseAdapter {
 
-    private final ListPane from;
-    private final ListPane to;
+    private final ListPanel from;
+    private final ListPanel to;
 
-    public ListMoverMouseListener(ListPane from, ListPane to) {
+    public ListMoverMouseListener(ListPanel from, ListPanel to) {
         this.from = from;
         this.to = to;
     }

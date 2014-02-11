@@ -19,7 +19,8 @@ public class ActivityInformationListListener implements ListSelectionListener {
         JList list = (JList) e.getSource();
         Activity activity = (Activity) list.getSelectedValue();
         if (activity != null) {
-            information.showInfo(activity);
+            information.selectInfo(activity);
+            information.showInfo();
         } else {
             information.clearInfo();
         }

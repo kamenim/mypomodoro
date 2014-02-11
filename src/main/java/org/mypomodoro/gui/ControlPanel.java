@@ -103,6 +103,7 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
+                preferencesInputFormPanel.agileModeBox.setSelected(false);
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
                 updatePreferences();
                 disableSaveButton();
@@ -184,6 +185,7 @@ public class ControlPanel extends JPanel {
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
+        preferences.setAgileMode(preferencesInputFormPanel.agileModeBox.isSelected());
         preferences.updatePreferences();
     }
 }

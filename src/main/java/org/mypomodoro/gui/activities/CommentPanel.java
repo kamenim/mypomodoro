@@ -6,13 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -21,10 +19,9 @@ import org.mypomodoro.util.Labels;
  *
  * @author Phil Karoo
  */
-public class CommentPanel extends JPanel implements ActivityInformation {
+public class CommentPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JTextArea commentArea = new JTextArea();
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public CommentPanel(ActivitiesPanel panel) {
@@ -46,7 +43,7 @@ public class CommentPanel extends JPanel implements ActivityInformation {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.saveComment(commentArea.getText());
+                panel.saveComment(informationArea.getText());
             }
         });
         add(changeButton, gbc);
@@ -60,18 +57,33 @@ public class CommentPanel extends JPanel implements ActivityInformation {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        commentArea.setEditable(true);
-        commentArea.setLineWrap(true);
-        commentArea.setWrapStyleWord(true);
-        add(new JScrollPane(commentArea), gbc);
+        informationArea.setEditable(true);
+        informationArea.setLineWrap(true);
+        informationArea.setWrapStyleWord(true);
+        add(new JScrollPane(informationArea), gbc);
     }
 
     @Override
-    public void showInfo(Activity activity) {
-        String text = activity.getNotes();
-        commentArea.setText(text);
-        // disable auto scrolling
-        commentArea.setCaretPosition(0);
+    public void selectInfo(Activity activity) {
+        textArray.clear();
+        // template for user stories and epics
+        if (ControlPanel.preferences.getAgileMode()
+                && activity.getNotes().trim().length() == 0
+                && activity.isStory()) {
+            textArray.add("Story line" + "\n");
+            textArray.add("-------------" + "\n");
+            textArray.add("As a <user role>, I want to <action> in order to <purpose>" + "\n\n");
+            textArray.add("User acceptance criteria" + "\n");
+            textArray.add("----------------------------------" + "\n");
+            textArray.add("* " + "\n");
+            textArray.add("* " + "\n\n");
+            textArray.add("Test cases" + "\n");
+            textArray.add("----------------" + "\n");
+            textArray.add("* " + "\n");
+            textArray.add("* ");
+        } else {
+            textArray.add(activity.getNotes());
+        }
     }
 
     @Override

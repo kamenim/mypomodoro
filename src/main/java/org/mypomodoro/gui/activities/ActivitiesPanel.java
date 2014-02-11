@@ -31,6 +31,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
@@ -55,9 +56,9 @@ public class ActivitiesPanel extends JPanel {
     JTable table = new JTable(getTableModel());
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"), Labels.getString("Common.Title"),
-        Labels.getString("Common.Estimated pomodoros"),
-        Labels.getString("Common.Type"), "ID"};
-    public static final int ID_KEY = 5;
+        Labels.getString("Common.Type"),
+        Labels.getString("Common.Estimated pomodoros"), "ID"};
+    public static int ID_KEY = 5;
     private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
 
@@ -90,12 +91,12 @@ public class ActivitiesPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        DetailsPane detailsPane = new DetailsPane(table);
+        DetailsPanel detailsPane = new DetailsPanel(table);
         controlPane.add(Labels.getString("Common.Details"), detailsPane);
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString("Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(true);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
@@ -123,26 +124,20 @@ public class ActivitiesPanel extends JPanel {
                             Activity a = iterator.next();
                             tableData[i][0] = a.isUnplanned();
                             tableData[i][1] = a.getDate();
-                            tableData[i][2] = a.getName();
+                            tableData[i][2] = a.getName();                            
+                            tableData[i][3] = a.getType();
                             String poms = "" + a.getEstimatedPoms();
                             if (a.getOverestimatedPoms() > 0) {
                                 poms += " + " + a.getOverestimatedPoms();
                             }
-                            tableData[i][3] = poms;
-                            tableData[i][4] = a.getType();
+                            tableData[i][4] = poms;
                             tableData[i][5] = a.getId();
                         }
                     }
 
                     @Override
                     public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        // Make the title and type colums editable
-                        if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
-                            // editable
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2;
                     }
                 };
 
@@ -161,7 +156,7 @@ public class ActivitiesPanel extends JPanel {
                 if (column == ID_KEY - 3 && sData.length() > 0) {
                     act.setName(sData);
                     act.databaseUpdate();
-                } else if (column == ID_KEY - 1) { // Type
+                } else if (column == ID_KEY - 2) { // Type
                     act.setType(sData);
                     act.databaseUpdate();
                 }
@@ -187,7 +182,7 @@ public class ActivitiesPanel extends JPanel {
                 });
     }
 
-    private void showSelectedItemDetails(DetailsPane detailsPane) {
+    private void showSelectedItemDetails(DetailsPanel detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),
                         table, detailsPane, ID_KEY));
@@ -272,7 +267,7 @@ public class ActivitiesPanel extends JPanel {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
                 int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 1) {
+                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
                     value = value.length() > 0 ? value : null;
                     table.setToolTipText(value);
@@ -281,7 +276,7 @@ public class ActivitiesPanel extends JPanel {
         });
         selectActivity();
         setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString("ActivityListPanel.Activity List") + " ("
+                Labels.getString(ControlPanel.preferences.getAgileMode()?"ActivityListPanel.Agile.Backlog":"ActivityListPanel.Activity List") + " ("
                 + ActivityList.getListSize() + ")"));
     }
 

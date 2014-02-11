@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.model.Activity;
@@ -525,7 +526,7 @@ public class ExportInputForm extends JPanel {
             Labels.getString("Common.Type"), Labels.getString("Common.Author"),
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),
-            Labels.getString("Common.Comment"),
+            Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment"),
             ""};
         private JComboBox columnsComboBox = new JComboBox();
 

@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,8 +31,8 @@ public class TimerPanel extends JPanel {
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
-    private JLabel pomodoroTime;
-    private ToDoJList toDoJList;
+    private final JLabel pomodoroTime;
+    private final ToDoJList toDoJList;
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoJList toDoJList) {
         this.pomodoroTime = pomodoroTime;

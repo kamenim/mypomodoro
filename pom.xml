@@ -7,7 +7,7 @@
     <groupId>org.mypomodoro</groupId>
     <artifactId>myPomodoro</artifactId>
     <packaging>jar</packaging>
-    <version>2.1.1</version>
+    <version>3.0</version>
     <name>myPomodoro</name>
     <url>http://sourceforge.net/projects/mypomodoro/</url>
     

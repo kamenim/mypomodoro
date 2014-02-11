@@ -36,6 +36,7 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox systemTrayBox;
     protected final JCheckBox systemTrayMessageBox;
     protected final JCheckBox alwaysOnTopBox;
+    protected final JCheckBox agileModeBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(),
@@ -62,17 +63,24 @@ public class PreferencesInputForm extends JPanel {
                 ControlPanel.preferences.getLongBreakLength(),
                 Labels.getString("PreferencesPanel.Long Break Length") + ": ",
                 15, 30, unitMinute);
-        maxNbPomPerActivitySlider = new TimerValueSlider(
-                controlPanel,
-                1,
-                7,
+
+        int maxNbPomPerActivity = 7;
+        int initMaxNbPomPerActivity = 5; 
+        final int maxNbPomPerDay = 12;
+        final int initMaxNbPomPerDay = 10;
+        // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
+        if (ControlPanel.preferences.getAgileMode()) {
+            maxNbPomPerActivity = maxNbPomPerDay * 2;
+            initMaxNbPomPerActivity = initMaxNbPomPerDay * 2;
+        }
+        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivity,
                 ControlPanel.preferences.getMaxNbPomPerActivity(),
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",
-                1, 5, unitPomodoro);
-        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, 12,
+                1, initMaxNbPomPerActivity, unitPomodoro);
+        maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerDay,
                 ControlPanel.preferences.getMaxNbPomPerDay(),
                 Labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1,
-                10, unitPomodoro);
+                initMaxNbPomPerDay, unitPomodoro);
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5,
                 ControlPanel.preferences.getNbPomPerSet(),
                 Labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4,
@@ -119,7 +127,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.System Tray"),
                 ControlPanel.preferences.getSystemTray());
         systemTrayMessageBox = new JCheckBox(
-                Labels.getString("PreferencesPanel.Popup message"),
+                Labels.getString("PreferencesPanel.Popup Message"),
                 ControlPanel.preferences.getSystemTrayMessage());
         systemTrayBox.addActionListener(new ActionListener() {
 
@@ -154,6 +162,25 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
+        agileModeBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Agile.Agile Mode"),
+                ControlPanel.preferences.getAgileMode());
+        agileModeBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
+                if (agileModeBox.isSelected()) {
+                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay * 2);
+                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() > 1?maxNbPomPerDaySlider.getSliderValue() * 2:1);
+                } else {
+                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay);
+                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() / 2);
+                }
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();                
+            }
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -184,6 +211,9 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 9;
         gbc.gridwidth = 2;
         addAlwaysOnTop(gbc);
+        gbc.gridy = 10;
+        gbc.gridwidth = 2;
+        addAgileMode(gbc);
     }
 
     private void addSounds(GridBagConstraints gbc) {
@@ -238,5 +268,17 @@ public class PreferencesInputForm extends JPanel {
         gbcAlwaysOnTop.gridy = 0;
         alwaysOnTop.add(alwaysOnTopBox, gbcAlwaysOnTop);
         add(alwaysOnTop, gbc);
+    }
+
+    private void addAgileMode(GridBagConstraints gbc) {
+        JPanel agileMode = new JPanel();
+        agileMode.setLayout(new GridBagLayout());
+        GridBagConstraints gbcAgileMode = new GridBagConstraints();
+        gbcAgileMode.fill = GridBagConstraints.HORIZONTAL;
+        gbcAgileMode.anchor = GridBagConstraints.NORTH;
+        gbcAgileMode.gridx = 0;
+        gbcAgileMode.gridy = 0;
+        agileMode.add(agileModeBox, gbcAgileMode);
+        add(agileMode, gbc);
     }
 }

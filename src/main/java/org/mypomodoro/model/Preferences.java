@@ -76,6 +76,11 @@ public class Preferences {
      */
     public static final boolean ALWAYS = false;
     private boolean alwaysOnTop = ALWAYS;
+    /**
+     * Agile mode
+     */
+    public static final boolean AGILE = false;
+    private boolean agileMode = AGILE;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -125,6 +130,10 @@ public class Preferences {
     public boolean getAlwaysOnTop() {
         return alwaysOnTop;
     }
+    
+    public boolean getAgileMode() {
+        return agileMode;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -173,6 +182,10 @@ public class Preferences {
 
     public void setAlwaysOnTop(boolean value) {
         alwaysOnTop = value;
+    }
+    
+    public void setAgileMode(boolean value) {
+        agileMode = value;
     }
 
     public void refresh() {

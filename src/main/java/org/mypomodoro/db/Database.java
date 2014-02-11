@@ -104,7 +104,8 @@ public class Database {
                 + "locale TEXT, "
                 + "system_tray BOOLEAN DEFAULT 1, "
                 + "system_tray_msg BOOLEAN DEFAULT 1, "
-                + "always_on_top BOOLEAN DEFAULT 0" + ");";
+                + "always_on_top BOOLEAN DEFAULT 0, "
+                + "agile_mode BOOLEAN DEFAULT 0" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
     }
@@ -117,9 +118,9 @@ public class Database {
                 String insertPreferencesSQL = "INSERT INTO preferences ("
                         + "pom_length,short_break_length,long_break_length,"
                         + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
-                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top) "
+                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode) "
                         + "VALUES ("
-                        + "25,5,20,5,10,4,1,1,'en_US',1,1,0);";
+                        + "25,5,20,5,10,4,1,1,'en_US',1,1,0,0);";
                 update(insertPreferencesSQL);
             }
         } catch (SQLException e) {

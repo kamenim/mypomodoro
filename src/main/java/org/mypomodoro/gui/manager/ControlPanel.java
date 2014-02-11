@@ -12,7 +12,7 @@ public class ControlPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    public ControlPanel(ListPane activitiesPane, ListPane todoPane) {
+    public ControlPanel(ListPanel activitiesPane, ListPanel todoPane) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 

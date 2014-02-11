@@ -9,14 +9,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.DefaultCaret;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -24,10 +21,9 @@ import org.mypomodoro.util.Labels;
  *
  * @author Phil Karoo
  */
-public class InformationPanel extends JPanel implements ActivityInformation {
+public class InformationPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JTextArea informationArea = new JTextArea();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final ToDoListPanel panel;
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -121,20 +117,15 @@ public class InformationPanel extends JPanel implements ActivityInformation {
     }
 
     @Override
-    public void showInfo(Activity activity) {
+    public void selectInfo(Activity activity) {
         //panel.refreshIconLabels();
         String text = Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
                 + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
                 + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
                 + "\n" + Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
-        informationArea.setText(text);
+        //informationArea.setText(text);
         // disable auto scrolling
-        informationArea.setCaretPosition(0);
-    }
-
-    @Override
-    public void clearInfo() {
-        informationArea.setText("");
+        //informationArea.setCaretPosition(0);
     }
 
     public JLabel getIconLabel() {

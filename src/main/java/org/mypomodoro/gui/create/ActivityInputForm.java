@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.JComboBox;
@@ -23,6 +25,9 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import static org.mypomodoro.util.TimeConverter.calculateEffectiveHours;
+import static org.mypomodoro.util.TimeConverter.calculatePlainHours;
+import static org.mypomodoro.util.TimeConverter.convertToTime;
 
 public class ActivityInputForm extends JPanel {
 
@@ -41,6 +46,7 @@ public class ActivityInputForm extends JPanel {
     protected final JXDatePicker datePicker = new JXDatePicker(
             Labels.getLocale());
     protected int activityId = -1;
+    protected final FormLabel timingLabel = new FormLabel("");
 
     public ActivityInputForm() {
         this(0);
@@ -61,8 +67,9 @@ public class ActivityInputForm extends JPanel {
     protected void addForm(int gridy) {
         addDate(gridy);
         addName(++gridy);
-        addEstimatedPoms(++gridy);
         addType(++gridy);
+        addEstimatedPoms(++gridy);
+        addTiming(++gridy);
         addAuthor(++gridy);
         addPlace(++gridy);
         addDescription(++gridy);
@@ -95,27 +102,6 @@ public class ActivityInputForm extends JPanel {
         addTextField(nameField);
     }
 
-    protected void addEstimatedPoms(int gridy) {
-        // init estimated Pomodoros combo box
-        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
-        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = (i + 1) + "";
-        }
-        estimatedPomodoros = new JComboBox(items);
-        // Estimated Poms Description and TextField
-        ++gridy;
-        c.gridx = 0;
-        c.gridy = gridy;
-        c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("Common.Estimated pomodoros")
-                + "*: "), c);
-        c.gridx = 1;
-        c.gridy = gridy;
-        c.weighty = 0.5;
-        estimatedPomodoros.setBackground(ColorUtil.WHITE);
-        add(estimatedPomodoros, c);
-    }
-
     protected void addType(int gridy) {
         types = new TypeComboBox();
         // Type Label and Combo box        
@@ -133,6 +119,47 @@ public class ActivityInputForm extends JPanel {
         types.setEditable(true);
         types.setFont(new Font(types.getFont().getName(), Font.PLAIN, types.getFont().getSize()));
         add(types, c);
+    }
+
+    protected void addEstimatedPoms(int gridy) {
+        // init estimated Pomodoros combo box
+        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+            items[i] = (i + 1) + "";
+        }
+        estimatedPomodoros = new JComboBox(items);
+        displayTiming(1); // default estimate = 1 pomodoro
+        // Estimated Poms Description and TextField
+        ++gridy;
+        c.gridx = 0;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        add(new FormLabel(Labels.getString("Common.Estimated pomodoros") + "*: "), c);
+        c.gridx = 1;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        estimatedPomodoros.setBackground(ColorUtil.WHITE);
+        estimatedPomodoros.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                int estimate = estimatedPomodoros.getSelectedIndex() + 1;
+                displayTiming(estimate);
+            }
+        });
+        add(estimatedPomodoros, c);        
+    }
+
+    protected void addTiming(int gridy) {
+        ++gridy;
+        c.gridx = 0;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        add(new FormLabel(Labels.getString("Common.Estimated length") + ": "), c);
+        c.gridx = 1;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        add(timingLabel, c);
     }
 
     protected void addAuthor(int gridy) {
@@ -161,7 +188,6 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        c.weightx = 0.0;
         add(new FormLabel(Labels.getString("Common.Place") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
@@ -284,4 +310,10 @@ public class ActivityInputForm extends JPanel {
         String todayFormat = DateUtil.getFormatedDate(new Date());
         return datePickerFormat.equalsIgnoreCase(todayFormat);
     }
+
+    private void displayTiming(int estimatePomodoros) {
+        String effectiveHours = convertToTime(calculateEffectiveHours(estimatePomodoros));
+        String plainHours = convertToTime(calculatePlainHours(estimatePomodoros));
+        timingLabel.setText(effectiveHours + " (effective hours) / " + plainHours + " (plain hours)");
+    }    
 }

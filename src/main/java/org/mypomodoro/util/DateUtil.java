@@ -2,7 +2,6 @@ package org.mypomodoro.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -19,7 +18,7 @@ public class DateUtil {
     private static final String EN_timePattern = "hh:mm a"; // AM/PM
 
     public DateUtil(Locale locale) {
-        this.locale = locale;
+        DateUtil.locale = locale;
     }
 
     public static Locale getLocale() {
@@ -57,5 +56,11 @@ public class DateUtil {
     public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         return new SimpleDateFormat(datePattern + " " + timePattern).parse(formatedDateTime);
+    }
+    
+    public boolean isDateToday(Date date) {
+        String datePickerFormat = DateUtil.getFormatedDate(date);
+        String todayFormat = DateUtil.getFormatedDate(new Date());
+        return datePickerFormat.equalsIgnoreCase(todayFormat);
     }
 }

@@ -13,7 +13,7 @@ import javax.swing.event.ChangeListener;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
-public class TimerValueSlider extends JPanel {
+public final class TimerValueSlider extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final JSlider slider;
@@ -68,5 +68,10 @@ public class TimerValueSlider extends JPanel {
         } else {
             slider.setBackground(ColorUtil.GREEN);
         }
+    }
+    
+    public void changeSlider(int max) {
+        slider.setMaximum(max);
+        slider.repaint();
     }
 }

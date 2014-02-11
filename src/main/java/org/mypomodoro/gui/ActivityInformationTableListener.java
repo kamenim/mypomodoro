@@ -29,7 +29,8 @@ public class ActivityInformationTableListener implements ListSelectionListener {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
             if (activity != null) {
-                information.showInfo(activity);
+                information.selectInfo(activity);
+                information.showInfo();
             }
         } else {
             information.clearInfo();
