@@ -12,7 +12,6 @@ import org.mypomodoro.gui.todo.Pomodoro;
 /**
  * Mute sound button
  *
- * @author Phil Karoo
  */
 public class MuteButton extends JButton {
 

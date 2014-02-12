@@ -7,7 +7,6 @@ import javax.swing.event.PopupMenuListener;
 /**
  * Combo box of types
  *
- * @author Phil Karoo
  */
 public class TypeComboBox extends AbstractComboBox {
 

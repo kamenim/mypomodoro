@@ -7,7 +7,6 @@ import javax.swing.event.PopupMenuListener;
 /**
  * Combo box of places
  *
- * @author Phil Karoo
  */
 public class PlaceComboBox extends AbstractComboBox {
 

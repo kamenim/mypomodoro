@@ -17,7 +17,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel that displays comment on the current Report and allows editing it
  *
- * @author Phil Karoo
  */
 public class CommentPanel extends ActivityInformationPanel {
 
@@ -64,12 +63,11 @@ public class CommentPanel extends ActivityInformationPanel {
     }
     
     @Override
-    public void selectInfo(Activity activity) {
-        textArray.clear();
-        textArray.add(activity.getNotes());
+    public void selectInfo(Activity activity) {        
+        textMap.put("comment", activity.getNotes());
     }
 
-    @Override
+    /*@Override
     public void clearInfo() {
-    }
+    }*/
 }

@@ -30,8 +30,6 @@ import org.mypomodoro.util.Labels;
  * pomodoro timer and a break timer, each looping into the other without
  * stopping.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class ToDoListPanel extends JPanel {
 

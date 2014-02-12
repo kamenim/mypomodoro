@@ -5,7 +5,6 @@ import java.awt.Color;
 /**
  * Color
  *
- * @author Phil Karoo
  */
 public class ColorUtil {
 

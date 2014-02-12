@@ -5,7 +5,6 @@ import javax.swing.JButton;
 /**
  * Template button
  *
- * @author Phil Karoo
  */
 public class AbstractPomodoroButton extends JButton {
 

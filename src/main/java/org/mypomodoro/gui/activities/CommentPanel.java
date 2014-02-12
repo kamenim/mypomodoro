@@ -17,7 +17,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel that displays comment on the current Activity and allows editing it
  *
- * @author Phil Karoo
  */
 public class CommentPanel extends ActivityInformationPanel {
 
@@ -64,29 +63,26 @@ public class CommentPanel extends ActivityInformationPanel {
     }
 
     @Override
-    public void selectInfo(Activity activity) {
-        textArray.clear();
+    public void selectInfo(Activity activity) {        
         // template for user stories and epics
         if (ControlPanel.preferences.getAgileMode()
                 && activity.getNotes().trim().length() == 0
                 && activity.isStory()) {
-            textArray.add("Story line" + "\n");
-            textArray.add("-------------" + "\n");
-            textArray.add("As a <user role>, I want to <action> in order to <purpose>" + "\n\n");
-            textArray.add("User acceptance criteria" + "\n");
-            textArray.add("----------------------------------" + "\n");
-            textArray.add("* " + "\n");
-            textArray.add("* " + "\n\n");
-            textArray.add("Test cases" + "\n");
-            textArray.add("----------------" + "\n");
-            textArray.add("* " + "\n");
-            textArray.add("* ");
+            StringBuilder text = new StringBuilder();
+            text.append("Story line" + "\n");
+            text.append("-------------" + "\n");
+            text.append("As a <user role>, I want to <action> in order to <purpose>" + "\n\n");
+            text.append("User acceptance criteria" + "\n");
+            text.append("----------------------------------" + "\n");
+            text.append("* " + "\n");
+            text.append("* " + "\n\n");
+            text.append("Test cases" + "\n");
+            text.append("----------------" + "\n");
+            text.append("* " + "\n");
+            text.append("* ");
+            textMap.put("comment", text.toString());
         } else {
-            textArray.add(activity.getNotes());
+            textMap.put("comment", activity.getNotes());
         }
-    }
-
-    @Override
-    public void clearInfo() {
     }
 }

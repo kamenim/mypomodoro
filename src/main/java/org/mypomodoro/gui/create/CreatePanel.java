@@ -26,8 +26,6 @@ import org.mypomodoro.util.Labels;
 /**
  * GUI for creating a new Activity and store to data layer.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class CreatePanel extends JPanel {
 

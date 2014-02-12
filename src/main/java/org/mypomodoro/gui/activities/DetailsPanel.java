@@ -2,7 +2,6 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -10,9 +9,6 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteAllButton;
 import org.mypomodoro.buttons.DeleteButton;
-import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.DateUtil;
-import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Pomodoro
@@ -62,33 +58,5 @@ public class DetailsPanel extends ActivityInformationPanel {
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
-    }
-
-    @Override
-    public void selectInfo(Activity activity) {
-        String text = Labels.getString("Common.Date") + ": ";
-        if (activity.isUnplanned()) {
-            text += "U [";
-        }
-        text += DateUtil.getFormatedDate(activity.getDate());
-        if (activity.isUnplanned()) {
-            text += "]";
-        }
-        text += "\n" + Labels.getString("Common.Title") + ": "
-                + activity.getName() + "\n"
-                + Labels.getString("Common.Estimated pomodoros") + ": "
-                + activity.getEstimatedPoms();
-        if (activity.getOverestimatedPoms() > 0) {
-            text += " + " + activity.getOverestimatedPoms();
-        }
-        text += "\n" + Labels.getString("Common.Type") + ": "
-                + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n" + Labels.getString("Common.Author")
-                + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n"
-                + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
-                + "\n" + Labels.getString("Common.Description") + ": "
-                + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());       
-        //informationArea.setText(text);
-        // disable auto scrolling
-        //informationArea.setCaretPosition(0);
     }
 }

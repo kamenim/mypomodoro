@@ -11,6 +11,8 @@ import org.mypomodoro.buttons.DeleteAllReportButton;
 import org.mypomodoro.buttons.DeleteReportButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
+import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Report
@@ -60,5 +62,15 @@ public class InformationPanel extends ActivityInformationPanel implements Activi
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
-    } 
+    }
+    
+    @Override
+    public void selectInfo(Activity activity) {
+        super.selectInfo(activity);
+        textMap.put("real", Labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms() + "\n");
+        textMap.put("diffi", Labels.getString("ReportListPanel.Diff I") + ": " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "\n");
+        textMap.put("diffii", Labels.getString("ReportListPanel.Diff II") + ": " + (activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "") + "\n");
+        textMap.put("internal", Labels.getString("ReportListPanel.Internal Interruptions") + ": " + activity.getNumInternalInterruptions() + "\n");
+        textMap.put("external", Labels.getString("ReportListPanel.External Interruptions") + ": " + activity.getNumInterruptions() + "\n");
+    }
 }

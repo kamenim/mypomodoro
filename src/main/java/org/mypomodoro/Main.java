@@ -24,9 +24,7 @@ import org.mypomodoro.util.RestartMac;
 
 /**
  * Main Application Starter
- *
- * @author Brian Wetzel
- * @author Phil Karoo
+ * 
  */
 public class Main {
 

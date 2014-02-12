@@ -4,9 +4,8 @@ import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
- *
- * @author Brian Wetzel
- * @author Phil Karoo
+ * ToDo list
+ * 
  */
 public class ToDoList extends AbstractActivities {
 

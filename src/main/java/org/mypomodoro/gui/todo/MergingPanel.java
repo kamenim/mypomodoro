@@ -19,7 +19,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel that allows the merging of ToDos
  *
- * @author Phil Karoo
  */
 public class MergingPanel extends CreatePanel {
 

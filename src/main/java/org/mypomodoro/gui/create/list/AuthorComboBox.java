@@ -7,7 +7,6 @@ import javax.swing.event.PopupMenuListener;
 /**
  * Combo box of authors
  *
- * @author Phil Karoo
  */
 public class AuthorComboBox extends AbstractComboBox {
 

@@ -10,7 +10,6 @@ import javax.swing.JList;
 /**
  * Template list combo box
  *
- * @author Phil Karoo
  */
 public class AbstractComboBox extends JComboBox {
 

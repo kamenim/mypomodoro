@@ -16,9 +16,8 @@ import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 
 /**
- *
- * @author Jordan
- * @author Phil Karoo
+ * Database
+ * 
  */
 public class Database {
 

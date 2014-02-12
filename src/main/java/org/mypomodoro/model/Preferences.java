@@ -7,7 +7,6 @@ import org.mypomodoro.util.DateUtil;
 /**
  * Preference Object stores all user preferences.
  *
- * @author Phil Karoo
  */
 public class Preferences {
 

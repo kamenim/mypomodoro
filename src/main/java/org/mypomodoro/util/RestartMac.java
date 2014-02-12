@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  *      RestartMac restart = new RestartMac(1);
  * </pre>
  *
- * @author Paul Barton
  */
 public class RestartMac {
 

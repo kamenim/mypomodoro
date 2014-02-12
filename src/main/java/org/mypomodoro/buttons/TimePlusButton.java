@@ -12,7 +12,6 @@ import org.mypomodoro.gui.todo.Pomodoro;
 /**
  * Time plus button
  *
- * @author Phil Karoo
  */
 public class TimePlusButton extends JButton {
 

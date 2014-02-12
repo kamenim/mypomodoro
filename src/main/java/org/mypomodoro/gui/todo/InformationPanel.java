@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -19,7 +20,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel that displays information on the selected Pomodoro
  *
- * @author Phil Karoo
  */
 public class InformationPanel extends ActivityInformationPanel {
 
@@ -118,14 +118,14 @@ public class InformationPanel extends ActivityInformationPanel {
 
     @Override
     public void selectInfo(Activity activity) {
-        //panel.refreshIconLabels();
-        String text = Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
-                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
-                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace())
-                + "\n" + Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription());
-        //informationArea.setText(text);
-        // disable auto scrolling
-        //informationArea.setCaretPosition(0);
+        super.selectInfo(activity);
+        textMap.remove("date");
+        textMap.remove("title");
+        textMap.remove("estimated");
+        if (ControlPanel.preferences.getAgileMode()) {
+            textMap.remove("storypoints");
+            textMap.remove("iteration");
+        }
     }
 
     public JLabel getIconLabel() {

@@ -19,7 +19,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel that allows overestimating the number of pomodoros of the current ToDo
  *
- * @author Phil Karoo
  */
 public class OverestimationPanel extends JPanel {
 

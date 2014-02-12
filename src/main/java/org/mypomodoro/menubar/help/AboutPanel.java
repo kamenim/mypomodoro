@@ -29,7 +29,6 @@ import org.mypomodoro.util.Labels;
  * GUI for myPomodoro about menu. Using JDialog to remove minimize and maximize
  * icons
  *
- * @author Phil Karoo
  */
 public class AboutPanel extends JDialog {
 
