@@ -25,15 +25,11 @@ import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * This class just abstracts a JPanel for jlist and a information panel for the
- * items in the list.
- *
- * @author nikolavp
- * @author Phil Karoo
+ * items in the list. 
  *
  */
 public class ListPanel extends ActivityInformationPanel {
@@ -94,30 +90,7 @@ public class ListPanel extends ActivityInformationPanel {
         add(new JScrollPane(internalActivitiesList), c);
         internalActivitiesList.addListSelectionListener(new ActivityInformationListListener(
                 this));
-    }
-
-    @Override
-    public void selectInfo(Activity activity) {
-        String text = Labels.getString("Common.Date") + ": ";
-        if (activity.isUnplanned()) {
-            text += "U [";
-        }
-        text += DateUtil.getFormatedDate(activity.getDate());
-        if (activity.isUnplanned()) {
-            text += "]";
-        }
-        text += "\n" + Labels.getString("Common.Title") + ": " + activity.getName()
-                + "\n" + Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms();
-        if (activity.getOverestimatedPoms() > 0) {
-            text += " + " + activity.getOverestimatedPoms();
-        }
-        text += "\n" + Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType())
-                + "\n" + Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor())
-                + "\n" + Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace());
-        //informationArea.setText(text);
-        // disable auto scrolling
-        //informationArea.setCaretPosition(0);
-    }
+    }    
 
     public void removeActivity(Activity activity) {
         list.remove(activity);

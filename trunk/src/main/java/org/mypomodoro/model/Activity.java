@@ -15,8 +15,6 @@ import org.mypomodoro.util.DateUtil;
  * Activity Objects stores all the required information about tasks in the
  * Pomodoro time management system.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class Activity {
     // ATTRIBUTES

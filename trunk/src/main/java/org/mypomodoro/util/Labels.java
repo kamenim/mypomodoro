@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 /**
  * Labels bundle
  *
- * @author Phil Karoo
  */
 public class Labels {
 

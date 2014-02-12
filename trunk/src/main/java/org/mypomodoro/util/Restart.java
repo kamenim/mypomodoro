@@ -14,7 +14,6 @@ import org.mypomodoro.Main;
  * support non Hotspot VM implementation, EXE wrapper file Also, support for
  * spaces and special characters in the path
  *
- * @author Phil Karoo
  */
 public class Restart {
 
@@ -39,7 +38,7 @@ public class Restart {
                 String java = System.getProperty("java.home") + "/bin/java";
                 // vm arguments
                 List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-                StringBuffer vmArgsOneLine = new StringBuffer();
+                StringBuilder vmArgsOneLine = new StringBuilder();
                 for (String arg : vmArguments) {
                     // if it's the agent argument : we ignore it otherwise the
                     // address of the old application and the new one will be in conflict
@@ -49,7 +48,7 @@ public class Restart {
                     }
                 }
                 // init the command to execute, add the vm args
-                final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine);
+                final StringBuilder cmd = new StringBuilder("\"" + java + "\" " + vmArgsOneLine);
 
                 // program main and program arguments
                 String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");

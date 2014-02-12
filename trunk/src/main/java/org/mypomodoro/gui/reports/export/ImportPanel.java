@@ -12,7 +12,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,7 +32,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Panel to import reports
  *
- * @author Phil Karoo
  */
 public class ImportPanel extends JPanel {
 

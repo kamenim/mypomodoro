@@ -24,8 +24,6 @@ import org.mypomodoro.menubar.ViewMenu;
 /**
  * Application GUI for myPomodoro.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class MyPomodoroView extends JFrame {
 

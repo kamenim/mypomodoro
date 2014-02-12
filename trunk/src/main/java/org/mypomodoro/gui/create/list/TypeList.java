@@ -10,7 +10,6 @@ import org.mypomodoro.gui.ControlPanel;
 /**
  * List of types of activities and reports
  *
- * @author Phil Karoo
  */
 public class TypeList {
 

@@ -4,8 +4,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- *
- * @author Phil Karoo
+ * Icon list listener
+ * 
  */
 public class ToDoIconListListener implements ListSelectionListener {
 

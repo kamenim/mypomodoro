@@ -8,7 +8,6 @@ import java.util.Locale;
 /**
  * Date utility class
  *
- * @author Phil Karoo
  */
 public class DateUtil {
 

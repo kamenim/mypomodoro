@@ -8,9 +8,8 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
- *
- * @author Brian Wetzel
- * @author Phil Karoo
+ * Manager panel
+ * 
  */
 public class ManagerPanel extends JPanel {
 

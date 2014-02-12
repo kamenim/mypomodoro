@@ -9,8 +9,8 @@ import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 
 /**
- *
- * @author Phil Karoo
+ * Activity edit listener
+ * 
  */
 public class ActivityEditTableListener implements ListSelectionListener {
 

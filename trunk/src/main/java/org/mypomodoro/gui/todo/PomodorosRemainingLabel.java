@@ -7,8 +7,8 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
- *
- * @author Phil Karoo
+ * Remaining label
+ * 
  */
 public class PomodorosRemainingLabel {
 

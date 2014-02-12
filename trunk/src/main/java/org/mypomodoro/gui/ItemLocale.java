@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 import org.mypomodoro.Main;
 
 /**
- *
- * @author Phil Karoo
+ * Locale
+ * 
  */
 public class ItemLocale {
 

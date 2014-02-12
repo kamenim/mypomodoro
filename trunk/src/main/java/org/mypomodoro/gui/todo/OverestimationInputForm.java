@@ -14,8 +14,8 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- *
- * @author Phil Karoo
+ * Overestimation input form
+ * 
  */
 public class OverestimationInputForm extends JPanel {
 

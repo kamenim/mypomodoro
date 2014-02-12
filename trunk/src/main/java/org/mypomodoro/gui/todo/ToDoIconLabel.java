@@ -10,8 +10,8 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CompoundIcon;
 
 /**
- *
- * @author Phil Karoo
+ * Icon label
+ * 
  */
 public class ToDoIconLabel {
 

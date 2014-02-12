@@ -36,7 +36,6 @@ import org.mypomodoro.util.Labels;
  * Code examples (JFreeChart) :
  * http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
  *
- * @author Phil Karoo
  */
 public class BurndownChart extends JPanel {
 

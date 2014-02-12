@@ -10,7 +10,6 @@ import org.mypomodoro.util.Restart;
 /**
  * Restart button
  *
- * @author Phil Karoo
  */
 public class RestartButton extends AbstractPomodoroButton {
 

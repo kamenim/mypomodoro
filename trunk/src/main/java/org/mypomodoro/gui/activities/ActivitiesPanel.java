@@ -46,8 +46,6 @@ import org.mypomodoro.util.Labels;
  * save cell edits to the ActivityCollection which can then be saved to the data
  * layer.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class ActivitiesPanel extends JPanel {
 

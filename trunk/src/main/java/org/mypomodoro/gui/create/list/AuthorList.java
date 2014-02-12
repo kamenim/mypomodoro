@@ -8,7 +8,6 @@ import org.mypomodoro.db.ActivitiesDAO;
 /**
  * List of authors of activities and reports
  *
- * @author Phil Karoo
  */
 public class AuthorList {
 

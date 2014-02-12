@@ -1,11 +1,9 @@
 package org.mypomodoro.gui.reports.export;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +25,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Export form
  *
- * @author Phil Karoo
  */
 public class ExportInputForm extends JPanel {
 

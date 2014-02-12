@@ -15,7 +15,6 @@ import org.mypomodoro.util.Labels;
 /**
  * GUI for editing an existing activity and store to data layer.
  *
- * @author Phil Karoo
  */
 public class EditPanel extends CreatePanel {
 

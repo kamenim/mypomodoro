@@ -9,17 +9,13 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -28,7 +24,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import org.mypomodoro.Main;
 
@@ -36,21 +31,17 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.ControlPanel;
-import org.mypomodoro.gui.manager.ListPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * GUI for viewing the Report List.
  *
- * @author Brian Wetzel
- * @author Phil Karoo
  */
 public class ReportListPanel extends JPanel {
 
@@ -205,16 +196,16 @@ public class ReportListPanel extends JPanel {
                 });
     }
 
-    private void showSelectedItemDetails(InformationPanel informationArea) {
+    private void showSelectedItemDetails(InformationPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
-                        table, informationArea, ID_KEY));
+                        table, informationPanel, ID_KEY));
     }
 
-    private void showSelectedItemEdit(EditPanel editPane) {
+    private void showSelectedItemEdit(EditPanel editPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ReportList.getList(), table,
-                        editPane, ID_KEY));
+                        editPanel, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {

@@ -15,7 +15,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Move button
  *
- * @author Phil Karoo
  */
 public class MoveButton extends AbstractPomodoroButton {
 

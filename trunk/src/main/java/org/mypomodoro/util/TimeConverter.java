@@ -5,7 +5,6 @@ import org.mypomodoro.gui.ControlPanel;
 /**
  * Time converter utility class
  *
- * @author Phil Karoo
  */
 public class TimeConverter {
     

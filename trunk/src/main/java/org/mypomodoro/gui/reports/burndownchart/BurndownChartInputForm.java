@@ -31,7 +31,6 @@ import org.mypomodoro.util.Labels;
 /**
  * Export form
  *
- * @author Phil Karoo
  */
 public class BurndownChartInputForm extends JPanel {
 

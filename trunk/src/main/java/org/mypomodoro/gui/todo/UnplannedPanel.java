@@ -19,7 +19,6 @@ import org.mypomodoro.util.Labels;
  * Panel that allows creating unplanned activities and adding interruptions to
  * the current ToDo
  *
- * @author Phil Karoo
  */
 public class UnplannedPanel extends CreatePanel {
 

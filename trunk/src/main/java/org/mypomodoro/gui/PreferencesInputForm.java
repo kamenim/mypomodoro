@@ -17,8 +17,8 @@ import javax.swing.border.TitledBorder;
 import org.mypomodoro.util.Labels;
 
 /**
- *
- * @author Phil Karoo
+ * Preferences input form
+ * 
  */
 public class PreferencesInputForm extends JPanel {
 
