@@ -30,6 +30,18 @@ public class ToDoIconLabel {
         int numInternalInterruptions = activity.getNumInternalInterruptions();
         int numExternalInterruptions = activity.getNumInterruptions();
         int plusSign = 1;
+
+        // Trim (add three points at the end of the row) when too many pomodoros
+        boolean trimIconLabel = false;
+        int nbMaxPoms = 10;
+        if (estimatedPoms + overestimatedPoms > nbMaxPoms) {
+            if (estimatedPoms > nbMaxPoms) {
+                estimatedPoms = nbMaxPoms;                
+            }
+            overestimatedPoms = (overestimatedPoms > nbMaxPoms - estimatedPoms)? nbMaxPoms - estimatedPoms : overestimatedPoms; 
+            trimIconLabel = true;
+        }
+        
         int arraySize = estimatedPoms;
         if (overestimatedPoms > 0) {
             arraySize += overestimatedPoms + plusSign;
@@ -40,7 +52,11 @@ public class ToDoIconLabel {
         if (numExternalInterruptions > 0) {
             arraySize += numExternalInterruptions;
         }
+        if (trimIconLabel) {
+            arraySize += 3; // 3 trailing points
+        }
         Icon[] icons = new Icon[arraySize];
+                
         // Estimated pomodoros
         for (int i = 0; i < estimatedPoms; i++) {
             if (i < realPoms) {
@@ -49,6 +65,7 @@ public class ToDoIconLabel {
                 icons[i] = new ImageIcon(Main.class.getResource("/images/square.png"));
             }
         }
+        
         // Overestimated pomodoros
         if (overestimatedPoms > 0) {
             // Plus sign
@@ -62,22 +79,30 @@ public class ToDoIconLabel {
                 }
             }
         }
+        
+        // Add three points at the end of the row when necessary
+        if (trimIconLabel) {
+            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0); i < arraySize; i++) {
+                icons[i] = new ImageIcon(Main.class.getResource("/images/point.png"));
+            }
+        }
+        
         // Internal interruption
         if (numInternalInterruptions > 0) {
-            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0); i < arraySize; i++) {
+            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0) + (trimIconLabel? 3 : 0); i < arraySize; i++) {
                 icons[i] = new ImageIcon(Main.class.getResource("/images/quote.png"));
             }
         }
         // External interruption
         if (numExternalInterruptions > 0) {
-            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0) + numInternalInterruptions; i < arraySize; i++) {
+            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0) + (trimIconLabel? 3 : 0) + numInternalInterruptions; i < arraySize; i++) {
                 icons[i] = new ImageIcon(Main.class.getResource("/images/dash.png"));
             }
-        }
+        }        
         CompoundIcon icon = new CompoundIcon(2, icons);
         iconLabel.setIcon(icon);
         iconLabel.setVerticalTextPosition(JLabel.CENTER);
-        iconLabel.setHorizontalTextPosition(JLabel.LEFT);
+        iconLabel.setHorizontalTextPosition(JLabel.LEFT);        
     }
 
     static public void clearIconLabel(JLabel iconLabel) {
