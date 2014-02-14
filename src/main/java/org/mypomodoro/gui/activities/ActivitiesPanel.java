@@ -32,6 +32,7 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.AbstractActivities;
@@ -70,177 +71,34 @@ public class ActivitiesPanel extends JPanel {
         addTabPane(gbc);
     }
 
-    private void addActivitiesTable(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.5;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(new JScrollPane(table), gbc);
-
-        recordSelectedRowId();
-    }
-
-    private void addTabPane(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane controlPane = new JTabbedPane();
-        controlPane.setMinimumSize(PANE_DIMENSION);
-        controlPane.setPreferredSize(PANE_DIMENSION);
-        DetailsPanel detailsPane = new DetailsPanel(table);
-        controlPane.add(Labels.getString("Common.Details"), detailsPane);
-        EditPanel editPanel = new EditPanel();
-        controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment"), commentPanel);
-        ImportPanel importPanel = new ImportPanel(true);
-        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
-        ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
-        controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        add(controlPane, gbc);
-
-        showSelectedItemDetails(detailsPane);
-        showSelectedItemEdit(editPanel);
-        showSelectedItemComment(commentPanel);
-    }
-
-    private static TableModel getTableModel() {
-        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(
-                columnNames, ActivityList.getList()) {
-
-                    private static final long serialVersionUID = 20110814L;
-
-                    @Override
-                    protected void populateData(AbstractActivities activities) {
-                        int rowIndex = activities.size();
-                        int colIndex = columnNames.length;
-                        tableData = new Object[rowIndex][colIndex];
-                        Iterator<Activity> iterator = activities.iterator();
-                        for (int i = 0; iterator.hasNext(); i++) {
-                            Activity a = iterator.next();
-                            tableData[i][0] = a.isUnplanned();
-                            tableData[i][1] = a.getDate();
-                            tableData[i][2] = a.getName();                            
-                            tableData[i][3] = a.getType();
-                            String poms = "" + a.getEstimatedPoms();
-                            if (a.getOverestimatedPoms() > 0) {
-                                poms += " + " + a.getOverestimatedPoms();
-                            }
-                            tableData[i][4] = poms;
-                            tableData[i][5] = a.getId();
-                        }
-                    }
-
-                    @Override
-                    public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        return columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2;
-                    }
-                };
-
-        tableModel.addTableModelListener(new TableModelListener() {
-
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                int row = e.getFirstRow();
-                int column = e.getColumn();
-                TableModel model = (TableModel) e.getSource();
-                Object data = model.getValueAt(row, column);
-                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                Activity act = Activity.getActivity(ID.intValue());
-                String sData = (String) data;
-                // Title (can't be empty)
-                if (column == ID_KEY - 3 && sData.length() > 0) {
-                    act.setName(sData);
-                    act.databaseUpdate();
-                } else if (column == ID_KEY - 2) { // Type
-                    act.setType(sData);
-                    act.databaseUpdate();
-                }
-                ActivityList.getList().update(); // always refresh list
-            }
-        });
-
-        return tableModel;
-    }
-
-    private void recordSelectedRowId() {
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        int row = table.getSelectedRow();
-                        if (row > -1) {
-                            selectedActivityId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
-                            selectedRowIndex = row;
-                        }
-                    }
-                });
-    }
-
-    private void showSelectedItemDetails(DetailsPanel detailsPane) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ActivityList.getList(),
-                        table, detailsPane, ID_KEY));
-    }
-
-    private void showSelectedItemEdit(EditPanel editPane) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ActivityList.getList(), table,
-                        editPane, ID_KEY));
-    }
-
-    private void showSelectedItemComment(CommentPanel commentPanel) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ActivityList.getList(),
-                        table, commentPanel, ID_KEY));
-    }
-
-    public void refresh() {
-        try {
-            table.setModel(getTableModel());
-        } catch (Exception e) {
-            // do nothing
-        }
-        init();
-    }
-
-    static class CustomTableRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            return renderer;
-        }
-    }
-
-    static class DateRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
-            return renderer;
-        }
-    }
-
     private void init() {
+        // activate drag and drop
+        //table.setDragEnabled(true);
+        //table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        //table.setDropMode(DropMode.INSERT_ROWS);
+        //table.setTransferHandler(new TableRowTransferHandler(table));
+
+        table.setRowHeight(26);
+
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
-        DateRenderer dd = new DateRenderer();
+        // Date renderer
+        DateRenderer dr = new DateRenderer();
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dd); // date (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dr); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr); // title
+        // type combo
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new ComboBoxCellRenderer((String[]) TypeList.getTypes().toArray(new String[0]))); // type        
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellEditor(new ComboBoxCellEditor((String[]) TypeList.getTypes().toArray(new String[0]))); // type
+        // Estimated combo
+        Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+            poms[i] = (i + 1);
+        }
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(poms)); // estimated
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(poms));
+        //table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr); // estimated
+
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
@@ -273,9 +131,188 @@ public class ActivitiesPanel extends JPanel {
             }
         });
         selectActivity();
-        setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString(ControlPanel.preferences.getAgileMode()?"ActivityListPanel.Agile.Backlog":"ActivityListPanel.Activity List") + " ("
-                + ActivityList.getListSize() + ")"));
+        String titleActivitiesList = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
+                + " (" + ActivityList.getListSize() + ")";
+        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
+                && ActivityList.getListSize() > 0) {
+            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ActivityList.getList().getStoryPoints();
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), titleActivitiesList));
+    }
+
+    private void addActivitiesTable(GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(new JScrollPane(table), gbc);
+
+        // Add listener to record selected row id
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        int row = table.getSelectedRow();
+                        if (row > -1) {
+                            selectedActivityId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
+                            selectedRowIndex = row;
+                        }
+                    }
+                });
+    }
+
+    private void addTabPane(GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        JTabbedPane controlPane = new JTabbedPane();
+        controlPane.setMinimumSize(PANE_DIMENSION);
+        controlPane.setPreferredSize(PANE_DIMENSION);
+        DetailsPanel detailsPane = new DetailsPanel(table);
+        controlPane.add(Labels.getString("Common.Details"), detailsPane);
+        EditPanel editPanel = new EditPanel();
+        controlPane.add(Labels.getString("Common.Edit"), editPanel);
+        CommentPanel commentPanel = new CommentPanel(this);
+        controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        ImportPanel importPanel = new ImportPanel(true);
+        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
+        ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
+        controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        add(controlPane, gbc);
+
+        showSelectedItemDetails(detailsPane);
+        showSelectedItemEdit(editPanel);
+        showSelectedItemComment(commentPanel);
+    }
+
+    private static TableModel getTableModel() {
+        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(
+                columnNames, ActivityList.getList()) {
+
+                    private static final long serialVersionUID = 20110814L;
+
+                    @Override
+                    protected void populateData(AbstractActivities activities) {
+                        int rowIndex = activities.size();
+                        int colIndex = columnNames.length;
+                        tableData = new Object[rowIndex][colIndex];
+                        Iterator<Activity> iterator = activities.iterator();
+                        for (int i = 0; iterator.hasNext(); i++) {
+                            Activity a = iterator.next();
+                            tableData[i][0] = a.isUnplanned();
+                            tableData[i][1] = a.getDate();
+                            tableData[i][2] = a.getName();
+                            tableData[i][3] = a.getType();
+                            /*String poms = "" + a.getEstimatedPoms();
+                             if (a.getOverestimatedPoms() > 0) {
+                             poms += " + " + a.getOverestimatedPoms();
+                             }*/
+                            Integer poms = new Integer(a.getEstimatedPoms());
+                            tableData[i][4] = poms;
+                            tableData[i][5] = a.getId();
+                        }
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        return columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
+                    }
+
+                    // this is mandatory to get columns with integers properly sorted
+                    @Override
+                    public Class getColumnClass(int column) {
+                        switch (column) {
+                            case 0:
+                                return Boolean.class;
+                            case 4:
+                                return Integer.class;
+                            default:
+                                return String.class;
+                        }
+                    }
+                };
+
+        // listener on editable cells
+        tableModel.addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                TableModel model = (TableModel) e.getSource();
+                Object data = model.getValueAt(row, column);
+                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                Activity act = Activity.getActivity(ID.intValue());
+                String sData = (String) data;
+                // Title (can't be empty)
+                if (column == ID_KEY - 3 && sData.length() > 0) {
+                    act.setName(sData);
+                    act.databaseUpdate();
+                } else if (column == ID_KEY - 2) { // Type
+                    act.setType(sData);
+                    act.databaseUpdate();
+                }
+                ActivityList.getList().update(); // always refresh list
+            }
+        });
+
+        return tableModel;
+    }
+
+    private void showSelectedItemDetails(DetailsPanel detailsPane) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityInformationTableListener(ActivityList.getList(),
+                        table, detailsPane, ID_KEY));
+    }
+
+    private void showSelectedItemEdit(EditPanel editPane) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityEditTableListener(ActivityList.getList(), table,
+                        editPane, ID_KEY));
+    }
+
+    private void showSelectedItemComment(CommentPanel commentPanel) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityInformationTableListener(ActivityList.getList(),
+                        table, commentPanel, ID_KEY));
+    }
+
+    public void refresh() {
+        try {
+            table.setModel(getTableModel());
+        } catch (Exception e) {
+            // do nothing
+        }
+        init();
+    }
+
+    // selected row BOLD
+    static class CustomTableRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            return renderer;
+        }
+    }
+
+    static class DateRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+            return renderer;
+        }
     }
 
     public void saveComment(String comment) {

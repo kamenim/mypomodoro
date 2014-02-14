@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ControlPanel;
 
 import org.mypomodoro.gui.manager.ListPanel;
 import org.mypomodoro.model.Activity;
@@ -39,29 +40,31 @@ public class MoveButton extends AbstractPomodoroButton {
         boolean alreadyAgreed = false;
         for (Activity selectedActivity : selectedActivities) {
             if (selectedActivity != null) {
-                if (selectedActivity.isActivity()) { // Not ToDo
-                    if (!selectedActivity.isDateToday()) {
-                        String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                        String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", selectedActivity.getName());
-                        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                title, JOptionPane.YES_NO_OPTION);
-                        if (reply == JOptionPane.NO_OPTION) {
-                            continue; // go to the next one
-                        } else if (reply == JOptionPane.CLOSED_OPTION) {
-                            break;
+                if (!ControlPanel.preferences.getAgileMode()) {
+                    if (selectedActivity.isActivity()) { // Not ToDo
+                        if (!selectedActivity.isDateToday()) {
+                            String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                            String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", selectedActivity.getName());
+                            int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                    title, JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.NO_OPTION) {
+                                continue; // go to the next one
+                            } else if (reply == JOptionPane.CLOSED_OPTION) {
+                                break;
+                            }
                         }
-                    }
-                    if (to.isMaxNbTotalEstimatedPomReached(selectedActivity) && !alreadyAgreed) {
-                        String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                        String message = Labels.getString(
-                                "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
-                        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                title, JOptionPane.YES_NO_OPTION);
-                        if (reply == JOptionPane.YES_OPTION) {
-                            alreadyAgreed = true;
-                        } else {
-                            break; // get out of the loop
+                        if (to.isMaxNbTotalEstimatedPomReached(selectedActivity) && !alreadyAgreed) {
+                            String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                            String message = Labels.getString(
+                                    "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
+                                    org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
+                            int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                    title, JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                alreadyAgreed = true;
+                            } else {
+                                break; // get out of the loop
+                            }
                         }
                     }
                 }

@@ -56,7 +56,7 @@ public class DateUtil {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         return new SimpleDateFormat(datePattern + " " + timePattern).parse(formatedDateTime);
     }
-    
+
     public boolean isDateToday(Date date) {
         String datePickerFormat = DateUtil.getFormatedDate(date);
         String todayFormat = DateUtil.getFormatedDate(new Date());

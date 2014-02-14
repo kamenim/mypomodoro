@@ -5,7 +5,7 @@ import javax.swing.event.ListSelectionListener;
 
 /**
  * Icon list listener
- * 
+ *
  */
 public class ToDoIconListListener implements ListSelectionListener {
 

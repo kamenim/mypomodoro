@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
@@ -136,13 +137,13 @@ public class MergingPanel extends CreatePanel {
             newActivity.setActualPoms(actualPoms);
         }
         if (mergingInputFormPanel.isDateToday()) {
-            message = Labels.getString("ToDoListPanel.Unplanned ToDo added to ToDo List");
+            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             // Today unplanned merge activity
             panel.getToDoList().add(newActivity);
             newActivity.databaseInsert();
             clearForm();
         } else {
-            message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
+            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);
             selectedToDos = null;
             mergingInputFormPanel.setToDoListTextArea("");

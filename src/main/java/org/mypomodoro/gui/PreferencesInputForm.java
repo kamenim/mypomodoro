@@ -18,7 +18,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Preferences input form
- * 
+ *
  */
 public class PreferencesInputForm extends JPanel {
 
@@ -65,7 +65,7 @@ public class PreferencesInputForm extends JPanel {
                 15, 30, unitMinute);
 
         int maxNbPomPerActivity = 7;
-        int initMaxNbPomPerActivity = 5; 
+        int initMaxNbPomPerActivity = 5;
         final int maxNbPomPerDay = 12;
         final int initMaxNbPomPerDay = 10;
         // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
@@ -172,13 +172,13 @@ public class PreferencesInputForm extends JPanel {
                 // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
                 if (agileModeBox.isSelected()) {
                     maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay * 2);
-                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() > 1?maxNbPomPerDaySlider.getSliderValue() * 2:1);
+                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() > 1 ? maxNbPomPerDaySlider.getSliderValue() * 2 : 1);
                 } else {
                     maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay);
                     maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() / 2);
                 }
                 controlPanel.enableSaveButton();
-                controlPanel.clearValidation();                
+                controlPanel.clearValidation();
             }
         });
 

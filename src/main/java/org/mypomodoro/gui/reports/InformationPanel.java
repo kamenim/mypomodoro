@@ -63,7 +63,7 @@ public class InformationPanel extends ActivityInformationPanel implements Activi
         informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
     }
-    
+
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);

@@ -53,9 +53,13 @@ public class ToDoJList extends JList {
 
     final public void init() {
         selectToDo();
-        setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString(ControlPanel.preferences.getAgileMode()?"ToDoListPanel.Agile.Iteration":"ToDoListPanel.ToDo List") + " ("
-                + ToDoList.getListSize() + ")"));
+        String title = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " ("
+                + ToDoList.getListSize() + ")";
+        if (ControlPanel.preferences.getAgileMode()
+                && toDoList.getListSize() > 0) {
+            title += " - " + Labels.getString("Agile.Common.Story Points") + ": " + toDoList.getStoryPoints();
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), title));
     }
 
     public void setSelectedRowIndex(int toDoId) {
@@ -93,7 +97,7 @@ public class ToDoJList extends JList {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             Activity toDo = (Activity) value;
-            renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms() + toDo.getOverestimatedPoms()) + ")");
+            renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + toDo.getEstimatedPoms() + (toDo.getOverestimatedPoms() > 0 ? " + " + toDo.getOverestimatedPoms() : "") + ")");
 
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (isSelected) {

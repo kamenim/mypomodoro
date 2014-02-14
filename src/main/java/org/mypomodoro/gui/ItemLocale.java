@@ -20,7 +20,7 @@ import org.mypomodoro.Main;
 
 /**
  * Locale
- * 
+ *
  */
 public class ItemLocale {
 

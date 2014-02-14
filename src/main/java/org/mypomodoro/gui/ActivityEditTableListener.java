@@ -10,7 +10,7 @@ import org.mypomodoro.model.Activity;
 
 /**
  * Activity edit listener
- * 
+ *
  */
 public class ActivityEditTableListener implements ListSelectionListener {
 

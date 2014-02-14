@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.mypomodoro.db.Database;
 import org.mypomodoro.gui.ControlPanel;
@@ -24,7 +25,7 @@ import org.mypomodoro.util.RestartMac;
 
 /**
  * Main Application Starter
- * 
+ *
  */
 public class Main {
 
@@ -64,20 +65,33 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
-                // deletes files created with RestartMac()
-                new RestartMac(1);
-            }
-        } catch (Exception ex) {
-            // Do nothing if we cannot set a nice ui look and feel
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+            // deletes files created with RestartMac()
+            new RestartMac(1);
+            return;
         }
         initLists();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
+                /* Substance look and feel not fully working with the following lines of code (enable dependency in pom.xml)  
+                 try {
+                 JFrame.setDefaultLookAndFeelDecorated(true);
+                 UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel());
+                 updateComponentTreeUI(gui);
+                 } catch (UnsupportedLookAndFeelException e) {*/
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException ex) {
+                    // cross platform look and feel is used by default by the JVM
+                } catch (InstantiationException ex) {
+                    // cross platform look and feel is used by default by the JVM
+                } catch (IllegalAccessException ex) {
+                    // cross platform look and feel is used by default by the JVM
+                } catch (UnsupportedLookAndFeelException ex) {
+                    // cross platform look and feel is used by default by the JVM
+                }
                 setUpAndShowGui();
             }
         });
@@ -88,6 +102,7 @@ public class Main {
 
             @Override
             public void run() {
+
                 TypeList.initTypes();
                 AuthorList.initAuthors();
                 PlaceList.initPlaces();
@@ -110,7 +125,6 @@ public class Main {
         if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
             gui.setAlwaysOnTop(true);
         }
-
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override

@@ -8,7 +8,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Remaining label
- * 
+ *
  */
 public class PomodorosRemainingLabel {
 

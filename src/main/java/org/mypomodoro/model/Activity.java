@@ -92,6 +92,19 @@ public class Activity {
      * Internal interruptions
      */
     private int numInternalInterruptions = 0;
+    /**
+     * Story points
+     */
+    private int storyPoints = -1;
+    /**
+     * Iteration
+     */
+    private String iteration = "";
+
+    /**
+     * Parent Id
+     */
+    private int parentId = -1;
 
     /**
      * Default Constructor
@@ -201,6 +214,9 @@ public class Activity {
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
             this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
+            this.storyPoints = rs.getInt("story_points");
+            this.iteration = rs.getString("iteration");
+            this.parentId = rs.getInt("parent_id");
         } catch (SQLException e) {
             System.err.println(e);
         }
@@ -271,6 +287,18 @@ public class Activity {
         return numInternalInterruptions;
     }
 
+    public int getStoryPoints() {
+        return storyPoints;
+    }
+
+    public String getIteration() {
+        return iteration;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
     // SETTERS
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
@@ -336,6 +364,18 @@ public class Activity {
         this.description = description;
     }
 
+    public void setStoryPoints(int storyPoints) {
+        this.storyPoints = storyPoints;
+    }
+
+    public void setIteration(String iteration) {
+        this.iteration = iteration;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
     /**
      * Determines if the activity contains valid data. Stores an ArrayList of
      * the boolean values, if any are false it returns false. This makes it
@@ -391,9 +431,9 @@ public class Activity {
     public boolean isFinished() {
         return actualPoms == estimatedPoms + overestimatedPoms;
     }
-    
+
     public boolean isStory() {
-        return ControlPanel.preferences.getAgileMode() && 
-                (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
+        return ControlPanel.preferences.getAgileMode()
+                && (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
     }
 }

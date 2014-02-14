@@ -33,7 +33,7 @@ public class ViewMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public ActivityListItem() {
-            super(Labels.getString(ControlPanel.preferences.getAgileMode()?"ViewMenu.Agile.Backlog":"ViewMenu.Activity List"));
+            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     ActionEvent.ALT_MASK));
@@ -108,7 +108,7 @@ public class ViewMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public ToDoListItem() {
-            super(Labels.getString(ControlPanel.preferences.getAgileMode()?"ViewMenu.Agile.Iteration":"ViewMenu.ToDo List"));
+            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
             // Adds Keyboard Shortcut Alt-T
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     ActionEvent.ALT_MASK));

@@ -95,7 +95,7 @@ public class ReportListPanel extends JPanel {
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel();
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(ReportList.getList());
@@ -132,10 +132,11 @@ public class ReportListPanel extends JPanel {
                             tableData[i][1] = currentActivity.getDate(); // date formated via custom renderer (DateRenderer)
                             tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
                             tableData[i][3] = currentActivity.getName();
-                            String poms = "" + currentActivity.getEstimatedPoms();
-                            if (currentActivity.getOverestimatedPoms() > 0) {
-                                poms += " + " + currentActivity.getOverestimatedPoms();
-                            }
+                            /*String poms = "" + currentActivity.getEstimatedPoms();
+                             if (currentActivity.getOverestimatedPoms() > 0) {
+                             poms += " + " + currentActivity.getOverestimatedPoms();
+                             }*/
+                            Integer poms = new Integer(currentActivity.getEstimatedPoms());
                             tableData[i][4] = poms;
                             tableData[i][5] = currentActivity.getActualPoms();
                             tableData[i][6] = currentActivity.getActualPoms()
@@ -149,10 +150,23 @@ public class ReportListPanel extends JPanel {
                         }
                     }
 
-                    // make Title and Type columns editable
+                    // make Title column editable
                     @Override
                     public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        return columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 1;
+                        return columnIndex == ID_KEY - 6;
+                    }
+
+                    // this is mandatory to get columns with integers properly sorted
+                    @Override
+                    public Class getColumnClass(int column) {
+                        switch (column) {
+                            case 0:
+                                return Boolean.class;
+                            case 4:
+                                return Integer.class;
+                            default:
+                                return String.class;
+                        }
                     }
                 };
 
@@ -300,9 +314,27 @@ public class ReportListPanel extends JPanel {
         String title = Labels.getString("ReportListPanel.Report List") + " ("
                 + ReportList.getListSize() + ")";
         if (ReportList.getListSize() > 0) {
-            title += " - " + Labels.getString("ReportListPanel.Accuracy") + " : " + getAccuracy() + "%";
+            title += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
+        }
+        if (ControlPanel.preferences.getAgileMode()
+                && ReportList.getListSize() > 0) {
+            title += " - " + Labels.getString("Agile.Common.Story Points") + ": " + getStoryPoints();
         }
         setBorder(new TitledBorder(new EtchedBorder(), title));
+    }
+
+    private int getStoryPoints() {
+        Iterator<Activity> act = ReportList.getList().iterator();
+        int storyPoints = 0;
+        int real = 0;
+        Activity activity;
+        while (act.hasNext()) {
+            activity = act.next();
+            if (activity.getStoryPoints() > 0) {
+                storyPoints += activity.getStoryPoints();
+            }
+        }
+        return storyPoints;
     }
 
     private int getAccuracy() {

@@ -1,11 +1,12 @@
 package org.mypomodoro.model;
 
+import java.util.Iterator;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  * ToDo list
- * 
+ *
  */
 public class ToDoList extends AbstractActivities {
 
@@ -54,6 +55,7 @@ public class ToDoList extends AbstractActivities {
         ActivitiesDAO.getInstance().completeAllTODOs();
         update();
     }
+
     /**
      * Promote the Activity at the desired index, by storing the value to be
      * replaced into a buffer and then switching the values. The root node

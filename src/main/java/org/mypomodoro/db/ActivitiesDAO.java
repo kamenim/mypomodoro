@@ -26,21 +26,25 @@ public class ActivitiesDAO {
     }
 
     public void insert(Activity newActivity) {
-        String insertSQL = "INSERT INTO activities VALUES ( " + "NULL, " + "'"
-                + newActivity.getName().replace("'", "''") + "', " + "'" + newActivity.getType().replace("'", "''")
-                + "', " + "'" + newActivity.getDescription().replace("'", "''") + "', " + "'"
-                + newActivity.getNotes().replace("'", "''") + "', " + "'"
-                + newActivity.getAuthor().replace("'", "''") + "', " + "'"
-                + newActivity.getPlace().replace("'", "''") + "', "
-                + newActivity.getDate().getTime() + ", "
+        String insertSQL = "INSERT INTO activities VALUES ( " + "NULL, "
+                + "'" + newActivity.getName().replace("'", "''") + "', "
+                + "'" + newActivity.getType().replace("'", "''") + "', "
+                + "'" + newActivity.getDescription().replace("'", "''") + "', "
+                + "'" + newActivity.getNotes().replace("'", "''") + "', "
+                + "'" + newActivity.getAuthor().replace("'", "''") + "', "
+                + "'" + newActivity.getPlace().replace("'", "''")
+                + "', " + newActivity.getDate().getTime() + ", "
                 + newActivity.getEstimatedPoms() + ", "
                 + newActivity.getActualPoms() + ", "
-                + newActivity.getOverestimatedPoms() + ", " + "'"
-                + String.valueOf(newActivity.isCompleted()) + "', " + "'"
-                + String.valueOf(newActivity.isUnplanned()) + "', "
+                + newActivity.getOverestimatedPoms() + ", "
+                + "'" + String.valueOf(newActivity.isCompleted()) + "', "
+                + "'" + String.valueOf(newActivity.isUnplanned()) + "', "
                 + newActivity.getNumInterruptions() + ", "
                 + newActivity.getPriority() + ", "
-                + newActivity.getNumInternalInterruptions() + ");";
+                + newActivity.getNumInternalInterruptions() + ", "
+                + newActivity.getStoryPoints() + ", "
+                + "'" + newActivity.getIteration().replace("'", "''") + "', "
+                + newActivity.getParentId() + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -139,21 +143,23 @@ public class ActivitiesDAO {
 
     public void update(Activity activity) {
         String updateSQL = "UPDATE activities SET " + "name = '"
-                + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''")
-                + "', " + "description = '" + activity.getDescription().replace("'", "''") + "', "
-                + "notes = '" + activity.getNotes().replace("'", "''") + "', " + "author = '"
-                + activity.getAuthor().replace("'", "''") + "', " + "place = '"
-                + activity.getPlace().replace("'", "''") + "', " + "date_added = "
-                + activity.getDate().getTime() + ", " + "estimated_poms = "
-                + activity.getEstimatedPoms() + ", " + "actual_poms = "
-                + activity.getActualPoms() + ", " + "overestimated_poms = "
-                + activity.getOverestimatedPoms() + ", "
-                + "is_complete = '" + String.valueOf(activity.isCompleted())
-                + "', " + "is_unplanned = '"
-                + String.valueOf(activity.isUnplanned()) + "', "
-                + "num_interruptions = " + activity.getNumInterruptions()
-                + ", " + "priority = " + activity.getPriority()
-                + ", " + "num_internal_interruptions = " + activity.getNumInternalInterruptions()
+                + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''") + "', "
+                + "description = '" + activity.getDescription().replace("'", "''") + "', "
+                + "notes = '" + activity.getNotes().replace("'", "''") + "', "
+                + "author = '" + activity.getAuthor().replace("'", "''") + "', "
+                + "place = '" + activity.getPlace().replace("'", "''") + "', "
+                + "date_added = " + activity.getDate().getTime() + ", "
+                + "estimated_poms = " + activity.getEstimatedPoms() + ", "
+                + "actual_poms = " + activity.getActualPoms() + ", "
+                + "overestimated_poms = " + activity.getOverestimatedPoms() + ", "
+                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "', "
+                + "is_unplanned = '" + String.valueOf(activity.isUnplanned()) + "', "
+                + "num_interruptions = " + activity.getNumInterruptions() + ", "
+                + "priority = " + activity.getPriority() + ", "
+                + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
+                + "story_points = " + activity.getStoryPoints() + ", "
+                + "iteration = '" + activity.getIteration().replace("'", "''") + "', "
+                + "parent_id = " + activity.getParentId()
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();

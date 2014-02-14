@@ -7,7 +7,7 @@ import org.mypomodoro.gui.ControlPanel;
  *
  */
 public class TimeConverter {
-    
+
     // Convertion minutes to duration
     public static String convertToTime(int min) {
         int hours = min / 60;
@@ -24,8 +24,8 @@ public class TimeConverter {
     public static int calculatePlainHours(int estimate) {
         int nbLongBreaks = estimate / ControlPanel.preferences.getNbPomPerSet(); // one long break per set
         int nbShortbreaks = estimate - nbLongBreaks; // on short break per pomodoro minus the long breaks
-        return calculateEffectiveHours(estimate) + 
-                nbShortbreaks * ControlPanel.preferences.getShortBreakLength() +
-                nbLongBreaks * ControlPanel.preferences.getLongBreakLength();
-    }    
+        return calculateEffectiveHours(estimate)
+                + nbShortbreaks * ControlPanel.preferences.getShortBreakLength()
+                + nbLongBreaks * ControlPanel.preferences.getLongBreakLength();
+    }
 }

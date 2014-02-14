@@ -63,7 +63,7 @@ public class CommentPanel extends ActivityInformationPanel {
     }
 
     @Override
-    public void selectInfo(Activity activity) {        
+    public void selectInfo(Activity activity) {
         // template for user stories and epics
         if (ControlPanel.preferences.getAgileMode()
                 && activity.getNotes().trim().length() == 0

@@ -17,7 +17,7 @@ import org.mypomodoro.model.ToDoList;
 
 /**
  * Database
- * 
+ *
  */
 public class Database {
 
@@ -79,14 +79,23 @@ public class Database {
 
     public void createActivitiesTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "name TEXT, "
-                + "type TEXT, " + "description TEXT, " + "notes TEXT, "
-                + "author TEXT, " + "place TEXT, " + "date_added INTEGER, "
-                + "estimated_poms INTEGER, " + "actual_poms INTEGER, "
-                + "overestimated_poms INTEGER, " + "is_complete TEXT, "
-                + "is_unplanned TEXT, " + "num_interruptions INTEGER, "
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name TEXT, "
+                + "type TEXT, " + "description TEXT, "
+                + "notes TEXT, "
+                + "author TEXT, " + "place TEXT, "
+                + "date_added INTEGER, "
+                + "estimated_poms INTEGER, "
+                + "actual_poms INTEGER, "
+                + "overestimated_poms INTEGER, "
+                + "is_complete TEXT, "
+                + "is_unplanned TEXT, "
+                + "num_interruptions INTEGER, "
                 + "priority INTEGER, "
-                + "num_internal_interruptions INTEGER" + ");";
+                + "num_internal_interruptions INTEGER, "
+                + "story_points INTEGER, "
+                + "iteration TEXT, "
+                + "parent_id INTEGER" + ");";
         update(createTableSQL);
     }
 

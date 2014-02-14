@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -101,23 +102,28 @@ public class UnplannedPanel extends CreatePanel {
             if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
                 currentToDo.incrementInternalInter();
                 currentToDo.databaseUpdate();
+                // set parent id
+                newActivity.setParentId(currentToDo.getId());
             } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
                 currentToDo.incrementInter();
                 currentToDo.databaseUpdate();
+                // set parent id
+                newActivity.setParentId(currentToDo.getId());
             }
         }
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message;
-        if (unplannedInputFormPanel.isDateToday()) {
-            message = Labels.getString("ToDoListPanel.Unplanned ToDo added to ToDo List");
+        // In Agile mode, the unplanned/interruption is always added to the Iteration Backlog
+        if (unplannedInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
+            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             // Today unplanned interruption/activity
             panel.getToDoList().add(newActivity);
             newActivity.databaseInsert();
             clearForm();
             panel.refresh();
         } else {
-            message = Labels.getString("ToDoListPanel.Unplanned activity added to Activity List");
+            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
         }

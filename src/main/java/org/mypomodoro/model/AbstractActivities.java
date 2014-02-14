@@ -3,6 +3,7 @@ package org.mypomodoro.model;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import static org.mypomodoro.model.ToDoList.getList;
 
 public abstract class AbstractActivities implements
         Iterable<Activity> {
@@ -60,5 +61,19 @@ public abstract class AbstractActivities implements
             nbEstimatedPom += a.getEstimatedPoms() + a.getOverestimatedPoms();
         }
         return nbEstimatedPom;
+    }
+
+    public int getStoryPoints() {
+        Iterator<Activity> act = getList().iterator();
+        int storyPoints = 0;
+        int real = 0;
+        Activity activity;
+        while (act.hasNext()) {
+            activity = act.next();
+            if (activity.getStoryPoints() > 0) {
+                storyPoints += activity.getStoryPoints();
+            }
+        }
+        return storyPoints;
     }
 }
