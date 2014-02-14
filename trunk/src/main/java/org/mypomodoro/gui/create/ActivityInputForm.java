@@ -46,7 +46,7 @@ public class ActivityInputForm extends JPanel {
     protected final JXDatePicker datePicker = new JXDatePicker(
             Labels.getLocale());
     protected int activityId = -1;
-    protected final FormLabel timingLabel = new FormLabel("");
+    protected final FormLabel estimatedLengthLabel = new FormLabel("");
 
     public ActivityInputForm() {
         this(0);
@@ -69,7 +69,7 @@ public class ActivityInputForm extends JPanel {
         addName(++gridy);
         addType(++gridy);
         addEstimatedPoms(++gridy);
-        addTiming(++gridy);
+        addEstimatedLength(++gridy);
         addAuthor(++gridy);
         addPlace(++gridy);
         addDescription(++gridy);
@@ -123,12 +123,12 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        String items[] = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        String[] items = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             items[i] = (i + 1) + "";
         }
         estimatedPomodoros = new JComboBox(items);
-        displayTiming(1); // default estimate = 1 pomodoro
+        displayLength(1); // default estimate = 1 pomodoro
         // Estimated Poms Description and TextField
         ++gridy;
         c.gridx = 0;
@@ -143,14 +143,14 @@ public class ActivityInputForm extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                int estimate = estimatedPomodoros.getSelectedIndex() + 1;
-                displayTiming(estimate);
+                int estimated = estimatedPomodoros.getSelectedIndex() + 1;
+                displayLength(estimated);
             }
         });
-        add(estimatedPomodoros, c);        
+        add(estimatedPomodoros, c);
     }
 
-    protected void addTiming(int gridy) {
+    protected void addEstimatedLength(int gridy) {
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
@@ -159,7 +159,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(timingLabel, c);
+        add(estimatedLengthLabel, c);
     }
 
     protected void addAuthor(int gridy) {
@@ -311,9 +311,9 @@ public class ActivityInputForm extends JPanel {
         return datePickerFormat.equalsIgnoreCase(todayFormat);
     }
 
-    private void displayTiming(int estimatePomodoros) {
-        String effectiveHours = convertToTime(calculateEffectiveHours(estimatePomodoros));
-        String plainHours = convertToTime(calculatePlainHours(estimatePomodoros));
-        timingLabel.setText(effectiveHours + " (effective hours) / " + plainHours + " (plain hours)");
-    }    
+    private void displayLength(int estimatedPomodoros) {
+        String effectiveHours = convertToTime(calculateEffectiveHours(estimatedPomodoros));
+        String plainHours = convertToTime(calculatePlainHours(estimatedPomodoros));
+        estimatedLengthLabel.setText(effectiveHours + " (" + Labels.getString("Common.Effective hours") + ") / " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+    }
 }

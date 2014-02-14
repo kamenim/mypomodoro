@@ -69,19 +69,19 @@ public class PreferencesDAO {
 
     public void update() {
         String updateSQL = "UPDATE preferences SET "
-                + "pom_length = " + ControlPanel.preferences.getPomodoroLength()
-                + ", " + "short_break_length = " + ControlPanel.preferences.getShortBreakLength()
-                + ", " + "long_break_length = " + ControlPanel.preferences.getLongBreakLength()
-                + ", " + "max_nb_pom_per_activity = " + ControlPanel.preferences.getMaxNbPomPerActivity()
-                + ", " + "max_nb_pom_per_day = " + ControlPanel.preferences.getMaxNbPomPerDay()
-                + ", " + "nb_pom_per_set = " + ControlPanel.preferences.getNbPomPerSet()
-                + ", " + "ticking = " + (ControlPanel.preferences.getTicking() ? 1 : 0)
-                + ", " + "ringing = " + (ControlPanel.preferences.getRinging() ? 1 : 0)
-                + ", " + "locale = '" + ControlPanel.preferences.getLocale().toString() + "'"
-                + ", " + "system_tray = " + (ControlPanel.preferences.getSystemTray() ? 1 : 0)
-                + ", " + "system_tray_msg = " + (ControlPanel.preferences.getSystemTrayMessage() ? 1 : 0)
-                + ", " + "always_on_top = " + (ControlPanel.preferences.getAlwaysOnTop() ? 1 : 0)
-                + ", " + "agile_mode = " + (ControlPanel.preferences.getAgileMode() ? 1 : 0) + ";";
+                + "pom_length = " + ControlPanel.preferences.getPomodoroLength() + ", "
+                + "short_break_length = " + ControlPanel.preferences.getShortBreakLength() + ", "
+                + "long_break_length = " + ControlPanel.preferences.getLongBreakLength() + ", "
+                + "max_nb_pom_per_activity = " + ControlPanel.preferences.getMaxNbPomPerActivity() + ", "
+                + "max_nb_pom_per_day = " + ControlPanel.preferences.getMaxNbPomPerDay() + ", "
+                + "nb_pom_per_set = " + ControlPanel.preferences.getNbPomPerSet() + ", "
+                + "ticking = " + (ControlPanel.preferences.getTicking() ? 1 : 0) + ", "
+                + "ringing = " + (ControlPanel.preferences.getRinging() ? 1 : 0) + ", "
+                + "locale = '" + ControlPanel.preferences.getLocale().toString() + "'" + ", "
+                + "system_tray = " + (ControlPanel.preferences.getSystemTray() ? 1 : 0) + ", "
+                + "system_tray_msg = " + (ControlPanel.preferences.getSystemTrayMessage() ? 1 : 0) + ", "
+                + "always_on_top = " + (ControlPanel.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
+                + "agile_mode = " + (ControlPanel.preferences.getAgileMode() ? 1 : 0) + ";";
         database.lock();
         try {
             database.update("begin;");

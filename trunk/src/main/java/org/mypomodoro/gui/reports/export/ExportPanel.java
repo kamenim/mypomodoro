@@ -56,7 +56,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Type"), Labels.getString("Common.Author"),
         Labels.getString("Common.Place"),
         Labels.getString("Common.Description"),
-        Labels.getString(ControlPanel.preferences.getAgileMode()?"Common.Agile.Story":"Common.Comment")};
+        Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment")};
 
     public ExportPanel(AbstractActivities activities) {
         this.activities = activities;

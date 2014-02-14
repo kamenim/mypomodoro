@@ -18,6 +18,7 @@ import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.SaveButton;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -122,7 +123,7 @@ public class CreatePanel extends JPanel {
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(Labels.getString("CreatePanel.Activity added to Activity List"));
+        validation.setText(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }
 
     public void saveActivity(Activity newActivity) {

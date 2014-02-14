@@ -6,7 +6,7 @@ import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  * Activity list
- * 
+ *
  */
 public class ActivityList extends AbstractActivities {
 

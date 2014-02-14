@@ -61,13 +61,13 @@ public class CommentPanel extends ActivityInformationPanel {
         informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
     }
-    
+
     @Override
-    public void selectInfo(Activity activity) {        
+    public void selectInfo(Activity activity) {
         textMap.put("comment", activity.getNotes());
     }
 
     /*@Override
-    public void clearInfo() {
-    }*/
+     public void clearInfo() {
+     }*/
 }

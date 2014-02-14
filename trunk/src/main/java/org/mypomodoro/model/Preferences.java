@@ -129,7 +129,7 @@ public class Preferences {
     public boolean getAlwaysOnTop() {
         return alwaysOnTop;
     }
-    
+
     public boolean getAgileMode() {
         return agileMode;
     }
@@ -182,7 +182,7 @@ public class Preferences {
     public void setAlwaysOnTop(boolean value) {
         alwaysOnTop = value;
     }
-    
+
     public void setAgileMode(boolean value) {
         agileMode = value;
     }

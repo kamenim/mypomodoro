@@ -1,10 +1,11 @@
 package org.mypomodoro.gui;
 
 import javax.swing.table.AbstractTableModel;
+import org.mypomodoro.gui.activities.Reorderable;
 
 import org.mypomodoro.model.AbstractActivities;
 
-public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
+public abstract class AbstractActivitiesTableModel extends AbstractTableModel implements Reorderable {
 
     private static final long serialVersionUID = 20110814L;
     protected Object[][] tableData;
@@ -61,5 +62,12 @@ public abstract class AbstractActivitiesTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         tableData[rowIndex][columnIndex] = aValue;
         fireTableCellUpdated(rowIndex, columnIndex);
+    }
+
+    @Override
+    public void reorder(int fromIndex, int toIndex) {
+        //Object o = getDataVector().remove(from);
+        //getDataVector().add(to, o);
+        fireTableDataChanged();
     }
 }

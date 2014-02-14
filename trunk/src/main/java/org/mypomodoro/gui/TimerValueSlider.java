@@ -69,7 +69,7 @@ public final class TimerValueSlider extends JPanel {
             slider.setBackground(ColorUtil.GREEN);
         }
     }
-    
+
     public void changeSlider(int max) {
         slider.setMaximum(max);
         slider.repaint();

@@ -29,7 +29,7 @@ import org.mypomodoro.util.Labels;
 
 /**
  * This class just abstracts a JPanel for jlist and a information panel for the
- * items in the list. 
+ * items in the list.
  *
  */
 public class ListPanel extends ActivityInformationPanel {
@@ -62,8 +62,6 @@ public class ListPanel extends ActivityInformationPanel {
                 setSelectedRowIndex();
             }
         });
-
-        //informationArea = new JTextArea(); ???
         addActivitiesList();
         addInformationArea();
     }
@@ -90,7 +88,7 @@ public class ListPanel extends ActivityInformationPanel {
         add(new JScrollPane(internalActivitiesList), c);
         internalActivitiesList.addListSelectionListener(new ActivityInformationListListener(
                 this));
-    }    
+    }
 
     public void removeActivity(Activity activity) {
         list.remove(activity);
@@ -131,7 +129,7 @@ public class ListPanel extends ActivityInformationPanel {
             }
             internalActivitiesList.setSelectedIndex(selectedRowIndex);
         }
-        internalActivitiesList.setBorder(new TitledBorder(new EtchedBorder(), titleList + " (" + list.size() + ")"));
+        internalActivitiesList.setBorder(new TitledBorder(new EtchedBorder(), titleList));
         this.informationArea.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("Common.Details")));
     }
 
@@ -154,7 +152,7 @@ public class ListPanel extends ActivityInformationPanel {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             Activity toDo = (Activity) value;
-            renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + (toDo.getEstimatedPoms() + toDo.getOverestimatedPoms()) + ")");
+            renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + toDo.getEstimatedPoms() + (toDo.getOverestimatedPoms() > 0 ? " + " + toDo.getOverestimatedPoms() : "") + ")");
 
             if (isSelected) {
                 renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
