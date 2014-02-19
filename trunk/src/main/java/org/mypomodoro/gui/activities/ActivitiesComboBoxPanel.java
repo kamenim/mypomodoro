@@ -1,11 +1,11 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  *
@@ -15,30 +15,15 @@ class ActivitiesComboBoxPanel extends JPanel {
 
     protected JComboBox comboBox;
 
-    /*protected JComboBox<String> comboBox = new JComboBox<String>(m) {
-     @Override
-     public Dimension getPreferredSize() {
-     Dimension d = super.getPreferredSize();
-     return new Dimension(40, d.height);
-     return new Dimension(40, 20);
-     }
-     };*/
     // Generic constructor
     public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
-        comboBox = new JComboBox<E>(data);/*{
-         @Override
-         public Dimension getPreferredSize() {
-         Dimension d = super.getPreferredSize();     
-         return new Dimension(d.width, d.height);     
-         }
-         };*/
-
+        comboBox = new JComboBox<E>(data);
         setOpaque(true);
         comboBox.setEditable(editable);
         add(comboBox);
     }
 
-    class ComboBoxFloatRenderer extends JLabel implements ListCellRenderer {
+    class ComboBoxFloatRenderer extends DefaultListCellRenderer {
 
         public ComboBoxFloatRenderer() {
         }
@@ -53,6 +38,19 @@ class ActivitiesComboBoxPanel extends JPanel {
             }
             setText(text);
             return this;
+        }
+    }
+
+    class ComboBoxEstimatedLengthRenderer extends DefaultListCellRenderer {
+
+        public ComboBoxEstimatedLengthRenderer() {
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            String length = getLength(Integer.parseInt(value.toString()));
+            setToolTipText(length);
+            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         }
     }
 }

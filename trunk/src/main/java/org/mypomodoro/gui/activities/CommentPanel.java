@@ -23,12 +23,12 @@ public class CommentPanel extends ActivityInformationPanel {
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CommentPanel(ActivitiesPanel panel) {
+    public CommentPanel(ActivitiesPanel activitiesPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addCommentArea();
-        addSaveButton(panel);
+        addSaveButton(activitiesPanel);
     }
 
     private void addSaveButton(final ActivitiesPanel panel) {
