@@ -285,10 +285,17 @@ public class ReportListPanel extends JPanel {
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // Set width of column Unplanned
-        table.getColumnModel().getColumn(0).setMaxWidth(30);
-        table.getColumnModel().getColumn(0).setMinWidth(30);
-        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        // hide unplanned in Agile mode
+        if (ControlPanel.preferences.getAgileMode()) { 
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setPreferredWidth(0);
+        } else {
+            // Set width of column Unplanned
+            table.getColumnModel().getColumn(0).setMaxWidth(30);
+            table.getColumnModel().getColumn(0).setMinWidth(30);
+            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        }
         // Set width of column Date
         table.getColumnModel().getColumn(1).setMaxWidth(80);
         table.getColumnModel().getColumn(1).setMinWidth(80);

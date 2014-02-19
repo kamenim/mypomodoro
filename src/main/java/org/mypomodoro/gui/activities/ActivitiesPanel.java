@@ -65,6 +65,7 @@ public class ActivitiesPanel extends JPanel {
     private int selectedRowIndex = 0;
 
     private final DetailsPanel detailsPane = new DetailsPanel(this);
+    private final CommentPanel commentPanel = new CommentPanel(this);
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -97,8 +98,8 @@ public class ActivitiesPanel extends JPanel {
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             poms[i] = (i + 1);
         }
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new ComboBoxCellRenderer(poms, false));
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new ComboBoxCellEditor(poms, false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(poms, false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new EstimatedComboBoxCellEditor(poms, false));
         // Story Point combo box
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
@@ -109,9 +110,9 @@ public class ActivitiesPanel extends JPanel {
             iterations[i] = i;
         }
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(iterations, false));
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(iterations, false));
-        // hide story points and iteration if not Agile mode
-        if (!ControlPanel.preferences.getAgileMode()) {
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(iterations, false));        
+        // hide story points and iteration in 'classic' mode
+        if (!ControlPanel.preferences.getAgileMode()) {            
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -123,10 +124,17 @@ public class ActivitiesPanel extends JPanel {
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // Set width of column Unplanned
-        table.getColumnModel().getColumn(0).setMaxWidth(30);
-        table.getColumnModel().getColumn(0).setMinWidth(30);
-        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        // hide unplanned in Agile mode (does not make sense to have unplanned task in the backlog anyway)
+        if (ControlPanel.preferences.getAgileMode()) { 
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setPreferredWidth(0);
+        } else {
+            // Set width of column Unplanned
+            table.getColumnModel().getColumn(0).setMaxWidth(30);
+            table.getColumnModel().getColumn(0).setMinWidth(30);
+            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        }
         // Set width of column Date
         table.getColumnModel().getColumn(1).setMaxWidth(80);
         table.getColumnModel().getColumn(1).setMinWidth(80);
@@ -202,8 +210,7 @@ public class ActivitiesPanel extends JPanel {
         controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPane);
         EditPanel editPanel = new EditPanel();
-        controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        CommentPanel commentPanel = new CommentPanel(this);
+        controlPane.add(Labels.getString("Common.Edit"), editPanel);        
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(true);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -281,6 +288,11 @@ public class ActivitiesPanel extends JPanel {
                     } else if (column == ID_KEY - 4) { // Type
                         act.setType(data.toString());
                         act.databaseUpdate();
+                        // load template for user stories
+                        if (ControlPanel.preferences.getAgileMode()) {                        
+                            commentPanel.selectInfo(act);
+                            commentPanel.showInfo();
+                        }
                     } else if (column == ID_KEY - 3) { // Estimated
                         act.setEstimatedPoms((Integer) data);
                         act.databaseUpdate();
@@ -300,7 +312,6 @@ public class ActivitiesPanel extends JPanel {
                     }
                     // update edit panel
                     ActivityList.getList().update(act);
-
                     // Refresh panel border
                     setPanelBorder();
                     detailsPane.selectInfo(act);
