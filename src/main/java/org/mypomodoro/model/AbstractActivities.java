@@ -2,13 +2,10 @@ package org.mypomodoro.model;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import static org.mypomodoro.model.ToDoList.getList;
 
-public abstract class AbstractActivities implements
-        Iterable<Activity> {
+public abstract class AbstractActivities implements Iterable<Activity> {
 
-    protected List<Activity> activities = new LinkedList<Activity>();
+    protected LinkedList<Activity> activities = new LinkedList<Activity>();
 
     public void add(Activity activity) {
         activities.add(activity);
@@ -22,6 +19,10 @@ public abstract class AbstractActivities implements
 
     public void remove(Activity activity) {
         activities.remove(activity);
+    }
+
+    public void update(Activity activity) {
+        activities.set(getIndex(activity), activity);
     }
 
     public int size() {
@@ -46,6 +47,26 @@ public abstract class AbstractActivities implements
         return null;
     }
 
+    public void removeById(int id) {
+        for (Activity activity : activities) {
+            if (activity.getId() == id) {
+                remove(activity);
+                break;
+            }
+        }
+    }
+
+    public int getIndex(Activity activity) {
+        int index = 0;
+        for (Activity act : activities) {
+            if (act.getId() == activity.getId()) {
+                break;
+            }
+            index++;
+        }
+        return index;
+    }
+
     public int getNbEstimatedPom() {
         int nbEstimatedPom = 0;
         for (Iterator<Activity> it = iterator(); it.hasNext();) {
@@ -63,16 +84,10 @@ public abstract class AbstractActivities implements
         return nbEstimatedPom;
     }
 
-    public int getStoryPoints() {
-        Iterator<Activity> act = getList().iterator();
-        int storyPoints = 0;
-        int real = 0;
-        Activity activity;
-        while (act.hasNext()) {
-            activity = act.next();
-            if (activity.getStoryPoints() > 0) {
-                storyPoints += activity.getStoryPoints();
-            }
+    public float getStoryPoints() {
+        float storyPoints = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            storyPoints += it.next().getStoryPoints();
         }
         return storyPoints;
     }

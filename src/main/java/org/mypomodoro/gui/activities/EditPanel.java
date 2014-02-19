@@ -75,7 +75,7 @@ public class EditPanel extends CreatePanel {
     @Override
     protected void validActivityAction(Activity currentActivity) {
         currentActivity.databaseUpdate();
-        ActivityList.getList().update();
+        //ActivityList.getList().update();
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -107,13 +107,10 @@ public class EditPanel extends CreatePanel {
 
     @Override
     public void fillOutInputForm(Activity activity) {
-        editInputForm.setPlaceField(activity.getPlace());
-        editInputForm.setAuthorField(activity.getAuthor());
-        editInputForm.setNameField(activity.getName());
-        editInputForm.setDescriptionField(activity.getDescription());
-        editInputForm.setTypeField(activity.getType());
-        editInputForm.setEstimatedPomodoro(activity.getEstimatedPoms());
         editInputForm.setDate(activity.getDate());
+        editInputForm.setAuthorField(activity.getAuthor());
+        editInputForm.setPlaceField(activity.getPlace());
+        editInputForm.setDescriptionField(activity.getDescription());
         editInputForm.setActivityId(activity.getId());
     }
 }

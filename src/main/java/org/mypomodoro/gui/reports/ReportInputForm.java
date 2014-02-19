@@ -29,7 +29,6 @@ public class ReportInputForm extends ActivityInputForm {
         Activity report = Activity.getActivity(activityId);
 
         report.setName(nameField.getText().trim());
-        report.setDescription(descriptionField.getText().trim());
         String type = (String) types.getSelectedItem();
         type = type != null ? type.trim() : "";
         report.setType(type);
@@ -39,6 +38,7 @@ public class ReportInputForm extends ActivityInputForm {
         String place = (String) places.getSelectedItem();
         place = place != null ? place.trim() : "";
         report.setPlace(place);
+        report.setDescription(descriptionField.getText().trim());
 
         return report;
     }

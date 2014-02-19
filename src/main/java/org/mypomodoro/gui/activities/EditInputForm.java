@@ -10,6 +10,14 @@ public class EditInputForm extends ActivityInputForm {
     public EditInputForm() {
     }
 
+    @Override
+    protected void addForm(int gridy) {
+        addDate(gridy);
+        addAuthor(++gridy);
+        addPlace(++gridy);
+        addDescription(++gridy);
+    }
+
     /**
      * Returns an updated activity from the class fields
      *
@@ -19,19 +27,14 @@ public class EditInputForm extends ActivityInputForm {
     public Activity getActivityFromFields() {
         Activity activity = Activity.getActivity(activityId);
 
-        activity.setName(nameField.getText().trim());
-        activity.setDescription(descriptionField.getText().trim());
-        String type = (String) types.getSelectedItem();
-        type = type != null ? type.trim() : "";
-        activity.setType(type);
+        activity.setDate(datePicker.getDate());
         String author = (String) authors.getSelectedItem();
         author = author != null ? author.trim() : "";
         activity.setAuthor(author);
         String place = (String) places.getSelectedItem();
         place = place != null ? place.trim() : "";
         activity.setPlace(place);
-        activity.setEstimatedPoms(estimatedPomodoros.getSelectedIndex() + 1);
-        activity.setDate(datePicker.getDate());
+        activity.setDescription(descriptionField.getText().trim());
 
         return activity;
     }

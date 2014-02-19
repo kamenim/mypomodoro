@@ -1,7 +1,5 @@
 package org.mypomodoro.model;
 
-import org.mypomodoro.Main;
-
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -32,18 +30,19 @@ public class ActivityList extends AbstractActivities {
         return getList().size();
     }
 
+    @Override
     public void removeById(final int id) {
         ActivitiesDAO.getInstance().removeById(id);
-        update();
-    }
-
-    public void update() {
-        Main.updateLists();
-        Main.updateView();
+        for (Activity activity : activities) {
+            if (activity.getId() == id) {
+                activities.remove(activity);
+                break;
+            }
+        }
     }
 
     public void removeAll() {
         ActivitiesDAO.getInstance().removeAllActivities();
-        update();
+        activities.clear();
     }
 }

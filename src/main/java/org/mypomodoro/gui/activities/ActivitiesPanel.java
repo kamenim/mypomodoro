@@ -25,7 +25,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableModel;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -35,11 +34,11 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * GUI for viewing what is in the ActivityList. This can be changed later. Right
@@ -52,14 +51,20 @@ public class ActivitiesPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
-    JTable table = new JTable(getTableModel());
+    AbstractActivitiesTableModel activitiesTableModel = getTableModel();
+    JTable table = new JTable(activitiesTableModel);
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"), Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
-        Labels.getString("Common.Estimated pomodoros"), "ID"};
-    public static int ID_KEY = 5;
+        Labels.getString(ControlPanel.preferences.getAgileMode() ? "Common.Estimated" : "Common.Estimated pomodoros"), // in Agile mode, shorten title of the column
+        Labels.getString("Agile.Common.Story Points"),
+        Labels.getString("Agile.Common.Iteration"),
+        "ID"};
+    public static int ID_KEY = 7;
     private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
+
+    private final DetailsPanel detailsPane = new DetailsPanel(this);
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -78,27 +83,42 @@ public class ActivitiesPanel extends JPanel {
         //table.setDropMode(DropMode.INSERT_ROWS);
         //table.setTransferHandler(new TableRowTransferHandler(table));
 
-        table.setRowHeight(26);
+        table.setRowHeight(30);
 
-        // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
-        // Date renderer
-        DateRenderer dr = new DateRenderer();
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dr); // date (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr); // title
-        // type combo
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new ComboBoxCellRenderer((String[]) TypeList.getTypes().toArray(new String[0]))); // type        
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellEditor(new ComboBoxCellEditor((String[]) TypeList.getTypes().toArray(new String[0]))); // type
-        // Estimated combo
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new CustomTableRenderer()); // title
+        // type combo box
+        String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
+        // Estimated combo box
         Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             poms[i] = (i + 1);
         }
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(poms)); // estimated
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(poms));
-        //table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr); // estimated
-
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new ComboBoxCellRenderer(poms, false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new ComboBoxCellEditor(poms, false));
+        // Story Point combo box
+        Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellEditor(new StoryPointsComboBoxCellEditor(points, false));
+        // Iteration combo box
+        Integer[] iterations = new Integer[101];
+        for (int i = 0; i < 101; i++) {
+            iterations[i] = i;
+        }
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(iterations, false));
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(iterations, false));
+        // hide story points and iteration if not Agile mode
+        if (!ControlPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+        }
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
@@ -115,7 +135,7 @@ public class ActivitiesPanel extends JPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        // Add tooltip for Title and Type colums 
+        // Add tooltip 
         table.addMouseMotionListener(new MouseMotionAdapter() {
 
             @Override
@@ -123,14 +143,23 @@ public class ActivitiesPanel extends JPanel {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
                 int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2) {
+                if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
                     value = value.length() > 0 ? value : null;
+                    table.setToolTipText(value);
+                } else if (columnIndex == ID_KEY - 3) { // estimated
+                    String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
                     table.setToolTipText(value);
                 }
             }
         });
+        // select first activity
         selectActivity();
+        // Refresh panel border
+        setPanelBorder();
+    }
+
+    private void setPanelBorder() {
         String titleActivitiesList = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
                 + " (" + ActivityList.getListSize() + ")";
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
@@ -171,7 +200,6 @@ public class ActivitiesPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        DetailsPanel detailsPane = new DetailsPanel(table);
         controlPane.add(Labels.getString("Common.Details"), detailsPane);
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
@@ -188,78 +216,112 @@ public class ActivitiesPanel extends JPanel {
         showSelectedItemComment(commentPanel);
     }
 
-    private static TableModel getTableModel() {
-        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(
-                columnNames, ActivityList.getList()) {
+    private AbstractActivitiesTableModel getTableModel() {
+        int rowIndex = ActivityList.getList().size();
+        int colIndex = columnNames.length;
+        Object[][] tableData = new Object[rowIndex][colIndex];
+        Iterator<Activity> iterator = ActivityList.getList().iterator();
+        for (int i = 0; iterator.hasNext(); i++) {
+            Activity a = iterator.next();
+            tableData[i][0] = a.isUnplanned();
+            tableData[i][1] = a.getDate();
+            tableData[i][2] = a.getName();
+            tableData[i][3] = a.getType();
+            Integer poms = new Integer(a.getEstimatedPoms());
+            tableData[i][4] = poms;
+            Float points = new Float(a.getStoryPoints());
+            tableData[i][5] = points;
+            Integer iteration = new Integer(a.getIteration());
+            tableData[i][6] = iteration;
+            tableData[i][7] = a.getId();
+        }
 
-                    private static final long serialVersionUID = 20110814L;
+        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
 
-                    @Override
-                    protected void populateData(AbstractActivities activities) {
-                        int rowIndex = activities.size();
-                        int colIndex = columnNames.length;
-                        tableData = new Object[rowIndex][colIndex];
-                        Iterator<Activity> iterator = activities.iterator();
-                        for (int i = 0; iterator.hasNext(); i++) {
-                            Activity a = iterator.next();
-                            tableData[i][0] = a.isUnplanned();
-                            tableData[i][1] = a.getDate();
-                            tableData[i][2] = a.getName();
-                            tableData[i][3] = a.getType();
-                            /*String poms = "" + a.getEstimatedPoms();
-                             if (a.getOverestimatedPoms() > 0) {
-                             poms += " + " + a.getOverestimatedPoms();
-                             }*/
-                            Integer poms = new Integer(a.getEstimatedPoms());
-                            tableData[i][4] = poms;
-                            tableData[i][5] = a.getId();
-                        }
-                    }
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4 || columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
+            }
 
-                    @Override
-                    public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        return columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
-                    }
-
-                    // this is mandatory to get columns with integers properly sorted
-                    @Override
-                    public Class getColumnClass(int column) {
-                        switch (column) {
-                            case 0:
-                                return Boolean.class;
-                            case 4:
-                                return Integer.class;
-                            default:
-                                return String.class;
-                        }
-                    }
-                };
+            // this is mandatory to get columns with integers properly sorted
+            @Override
+            public Class getColumnClass(int column) {
+                switch (column) {
+                    case 0:
+                        return Boolean.class;
+                    case 1:
+                        return Date.class;
+                    case 4:
+                        return Integer.class;
+                    case 5:
+                        return Float.class;
+                    case 6:
+                        return Integer.class;
+                    default:
+                        return String.class;
+                }
+            }
+        };
 
         // listener on editable cells
         tableModel.addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                int row = e.getFirstRow();
-                int column = e.getColumn();
-                TableModel model = (TableModel) e.getSource();
-                Object data = model.getValueAt(row, column);
-                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                Activity act = Activity.getActivity(ID.intValue());
-                String sData = (String) data;
-                // Title (can't be empty)
-                if (column == ID_KEY - 3 && sData.length() > 0) {
-                    act.setName(sData);
-                    act.databaseUpdate();
-                } else if (column == ID_KEY - 2) { // Type
-                    act.setType(sData);
-                    act.databaseUpdate();
+                if (e.getType() != TableModelEvent.DELETE) {
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
+                    Object data = model.getValueAt(row, column);
+                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                    Activity act = Activity.getActivity(ID.intValue());
+                    if (column == ID_KEY - 5 && data.toString().length() > 0) { // Title (can't be empty)
+                        act.setName(data.toString());
+                        act.databaseUpdate();
+                    } else if (column == ID_KEY - 4) { // Type
+                        act.setType(data.toString());
+                        act.databaseUpdate();
+                    } else if (column == ID_KEY - 3) { // Estimated
+                        act.setEstimatedPoms((Integer) data);
+                        act.databaseUpdate();
+                    } else if (column == ID_KEY - 2) { // Story Points
+                        act.setStoryPoints((Float) data);
+                        act.databaseUpdate();
+                        // Refresh panel border
+                        setPanelBorder();
+                    } else if (column == ID_KEY - 1) { // Iteration
+                        try {
+                            act.setIteration(Integer.parseInt(data.toString()));
+                            act.databaseUpdate();
+                        } catch (java.lang.NumberFormatException ex) {
+                            // only numers may be written down in the combo
+                            // do nothing
+                        }
+                    }
+                    // update edit panel
+                    ActivityList.getList().update(act);
+
+                    // Refresh panel border
+                    setPanelBorder();
+                    detailsPane.selectInfo(act);
+                    detailsPane.showInfo();
                 }
-                ActivityList.getList().update(); // always refresh list
             }
         });
-
         return tableModel;
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
+    public void removeRow(int rowIndex) {
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
+        // select following activity in the list
+        selectActivity();
+        // Refresh panel border
+        setPanelBorder();
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
@@ -282,7 +344,8 @@ public class ActivitiesPanel extends JPanel {
 
     public void refresh() {
         try {
-            table.setModel(getTableModel());
+            activitiesTableModel = getTableModel();
+            table.setModel(activitiesTableModel);
         } catch (Exception e) {
             // do nothing
         }
@@ -353,6 +416,7 @@ public class ActivitiesPanel extends JPanel {
             }
         }
         if (!ActivityList.getList().isEmpty()) {
+            index = index > ActivityList.getListSize() ? 0 : index;
             table.setRowSelectionInterval(index, index);
         }
     }

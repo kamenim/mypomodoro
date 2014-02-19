@@ -117,6 +117,9 @@ public class UnplannedPanel extends CreatePanel {
         // In Agile mode, the unplanned/interruption is always added to the Iteration Backlog
         if (unplannedInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+            if (ControlPanel.preferences.getAgileMode()) {
+                newActivity.setIteration(-1); // no specific iteration
+            }
             // Today unplanned interruption/activity
             panel.getToDoList().add(newActivity);
             newActivity.databaseInsert();

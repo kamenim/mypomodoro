@@ -52,7 +52,7 @@ public class Main {
     }
 
     public static void updateLists() {
-        ActivityList.getList().refresh();
+        //ActivityList.getList().refresh();
         ToDoList.getList().refresh();
         ReportList.getList().refresh();
     }
@@ -102,7 +102,6 @@ public class Main {
 
             @Override
             public void run() {
-
                 TypeList.initTypes();
                 AuthorList.initAuthors();
                 PlaceList.initPlaces();

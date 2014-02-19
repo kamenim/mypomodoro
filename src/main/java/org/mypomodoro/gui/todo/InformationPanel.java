@@ -122,10 +122,6 @@ public class InformationPanel extends ActivityInformationPanel {
         textMap.remove("date");
         textMap.remove("title");
         textMap.remove("estimated");
-        if (ControlPanel.preferences.getAgileMode()) {
-            textMap.remove("storypoints");
-            textMap.remove("iteration");
-        }
     }
 
     public JLabel getIconLabel() {

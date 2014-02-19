@@ -17,8 +17,8 @@ import javax.swing.table.TableCellEditor;
  */
 class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEditor {
 
-    public <E> ComboBoxCellEditor(E[] data) {
-        super(data);
+    public <E> ComboBoxCellEditor(E[] data, boolean editable) {
+        super(data, editable);
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -40,7 +40,6 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
         return this;
     }
 
-    //Copid from DefaultCellEditor.EditorDelegate
     @Override
     public Object getCellEditorValue() {
         return comboBox.getSelectedItem();
@@ -64,8 +63,6 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
         return true;
     }
 
-    //Copid from AbstractCellEditor
-    //protected EventListenerList listenerList = new EventListenerList();
     transient protected ChangeEvent changeEvent = null;
 
     @Override
