@@ -95,11 +95,11 @@ public class Activity {
     /**
      * Story points
      */
-    private int storyPoints = -1;
+    private float storyPoints = 0;
     /**
      * Iteration
      */
-    private String iteration = "";
+    private int iteration = 0;
 
     /**
      * Parent Id
@@ -214,8 +214,8 @@ public class Activity {
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
             this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
-            this.storyPoints = rs.getInt("story_points");
-            this.iteration = rs.getString("iteration");
+            this.storyPoints = rs.getFloat("story_points");
+            this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
         } catch (SQLException e) {
             System.err.println(e);
@@ -287,11 +287,11 @@ public class Activity {
         return numInternalInterruptions;
     }
 
-    public int getStoryPoints() {
+    public float getStoryPoints() {
         return storyPoints;
     }
 
-    public String getIteration() {
+    public int getIteration() {
         return iteration;
     }
 
@@ -364,11 +364,11 @@ public class Activity {
         this.description = description;
     }
 
-    public void setStoryPoints(int storyPoints) {
+    public void setStoryPoints(float storyPoints) {
         this.storyPoints = storyPoints;
     }
 
-    public void setIteration(String iteration) {
+    public void setIteration(int iteration) {
         this.iteration = iteration;
     }
 
@@ -407,6 +407,7 @@ public class Activity {
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
+
     }
 
     public boolean alreadyExists() {

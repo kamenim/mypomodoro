@@ -293,7 +293,6 @@ public class ActivityInputForm extends JPanel {
     }
 
     public void setEstimatedPomodoro(int value) {
-        value = value > ControlPanel.preferences.getMaxNbPomPerActivity() ? ControlPanel.preferences.getMaxNbPomPerActivity() : value;
         estimatedPomodoros.setSelectedIndex(value - 1);
     }
 

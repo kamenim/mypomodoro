@@ -43,7 +43,7 @@ public class ActivitiesDAO {
                 + newActivity.getPriority() + ", "
                 + newActivity.getNumInternalInterruptions() + ", "
                 + newActivity.getStoryPoints() + ", "
-                + "'" + newActivity.getIteration().replace("'", "''") + "', "
+                + newActivity.getIteration() + ", "
                 + newActivity.getParentId() + ");";
         try {
             database.lock();
@@ -158,7 +158,7 @@ public class ActivitiesDAO {
                 + "priority = " + activity.getPriority() + ", "
                 + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
                 + "story_points = " + activity.getStoryPoints() + ", "
-                + "iteration = '" + activity.getIteration().replace("'", "''") + "', "
+                + "iteration = " + activity.getIteration() + ", "
                 + "parent_id = " + activity.getParentId()
                 + " WHERE id = " + activity.getId() + ";";
         try {
@@ -264,7 +264,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities");
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities ORDER BY type");
             try {
                 while (rs.next()) {
                     String type = rs.getString("type");
@@ -291,7 +291,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT author FROM activities");
+            ResultSet rs = database.query("SELECT DISTINCT author FROM activities ORDER BY author");
             try {
                 while (rs.next()) {
                     String type = rs.getString("author");
@@ -318,7 +318,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT place FROM activities");
+            ResultSet rs = database.query("SELECT DISTINCT place FROM activities ORDER BY place");
             try {
                 while (rs.next()) {
                     String type = rs.getString("place");

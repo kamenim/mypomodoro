@@ -28,4 +28,11 @@ public class TimeConverter {
                 + nbShortbreaks * ControlPanel.preferences.getShortBreakLength()
                 + nbLongBreaks * ControlPanel.preferences.getLongBreakLength();
     }
+
+    public static String getLength(int pomodoros) {
+        String effectiveHours = convertToTime(calculateEffectiveHours(pomodoros));
+        String plainHours = convertToTime(calculatePlainHours(pomodoros));
+        String length = effectiveHours + " / " + plainHours;
+        return length;
+    }
 }

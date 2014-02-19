@@ -10,8 +10,8 @@ import javax.swing.table.TableCellRenderer;
  */
 class ComboBoxCellRenderer extends ActivitiesComboBoxPanel implements TableCellRenderer {
 
-    public <E> ComboBoxCellRenderer(E[] data) {
-        super(data);
+    public <E> ComboBoxCellRenderer(E[] data, boolean editable) {
+        super(data, editable);
     }
 
     @Override

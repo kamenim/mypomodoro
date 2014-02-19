@@ -5,15 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
 import org.mypomodoro.Main;
-import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.model.ReportList;
-import org.mypomodoro.model.ToDoList;
 
 /**
  * Database
@@ -93,8 +88,8 @@ public class Database {
                 + "num_interruptions INTEGER, "
                 + "priority INTEGER, "
                 + "num_internal_interruptions INTEGER, "
-                + "story_points INTEGER, "
-                + "iteration TEXT, "
+                + "story_points FLOAT, "
+                + "iteration INTEGER, "
                 + "parent_id INTEGER" + ");";
         update(createTableSQL);
     }
@@ -157,27 +152,27 @@ public class Database {
 
     }
 
-    public static void main(String[] args) throws Exception {
-        Database db = new Database();
-        db.close();
-        System.out.println("to_do:");
-        ToDoList list = ToDoList.getList();
-        for (Activity a : list) {
-            System.out.println(a);
-        }
+    /*public static void main(String[] args) throws Exception {
+     Database db = new Database();
+     db.close();
+     System.out.println("to_do:");
+     ToDoList list = ToDoList.getList();
+     for (Activity a : list) {
+     System.out.println(a);
+     }
 
-        System.out.println("act:");
-        ActivityList list2 = ActivityList.getList();
-        for (Activity a : list2) {
-            System.out.println(a);
-        }
+     System.out.println("act:");
+     ActivityList list2 = ActivityList.getList();
+     for (Activity a : list2) {
+     System.out.println(a);
+     }
 
-        System.out.println("reports:");
-        Iterator<Activity> iterator = ReportList.getList().iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
-        }
-    }
+     System.out.println("reports:");
+     Iterator<Activity> iterator = ReportList.getList().iterator();
+     while (iterator.hasNext()) {
+     System.out.println(iterator.next());
+     }
+     }*/
     private final ReentrantLock lock = new ReentrantLock();
 
     public void lock() {

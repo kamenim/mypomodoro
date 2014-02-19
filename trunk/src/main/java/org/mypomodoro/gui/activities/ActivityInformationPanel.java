@@ -9,9 +9,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.calculateEffectiveHours;
-import static org.mypomodoro.util.TimeConverter.calculatePlainHours;
-import static org.mypomodoro.util.TimeConverter.convertToTime;
+import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * Activity information panel
@@ -30,16 +28,16 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
                 + DateUtil.getFormatedDate(activity.getDate())
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
-        if (ControlPanel.preferences.getAgileMode()) {
-            textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + (activity.getStoryPoints() < 0 ? "-" : activity.getStoryPoints()) + "\n");
-            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration().isEmpty() ? "-" : activity.getIteration()) + "\n");
-        }
+        textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
         textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
-                //+ "(" + getLength(activity.getEstimatedPoms())
+        //+ "(" + getLength(activity.getEstimatedPoms())
         //+ (activity.getOverestimatedPoms() > 0 ? " + " + getLength(activity.getOverestimatedPoms()) : "") + ")\n");
-        textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
+        if (ControlPanel.preferences.getAgileMode()) {
+            textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
+            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() < 0 ? "-" : activity.getIteration()) + "\n");
+        }
         textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n");
         textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "\n");
         textMap.put("description", Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "\n");
@@ -63,10 +61,13 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         informationArea.setText("");
     }
 
-    private String getLength(int pomodoros) {
-        String effectiveHours = convertToTime(calculateEffectiveHours(pomodoros));
-        String plainHours = convertToTime(calculatePlainHours(pomodoros));
-        String length = effectiveHours + " / " + plainHours;
-        return length;
+    private String displayStoryPoint(float points) {
+        String text;
+        if (points / 0.5 == 1) {
+            text = "1/2";
+        } else {
+            text = Math.round(points) + "";
+        }
+        return text;
     }
 }
