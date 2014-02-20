@@ -99,12 +99,6 @@ public class ActivitiesPanel extends JPanel {
     }
 
     private void init() {
-        // activate drag and drop
-        table.setDragEnabled(true);
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        table.setDropMode(DropMode.INSERT_ROWS);
-        table.setTransferHandler(new TableRowTransferHandler(table));
-
         table.setRowHeight(30);
 
         // set custom render for dates
