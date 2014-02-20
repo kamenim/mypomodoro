@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
@@ -87,7 +88,12 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_added ASC;");
+            ResultSet rs;
+            if (ControlPanel.preferences.getAgileMode()) {
+                rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY iteration DESC, priority ASC;");
+            } else {
+                rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_added ASC;");
+            }
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -250,8 +256,7 @@ public class ActivitiesDAO {
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'true',"
-                + "date_added = " + new Date().getTime() + ","
-                + "priority = -1"
+                + "date_added = " + new Date().getTime()
                 + " WHERE priority > -1 AND is_complete = 'false';";
         try {
             database.lock();
