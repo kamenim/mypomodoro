@@ -210,8 +210,7 @@ public class ToDoListPanel extends JPanel {
 
     private void completeTask(Activity selectedToDo) {
         selectedToDo.setIsCompleted(true);
-        selectedToDo.setDate(new Date());
-        selectedToDo.setPriority(-1);
+        selectedToDo.setDate(new Date());        
         selectedToDo.databaseUpdate();
         ReportList reportList = ReportList.getList();
         reportList.add(selectedToDo);
