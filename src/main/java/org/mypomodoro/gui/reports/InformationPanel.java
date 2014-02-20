@@ -12,6 +12,7 @@ import org.mypomodoro.buttons.DeleteReportButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -67,6 +68,13 @@ public class InformationPanel extends ActivityInformationPanel implements Activi
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
+        // replace date
+        textMap.put("date", Labels.getString("Common.Date") + ": "
+                + (activity.isUnplanned() ? "U [" : "")
+                + DateUtil.getFormatedDate(activity.getDate())
+                + " " + DateUtil.getFormatedTime(activity.getDate())
+                + (activity.isUnplanned() ? "]" : "") + "\n");
+        // add additional info
         textMap.put("real", Labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms() + "\n");
         textMap.put("diffi", Labels.getString("ReportListPanel.Diff I") + ": " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "\n");
         textMap.put("diffii", Labels.getString("ReportListPanel.Diff II") + ": " + (activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "") + "\n");

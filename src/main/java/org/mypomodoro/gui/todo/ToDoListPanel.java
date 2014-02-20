@@ -3,6 +3,7 @@ package org.mypomodoro.gui.todo;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Date;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -209,6 +210,8 @@ public class ToDoListPanel extends JPanel {
 
     private void completeTask(Activity selectedToDo) {
         selectedToDo.setIsCompleted(true);
+        selectedToDo.setDate(new Date());
+        selectedToDo.setPriority(-1);
         selectedToDo.databaseUpdate();
         ReportList reportList = ReportList.getList();
         reportList.add(selectedToDo);

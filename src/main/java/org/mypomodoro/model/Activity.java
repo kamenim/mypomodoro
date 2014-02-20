@@ -99,7 +99,7 @@ public class Activity {
     /**
      * Iteration
      */
-    private int iteration = 0;
+    private int iteration = -1;
 
     /**
      * Parent Id
@@ -141,6 +141,38 @@ public class Activity {
         this.description = description;
         this.type = type;
         this.estimatedPoms = estimatedPoms;
+        this.date = dateActivity;
+        this.id = activityId > 0 ? activityId : this.id;
+    }
+    
+    /**
+     * Constructor for Activity
+     *
+     * @param place
+     * @param author
+     * @param name
+     * @param description
+     * @param type
+     * @param estimatedPoms
+     * @param storyPoints
+     * @param iteration
+     * @param dateActivity
+     */
+    public Activity(String place, String author, String name,
+            String description, String type, int estimatedPoms, float storyPoints, int iteration, Date dateActivity) {
+        this(place, author, name, description, type, estimatedPoms, storyPoints, iteration, dateActivity, -1);
+    }
+    
+    public Activity(String place, String author, String name,
+            String description, String type, int estimatedPoms, float storyPoints, int iteration, Date dateActivity, int activityId) {
+        this.place = place;
+        this.author = author;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.estimatedPoms = estimatedPoms;
+        this.storyPoints = storyPoints;
+        this.iteration = iteration;
         this.date = dateActivity;
         this.id = activityId > 0 ? activityId : this.id;
     }

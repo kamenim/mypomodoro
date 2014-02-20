@@ -1,6 +1,5 @@
 package org.mypomodoro.model;
 
-import java.util.Iterator;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
