@@ -52,7 +52,7 @@ public class Main {
     }
 
     public static void updateLists() {
-        //ActivityList.getList().refresh();
+        ActivityList.getList().refresh();
         ToDoList.getList().refresh();
         ReportList.getList().refresh();
     }

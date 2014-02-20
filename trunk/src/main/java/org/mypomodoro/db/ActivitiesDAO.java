@@ -3,6 +3,7 @@ package org.mypomodoro.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.mypomodoro.Main;
@@ -62,7 +63,7 @@ public class ActivitiesDAO {
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY date_added ASC;");
+                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY iteration ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -86,7 +87,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_added DESC;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_added ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -248,7 +249,9 @@ public class ActivitiesDAO {
 
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
-                + "is_complete = 'true'"
+                + "is_complete = 'true',"
+                + "date_added = " + new Date().getTime() + ","
+                + "priority = -1"
                 + " WHERE priority > -1 AND is_complete = 'false';";
         try {
             database.lock();

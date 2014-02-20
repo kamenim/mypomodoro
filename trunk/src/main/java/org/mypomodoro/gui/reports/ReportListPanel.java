@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.reports;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.Iterator;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -32,6 +35,7 @@ import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -45,7 +49,7 @@ public class ReportListPanel extends JPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private final JTable table = new JTable(activitiesTableModel);
+    private JTable table;
     private final static String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -63,6 +67,21 @@ public class ReportListPanel extends JPanel {
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
+        table = new JTable(activitiesTableModel) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (isRowSelected(row)) {
+                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+                } else {
+                    ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
+                }
+                return c;
+            }
+        };
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
