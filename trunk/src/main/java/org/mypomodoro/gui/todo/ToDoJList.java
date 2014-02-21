@@ -1,11 +1,13 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Iterator;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -95,6 +97,12 @@ public class ToDoJList extends JList {
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            
+            if (isSelected) {
+                renderer.setBackground(ColorUtil.BLUE_ROW);
+            } else {
+                renderer.setBackground(index % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
+            }
 
             Activity toDo = (Activity) value;
             renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + toDo.getEstimatedPoms() + (toDo.getOverestimatedPoms() > 0 ? " + " + toDo.getOverestimatedPoms() : "") + ")");

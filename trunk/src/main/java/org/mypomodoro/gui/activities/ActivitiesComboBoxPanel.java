@@ -3,6 +3,7 @@ package org.mypomodoro.gui.activities;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -14,6 +15,7 @@ import static org.mypomodoro.util.TimeConverter.getLength;
 class ActivitiesComboBoxPanel extends JPanel {
 
     protected JComboBox comboBox;
+    protected JLabel label = new JLabel();
 
     // Generic constructor
     public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
@@ -21,6 +23,7 @@ class ActivitiesComboBoxPanel extends JPanel {
         setOpaque(true);
         comboBox.setEditable(editable);
         add(comboBox);
+        add(label);
     }
 
     class ComboBoxFloatRenderer extends DefaultListCellRenderer {
@@ -36,7 +39,7 @@ class ActivitiesComboBoxPanel extends JPanel {
             } else {
                 text = Math.round((Float) value) + "";
             }
-            setText(text);
+            setText(text);            
             return this;
         }
     }

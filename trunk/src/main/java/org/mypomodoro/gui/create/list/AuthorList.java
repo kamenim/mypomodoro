@@ -9,7 +9,7 @@ import org.mypomodoro.db.ActivitiesDAO;
  * List of authors of activities and reports
  *
  */
-public class AuthorList {
+public class AuthorList extends AbstractList {
 
     private static List<String> authors = new ArrayList<String>();
 
@@ -19,7 +19,7 @@ public class AuthorList {
 
     public static List<String> getAuthors() {
         if (authors.size() > 1) {
-            Collections.sort(authors);
+            Collections.sort(authors, new SortIgnoreCase());
         }
         return authors;
     }

@@ -9,7 +9,7 @@ import org.mypomodoro.db.ActivitiesDAO;
  * List of places of activities and reports
  *
  */
-public class PlaceList {
+public class PlaceList extends AbstractList {
 
     private static List<String> places = new ArrayList<String>();
 
@@ -19,7 +19,7 @@ public class PlaceList {
 
     public static List<String> getPlaces() {
         if (places.size() > 1) {
-            Collections.sort(places);
+            Collections.sort(places, new SortIgnoreCase());
         }
         return places;
     }

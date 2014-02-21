@@ -72,5 +72,8 @@ public class MoveButton extends AbstractPomodoroButton {
                 to.addActivity(selectedActivity);
             }
         }
+        // Refresh panel borders
+        from.setPanelBorder();
+        to.setPanelBorder();
     }
 }

@@ -78,7 +78,7 @@ public class EditPanel extends CreatePanel {
     @Override
     protected void validActivityAction(Activity currentReport) {
         currentReport.databaseUpdate();
-        ReportList.getList().update();
+        //ReportList.getList().update();
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -98,12 +98,7 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {
-        String title = Labels.getString("Common.Error");
-        String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-    }
+    protected void invalidActivityAction() {}
 
     @Override
     public ActivityInputForm getFormPanel() {
@@ -112,20 +107,16 @@ public class EditPanel extends CreatePanel {
 
     @Override
     public void fillOutInputForm(Activity report) {
-        reportInputForm.setNameField(report.getName());
-        reportInputForm.setDescriptionField(report.getDescription());
-        reportInputForm.setTypeField(report.getType());
         reportInputForm.setAuthorField(report.getAuthor());
         reportInputForm.setPlaceField(report.getPlace());
+        reportInputForm.setDescriptionField(report.getDescription());
         reportInputForm.setActivityId(report.getId());
     }
 
-    @Override
+    /*@Override
     public void clearForm() {
-        reportInputForm.setNameField("");
-        reportInputForm.setDescriptionField("");
-        reportInputForm.setTypeField("");
         reportInputForm.setAuthorField("");
         reportInputForm.setPlaceField("");
-    }
+        reportInputForm.setDescriptionField("");
+    }*/
 }
