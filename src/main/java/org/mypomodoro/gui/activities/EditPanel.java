@@ -94,11 +94,7 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {
-        String title = Labels.getString("Common.Error");
-        String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-    }
+    protected void invalidActivityAction() {}
 
     @Override
     public ActivityInputForm getFormPanel() {

@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.Iterator;
-import javax.swing.DropMode;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
@@ -20,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -42,6 +40,7 @@ import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -134,35 +133,42 @@ public class ActivitiesPanel extends JPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+        } else {
+            // Set width of columns story points, iteration
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
         }
-        // hide ID column
-        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // hide unplanned in Agile mode (does not make sense to have unplanned task in the backlog anyway)
+        // hide unplanned and date in Agile mode (does not make sense to have unplanned task in the backlog anyway)
         if (ControlPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(0);
         } else {
-            // Set width of column Unplanned
+            // Set width of columns Unplanned and date
             table.getColumnModel().getColumn(0).setMaxWidth(30);
             table.getColumnModel().getColumn(0).setMinWidth(30);
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
         }
-        // Set width of column Date, estimated, story points, iteration
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
+        // Set width of column estimated
         table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
+        // Set minimum width of column title so the custom resizer won't 'shrink' it
+        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
@@ -189,6 +195,10 @@ public class ActivitiesPanel extends JPanel {
         selectActivity();
         // Refresh panel border
         setPanelBorder();
+
+        // Make sure column title will fit long titles
+        ColumnResizer.adjustColumnPreferredWidths(table);
+        table.revalidate();
     }
 
     private void setPanelBorder() {
@@ -309,6 +319,9 @@ public class ActivitiesPanel extends JPanel {
                     if (column == ID_KEY - 5 && data.toString().length() > 0) { // Title (can't be empty)
                         act.setName(data.toString());
                         act.databaseUpdate();
+                        // The customer resizer may resize the title column to fit the length of the new text
+                        ColumnResizer.adjustColumnPreferredWidths(table);
+                        table.revalidate();
                     } else if (column == ID_KEY - 4) { // Type
                         act.setType(data.toString());
                         act.databaseUpdate();
@@ -317,6 +330,10 @@ public class ActivitiesPanel extends JPanel {
                             commentPanel.selectInfo(act);
                             commentPanel.showInfo();
                         }
+                        // refresh the combo boxes of all rows to display the new type (if any)
+                        String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
+                        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
+                        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
                     } else if (column == ID_KEY - 3) { // Estimated
                         act.setEstimatedPoms((Integer) data);
                         act.databaseUpdate();
@@ -395,14 +412,11 @@ public class ActivitiesPanel extends JPanel {
         }
     }
 
-    static class DateRenderer extends DefaultTableCellRenderer {
+    static class DateRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }

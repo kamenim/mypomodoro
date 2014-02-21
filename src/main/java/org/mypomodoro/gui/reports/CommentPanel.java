@@ -64,10 +64,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
     @Override
     public void selectInfo(Activity activity) {
+        // NO template for user stories and epics here (see other CommentPanel classes)        
         textMap.put("comment", activity.getNotes());
     }
-
-    /*@Override
-     public void clearInfo() {
-     }*/
 }

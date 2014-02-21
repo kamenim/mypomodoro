@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -81,7 +82,26 @@ public class CommentPanel extends ActivityInformationPanel {
 
     @Override
     public void selectInfo(Activity activity) {
-        textMap.put("comment", activity.getNotes());
+        // template for user stories and epics
+        if (ControlPanel.preferences.getAgileMode()
+                && activity.getNotes().trim().length() == 0
+                && activity.isStory()) {
+            StringBuilder text = new StringBuilder();
+            text.append("Story line" + "\n");
+            text.append("-------------" + "\n");
+            text.append("As a <user role>, I want to <action> in order to <purpose>" + "\n\n");
+            text.append("User acceptance criteria" + "\n");
+            text.append("----------------------------------" + "\n");
+            text.append("* " + "\n");
+            text.append("* " + "\n\n");
+            text.append("Test cases" + "\n");
+            text.append("----------------" + "\n");
+            text.append("* " + "\n");
+            text.append("* ");
+            textMap.put("comment", text.toString());
+        } else {
+            textMap.put("comment", activity.getNotes());
+        }
     }
 
     public JLabel getIconLabel() {

@@ -10,6 +10,6 @@ class EstimatedComboBoxCellRenderer extends ComboBoxCellRenderer {
         super(data, editable);
         
         // Custom display hovered item value
-        comboBox.setRenderer(new ComboBoxEstimatedLengthRenderer());        
+        comboBox.setRenderer(new ComboBoxEstimatedLengthRenderer());
     }
 }

@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
-import org.mypomodoro.util.Labels;
 
 /**
  * Manager panel
@@ -15,28 +14,18 @@ public class ManagerPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final ToDoList toDoList = ToDoList.getList();
-    private final ActivityList activityList = ActivityList.getList();
-    private final ListPanel todoPane;
-    private final ListPanel activitiesPane;
+    private ActivityList activityList = ActivityList.getList();
+    private final ToDoPanel todoPane;
+    private final ActivitiesPanel activitiesPane;
 
     public ManagerPanel() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-        String titleActivitiesList = Labels.getString((org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
-                + " (" + activityList.getListSize() + ")";
-        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
-                && activityList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + activityList.getStoryPoints();
+        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
+            activityList = activityList.getListIteration(0); // subset of activities : by default, activities with iteration = 0
         }
-        activitiesPane = new ListPanel(activityList, titleActivitiesList);
-
-        String titleToDoList = Labels.getString((org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
-                + " (" + toDoList.getListSize() + ")";
-        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
-                && toDoList.getListSize() > 0) {
-            titleToDoList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + toDoList.getStoryPoints();
-        }
-        todoPane = new ListPanel(toDoList, titleToDoList);
+        activitiesPane = new ActivitiesPanel(activityList);        
+        todoPane = new ToDoPanel(toDoList);
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(
                 activitiesPane, todoPane));
@@ -45,6 +34,9 @@ public class ManagerPanel extends JPanel {
         add(activitiesPane);
         add(new ControlPanel(activitiesPane, todoPane));
         add(todoPane);
+        
+        activitiesPane.setPanelBorder();
+        todoPane.setPanelBorder();
     }
 
     public void refresh() {

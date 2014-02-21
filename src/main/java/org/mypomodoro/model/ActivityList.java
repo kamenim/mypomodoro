@@ -45,4 +45,14 @@ public class ActivityList extends AbstractActivities {
         ActivitiesDAO.getInstance().removeAllActivities();
         activities.clear();
     }
+    
+    public ActivityList getListIteration(int iteration) {
+        ActivityList listIteration = new ActivityList();
+        for (Activity activity : activities) {
+            if (activity.getIteration() == iteration) {
+                listIteration.add(activity);                
+            }
+        }
+        return listIteration;
+    }
 }

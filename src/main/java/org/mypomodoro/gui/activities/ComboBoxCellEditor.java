@@ -1,6 +1,7 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,6 +38,7 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.setBackground(table.getSelectionBackground());
         comboBox.setSelectedItem(value);
+        comboBox.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
         return this;
     }
 

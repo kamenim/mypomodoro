@@ -36,6 +36,7 @@ import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -88,6 +89,114 @@ public class ReportListPanel extends JPanel {
 
         addReportsTable(gbc);
         addTabPane(gbc);
+    }
+    
+    private void init() {
+        table.setRowHeight(30);
+        
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
+        // set custom render for dates
+        table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
+        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr); // title
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // estimated
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsRenderer());
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr);
+        // hide story points and iteration in 'classic' mode
+        if (!ControlPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+        } else {
+            // Set width of columns story points, iteration
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
+        }
+        // hide unplanned in Agile mode
+        if (ControlPanel.preferences.getAgileMode()) { 
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setPreferredWidth(0);
+        } else {
+            // Set width of column Unplanned
+            table.getColumnModel().getColumn(0).setMaxWidth(30);
+            table.getColumnModel().getColumn(0).setMinWidth(30);
+            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        }
+        // Set width of column Date
+        table.getColumnModel().getColumn(ID_KEY - 9).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 9).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 9).setPreferredWidth(80);
+        // Set width of estimated, real, diff I/II
+        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(40);
+        // Set width of column Time
+        /*table.getColumnModel().getColumn(2).setMaxWidth(60);
+         table.getColumnModel().getColumn(2).setMinWidth(60);
+         table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
+        // Set minimum width of column title so the custom resizer won't 'shrink' it
+        table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(100);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // enable sorting
+        if (table.getModel().getRowCount() > 0) {
+            table.setAutoCreateRowSorter(true);
+        }
+
+        // Add tooltip for Title and Type colums 
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                int rowIndex = table.rowAtPoint(p);
+                int columnIndex = table.columnAtPoint(p);
+                if (columnIndex == ID_KEY - 8 || columnIndex == ID_KEY - 7) {
+                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                    value = value.length() > 0 ? value : null;
+                    table.setToolTipText(value);
+                } else if (columnIndex == ID_KEY - 6) { // estimated
+                    String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
+                    table.setToolTipText(value);
+                } else if (columnIndex == ID_KEY - 9) { // date and time
+                    String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(rowIndex, columnIndex));
+                    value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(rowIndex, columnIndex));
+                    table.setToolTipText(value);
+                }
+            }
+        });      
+        // select first activity
+        selectReport();
+        // Refresh panel border
+        setPanelBorder();
+        
+        // Make sure column title will fit long titles
+        ColumnResizer.adjustColumnPreferredWidths(table);
+        table.revalidate();
     }
 
     private void addReportsTable(GridBagConstraints gbc) {
@@ -167,7 +276,7 @@ public class ReportListPanel extends JPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4 || columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
+                return columnIndex == ID_KEY - 8;
             }
 
             // this is mandatory to get columns with integers properly sorted
@@ -233,6 +342,7 @@ public class ReportListPanel extends JPanel {
         init();
     }
 
+    // selected row BOLD
     static class CustomTableRenderer extends DefaultTableCellRenderer {
 
         @Override
@@ -249,10 +359,7 @@ public class ReportListPanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }
@@ -262,10 +369,7 @@ public class ReportListPanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text;
             if (value.toString().equals("0.5")) {
                 text = "1/2";
@@ -276,105 +380,18 @@ public class ReportListPanel extends JPanel {
             return renderer;
         }
     }
-
-    private void init() {
-        // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
-        // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
-        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // type
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // estimated
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsRenderer());
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr);
-        // hide story points and iteration if not Agile mode
-        if (!ControlPanel.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
-        }
-        // hide ID column
-        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // hide unplanned in Agile mode
-        if (ControlPanel.preferences.getAgileMode()) { 
-            table.getColumnModel().getColumn(0).setMaxWidth(0);
-            table.getColumnModel().getColumn(0).setMinWidth(0);
-            table.getColumnModel().getColumn(0).setPreferredWidth(0);
-        } else {
-            // Set width of column Unplanned
-            table.getColumnModel().getColumn(0).setMaxWidth(30);
-            table.getColumnModel().getColumn(0).setMinWidth(30);
-            table.getColumnModel().getColumn(0).setPreferredWidth(30);
-        }
-        // Set width of column Date
-        table.getColumnModel().getColumn(1).setMaxWidth(80);
-        table.getColumnModel().getColumn(1).setMinWidth(80);
-        table.getColumnModel().getColumn(1).setPreferredWidth(80);
-        // Set width of column Time
-        /*table.getColumnModel().getColumn(2).setMaxWidth(60);
-         table.getColumnModel().getColumn(2).setMinWidth(60);
-         table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
-        // enable sorting
-        if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
-        }
-
-        // Add tooltip for Title and Type colums 
-        table.addMouseMotionListener(new MouseMotionAdapter() {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Point p = e.getPoint();
-                int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 8 || columnIndex == ID_KEY - 7) {
-                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
-                    value = value.length() > 0 ? value : null;
-                    table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 6) { // estimated
-                    String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
-                    table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 9) { // date and time
-                    String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(rowIndex, columnIndex));
-                    value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(rowIndex, columnIndex));
-                    table.setToolTipText(value);
-                }
-            }
-        });
-        selectReport();
-        String title = Labels.getString("ReportListPanel.Report List") + " ("
+    
+    private void setPanelBorder() {
+        String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
                 + ReportList.getListSize() + ")";
         if (ReportList.getListSize() > 0) {
-            title += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
+            titleReportsList += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
         }
         if (ControlPanel.preferences.getAgileMode()
                 && ReportList.getListSize() > 0) {
-            title += " - " + Labels.getString("Agile.Common.Story Points") + ": " + getStoryPoints();
+            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
         }
-        setBorder(new TitledBorder(new EtchedBorder(), title));
-    }
-
-    private int getStoryPoints() {
-        Iterator<Activity> act = ReportList.getList().iterator();
-        int storyPoints = 0;
-        int real = 0;
-        Activity activity;
-        while (act.hasNext()) {
-            activity = act.next();
-            if (activity.getStoryPoints() > 0) {
-                storyPoints += activity.getStoryPoints();
-            }
-        }
-        return storyPoints;
+        setBorder(new TitledBorder(new EtchedBorder(), titleReportsList));
     }
 
     private int getAccuracy() {

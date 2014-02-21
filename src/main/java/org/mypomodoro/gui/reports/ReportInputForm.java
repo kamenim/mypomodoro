@@ -12,8 +12,6 @@ public class ReportInputForm extends ActivityInputForm {
 
     @Override
     protected void addForm(int gridy) {
-        addName(gridy);
-        addType(++gridy);
         addAuthor(++gridy);
         addPlace(++gridy);
         addDescription(++gridy);
@@ -28,10 +26,6 @@ public class ReportInputForm extends ActivityInputForm {
     public Activity getActivityFromFields() {
         Activity report = Activity.getActivity(activityId);
 
-        report.setName(nameField.getText().trim());
-        String type = (String) types.getSelectedItem();
-        type = type != null ? type.trim() : "";
-        report.setType(type);
         String author = (String) authors.getSelectedItem();
         author = author != null ? author.trim() : "";
         report.setAuthor(author);

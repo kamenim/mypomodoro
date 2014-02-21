@@ -11,9 +11,9 @@ import org.mypomodoro.gui.ControlPanel;
  * List of types of activities and reports
  *
  */
-public class TypeList {
+public class TypeList extends AbstractList {
 
-    private static List<String> types = new ArrayList<String>();
+    private static ArrayList<String> types = new ArrayList<String>();
 
     public static void initTypes() {
         types = ActivitiesDAO.getInstance().getTypes();
@@ -30,7 +30,7 @@ public class TypeList {
 
     public static List<String> getTypes() {
         if (types.size() > 1) {
-            Collections.sort(types);
+            Collections.sort(types, new SortIgnoreCase());
         }
         return types;
     }
