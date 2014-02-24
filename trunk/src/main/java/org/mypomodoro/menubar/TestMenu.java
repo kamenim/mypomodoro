@@ -75,7 +75,7 @@ public class TestMenu extends JMenu {
                     String[] type = {"Homework", "Work", "Testing",
                         "Programming", "Distribution"};
                     Float[] storypoint = new Float[]{0f, 0f, 0f, 0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f, 40f, 100f};
-                    Integer[] iteration = new Integer[] {-1, 0, 1, 2, 3, 4, 5};    
+                    Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4, 5};
                     java.util.Random rand = new java.util.Random();
                     int alSize = 10;
 
@@ -93,12 +93,12 @@ public class TestMenu extends JMenu {
 
                         Activity a = new Activity(place[rand.nextInt(12)],
                                 authors[rand.nextInt(5)],
-                                name[rand.nextInt(4)], 
-                                description[rand.nextInt(5)], 
+                                name[rand.nextInt(4)],
+                                description[rand.nextInt(5)],
                                 type[rand.nextInt(5)],
                                 rand.nextInt(ControlPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(23)],
-                                iteration[rand.nextInt(7)],                                
+                                iteration[rand.nextInt(7)],
                                 currentDateAtMidnight);
                         a.databaseInsert();
                     }

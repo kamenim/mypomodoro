@@ -27,10 +27,17 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
+import org.mypomodoro.gui.todo.TabPane;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ToDoList;
 
 /**
  * Panel to export reports
@@ -41,25 +48,29 @@ public class ExportPanel extends JPanel {
     private static final long serialVersionUID = 20110814L;
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final AbstractActivities activities;
+    private AbstractActivities activities;
+    private final JComponent component;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString("Common.Date"),
         Labels.getString("ReportListPanel.Time"),
         Labels.getString("Common.Title"),
-        Labels.getString("ReportListPanel.Estimated"),
-        Labels.getString("ReportListPanel.Overestimated"),
+        Labels.getString("Common.Estimated"),
+        Labels.getString("Common.Overestimated"),
         Labels.getString("ReportListPanel.Real"),
         Labels.getString("ReportListPanel.Diff I"),
         Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("ToDoListPanel.Internal"),
         Labels.getString("ToDoListPanel.External"),
-        Labels.getString("Common.Type"), Labels.getString("Common.Author"),
+        Labels.getString("Common.Type"),
+        Labels.getString("Common.Author"),
         Labels.getString("Common.Place"),
         Labels.getString("Common.Description"),
-        Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment")};
+        Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+        Labels.getString("Agile.Common.Story Points"),
+        Labels.getString("Agile.Common.Iteration")};
 
-    public ExportPanel(AbstractActivities activities) {
-        this.activities = activities;
+    public ExportPanel(JComponent component) {
+        this.component = component;
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -106,6 +117,13 @@ public class ExportPanel extends JPanel {
     }
 
     private void export() {
+        if (component instanceof TabPane) {
+            activities = ToDoList.getListFromDB();
+        } else if (component instanceof ActivitiesPanel) {
+            activities = ActivityList.getListFromDB();
+        } else if (component instanceof ReportListPanel) {
+            activities = ReportList.getListFromDB();
+        }
         if (activities.size() > 0) {
             try {
                 String fileName = exportInputForm.getFileName() + "."

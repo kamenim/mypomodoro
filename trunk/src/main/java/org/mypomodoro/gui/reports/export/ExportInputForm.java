@@ -513,8 +513,8 @@ public class ExportInputForm extends JPanel {
             Labels.getString("Common.Date"),
             Labels.getString("ReportListPanel.Time"),
             Labels.getString("Common.Title"),
-            Labels.getString("ReportListPanel.Estimated"),
-            Labels.getString("ReportListPanel.Overestimated"),
+            Labels.getString("Common.Estimated"),
+            Labels.getString("Common.Overestimated"),
             Labels.getString("ReportListPanel.Real"),
             Labels.getString("ReportListPanel.Diff I"),
             Labels.getString("ReportListPanel.Diff II"),
@@ -524,6 +524,8 @@ public class ExportInputForm extends JPanel {
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),
             Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+            Labels.getString("Agile.Common.Story Points"),
+            Labels.getString("Agile.Common.Iteration"),
             ""};
         private JComboBox columnsComboBox = new JComboBox();
 
@@ -554,7 +556,7 @@ public class ExportInputForm extends JPanel {
         }
 
         public static String[] toArray(Activity activity, String datePattern) {
-            String[] attributes = new String[16];
+            String[] attributes = new String[18];
             attributes[0] = activity.isUnplanned() ? "1" : "0";
             attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
             attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
@@ -571,12 +573,14 @@ public class ExportInputForm extends JPanel {
             attributes[13] = activity.getPlace();
             attributes[14] = activity.getDescription();
             attributes[15] = activity.getNotes();
+            attributes[16] = activity.getStoryPoints() + "";
+            attributes[17] = activity.getIteration() + "";
             return attributes;
         }
 
         public static Object[] toRowArray(Activity activity) {
-            Object[] attributes = new Object[16];
-            attributes[0] = activity.isUnplanned() ? true : false;
+            Object[] attributes = new Object[18];
+            attributes[0] = activity.isUnplanned();
             attributes[1] = activity.getDate();
             attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
             attributes[3] = activity.getName();
@@ -592,6 +596,8 @@ public class ExportInputForm extends JPanel {
             attributes[13] = activity.getPlace();
             attributes[14] = activity.getDescription();
             attributes[15] = activity.getNotes();
+            attributes[16] = activity.getStoryPoints();
+            attributes[17] = activity.getIteration();
             return attributes;
         }
     }

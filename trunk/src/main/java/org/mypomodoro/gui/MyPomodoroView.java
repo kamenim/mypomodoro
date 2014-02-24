@@ -15,6 +15,7 @@ import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.manager.ManagerPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
+import org.mypomodoro.gui.reports.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.todo.ToDoListPanel;
 import org.mypomodoro.menubar.FileMenu;
 import org.mypomodoro.menubar.HelpMenu;
@@ -37,6 +38,7 @@ public class MyPomodoroView extends JFrame {
     private final ManagerPanel generatePanel = Main.generatePanel;
     private final ReportListPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
+    public final BurndownPanel burndownPanel = Main.burndownPanel;
     private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
     private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
@@ -54,6 +56,10 @@ public class MyPomodoroView extends JFrame {
 
     public ReportListPanel getReportListPanel() {
         return reportListPanel;
+    }
+
+    public BurndownPanel getBurndownPanel() {
+        return burndownPanel;
     }
 
     public CreatePanel getCreatePanel() {

@@ -28,8 +28,7 @@ public class DeleteAllButton extends AbstractPomodoroButton {
                 if (rowCount > 0) {
                     String title = Labels.getString("ActivityListPanel.Delete all activities");
                     String message = Labels.getString("ActivityListPanel.Are you sure to delete all activities?");
-                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                            title, JOptionPane.YES_NO_OPTION);
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivityList.getList().removeAll();
                         activitiesPanel.refresh();

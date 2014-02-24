@@ -26,6 +26,11 @@ public class ActivityList extends AbstractActivities {
         return list;
     }
 
+    // This makes sure we have a list properly sorted by database
+    public static ActivityList getListFromDB() {
+        return new ActivityList();
+    }
+
     public static int getListSize() {
         return getList().size();
     }
@@ -45,12 +50,12 @@ public class ActivityList extends AbstractActivities {
         ActivitiesDAO.getInstance().removeAllActivities();
         activities.clear();
     }
-    
+
     public ActivityList getListIteration(int iteration) {
         ActivityList listIteration = new ActivityList();
         for (Activity activity : activities) {
             if (activity.getIteration() == iteration) {
-                listIteration.add(activity);                
+                listIteration.add(activity);
             }
         }
         return listIteration;

@@ -248,7 +248,7 @@ public class ActivitiesPanel extends JPanel {
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(true);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
-        ExportPanel exportPanel = new ExportPanel(ActivityList.getList());
+        ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
 
@@ -346,10 +346,10 @@ public class ActivitiesPanel extends JPanel {
                         act.setIteration(Integer.parseInt(data.toString()));
                         act.databaseUpdate();
                     }
-                    // update edit panel
                     ActivityList.getList().update(act);
                     // Refresh panel border
                     setPanelBorder();
+                    // update info
                     detailsPane.selectInfo(act);
                     detailsPane.showInfo();
                 }

@@ -94,29 +94,33 @@ public class BurndownChartInputForm extends JPanel {
 
     private void addDatesInputForm() {
         c.gridx = 0;
-        c.gridy = 0;
-        //c.weighty = 0.5;
+        c.gridy = 0;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         FormLabel dateslabel = new FormLabel(
                 Labels.getString("ReportListPanel.Chart.Dates") + "*: ");
         dateslabel.setMinimumSize(LABEL_DIMENSION);
         dateslabel.setPreferredSize(LABEL_DIMENSION);
         add(dateslabel, c);
         c.gridx = 1;
-        c.gridy = 0;
-        //c.weighty = 0.5;
+        c.gridy = 0;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         startDatePicker.setDate(new Date());
         add(startDatePicker, c);
         c.gridx = 2;
-        c.gridy = 0;
-        //c.weighty = 0.5;
+        c.gridy = 0;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         endDatePicker.setDate(new Date());
         add(endDatePicker, c);
     }
 
     private void addTypeInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 1;
-        //c.weighty = 0.5;                
+        c.gridy = 1;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;               
         c.anchor = GridBagConstraints.NORTH;
         FormLabel typelabel = new FormLabel(
                 Labels.getString("ReportListPanel.Chart.Type") + "*: ");
@@ -124,8 +128,9 @@ public class BurndownChartInputForm extends JPanel {
         typelabel.setPreferredSize(LABEL_DIMENSION);
         add(typelabel, c);
         c.gridx = 1;
-        c.gridy = 1;
-        //c.weighty = 0.5;
+        c.gridy = 1;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         c.gridwidth = 2;
         c.anchor = GridBagConstraints.WEST;
         typesInputFormPanel.setLayout(new GridBagLayout());
@@ -201,8 +206,9 @@ public class BurndownChartInputForm extends JPanel {
 
     private void addChartInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 2;
-        //c.weighty = 0.5;
+        c.gridy = 2;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         c.gridwidth = 3;
         chartInputFormPanel.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Chart.Chart")));
         chartInputFormPanel.setLayout(new GridBagLayout());
@@ -213,8 +219,9 @@ public class BurndownChartInputForm extends JPanel {
 
     private void addImageInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 3;
-        //c.weighty = 0.5;
+        c.gridy = 3;        
+        c.weightx = 1.0;
+        c.weighty = 0.5;
         c.gridwidth = 3;
         imageInputFormPanel.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Chart.Image")));
         imageInputFormPanel.setLayout(new GridBagLayout());

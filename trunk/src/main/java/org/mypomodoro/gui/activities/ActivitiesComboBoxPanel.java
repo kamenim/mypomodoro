@@ -39,7 +39,7 @@ class ActivitiesComboBoxPanel extends JPanel {
             } else {
                 text = Math.round((Float) value) + "";
             }
-            setText(text);            
+            setText(text);
             return this;
         }
     }

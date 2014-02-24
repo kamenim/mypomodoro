@@ -23,6 +23,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
@@ -31,6 +33,8 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.reports.burndownchart.BurndownChartInputPanel;
+import org.mypomodoro.gui.reports.burndownchart.BurndownChartPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -49,9 +53,9 @@ public class ReportListPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
-    AbstractActivitiesTableModel activitiesTableModel = getTableModel();
+    private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private JTable table;
-    private final static String[] columnNames = {"U",
+    private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
@@ -60,11 +64,14 @@ public class ReportListPanel extends JPanel {
         Labels.getString("ReportListPanel.Diff I"),
         Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("Agile.Common.Story Points"),
-        Labels.getString("Agile.Common.Iteration"), "ID"};
+        Labels.getString("Agile.Common.Iteration"),
+        "ID"};
     //Labels.getString("ReportListPanel.Time")
-    public static final int ID_KEY = 10;
+    public static int ID_KEY = 10;
     private int selectedReportId = 0;
     private int selectedRowIndex = 0;
+
+    private final InformationPanel informationArea = new InformationPanel(this);
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -90,10 +97,10 @@ public class ReportListPanel extends JPanel {
         addReportsTable(gbc);
         addTabPane(gbc);
     }
-    
+
     private void init() {
         table.setRowHeight(30);
-        
+
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
@@ -125,7 +132,7 @@ public class ReportListPanel extends JPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (ControlPanel.preferences.getAgileMode()) { 
+        if (ControlPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -188,15 +195,28 @@ public class ReportListPanel extends JPanel {
                     table.setToolTipText(value);
                 }
             }
-        });      
+        });
         // select first activity
         selectReport();
         // Refresh panel border
         setPanelBorder();
-        
+
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(table);
         table.revalidate();
+    }
+
+    private void setPanelBorder() {
+        String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
+                + ReportList.getListSize() + ")";
+        if (ReportList.getListSize() > 0) {
+            titleReportsList += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
+        }
+        if (ControlPanel.preferences.getAgileMode()
+                && ReportList.getListSize() > 0) {
+            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
+        }
+        setBorder(new TitledBorder(new EtchedBorder(), titleReportsList));
     }
 
     private void addReportsTable(GridBagConstraints gbc) {
@@ -207,7 +227,18 @@ public class ReportListPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(table), gbc);
 
-        recordSelectedRowId();
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        int row = table.getSelectedRow();
+                        if (row > -1) {
+                            selectedReportId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
+                            selectedRowIndex = row;
+                        }
+                    }
+                });
     }
 
     private void addTabPane(GridBagConstraints gbc) {
@@ -218,7 +249,6 @@ public class ReportListPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        InformationPanel informationArea = new InformationPanel(table);
         controlPane.add(Labels.getString("Common.Details"), informationArea);
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
@@ -226,15 +256,8 @@ public class ReportListPanel extends JPanel {
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel();
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
-        ExportPanel exportPanel = new ExportPanel(ReportList.getList());
+        ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        /*JTabbedPane burdownChartPane = new JTabbedPane();
-         BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
-         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
-         BurndownChartPanel burndownChart = new BurndownChartPanel(this);        
-         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
-
-         controlPane.add(Labels.getString("ReportListPanel.Chart.Burndown Chart"), burdownChartPane);*/
         add(controlPane, gbc);
 
         showSelectedItemDetails(informationArea);
@@ -242,7 +265,7 @@ public class ReportListPanel extends JPanel {
         showSelectedItemComment(commentPanel);
     }
 
-    private static AbstractActivitiesTableModel getTableModel() {
+    private AbstractActivitiesTableModel getTableModel() {
         int rowIndex = ReportList.getList().size();
         int colIndex = columnNames.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
@@ -285,7 +308,15 @@ public class ReportListPanel extends JPanel {
                 switch (column) {
                     case 0:
                         return Boolean.class;
+                    case 1:
+                        return Date.class;
                     case 4:
+                        return Integer.class;
+                    case 5:
+                        return Integer.class;
+                    case 6:
+                        return Integer.class;
+                    case 7:
                         return Integer.class;
                     case 8:
                         return Float.class;
@@ -296,22 +327,49 @@ public class ReportListPanel extends JPanel {
                 }
             }
         };
+
+        // listener on editable cells
+        tableModel.addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() != TableModelEvent.DELETE) {
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
+                    Object data = model.getValueAt(row, column);
+                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                    Activity act = Activity.getActivity(ID.intValue());
+                    if (column == ID_KEY - 8 && data.toString().length() > 0) { // Title (can't be empty)
+                        act.setName(data.toString());
+                        act.databaseUpdate();
+                        // The customer resizer may resize the title column to fit the length of the new text
+                        ColumnResizer.adjustColumnPreferredWidths(table);
+                        table.revalidate();
+                    }
+                    ReportList.getList().update(act);
+                    // Refresh panel border
+                    setPanelBorder();
+                    // update info
+                    informationArea.selectInfo(act);
+                    informationArea.showInfo();
+                }
+            }
+        });
         return tableModel;
     }
 
-    private void recordSelectedRowId() {
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
+    public JTable getTable() {
+        return table;
+    }
 
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        int row = table.getSelectedRow();
-                        if (row > -1) {
-                            selectedReportId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
-                            selectedRowIndex = row;
-                        }
-                    }
-                });
+    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
+    public void removeRow(int rowIndex) {
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
+        // select following activity in the list
+        selectReport();
+        // Refresh panel border
+        setPanelBorder();
     }
 
     private void showSelectedItemDetails(InformationPanel informationPanel) {
@@ -379,19 +437,6 @@ public class ReportListPanel extends JPanel {
             renderer.setText(text);
             return renderer;
         }
-    }
-    
-    private void setPanelBorder() {
-        String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
-                + ReportList.getListSize() + ")";
-        if (ReportList.getListSize() > 0) {
-            titleReportsList += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
-        }
-        if (ControlPanel.preferences.getAgileMode()
-                && ReportList.getListSize() > 0) {
-            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
-        }
-        setBorder(new TitledBorder(new EtchedBorder(), titleReportsList));
     }
 
     private int getAccuracy() {

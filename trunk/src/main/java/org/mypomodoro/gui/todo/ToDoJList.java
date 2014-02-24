@@ -97,7 +97,7 @@ public class ToDoJList extends JList {
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            
+
             if (isSelected) {
                 renderer.setBackground(ColorUtil.BLUE_ROW);
             } else {

@@ -8,12 +8,13 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteAllButton;
 import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.gui.ActivityInformation;
 
 /**
  * Panel that displays information on the current Pomodoro
  *
  */
-public class DetailsPanel extends ActivityInformationPanel {
+public class DetailsPanel extends ActivityInformationPanel implements ActivityInformation {
 
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();

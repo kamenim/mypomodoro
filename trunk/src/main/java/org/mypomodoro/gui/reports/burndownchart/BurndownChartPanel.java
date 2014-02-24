@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.gui.reports.ReportListPanel;
 
 /**
  * Panel that displays a burndown chart
@@ -17,7 +16,7 @@ public class BurndownChartPanel extends JPanel {
     private BurndownChart burndownChart;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public BurndownChartPanel(ReportListPanel panel) {
+    public BurndownChartPanel() {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
