@@ -21,8 +21,7 @@ public class IterationComboBox extends JComboBox {
                 for (int i = 0; i <= 101; i++) {
                     addItem(i); //starting at iteration 0 (not -1)
                 }
-                setSelectedItem(0);
-                //tooltipRenderer.setTooltips((ArrayList) TypeList.getTypes());
+//                //setSelectedItem(0);
                 //setSelectedItem(selectedItem);
             }
 
@@ -33,6 +32,7 @@ public class IterationComboBox extends JComboBox {
             @Override
             public void popupMenuCanceled(PopupMenuEvent e) {
             }
+            
         });
     }
 }

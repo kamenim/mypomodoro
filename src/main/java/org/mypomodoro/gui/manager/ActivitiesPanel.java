@@ -3,6 +3,7 @@ package org.mypomodoro.gui.manager;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -50,7 +51,13 @@ public class ActivitiesPanel extends ListPanel {
         //c.weighty = 0.1;
         JPanel iterationPanel = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
-        IterationComboBox iterationComboBox = new IterationComboBox();
+        //IterationComboBox iterationComboBox = new IterationComboBox();
+        JComboBox iterationComboBox = new JComboBox() {
+            //
+        };
+        for (int i = 0; i <= 101; i++) {
+            iterationComboBox.addItem(i); //starting at iteration 0 (not -1)
+        }
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weighty = 0.5;

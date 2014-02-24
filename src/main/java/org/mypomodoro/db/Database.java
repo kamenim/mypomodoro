@@ -21,7 +21,7 @@ public class Database {
 
     public Database() {
         try {
-            // The driver can be found in src\main\resources\org\sqlite along with the database
+            System.setProperty("sqlite.purejava", "true");
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:pomodoro.db");
             statement = connection.createStatement();
