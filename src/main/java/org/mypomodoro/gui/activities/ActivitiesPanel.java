@@ -62,10 +62,11 @@ public class ActivitiesPanel extends JPanel {
         Labels.getString("Common.Date"), Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
         Labels.getString("Common.Estimated"),
+        Labels.getString("Common.Overestimated"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
-    public static int ID_KEY = 7;
+    public static int ID_KEY = 8;
     private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
 
@@ -101,19 +102,19 @@ public class ActivitiesPanel extends JPanel {
         table.setRowHeight(30);
 
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new CustomTableRenderer()); // title
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
         // Estimated combo box
         Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             poms[i] = (i + 1);
         }
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(poms, false));
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new EstimatedComboBoxCellEditor(poms, false));
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new EstimatedComboBoxCellRenderer(poms, false));
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new EstimatedComboBoxCellEditor(poms, false));
         // Story Point combo box
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
@@ -147,28 +148,32 @@ public class ActivitiesPanel extends JPanel {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(0);
         } else {
             // Set width of columns Unplanned and date
             table.getColumnModel().getColumn(0).setMaxWidth(30);
             table.getColumnModel().getColumn(0).setMinWidth(30);
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(80);
         }
         // Set width of column estimated
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
-        // Set minimum width of column title so the custom resizer won't 'shrink' it
-        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
+        table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(80);
+        // Set minimum width of column type so the custom resizer won't 'shrink' it
+        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(100);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // hide Overstimated column
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
@@ -181,11 +186,11 @@ public class ActivitiesPanel extends JPanel {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
                 int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
+                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 5) {
                     String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
                     value = value.length() > 0 ? value : null;
                     table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 3) { // estimated
+                } else if (columnIndex == ID_KEY - 4) { // estimated
                     String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
                     table.setToolTipText(value);
                 }
@@ -271,17 +276,19 @@ public class ActivitiesPanel extends JPanel {
             Integer poms = new Integer(a.getEstimatedPoms());
             tableData[i][4] = poms;
             Float points = new Float(a.getStoryPoints());
-            tableData[i][5] = points;
+            Integer overestimatedpoms = new Integer(a.getOverestimatedPoms());
+            tableData[i][5] = overestimatedpoms;
+            tableData[i][6] = points;
             Integer iteration = new Integer(a.getIteration());
-            tableData[i][6] = iteration;
-            tableData[i][7] = a.getId();
+            tableData[i][7] = iteration;
+            tableData[i][8] = a.getId();
         }
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4 || columnIndex == ID_KEY - 3 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
+                return columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4 || columnIndex == ID_KEY - 2 || columnIndex == ID_KEY - 1;
             }
 
             // this is mandatory to get columns with integers properly sorted
@@ -295,8 +302,10 @@ public class ActivitiesPanel extends JPanel {
                     case 4:
                         return Integer.class;
                     case 5:
-                        return Float.class;
+                        return Integer.class;
                     case 6:
+                        return Float.class;
+                    case 7:
                         return Integer.class;
                     default:
                         return String.class;
@@ -316,13 +325,13 @@ public class ActivitiesPanel extends JPanel {
                     Object data = model.getValueAt(row, column);
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 5 && data.toString().length() > 0) { // Title (can't be empty)
+                    if (column == ID_KEY - 6 && data.toString().length() > 0) { // Title (can't be empty)
                         act.setName(data.toString());
                         act.databaseUpdate();
                         // The customer resizer may resize the title column to fit the length of the new text
                         ColumnResizer.adjustColumnPreferredWidths(table);
                         table.revalidate();
-                    } else if (column == ID_KEY - 4) { // Type
+                    } else if (column == ID_KEY - 5) { // Type
                         act.setType(data.toString());
                         act.databaseUpdate();
                         // load template for user stories
@@ -332,9 +341,9 @@ public class ActivitiesPanel extends JPanel {
                         }
                         // refresh the combo boxes of all rows to display the new type (if any)
                         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
-                    } else if (column == ID_KEY - 3) { // Estimated
+                        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
+                        table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
+                    } else if (column == ID_KEY - 4) { // Estimated
                         act.setEstimatedPoms((Integer) data);
                         act.databaseUpdate();
                     } else if (column == ID_KEY - 2) { // Story Points

@@ -3,7 +3,6 @@ package org.mypomodoro.gui.manager;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
