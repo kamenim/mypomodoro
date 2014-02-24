@@ -26,6 +26,11 @@ public class ReportList extends AbstractActivities {
         return list;
     }
 
+    // This makes sure we have a list properly sorted by database
+    public static ReportList getListFromDB() {
+        return new ReportList();
+    }
+
     public static int getListSize() {
         return getList().size();
     }

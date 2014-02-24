@@ -5,9 +5,9 @@ import javax.swing.JTable;
 import javax.swing.table.*;
 
 /**
- *  Column resizer
- * Get max width for cells in column and make that the preferred width
- * found here : http://niravjavadeveloper.blogspot.com/2011/05/resize-jtable-columns.html
+ * Column resizer Get max width for cells in column and make that the preferred
+ * width found here :
+ * http://niravjavadeveloper.blogspot.com/2011/05/resize-jtable-columns.html
  *
  */
 public class ColumnResizer {

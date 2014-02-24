@@ -144,7 +144,7 @@ public class Activity {
         this.date = dateActivity;
         this.id = activityId > 0 ? activityId : this.id;
     }
-    
+
     /**
      * Constructor for Activity
      *
@@ -162,7 +162,7 @@ public class Activity {
             String description, String type, int estimatedPoms, float storyPoints, int iteration, Date dateActivity) {
         this(place, author, name, description, type, estimatedPoms, storyPoints, iteration, dateActivity, -1);
     }
-    
+
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms, float storyPoints, int iteration, Date dateActivity, int activityId) {
         this.place = place;
@@ -380,7 +380,7 @@ public class Activity {
         this.name = name;
     }
 
-    public void setType(String type) {        
+    public void setType(String type) {
         this.type = type;
     }
 

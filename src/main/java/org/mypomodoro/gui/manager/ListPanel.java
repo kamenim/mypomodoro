@@ -77,7 +77,7 @@ public class ListPanel extends ActivityInformationPanel {
         internalActivitiesList.addListSelectionListener(new ActivityInformationListListener(
                 this));
     }
-    
+
     protected void addInformationArea() {
         addInformationArea(1);
     }
@@ -174,6 +174,7 @@ public class ListPanel extends ActivityInformationPanel {
             return renderer;
         }
     }
-    
-    public void setPanelBorder() {}
+
+    public void setPanelBorder() {
+    }
 }

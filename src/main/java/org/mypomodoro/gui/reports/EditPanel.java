@@ -98,7 +98,8 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void invalidActivityAction() {}
+    protected void invalidActivityAction() {
+    }
 
     @Override
     public ActivityInputForm getFormPanel() {
@@ -114,9 +115,9 @@ public class EditPanel extends CreatePanel {
     }
 
     /*@Override
-    public void clearForm() {
-        reportInputForm.setAuthorField("");
-        reportInputForm.setPlaceField("");
-        reportInputForm.setDescriptionField("");
-    }*/
+     public void clearForm() {
+     reportInputForm.setAuthorField("");
+     reportInputForm.setPlaceField("");
+     reportInputForm.setDescriptionField("");
+     }*/
 }

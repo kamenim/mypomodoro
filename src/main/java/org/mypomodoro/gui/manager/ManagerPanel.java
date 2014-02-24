@@ -24,7 +24,7 @@ public class ManagerPanel extends JPanel {
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
             activityList = activityList.getListIteration(0); // subset of activities : by default, activities with iteration = 0
         }
-        activitiesPane = new ActivitiesPanel(activityList);        
+        activitiesPane = new ActivitiesPanel(activityList);
         todoPane = new ToDoPanel(toDoList);
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(
@@ -34,7 +34,7 @@ public class ManagerPanel extends JPanel {
         add(activitiesPane);
         add(new ControlPanel(activitiesPane, todoPane));
         add(todoPane);
-        
+
         activitiesPane.setPanelBorder();
         todoPane.setPanelBorder();
     }

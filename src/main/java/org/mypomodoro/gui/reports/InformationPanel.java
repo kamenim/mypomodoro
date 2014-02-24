@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteAllReportButton;
@@ -24,31 +23,31 @@ public class InformationPanel extends ActivityInformationPanel implements Activi
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public InformationPanel(JTable table) {
+    public InformationPanel(ReportListPanel reportsPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addInformationArea();
-        addDeleteButton(table);
-        addDeleteAllButton(table);
+        addDeleteButton(reportsPanel);
+        addDeleteAllButton(reportsPanel);
     }
 
-    private void addDeleteButton(JTable table) {
+    private void addDeleteButton(ReportListPanel reportsPanel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        add(new DeleteReportButton(table), gbc);
+        add(new DeleteReportButton(reportsPanel), gbc);
     }
 
-    private void addDeleteAllButton(JTable table) {
+    private void addDeleteAllButton(ReportListPanel reportsPanel) {
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
         //gbc.fill = GridBagConstraints.NONE;
-        add(new DeleteAllReportButton(table), gbc);
+        add(new DeleteAllReportButton(reportsPanel), gbc);
     }
 
     private void addInformationArea() {

@@ -2,10 +2,12 @@ package org.mypomodoro.gui.todo;
 
 import javax.swing.JTabbedPane;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.reports.export.ExportPanel;
+import org.mypomodoro.gui.reports.export.ImportPanel;
 
 import org.mypomodoro.util.Labels;
 
-class TabPane extends JTabbedPane {
+public class TabPane extends JTabbedPane {
 
     private static final long serialVersionUID = 20110814L;
 
@@ -15,5 +17,9 @@ class TabPane extends JTabbedPane {
         add(Labels.getString("ToDoListPanel.Overestimation"), panel.getOverestimationPanel());
         add(Labels.getString("ToDoListPanel.Unplanned"), unplannedPanel);
         add(Labels.getString("ToDoListPanel.Merging"), panel.getMergingPanel());
+        ImportPanel importPanel = new ImportPanel(true);
+        add(Labels.getString("ReportListPanel.Import"), importPanel);
+        ExportPanel exportPanel = new ExportPanel(this);
+        add(Labels.getString("ReportListPanel.Export"), exportPanel);
     }
 }

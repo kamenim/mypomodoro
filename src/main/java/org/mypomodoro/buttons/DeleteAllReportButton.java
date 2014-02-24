@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.reports.ReportListPanel;
 
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
@@ -18,19 +18,20 @@ public class DeleteAllReportButton extends AbstractPomodoroButton {
 
     private static final long serialVersionUID = 20110814L;
 
-    public DeleteAllReportButton(final JTable table) {
+    public DeleteAllReportButton(final ReportListPanel reportsPanel) {
         super(Labels.getString("Common.Delete all"));
         addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int rowCount = table.getRowCount();
+                int rowCount = reportsPanel.getTable().getRowCount();
                 if (rowCount > 0) {
                     String title = Labels.getString("ReportListPanel.Delete all reports");
                     String message = Labels.getString("ReportListPanel.Are you sure to delete all reports?");
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ReportList.getList().removeAll();
+                        reportsPanel.refresh();
                     }
                 }
             }

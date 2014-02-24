@@ -8,14 +8,14 @@ import org.mypomodoro.util.Labels;
 
 /**
  * ToDos Panel
- * 
+ *
  */
 public class ToDoPanel extends ListPanel {
 
     public ToDoPanel(AbstractActivities list) {
         super(list);
     }
-    
+
     @Override
     public void setPanelBorder() {
         String titleToDoList = Labels.getString((org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
@@ -25,5 +25,5 @@ public class ToDoPanel extends ListPanel {
             titleToDoList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
         }
         setBorder(new TitledBorder(new EtchedBorder(), titleToDoList));
-    }   
+    }
 }

@@ -15,16 +15,16 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Activities Panel
- * 
+ *
  */
 public class ActivitiesPanel extends ListPanel {
-    
+
     protected static final Dimension COMBO_BOX_DIMENSION = new Dimension(60, 20);
 
     public ActivitiesPanel(AbstractActivities list) {
         super(list);
     }
-    
+
     @Override
     public void setPanelBorder() {
         String titleActivitiesList = Labels.getString((org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
@@ -35,7 +35,7 @@ public class ActivitiesPanel extends ListPanel {
         }
         setBorder(new TitledBorder(new EtchedBorder(), titleActivitiesList));
     }
-    
+
     @Override
     protected void addActivitiesList() {
         super.addActivitiesList();
@@ -43,7 +43,7 @@ public class ActivitiesPanel extends ListPanel {
             addIterationFilterPanel(); // panel to filter task by iteration            
         }
     }
-    
+
     protected void addIterationFilterPanel() {
         c.gridx = 0;
         c.gridy = 1;
@@ -51,22 +51,22 @@ public class ActivitiesPanel extends ListPanel {
         //c.weighty = 0.1;
         JPanel iterationPanel = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
-        IterationComboBox iterationComboBox = new IterationComboBox();        
+        IterationComboBox iterationComboBox = new IterationComboBox();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weighty = 0.5;
         iterationPanel.add(new FormLabel(Labels.getString("Agile.Common.Iteration") + ": "), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.weighty = 0.5;        
+        gbc.weighty = 0.5;
         iterationComboBox.setBackground(ColorUtil.WHITE);
         iterationComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
-        iterationComboBox.setPreferredSize(COMBO_BOX_DIMENSION);        
-        iterationComboBox.setFont(new Font(iterationComboBox.getFont().getName(), Font.PLAIN, iterationComboBox.getFont().getSize()));        
+        iterationComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
+        iterationComboBox.setFont(new Font(iterationComboBox.getFont().getName(), Font.PLAIN, iterationComboBox.getFont().getSize()));
         iterationPanel.add(iterationComboBox, gbc);
         add(iterationPanel, c);
     }
-    
+
     @Override
     protected void addInformationArea() {
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
@@ -75,7 +75,7 @@ public class ActivitiesPanel extends ListPanel {
             super.addInformationArea();
         }
     }
-    
+
     public void update() {
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
             internalActivitiesList.setListData(ActivityList.getList().getListIteration(0).toArray()); // subset of activities : by default, activities with iteration = 0

@@ -31,6 +31,11 @@ public class MyPomodoroIconBar extends JPanel {
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Report"), "reportButton",
                 view.getReportListPanel()));
+        if (ControlPanel.preferences.getAgileMode()) {
+            myIcons.add(MyIcon.getInstance(view,
+                    Labels.getString("IconBar.Burndown Chart"), "burndownButton",
+                    view.getBurndownPanel()));
+        }
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(getWidth(), 80));
