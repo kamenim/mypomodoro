@@ -25,7 +25,7 @@ public class ActivityList extends AbstractActivities {
     public static ActivityList getList() {
         return list;
     }
-
+    
     // This makes sure we have a list properly sorted by database
     public static ActivityList getListFromDB() {
         return new ActivityList();
@@ -57,7 +57,7 @@ public class ActivityList extends AbstractActivities {
             if (activity.getIteration() == iteration) {
                 listIteration.add(activity);
             }
-        }
+        }        
         return listIteration;
     }
 }

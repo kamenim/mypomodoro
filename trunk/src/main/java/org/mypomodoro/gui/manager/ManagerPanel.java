@@ -14,7 +14,7 @@ public class ManagerPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final ToDoList toDoList = ToDoList.getList();
-    private ActivityList activityList = ActivityList.getList();
+    private ActivityList activityList;
     private final ToDoPanel todoPane;
     private final ActivitiesPanel activitiesPane;
 
@@ -22,7 +22,9 @@ public class ManagerPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
-            activityList = activityList.getListIteration(0); // subset of activities : by default, activities with iteration = 0
+            activityList = ActivityList.getList().getListIteration(0); // subset of activities : by default, activities with iteration = 0
+        } else {
+            activityList = ActivityList.getList();
         }
         activitiesPane = new ActivitiesPanel(activityList);
         todoPane = new ToDoPanel(toDoList);

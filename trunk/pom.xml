@@ -64,12 +64,18 @@
       <artifactId>jfreechart</artifactId>
       <version>1.0.12</version>
     </dependency>
-    <!-- Substance look and feel -->
+    <!-- Substance look and feel / not working properly with myPomodoro -->
     <!--dependency>
       <groupId>org.java.net.substance</groupId>
       <artifactId>substance</artifactId>
       <version>6.0</version>
     </dependency-->
+    <!-- SQLite DB embedded driver -->
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.7.2</version>
+    </dependency>
   </dependencies>
     
   <!-- PROPERTIES -->
