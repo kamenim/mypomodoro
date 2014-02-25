@@ -19,7 +19,7 @@ public class HelpMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
 
-    public HelpMenu(final MyPomodoroView view) {
+    public HelpMenu() {
         super(Labels.getString("MenuBar.Help"));
         add(new HelpUserGuide());
         add(new HelpPomodoroMenu());

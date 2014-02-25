@@ -10,7 +10,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.MyPomodoroView;

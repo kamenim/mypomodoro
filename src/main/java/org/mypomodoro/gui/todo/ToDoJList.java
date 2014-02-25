@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.util.Iterator;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;

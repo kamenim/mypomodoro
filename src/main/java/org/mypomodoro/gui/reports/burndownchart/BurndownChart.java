@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;

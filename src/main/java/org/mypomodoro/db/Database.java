@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.mypomodoro.Main;
@@ -26,7 +24,7 @@ public class Database {
     private String connectionStatement = "jdbc:sqlite:pomodoro.db";
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
-    public static String databaseServer = SQLLITE;
+    private static String databaseServer = SQLLITE;
     private String autoIncrementKeyword = "AUTOINCREMENT";
     private String longInteger = "INTEGER";
 
@@ -35,8 +33,8 @@ public class Database {
             MySQLConfigLoader.loadProperties();
             if (MySQLConfigLoader.isValid()) {
                 driverClassName = "com.mysql.jdbc.Driver";
-                connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getServer() + "/" + MySQLConfigLoader.getDatabase() + "?"
-                        + "user=" + MySQLConfigLoader.getUID() + "&password=" + MySQLConfigLoader.getPwd();
+                connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
+                        + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();
                 databaseServer = MYSQL;
             }
         } catch (IOException ex) {

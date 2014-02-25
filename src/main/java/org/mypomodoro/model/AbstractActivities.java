@@ -39,12 +39,14 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     }
 
     public Activity getById(int id) {
-        for (Activity activity : activities) {
-            if (activity.getId() == id) {
-                return activity;
+        Activity activity = null;
+        for (Activity act : activities) {
+            if (act.getId() == id) {
+                activity = act;
+                break;
             }
         }
-        return null;
+        return activity;
     }
 
     public void removeById(int id) {

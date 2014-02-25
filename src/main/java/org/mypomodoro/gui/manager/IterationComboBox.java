@@ -32,7 +32,7 @@ public class IterationComboBox extends JComboBox {
             @Override
             public void popupMenuCanceled(PopupMenuEvent e) {
             }
-            
+
         });
     }
 }
