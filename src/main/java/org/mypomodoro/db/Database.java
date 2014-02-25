@@ -1,14 +1,18 @@
 package org.mypomodoro.db;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 
 /**
  * Database
@@ -18,14 +22,34 @@ public class Database {
 
     private Connection connection = null;
     private Statement statement = null;
+    private String driverClassName = "org.sqlite.JDBC";
+    private String connectionStatement = "jdbc:sqlite:pomodoro.db";
+    final public static String SQLLITE = "SQLLITE";
+    final public static String MYSQL = "MYSQL";
+    public static String databaseServer = SQLLITE;
+    private String autoIncrementKeyword = "AUTOINCREMENT";
+    private String longInteger = "INTEGER";
 
     public Database() {
         try {
-            System.setProperty("sqlite.purejava", "true");
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:pomodoro.db");
+            MySQLConfigLoader.loadProperties();
+            if (MySQLConfigLoader.isValid()) {
+                driverClassName = "com.mysql.jdbc.Driver";
+                connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getServer() + "/" + MySQLConfigLoader.getDatabase() + "?"
+                        + "user=" + MySQLConfigLoader.getUID() + "&password=" + MySQLConfigLoader.getPwd();
+                databaseServer = MYSQL;
+            }
+        } catch (IOException ex) {
+            // do nothing
+        }
+        // Connect to database
+        try {
+            Class.forName(driverClassName);
+            connection = DriverManager.getConnection(connectionStatement);
             statement = connection.createStatement();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            System.err.println(e);
+        } catch (SQLException e) {
             System.err.println(e);
         }
     }
@@ -73,13 +97,18 @@ public class Database {
     }
 
     public void createActivitiesTable() {
+        if (databaseServer.equals(MYSQL)) {
+            autoIncrementKeyword = "AUTO_INCREMENT";
+            longInteger = "BIGINT";
+        }
+
         String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "id INTEGER PRIMARY KEY " + autoIncrementKeyword + ", "
                 + "name TEXT, "
                 + "type TEXT, " + "description TEXT, "
                 + "notes TEXT, "
                 + "author TEXT, " + "place TEXT, "
-                + "date_added INTEGER, "
+                + "date_added " + longInteger + ", "
                 + "estimated_poms INTEGER, "
                 + "actual_poms INTEGER, "
                 + "overestimated_poms INTEGER, "
