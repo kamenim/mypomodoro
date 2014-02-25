@@ -1,21 +1,26 @@
 package org.mypomodoro.gui.create;
 
+import java.awt.Component;
 import org.mypomodoro.gui.create.list.TypeComboBox;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.ControlPanel;
@@ -40,13 +45,15 @@ public class ActivityInputForm extends JPanel {
     protected final JTextField nameField = new JTextField();
     protected final JTextArea descriptionField = new JTextArea();
     protected JComboBox estimatedPomodoros = new JComboBox();
+    protected JComboBox storyPoints = new JComboBox();
+    protected JComboBox iterations = new JComboBox();
     protected JComboBox types = new JComboBox();
     protected JComboBox authors = new JComboBox();
     protected JComboBox places = new JComboBox();
     protected final JXDatePicker datePicker = new JXDatePicker(
             Labels.getLocale());
     protected int activityId = -1;
-    protected final FormLabel estimatedLengthLabel = new FormLabel("");
+    protected final JLabel estimatedLengthLabel = new JLabel("", JLabel.LEFT);
 
     public ActivityInputForm() {
         this(0);
@@ -69,7 +76,10 @@ public class ActivityInputForm extends JPanel {
         addName(++gridy);
         addType(++gridy);
         addEstimatedPoms(++gridy);
-        addEstimatedLength(++gridy);
+        if (ControlPanel.preferences.getAgileMode()) {
+            addStoryPoints(++gridy);
+            addIterations(++gridy);
+        }
         addAuthor(++gridy);
         addPlace(++gridy);
         addDescription(++gridy);
@@ -123,9 +133,9 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        String[] items = new String[ControlPanel.preferences.getMaxNbPomPerActivity()];
+        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()];
         for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = (i + 1) + "";
+            items[i] = i + 1;
         }
         estimatedPomodoros = new JComboBox(items);
         displayLength(1); // default estimate = 1 pomodoro
@@ -134,11 +144,14 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("Common.Estimated pomodoros") + "*: "), c);
+        add(new FormLabel(Labels.getString("Common.Estimated pomodoros") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
         estimatedPomodoros.setBackground(ColorUtil.WHITE);
+        estimatedPomodoros.setMinimumSize(new Dimension(40, 25));
+        estimatedPomodoros.setMaximumSize(new Dimension(40, 25));
+        estimatedPomodoros.setPreferredSize(new Dimension(40, 25));
         estimatedPomodoros.addActionListener(new ActionListener() {
 
             @Override
@@ -147,19 +160,77 @@ public class ActivityInputForm extends JPanel {
                 displayLength(estimated);
             }
         });
-        add(estimatedPomodoros, c);
+        JPanel estimatedPanel = new JPanel();
+        estimatedPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(3, 3, 3, 3); // white space between components        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        estimatedPanel.add(estimatedPomodoros, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.9;
+        estimatedPanel.add(estimatedLengthLabel, gbc);
+        add(estimatedPanel, c);
     }
 
-    protected void addEstimatedLength(int gridy) {
+    protected void addStoryPoints(int gridy) {
+        // init story points combo box
+        Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
+        storyPoints = new JComboBox(points);
+        storyPoints.setRenderer(new StoryPointsComboBoxRenderer());
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("Common.Estimated length") + ": "), c);
+        add(new FormLabel(Labels.getString("Agile.Common.Story Points") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(estimatedLengthLabel, c);
+        storyPoints.setBackground(ColorUtil.WHITE);
+        add(storyPoints, c);
+    }
+
+    class StoryPointsComboBoxRenderer extends BasicComboBoxRenderer {
+
+        public StoryPointsComboBoxRenderer() {
+            super();
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            String text;
+            if (value.toString().equals("0.5")) {
+                text = "1/2";
+            } else {
+                text = Math.round((Float) value) + "";
+            }
+            setText(text);
+            return this;
+        }
+    }
+
+    protected void addIterations(int gridy) {
+        // init iterations combo box
+        Integer[] its = new Integer[102];
+        for (int i = 0; i <= 101; i++) {
+            its[i] = i - 1;
+        }
+        iterations = new JComboBox(its);
+        ++gridy;
+        c.gridx = 0;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        add(new FormLabel(Labels.getString("Agile.Common.Iteration") + ": "), c);
+        c.gridx = 1;
+        c.gridy = gridy;
+        c.weighty = 0.5;
+        iterations.setBackground(ColorUtil.WHITE);
+        add(iterations, c);
     }
 
     protected void addAuthor(int gridy) {
@@ -241,11 +312,17 @@ public class ActivityInputForm extends JPanel {
         author = author != null ? author.trim() : "";
         String place = (String) places.getSelectedItem();
         place = place != null ? place.trim() : "";
-        int estimatedPoms = estimatedPomodoros.getSelectedIndex() + 1;
+        int estimatedPoms = (Integer) estimatedPomodoros.getSelectedItem();
         Date dateActivity = datePicker.getDate();
-
-        return new Activity(place, author, name, description, type,
+        Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
+        if (ControlPanel.preferences.getAgileMode()) {
+            float storypoint = (Float) storyPoints.getSelectedItem();
+            int iteration = (Integer) iterations.getSelectedItem();
+            activity = new Activity(place, author, name, description, type,
+                    estimatedPoms, storypoint, iteration, dateActivity, activityId);
+        }
+        return activity;
     }
 
     /*
@@ -292,8 +369,16 @@ public class ActivityInputForm extends JPanel {
         places.setSelectedIndex(index);
     }
 
-    public void setEstimatedPomodoro(int value) {
-        estimatedPomodoros.setSelectedIndex(value - 1);
+    public void setEstimatedPomodoro(int index) {
+        estimatedPomodoros.setSelectedIndex(index);
+    }
+
+    public void setStoryPoints(int index) {
+        storyPoints.setSelectedIndex(index);
+    }
+
+    public void setIterations(int index) {
+        iterations.setSelectedIndex(index);
     }
 
     public void setDate(Date value) {

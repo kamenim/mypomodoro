@@ -31,13 +31,13 @@ import org.mypomodoro.util.RestartMac;
 public class Main {
 
     public static final Database database = new Database();
-    public static ControlPanel controlPanel = new ControlPanel();
+    public final static ControlPanel controlPanel = new ControlPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ManagerPanel generatePanel = new ManagerPanel();
     public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
     public static final BurndownPanel burndownPanel = new BurndownPanel();
-    public static ReentrantLock datalock = new ReentrantLock();
+    public final static ReentrantLock datalock = new ReentrantLock();
     public static final MyPomodoroView gui = new MyPomodoroView();
 
     public static void updateView() {

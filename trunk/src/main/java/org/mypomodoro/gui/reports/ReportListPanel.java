@@ -441,15 +441,15 @@ public class ReportListPanel extends JPanel {
             return renderer;
         }
     }
-    
+
     static class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = value.toString();
-            Integer overestimatedpoms = (Integer)table.getModel().getValueAt(table.convertRowIndexToModel(row), column+1);        
-            text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "" ;
+            Integer overestimatedpoms = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), column + 1);
+            text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);
             return renderer;
         }

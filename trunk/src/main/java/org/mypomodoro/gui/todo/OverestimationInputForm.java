@@ -3,10 +3,12 @@ package org.mypomodoro.gui.todo;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -28,10 +30,10 @@ public class OverestimationInputForm extends JPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
     private static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
-    private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
+    private static final Dimension COMBO_BOX_DIMENSION = new Dimension(50, 25);
     protected JComboBox overestimatedPomodoros = new JComboBox();
     protected final GridBagConstraints c = new GridBagConstraints();
-    protected final FormLabel overestimatedLengthLabel = new FormLabel("");
+    protected final JLabel overestimatedLengthLabel = new JLabel("", JLabel.LEFT);
 
     public OverestimationInputForm() {
         setBorder(new TitledBorder(new EtchedBorder(), ""));
@@ -43,7 +45,6 @@ public class OverestimationInputForm extends JPanel {
         c.anchor = GridBagConstraints.NORTH;
 
         addOverestimatedPoms();
-        addOverestimatedLength();
     }
 
     protected void addOverestimatedPoms() {
@@ -65,9 +66,10 @@ public class OverestimationInputForm extends JPanel {
             items[i] = "+ " + (i + 1);
         }
         overestimatedPomodoros = new JComboBox(items);
-        overestimatedPomodoros.setMinimumSize(COMBO_BOX_DIMENSION);
-        overestimatedPomodoros.setPreferredSize(COMBO_BOX_DIMENSION);
         overestimatedPomodoros.setBackground(ColorUtil.WHITE);
+        overestimatedPomodoros.setMinimumSize(COMBO_BOX_DIMENSION);
+        overestimatedPomodoros.setMaximumSize(COMBO_BOX_DIMENSION);
+        overestimatedPomodoros.setPreferredSize(COMBO_BOX_DIMENSION);
         overestimatedPomodoros.addActionListener(new ActionListener() {
 
             @Override
@@ -76,18 +78,22 @@ public class OverestimationInputForm extends JPanel {
                 displayLength(overestimated);
             }
         });
-        add(overestimatedPomodoros, c);
-    }
-
-    protected void addOverestimatedLength() {
-        c.gridx = 0;
-        c.gridy = 1;
-        //c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("ToDoListPanel.Overestimated length") + ": "), c);
-        c.gridx = 1;
-        c.gridy = 1;
-        //c.weighty = 0.5;
-        add(overestimatedLengthLabel, c);
+        JPanel overestimatedPanel = new JPanel();
+        overestimatedPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(3, 3, 3, 3); // white space between components
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        overestimatedPanel.add(overestimatedPomodoros, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.9;
+        overestimatedPanel.add(overestimatedLengthLabel, gbc);
+        add(overestimatedPanel, c);
+        add(overestimatedPanel, c);
     }
 
     public JComboBox getOverestimationPomodoros() {

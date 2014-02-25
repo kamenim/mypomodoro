@@ -47,6 +47,8 @@ public class ItemLocale {
 
     /**
      * Browse directory labels for properties files and extract locales
+     *
+     * @return
      */
     public static List<ItemLocale> getLocalesFromPropertiesTitlefiles() {
         List<ItemLocale> vLocales = new ArrayList<ItemLocale>();
@@ -58,22 +60,14 @@ public class ItemLocale {
                 int filePrefixLength = filePrefix.length();
                 String fileExtension = ".properties";
                 int fileExtensionLength = fileExtension.length();
-                for (int i = 0; i < propertiesFiles.length; i++) {
+                for (String propertiesFile : propertiesFiles) {
                     String regularExpression = filePrefix
                             + "[a-z]{2}_[A-Z]{2}_[a-zA-Z]+" + fileExtension; // with
                     // variant
                     Pattern pat = Pattern.compile(regularExpression);
-                    Matcher mat = pat.matcher(propertiesFiles[i]);
+                    Matcher mat = pat.matcher(propertiesFile);
                     if (mat.find()) {
-                        Locale l = new Locale(propertiesFiles[i].substring(
-                                0 + filePrefixLength, 2 + filePrefixLength),
-                                propertiesFiles[i].substring(
-                                        3 + filePrefixLength,
-                                        5 + filePrefixLength),
-                                propertiesFiles[i].substring(
-                                        6 + filePrefixLength,
-                                        propertiesFiles[i].length()
-                                        - fileExtensionLength));
+                        Locale l = new Locale(propertiesFile.substring(0 + filePrefixLength, 2 + filePrefixLength), propertiesFile.substring(3 + filePrefixLength, 5 + filePrefixLength), propertiesFile.substring(6 + filePrefixLength, propertiesFile.length() - fileExtensionLength));
                         vLocales.add(new ItemLocale(l, l.getDisplayLanguage()
                                 + " (" + l.getDisplayCountry() + ")" + " ("
                                 + l.getVariant() + ")"));
@@ -81,15 +75,9 @@ public class ItemLocale {
                         regularExpression = filePrefix + "[a-z]{2}_[A-Z]{2}"
                                 + fileExtension; // without variant
                         pat = Pattern.compile(regularExpression);
-                        mat = pat.matcher(propertiesFiles[i]);
+                        mat = pat.matcher(propertiesFile);
                         if (mat.find()) {
-                            Locale l = new Locale(
-                                    propertiesFiles[i].substring(
-                                            0 + filePrefixLength,
-                                            2 + filePrefixLength),
-                                    propertiesFiles[i].substring(
-                                            3 + filePrefixLength,
-                                            5 + filePrefixLength));
+                            Locale l = new Locale(propertiesFile.substring(0 + filePrefixLength, 2 + filePrefixLength), propertiesFile.substring(3 + filePrefixLength, 5 + filePrefixLength));
                             vLocales.add(new ItemLocale(l, l.getDisplayLanguage()
                                     + " ("
                                     + l.getDisplayCountry() + ")"));
@@ -97,7 +85,9 @@ public class ItemLocale {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            // Do nothing
+        } catch (URISyntaxException e) {
             // Do nothing
         } finally {
             if (vLocales.isEmpty()) {

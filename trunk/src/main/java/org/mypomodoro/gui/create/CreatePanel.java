@@ -159,7 +159,11 @@ public class CreatePanel extends JPanel {
 
     public void clearForm() {
         inputFormPanel.setNameField("");
-        inputFormPanel.setEstimatedPomodoro(1);
+        inputFormPanel.setEstimatedPomodoro(0);
+        if (ControlPanel.preferences.getAgileMode()) {
+            inputFormPanel.setStoryPoints(0);
+            inputFormPanel.setIterations(0);
+        }
         inputFormPanel.setDescriptionField("");
         inputFormPanel.setTypeField("");
         inputFormPanel.setAuthorField("");
