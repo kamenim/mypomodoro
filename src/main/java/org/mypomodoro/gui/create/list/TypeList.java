@@ -24,6 +24,8 @@ public class TypeList extends AbstractList {
             types.add("Technical work");
             types.add("Impediment");
             types.add("Bug");
+            types.add("Duplicate");
+            types.add("Knowledge acquisition");
             types = new ArrayList<String>(new HashSet<String>(types)); // remove duplicates
         }
     }

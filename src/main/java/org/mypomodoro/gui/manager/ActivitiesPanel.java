@@ -9,7 +9,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.model.AbstractActivities;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -27,11 +26,11 @@ public class ActivitiesPanel extends ListPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
-                + " (" + ActivityList.getListSize() + ")";
+        String titleActivitiesList = Labels.getString(org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile.Common.Iteration" : "ActivityListPanel.Activity List")        
+                + " (" + list.size() + ")";
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
-                && ActivityList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ActivityList.getList().getStoryPoints();
+                && list.size() > 0) {
+            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + list.getStoryPoints();
         }
         setBorder(new TitledBorder(new EtchedBorder(), titleActivitiesList));
     }
@@ -53,7 +52,7 @@ public class ActivitiesPanel extends ListPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         //IterationComboBox iterationComboBox = new IterationComboBox();
         JComboBox iterationComboBox = new JComboBox() {
-            //
+
         };
         for (int i = 0; i <= 101; i++) {
             iterationComboBox.addItem(i); //starting at iteration 0 (not -1)
@@ -82,12 +81,12 @@ public class ActivitiesPanel extends ListPanel {
         }
     }
 
-    public void update() {
+    /*public void update() {
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
-            internalActivitiesList.setListData(ActivityList.getList().getListIteration(0).toArray()); // subset of activities : by default, activities with iteration = 0
+            internalActivitiesList.setListData(ActivityIterationList.getList().toArray()); // subset of activities : by default, activities with iteration = 0
         } else {
             super.update();
         }
         init();
-    }
+    }*/
 }

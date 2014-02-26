@@ -30,7 +30,7 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoListPanel panel) {
         this.panel = panel;
-
+        unplannedInputFormPanel.setEstimatedPomodoro(1);        
         addToDoIconPanel();
     }
 
@@ -155,6 +155,10 @@ public class UnplannedPanel extends CreatePanel {
         unplannedInputFormPanel.setInterruption(0);
         unplannedInputFormPanel.setNameField("");
         unplannedInputFormPanel.setEstimatedPomodoro(1);
+        if (ControlPanel.preferences.getAgileMode()) {
+            unplannedInputFormPanel.setStoryPoints(0);
+            unplannedInputFormPanel.setIterations(0);
+        }
         unplannedInputFormPanel.setDescriptionField("");
         unplannedInputFormPanel.setTypeField("");
         unplannedInputFormPanel.setAuthorField("");

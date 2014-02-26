@@ -40,11 +40,12 @@ public class MoveButton extends AbstractPomodoroButton {
         boolean alreadyAgreed = false;
         for (Activity selectedActivity : selectedActivities) {
             if (selectedActivity != null) {
-                if (!ControlPanel.preferences.getAgileMode()) {
-                    if (selectedActivity.isActivity()) { // Not ToDo
+                if (selectedActivity.isActivity()) { // Not ToDo
+                    String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+                    if (!ControlPanel.preferences.getAgileMode()) {
                         if (!selectedActivity.isDateToday()) {
                             String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                            String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", selectedActivity.getName());
+                            String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                     title, JOptionPane.YES_NO_OPTION);
                             if (reply == JOptionPane.NO_OPTION) {
@@ -67,6 +68,13 @@ public class MoveButton extends AbstractPomodoroButton {
                             }
                         }
                     }
+                    /*if (selectedActivity.getEstimatedPoms() + selectedActivity.getOverestimatedPoms() == 0) {
+                        String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                        String message = Labels.getString("ManagerListPanel.Activity {0} has no estimated pomodoros. Can't proceed.", activityName);
+                        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                        continue;
+                    }*/
                 }
                 from.removeActivity(selectedActivity);
                 to.addActivity(selectedActivity);

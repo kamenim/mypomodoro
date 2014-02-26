@@ -30,6 +30,7 @@ public class MergingPanel extends CreatePanel {
 
     public MergingPanel(ToDoListPanel panel) {
         this.panel = panel;
+        mergingInputFormPanel.setEstimatedPomodoro(1); 
     }
 
     @Override
@@ -172,6 +173,10 @@ public class MergingPanel extends CreatePanel {
         mergingInputFormPanel.setToDoListTextArea("");
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
+        if (ControlPanel.preferences.getAgileMode()) {
+            mergingInputFormPanel.setStoryPoints(0);
+            mergingInputFormPanel.setIterations(0);
+        }
         mergingInputFormPanel.setDescriptionField("");
         mergingInputFormPanel.setTypeField("");
         mergingInputFormPanel.setAuthorField("");

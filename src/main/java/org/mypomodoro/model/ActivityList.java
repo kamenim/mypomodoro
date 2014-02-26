@@ -13,6 +13,10 @@ public class ActivityList extends AbstractActivities {
     private ActivityList() {
         refresh();
     }
+    
+    /*private ActivityList(ActivityList list) {
+        this.list = list;
+    }*/
 
     @Override
     public void refresh() {
@@ -41,6 +45,7 @@ public class ActivityList extends AbstractActivities {
         for (Activity activity : activities) {
             if (activity.getId() == id) {
                 activities.remove(activity);
+                ActivityIterationList.getList().remove(activity);
                 break;
             }
         }
@@ -49,15 +54,12 @@ public class ActivityList extends AbstractActivities {
     public void removeAll() {
         ActivitiesDAO.getInstance().removeAllActivities();
         activities.clear();
+        ActivityIterationList.getList().activities.clear();
     }
-
-    public ActivityList getListIteration(int iteration) {
-        ActivityList listIteration = new ActivityList();
-        for (Activity activity : activities) {
-            if (activity.getIteration() == iteration) {
-                listIteration.add(activity);
-            }
-        }
-        return listIteration;
+    
+    @Override
+    public void remove(Activity activity) {
+        activities.remove(activity);
+        ActivityIterationList.getList().remove(activity);
     }
 }
