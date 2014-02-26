@@ -35,6 +35,7 @@ public class ReportList extends AbstractActivities {
         return getList().size();
     }
 
+    @Override
     public void removeById(final int id) {
         ActivitiesDAO.getInstance().removeById(id);
         for (Activity activity : activities) {
@@ -43,10 +44,19 @@ public class ReportList extends AbstractActivities {
                 break;
             }
         }
-    }
+    }    
 
     public void removeAll() {
         ActivitiesDAO.getInstance().removeAllReports();
         activities.clear();
+    }
+    
+    public void reopen(int id) {
+        Activity act = getById(id);
+        act.setPriority(-1);
+        act.setIsCompleted(false);
+        act.databaseUpdate();
+        ActivityList.getList().add(act);
+        activities.remove(act);
     }
 }

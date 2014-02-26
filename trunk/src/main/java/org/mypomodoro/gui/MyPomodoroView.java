@@ -35,7 +35,7 @@ public class MyPomodoroView extends JFrame {
     public static final String MYPOMODORO_VERSION = "3.0";
     private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
     private final CreatePanel createPanel = new CreatePanel();
-    private final ManagerPanel generatePanel = Main.generatePanel;
+    private final ManagerPanel managerPanel = Main.managerPanel;
     private final ReportListPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
     public final BurndownPanel burndownPanel = Main.burndownPanel;
@@ -47,7 +47,7 @@ public class MyPomodoroView extends JFrame {
     }
 
     public ManagerPanel getGeneratePanel() {
-        return generatePanel;
+        return managerPanel;
     }
 
     public ActivitiesPanel getActivityListPanel() {

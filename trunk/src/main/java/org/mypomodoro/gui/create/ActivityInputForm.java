@@ -133,12 +133,12 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()];
-        for (int i = 0; i < ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
-            items[i] = i + 1;
+        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()+1];
+        for (int i = 0; i <= ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+            items[i] = i;
         }
         estimatedPomodoros = new JComboBox(items);
-        displayLength(1); // default estimate = 1 pomodoro
+        displayLength(0);
         // Estimated Poms Description and TextField
         ++gridy;
         c.gridx = 0;
@@ -156,7 +156,7 @@ public class ActivityInputForm extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                int estimated = estimatedPomodoros.getSelectedIndex() + 1;
+                int estimated = (Integer) estimatedPomodoros.getSelectedItem();
                 displayLength(estimated);
             }
         });
@@ -395,7 +395,7 @@ public class ActivityInputForm extends JPanel {
         return datePickerFormat.equalsIgnoreCase(todayFormat);
     }
 
-    private void displayLength(int estimatedPomodoros) {
+    protected void displayLength(int estimatedPomodoros) {
         String effectiveHours = convertToTime(calculateEffectiveHours(estimatedPomodoros));
         String plainHours = convertToTime(calculatePlainHours(estimatedPomodoros));
         estimatedLengthLabel.setText(effectiveHours + " (" + Labels.getString("Common.Effective hours") + ") / " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");

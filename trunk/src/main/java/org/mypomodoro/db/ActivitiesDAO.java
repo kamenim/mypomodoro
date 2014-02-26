@@ -83,6 +83,31 @@ public class ActivitiesDAO {
         }
         return activities;
     }
+    
+    public Iterable<Activity> getActivitiesByIteration(int iteration) {
+        List<Activity> activities = new ArrayList<Activity>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT * FROM activities "
+                    + "WHERE priority = -1 AND is_complete = 'false' AND iteration = " + iteration);
+            try {
+                while (rs.next()) {
+                    activities.add(new Activity(rs));
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            } finally {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return activities;
+    }
 
     public Iterable<Activity> getReports() {
         List<Activity> activities = new ArrayList<Activity>();

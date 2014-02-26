@@ -422,7 +422,7 @@ public class Activity {
     }
 
     private boolean validNumberOfPomodoros() {
-        return estimatedPoms > 0;
+        return estimatedPoms + overestimatedPoms >= 0;
     }
 
     public void databaseInsert() {
@@ -462,7 +462,7 @@ public class Activity {
     }
 
     public boolean isFinished() {
-        return actualPoms == estimatedPoms + overestimatedPoms;
+        return actualPoms == estimatedPoms + overestimatedPoms && estimatedPoms + overestimatedPoms != 0;
     }
 
     public boolean isStory() {

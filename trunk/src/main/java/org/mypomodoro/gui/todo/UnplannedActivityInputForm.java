@@ -24,8 +24,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("ToDoListPanel.Interruption") + ": "),
-                c);
+        add(new FormLabel(Labels.getString("ToDoListPanel.Interruption") + ": "), c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;

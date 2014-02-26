@@ -38,7 +38,7 @@ public class ListPanel extends ActivityInformationPanel {
     private static final long serialVersionUID = 20110814L;
     protected final GridBagConstraints c = new GridBagConstraints();
     protected final JList internalActivitiesList;
-    private final AbstractActivities list;
+    protected final AbstractActivities list;
     private int selectedRowIndex = 0;
     final private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 

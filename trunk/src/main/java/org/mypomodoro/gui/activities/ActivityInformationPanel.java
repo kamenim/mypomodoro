@@ -32,11 +32,9 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
-        //+ "(" + getLength(activity.getEstimatedPoms())
-        //+ (activity.getOverestimatedPoms() > 0 ? " + " + getLength(activity.getOverestimatedPoms()) : "") + ")\n");
         if (ControlPanel.preferences.getAgileMode()) {
             textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
-            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() < 0 ? "-" : activity.getIteration()) + "\n");
+            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + activity.getIteration() + "\n");
         }
         textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n");
         textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "\n");
