@@ -2,6 +2,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import javax.swing.JTable;
+import org.mypomodoro.model.ActivityList;
 
 /**
  *
@@ -20,7 +21,8 @@ class EstimatedComboBoxCellRenderer extends ComboBoxCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         // overestimated
-        Integer overestimatedpoms = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), column + 1);
+        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);        
+        int overestimatedpoms = ActivityList.getList().getById(id).getOverestimatedPoms();
         label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
         return this;
     }

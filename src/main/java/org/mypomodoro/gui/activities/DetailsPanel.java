@@ -24,12 +24,22 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addInformationArea();
+        //addMoveButton(activitiesPanel);
         addDeleteButton(activitiesPanel);
         addDeleteAllButton(activitiesPanel);
     }
+    
+    /*private void addMoveButton(ActivitiesPanel activitiesPanel) {
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        gbc.gridheight = 2;
+        //gbc.fill = GridBagConstraints.NONE;
+        add(new MoveButton("move to ToDo List", activitiesPanel, gbc);
+    }*/
 
     private void addDeleteButton(ActivitiesPanel activitiesPanel) {
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.gridheight = 1;
@@ -38,7 +48,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     }
 
     private void addDeleteAllButton(ActivitiesPanel activitiesPanel) {
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.weightx = 0.1;
         gbc.gridheight = 1;

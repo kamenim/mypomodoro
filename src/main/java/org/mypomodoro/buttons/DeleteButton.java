@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 
@@ -31,7 +32,9 @@ public class DeleteButton extends AbstractPomodoroButton {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         Integer id = (Integer) activitiesPanel.getTable().getModel().getValueAt(row, ActivitiesPanel.ID_KEY);
-                        ActivityList.getList().removeById(id);
+                        Activity act = Activity.getActivity(id);
+                        ActivityList.getList().remove(act);
+                        act.databaseDelete();
                         activitiesPanel.removeRow(row);
                     }
                 }

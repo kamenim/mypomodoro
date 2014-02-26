@@ -98,7 +98,7 @@ public class ViewMenu extends JMenu {
                 MyIcon generateIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(generateIcon);
                 view.setWindow(generateIcon.getPanel());
-                view.setWindow(view.getGeneratePanel());
+                //view.setWindow(view.getGeneratePanel());
             }
         }
     }

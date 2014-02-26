@@ -109,7 +109,7 @@ public class ActivitiesPanel extends JPanel {
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
         table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
         // Estimated combo box
-        Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()+1];
+        Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
         for (int i = 0; i <= ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             poms[i] = i;
         }
@@ -417,6 +417,10 @@ public class ActivitiesPanel extends JPanel {
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);            
+            if (ActivityList.getList().getById(id).isFinished()) {                
+                renderer.setForeground(ColorUtil.GREEN);
+            }
             return renderer;
         }
     }

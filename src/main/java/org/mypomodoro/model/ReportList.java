@@ -34,29 +34,11 @@ public class ReportList extends AbstractActivities {
     public static int getListSize() {
         return getList().size();
     }
-
-    @Override
-    public void removeById(final int id) {
-        ActivitiesDAO.getInstance().removeById(id);
-        for (Activity activity : activities) {
-            if (activity.getId() == id) {
-                activities.remove(activity);
-                break;
-            }
-        }
-    }    
-
-    public void removeAll() {
-        ActivitiesDAO.getInstance().removeAllReports();
-        activities.clear();
-    }
     
-    public void reopen(int id) {
+    // move from Report list to Activity list
+    public void move(int id) {
         Activity act = getById(id);
-        act.setPriority(-1);
-        act.setIsCompleted(false);
-        act.databaseUpdate();
-        ActivityList.getList().add(act);
+        ActivityList.getList().add(act); // this sets the priority to -1 and non conplete and updates the database
         activities.remove(act);
     }
 }

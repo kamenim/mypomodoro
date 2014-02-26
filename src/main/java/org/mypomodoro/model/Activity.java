@@ -439,7 +439,14 @@ public class Activity {
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
-
+    }
+    
+    public void databaseDelete() {
+        ActivitiesDAO.getInstance().delete(this);
+        // update lists
+        TypeList.addType(getType());
+        AuthorList.addAuthor(getAuthor());
+        PlaceList.addPlace(getPlace());
     }
 
     public boolean alreadyExists() {
@@ -457,7 +464,7 @@ public class Activity {
         return getPriority() == -1 && !isCompleted();
     }
 
-    public static Activity getActivity(int Id) {
+    public static Activity getActivity(int Id) { // ???
         return ActivitiesDAO.getInstance().getActivity(Id);
     }
 

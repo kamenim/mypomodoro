@@ -59,6 +59,47 @@ public class ActivitiesDAO {
         Main.updateView();
     }
 
+    public void update(Activity activity) {
+        String updateSQL = "UPDATE activities SET " + "name = '"
+                + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''") + "', "
+                + "description = '" + activity.getDescription().replace("'", "''") + "', "
+                + "notes = '" + activity.getNotes().replace("'", "''") + "', "
+                + "author = '" + activity.getAuthor().replace("'", "''") + "', "
+                + "place = '" + activity.getPlace().replace("'", "''") + "', "
+                + "date_added = " + activity.getDate().getTime() + ", "
+                + "estimated_poms = " + activity.getEstimatedPoms() + ", "
+                + "actual_poms = " + activity.getActualPoms() + ", "
+                + "overestimated_poms = " + activity.getOverestimatedPoms() + ", "
+                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "', "
+                + "is_unplanned = '" + String.valueOf(activity.isUnplanned()) + "', "
+                + "num_interruptions = " + activity.getNumInterruptions() + ", "
+                + "priority = " + activity.getPriority() + ", "
+                + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
+                + "story_points = " + activity.getStoryPoints() + ", "
+                + "iteration = " + activity.getIteration() + ", "
+                + "parent_id = " + activity.getParentId()
+                + " WHERE id = " + activity.getId() + ";";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+            database.update("commit;");
+        } finally {
+            database.unlock();
+        }
+    }
+    
+    public void delete(Activity activity) {
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update("DELETE FROM activities WHERE id=" + activity.getId() + ";");
+        } finally {
+            database.update("Commit;");
+            database.unlock();
+        }
+    }
+
     public Iterable<Activity> getActivities() {
         List<Activity> activities = new ArrayList<Activity>();
         try {
@@ -160,9 +201,9 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activities;
-    }
+    }       
 
-    public void removeById(int id) {
+    /*public void removeById(int id) {
         try {
             database.lock();
             database.update("begin;");
@@ -171,37 +212,7 @@ public class ActivitiesDAO {
             database.update("Commit;");
             database.unlock();
         }
-    }
-
-    public void update(Activity activity) {
-        String updateSQL = "UPDATE activities SET " + "name = '"
-                + activity.getName().replace("'", "''") + "', " + "type = '" + activity.getType().replace("'", "''") + "', "
-                + "description = '" + activity.getDescription().replace("'", "''") + "', "
-                + "notes = '" + activity.getNotes().replace("'", "''") + "', "
-                + "author = '" + activity.getAuthor().replace("'", "''") + "', "
-                + "place = '" + activity.getPlace().replace("'", "''") + "', "
-                + "date_added = " + activity.getDate().getTime() + ", "
-                + "estimated_poms = " + activity.getEstimatedPoms() + ", "
-                + "actual_poms = " + activity.getActualPoms() + ", "
-                + "overestimated_poms = " + activity.getOverestimatedPoms() + ", "
-                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "', "
-                + "is_unplanned = '" + String.valueOf(activity.isUnplanned()) + "', "
-                + "num_interruptions = " + activity.getNumInterruptions() + ", "
-                + "priority = " + activity.getPriority() + ", "
-                + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
-                + "story_points = " + activity.getStoryPoints() + ", "
-                + "iteration = " + activity.getIteration() + ", "
-                + "parent_id = " + activity.getParentId()
-                + " WHERE id = " + activity.getId() + ";";
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update(updateSQL);
-            database.update("commit;");
-        } finally {
-            database.unlock();
-        }
-    }
+    }*/
 
     public Activity getActivityByNameAndDate(Activity newActivity) {
         Activity activity = null;
