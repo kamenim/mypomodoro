@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.reports.ReportListPanel;
 
 import org.mypomodoro.model.ReportList;
@@ -31,6 +32,7 @@ public class DeleteAllReportButton extends AbstractPomodoroButton {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ReportList.getList().removeAll();
+                        ActivitiesDAO.getInstance().removeAllReports();
                         reportsPanel.refresh();
                     }
                 }

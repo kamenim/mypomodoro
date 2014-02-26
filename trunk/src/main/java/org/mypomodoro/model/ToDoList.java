@@ -39,6 +39,7 @@ public class ToDoList extends AbstractActivities {
     @Override
     public void add(Activity act) {
         act.setPriority(size());
+        act.setIsCompleted(false);
         act.databaseUpdate();
         super.add(act);
     }
@@ -58,6 +59,13 @@ public class ToDoList extends AbstractActivities {
     public void completeAll() {
         ActivitiesDAO.getInstance().completeAllTODOs();
         update();
+    }
+    
+    // move from ToDO list to Activity list
+    public void move(int id) {
+        Activity act = getById(id);
+        ActivityList.getList().add(act); // this sets the priority and update the database
+        activities.remove(act);
     }
 
     /**

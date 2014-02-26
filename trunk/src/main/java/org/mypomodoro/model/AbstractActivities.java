@@ -57,6 +57,10 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             }
         }
     }
+       
+    public void removeAll() {
+        activities.clear();
+    }
 
     public int getIndex(Activity activity) {
         int index = 0;
@@ -92,5 +96,5 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             storyPoints += it.next().getStoryPoints();
         }
         return storyPoints;
-    }
+    }            
 }

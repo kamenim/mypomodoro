@@ -13,10 +13,6 @@ public class ActivityList extends AbstractActivities {
     private ActivityList() {
         refresh();
     }
-    
-    /*private ActivityList(ActivityList list) {
-        this.list = list;
-    }*/
 
     @Override
     public void refresh() {
@@ -39,27 +35,28 @@ public class ActivityList extends AbstractActivities {
         return getList().size();
     }
 
-    @Override
-    public void removeById(final int id) {
-        ActivitiesDAO.getInstance().removeById(id);
-        for (Activity activity : activities) {
-            if (activity.getId() == id) {
-                activities.remove(activity);
-                ActivityIterationList.getList().remove(activity);
-                break;
-            }
-        }
-    }
-
     public void removeAll() {
         ActivitiesDAO.getInstance().removeAllActivities();
         activities.clear();
-        ActivityIterationList.getList().activities.clear();
+    }
+
+    @Override
+    public void add(Activity act) {
+        act.setPriority(-1);
+        act.setIsCompleted(false);
+        act.databaseUpdate();
+        super.add(act);
     }
     
     @Override
     public void remove(Activity activity) {
         activities.remove(activity);
-        ActivityIterationList.getList().remove(activity);
+    }
+    
+    // move from Activity list to ToDo list
+    public void move(int id) {
+        Activity act = getById(id);
+        ToDoList.getList().add(act); // this sets the priority and update the database
+        activities.remove(act);
     }
 }

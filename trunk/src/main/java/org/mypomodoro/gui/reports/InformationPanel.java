@@ -8,7 +8,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteAllReportButton;
 import org.mypomodoro.buttons.DeleteReportButton;
-import org.mypomodoro.buttons.ReopenActivityButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -29,19 +29,19 @@ public class InformationPanel extends ActivityInformationPanel implements Activi
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addInformationArea();
-        addReopenActivityButton(reportsPanel);
+        //addReopenButton(reportsPanel);
         addDeleteButton(reportsPanel);
         addDeleteAllButton(reportsPanel);
     }
     
-    private void addReopenActivityButton(ReportListPanel reportsPanel) {
+    /*private void addReopenButton(ReportListPanel reportsPanel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         //gbc.fill = GridBagConstraints.NONE;
-        add(new ReopenActivityButton(reportsPanel), gbc);
-    }
+        add(new MoveButton("ReportListPanel.Reopen", reportsPanel), gbc);
+    }*/
 
     private void addDeleteButton(ReportListPanel reportsPanel) {
         gbc.gridx = 2;

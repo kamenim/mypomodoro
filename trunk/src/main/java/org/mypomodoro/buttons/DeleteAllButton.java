@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 
 import org.mypomodoro.model.ActivityList;
@@ -31,6 +32,7 @@ public class DeleteAllButton extends AbstractPomodoroButton {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivityList.getList().removeAll();
+                        ActivitiesDAO.getInstance().removeAllActivities();
                         activitiesPanel.refresh();
                     }
                 }
