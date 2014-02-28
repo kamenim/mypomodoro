@@ -123,7 +123,7 @@ public class ViewMenu extends JMenu {
                 MyIcon toDoListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(toDoListIcon);
                 view.setWindow(toDoListIcon.getPanel());
-                view.setWindow(view.getToDoListPanel());
+                view.setWindow(view.getToDoPanel());
             }
         }
     }

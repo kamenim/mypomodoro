@@ -32,11 +32,11 @@ public class TimerPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
     private final JLabel pomodoroTime;
-    private final ToDoJList toDoJList;
+    private final ToDoPanel todoPanel;
 
-    TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoJList toDoJList) {
+    TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel todoPanel) {
         this.pomodoroTime = pomodoroTime;
-        this.toDoJList = toDoJList;
+        this.todoPanel = todoPanel;
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
@@ -127,7 +127,7 @@ public class TimerPanel extends JPanel {
                             Border compound = new CompoundBorder(line, margin);
                             startButton.setBorder(compound);
                             pomodoroTime.setForeground(ColorUtil.RED);
-                            toDoJList.init(); // init list so the custom cell renderer can turn the title into red
+                            //toDoJList.init(); // init list so the custom cell renderer can turn the title into red
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
@@ -137,7 +137,7 @@ public class TimerPanel extends JPanel {
                         Border compound = new CompoundBorder(line, margin);
                         startButton.setBorder(compound);
                         pomodoroTime.setForeground(ColorUtil.BLACK);
-                        toDoJList.init(); // init list so the custom cell renderer can turn the title into black
+                        //toDoJList.init(); // init list so the custom cell renderer can turn the title into black
                     }
                 }
             }

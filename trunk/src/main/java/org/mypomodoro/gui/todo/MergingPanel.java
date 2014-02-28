@@ -14,7 +14,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -25,11 +25,11 @@ public class MergingPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
     private MergingActivityInputForm mergingInputFormPanel;
-    private final ToDoListPanel panel;
+    private final ToDoPanel panel;
     private List<Activity> selectedToDos;
 
-    public MergingPanel(ToDoListPanel panel) {
-        this.panel = panel;
+    public MergingPanel(ToDoPanel todoPanel) {
+        this.panel = todoPanel;
         mergingInputFormPanel.setEstimatedPomodoro(1); 
     }
 
@@ -124,7 +124,7 @@ public class MergingPanel extends CreatePanel {
                 comments.append(deleteToDo.getNotes());
                 comments.append("\n\n");
             }
-            ActivityList.getList().removeById(deleteToDo.getId());
+            ToDoList.getList().removeById(deleteToDo.getId());
             actualPoms += deleteToDo.getActualPoms();
         }
         // set comment
@@ -140,7 +140,7 @@ public class MergingPanel extends CreatePanel {
         if (mergingInputFormPanel.isDateToday()) {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             // Today unplanned merge activity
-            panel.getToDoList().add(newActivity);
+            //panel.getToDoList().add(newActivity); ???
             newActivity.databaseInsert();
             clearForm();
         } else {

@@ -4,13 +4,14 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.List;
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.activities.ActivitiesPanel;
 
-import org.mypomodoro.gui.manager.ListPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -22,7 +23,7 @@ public class MoveButton extends AbstractPomodoroButton {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
-    public MoveButton(String label, final ListPanel from, final ListPanel to) {
+    public MoveButton(String label, final AbstractActivitiesPanel panel) {
         super(label);
         setMinimumSize(BUTTON_SIZE);
         setPreferredSize(BUTTON_SIZE);
@@ -30,18 +31,22 @@ public class MoveButton extends AbstractPomodoroButton {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                move(from, to);
+                move(panel);
             }
         });
     }
 
-    public static void move(final ListPanel from, final ListPanel to) {
-        List<Activity> selectedActivities = from.getSelectedActivities();
-        boolean alreadyAgreed = false;
-        for (Activity selectedActivity : selectedActivities) {
-            if (selectedActivity != null) {
-                if (selectedActivity.isActivity()) { // Not ToDo
-                    String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+    public void move(final AbstractActivitiesPanel panel) {
+        int[] rows = panel.getTable().getSelectedRows();
+        if (rows.length > 0) {
+            boolean agreed = false;
+            int increment = 0;
+            for (int row : rows) {
+                row = row - increment;
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
+                Activity selectedActivity = panel.getActivityById(id);
+                String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+                if (panel instanceof ActivitiesPanel) {
                     if (!ControlPanel.preferences.getAgileMode()) {
                         if (!selectedActivity.isDateToday()) {
                             String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
@@ -54,7 +59,7 @@ public class MoveButton extends AbstractPomodoroButton {
                                 break;
                             }
                         }
-                        if (to.isMaxNbTotalEstimatedPomReached(selectedActivity) && !alreadyAgreed) {
+                        if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreed) {
                             String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                             String message = Labels.getString(
                                     "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
@@ -62,26 +67,27 @@ public class MoveButton extends AbstractPomodoroButton {
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                     title, JOptionPane.YES_NO_OPTION);
                             if (reply == JOptionPane.YES_OPTION) {
-                                alreadyAgreed = true;
+                                agreed = true;
                             } else {
                                 break; // get out of the loop
                             }
                         }
                     }
-                    /*if (selectedActivity.getEstimatedPoms() + selectedActivity.getOverestimatedPoms() == 0) {
-                        String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                        String message = Labels.getString("ManagerListPanel.Activity {0} has no estimated pomodoros. Can't proceed.", activityName);
-                        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-                        continue;
-                    }*/
                 }
-                from.removeActivity(selectedActivity);
-                to.addActivity(selectedActivity);
+                panel.move(selectedActivity);
+                // removing a row requires decreasing  the row index number
+                panel.removeRow(row);
+                increment++;
+                // Refresh panel border
+                panel.setPanelBorder();
             }
+            // select following activity in the list only when all rows are removed
+            panel.selectActivity();
         }
-        // Refresh panel borders
-        from.setPanelBorder();
-        to.setPanelBorder();
+    }
+
+    private boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
+        int nbTotalEstimatedPom = ToDoList.getList().getNbTotalEstimatedPom() + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
+        return nbTotalEstimatedPom > ControlPanel.preferences.getMaxNbPomPerDay();
     }
 }

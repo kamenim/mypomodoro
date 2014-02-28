@@ -11,6 +11,10 @@ public interface ActivityInformation {
     void selectInfo(Activity activity);
 
     void showInfo();
+    
+    void showInfo(String info);
 
     void clearInfo();
+    
+    boolean isMultipleSelectionAllowed();
 }

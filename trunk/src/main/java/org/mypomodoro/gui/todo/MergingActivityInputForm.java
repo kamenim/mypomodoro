@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Insets;
 import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -26,6 +27,7 @@ public class MergingActivityInputForm extends ActivityInputForm {
         toDosListTextArea.setLineWrap(true);
         toDosListTextArea.setWrapStyleWord(true);
         toDosListTextArea.setEditable(false);
+        toDosListTextArea.setMargin(new Insets(3, 3, 3, 3)); // margin
         JScrollPane listTextArea = new JScrollPane(toDosListTextArea);
         listTextArea.setMinimumSize(TEXT_AREA_DIMENSION);
         listTextArea.setPreferredSize(TEXT_AREA_DIMENSION);

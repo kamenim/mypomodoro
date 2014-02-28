@@ -34,7 +34,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
-import org.mypomodoro.gui.todo.TabPane;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
@@ -117,7 +117,7 @@ public class ExportPanel extends JPanel {
     }
 
     private void export() {
-        if (component instanceof TabPane) {
+        if (component instanceof ToDoPanel) {
             activities = ToDoList.getListFromDB();
         } else if (component instanceof ActivitiesPanel) {
             activities = ActivityList.getListFromDB();

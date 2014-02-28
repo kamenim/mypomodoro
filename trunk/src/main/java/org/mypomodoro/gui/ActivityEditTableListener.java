@@ -29,13 +29,11 @@ public class ActivityEditTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        int row = table.getSelectedRow();
-        if (row >= 0) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+        int[] row = table.getSelectedRows();
+        if (row.length == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row[0]), idKey);
             Activity activity = activities.getById(id);
-            if (activity != null) {
-                panel.fillOutInputForm(activity);
-            }
+            panel.fillOutInputForm(activity);            
         } else {
             panel.clearForm();
         }

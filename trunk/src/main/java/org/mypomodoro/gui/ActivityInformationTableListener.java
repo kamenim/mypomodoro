@@ -24,14 +24,20 @@ public class ActivityInformationTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        int row = table.getSelectedRow();
-        if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-            Activity activity = activities.getById(id);
-            if (activity != null) {
-                information.selectInfo(activity);
-                information.showInfo();
+        int[] rows = table.getSelectedRows();
+        if (rows.length > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+            String info = "";
+            for (int row : rows) {
+                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                Activity selectedActivity = activities.getById(id);
+                info += selectedActivity.getName() + "\n";
             }
+            information.showInfo(info);
+        } else if (rows.length == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), idKey);
+            Activity activity = activities.getById(id);
+            information.selectInfo(activity);
+            information.showInfo();
         } else {
             information.clearInfo();
         }
