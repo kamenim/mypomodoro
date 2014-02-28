@@ -9,9 +9,9 @@ import javax.swing.event.ListSelectionListener;
  */
 public class ToDoIconListListener implements ListSelectionListener {
 
-    private final ToDoListPanel panel;
+    private final ToDoPanel panel;
 
-    public ToDoIconListListener(ToDoListPanel panel) {
+    public ToDoIconListListener(ToDoPanel panel) {
         this.panel = panel;
     }
 

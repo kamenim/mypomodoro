@@ -2,12 +2,12 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
-import org.mypomodoro.buttons.DeleteAllReportButton;
-import org.mypomodoro.buttons.DeleteReportButton;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
@@ -19,60 +19,47 @@ import org.mypomodoro.util.Labels;
  * Panel that displays information on the current Report
  *
  */
-public class InformationPanel extends ActivityInformationPanel implements ActivityInformation {
+public class DetailsPanel extends ActivityInformationPanel implements ActivityInformation {
 
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public InformationPanel(ReportListPanel reportsPanel) {
+    public DetailsPanel(ReportListPanel reportsPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-
+        
+        addReopenButton(reportsPanel);
         addInformationArea();
-        //addReopenButton(reportsPanel);
         addDeleteButton(reportsPanel);
-        addDeleteAllButton(reportsPanel);
     }
     
-    /*private void addReopenButton(ReportListPanel reportsPanel) {
-        gbc.gridx = 1;
+    private void addReopenButton(ReportListPanel reportsPanel) {
+        gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        gbc.gridheight = 2;
-        //gbc.fill = GridBagConstraints.NONE;
-        add(new MoveButton("ReportListPanel.Reopen", reportsPanel), gbc);
-    }*/
-
-    private void addDeleteButton(ReportListPanel reportsPanel) {
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0.1;
-        gbc.gridheight = 1;
-        //gbc.fill = GridBagConstraints.NONE;
-        add(new DeleteReportButton(reportsPanel), gbc);
-    }
-
-    private void addDeleteAllButton(ReportListPanel reportsPanel) {
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 0.1;
-        gbc.gridheight = 1;
-        //gbc.fill = GridBagConstraints.NONE;
-        add(new DeleteAllReportButton(reportsPanel), gbc);
+        add(new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel), gbc);
     }
 
     private void addInformationArea() {
         // add the information area
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.gridheight = 2;
         informationArea.setEditable(false);
         informationArea.setLineWrap(true);
         informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
+    }
+
+    private void addDeleteButton(ReportListPanel reportsPanel) {
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 0.1;
+        add(new DeleteButton(Labels.getString("ActivityListPanel.Are you sure to delete those reports?"), reportsPanel), gbc);
     }
 
     @Override

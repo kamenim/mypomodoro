@@ -284,6 +284,7 @@ public class ActivityInputForm extends JPanel {
         descriptionField.setFont(this.getFont());
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
+        descriptionField.setMargin(new Insets(3, 3, 3, 3)); // margin
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);

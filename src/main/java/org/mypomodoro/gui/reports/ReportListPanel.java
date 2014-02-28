@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -28,6 +29,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -47,7 +49,7 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  * GUI for viewing the Report List.
  *
  */
-public class ReportListPanel extends JPanel {
+public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
@@ -70,7 +72,7 @@ public class ReportListPanel extends JPanel {
     private int selectedReportId = 0;
     private int selectedRowIndex = 0;
 
-    private final InformationPanel informationArea = new InformationPanel(this);
+    private final DetailsPanel informationArea = new DetailsPanel(this);
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -99,6 +101,10 @@ public class ReportListPanel extends JPanel {
 
     private void init() {
         table.setRowHeight(30);
+
+        // Make table allowing multiple selections
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
@@ -183,24 +189,28 @@ public class ReportListPanel extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
-                int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 9 || columnIndex == ID_KEY - 8) {
-                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
-                    value = value.length() > 0 ? value : null;
-                    table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 7) { // estimated
-                    String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
-                    table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 10) { // date and time
-                    String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(rowIndex, columnIndex));
-                    value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(rowIndex, columnIndex));
-                    table.setToolTipText(value);
+                try {
+                    int rowIndex = table.rowAtPoint(p);
+                    int columnIndex = table.columnAtPoint(p);
+                    if (columnIndex == ID_KEY - 9 || columnIndex == ID_KEY - 8) {
+                        String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                        value = value.length() > 0 ? value : null;
+                        table.setToolTipText(value);
+                    } else if (columnIndex == ID_KEY - 7) { // estimated
+                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
+                        table.setToolTipText(value);
+                    } else if (columnIndex == ID_KEY - 10) { // date and time
+                        String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(rowIndex, columnIndex));
+                        value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(rowIndex, columnIndex));
+                        table.setToolTipText(value);
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
                 }
             }
         });
         // select first activity
-        selectReport();
+        selectActivity();
         // Refresh panel border
         setPanelBorder();
 
@@ -209,7 +219,8 @@ public class ReportListPanel extends JPanel {
         table.revalidate();
     }
 
-    private void setPanelBorder() {
+    @Override
+    public void setPanelBorder() {
         String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
                 + ReportList.getListSize() + ")";
         if (ReportList.getListSize() > 0) {
@@ -362,20 +373,38 @@ public class ReportListPanel extends JPanel {
         return tableModel;
     }
 
+    @Override
     public JTable getTable() {
         return table;
     }
 
-    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
-    public void removeRow(int rowIndex) {
-        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
-        // select following activity in the list
-        selectReport();
-        // Refresh panel border
-        setPanelBorder();
+    @Override
+    public int getIdKey() {
+        return ID_KEY;
     }
 
-    private void showSelectedItemDetails(InformationPanel informationPanel) {
+    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
+    @Override
+    public void removeRow(int rowIndex) {
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
+    }
+
+    @Override
+    public void move(Activity activity) {
+        ReportList.getList().reopen(activity);
+    }
+
+    @Override
+    public Activity getActivityById(int id) {
+        return ReportList.getList().getById(id);
+    }
+
+    @Override
+    public void delete(Activity activity) {
+        ReportList.getList().remove(activity);        
+    }
+
+    private void showSelectedItemDetails(DetailsPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
                         table, informationPanel, ID_KEY));
@@ -448,7 +477,9 @@ public class ReportListPanel extends JPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = value.toString();
-            Integer overestimatedpoms = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), column + 1);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = ReportList.getList().getById(id);
+            Integer overestimatedpoms = activity.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);
             return renderer;
@@ -486,7 +517,8 @@ public class ReportListPanel extends JPanel {
         }
     }
 
-    private void selectReport() {
+    @Override
+    public void selectActivity() {
         int index = 0;
         if (!ReportList.getList().isEmpty()) {
             // Report deleted (removed from the list)
@@ -507,6 +539,7 @@ public class ReportListPanel extends JPanel {
             }
         }
         if (!ReportList.getList().isEmpty()) {
+            index = index > ReportList.getListSize() ? 0 : index;
             table.setRowSelectionInterval(index, index);
         }
     }

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -29,6 +30,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -52,14 +54,15 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  * layer.
  *
  */
-public class ActivitiesPanel extends JPanel {
+public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private JTable table;
     private static final String[] columnNames = {"U",
-        Labels.getString("Common.Date"), Labels.getString("Common.Title"),
+        Labels.getString("Common.Date"), 
+        Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
         Labels.getString("Common.Estimated"),
         Labels.getString("Common.Overestimated"),
@@ -70,7 +73,7 @@ public class ActivitiesPanel extends JPanel {
     private int selectedActivityId = 0;
     private int selectedRowIndex = 0;
 
-    private final DetailsPanel detailsPane = new DetailsPanel(this);
+    private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
 
     public ActivitiesPanel() {
@@ -100,6 +103,10 @@ public class ActivitiesPanel extends JPanel {
 
     private void init() {
         table.setRowHeight(30);
+
+        // Make table allowing multiple selections
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // set custom render for dates
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -184,15 +191,19 @@ public class ActivitiesPanel extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
-                int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 5) {
-                    String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
-                    value = value.length() > 0 ? value : null;
-                    table.setToolTipText(value);
-                } else if (columnIndex == ID_KEY - 4) { // estimated
-                    String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
-                    table.setToolTipText(value);
+                try {
+                    int rowIndex = table.rowAtPoint(p);
+                    int columnIndex = table.columnAtPoint(p);
+                    if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 5) {
+                        String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                        value = value.length() > 0 ? value : null;
+                        table.setToolTipText(value);
+                    } else if (columnIndex == ID_KEY - 4) { // estimated
+                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
+                        table.setToolTipText(value);
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
                 }
             }
         });
@@ -206,7 +217,8 @@ public class ActivitiesPanel extends JPanel {
         table.revalidate();
     }
 
-    private void setPanelBorder() {
+    @Override
+    public void setPanelBorder() {
         String titleActivitiesList = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
                 + " (" + ActivityList.getListSize() + ")";
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
@@ -247,7 +259,7 @@ public class ActivitiesPanel extends JPanel {
         JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        controlPane.add(Labels.getString("Common.Details"), detailsPane);
+        controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         EditPanel editPanel = new EditPanel();
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
@@ -257,7 +269,7 @@ public class ActivitiesPanel extends JPanel {
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
 
-        showSelectedItemDetails(detailsPane);
+        showSelectedItemDetails(detailsPanel);
         showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
     }
@@ -359,25 +371,43 @@ public class ActivitiesPanel extends JPanel {
                     // Refresh panel border
                     setPanelBorder();
                     // update info
-                    detailsPane.selectInfo(act);
-                    detailsPane.showInfo();
+                    detailsPanel.selectInfo(act);
+                    detailsPanel.showInfo();
                 }
             }
         });
         return tableModel;
     }
 
+    @Override
     public JTable getTable() {
         return table;
     }
 
-    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
+    @Override
+    public int getIdKey() {
+        return ID_KEY;
+    }
+
+    // use convertRowIndexToModel to avoid the sorting of columns to mess with the move/deletion
+    @Override
     public void removeRow(int rowIndex) {
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
-        // select following activity in the list
-        selectActivity();
-        // Refresh panel border
-        setPanelBorder();
+    }
+
+    @Override
+    public void move(Activity activity) {
+        ActivityList.getList().move(activity);
+    }
+
+    @Override
+    public Activity getActivityById(int id) {
+        return ActivityList.getList().getById(id);
+    }
+
+    @Override
+    public void delete(Activity activity) {
+        ActivityList.getList().remove(activity);        
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
@@ -417,8 +447,9 @@ public class ActivitiesPanel extends JPanel {
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);            
-            if (ActivityList.getList().getById(id).isFinished()) {                
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = ActivityList.getList().getById(id);
+            if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
             return renderer;
@@ -452,7 +483,8 @@ public class ActivitiesPanel extends JPanel {
         }
     }
 
-    private void selectActivity() {
+    @Override
+    public void selectActivity() {
         int index = 0;
         if (!ActivityList.getList().isEmpty()) {
             // Activity deleted (removed from the list)

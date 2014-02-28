@@ -26,10 +26,10 @@ public class UnplannedPanel extends CreatePanel {
     private static final long serialVersionUID = 20110814L;
     private UnplannedActivityInputForm unplannedInputFormPanel;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
-    private final ToDoListPanel panel;
+    private final ToDoPanel panel;
 
-    public UnplannedPanel(ToDoListPanel panel) {
-        this.panel = panel;
+    public UnplannedPanel(ToDoPanel todoPanel) {
+        this.panel = todoPanel;
         unplannedInputFormPanel.setEstimatedPomodoro(1);        
         addToDoIconPanel();
     }
@@ -121,7 +121,7 @@ public class UnplannedPanel extends CreatePanel {
                 newActivity.setIteration(-1); // no specific iteration
             }
             // Today unplanned interruption/activity
-            panel.getToDoList().add(newActivity);
+            //panel.getToDoList().add(newActivity); ???
             newActivity.databaseInsert();
             clearForm();
             panel.refresh();

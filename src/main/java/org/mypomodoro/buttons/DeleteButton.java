@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
 
-import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -19,23 +19,31 @@ public class DeleteButton extends AbstractPomodoroButton {
 
     private static final long serialVersionUID = 20110814L;
 
-    public DeleteButton(final ActivitiesPanel activitiesPanel) {
+    public DeleteButton(final String label, final AbstractActivitiesPanel panel) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = activitiesPanel.getTable().getSelectedRow();
-                if (row > -1) {
+                int[] rows = panel.getTable().getSelectedRows();
+                if (rows.length > 0) {
                     String title = Labels.getString("ActivityListPanel.Delete activity");
-                    String message = Labels.getString("ActivityListPanel.Are you sure to delete this activity?");
-                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, label, title, JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        Integer id = (Integer) activitiesPanel.getTable().getModel().getValueAt(row, ActivitiesPanel.ID_KEY);
-                        Activity act = Activity.getActivity(id);
-                        ActivityList.getList().remove(act);
-                        act.databaseDelete();
-                        activitiesPanel.removeRow(row);
+                        int increment = 0;
+                        for (int row : rows) {
+                            row = row - increment;
+                            Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
+                            Activity selectedActivity = panel.getActivityById(id);
+                            panel.delete(selectedActivity);
+                            // removing a row requires decreasing  the row index number
+                            panel.removeRow(row);
+                            increment++;
+                            // Refresh panel border
+                            panel.setPanelBorder();
+                        }
+                        // select following activity in the list only when all rows are removed
+                        panel.selectActivity();
                     }
                 }
             }

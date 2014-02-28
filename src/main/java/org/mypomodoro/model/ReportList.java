@@ -35,10 +35,15 @@ public class ReportList extends AbstractActivities {
         return getList().size();
     }
     
+    @Override
+    public void remove(Activity activity) {
+        activities.remove(activity);
+        activity.databaseDelete();
+    }
+    
     // move from Report list to Activity list
-    public void move(int id) {
-        Activity act = getById(id);
-        ActivityList.getList().add(act); // this sets the priority to -1 and non conplete and updates the database
-        activities.remove(act);
+    public void reopen(Activity activity) {        
+        ActivityList.getList().add(activity); // this sets the priority to -1 and non conplete and updates the database
+        activities.remove(activity);
     }
 }

@@ -85,4 +85,9 @@ public class CommentPanel extends ActivityInformationPanel {
             textMap.put("comment", activity.getNotes());
         }
     }
+    
+    @Override
+    public boolean isMultipleSelectionAllowed() {
+        return false;
+    }
 }

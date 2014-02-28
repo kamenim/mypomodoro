@@ -53,7 +53,7 @@ public class Pomodoro {
     private long shortBreakLength = POMODORO_BREAK_LENGTH;
     private long longBreakLength = POMODORO_LONG_LENGTH;
     private final JLabel pomodoroTime;
-    private final ToDoListPanel panel;
+    private final ToDoPanel panel;
     private TimerPanel timerPanel;
     private Activity currentToDo;
     private long time = pomodoroLength;
@@ -61,11 +61,11 @@ public class Pomodoro {
     private Clip clip;
     private boolean isMute = false;
 
-    public Pomodoro(ToDoListPanel panel) {
-        pomodoroTime = panel.getPomodoroTime();
+    public Pomodoro(ToDoPanel todoPanel) {
+        pomodoroTime = todoPanel.getPomodoroTime();
         pomodoroTime.setText(sdf.format(pomodoroLength));
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
-        this.panel = panel;
+        this.panel = todoPanel;
     }
 
     public void start() {

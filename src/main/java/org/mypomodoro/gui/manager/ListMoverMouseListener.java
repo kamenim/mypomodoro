@@ -18,7 +18,7 @@ public class ListMoverMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() >= 2) {
-            MoveButton.move(from, to);
+            //MoveButton.move(from, to);
         }
     }
 }

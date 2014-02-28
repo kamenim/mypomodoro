@@ -78,7 +78,7 @@ public class EditPanel extends CreatePanel {
     @Override
     protected void validActivityAction(Activity currentReport) {
         currentReport.databaseUpdate();
-        //ReportList.getList().update();
+        ReportList.getList().update(currentReport);
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title,

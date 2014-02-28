@@ -23,22 +23,19 @@ import org.mypomodoro.util.Labels;
 public class CommentPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
-    private final ToDoListPanel panel;
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);    
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CommentPanel(ToDoListPanel panel) {
-        this.panel = panel;
-
+    public CommentPanel(ToDoPanel todoPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addToDoIconPanel();
         addCommentArea();
-        addSaveButton();
+        addSaveButton(todoPanel);
     }
 
-    private void addSaveButton() {
+    private void addSaveButton(final ToDoPanel todoPanel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
@@ -50,7 +47,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.saveComment(informationArea.getText());
+                todoPanel.saveComment(informationArea.getText());
             }
         });
         add(changeButton, gbc);

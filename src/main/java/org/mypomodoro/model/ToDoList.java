@@ -62,8 +62,13 @@ public class ToDoList extends AbstractActivities {
     }
     
     // move from ToDO list to Activity list
-    public void move(int id) {
+    /*public void move(int id) {
         Activity act = getById(id);
+        ActivityList.getList().add(act); // this sets the priority and update the database
+        activities.remove(act);
+    }*/
+    
+    public void move(Activity act) {         
         ActivityList.getList().add(act); // this sets the priority and update the database
         activities.remove(act);
     }

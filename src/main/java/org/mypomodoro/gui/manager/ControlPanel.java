@@ -23,9 +23,9 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        MoveButton mRight = new MoveButton(">>>", activitiesPane, todoPane);
-        mRight.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
-        add(mRight, gbc);
+        //MoveButton mRight = new MoveButton(">>>", activitiesPane, todoPane);
+        //mRight.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
+        //add(mRight, gbc);
         // Adding the remove button from todo to activities list
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -33,8 +33,8 @@ public class ControlPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        MoveButton mLeft = new MoveButton("<<<", todoPane, activitiesPane);
-        mLeft.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
-        add(mLeft, gbc);
+        //MoveButton mLeft = new MoveButton("<<<", todoPane, activitiesPane);
+        //mLeft.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 6));
+        //add(mLeft, gbc);
     }
 }

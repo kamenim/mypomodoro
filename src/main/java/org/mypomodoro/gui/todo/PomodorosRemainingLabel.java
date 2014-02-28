@@ -1,6 +1,5 @@
 package org.mypomodoro.gui.todo;
 
-import java.util.Iterator;
 import javax.swing.JLabel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -13,22 +12,16 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  */
 public class PomodorosRemainingLabel {
 
-    static public void showRemainPomodoros(JLabel remainPomodorosLabel, ToDoList toDoList) {
+    static public void showRemainPomodoros(JLabel remainPomodorosLabel) {
         String label = "";
         int remainingPomodoros = 0;
-        //int completedPomodoros = 0;
-        Iterator<Activity> iToDo = toDoList.iterator();
-        while (iToDo.hasNext()) {
-            Activity toDo = iToDo.next();
+        for (Activity toDo : ToDoList.getList()) {            
             int Pomodoros = toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             if (Pomodoros > 0) {
                 remainingPomodoros += Pomodoros;
-            }/* else {
-             completedPomodoros++;
-             }*/
-
+            }
         }
-        if (!toDoList.isEmpty()) {
+        if (ToDoList.getListSize() != 0) {
             label = Labels.getString("ToDoListPanel.{0} pomodoros remaining ({1})",
                     remainingPomodoros, getLength(remainingPomodoros));
         }

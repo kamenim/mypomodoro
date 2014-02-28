@@ -15,10 +15,9 @@ import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
-import org.mypomodoro.gui.manager.ManagerPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.burndownchart.BurndownPanel;
-import org.mypomodoro.gui.todo.ToDoListPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
@@ -34,7 +33,7 @@ public class Main {
     public final static ControlPanel controlPanel = new ControlPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     //public static final ManagerPanel managerPanel = new ManagerPanel();
-    public static final ToDoListPanel toDoListPanel = new ToDoListPanel();
+    public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportListPanel reportListPanel = new ReportListPanel();
     public static final BurndownPanel burndownPanel = new BurndownPanel();
     public final static ReentrantLock datalock = new ReentrantLock();
@@ -46,7 +45,7 @@ public class Main {
             @Override
             public void run() {
                 activitiesPanel.refresh();
-                toDoListPanel.refresh();
+                toDoPanel.refresh();
                 //managerPanel.refresh();
                 reportListPanel.refresh();
             }

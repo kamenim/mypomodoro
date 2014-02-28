@@ -34,10 +34,10 @@ import org.mypomodoro.util.Labels;
  */
 public class ToDoListPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
+    /*private static final long serialVersionUID = 20110814L;
     private final ToDoList toDoList = ToDoList.getList();
     private final JLabel pomodoroTime = new JLabel();
-    private final InformationPanel informationPanel = new InformationPanel(this);
+    private final DetailsPanel informationPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(
             this);
@@ -311,7 +311,7 @@ public class ToDoListPanel extends JPanel {
         return pomodoro;
     }
 
-    public InformationPanel getInformationPanel() {
+    public DetailsPanel getInformationPanel() {
         return informationPanel;
     }
 
@@ -380,5 +380,5 @@ public class ToDoListPanel extends JPanel {
             ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
             ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
         }
-    }
+    }*/
 }

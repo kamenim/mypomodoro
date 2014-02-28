@@ -13,10 +13,10 @@ import javax.swing.JMenuBar;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.manager.ManagerPanel;
 import org.mypomodoro.gui.reports.ReportListPanel;
 import org.mypomodoro.gui.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.todo.ToDoListPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.menubar.FileMenu;
 import org.mypomodoro.menubar.HelpMenu;
 import org.mypomodoro.menubar.TestMenu;
@@ -33,7 +33,7 @@ public class MyPomodoroView extends JFrame {
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "3.0";
-    private final ToDoListPanel toDoListPanel = Main.toDoListPanel;
+    private final ToDoPanel toDoPanel = Main.toDoPanel;
     private final CreatePanel createPanel = new CreatePanel();
     //private final ManagerPanel managerPanel = Main.managerPanel;
     private final ReportListPanel reportListPanel = Main.reportListPanel;
@@ -42,8 +42,8 @@ public class MyPomodoroView extends JFrame {
     private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
     private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
-    public ToDoListPanel getToDoListPanel() {
-        return toDoListPanel;
+    public ToDoPanel getToDoPanel() {
+        return toDoPanel;
     }
 
     /*public ManagerPanel getGeneratePanel() {

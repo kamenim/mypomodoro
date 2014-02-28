@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
@@ -20,6 +21,10 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
     protected final JTextArea informationArea = new JTextArea();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
     protected StringBuilder info = new StringBuilder();
+    
+    public ActivityInformationPanel() {
+        informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin
+    }
 
     @Override
     public void selectInfo(Activity activity) {
@@ -53,6 +58,13 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         // disable auto scrolling
         informationArea.setCaretPosition(0);
     }
+    
+    @Override
+    public void showInfo(String newInfo) {
+        informationArea.setText(newInfo);
+        // disable auto scrolling
+        informationArea.setCaretPosition(0);
+    }
 
     @Override
     public void clearInfo() {
@@ -67,5 +79,9 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
             text = Math.round(points) + "";
         }
         return text;
+    }
+    
+    public boolean isMultipleSelectionAllowed() {
+        return true;
     }
 }
