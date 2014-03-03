@@ -26,7 +26,7 @@ public class ActivitiesPanel extends ListPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString(org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile.Common.Iteration" : "ActivityListPanel.Activity List")        
+        String titleActivitiesList = Labels.getString(org.mypomodoro.gui.ControlPanel.preferences.getAgileMode() ? "Agile.Common.Iteration" : "ActivityListPanel.Activity List")
                 + " (" + list.size() + ")";
         if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
                 && list.size() > 0) {
@@ -82,11 +82,11 @@ public class ActivitiesPanel extends ListPanel {
     }
 
     /*public void update() {
-        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
-            internalActivitiesList.setListData(ActivityIterationList.getList().toArray()); // subset of activities : by default, activities with iteration = 0
-        } else {
-            super.update();
-        }
-        init();
-    }*/
+     if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()) {
+     internalActivitiesList.setListData(ActivityIterationList.getList().toArray()); // subset of activities : by default, activities with iteration = 0
+     } else {
+     super.update();
+     }
+     init();
+     }*/
 }

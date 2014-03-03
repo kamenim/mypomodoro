@@ -133,7 +133,7 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity()+1];
+        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
         for (int i = 0; i <= ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
             items[i] = i;
         }

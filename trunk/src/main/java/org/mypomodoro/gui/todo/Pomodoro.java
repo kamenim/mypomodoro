@@ -26,6 +26,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -55,7 +56,7 @@ public class Pomodoro {
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
     private TimerPanel timerPanel;
-    private Activity currentToDo;
+    private int currentToDoId;
     private long time = pomodoroLength;
     private boolean inpomodoro = false;
     private Clip clip;
@@ -105,7 +106,7 @@ public class Pomodoro {
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
             message += "\n(" + Labels.getString("ToDoListPanel.please create an unplanned activity in order to record this interruption") + ")";
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (reply == JOptionPane.YES_OPTION) {
                 stop();
             }
@@ -130,6 +131,7 @@ public class Pomodoro {
                 if (ControlPanel.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
+                Activity currentToDo = ToDoList.getList().getById(currentToDoId);
                 if (inPomodoro()) {
                     // increment real poms
                     currentToDo.incrementPoms();
@@ -284,12 +286,12 @@ public class Pomodoro {
         }
     }
 
-    public void setCurrentToDo(Activity toDo) {
-        currentToDo = toDo;
+    public void setCurrentToDoId(int id) {
+        currentToDoId = id;
     }
 
     public Activity getCurrentToDo() {
-        return currentToDo;
+        return ToDoList.getList().getById(currentToDoId);
     }
 
     public void setTimerPanel(TimerPanel timerPanel) {
@@ -298,6 +300,10 @@ public class Pomodoro {
 
     public TimerPanel getTimerPanel() {
         return timerPanel;
+    }
+
+    public Timer getTimer() {
+        return pomodoroTimer;
     }
 
     private InputStream getStreamWithMarkReset(InputStream stream) throws IOException {

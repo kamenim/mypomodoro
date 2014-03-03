@@ -30,7 +30,7 @@ public class MergingPanel extends CreatePanel {
 
     public MergingPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        mergingInputFormPanel.setEstimatedPomodoro(1); 
+        mergingInputFormPanel.setEstimatedPomodoro(1);
     }
 
     @Override
@@ -116,16 +116,30 @@ public class MergingPanel extends CreatePanel {
         String message;
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
-        for (Activity deleteToDo : selectedToDos) {
-            // aggregate comments
-            if (deleteToDo.getNotes() != null && deleteToDo.getNotes().length() > 0) {
-                comments.append(deleteToDo.getName());
-                comments.append(":\n");
-                comments.append(deleteToDo.getNotes());
-                comments.append("\n\n");
+        int[] rows = panel.getTable().getSelectedRows();
+        if (rows.length > 0) {
+            int increment = 0;
+            for (int row : rows) {
+                row = row - increment;
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                Activity selectedToDo = panel.getActivityById(id);
+                if ((panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId())
+                        || selectedToDo.isFinished()) {
+                    continue;
+                }
+                // aggregate comments
+                if (selectedToDo.getNotes() != null && selectedToDo.getNotes().length() > 0) {
+                    comments.append(selectedToDo.getName());
+                    comments.append(":\n");
+                    comments.append(selectedToDo.getNotes());
+                    comments.append("\n\n");
+                }
+                actualPoms += selectedToDo.getActualPoms();
+                panel.delete(selectedToDo);
+                // removing a row requires decreasing  the row index number
+                panel.removeRow(row);
+                increment++;
             }
-            ToDoList.getList().removeById(deleteToDo.getId());
-            actualPoms += deleteToDo.getActualPoms();
         }
         // set comment
         newActivity.setNotes(comments.toString());
@@ -137,7 +151,7 @@ public class MergingPanel extends CreatePanel {
         if (actualPoms > 0) {
             newActivity.setActualPoms(actualPoms);
         }
-        if (mergingInputFormPanel.isDateToday()) {
+        if (mergingInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             // Today unplanned merge activity
             //panel.getToDoList().add(newActivity); ???

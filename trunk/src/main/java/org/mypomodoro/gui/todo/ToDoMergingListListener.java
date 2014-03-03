@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.model.AbstractActivities;
 
 import org.mypomodoro.model.Activity;
@@ -46,6 +45,8 @@ public class ToDoMergingListListener implements ListSelectionListener {
             } else {
                 mergingPanel.clearForm();
             }
+        } else {
+            mergingPanel.clearForm();
         }
     }
 }

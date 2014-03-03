@@ -73,6 +73,7 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
     private int selectedRowIndex = 0;
 
     private final DetailsPanel informationArea = new DetailsPanel(this);
+    private final JTabbedPane controlPane = new JTabbedPane();
 
     public ReportListPanel() {
         setLayout(new GridBagLayout());
@@ -152,9 +153,9 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 10).setMinWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 10).setPreferredWidth(80);
         // Set width of estimated, real, diff I/II
-        table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(60);
+        table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(60);
+        table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(60);
         table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(40);
         table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(40);
         table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(40);
@@ -193,15 +194,15 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
                     int rowIndex = table.rowAtPoint(p);
                     int columnIndex = table.columnAtPoint(p);
                     if (columnIndex == ID_KEY - 9 || columnIndex == ID_KEY - 8) {
-                        String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
                     } else if (columnIndex == ID_KEY - 7) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
+                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
                     } else if (columnIndex == ID_KEY - 10) { // date and time
-                        String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(rowIndex, columnIndex));
-                        value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(rowIndex, columnIndex));
+                        String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
+                        value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         table.setToolTipText(value);
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
@@ -246,10 +247,23 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        int row = table.getSelectedRow();
-                        if (row > -1) {
-                            selectedReportId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
-                            selectedRowIndex = row;
+                        int[] rows = table.getSelectedRows();
+                        if (rows.length > 1) { // multiple selection
+                            // diactivate/grey out unused tabs
+                            controlPane.setEnabledAt(1, false); // edit
+                            controlPane.setEnabledAt(2, false); // comment 
+                            if (controlPane.getSelectedIndex() == 1
+                            || controlPane.getSelectedIndex() == 2) {
+                                controlPane.setSelectedIndex(0); // switch to details panel
+                            }
+                        } else if (rows.length == 1) {
+                            // activate panels
+                            controlPane.setEnabledAt(1, true); // edit
+                            controlPane.setEnabledAt(2, true); // comment
+
+                            selectedReportId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
+                            selectedRowIndex = rows[0];
+
                         }
                     }
                 });
@@ -260,7 +274,6 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), informationArea);
@@ -401,7 +414,22 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void delete(Activity activity) {
-        ReportList.getList().remove(activity);        
+        ReportList.getList().remove(activity);
+    }
+
+    @Override
+    public void deleteAll() {
+        ReportList.getList().removeAll();
+    }
+
+    @Override
+    public void complete(Activity activity) {
+        // no use
+    }
+
+    @Override
+    public void completeAll() {
+        // no use
     }
 
     private void showSelectedItemDetails(DetailsPanel informationPanel) {
@@ -422,6 +450,7 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
                         table, commentPanel, ID_KEY));
     }
 
+    @Override
     public void refresh() {
         try {
             activitiesTableModel = getTableModel();
@@ -503,8 +532,7 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
     public void saveComment(String comment) {
         int row = table.getSelectedRow();
         if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(
-                    table.convertRowIndexToModel(row), ID_KEY);
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity selectedReport = ReportList.getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);

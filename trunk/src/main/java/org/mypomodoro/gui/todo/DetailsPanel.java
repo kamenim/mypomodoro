@@ -3,17 +3,14 @@ package org.mypomodoro.gui.todo;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
+import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
-import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.buttons.MoveButton;
+import org.mypomodoro.buttons.CompleteButton;
+import org.mypomodoro.buttons.ToDoMoveButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -26,7 +23,7 @@ import org.mypomodoro.util.Labels;
 public class DetailsPanel extends ActivityInformationPanel implements ActivityInformation {
 
     private static final long serialVersionUID = 20110814L;
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);    
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public DetailsPanel(ToDoPanel todoPanel) {
@@ -35,16 +32,16 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
 
         addMoveButton(todoPanel);
         addInformationPanel();
-        //addCompleteButton(todoPanel);
+        addCompleteButton(todoPanel);
     }
-        
+
     private void addMoveButton(ToDoPanel todoPanel) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        MoveButton moveButton = new MoveButton("<<<", todoPanel);
+        ToDoMoveButton moveButton = new ToDoMoveButton("<<<", todoPanel);
         moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
         add(moveButton, gbc);
     }
@@ -72,7 +69,9 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         igbc.weightx = 1.0;
         igbc.weighty = 0.1;
         igbc.gridheight = 1;
+        igbc.insets = new Insets(0, 3, 0, 0); // margin left
         infoPanel.add(iconLabel, igbc);
+        igbc.insets = new Insets(0, 0, 0, 0); // no margin anymore        
     }
 
     private void addInformationArea(JPanel infoPanel, GridBagConstraints igbc) {
@@ -89,21 +88,13 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         infoPanel.add(new JScrollPane(informationArea), igbc);
     }
 
-    private void addCompleteButton(final ToDoListPanel panel) {
+    private void addCompleteButton(ToDoPanel todoPanel) {
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        JButton completeButton = new AbstractPomodoroButton(Labels.getString("ToDoListPanel.Complete"));
-        completeButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //panel.completeTaskWithWarning(); ???
-            }
-        });
-        add(completeButton, gbc);
+        add(new CompleteButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), todoPanel), gbc);
     }
 
     @Override

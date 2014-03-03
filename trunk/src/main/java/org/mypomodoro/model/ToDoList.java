@@ -1,5 +1,6 @@
 package org.mypomodoro.model;
 
+import java.util.Date;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -56,19 +57,25 @@ public class ToDoList extends AbstractActivities {
         Main.updateView();
     }
 
-    public void completeAll() {
-        ActivitiesDAO.getInstance().completeAllTODOs();
-        update();
+    public void complete(Activity a) {
+        a.setIsCompleted(true);
+        a.setDate(new Date());
+        a.databaseUpdate();
+        ReportList.getList().add(a);
+        activities.remove(a);
     }
-    
-    // move from ToDO list to Activity list
-    /*public void move(int id) {
-        Activity act = getById(id);
-        ActivityList.getList().add(act); // this sets the priority and update the database
-        activities.remove(act);
-    }*/
-    
-    public void move(Activity act) {         
+
+    public void completeAll() {
+        for (Activity activity : activities) {
+            activity.setIsCompleted(true);
+            activity.setDate(new Date());
+            ReportList.getList().add(activity);
+        }
+        activities.clear();
+        ActivitiesDAO.getInstance().completeAllTODOs();
+    }
+
+    public void move(Activity act) {
         ActivityList.getList().add(act); // this sets the priority and update the database
         activities.remove(act);
     }

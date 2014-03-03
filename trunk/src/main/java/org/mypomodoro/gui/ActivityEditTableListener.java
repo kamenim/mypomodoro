@@ -33,7 +33,7 @@ public class ActivityEditTableListener implements ListSelectionListener {
         if (row.length == 1) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row[0]), idKey);
             Activity activity = activities.getById(id);
-            panel.fillOutInputForm(activity);            
+            panel.fillOutInputForm(activity);
         } else {
             panel.clearForm();
         }

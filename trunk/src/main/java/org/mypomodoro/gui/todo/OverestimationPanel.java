@@ -2,6 +2,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,6 +15,7 @@ import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -24,7 +26,7 @@ public class OverestimationPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final OverestimationInputForm overestimationInputFormPanel = new OverestimationInputForm();
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);    
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public OverestimationPanel(ToDoPanel todoPanel) {
@@ -61,7 +63,9 @@ public class OverestimationPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 3, 0, 0); // margin left
         add(iconLabel, gbc);
+        gbc.insets = new Insets(0, 0, 0, 0);
     }
 
     private void addOverestimationInputFormPanel() {
@@ -76,29 +80,21 @@ public class OverestimationPanel extends JPanel {
     }
 
     public void saveOverestimation(ToDoPanel panel, int overestimatedPomodoros) {
-        //Activity selectedToDo = (Activity) panel.getToDoJList().getSelectedValue();
         int row = panel.getTable().getSelectedRow();
-        Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
+        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         Activity selectedToDo = panel.getActivityById(id);
-        //if (selectedToDo != null) {
-            // Overestimation : update current/running pomodoro
-            Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-            if (currentToDo != null && selectedToDo.getId() == currentToDo.getId()) {
-                currentToDo.setOverestimatedPoms(currentToDo.getOverestimatedPoms() + overestimatedPomodoros);
-                currentToDo.databaseUpdate();
-            } else {
-                selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
-                selectedToDo.databaseUpdate();
-            }
-            overestimationInputFormPanel.reset();
-            panel.refresh(); // NON : need to refresh the line only
-            String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
-            String message = Labels.getString(
-                    "ToDoListPanel.Nb of estimated pomodoros increased by {0}",
-                    overestimatedPomodoros);
-            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-        //}
+        // Overestimation
+        selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
+        ToDoList.getList().update(selectedToDo);
+        selectedToDo.databaseUpdate();
+        panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), 2); // update estimated colunm column index = 2 (the renderer will do the rest)        
+        overestimationInputFormPanel.reset();
+        String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
+        String message = Labels.getString(
+                "ToDoListPanel.Nb of estimated pomodoros increased by {0}",
+                overestimatedPomodoros);
+        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public JLabel getIconLabel() {

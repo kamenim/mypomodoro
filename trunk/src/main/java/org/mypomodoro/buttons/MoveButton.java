@@ -39,35 +39,35 @@ public class MoveButton extends AbstractPomodoroButton {
     public void move(final AbstractActivitiesPanel panel) {
         int[] rows = panel.getTable().getSelectedRows();
         if (rows.length > 0) {
-            boolean agreed = false;
+            boolean agreedToMorePomodoros = false;
             int increment = 0;
             for (int row : rows) {
                 row = row - increment;
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedActivity = panel.getActivityById(id);
-                String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                 if (panel instanceof ActivitiesPanel) {
+                    String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                     if (!ControlPanel.preferences.getAgileMode()) {
                         if (!selectedActivity.isDateToday()) {
                             String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                             String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                    title, JOptionPane.YES_NO_OPTION);
+                                    title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                             if (reply == JOptionPane.NO_OPTION) {
                                 continue; // go to the next one
                             } else if (reply == JOptionPane.CLOSED_OPTION) {
                                 break;
                             }
                         }
-                        if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreed) {
+                        if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
                             String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                             String message = Labels.getString(
                                     "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                                     org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                    title, JOptionPane.YES_NO_OPTION);
+                                    title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                             if (reply == JOptionPane.YES_OPTION) {
-                                agreed = true;
+                                agreedToMorePomodoros = true;
                             } else {
                                 break; // get out of the loop
                             }
@@ -78,9 +78,9 @@ public class MoveButton extends AbstractPomodoroButton {
                 // removing a row requires decreasing  the row index number
                 panel.removeRow(row);
                 increment++;
-                // Refresh panel border
-                panel.setPanelBorder();
             }
+            // Refresh panel border
+            panel.setPanelBorder();
             // select following activity in the list only when all rows are removed
             panel.selectActivity();
         }

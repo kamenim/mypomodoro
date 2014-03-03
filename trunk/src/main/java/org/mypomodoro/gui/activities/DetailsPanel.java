@@ -3,7 +3,6 @@ package org.mypomodoro.gui.activities;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
@@ -36,7 +35,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new DeleteButton(Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), activitiesPanel), gbc);
+        add(new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), activitiesPanel), gbc);
     }
 
     private void addInformationArea(ActivitiesPanel activitiesPanel) {

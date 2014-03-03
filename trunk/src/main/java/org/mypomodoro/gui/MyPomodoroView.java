@@ -47,9 +47,8 @@ public class MyPomodoroView extends JFrame {
     }
 
     /*public ManagerPanel getGeneratePanel() {
-        return managerPanel;
-    }*/
-
+     return managerPanel;
+     }*/
     public ActivitiesPanel getActivityListPanel() {
         return activityListPanel;
     }

@@ -440,7 +440,7 @@ public class Activity {
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
     }
-    
+
     public void databaseDelete() {
         ActivitiesDAO.getInstance().delete(this);
         // update lists

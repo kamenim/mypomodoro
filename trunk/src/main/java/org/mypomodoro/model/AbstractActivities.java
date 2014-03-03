@@ -57,7 +57,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             }
         }
     }
-       
+
     public void removeAll() {
         activities.clear();
     }
@@ -96,5 +96,5 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             storyPoints += it.next().getStoryPoints();
         }
         return storyPoints;
-    }            
+    }
 }

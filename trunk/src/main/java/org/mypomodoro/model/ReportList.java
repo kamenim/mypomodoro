@@ -34,15 +34,21 @@ public class ReportList extends AbstractActivities {
     public static int getListSize() {
         return getList().size();
     }
-    
+
     @Override
     public void remove(Activity activity) {
         activities.remove(activity);
         activity.databaseDelete();
     }
-    
+
+    @Override
+    public void removeAll() {
+        activities.clear();
+        ActivitiesDAO.getInstance().removeAllReports();
+    }
+
     // move from Report list to Activity list
-    public void reopen(Activity activity) {        
+    public void reopen(Activity activity) {
         ActivityList.getList().add(activity); // this sets the priority to -1 and non conplete and updates the database
         activities.remove(activity);
     }

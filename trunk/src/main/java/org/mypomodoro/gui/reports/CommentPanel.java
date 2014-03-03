@@ -67,7 +67,7 @@ public class CommentPanel extends ActivityInformationPanel {
         // NO template for user stories and epics here (see other CommentPanel classes)        
         textMap.put("comment", activity.getNotes());
     }
-    
+
     @Override
     public boolean isMultipleSelectionAllowed() {
         return false;

@@ -20,7 +20,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.mypomodoro.gui.ActivityInformationListListener;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.AbstractActivities;
@@ -74,8 +73,7 @@ public class ListPanel extends ActivityInformationPanel {
         internalActivitiesList.setFixedCellWidth(CELL_WIDTH);
         update();
         add(new JScrollPane(internalActivitiesList), c);
-        internalActivitiesList.addListSelectionListener(new ActivityInformationListListener(
-                this));
+
     }
 
     protected void addInformationArea() {
