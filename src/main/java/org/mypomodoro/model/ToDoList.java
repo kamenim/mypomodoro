@@ -1,7 +1,6 @@
 package org.mypomodoro.model;
 
 import java.util.Date;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -39,24 +38,23 @@ public class ToDoList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
-        act.setPriority(size());
+        act.setPriority(size() + 1); // starting the priority at 1 (not 0)
         act.setIsCompleted(false);
         act.databaseUpdate();
         super.add(act);
     }
 
-    @Override
-    public void remove(Activity a) {
-        activities.remove(a);
-        a.setPriority(-1);
-        a.databaseUpdate();
-    }
-
-    public void update() {
-        Main.updateLists();
-        Main.updateView();
-    }
-
+    /*@Override
+     public void remove(Activity a) {
+     activities.remove(a);
+     a.setPriority(-1);
+     a.databaseUpdate();
+     reorder();
+     }*/
+    /*public void update() {
+     Main.updateLists();
+     Main.updateView();
+     }*/
     public void complete(Activity a) {
         a.setIsCompleted(true);
         a.setDate(new Date());
@@ -78,6 +76,17 @@ public class ToDoList extends AbstractActivities {
     public void move(Activity act) {
         ActivityList.getList().add(act); // this sets the priority and update the database
         activities.remove(act);
+    }
+
+    // set new priorities
+    public void reorderByPriority() {
+        sortByPriority();
+        int increment = 1;
+        for (Activity activity : activities) {
+            activity.setPriority(increment);
+            activity.databaseUpdate();
+            increment++;
+        }
     }
 
     /**

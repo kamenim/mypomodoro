@@ -26,7 +26,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addDeleteButton(activitiesPanel);
-        addInformationArea(activitiesPanel);
+        addInformationArea();
         addMoveButton(activitiesPanel);
     }
 
@@ -38,7 +38,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         add(new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), activitiesPanel), gbc);
     }
 
-    private void addInformationArea(ActivitiesPanel activitiesPanel) {
+    private void addInformationArea() {
         // add the information area
         gbc.gridx = 1;
         gbc.gridy = 0;

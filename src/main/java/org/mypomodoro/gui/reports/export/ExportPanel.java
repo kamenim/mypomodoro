@@ -32,7 +32,7 @@ import javax.swing.JScrollPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.reports.ReportListPanel;
+import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
@@ -121,7 +121,7 @@ public class ExportPanel extends JPanel {
             activities = ToDoList.getListFromDB();
         } else if (component instanceof ActivitiesPanel) {
             activities = ActivityList.getListFromDB();
-        } else if (component instanceof ReportListPanel) {
+        } else if (component instanceof ReportsPanel) {
             activities = ReportList.getListFromDB();
         }
         if (activities.size() > 0) {

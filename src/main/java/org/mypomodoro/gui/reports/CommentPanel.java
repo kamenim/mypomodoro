@@ -23,7 +23,7 @@ public class CommentPanel extends ActivityInformationPanel {
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CommentPanel(ReportListPanel panel) {
+    public CommentPanel(ReportsPanel panel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
@@ -31,7 +31,7 @@ public class CommentPanel extends ActivityInformationPanel {
         addSaveButton(panel);
     }
 
-    private void addSaveButton(final ReportListPanel panel) {
+    private void addSaveButton(final ReportsPanel panel) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;

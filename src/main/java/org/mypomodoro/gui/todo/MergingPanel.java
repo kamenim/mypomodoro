@@ -14,7 +14,6 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -24,9 +23,8 @@ import org.mypomodoro.util.Labels;
 public class MergingPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
-    private MergingActivityInputForm mergingInputFormPanel;
+    private ActivityInputForm mergingInputFormPanel;
     private final ToDoPanel panel;
-    private List<Activity> selectedToDos;
 
     public MergingPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
@@ -41,14 +39,12 @@ public class MergingPanel extends CreatePanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        mergingInputFormPanel = new MergingActivityInputForm();
+        mergingInputFormPanel = new ActivityInputForm();
         mergingInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                if (mergingInputFormPanel.getToDosListTextArea().getText().length() != 0) {
-                    enableSaveButton();
-                }
+                enableSaveButton();
             }
 
             @Override
@@ -60,32 +56,7 @@ public class MergingPanel extends CreatePanel {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if (mergingInputFormPanel.getToDosListTextArea().getText().length() != 0) {
-                    enableSaveButton();
-                }
-            }
-        });
-        mergingInputFormPanel.getToDosListTextArea().getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                if (mergingInputFormPanel.getNameField().getText().length() != 0) {
-                    enableSaveButton();
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                if (mergingInputFormPanel.getToDosListTextArea().getText().length() == 0) {
-                    disableSaveButton();
-                }
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                if (mergingInputFormPanel.getNameField().getText().length() != 0) {
-                    enableSaveButton();
-                }
+                enableSaveButton();
             }
         });
         add(new JScrollPane(mergingInputFormPanel), gbc);
@@ -96,7 +67,6 @@ public class MergingPanel extends CreatePanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        //gbc.fill = GridBagConstraints.NONE;
         disableSaveButton();
         add(saveButton, gbc);
     }
@@ -123,8 +93,7 @@ public class MergingPanel extends CreatePanel {
                 row = row - increment;
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedToDo = panel.getActivityById(id);
-                if ((panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId())
-                        || selectedToDo.isFinished()) {
+                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                     continue;
                 }
                 // aggregate comments
@@ -160,8 +129,6 @@ public class MergingPanel extends CreatePanel {
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);
-            selectedToDos = null;
-            mergingInputFormPanel.setToDoListTextArea("");
             super.validActivityAction(newActivity); // validation and clear form
         }
         JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -183,8 +150,6 @@ public class MergingPanel extends CreatePanel {
 
     @Override
     public void clearForm() {
-        selectedToDos = null;
-        mergingInputFormPanel.setToDoListTextArea("");
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
         if (ControlPanel.preferences.getAgileMode()) {
@@ -196,10 +161,5 @@ public class MergingPanel extends CreatePanel {
         mergingInputFormPanel.setAuthorField("");
         mergingInputFormPanel.setPlaceField("");
         mergingInputFormPanel.setDate(new Date());
-    }
-
-    public void displaySelectedToDos(List<Activity> selectedToDos) {
-        this.selectedToDos = selectedToDos;
-        mergingInputFormPanel.displaySelectedToDos(selectedToDos);
     }
 }

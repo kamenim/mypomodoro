@@ -14,11 +14,11 @@ import org.mypomodoro.util.Labels;
  * Delete button
  *
  */
-public class CompleteButton extends AbstractPomodoroButton {
+public class CompleteToDoButton extends AbstractPomodoroButton {
 
     private static final long serialVersionUID = 20110814L;
 
-    public CompleteButton(final String title, final String message, final ToDoPanel panel) {
+    public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
         super(Labels.getString("ToDoListPanel.Complete"));
         addActionListener(new ActionListener() {
 
@@ -30,7 +30,7 @@ public class CompleteButton extends AbstractPomodoroButton {
                     if (reply == JOptionPane.YES_OPTION) {
                         if (rows.length == panel.getTable().getRowCount()) { // complete all at once                        
                             panel.completeAll();
-                            panel.refresh();
+                            panel.refresh(); // ???
                         } else {
                             int increment = 0;
                             for (int row : rows) {
@@ -45,6 +45,13 @@ public class CompleteButton extends AbstractPomodoroButton {
                                 // removing a row requires decreasing  the row index number
                                 panel.removeRow(row);
                                 increment++;
+                            }
+                            // reorder                            
+                            panel.reorderByPriority();
+                            for (int row = 0; row < panel.getTable().getModel().getRowCount(); row++) {
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity activity = panel.getActivityById(id);
+                                panel.getTable().getModel().setValueAt(activity.getPriority(), panel.getTable().convertRowIndexToModel(row), 0); // priority column index = 0
                             }
                             // select following activity in the list only when all rows are removed
                             panel.selectActivity();

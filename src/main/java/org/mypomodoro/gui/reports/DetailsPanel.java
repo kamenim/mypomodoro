@@ -2,7 +2,6 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
@@ -24,7 +23,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public DetailsPanel(ReportListPanel reportsPanel) {
+    public DetailsPanel(ReportsPanel reportsPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
@@ -33,7 +32,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         addDeleteButton(reportsPanel);
     }
 
-    private void addReopenButton(ReportListPanel reportsPanel) {
+    private void addReopenButton(ReportsPanel reportsPanel) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -54,7 +53,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         add(new JScrollPane(informationArea), gbc);
     }
 
-    private void addDeleteButton(ReportListPanel reportsPanel) {
+    private void addDeleteButton(ReportsPanel reportsPanel) {
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;

@@ -1,5 +1,7 @@
 package org.mypomodoro.model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -36,6 +38,18 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     @Override
     public Iterator<Activity> iterator() {
         return activities.iterator();
+    }
+
+    public void sortByPriority() {
+        Collections.sort(activities, new Comparator<Activity>() {
+
+            @Override
+            public int compare(Activity a1, Activity a2) {
+                Integer p1 = (Integer) a1.getPriority();
+                Integer p2 = (Integer) a2.getPriority();
+                return p1.compareTo(p2);
+            }
+        });
     }
 
     public Activity getById(int id) {

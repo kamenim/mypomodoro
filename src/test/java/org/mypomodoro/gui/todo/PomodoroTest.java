@@ -10,7 +10,7 @@ import org.junit.Test;
 public class PomodoroTest {
 
     private String beginingText;
-    private Pomodoro pomodoro;
+    //private Pomodoro pomodoro;
     private JLabel label;
 	
 
