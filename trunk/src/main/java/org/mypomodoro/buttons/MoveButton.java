@@ -78,9 +78,9 @@ public class MoveButton extends AbstractPomodoroButton {
                 // removing a row requires decreasing  the row index number
                 panel.removeRow(row);
                 increment++;
+                // Refresh panel border
+                panel.setPanelBorder();
             }
-            // Refresh panel border
-            panel.setPanelBorder();
             // select following activity in the list only when all rows are removed
             panel.selectActivity();
         }

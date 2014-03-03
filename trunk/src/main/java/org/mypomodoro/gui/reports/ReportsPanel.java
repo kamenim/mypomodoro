@@ -49,7 +49,7 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  * GUI for viewing the Report List.
  *
  */
-public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
+public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
@@ -75,7 +75,7 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
     private final DetailsPanel informationArea = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
 
-    public ReportListPanel() {
+    public ReportsPanel() {
         setLayout(new GridBagLayout());
         table = new JTable(activitiesTableModel) {
 
@@ -212,6 +212,12 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
         });
         // select first activity
         selectActivity();
+        // diactivate/gray out all tabs
+        if (ReportList.getListSize() == 0) {
+            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                controlPane.setEnabledAt(index, false);
+            }
+        }
         // Refresh panel border
         setPanelBorder();
 
@@ -249,7 +255,7 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         int[] rows = table.getSelectedRows();
                         if (rows.length > 1) { // multiple selection
-                            // diactivate/grey out unused tabs
+                            // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
                             controlPane.setEnabledAt(2, false); // comment 
                             if (controlPane.getSelectedIndex() == 1
@@ -257,13 +263,12 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
                         } else if (rows.length == 1) {
-                            // activate panels
-                            controlPane.setEnabledAt(1, true); // edit
-                            controlPane.setEnabledAt(2, true); // comment
-
+                            // activate all panels
+                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                controlPane.setEnabledAt(index, true);
+                            }
                             selectedReportId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
                             selectedRowIndex = rows[0];
-
                         }
                     }
                 });
@@ -380,6 +385,12 @@ public class ReportListPanel extends JPanel implements AbstractActivitiesPanel {
                     // update info
                     informationArea.selectInfo(act);
                     informationArea.showInfo();
+                }
+                // diactivate/gray out all tabs
+                if (ReportList.getListSize() == 0) {
+                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                        controlPane.setEnabledAt(index, false);
+                    }
                 }
             }
         });

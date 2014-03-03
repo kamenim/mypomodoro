@@ -205,11 +205,19 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
+                } catch (IndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
                 }
             }
         });
         // select first activity
         selectActivity();
+        // diactivate/gray out all tabs
+        if (ActivityList.getListSize() == 0) {
+            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                controlPane.setEnabledAt(index, false);
+            }
+        }
         // Refresh panel border
         setPanelBorder();
 
@@ -245,7 +253,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         int[] rows = table.getSelectedRows();
                         if (rows.length > 1) { // multiple selection
-                            // diactivate/grey out unused tabs
+                            // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
                             controlPane.setEnabledAt(2, false); // comment
                             if (controlPane.getSelectedIndex() == 1
@@ -253,10 +261,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
                         } else if (rows.length == 1) {
-                            // activate panels
-                            controlPane.setEnabledAt(1, true); // edit
-                            controlPane.setEnabledAt(2, true); // comment
-
+                            // activate all panels
+                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                controlPane.setEnabledAt(index, true);
+                            }
                             selectedActivityId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
                             selectedRowIndex = rows[0];
                         }
@@ -385,6 +393,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     // update info
                     detailsPanel.selectInfo(act);
                     detailsPanel.showInfo();
+                }
+                // diactivate/gray out all tabs
+                if (ActivityList.getListSize() == 0) {
+                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                        controlPane.setEnabledAt(index, false);
+                    }
                 }
             }
         });

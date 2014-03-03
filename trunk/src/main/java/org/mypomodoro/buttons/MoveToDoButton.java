@@ -12,12 +12,12 @@ import org.mypomodoro.model.Activity;
  * Move button
  *
  */
-public class ToDoMoveButton extends AbstractPomodoroButton {
+public class MoveToDoButton extends AbstractPomodoroButton {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
-    public ToDoMoveButton(String label, final ToDoPanel panel) {
+    public MoveToDoButton(String label, final ToDoPanel panel) {
         super(label);
         setMinimumSize(BUTTON_SIZE);
         setPreferredSize(BUTTON_SIZE);
@@ -33,7 +33,6 @@ public class ToDoMoveButton extends AbstractPomodoroButton {
     public void move(final ToDoPanel panel) {
         int[] rows = panel.getTable().getSelectedRows();
         if (rows.length > 0) {
-            boolean agreed = false;
             int increment = 0;
             for (int row : rows) {
                 row = row - increment;
@@ -52,6 +51,13 @@ public class ToDoMoveButton extends AbstractPomodoroButton {
             }
             // Refresh panel border
             panel.setPanelBorder();
+            // reorder                            
+            panel.reorderByPriority();
+            for (int row = 0; row < panel.getTable().getModel().getRowCount(); row++) {
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                Activity activity = panel.getActivityById(id);
+                panel.getTable().getModel().setValueAt(activity.getPriority(), panel.getTable().convertRowIndexToModel(row), 0); // priority column index = 0
+            }
             // select following activity in the list only when all rows are removed
             panel.selectActivity();
         }

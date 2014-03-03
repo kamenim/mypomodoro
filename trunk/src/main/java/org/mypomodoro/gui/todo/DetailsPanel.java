@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
-import org.mypomodoro.buttons.CompleteButton;
-import org.mypomodoro.buttons.ToDoMoveButton;
+import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -41,7 +41,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        ToDoMoveButton moveButton = new ToDoMoveButton("<<<", todoPanel);
+        MoveToDoButton moveButton = new MoveToDoButton("<<<", todoPanel);
         moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
         add(moveButton, gbc);
     }
@@ -94,7 +94,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        add(new CompleteButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), todoPanel), gbc);
+        add(new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), todoPanel), gbc);
     }
 
     @Override
