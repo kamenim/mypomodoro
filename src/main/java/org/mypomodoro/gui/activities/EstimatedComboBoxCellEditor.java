@@ -21,7 +21,7 @@ class EstimatedComboBoxCellEditor extends ComboBoxCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
         // overestimated
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);        
+        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
         int overestimatedpoms = ActivityList.getList().getById(id).getOverestimatedPoms();
         label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
         return this;

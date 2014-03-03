@@ -27,12 +27,12 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     public DetailsPanel(ReportListPanel reportsPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        
+
         addReopenButton(reportsPanel);
         addInformationArea();
         addDeleteButton(reportsPanel);
     }
-    
+
     private void addReopenButton(ReportListPanel reportsPanel) {
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -59,7 +59,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new DeleteButton(Labels.getString("ActivityListPanel.Are you sure to delete those reports?"), reportsPanel), gbc);
+        add(new DeleteButton(Labels.getString("ReportListPanel.Delete report"), Labels.getString("ActivityListPanel.Are you sure to delete those reports?"), reportsPanel), gbc);
     }
 
     @Override

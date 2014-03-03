@@ -22,6 +22,7 @@ import javax.swing.border.LineBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TimeMinusButton;
 import org.mypomodoro.buttons.TimePlusButton;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -112,13 +113,14 @@ public class TimerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (pomodoro.getCurrentToDo() != null) {
+                Activity currentToDo = pomodoro.getCurrentToDo();
+                if (currentToDo != null) {
                     if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
-                        if (pomodoro.getCurrentToDo().isFinished()) {
+                        if (currentToDo.isFinished()) {
                             String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
                             message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                             JOptionPane.showMessageDialog(Main.gui, message);
-                        } else {
+                        } else if (currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms() != 0) {
                             pomodoro.start();
                             startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                             startButton.setForeground(ColorUtil.RED);

@@ -42,13 +42,19 @@ public class ActivityList extends AbstractActivities {
         act.databaseUpdate();
         super.add(act);
     }
-    
+
     @Override
     public void remove(Activity activity) {
         activities.remove(activity);
         activity.databaseDelete();
     }
-    
+
+    @Override
+    public void removeAll() {
+        activities.clear();
+        ActivitiesDAO.getInstance().removeAllActivities();
+    }
+
     // move from Activity list to ToDo list
     public void move(Activity activity) {
         ToDoList.getList().add(activity); // this sets the priority and update the database

@@ -61,7 +61,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private JTable table;
     private static final String[] columnNames = {"U",
-        Labels.getString("Common.Date"), 
+        Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
         Labels.getString("Common.Estimated"),
@@ -75,6 +75,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
+    private final JTabbedPane controlPane = new JTabbedPane();
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -195,11 +196,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     int rowIndex = table.rowAtPoint(p);
                     int columnIndex = table.columnAtPoint(p);
                     if (columnIndex == ID_KEY - 6 || columnIndex == ID_KEY - 5) {
-                        String value = String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex));
+                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
                     } else if (columnIndex == ID_KEY - 4) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(rowIndex, columnIndex))));
+                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
@@ -242,10 +243,22 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        int row = table.getSelectedRow();
-                        if (row > -1) {
-                            selectedActivityId = (Integer) table.getModel().getValueAt(row, ID_KEY); // ID
-                            selectedRowIndex = row;
+                        int[] rows = table.getSelectedRows();
+                        if (rows.length > 1) { // multiple selection
+                            // diactivate/grey out unused tabs
+                            controlPane.setEnabledAt(1, false); // edit
+                            controlPane.setEnabledAt(2, false); // comment
+                            if (controlPane.getSelectedIndex() == 1
+                            || controlPane.getSelectedIndex() == 2) {
+                                controlPane.setSelectedIndex(0); // switch to details panel
+                            }
+                        } else if (rows.length == 1) {
+                            // activate panels
+                            controlPane.setEnabledAt(1, true); // edit
+                            controlPane.setEnabledAt(2, true); // comment
+
+                            selectedActivityId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
+                            selectedRowIndex = rows[0];
                         }
                     }
                 });
@@ -256,11 +269,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane controlPane = new JTabbedPane();
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        EditPanel editPanel = new EditPanel();
+        EditPanel editPanel = new EditPanel(this);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(true);
@@ -407,7 +419,22 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void delete(Activity activity) {
-        ActivityList.getList().remove(activity);        
+        ActivityList.getList().remove(activity);
+    }
+
+    @Override
+    public void deleteAll() {
+        ActivityList.getList().removeAll();
+    }
+
+    @Override
+    public void complete(Activity activity) {
+        // no use
+    }
+
+    @Override
+    public void completeAll() {
+        // no use
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
@@ -428,6 +455,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                         table, commentPanel, ID_KEY));
     }
 
+    @Override
     public void refresh() {
         try {
             activitiesTableModel = getTableModel();
@@ -469,8 +497,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void saveComment(String comment) {
         int row = table.getSelectedRow();
         if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(
-                    table.convertRowIndexToModel(row), ID_KEY);
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity selectedActivity = ActivityList.getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);

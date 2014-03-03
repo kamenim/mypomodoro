@@ -99,7 +99,7 @@ public class FileMenu extends JMenu {
                 String title = Labels.getString("FileMenu.Exit myPomodoro");
                 String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
                 int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                        title, JOptionPane.YES_NO_OPTION);
+                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (reply == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }

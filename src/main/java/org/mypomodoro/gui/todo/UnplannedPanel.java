@@ -1,6 +1,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.Date;
 
 import javax.swing.JLabel;
@@ -30,7 +31,7 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        unplannedInputFormPanel.setEstimatedPomodoro(1);        
+        unplannedInputFormPanel.setEstimatedPomodoro(1);
         addToDoIconPanel();
     }
 
@@ -41,7 +42,9 @@ public class UnplannedPanel extends CreatePanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 3, 0, 0); // margin left
         add(iconLabel, gbc);
+        gbc.insets = new Insets(0, 0, 0, 0);
     }
 
     @Override

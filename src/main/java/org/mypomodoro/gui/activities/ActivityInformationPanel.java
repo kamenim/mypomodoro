@@ -21,7 +21,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
     protected final JTextArea informationArea = new JTextArea();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
     protected StringBuilder info = new StringBuilder();
-    
+
     public ActivityInformationPanel() {
         informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin
     }
@@ -58,7 +58,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         // disable auto scrolling
         informationArea.setCaretPosition(0);
     }
-    
+
     @Override
     public void showInfo(String newInfo) {
         informationArea.setText(newInfo);
@@ -80,7 +80,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         }
         return text;
     }
-    
+
     public boolean isMultipleSelectionAllowed() {
         return true;
     }

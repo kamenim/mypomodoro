@@ -27,7 +27,7 @@ public class ManagerPanel extends JPanel {
         } else {
             activityList = ActivityList.getList();
             activitiesPane = new ActivitiesPanel(activityList);
-        }        
+        }
         todoPane = new ToDoPanel(toDoList);
 
         activitiesPane.addListMouseListener(new ListMoverMouseListener(

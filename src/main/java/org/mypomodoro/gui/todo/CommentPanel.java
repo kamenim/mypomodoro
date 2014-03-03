@@ -2,6 +2,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,7 +24,7 @@ import org.mypomodoro.util.Labels;
 public class CommentPanel extends ActivityInformationPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);    
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public CommentPanel(ToDoPanel todoPanel) {
@@ -60,7 +61,9 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 3, 0, 0); // margin left
         add(iconLabel, gbc);
+        gbc.insets = new Insets(0, 0, 0, 0);
     }
 
     private void addCommentArea() {
@@ -99,6 +102,11 @@ public class CommentPanel extends ActivityInformationPanel {
         } else {
             textMap.put("comment", activity.getNotes());
         }
+    }
+
+    @Override
+    public boolean isMultipleSelectionAllowed() {
+        return false;
     }
 
     public JLabel getIconLabel() {

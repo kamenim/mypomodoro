@@ -15,7 +15,7 @@ public class PomodorosRemainingLabel {
     static public void showRemainPomodoros(JLabel remainPomodorosLabel) {
         String label = "";
         int remainingPomodoros = 0;
-        for (Activity toDo : ToDoList.getList()) {            
+        for (Activity toDo : ToDoList.getList()) {
             int Pomodoros = toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             if (Pomodoros > 0) {
                 remainingPomodoros += Pomodoros;

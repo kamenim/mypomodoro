@@ -88,7 +88,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void delete(Activity activity) {
         try {
             database.lock();
@@ -124,7 +124,7 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-    
+
     public Iterable<Activity> getActivitiesByIteration(int iteration) {
         List<Activity> activities = new ArrayList<Activity>();
         try {
@@ -201,19 +201,18 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activities;
-    }       
+    }
 
     /*public void removeById(int id) {
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update("DELETE FROM activities WHERE id=" + id + ";");
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }*/
-
+     try {
+     database.lock();
+     database.update("begin;");
+     database.update("DELETE FROM activities WHERE id=" + id + ";");
+     } finally {
+     database.update("Commit;");
+     database.unlock();
+     }
+     }*/
     public Activity getActivityByNameAndDate(Activity newActivity) {
         Activity activity = null;
         try {
