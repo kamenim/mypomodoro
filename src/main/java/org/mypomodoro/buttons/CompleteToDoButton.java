@@ -28,9 +28,9 @@ public class CompleteToDoButton extends AbstractPomodoroButton {
                 if (rows.length > 0) {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (reply == JOptionPane.YES_OPTION) {
-                        if (rows.length == panel.getTable().getRowCount()) { // complete all at once                        
+                        if (!panel.getPomodoro().inPomodoro() && rows.length == panel.getTable().getRowCount()) { // complete all at once                       
                             panel.completeAll();
-                            panel.refresh(); // ???
+                            panel.refresh();
                         } else {
                             int increment = 0;
                             for (int row : rows) {

@@ -56,7 +56,7 @@ public class Pomodoro {
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
     private TimerPanel timerPanel;
-    private int currentToDoId;
+    private int currentToDoId = -1;
     private long time = pomodoroLength;
     private boolean inpomodoro = false;
     private Clip clip;
@@ -70,6 +70,8 @@ public class Pomodoro {
     }
 
     public void start() {
+        int row = panel.getTable().getSelectedRow();
+        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         pomodoroTimer.start();
         if (ControlPanel.preferences.getTicking() && !isMute) {
             tick();
@@ -85,6 +87,7 @@ public class Pomodoro {
     }
 
     public void stop() {
+        currentToDoId = -1;
         pomodoroTimer.stop();
         time = pomodoroLength;
         tmpPomodoroLength = pomodoroLength;
@@ -183,7 +186,6 @@ public class Pomodoro {
                         goInPomodoro();
                     }
                 }
-                panel.refresh();
             }
         }
 
@@ -286,9 +288,9 @@ public class Pomodoro {
         }
     }
 
-    public void setCurrentToDoId(int id) {
+    /*public void setCurrentToDoId(int id) {
         currentToDoId = id;
-    }
+    }*/
 
     public Activity getCurrentToDo() {
         return ToDoList.getList().getById(currentToDoId);

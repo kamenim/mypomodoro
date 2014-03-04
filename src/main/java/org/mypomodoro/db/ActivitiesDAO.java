@@ -287,6 +287,20 @@ public class ActivitiesDAO {
         }
         return activity;
     }
+    
+    public void moveAllTODOs() {
+        String updateSQL = "UPDATE activities SET "
+                + "priority = -1"
+                + " WHERE priority > -1 AND is_complete = 'false';";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+        } finally {
+            database.update("Commit;");
+            database.unlock();
+        }
+    }
 
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "

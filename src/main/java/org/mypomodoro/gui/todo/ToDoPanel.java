@@ -77,39 +77,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(this);
-    //private final ToDoJList toDoJList = new ToDoJList(toDoList, pomodoro);
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
 
     public ToDoPanel() {
         setLayout(new GridBagLayout());
 
-        /*toDoJList.addListSelectionListener(new ListSelectionListener() {
-
-         @Override
-         public void valueChanged(ListSelectionEvent e) {
-         JList list = (JList) e.getSource();
-         Activity selectedToDo = (Activity) list.getSelectedValue();
-         if (selectedToDo != null) {
-         if (!pomodoro.inPomodoro()) {
-         pomodoro.setCurrentToDo(selectedToDo);
-         }
-         toDoJList.setSelectedRowIndex(selectedToDo.getId());
-         } else if (toDoList.isEmpty()) { // empty list
-         refreshIconLabels();
-         unplannedPanel.clearForm();
-         if (pomodoro.inPomodoro()) { // completed or moved to
-         // Activity List
-         pomodoro.stop();
-         pomodoro.getTimerPanel().setStart();
-         }
-         pomodoro.setCurrentToDo(null);
-         // refresh remaining Pomodoros label
-         PomodorosRemainingLabel.showRemainPomodoros(
-         pomodorosRemainingLabel, toDoList);
-         }
-         }
-         });*/
         table = new JTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -211,6 +184,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 controlPane.setEnabledAt(index, false);
             }
         }
+
         // Refresh panel border
         setPanelBorder();
     }
@@ -278,14 +252,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
                             selectedActivityId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
                             selectedRowIndex = rows[0];
-
-                            // Manage pomodoro timer
-                            Activity selectedToDo = getActivityById(selectedActivityId);
-                            if (selectedToDo != null) {
-                                if (!pomodoro.inPomodoro()) {
-                                    pomodoro.setCurrentToDoId(selectedToDo.getId());
-                                }
-                            }
                         }
                     }
                 });
@@ -348,7 +314,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         showIconList();
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
-        //showSelectedMergeList(mergingPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
@@ -409,42 +374,27 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     if (column == ID_KEY - 4 && data.toString().length() > 0) { // Title (can't be empty)
                         act.setName(data.toString());
                         act.databaseUpdate();
+                        ToDoList.getList().update(act);
                     }
-                    ToDoList.getList().update(act);
-                    // Refresh panel border
-                    //setPanelBorder();
-                    // update info
-                    //detailsPane.selectInfo(act);
-                    //detailsPane.showInfo();
                 }
-                // diactivate/gray out all tabs
                 if (ToDoList.getListSize() == 0) {
+                    // diactivate/gray out all tabs
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
                         controlPane.setEnabledAt(index, false);
                     }
+
+                    pomodoro.getTimerPanel().setStartColor(ColorUtil.BLACK);
+
+                    if (pomodoro.getTimer().isRunning()) { // when completing or moving the whole list                        
+                        pomodoro.stop();
+                        pomodoro.getTimerPanel().setStart();
+                    }
+                    //pomodoro.setCurrentToDoId(-1);                    
                 }
-
-
-                /*if (ToDoList.getList().isEmpty()) { // empty list
-                 // diactivate/gray out panels
-                 for (Component component : controlPane.getComponents()) {
-                 component.setEnabled(false);
-                 }
-
-                 // disable start button
-                 pomodoro.getTimerPanel().setStartColor(ColorUtil.GREEN);                            
-                            
-                 refreshIconLabels();
-                 unplannedPanel.clearForm();
-                 if (pomodoro.inPomodoro()) { // when completing or moving the whole list
-                 // Activity List
-                 pomodoro.stop();
-                 pomodoro.getTimerPanel().setStart();
-                 }
-                 pomodoro.setCurrentToDo(null);
-                 // refresh remaining Pomodoros label
-                 PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
-                 }*/
+                // refresh icon label
+                refreshIconLabels();
+                // refresh remaining Pomodoros label
+                PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
             }
         });
         return tableModel;
@@ -466,9 +416,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
     }
 
-    @Override
-    public void move(Activity activity) {
-        ToDoList.getList().move(activity);
+    public void removeAllRows(int rowIndex) {
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
     }
 
     @Override
@@ -478,7 +427,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void delete(Activity activity) {
-        ToDoList.getList().remove(activity);
+        ToDoList.getList().delete(activity);
     }
 
     @Override
@@ -487,9 +436,28 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     @Override
+    public void move(Activity activity) {
+        ToDoList.getList().move(activity);
+        if (ToDoList.getList().isEmpty()
+                && pomodoro.getTimer().isRunning()) {
+            pomodoro.stop();
+            pomodoro.getTimerPanel().setStart();
+        }
+    }
+
+    public void moveAll() {
+        ToDoList.getList().moveAll();
+        if (pomodoro.getTimer().isRunning()) {
+            pomodoro.stop();
+            pomodoro.getTimerPanel().setStart();
+        }
+    }
+
+    @Override
     public void complete(Activity activity) {
         ToDoList.getList().complete(activity);
-        if (ToDoList.getList().isEmpty()) {
+        if (ToDoList.getList().isEmpty()
+                && pomodoro.getTimer().isRunning()) {
             pomodoro.stop();
             pomodoro.getTimerPanel().setStart();
         }
@@ -498,8 +466,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     @Override
     public void completeAll() {
         ToDoList.getList().completeAll();
-        pomodoro.stop();
-        pomodoro.getTimerPanel().setStart();
+        if (pomodoro.getTimer().isRunning()) {
+            pomodoro.stop();
+            pomodoro.getTimerPanel().setStart();
+        }
     }
 
     public void reorderByPriority() {
@@ -522,12 +492,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         table, commentPanel, ID_KEY));
     }
 
-    /*private void showSelectedMergeList(MergingPanel mergingPanel) {
-     table.getSelectionModel().addListSelectionListener(
-     new ToDoMergingListListener(ToDoList.getList(), table,
-     mergingPanel, ID_KEY, pomodoro));
-     }*/
-    //new ToDoMergingListListener(mergingPanel, pomodoro)
     @Override
     public void refresh() {
         try {
@@ -637,18 +601,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     public void saveComment(String comment) {
-        int row = table.getSelectedRow();
-        if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+        if (table.getSelectedRowCount() == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
             Activity selectedActivity = ToDoList.getList().getById(id);
-            if (selectedActivity != null) {
-                selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdate();
-                String title = Labels.getString("Common.Add comment");
-                String message = Labels.getString("Common.Comment saved");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            }
+            selectedActivity.setNotes(comment);
+            selectedActivity.databaseUpdate();
+            String title = Labels.getString("Common.Add comment");
+            String message = Labels.getString("Common.Comment saved");
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -688,8 +649,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     public void refreshIconLabels() {
-        int[] rows = table.getSelectedRows();
-        if (rows.length > 0) {
+        if (table.getSelectedRowCount() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED);
@@ -698,8 +658,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
             }
-            if (rows.length == 1) { // one selected only
-                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY);
+            if (table.getSelectedRowCount() == 1) { // one selected only                
+                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
@@ -723,7 +683,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     }
                 }
-            } else { // empty list or multiple selection
+            } else { // multiple selection
                 if (!pomodoro.getTimer().isRunning()) {
                     ToDoIconLabel.clearIconLabel(iconLabel);
                     ToDoIconLabel.clearIconLabel(unplannedPanel.getIconLabel());
@@ -732,6 +692,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
                 ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
             }
+        } else { // empty list
+            ToDoIconLabel.clearIconLabel(iconLabel);
+            ToDoIconLabel.clearIconLabel(unplannedPanel.getIconLabel());
+            ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
+            ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
+            ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
         }
     }
 
