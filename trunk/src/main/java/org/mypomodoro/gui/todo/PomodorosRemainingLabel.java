@@ -13,18 +13,15 @@ import static org.mypomodoro.util.TimeConverter.getLength;
 public class PomodorosRemainingLabel {
 
     static public void showRemainPomodoros(JLabel remainPomodorosLabel) {
-        String label = "";
-        int remainingPomodoros = 0;
-        for (Activity toDo : ToDoList.getList()) {
-            int Pomodoros = toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
-            if (Pomodoros > 0) {
-                remainingPomodoros += Pomodoros;
+        String label = "  "; // margin (spaces)
+        if (ToDoList.getListSize() > 0) {
+            int remainingPomodoros = 0;
+            for (Activity toDo : ToDoList.getList()) {
+                remainingPomodoros += toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             }
-        }
-        if (ToDoList.getListSize() != 0) {
-            label = Labels.getString("ToDoListPanel.{0} pomodoros remaining ({1})",
+            label += Labels.getString("ToDoListPanel.{0} pomodoros remaining ({1})",
                     remainingPomodoros, getLength(remainingPomodoros));
         }
-        remainPomodorosLabel.setText("  " + label);
+        remainPomodorosLabel.setText(label);
     }
 }

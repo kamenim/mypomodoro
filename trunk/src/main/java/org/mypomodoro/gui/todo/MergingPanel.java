@@ -14,6 +14,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -122,8 +123,9 @@ public class MergingPanel extends CreatePanel {
         }
         if (mergingInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-            // Today unplanned merge activity
-            //panel.getToDoList().add(newActivity); ???
+            newActivity.setPriority(ToDoList.getListSize() + 1);
+            ToDoList.getList().add(newActivity);
+            ToDoList.getList().reorderByPriority();
             newActivity.databaseInsert();
             clearForm();
         } else {
@@ -132,8 +134,7 @@ public class MergingPanel extends CreatePanel {
             super.validActivityAction(newActivity); // validation and clear form
         }
         JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-        panel.refresh();
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);        
     }
 
     @Override

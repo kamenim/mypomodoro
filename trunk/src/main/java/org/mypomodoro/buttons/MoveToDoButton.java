@@ -31,23 +31,28 @@ public class MoveToDoButton extends AbstractPomodoroButton {
     }
 
     public void move(final ToDoPanel panel) {
-        int[] rows = panel.getTable().getSelectedRows();
-        if (rows.length > 0) {
-            int increment = 0;
-            for (int row : rows) {
-                row = row - increment;
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity selectedToDo = panel.getActivityById(id);
-                if (panel instanceof ToDoPanel) {
-                    // excluding current running task
-                    if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                        continue;
+        if (panel.getTable().getSelectedRowCount() > 0) {
+            if (!panel.getPomodoro().inPomodoro() && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
+                panel.moveAll();
+                panel.refresh();
+            } else {
+                int[] rows = panel.getTable().getSelectedRows();
+                int increment = 0;
+                for (int row : rows) {
+                    row = row - increment;
+                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    Activity selectedToDo = panel.getActivityById(id);
+                    if (panel instanceof ToDoPanel) {
+                        // excluding current running task
+                        if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                            continue;
+                        }
                     }
+                    panel.move(selectedToDo);
+                    // removing a row requires decreasing  the row index number
+                    panel.removeRow(row);
+                    increment++;
                 }
-                panel.move(selectedToDo);
-                // removing a row requires decreasing  the row index number
-                panel.removeRow(row);
-                increment++;
             }
             // Refresh panel border
             panel.setPanelBorder();

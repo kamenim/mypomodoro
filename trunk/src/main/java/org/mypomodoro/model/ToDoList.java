@@ -44,17 +44,29 @@ public class ToDoList extends AbstractActivities {
         super.add(act);
     }
 
-    /*@Override
-     public void remove(Activity a) {
-     activities.remove(a);
-     a.setPriority(-1);
-     a.databaseUpdate();
-     reorder();
-     }*/
-    /*public void update() {
-     Main.updateLists();
-     Main.updateView();
-     }*/
+    @Override
+    public void remove(Activity activity) {
+        activities.remove(activity);        
+    }
+        
+    public void delete(Activity activity) {        
+        activities.remove(activity);
+        activity.databaseDelete();
+    }
+    
+    public void moveAll() {
+        for (Activity activity : activities) {
+            ActivityList.getList().add(activity); // this sets the priority and update the database
+        }
+        activities.clear();
+        ActivitiesDAO.getInstance().moveAllTODOs();        
+    }
+
+    public void move(Activity act) {
+        ActivityList.getList().add(act); // this sets the priority and update the database
+        activities.remove(act);
+    }
+
     public void complete(Activity a) {
         a.setIsCompleted(true);
         a.setDate(new Date());
@@ -71,11 +83,6 @@ public class ToDoList extends AbstractActivities {
         }
         activities.clear();
         ActivitiesDAO.getInstance().completeAllTODOs();
-    }
-
-    public void move(Activity act) {
-        ActivityList.getList().add(act); // this sets the priority and update the database
-        activities.remove(act);
     }
 
     // set new priorities
