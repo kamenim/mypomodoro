@@ -22,22 +22,16 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import javax.swing.JComponent;
+import java.util.ArrayList;
 import javax.swing.JScrollPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.ControlPanel;
-import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
-import org.mypomodoro.gui.todo.ToDoPanel;
-import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.model.ReportList;
-import org.mypomodoro.model.ToDoList;
 
 /**
  * Panel to export reports
@@ -47,9 +41,8 @@ public class ExportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final ExportInputForm exportInputForm = new ExportInputForm();
-    private final GridBagConstraints gbc = new GridBagConstraints();
-    private AbstractActivities activities;
-    private final JComponent component;
+    private final GridBagConstraints gbc = new GridBagConstraints();    
+    private final AbstractActivitiesPanel panel;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString("Common.Date"),
         Labels.getString("ReportListPanel.Time"),
@@ -67,10 +60,11 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Description"),
         Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
         Labels.getString("Agile.Common.Story Points"),
-        Labels.getString("Agile.Common.Iteration")};
+        Labels.getString("Agile.Common.Iteration"),
+        Labels.getString("Common.Priority")};
 
-    public ExportPanel(JComponent component) {
-        this.component = component;
+    public ExportPanel(AbstractActivitiesPanel panel) {
+        this.panel = panel;
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -117,14 +111,14 @@ public class ExportPanel extends JPanel {
     }
 
     private void export() {
-        if (component instanceof ToDoPanel) {
-            activities = ToDoList.getListFromDB();
-        } else if (component instanceof ActivitiesPanel) {
-            activities = ActivityList.getListFromDB();
-        } else if (component instanceof ReportsPanel) {
-            activities = ReportList.getListFromDB();
-        }
-        if (activities.size() > 0) {
+        if (panel.getTable().getSelectedRowCount() > 0) {
+            ArrayList<Activity> activities = new ArrayList<Activity>();
+            int[] rows = panel.getTable().getSelectedRows();
+            for (int row : rows) {
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                Activity selectedActivity = panel.getActivityById(id);
+                activities.add(selectedActivity);
+            }
             try {
                 String fileName = exportInputForm.getFileName() + "."
                         + exportInputForm.getFileExtention();
@@ -205,7 +199,6 @@ public class ExportPanel extends JPanel {
             }
             rowNb++;
         }
-
         workbook.write(fileOut);
         fileOut.flush();
         fileOut.close();

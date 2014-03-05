@@ -15,7 +15,6 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -124,9 +123,7 @@ public class UnplannedPanel extends CreatePanel {
             if (ControlPanel.preferences.getAgileMode()) {
                 newActivity.setIteration(-1); // no specific iteration
             }
-            newActivity.setPriority(ToDoList.getListSize() + 1);
-            ToDoList.getList().add(newActivity);
-            newActivity.databaseInsert();
+            panel.addActivity(newActivity);
             clearForm();            
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");

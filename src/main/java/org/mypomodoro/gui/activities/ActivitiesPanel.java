@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JComponent;
@@ -283,7 +284,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         EditPanel editPanel = new EditPanel(this);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        ImportPanel importPanel = new ImportPanel(true);
+        ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
@@ -449,6 +450,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     @Override
     public void completeAll() {
         // no use
+    }
+    
+    @Override
+    public void addActivity(Activity activity) {
+        ActivityList.getList().add(activity);
+        activity.databaseInsert();
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {

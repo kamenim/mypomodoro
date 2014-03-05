@@ -286,7 +286,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        ImportPanel importPanel = new ImportPanel();
+        ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
@@ -442,7 +442,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     public void completeAll() {
         // no use
     }
-
+    
+    @Override
+    public void addActivity(Activity activity) {
+        ReportList.getList().add(activity);        
+        activity.databaseInsert();
+    }
+    
     private void showSelectedItemDetails(DetailsPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),

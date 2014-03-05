@@ -520,12 +520,14 @@ public class ExportInputForm extends JPanel {
             Labels.getString("ReportListPanel.Diff II"),
             Labels.getString("ToDoListPanel.Internal"),
             Labels.getString("ToDoListPanel.External"),
-            Labels.getString("Common.Type"), Labels.getString("Common.Author"),
+            Labels.getString("Common.Type"), 
+            Labels.getString("Common.Author"),
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),
             Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
             Labels.getString("Agile.Common.Story Points"),
             Labels.getString("Agile.Common.Iteration"),
+            Labels.getString("Common.Priority"),
             ""};
         private JComboBox columnsComboBox = new JComboBox();
 
@@ -556,7 +558,7 @@ public class ExportInputForm extends JPanel {
         }
 
         public static String[] toArray(Activity activity, String datePattern) {
-            String[] attributes = new String[18];
+            String[] attributes = new String[19];
             attributes[0] = activity.isUnplanned() ? "1" : "0";
             attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
             attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
@@ -575,11 +577,12 @@ public class ExportInputForm extends JPanel {
             attributes[15] = activity.getNotes();
             attributes[16] = activity.getStoryPoints() + "";
             attributes[17] = activity.getIteration() + "";
+            attributes[18] = activity.getPriority() + "";
             return attributes;
         }
 
         public static Object[] toRowArray(Activity activity) {
-            Object[] attributes = new Object[18];
+            Object[] attributes = new Object[19];
             attributes[0] = activity.isUnplanned();
             attributes[1] = activity.getDate();
             attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
@@ -598,6 +601,7 @@ public class ExportInputForm extends JPanel {
             attributes[15] = activity.getNotes();
             attributes[16] = activity.getStoryPoints();
             attributes[17] = activity.getIteration();
+            attributes[18] = activity.getPriority();
             return attributes;
         }
     }

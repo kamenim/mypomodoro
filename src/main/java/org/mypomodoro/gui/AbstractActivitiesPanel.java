@@ -28,4 +28,6 @@ public interface AbstractActivitiesPanel {
     void complete(Activity activity);
 
     void completeAll();
+    
+    void addActivity(Activity activity);
 }
