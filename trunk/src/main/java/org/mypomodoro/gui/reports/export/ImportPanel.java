@@ -26,6 +26,9 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -38,20 +41,16 @@ public class ImportPanel extends JPanel {
     private static final long serialVersionUID = 20110814L;
     protected final ImportInputForm importInputForm = new ImportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private boolean importReports = true;
+    private final AbstractActivitiesPanel panel;
 
-    public ImportPanel() {
+    public ImportPanel(AbstractActivitiesPanel panel) {
+        this.panel = panel;
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addImportInputForm();
         addImportButton();
-    }
-
-    public ImportPanel(boolean importActivities) {
-        this();
-        this.importReports = !importActivities;
     }
 
     private void addImportButton() {
@@ -182,7 +181,20 @@ public class ImportPanel extends JPanel {
         Activity newReport = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
-                !line[0].equals("0"), importReports);
-        newReport.databaseInsert();
+                !line[0].equals("0"), panel instanceof ReportsPanel);
+        try {
+            newReport.setStoryPoints(Float.parseFloat(line[16]));
+            newReport.setIteration(Integer.parseInt(line[17]));
+            newReport.setPriority(Integer.parseInt(line[18]));
+        } catch (NumberFormatException e) {
+            newReport.setStoryPoints(0);
+            newReport.setIteration(-1);
+            newReport.setPriority(-1);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            newReport.setStoryPoints(0);
+            newReport.setIteration(-1);
+            newReport.setPriority(-1);
+        }
+        panel.addActivity(newReport);        
     }
 }

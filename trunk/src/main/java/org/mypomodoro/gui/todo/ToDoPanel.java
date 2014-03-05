@@ -305,7 +305,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Unplanned"), unplannedPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merging"), mergingPanel);
-        ImportPanel importPanel = new ImportPanel(true);
+        ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
@@ -470,6 +470,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             pomodoro.stop();
             pomodoro.getTimerPanel().setStart();
         }
+    }
+
+    @Override
+    public void addActivity(Activity activity) {
+        ToDoList.getList().add(activity);        
+        activity.databaseInsert();        
     }
 
     public void reorderByPriority() {

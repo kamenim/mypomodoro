@@ -26,11 +26,6 @@ public class ActivityList extends AbstractActivities {
         return list;
     }
 
-    // This makes sure we have a list properly sorted by database
-    public static ActivityList getListFromDB() {
-        return new ActivityList();
-    }
-
     public static int getListSize() {
         return getList().size();
     }
