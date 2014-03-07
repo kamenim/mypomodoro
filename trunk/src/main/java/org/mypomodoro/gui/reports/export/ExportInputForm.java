@@ -42,7 +42,7 @@ public class ExportInputForm extends JPanel {
     private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
             FileFormat.ExcelExtention);
     private final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
-            FileFormat.ExcelOpenXMLExtention);    
+            FileFormat.ExcelOpenXMLExtention);
     private final Separator commaSeparator = new Separator(0,
             Labels.getString("ReportListPanel.Comma"), ',');
     private final Separator tabSeparator = new Separator(1,
@@ -294,10 +294,10 @@ public class ExportInputForm extends JPanel {
     public boolean isFileExcelFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelFormat();
     }
-    
+
     public boolean isFileExcelOpenXMLFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelOpenXMLFormat();
-    }    
+    }
 
     public String getFileName() {
         return fileName.getText().trim();
@@ -531,7 +531,7 @@ public class ExportInputForm extends JPanel {
             Labels.getString("ReportListPanel.Diff II"),
             Labels.getString("ToDoListPanel.Internal"),
             Labels.getString("ToDoListPanel.External"),
-            Labels.getString("Common.Type"), 
+            Labels.getString("Common.Type"),
             Labels.getString("Common.Author"),
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),

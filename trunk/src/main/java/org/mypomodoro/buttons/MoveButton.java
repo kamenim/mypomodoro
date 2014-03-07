@@ -9,6 +9,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.reports.ReportsPanel;
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -37,50 +38,56 @@ public class MoveButton extends AbstractPomodoroButton {
     }
 
     public void move(final AbstractActivitiesPanel panel) {
-        int[] rows = panel.getTable().getSelectedRows();
-        if (rows.length > 0) {
-            boolean agreedToMorePomodoros = false;
-            int increment = 0;
-            for (int row : rows) {
-                row = row - increment;
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity selectedActivity = panel.getActivityById(id);
-                if (panel instanceof ActivitiesPanel) {
-                    String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                    if (!ControlPanel.preferences.getAgileMode()) {
-                        if (!selectedActivity.isDateToday()) {
-                            String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                            String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
-                            int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                    title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                            if (reply == JOptionPane.NO_OPTION) {
-                                continue; // go to the next one
-                            } else if (reply == JOptionPane.CLOSED_OPTION) {
-                                break;
+        if (panel.getTable().getSelectedRowCount() > 0) {
+            if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()
+                    && panel instanceof ReportsPanel) { // complete all at once                       
+                panel.moveAll();
+                panel.refresh();
+            } else {
+                boolean agreedToMorePomodoros = false;
+                int increment = 0;
+                int[] rows = panel.getTable().getSelectedRows();
+                for (int row : rows) {
+                    row = row - increment;
+                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    Activity selectedActivity = panel.getActivityById(id);
+                    if (panel instanceof ActivitiesPanel) {
+                        String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+                        if (!ControlPanel.preferences.getAgileMode()) {
+                            if (!selectedActivity.isDateToday()) {
+                                String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                                String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
+                                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                if (reply == JOptionPane.NO_OPTION) {
+                                    continue; // go to the next one
+                                } else if (reply == JOptionPane.CLOSED_OPTION) {
+                                    break;
+                                }
                             }
-                        }
-                        if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
-                            String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                            String message = Labels.getString(
-                                    "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                    org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
-                            int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                    title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                            if (reply == JOptionPane.YES_OPTION) {
-                                agreedToMorePomodoros = true;
-                            } else {
-                                break; // get out of the loop
+                            if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
+                                String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                                String message = Labels.getString(
+                                        "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
+                                        org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
+                                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    agreedToMorePomodoros = true;
+                                } else {
+                                    break; // get out of the loop
+                                }
                             }
                         }
                     }
+                    panel.move(selectedActivity);
+                    // removing a row requires decreasing  the row index number
+                    panel.removeRow(row);
+                    increment++;
                 }
-                panel.move(selectedActivity);
-                // removing a row requires decreasing  the row index number
-                panel.removeRow(row);
-                increment++;
-                // Refresh panel border
-                panel.setPanelBorder();
             }
+            // Refresh panel border
+            panel.setPanelBorder();
         }
     }
 

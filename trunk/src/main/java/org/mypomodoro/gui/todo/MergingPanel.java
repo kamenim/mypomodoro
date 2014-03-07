@@ -2,7 +2,6 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -87,8 +86,8 @@ public class MergingPanel extends CreatePanel {
         String message;
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
-        int[] rows = panel.getTable().getSelectedRows();
-        if (rows.length > 0) {
+        if (panel.getTable().getSelectedRowCount() > 0) {
+            int[] rows = panel.getTable().getSelectedRows();
             int increment = 0;
             for (int row : rows) {
                 row = row - increment;
@@ -106,7 +105,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 actualPoms += selectedToDo.getActualPoms();
                 panel.delete(selectedToDo);
-                // removing a row requires decreasing  the row index number
+                // removing a row requires decreasing the row index number
                 panel.removeRow(row);
                 increment++;
             }
@@ -125,7 +124,7 @@ public class MergingPanel extends CreatePanel {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             newActivity.setPriority(ToDoList.getListSize() + 1);
             ToDoList.getList().add(newActivity);
-            ToDoList.getList().reorderByPriority();            
+            ToDoList.getList().reorderByPriority();
             clearForm();
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
@@ -133,7 +132,7 @@ public class MergingPanel extends CreatePanel {
             super.validActivityAction(newActivity); // validation and clear form
         }
         JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);        
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override

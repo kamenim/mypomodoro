@@ -19,7 +19,6 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TimeMinusButton;
 import org.mypomodoro.buttons.TimePlusButton;
@@ -131,7 +130,7 @@ public class TimerPanel extends JPanel {
                             Border margin = new EmptyBorder(5, 15, 5, 15);
                             Border compound = new CompoundBorder(line, margin);
                             startButton.setBorder(compound);
-                            pomodoroTime.setForeground(ColorUtil.RED);                           
+                            pomodoroTime.setForeground(ColorUtil.RED);
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
@@ -140,7 +139,7 @@ public class TimerPanel extends JPanel {
                         Border margin = new EmptyBorder(5, 15, 5, 15);
                         Border compound = new CompoundBorder(line, margin);
                         startButton.setBorder(compound);
-                        pomodoroTime.setForeground(ColorUtil.BLACK);                       
+                        pomodoroTime.setForeground(ColorUtil.BLACK);
                     }
                 }
             }

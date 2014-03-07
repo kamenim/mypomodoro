@@ -372,12 +372,17 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 9 && data.toString().length() > 0) { // Title (can't be empty)
-                        act.setName(data.toString());
-                        act.databaseUpdate();
-                        // The customer resizer may resize the title column to fit the length of the new text
-                        ColumnResizer.adjustColumnPreferredWidths(table);
-                        table.revalidate();
+                    if (column == ID_KEY - 9) {
+                        if (data.toString().trim().length() == 0) {
+                            // reset the original value. Title can't be empty.
+                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 9);
+                        } else {
+                            act.setName(data.toString());
+                            act.databaseUpdate();
+                            // The customer resizer may resize the title column to fit the length of the new text
+                            ColumnResizer.adjustColumnPreferredWidths(table);
+                            table.revalidate();
+                        }
                     }
                     ReportList.getList().update(act);
                     // Refresh panel border
@@ -424,6 +429,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     public void move(Activity activity) {
         ReportList.getList().reopen(activity);
     }
+    
+    @Override
+    public void moveAll() {
+        ReportList.getList().reopenAll();
+    }
 
     @Override
     public Activity getActivityById(int id) {
@@ -432,12 +442,12 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void delete(Activity activity) {
-        ReportList.getList().remove(activity);
+        ReportList.getList().delete(activity);
     }
 
     @Override
     public void deleteAll() {
-        ReportList.getList().removeAll();
+        ReportList.getList().deleteAll();
     }
 
     @Override

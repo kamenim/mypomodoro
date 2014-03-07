@@ -196,7 +196,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {            
+        } else {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
@@ -242,7 +242,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                             || controlPane.getSelectedIndex() == 3) {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
-
+                            refreshIconLabels();
                             /*if (!pomodoro.getTimer().isRunning()) {
                              // disable start button
                              pomodoro.getTimerPanel().setStartColor(ColorUtil.GRAY);
@@ -259,6 +259,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     controlPane.setEnabledAt(index, true);
                                 }
                             }
+                            refreshIconLabels();
 
                             /*if (!pomodoro.getTimer().isRunning()) {
                              // enable start button
@@ -387,11 +388,18 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 4 && data.toString().length() > 0) { // Title (can't be empty)
-                        act.setName(data.toString());
-                        act.databaseUpdate();
-                        ToDoList.getList().update(act);
+                    if (column == ID_KEY - 4) { // Title (can't be empty)
+                        if (data.toString().trim().length() == 0) {
+                            // reset the original value. Title can't be empty.
+                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
+                        } else {
+                            act.setName(data.toString());
+                            act.databaseUpdate();
+                            ToDoList.getList().update(act);
+                        }
                     }
+                    refreshRemaining();
+                    refreshIconLabels();
                 } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
                     int lastRow = e.getLastRow(); // no need for convertRowIndexToModel
                     int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
@@ -443,6 +451,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
+    @Override
     public void moveAll() {
         ToDoList.getList().moveAll();
     }
@@ -627,7 +636,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     public void refreshIconLabels() {
-        if (table.getSelectedRowCount() > 0) {
+        if (table.getRowCount() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED);

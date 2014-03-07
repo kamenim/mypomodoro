@@ -47,7 +47,7 @@ public class ExportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected final ExportInputForm exportInputForm = new ExportInputForm();
-    private final GridBagConstraints gbc = new GridBagConstraints();    
+    private final GridBagConstraints gbc = new GridBagConstraints();
     private final AbstractActivitiesPanel panel;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString("Common.Date"),
@@ -192,7 +192,7 @@ public class ExportPanel extends JPanel {
                 if (entries[i] instanceof Integer) {
                     cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
                     cell.setCellValue((Integer) entries[i]);
-                }  else if (entries[i] instanceof Float) {
+                } else if (entries[i] instanceof Float) {
                     cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
                     HSSFCellStyle cellStyle = workbook.createCellStyle();
                     cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.0"));
@@ -217,7 +217,7 @@ public class ExportPanel extends JPanel {
         fileOut.flush();
         fileOut.close();
     }
-    
+
     private void exportExcelx(String fileName, Iterator<Activity> act)
             throws IOException {
         FileOutputStream fileOut = new FileOutputStream(fileName);
@@ -246,7 +246,7 @@ public class ExportPanel extends JPanel {
                     cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                     XSSFCellStyle cellStyle = workbook.createCellStyle();
                     XSSFDataFormat dataFormat = workbook.createDataFormat();
-                    cellStyle.setDataFormat(dataFormat.getFormat("0.0"));                    
+                    cellStyle.setDataFormat(dataFormat.getFormat("0.0"));
                     cell.setCellValue((Float) entries[i]);
                 } else if (entries[i] instanceof Boolean) {
                     cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
