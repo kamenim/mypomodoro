@@ -216,7 +216,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {            
+        } else {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
@@ -357,12 +357,17 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 6 && data.toString().length() > 0) { // Title (can't be empty)
-                        act.setName(data.toString());
-                        act.databaseUpdate();
-                        // The customer resizer may resize the title column to fit the length of the new text
-                        ColumnResizer.adjustColumnPreferredWidths(table);
-                        table.revalidate();
+                    if (column == ID_KEY - 6) {
+                        if (data.toString().trim().length() == 0) {
+                            // reset the original value. Title can't be empty.
+                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 6);
+                        } else {
+                            act.setName(data.toString());
+                            act.databaseUpdate();
+                            // The customer resizer may resize the title column to fit the length of the new text
+                            ColumnResizer.adjustColumnPreferredWidths(table);
+                            table.revalidate();
+                        }
                     } else if (column == ID_KEY - 5) { // Type
                         act.setType(data.toString());
                         act.databaseUpdate();
@@ -432,6 +437,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void move(Activity activity) {
         ActivityList.getList().move(activity);
     }
+    
+    @Override
+    public void moveAll() {
+        // no use
+    }
 
     @Override
     public Activity getActivityById(int id) {
@@ -440,12 +450,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void delete(Activity activity) {
-        ActivityList.getList().remove(activity);
+        ActivityList.getList().delete(activity);
     }
 
     @Override
     public void deleteAll() {
-        ActivityList.getList().removeAll();
+        ActivityList.getList().deleteAll();
     }
 
     @Override
@@ -460,7 +470,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void addActivity(Activity activity) {
-        ActivityList.getList().add(activity);        
+        ActivityList.getList().add(activity);
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {

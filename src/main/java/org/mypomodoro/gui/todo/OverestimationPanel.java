@@ -14,7 +14,6 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -88,11 +87,7 @@ public class OverestimationPanel extends JPanel {
         selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
         ToDoList.getList().update(selectedToDo);
         selectedToDo.databaseUpdate();
-        if (ControlPanel.preferences.getAgileMode()) {
-            panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), 3); // update estimated colunm column index = 3 (the renderer will do the rest)
-        } else {
-            panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), 4); // update estimated colunm column index = 4 (the renderer will do the rest)
-        }
+        panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm column index = 3 (the renderer will do the rest)
         overestimationInputFormPanel.reset();
         String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
         String message = Labels.getString(

@@ -36,8 +36,8 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                 panel.moveAll();
                 panel.refresh();
             } else {
-                int[] rows = panel.getTable().getSelectedRows();
                 int increment = 0;
+                int[] rows = panel.getTable().getSelectedRows();
                 for (int row : rows) {
                     row = row - increment;
                     Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());

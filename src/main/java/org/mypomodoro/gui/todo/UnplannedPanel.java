@@ -124,7 +124,7 @@ public class UnplannedPanel extends CreatePanel {
                 newActivity.setIteration(-1); // no specific iteration
             }
             panel.addActivity(newActivity);
-            clearForm();            
+            clearForm();
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);

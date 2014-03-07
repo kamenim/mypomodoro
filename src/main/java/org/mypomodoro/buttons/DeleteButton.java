@@ -24,15 +24,15 @@ public class DeleteButton extends AbstractPomodoroButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int[] rows = panel.getTable().getSelectedRows();
-                if (rows.length > 0) {
+                if (panel.getTable().getSelectedRowCount() > 0) {                    
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (reply == JOptionPane.YES_OPTION) {
-                        if (rows.length == panel.getTable().getRowCount()) { // delete all at once                        
+                        if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        
                             panel.deleteAll();
                             panel.refresh();
                         } else {
                             int increment = 0;
+                            int[] rows = panel.getTable().getSelectedRows();
                             for (int row : rows) {
                                 row = row - increment;
                                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());

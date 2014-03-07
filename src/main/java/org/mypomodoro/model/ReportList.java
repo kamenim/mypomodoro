@@ -1,9 +1,13 @@
 package org.mypomodoro.model;
 
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
- * Report list
+ * Report list/**
+
  *
  */
 public class ReportList extends AbstractActivities {
@@ -29,10 +33,12 @@ public class ReportList extends AbstractActivities {
     public static int getListSize() {
         return getList().size();
     }
-    
+
     @Override
-    public void add(Activity act) {        
+    public void add(Activity act) {
         act.setIsCompleted(true);
+        act.setPriority(-1);
+        act.setDate(new Date());
         if (act.getId() == -1) {
             act.databaseInsert();
         } else {
@@ -41,21 +47,25 @@ public class ReportList extends AbstractActivities {
         super.add(act);
     }
 
-    @Override
-    public void remove(Activity activity) {
+    public void delete(Activity activity) {
         activities.remove(activity);
         activity.databaseDelete();
     }
 
-    @Override
-    public void removeAll() {
+    public void deleteAll() {
         activities.clear();
-        ActivitiesDAO.getInstance().removeAllReports();
+        ActivitiesDAO.getInstance().deleteAllReports();
     }
 
     // move from Report list to Activity list
     public void reopen(Activity activity) {
-        ActivityList.getList().add(activity); // this sets the priority to -1 and non conplete and updates the database
+        ActivityList.getList().add(activity);
         activities.remove(activity);
+    }
+
+    public void reopenAll() {        
+        ActivityList.getList().addAll(activities);
+        ActivitiesDAO.getInstance().reopenAllReports();
+        activities.clear();
     }
 }

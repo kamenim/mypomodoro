@@ -196,7 +196,7 @@ public class ImportPanel extends JPanel {
                 } else if (cell.getCellStyle().getDataFormat() == new XSSFWorkbook().createDataFormat().getFormat("0.0")) {
                     value = (float) cell.getNumericCellValue() + "";
                 } else {
-                    value = (int) cell.getNumericCellValue() + "";                
+                    value = (int) cell.getNumericCellValue() + "";
                 }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
