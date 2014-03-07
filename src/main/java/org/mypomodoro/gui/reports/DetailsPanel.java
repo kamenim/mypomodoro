@@ -58,7 +58,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new DeleteButton(Labels.getString("ReportListPanel.Delete report"), Labels.getString("ActivityListPanel.Are you sure to delete those reports?"), reportsPanel), gbc);
+        add(new DeleteButton(Labels.getString("ReportListPanel.Delete report"), Labels.getString("ReportListPanel.Are you sure to delete those reports?"), reportsPanel), gbc);
     }
 
     @Override

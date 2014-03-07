@@ -9,7 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JComponent;
@@ -71,8 +70,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
     public static int ID_KEY = 8;
-    private int selectedActivityId = 0;
-    private int selectedRowIndex = 0;
 
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
@@ -211,13 +208,17 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         });
-        // select first activity
-        selectActivity();
-        // diactivate/gray out all tabs
+        // diactivate/gray out all tabs (except import)
         if (ActivityList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                if (index == 3) { // import tab
+                    continue;
+                }
                 controlPane.setEnabledAt(index, false);
             }
+        } else {            
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
         }
         // Refresh panel border
         setPanelBorder();
@@ -266,8 +267,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                                 controlPane.setEnabledAt(index, true);
                             }
-                            selectedActivityId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
-                            selectedRowIndex = rows[0];
                         }
                     }
                 });
@@ -355,7 +354,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column);
+                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
                     if (column == ID_KEY - 6 && data.toString().length() > 0) { // Title (can't be empty)
@@ -394,10 +393,17 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     // update info
                     detailsPanel.selectInfo(act);
                     detailsPanel.showInfo();
+                } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
+                    int lastRow = e.getLastRow(); // no need for convertRowIndexToModel
+                    int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
+                    table.setRowSelectionInterval(row, row);
                 }
-                // diactivate/gray out all tabs
+                // diactivate/gray out all tabs (except import)
                 if (ActivityList.getListSize() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                        if (index == 3) { // import tab
+                            continue;
+                        }
                         controlPane.setEnabledAt(index, false);
                     }
                 }
@@ -451,11 +457,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void completeAll() {
         // no use
     }
-    
+
     @Override
     public void addActivity(Activity activity) {
-        ActivityList.getList().add(activity);
-        activity.databaseInsert();
+        ActivityList.getList().add(activity);        
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
@@ -488,7 +493,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     // selected row BOLD
-    static class CustomTableRenderer extends DefaultTableCellRenderer {
+    class CustomTableRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -505,7 +510,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    static class DateRenderer extends CustomTableRenderer {
+    class DateRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -528,33 +533,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
-        }
-    }
-
-    @Override
-    public void selectActivity() {
-        int index = 0;
-        if (!ActivityList.getList().isEmpty()) {
-            // Activity deleted (removed from the list)
-            if (ActivityList.getList().getById(selectedActivityId) == null) {
-                index = selectedRowIndex;
-                // Activity deleted (end of the list)
-                if (ActivityList.getListSize() < selectedRowIndex + 1) {
-                    --index;
-                }
-            } else if (selectedActivityId != 0) {
-                Iterator<Activity> iActivity = ActivityList.getList().iterator();
-                while (iActivity.hasNext()) {
-                    if (iActivity.next().getId() == selectedActivityId) {
-                        break;
-                    }
-                    index++;
-                }
-            }
-        }
-        if (!ActivityList.getList().isEmpty()) {
-            index = index > ActivityList.getListSize() ? 0 : index;
-            table.setRowSelectionInterval(index, index);
         }
     }
 }

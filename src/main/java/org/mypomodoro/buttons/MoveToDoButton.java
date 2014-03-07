@@ -63,8 +63,6 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                 Activity activity = panel.getActivityById(id);
                 panel.getTable().getModel().setValueAt(activity.getPriority(), panel.getTable().convertRowIndexToModel(row), 0); // priority column index = 0
             }
-            // select following activity in the list only when all rows are removed
-            panel.selectActivity();
         }
     }
 }

@@ -70,8 +70,6 @@ public class Pomodoro {
     }
 
     public void start() {
-        int row = panel.getTable().getSelectedRow();
-        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         pomodoroTimer.start();
         if (ControlPanel.preferences.getTicking() && !isMute) {
             tick();
@@ -84,6 +82,7 @@ public class Pomodoro {
         }
         inpomodoro = true;
         panel.refreshIconLabels();
+        panel.getTable().repaint(); // trigger row renderers
     }
 
     public void stop() {
@@ -102,6 +101,7 @@ public class Pomodoro {
         }
         inpomodoro = false;
         panel.refreshIconLabels();
+        panel.getTable().repaint(); // trigger row renderers
     }
 
     public boolean stopWithWarning() {
@@ -288,9 +288,9 @@ public class Pomodoro {
         }
     }
 
-    /*public void setCurrentToDoId(int id) {
+    public void setCurrentToDoId(int id) {
         currentToDoId = id;
-    }*/
+    }
 
     public Activity getCurrentToDo() {
         return ToDoList.getList().getById(currentToDoId);

@@ -13,8 +13,6 @@ public interface AbstractActivitiesPanel {
 
     void setPanelBorder();
 
-    void selectActivity();
-
     JTable getTable();
 
     int getIdKey();

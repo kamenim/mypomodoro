@@ -35,7 +35,11 @@ public class ToDoList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(size() + 1); // starting the priority at 1 (not 0)
         act.setIsCompleted(false);
-        act.databaseUpdate();
+        if (act.getId() == -1) {
+            act.databaseInsert();
+        } else {
+            act.databaseUpdate();
+        }
         super.add(act);
     }
 
