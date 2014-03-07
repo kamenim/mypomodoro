@@ -33,7 +33,11 @@ public class ReportList extends AbstractActivities {
     @Override
     public void add(Activity act) {        
         act.setIsCompleted(true);
-        act.databaseUpdate();
+        if (act.getId() == -1) {
+            act.databaseInsert();
+        } else {
+            act.databaseUpdate();
+        }
         super.add(act);
     }
 

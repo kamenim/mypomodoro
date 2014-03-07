@@ -41,6 +41,8 @@ public class ExportInputForm extends JPanel {
             FileFormat.CSVExtention);
     private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
             FileFormat.ExcelExtention);
+    private final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
+            FileFormat.ExcelOpenXMLExtention);    
     private final Separator commaSeparator = new Separator(0,
             Labels.getString("ReportListPanel.Comma"), ',');
     private final Separator tabSeparator = new Separator(1,
@@ -92,14 +94,14 @@ public class ExportInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 2;
         c.weighty = 0.5;
-        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat};
+        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
         fileFormatComboBox = new JComboBox(fileFormats);
         fileFormatComboBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
-                if (selectedFormat.equals(ExcelFormat)) {
+                if (selectedFormat.equals(ExcelFormat) || selectedFormat.equals(ExcelOpenXMLFormat)) {
                     patternsPanel.setVisible(false);
                     separatorLabel.setVisible(false);
                     separatorComboBox.setVisible(false);
@@ -292,6 +294,10 @@ public class ExportInputForm extends JPanel {
     public boolean isFileExcelFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelFormat();
     }
+    
+    public boolean isFileExcelOpenXMLFormat() {
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelOpenXMLFormat();
+    }    
 
     public String getFileName() {
         return fileName.getText().trim();
@@ -299,7 +305,7 @@ public class ExportInputForm extends JPanel {
 
     public String getDatePattern() {
         FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
-        if (selectedFormat.equals(ExcelFormat)) {
+        if (selectedFormat.equals(ExcelFormat) || selectedFormat.equals(ExcelOpenXMLFormat)) {
             return excelPatterns;
         } else {
             return patterns.getDatePattern();
@@ -330,6 +336,7 @@ public class ExportInputForm extends JPanel {
 
         public static final String CSVExtention = "csv";
         public static final String ExcelExtention = "xls";
+        public static final String ExcelOpenXMLExtention = "xlsx";
         private final String formatName;
         private final String extention;
 
@@ -348,6 +355,10 @@ public class ExportInputForm extends JPanel {
 
         public boolean isExcelFormat() {
             return extention.equals(ExcelExtention);
+        }
+
+        public boolean isExcelOpenXMLFormat() {
+            return extention.equals(ExcelOpenXMLExtention);
         }
 
         @Override

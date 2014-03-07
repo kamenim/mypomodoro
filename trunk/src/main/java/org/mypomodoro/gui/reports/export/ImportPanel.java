@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -24,10 +25,11 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -89,18 +91,20 @@ public class ImportPanel extends JPanel {
     }
 
     private void importData() {
-        String filePath = importInputForm.getFileName(); // path
-        if (filePath != null && filePath.length() > 0) {
+        String fileName = importInputForm.getFileName(); // path
+        if (fileName != null && fileName.length() > 0) {
             try {
                 if (importInputForm.isFileCSVFormat()) {
-                    importCSV(filePath);
+                    importCSV(fileName);
                 } else if (importInputForm.isFileExcelFormat()) {
-                    importExcel(filePath);
+                    importExcel(fileName);
+                } else if (importInputForm.isFileExcelOpenXMLFormat()) {
+                    importExcelx(fileName);
                 }
                 String title = Labels.getString("ReportListPanel.Import");
                 String message = Labels.getString(
                         "ReportListPanel.Data imported",
-                        filePath);
+                        fileName);
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception ex) {
@@ -141,7 +145,7 @@ public class ImportPanel extends JPanel {
             sheet.removeRow(sheet.getRow(0));
         }
         for (Row row : sheet) {
-            String[] line = new String[16];
+            String[] line = new String[19];
             int i = 0;
             for (Cell cell : row) {
                 line[i] = getCellContent(cell, eval);
@@ -150,6 +154,26 @@ public class ImportPanel extends JPanel {
             insertData(line);
         }
         myxls.close();
+    }
+
+    private void importExcelx(String fileName) throws Exception {
+        InputStream myxlsx = new FileInputStream(fileName);
+        XSSFWorkbook book = new XSSFWorkbook(myxlsx);
+        FormulaEvaluator eval = book.getCreationHelper().createFormulaEvaluator();
+        XSSFSheet sheet = book.getSheetAt(0);
+        if (importInputForm.isHeaderSelected()) {
+            sheet.removeRow(sheet.getRow(0));
+        }
+        for (Row row : sheet) {
+            String[] line = new String[19];
+            int i = 0;
+            for (Cell cell : row) {
+                line[i] = getCellContent(cell, eval);
+                i++;
+            }
+            insertData(line);
+        }
+        myxlsx.close();
     }
 
     private String getCellContent(Cell cell, FormulaEvaluator eval) {
@@ -164,8 +188,15 @@ public class ImportPanel extends JPanel {
                 if (DateUtil.isCellDateFormatted(cell)) {
                     CellValue cellValue = eval.evaluate(cell);
                     value = org.mypomodoro.util.DateUtil.getFormatedDate(DateUtil.getJavaDate(cellValue.getNumberValue(), true), importInputForm.getDatePattern());
+                } else if (cell.getCellStyle().getDataFormat() == new XSSFWorkbook().createDataFormat().getFormat(importInputForm.getDatePattern())) {
+                    CellValue cellValue = eval.evaluate(cell);
+                    value = org.mypomodoro.util.DateUtil.getFormatedDate(DateUtil.getJavaDate(cellValue.getNumberValue(), true), importInputForm.getDatePattern());
+                } else if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("0.0")) {
+                    value = (float) cell.getNumericCellValue() + "";
+                } else if (cell.getCellStyle().getDataFormat() == new XSSFWorkbook().createDataFormat().getFormat("0.0")) {
+                    value = (float) cell.getNumericCellValue() + "";
                 } else {
-                    value = (int) cell.getNumericCellValue() + "";
+                    value = (int) cell.getNumericCellValue() + "";                
                 }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
@@ -195,6 +226,6 @@ public class ImportPanel extends JPanel {
             newReport.setIteration(-1);
             newReport.setPriority(-1);
         }
-        panel.addActivity(newReport);        
+        panel.addActivity(newReport);
     }
 }

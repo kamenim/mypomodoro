@@ -125,8 +125,7 @@ public class MergingPanel extends CreatePanel {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             newActivity.setPriority(ToDoList.getListSize() + 1);
             ToDoList.getList().add(newActivity);
-            ToDoList.getList().reorderByPriority();
-            newActivity.databaseInsert();
+            ToDoList.getList().reorderByPriority();            
             clearForm();
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");

@@ -69,8 +69,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         "ID"};
     //Labels.getString("ReportListPanel.Time")
     public static int ID_KEY = 11;
-    private int selectedReportId = 0;
-    private int selectedRowIndex = 0;
 
     private final DetailsPanel informationArea = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -210,13 +208,17 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         });
-        // select first activity
-        selectActivity();
-        // diactivate/gray out all tabs
+        // diactivate/gray out all tabs (except import)
         if (ReportList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                if (index == 3) { // import tab
+                    continue;
+                }
                 controlPane.setEnabledAt(index, false);
             }
+        } else {
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
         }
         // Refresh panel border
         setPanelBorder();
@@ -267,8 +269,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                                 controlPane.setEnabledAt(index, true);
                             }
-                            selectedReportId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
-                            selectedRowIndex = rows[0];
                         }
                     }
                 });
@@ -369,7 +369,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column);
+                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
                     if (column == ID_KEY - 9 && data.toString().length() > 0) { // Title (can't be empty)
@@ -385,10 +385,17 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     // update info
                     informationArea.selectInfo(act);
                     informationArea.showInfo();
+                } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
+                    int lastRow = e.getLastRow(); // no need for convertRowIndexToModel                    
+                    int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
+                    table.setRowSelectionInterval(row, row);
                 }
-                // diactivate/gray out all tabs
+                // diactivate/gray out all tabs (except import)
                 if (ReportList.getListSize() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                        if (index == 3) { // import tab
+                            continue;
+                        }
                         controlPane.setEnabledAt(index, false);
                     }
                 }
@@ -442,13 +449,12 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     public void completeAll() {
         // no use
     }
-    
+
     @Override
     public void addActivity(Activity activity) {
-        ReportList.getList().add(activity);        
-        activity.databaseInsert();
+        ReportList.getList().add(activity);
     }
-    
+
     private void showSelectedItemDetails(DetailsPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
@@ -479,7 +485,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     // selected row BOLD
-    static class CustomTableRenderer extends DefaultTableCellRenderer {
+    class CustomTableRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -491,7 +497,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    static class DateRenderer extends CustomTableRenderer {
+    class DateRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -501,7 +507,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    static class StoryPointsCellRenderer extends CustomTableRenderer {
+    class StoryPointsCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -517,7 +523,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    static class EstimatedCellRenderer extends CustomTableRenderer {
+    class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -559,33 +565,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
-        }
-    }
-
-    @Override
-    public void selectActivity() {
-        int index = 0;
-        if (!ReportList.getList().isEmpty()) {
-            // Report deleted (removed from the list)
-            if (ReportList.getList().getById(selectedReportId) == null) {
-                index = selectedRowIndex;
-                // Report deleted (end of the list)
-                if (ReportList.getListSize() < selectedRowIndex + 1) {
-                    --index;
-                }
-            } else if (selectedReportId != 0) {
-                Iterator<Activity> iReport = ReportList.getList().iterator();
-                while (iReport.hasNext()) {
-                    if (iReport.next().getId() == selectedReportId) {
-                        break;
-                    }
-                    index++;
-                }
-            }
-        }
-        if (!ReportList.getList().isEmpty()) {
-            index = index > ReportList.getListSize() ? 0 : index;
-            table.setRowSelectionInterval(index, index);
         }
     }
 }

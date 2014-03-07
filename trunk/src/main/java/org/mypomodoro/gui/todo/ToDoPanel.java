@@ -60,14 +60,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private JTable table;
     private static final String[] columnNames = {Labels.getString("Common.Priority"),
+        "U",
         Labels.getString("Common.Title"),
         Labels.getString("Common.Estimated"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
-    public static int ID_KEY = 5;
-    private int selectedActivityId = 0;
-    private int selectedRowIndex = 0;
+    public static int ID_KEY = 6;
 
     private final JLabel pomodoroTime = new JLabel();
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
@@ -117,10 +116,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // set custom render for title
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new CustomTableRenderer()); // priority
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new CustomTableRenderer()); // title                
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new CustomTableRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
         if (!ControlPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
@@ -137,6 +137,17 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(80);
             table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(80);
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
+        }
+        // hide unplanned in Agile mode (does not make sense to have unplanned task in the backlog anyway)
+        if (ControlPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
+        } else {
+            // Set width of columns Unplanned and date
+            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(30);
+            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(30);
+            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(30);
         }
         // Set width of column priority
         table.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -176,15 +187,19 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         });
-        // select first activity
-        selectActivity();
-        // diactivate/gray out all tabs
+
+        // diactivate/gray out all tabs (except import)
         if (ToDoList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                if (index == 5) { // import tab
+                    continue;
+                }
                 controlPane.setEnabledAt(index, false);
             }
+        } else {            
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
         }
-
         // Refresh panel border
         setPanelBorder();
     }
@@ -228,10 +243,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
 
-                            if (!pomodoro.getTimer().isRunning()) {
-                                // disable start button
-                                pomodoro.getTimerPanel().setStartColor(ColorUtil.GRAY);
-                            }
+                            /*if (!pomodoro.getTimer().isRunning()) {
+                             // disable start button
+                             pomodoro.getTimerPanel().setStartColor(ColorUtil.GRAY);
+                             }*/
                         } else if (rows.length == 1) {
                             // activate all panels
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
@@ -245,13 +260,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                 }
                             }
 
-                            if (!pomodoro.getTimer().isRunning()) {
-                                // enable start button
-                                pomodoro.getTimerPanel().setStartColor(Color.BLACK);
-                            }
-
-                            selectedActivityId = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), ID_KEY); // ID
-                            selectedRowIndex = rows[0];
+                            /*if (!pomodoro.getTimer().isRunning()) {
+                             // enable start button
+                             pomodoro.getTimerPanel().setStartColor(Color.BLACK);
+                             }*/
                         }
                     }
                 });
@@ -312,6 +324,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         add(controlPane, gbc);
 
         showIconList();
+        showRemaining();
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
     }
@@ -324,14 +337,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         for (int i = 0; iterator.hasNext(); i++) {
             Activity a = iterator.next();
             tableData[i][0] = a.getPriority();
-            tableData[i][1] = a.getName();
+            tableData[i][1] = a.isUnplanned();
+            tableData[i][2] = a.getName();
             Integer poms = new Integer(a.getEstimatedPoms());
-            tableData[i][2] = poms;
+            tableData[i][3] = poms;
             Float points = new Float(a.getStoryPoints());
-            tableData[i][3] = points;
+            tableData[i][4] = points;
             Integer iteration = new Integer(a.getIteration());
-            tableData[i][4] = iteration;
-            tableData[i][5] = a.getId();
+            tableData[i][5] = iteration;
+            tableData[i][6] = a.getId();
         }
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
@@ -347,11 +361,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 switch (column) {
                     case 0:
                         return Integer.class;
-                    case 2:
-                        return Integer.class;
+                    case 1:
+                        return Boolean.class;
                     case 3:
-                        return Float.class;
+                        return Integer.class;
                     case 4:
+                        return Float.class;
+                    case 5:
                         return Integer.class;
                     default:
                         return String.class;
@@ -364,11 +380,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE) {
+                if (e.getType() == TableModelEvent.UPDATE) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column);
+                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
                     if (column == ID_KEY - 4 && data.toString().length() > 0) { // Title (can't be empty)
@@ -376,25 +392,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         act.databaseUpdate();
                         ToDoList.getList().update(act);
                     }
+                } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
+                    int lastRow = e.getLastRow(); // no need for convertRowIndexToModel
+                    int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
+                    table.setRowSelectionInterval(row, row);
                 }
-                if (ToDoList.getListSize() == 0) {
-                    // diactivate/gray out all tabs
-                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        controlPane.setEnabledAt(index, false);
-                    }
-
-                    pomodoro.getTimerPanel().setStartColor(ColorUtil.BLACK);
-
-                    if (pomodoro.getTimer().isRunning()) { // when completing or moving the whole list                        
-                        pomodoro.stop();
-                        pomodoro.getTimerPanel().setStart();
-                    }
-                    //pomodoro.setCurrentToDoId(-1);                    
-                }
-                // refresh icon label
-                refreshIconLabels();
-                // refresh remaining Pomodoros label
-                PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
             }
         });
         return tableModel;
@@ -413,10 +415,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     // use convertRowIndexToModel to avoid the sorting of columns to mess with the move/deletion
     @Override
     public void removeRow(int rowIndex) {
-        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
-    }
-
-    public void removeAllRows(int rowIndex) {
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
     }
 
@@ -447,10 +445,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     public void moveAll() {
         ToDoList.getList().moveAll();
-        if (pomodoro.getTimer().isRunning()) {
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
-        }
     }
 
     @Override
@@ -466,16 +460,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     @Override
     public void completeAll() {
         ToDoList.getList().completeAll();
-        if (pomodoro.getTimer().isRunning()) {
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
-        }
     }
 
     @Override
     public void addActivity(Activity activity) {
-        ToDoList.getList().add(activity);        
-        activity.databaseInsert();        
+        ToDoList.getList().add(activity);
     }
 
     public void reorderByPriority() {
@@ -498,11 +487,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         table, commentPanel, ID_KEY));
     }
 
+    private void showRemaining() {
+        table.getSelectionModel().addListSelectionListener(new ToDoRemainingListListener(this));
+    }
+
     @Override
     public void refresh() {
         try {
             activitiesTableModel = getTableModel();
             table.setModel(activitiesTableModel);
+
         } catch (Exception e) {
             // do nothing
         }
@@ -510,7 +504,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     // selected row BOLD
-    static class CustomTableRenderer extends DefaultTableCellRenderer {
+    class CustomTableRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -519,15 +513,20 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ToDoList.getList().getById(id);
-            if (activity != null && activity.isFinished()) {
+            Activity toDo = ToDoList.getList().getById(id);
+            Activity currentToDo = pomodoro.getCurrentToDo();
+            if (pomodoro.inPomodoro() && toDo.getId() == currentToDo.getId()) {
+                renderer.setForeground(ColorUtil.RED);
+            } else if (toDo.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
+            } else {
+                renderer.setForeground(ColorUtil.BLACK);
             }
             return renderer;
         }
     }
 
-    static class StoryPointsCellRenderer extends CustomTableRenderer {
+    class StoryPointsCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -543,16 +542,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    static class EstimatedCellRenderer extends CustomTableRenderer {
+    class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ToDoList.getList().getById(id);
-            String text = activity.getActualPoms() + " / ";
+            Activity toDo = ToDoList.getList().getById(id);
+            String text = toDo.getActualPoms() + " / ";
             text += value.toString();
-            Integer overestimatedpoms = activity.getOverestimatedPoms();
+            Integer overestimatedpoms = toDo.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);
             return renderer;
@@ -619,33 +618,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    @Override
-    public void selectActivity() {
-        int index = 0;
-        if (!ToDoList.getList().isEmpty()) {
-            // Activity deleted (removed from the list)
-            if (ToDoList.getList().getById(selectedActivityId) == null) {
-                index = selectedRowIndex;
-                // Activity deleted (end of the list)
-                if (ToDoList.getListSize() < selectedRowIndex + 1) {
-                    --index;
-                }
-            } else if (selectedActivityId != 0) {
-                Iterator<Activity> iActivity = ToDoList.getList().iterator();
-                while (iActivity.hasNext()) {
-                    if (iActivity.next().getId() == selectedActivityId) {
-                        break;
-                    }
-                    index++;
-                }
-            }
-        }
-        if (!ToDoList.getList().isEmpty()) {
-            index = index > ToDoList.getListSize() ? 0 : index;
-            table.setRowSelectionInterval(index, index);
-        }
-    }
-
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
@@ -707,43 +679,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    /*private class cellRenderer implements ListCellRenderer {
-
-     @Override
-     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-     JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-     if (isSelected) {
-     renderer.setBackground(ColorUtil.BLUE_ROW);
-     } else {
-     renderer.setBackground(index % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
-     }
-
-     Activity toDo = (Activity) value;
-     renderer.setText((toDo.isUnplanned() ? "(" + "U" + ") " : "") + toDo.getName() + " (" + toDo.getActualPoms() + "/" + toDo.getEstimatedPoms() + (toDo.getOverestimatedPoms() > 0 ? " + " + toDo.getOverestimatedPoms() : "") + ")");
-
-     Activity currentToDo = pomodoro.getCurrentToDo();
-     if (isSelected) {
-     renderer.setFont(new Font(renderer.getFont().getName(), Font.BOLD, renderer.getFont().getSize()));
-     }
-     if (pomodoro.inPomodoro()) {
-     if (toDo.getId() == currentToDo.getId()) {
-     renderer.setForeground(ColorUtil.RED);
-     } else {
-     if (toDo.isFinished()) {
-     renderer.setForeground(ColorUtil.GREEN);
-     } else {
-     renderer.setForeground(ColorUtil.BLACK);
-     }
-     }
-     } else {
-     if (toDo.isFinished()) {
-     renderer.setForeground(ColorUtil.GREEN);
-     } else {
-     renderer.setForeground(ColorUtil.BLACK);
-     }
-     }
-     return renderer;
-     }
-     }*/
+    public void refreshRemaining() {
+        PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
+    }
 }

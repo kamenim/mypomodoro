@@ -42,8 +42,6 @@ public class DeleteButton extends AbstractPomodoroButton {
                                 panel.removeRow(row);
                                 increment++;
                             }
-                            // select following activity in the list only when all rows are removed
-                            panel.selectActivity();
                         }
                         // Refresh panel border
                         panel.setPanelBorder();

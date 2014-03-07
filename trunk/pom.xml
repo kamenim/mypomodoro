@@ -56,7 +56,13 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>3.7</version>
+      <version>3.9</version>
+    </dependency>
+    <!-- Apache POI Open XML -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.9</version>
     </dependency>
     <!-- JFreeChart -->
     <dependency>

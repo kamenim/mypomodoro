@@ -28,6 +28,12 @@ import org.mypomodoro.util.Labels;
 import au.com.bytecode.opencsv.CSVWriter;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.ControlPanel;
@@ -127,6 +133,8 @@ public class ExportPanel extends JPanel {
                     exportCSV(fileName, act);
                 } else if (exportInputForm.isFileExcelFormat()) {
                     exportExcel(fileName, act);
+                } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
+                    exportExcelx(fileName, act);
                 }
                 String title = Labels.getString("ReportListPanel.Export");
                 String message = Labels.getString(
@@ -184,6 +192,12 @@ public class ExportPanel extends JPanel {
                 if (entries[i] instanceof Integer) {
                     cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
                     cell.setCellValue((Integer) entries[i]);
+                }  else if (entries[i] instanceof Float) {
+                    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+                    HSSFCellStyle cellStyle = workbook.createCellStyle();
+                    cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.0"));
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue((Float) entries[i]);
                 } else if (entries[i] instanceof Boolean) {
                     cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
                     cell.setCellValue((Boolean) entries[i]);
@@ -194,6 +208,57 @@ public class ExportPanel extends JPanel {
                     cell.setCellValue((Date) entries[i]);
                 } else { // text
                     cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    cell.setCellValue((String) entries[i]);
+                }
+            }
+            rowNb++;
+        }
+        workbook.write(fileOut);
+        fileOut.flush();
+        fileOut.close();
+    }
+    
+    private void exportExcelx(String fileName, Iterator<Activity> act)
+            throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet worksheet = workbook.createSheet();
+
+        int rowNb = 0;
+        // Header
+        if (exportInputForm.isHeaderSelected()) {
+            XSSFRow row = worksheet.createRow(rowNb);
+            for (int i = 0; i < headerEntries.length; i++) {
+                row.createCell(i).setCellValue(headerEntries[i]);
+            }
+            rowNb++;
+        }
+        // Data
+        while (act.hasNext()) {
+            Object[] entries = activityToArray.toRowArray(act.next());
+            XSSFRow row = worksheet.createRow(rowNb);
+            for (int i = 0; i < entries.length; i++) {
+                XSSFCell cell = row.createCell(i);
+                if (entries[i] instanceof Integer) {
+                    cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                    cell.setCellValue((Integer) entries[i]);
+                } else if (entries[i] instanceof Float) {
+                    cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                    XSSFCellStyle cellStyle = workbook.createCellStyle();
+                    XSSFDataFormat dataFormat = workbook.createDataFormat();
+                    cellStyle.setDataFormat(dataFormat.getFormat("0.0"));                    
+                    cell.setCellValue((Float) entries[i]);
+                } else if (entries[i] instanceof Boolean) {
+                    cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
+                    cell.setCellValue((Boolean) entries[i]);
+                } else if (entries[i] instanceof Date) {
+                    XSSFCellStyle cellStyle = workbook.createCellStyle();
+                    XSSFDataFormat dataFormat = workbook.createDataFormat();
+                    cellStyle.setDataFormat(dataFormat.getFormat(exportInputForm.getDatePattern()));
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue((Date) entries[i]);
+                } else { // text
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                     cell.setCellValue((String) entries[i]);
                 }
             }

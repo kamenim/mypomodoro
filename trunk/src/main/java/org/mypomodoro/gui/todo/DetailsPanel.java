@@ -12,6 +12,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -100,9 +101,11 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        textMap.remove("date");
         textMap.remove("title");
-        textMap.remove("estimated");
+        if (ControlPanel.preferences.getAgileMode()) {
+            textMap.remove("storypoints");
+            textMap.remove("iteration");
+        }
     }
 
     public JLabel getIconLabel() {
