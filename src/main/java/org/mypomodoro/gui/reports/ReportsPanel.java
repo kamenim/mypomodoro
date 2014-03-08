@@ -429,7 +429,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     public void move(Activity activity) {
         ReportList.getList().reopen(activity);
     }
-    
+
     @Override
     public void moveAll() {
         ReportList.getList().reopenAll();

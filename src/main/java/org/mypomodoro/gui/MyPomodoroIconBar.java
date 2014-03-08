@@ -23,13 +23,12 @@ public class MyPomodoroIconBar extends JPanel {
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Activity"), "activityButton",
                 view.getActivityListPanel()));
-        /*myIcons.add(MyIcon.getInstance(view,
-         Labels.getString("IconBar.Manager"), "managerButton",
-         view.getGeneratePanel()));*/
-        myIcons.add(MyIcon.getInstance(view, Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.ToDo"),
-                "todoButton", view.getToDoPanel()));
         myIcons.add(MyIcon.getInstance(view,
-                Labels.getString("IconBar.Report"), "reportButton",
+                Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.ToDo"),
+                "todoButton", view.getToDoPanel()));
+        // TODO change icon for Reports/Done? (tick)
+        myIcons.add(MyIcon.getInstance(view,
+                Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Report"), "reportButton",
                 view.getReportListPanel()));
         if (ControlPanel.preferences.getAgileMode()) {
             myIcons.add(MyIcon.getInstance(view,

@@ -13,7 +13,6 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -109,30 +108,34 @@ public class MergingPanel extends CreatePanel {
                 panel.removeRow(row);
                 increment++;
             }
+            // set comment
+            newActivity.setNotes(comments.toString());
+            // set estimate
+            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)
+            // TODO fix problem with estimated
+            if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
+                newActivity.setEstimatedPoms(actualPoms + 1);
+            }
+            if (actualPoms > 0) {
+                newActivity.setActualPoms(actualPoms);
+            }
+            if (mergingInputFormPanel.isDateToday()) {
+                message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+                panel.addActivity(newActivity);
+                // TODO how to set the priority of the new activity (use the highest priority among the merged activities?)
+                // TODO select that activity in the table after refresh?                
+                panel.reorderByPriority();
+                panel.refresh();
+                panel.refreshRemaining();
+                clearForm();
+            } else {
+                message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
+                validation.setVisible(false);
+                super.validActivityAction(newActivity); // validation and clear form
+            }
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
-        // set comment
-        newActivity.setNotes(comments.toString());
-        // set estimate
-        // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)
-        if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
-            newActivity.setEstimatedPoms(actualPoms + 1);
-        }
-        if (actualPoms > 0) {
-            newActivity.setActualPoms(actualPoms);
-        }
-        if (mergingInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
-            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-            newActivity.setPriority(ToDoList.getListSize() + 1);
-            ToDoList.getList().add(newActivity);
-            ToDoList.getList().reorderByPriority();
-            clearForm();
-        } else {
-            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
-            validation.setVisible(false);
-            super.validActivityAction(newActivity); // validation and clear form
-        }
-        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override

@@ -12,7 +12,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public void add(Activity activity) {
         activities.add(activity);
     }
-    
+
     public void addAll(LinkedList<Activity> acts) {
         activities.addAll(acts);
     }

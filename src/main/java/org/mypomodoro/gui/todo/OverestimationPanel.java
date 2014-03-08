@@ -87,7 +87,8 @@ public class OverestimationPanel extends JPanel {
         selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
         ToDoList.getList().update(selectedToDo);
         selectedToDo.databaseUpdate();
-        panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm column index = 3 (the renderer will do the rest)
+        panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm column index = 3 (the renderer will do the rest)        
+        panel.refreshRemaining();
         overestimationInputFormPanel.reset();
         String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
         String message = Labels.getString(

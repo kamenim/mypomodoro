@@ -86,7 +86,6 @@ public class Pomodoro {
     }
 
     public void stop() {
-        currentToDoId = -1;
         pomodoroTimer.stop();
         time = pomodoroLength;
         tmpPomodoroLength = pomodoroLength;
@@ -141,6 +140,7 @@ public class Pomodoro {
                     currentToDo.setDate(new Date());
                     currentToDo.databaseUpdate();
                     pomSetNumber++;
+                    // break time
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
                         pomSetNumber = 0;
@@ -161,6 +161,9 @@ public class Pomodoro {
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
                     inpomodoro = false;
+                    panel.refreshIconLabels();
+                    panel.refreshRemaining();
+                    panel.getTable().repaint(); // trigger row renderers
                 } else {
                     if (currentToDo.isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
@@ -184,6 +187,8 @@ public class Pomodoro {
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
+                        panel.refreshIconLabels();
+                        panel.getTable().repaint(); // trigger row renderers
                     }
                 }
             }

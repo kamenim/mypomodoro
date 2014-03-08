@@ -8,7 +8,7 @@ public interface AbstractActivitiesPanel {
     void refresh();
 
     void move(Activity activity);
-    
+
     void moveAll();
 
     void removeRow(int row);

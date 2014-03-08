@@ -15,6 +15,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -117,13 +118,16 @@ public class UnplannedPanel extends CreatePanel {
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message;
-        // In Agile mode, the unplanned/interruption is always added to the Iteration Backlog
-        if (unplannedInputFormPanel.isDateToday() || ControlPanel.preferences.getAgileMode()) {
+        if (unplannedInputFormPanel.isDateToday()) {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-            if (ControlPanel.preferences.getAgileMode()) {
-                newActivity.setIteration(-1); // no specific iteration
-            }
+            newActivity.setPriority(ToDoList.getListSize() + 1);
             panel.addActivity(newActivity);
+            // get current selected row
+            int row = panel.getTable().convertRowIndexToModel(panel.getTable().getSelectedRow());
+            panel.refresh();
+            // reselect previously selected row
+            panel.getTable().setRowSelectionInterval(row, row);
+            panel.refreshRemaining();
             clearForm();
         } else {
             message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");

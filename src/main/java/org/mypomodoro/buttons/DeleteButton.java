@@ -24,7 +24,7 @@ public class DeleteButton extends AbstractPomodoroButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (panel.getTable().getSelectedRowCount() > 0) {                    
+                if (panel.getTable().getSelectedRowCount() > 0) {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if (reply == JOptionPane.YES_OPTION) {
                         if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        

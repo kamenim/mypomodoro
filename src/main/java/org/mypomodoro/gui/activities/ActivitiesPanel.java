@@ -437,7 +437,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void move(Activity activity) {
         ActivityList.getList().move(activity);
     }
-    
+
     @Override
     public void moveAll() {
         // no use

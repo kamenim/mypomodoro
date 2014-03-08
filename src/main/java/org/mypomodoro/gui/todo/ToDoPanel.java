@@ -108,6 +108,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         addTabPane(gbc);
     }
 
+    // TODO add drag and drop to change priority (dont loose focus on selected row)
     private void init() {
         table.setRowHeight(30);
 
@@ -199,6 +200,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         } else {
             // select first activity
             table.setRowSelectionInterval(0, 0);
+            pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(0), ID_KEY));
         }
         // Refresh panel border
         setPanelBorder();
@@ -230,8 +232,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        int[] rows = table.getSelectedRows();
-                        if (rows.length > 1) { // multiple selection
+                        if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // comment
                             controlPane.setEnabledAt(2, false); // overestimation
@@ -243,11 +244,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
                             refreshIconLabels();
-                            /*if (!pomodoro.getTimer().isRunning()) {
-                             // disable start button
-                             pomodoro.getTimerPanel().setStartColor(ColorUtil.GRAY);
-                             }*/
-                        } else if (rows.length == 1) {
+                            if (!pomodoro.getTimer().isRunning()) {
+                                pomodoro.setCurrentToDoId(-1); // this will disable the start button
+                            }
+                        } else if (table.getSelectedRowCount() == 1) {
+                            int row = table.getSelectedRow();
                             // activate all panels
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                                 if (index == 4) {
@@ -259,12 +260,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     controlPane.setEnabledAt(index, true);
                                 }
                             }
+                            if (!pomodoro.inPomodoro()) {
+                                pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
+                            }
                             refreshIconLabels();
-
-                            /*if (!pomodoro.getTimer().isRunning()) {
-                             // enable start button
-                             pomodoro.getTimerPanel().setStartColor(Color.BLACK);
-                             }*/
                         }
                     }
                 });
@@ -396,10 +395,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                             act.setName(data.toString());
                             act.databaseUpdate();
                             ToDoList.getList().update(act);
+                            refreshIconLabels();
                         }
                     }
-                    refreshRemaining();
-                    refreshIconLabels();
                 } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
                     int lastRow = e.getLastRow(); // no need for convertRowIndexToModel
                     int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
@@ -445,30 +443,40 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public void move(Activity activity) {
         ToDoList.getList().move(activity);
         if (ToDoList.getList().isEmpty()
-                && pomodoro.getTimer().isRunning()) {
+                && pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
             pomodoro.getTimerPanel().setStart();
         }
     }
 
+    // comleteAll is used only if no pomodoro is running (see MoveToDoButton)
     @Override
     public void moveAll() {
         ToDoList.getList().moveAll();
+        if (pomodoro.getTimer().isRunning()) { // break running
+            pomodoro.stop();
+            pomodoro.getTimerPanel().setStart();
+        }
     }
 
     @Override
     public void complete(Activity activity) {
         ToDoList.getList().complete(activity);
         if (ToDoList.getList().isEmpty()
-                && pomodoro.getTimer().isRunning()) {
+                && pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
             pomodoro.getTimerPanel().setStart();
         }
     }
 
+    // comleteAll is used only if no pomodoro is running (see CompleteToDoButton)
     @Override
     public void completeAll() {
         ToDoList.getList().completeAll();
+        if (pomodoro.getTimer().isRunning()) { // break running
+            pomodoro.stop();
+            pomodoro.getTimerPanel().setStart();
+        }
     }
 
     @Override
@@ -505,7 +513,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         try {
             activitiesTableModel = getTableModel();
             table.setModel(activitiesTableModel);
-
         } catch (Exception e) {
             // do nothing
         }
@@ -645,33 +652,23 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
             }
-            if (table.getSelectedRowCount() == 1) { // one selected only                
-                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+            if (table.getSelectedRowCount() == 1) { // one selected only
+                int row = table.getSelectedRow();
+                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                } else {
-                    if (currentToDo != null && selectedToDo.getId() != currentToDo.getId()) {
-                        ToDoIconLabel.showIconLabel(iconLabel, currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    } else if (currentToDo != null) {
-                        ToDoIconLabel.showIconLabel(iconLabel, currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, currentToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    } else {
-                        ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                        ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    }
+                } else if (!pomodoro.inPomodoro()) {
+                    ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                 }
-            } else { // multiple selection
-                if (!pomodoro.getTimer().isRunning()) {
+            } else if (table.getSelectedRowCount() > 1) { // multiple selection
+                if (!pomodoro.inPomodoro()) {
                     ToDoIconLabel.clearIconLabel(iconLabel);
                     ToDoIconLabel.clearIconLabel(unplannedPanel.getIconLabel());
                 }

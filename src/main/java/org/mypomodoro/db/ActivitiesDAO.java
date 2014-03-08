@@ -54,8 +54,8 @@ public class ActivitiesDAO {
         } finally {
             database.unlock();
         }
-        Main.updateLists();
-        Main.updateView();
+        //Main.updateLists();
+        //Main.updateView();
     }
 
     public void update(Activity activity) {
@@ -272,7 +272,7 @@ public class ActivitiesDAO {
         }
         return activity;
     }
-    
+
     public void moveAllActivities() {
         String updateSQL = "UPDATE activities SET "
                 + "priority = -1"
@@ -299,7 +299,7 @@ public class ActivitiesDAO {
             database.update("Commit;");
             database.unlock();
         }
-    }        
+    }
 
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
@@ -316,7 +316,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void reopenAllReports() {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'false'"
