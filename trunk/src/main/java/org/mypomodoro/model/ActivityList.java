@@ -6,9 +6,9 @@ import org.mypomodoro.db.ActivitiesDAO;
  * Activity list
  *
  */
-public class ActivityList extends AbstractActivities {
+public final class ActivityList extends AbstractActivities {
 
-    private static ActivityList list = new ActivityList();
+    private static final ActivityList list = new ActivityList();
 
     private ActivityList() {
         refresh();
@@ -16,9 +16,9 @@ public class ActivityList extends AbstractActivities {
 
     @Override
     public void refresh() {
-        activities.clear();
+        removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivities()) {
-            activities.add(act);
+            super.add(act);
         }
     }
 
@@ -43,21 +43,21 @@ public class ActivityList extends AbstractActivities {
     }
 
     public void delete(Activity activity) {
-        activities.remove(activity);
+        remove(activity);
         activity.databaseDelete();
     }
 
     public void deleteAll() {
         ActivitiesDAO.getInstance().deleteAllActivities();
-        activities.clear();
+        removeAll();
     }
 
     // move from Activity list to ToDo list
     public void move(Activity activity) {
         ToDoList.getList().add(activity); // this sets the priority and update the database
-        activities.remove(activity);
+        remove(activity);
     }
-    
+
     public void moveAll() {
         // no use
     }

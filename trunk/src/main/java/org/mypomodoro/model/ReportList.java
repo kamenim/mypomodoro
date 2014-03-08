@@ -1,18 +1,15 @@
 package org.mypomodoro.model;
 
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
- * Report list/**
-
+ * Report list
  *
  */
-public class ReportList extends AbstractActivities {
+public final class ReportList extends AbstractActivities {
 
-    private static ReportList list = new ReportList();
+    private static final ReportList list = new ReportList();
 
     private ReportList() {
         refresh();
@@ -20,9 +17,9 @@ public class ReportList extends AbstractActivities {
 
     @Override
     public void refresh() {
-        activities.clear();
+        removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getReports()) {
-            activities.add(act);
+            super.add(act);
         }
     }
 
@@ -36,8 +33,8 @@ public class ReportList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
-        act.setIsCompleted(true);
         act.setPriority(-1);
+        act.setIsCompleted(true);
         act.setDate(new Date());
         if (act.getId() == -1) {
             act.databaseInsert();
@@ -48,24 +45,24 @@ public class ReportList extends AbstractActivities {
     }
 
     public void delete(Activity activity) {
-        activities.remove(activity);
+        remove(activity);
         activity.databaseDelete();
     }
 
     public void deleteAll() {
-        activities.clear();
         ActivitiesDAO.getInstance().deleteAllReports();
+        removeAll();
     }
 
     // move from Report list to Activity list
     public void reopen(Activity activity) {
         ActivityList.getList().add(activity);
-        activities.remove(activity);
+        remove(activity);
     }
 
-    public void reopenAll() {        
+    public void reopenAll() {
         ActivityList.getList().addAll(activities);
         ActivitiesDAO.getInstance().reopenAllReports();
-        activities.clear();
+        removeAll();
     }
 }

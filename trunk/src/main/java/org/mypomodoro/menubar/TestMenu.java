@@ -112,6 +112,7 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
+                    // TODO fix display of test data in Activity list
                     view.updateView();
                 }
             });

@@ -23,11 +23,14 @@ public class ViewMenu extends JMenu {
         super(Labels.getString("MenuBar.View"));
         this.view = view;
         add(new ActivityListItem());
-        add(new GenerateListItem());
         add(new ToDoListItem());
         add(new ReportListItem());
+        if (ControlPanel.preferences.getAgileMode()) {
+            add(new BurndownChartItem());
+        }
     }
-
+    
+    // TODO change keywords in Agile mode?
     class ActivityListItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
@@ -53,56 +56,6 @@ public class ViewMenu extends JMenu {
         }
     }
 
-    class ReportListItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
-
-        public ReportListItem() {
-            super(Labels.getString("ViewMenu.Report List"));
-            // Adds Keyboard Shortcut Alt-R
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-                    ActionEvent.ALT_MASK));
-            addActionListener(new MenuItemListener());
-        }
-
-        class MenuItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.updateView();
-                MyIcon reportListIcon = view.getIconBar().getIcon(4);
-                view.getIconBar().highlightIcon(reportListIcon);
-                view.setWindow(reportListIcon.getPanel());
-                view.setWindow(view.getReportListPanel());
-            }
-        }
-    }
-
-    class GenerateListItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
-
-        public GenerateListItem() {
-            super(Labels.getString("ViewMenu.Manager"));
-            // Adds Keyboard Shortcut Alt-M
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
-                    ActionEvent.ALT_MASK));
-            addActionListener(new MenuItemListener());
-        }
-
-        class MenuItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.updateView();
-                MyIcon generateIcon = view.getIconBar().getIcon(2);
-                view.getIconBar().highlightIcon(generateIcon);
-                view.setWindow(generateIcon.getPanel());
-                //view.setWindow(view.getGeneratePanel());
-            }
-        }
-    }
-
     class ToDoListItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
@@ -120,10 +73,59 @@ public class ViewMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.updateView();
-                MyIcon toDoListIcon = view.getIconBar().getIcon(3);
+                MyIcon toDoListIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(toDoListIcon);
                 view.setWindow(toDoListIcon.getPanel());
                 view.setWindow(view.getToDoPanel());
+            }
+        }
+    }
+
+    class ReportListItem extends JMenuItem {
+
+        private static final long serialVersionUID = 20110814L;
+
+        public ReportListItem() {
+            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
+            // Adds Keyboard Shortcut Alt-R
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+                    ActionEvent.ALT_MASK));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.updateView();
+                MyIcon reportListIcon = view.getIconBar().getIcon(3);
+                view.getIconBar().highlightIcon(reportListIcon);
+                view.setWindow(reportListIcon.getPanel());
+                view.setWindow(view.getReportListPanel());
+            }
+        }
+    }
+
+    class BurndownChartItem extends JMenuItem {
+
+        private static final long serialVersionUID = 20110814L;
+
+        public BurndownChartItem() {
+            super(Labels.getString("ViewMenu.Burndown Chart"));
+            // Adds Keyboard Shortcut Alt-B
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
+                    ActionEvent.ALT_MASK));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.updateView();
+                MyIcon burndownChartIcon = view.getIconBar().getIcon(4);
+                view.getIconBar().highlightIcon(burndownChartIcon);
+                view.setWindow(burndownChartIcon.getPanel());
             }
         }
     }

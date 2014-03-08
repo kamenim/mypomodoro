@@ -113,8 +113,6 @@ public class TimerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = panel.getTable().getSelectedRow();
-                pomodoro.setCurrentToDoId((Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey()));
                 Activity currentToDo = pomodoro.getCurrentToDo();
                 if (currentToDo != null) {
                     if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {

@@ -1,15 +1,14 @@
 package org.mypomodoro.model;
 
-import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  * ToDo list
  *
  */
-public class ToDoList extends AbstractActivities {
+public final class ToDoList extends AbstractActivities {
 
-    final private static ToDoList list = new ToDoList();
+    private static final ToDoList list = new ToDoList();
 
     private ToDoList() {
         refresh();
@@ -17,9 +16,9 @@ public class ToDoList extends AbstractActivities {
 
     @Override
     final public void refresh() {
-        activities.clear();
+        removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getTODOs()) {
-            activities.add(act);
+            super.add(act);
         }
     }
 
@@ -33,7 +32,7 @@ public class ToDoList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
-        act.setPriority(size() + 1); // starting the priority at 1 (not 0)
+        act.setPriority(size() + 1);
         act.setIsCompleted(false);
         if (act.getId() == -1) {
             act.databaseInsert();
@@ -44,30 +43,30 @@ public class ToDoList extends AbstractActivities {
     }
 
     public void delete(Activity activity) {
-        activities.remove(activity);
+        remove(activity);
         activity.databaseDelete();
     }
 
     public void move(Activity act) {
         ActivityList.getList().add(act); // this sets the priority and update the database
-        activities.remove(act);
+        remove(act);
     }
 
     public void moveAll() {
         ActivityList.getList().addAll(activities);
-        ActivitiesDAO.getInstance().moveAllTODOs();        
-        activities.clear();
+        ActivitiesDAO.getInstance().moveAllTODOs();
+        removeAll();
     }
 
     public void complete(Activity a) {
         ReportList.getList().add(a);
-        activities.remove(a);
+        remove(a);
     }
 
-    public void completeAll() {        
+    public void completeAll() {
         ReportList.getList().addAll(activities);
         ActivitiesDAO.getInstance().completeAllTODOs();
-        activities.clear();
+        removeAll();
     }
 
     // set new priorities
