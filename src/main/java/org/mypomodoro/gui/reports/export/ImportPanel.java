@@ -184,6 +184,7 @@ public class ImportPanel extends JPanel {
             case Cell.CELL_TYPE_STRING:
                 value = cell.getStringCellValue();
                 break;
+                // TODO fix float issue with xlsx format (story points)
             case Cell.CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     CellValue cellValue = eval.evaluate(cell);

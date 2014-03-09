@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ActivityInformation;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -20,10 +21,12 @@ public class EditPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
     private EditInputForm editInputForm;
-    private final ActivitiesPanel panel;
+    private final ActivitiesPanel activitiesPanel;
+    private final ActivityInformation information;
 
-    public EditPanel(ActivitiesPanel activitiesPanel) {
-        panel = activitiesPanel;
+    public EditPanel(ActivitiesPanel activitiesPanel, ActivityInformation information) {
+        this.activitiesPanel = activitiesPanel;
+        this.information = information;
     }
 
     @Override
@@ -75,11 +78,14 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(Activity currentActivity) {
-        currentActivity.databaseUpdate();
-        ActivityList.getList().update(currentActivity);
-        int row = panel.getTable().getSelectedRow();
-        panel.getTable().getModel().setValueAt(currentActivity.getDate(), panel.getTable().convertRowIndexToModel(row), 1); // date column index = 1
+    protected void validActivityAction(Activity activity) {
+        ActivityList.getList().update(activity);
+        activity.databaseUpdate();
+        int row = activitiesPanel.getTable().getSelectedRow();
+        activitiesPanel.getTable().getModel().setValueAt(activity.getDate(), activitiesPanel.getTable().convertRowIndexToModel(row), 1); // date column index = 1
+        // update details panel
+        information.selectInfo(activity);
+        information.showInfo();
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);

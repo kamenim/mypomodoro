@@ -59,7 +59,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private JTable table;
+    private final JTable table;
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -112,7 +112,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
+
+        ComboBoxCellRenderer typeComboBoxCellRenderer = new ComboBoxCellRenderer(types, true);
+        //typeComboBoxCellRenderer.setMinimumSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
+        //typeComboBoxCellRenderer.setPreferredSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
+        //typeComboBoxCellRenderer.setMaximumSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(typeComboBoxCellRenderer);
         table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
         // Estimated combo box
         Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
@@ -149,7 +154,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(80);
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
         }
-        // hide unplanned and date in Agile mode (does not make sense to have unplanned task in the backlog anyway)
+        // hide unplanned and date in Agile mode
         if (ControlPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
@@ -170,7 +175,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(80);
-        // Set minimum width of column type so the custom resizer won't 'shrink' it
+        // Set min width of type column
+        // TODO make the combo box resize with the cell
         table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(100);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
@@ -253,8 +259,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        int[] rows = table.getSelectedRows();
-                        if (rows.length > 1) { // multiple selection
+                        if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
                             controlPane.setEnabledAt(2, false); // comment
@@ -262,7 +267,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                             || controlPane.getSelectedIndex() == 2) {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
-                        } else if (rows.length == 1) {
+                        } else if (table.getSelectedRowCount() == 1) {
                             // activate all panels
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                                 controlPane.setEnabledAt(index, true);
@@ -280,7 +285,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        EditPanel editPanel = new EditPanel(this);
+        EditPanel editPanel = new EditPanel(this, detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);

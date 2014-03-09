@@ -1,6 +1,9 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,10 +22,15 @@ class ActivitiesComboBoxPanel extends JPanel {
 
     // Generic constructor
     public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
+        setLayout(new GridBagLayout());
         comboBox = new JComboBox<E>(data);
         setOpaque(true);
         comboBox.setEditable(editable);
-        add(comboBox);
+        if (data instanceof String[]) {
+            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 3, 0, 3), 0, 0));
+        } else {
+            add(comboBox);
+        }
         add(label);
     }
 

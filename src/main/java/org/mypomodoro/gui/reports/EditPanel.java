@@ -8,8 +8,10 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
@@ -22,8 +24,10 @@ public class EditPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
     private ReportInputForm reportInputForm;
+    private final ActivityInformation information;
 
-    public EditPanel() {
+    public EditPanel(ActivityInformation information) {
+        this.information = information;
     }
 
     @Override
@@ -76,9 +80,13 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(Activity currentReport) {
-        currentReport.databaseUpdate();
-        ReportList.getList().update(currentReport);
+    protected void validActivityAction(Activity activity) {
+        ReportList.getList().update(activity);
+        activity.databaseUpdate();
+        // update details panel
+        information.selectInfo(activity);
+        information.showInfo();
+        // TODO update the details pane
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -113,11 +121,4 @@ public class EditPanel extends CreatePanel {
         reportInputForm.setDescriptionField(report.getDescription());
         reportInputForm.setActivityId(report.getId());
     }
-
-    /*@Override
-     public void clearForm() {
-     reportInputForm.setAuthorField("");
-     reportInputForm.setPlaceField("");
-     reportInputForm.setDescriptionField("");
-     }*/
 }
