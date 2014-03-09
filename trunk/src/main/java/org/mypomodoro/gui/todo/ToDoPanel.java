@@ -43,6 +43,7 @@ import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
@@ -58,7 +59,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     //private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private JTable table;
+    private final JTable table;
     private static final String[] columnNames = {Labels.getString("Common.Priority"),
         "U",
         Labels.getString("Common.Title"),
@@ -71,7 +72,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final JLabel pomodoroTime = new JLabel();
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
-    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this);
+    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
@@ -139,13 +140,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(80);
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
         }
-        // hide unplanned in Agile mode (does not make sense to have unplanned task in the backlog anyway)
+        // hide unplanned in Agile mode
         if (ControlPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
         } else {
-            // Set width of columns Unplanned and date
+            // Set width of columns Unplanned
             table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(30);
             table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(30);
             table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(30);

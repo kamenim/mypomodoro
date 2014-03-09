@@ -54,7 +54,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private JTable table;
+    private final JTable table;
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -70,7 +70,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     //Labels.getString("ReportListPanel.Time")
     public static int ID_KEY = 11;
 
-    private final DetailsPanel informationArea = new DetailsPanel(this);
+    private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
 
     public ReportsPanel() {
@@ -167,7 +167,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         /*table.getColumnModel().getColumn(2).setMaxWidth(60);
          table.getColumnModel().getColumn(2).setMinWidth(60);
          table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
-        // Set minimum width of column type so the custom resizer won't 'shrink' it
+        // Set min width of type column
         table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(100);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
@@ -255,8 +255,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        int[] rows = table.getSelectedRows();
-                        if (rows.length > 1) { // multiple selection
+                        if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
                             controlPane.setEnabledAt(2, false); // comment 
@@ -264,7 +263,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                             || controlPane.getSelectedIndex() == 2) {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
-                        } else if (rows.length == 1) {
+                        } else if (table.getSelectedRowCount() == 1) {
                             // activate all panels
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                                 controlPane.setEnabledAt(index, true);
@@ -281,8 +280,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.fill = GridBagConstraints.BOTH;
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
-        controlPane.add(Labels.getString("Common.Details"), informationArea);
-        EditPanel editPanel = new EditPanel();
+        controlPane.add(Labels.getString("Common.Details"), detailsPanel);
+        EditPanel editPanel = new EditPanel(detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
@@ -292,7 +291,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
 
-        showSelectedItemDetails(informationArea);
+        showSelectedItemDetails(detailsPanel);
         showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
     }
@@ -388,8 +387,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     // Refresh panel border
                     setPanelBorder();
                     // update info
-                    informationArea.selectInfo(act);
-                    informationArea.showInfo();
+                    detailsPanel.selectInfo(act);
+                    detailsPanel.showInfo();
                 } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
                     int lastRow = e.getLastRow(); // no need for convertRowIndexToModel                    
                     int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;

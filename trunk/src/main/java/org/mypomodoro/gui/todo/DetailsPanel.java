@@ -101,7 +101,6 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        textMap.remove("title");
         if (ControlPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");

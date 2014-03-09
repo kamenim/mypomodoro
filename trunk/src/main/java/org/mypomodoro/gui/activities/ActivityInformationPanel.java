@@ -81,6 +81,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         return text;
     }
 
+    @Override
     public boolean isMultipleSelectionAllowed() {
         return true;
     }

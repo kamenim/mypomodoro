@@ -13,7 +13,7 @@ public class ActivityInformationTableListener implements ListSelectionListener {
     private final ActivityInformation information;
     private final int idKey;
     private final AbstractActivities activities;
-
+    
     public ActivityInformationTableListener(AbstractActivities activities,
             JTable table, ActivityInformation information, int idKey) {
         this.activities = activities;
@@ -23,18 +23,19 @@ public class ActivityInformationTableListener implements ListSelectionListener {
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        int[] rows = table.getSelectedRows();
-        if (rows.length > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+    public void valueChanged(ListSelectionEvent e) {        
+        if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
             String info = "";
+            int[] rows = table.getSelectedRows();
             for (int row : rows) {
                 Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
                 Activity selectedActivity = activities.getById(id);
                 info += selectedActivity.getName() + "\n";
             }
             information.showInfo(info);
-        } else if (rows.length == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), idKey);
+        } else if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
             information.selectInfo(activity);
             information.showInfo();

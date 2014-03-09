@@ -27,9 +27,9 @@ public class ToDoInformationTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        int[] rows = table.getSelectedRows();
-        if (rows.length > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+        if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
             String info = "";
+            int[] rows = table.getSelectedRows();
             for (int row : rows) {
                 Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
                 Activity selectedToDo = activities.getById(id);
@@ -40,8 +40,9 @@ public class ToDoInformationTableListener implements ListSelectionListener {
                 info += selectedToDo.getName() + "\n";
             }
             information.showInfo(info);
-        } else if (rows.length == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rows[0]), idKey);
+        } else if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
             information.selectInfo(activity);
             information.showInfo();
