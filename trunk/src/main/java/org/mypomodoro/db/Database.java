@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
-import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 
 /**
@@ -18,6 +17,7 @@ import org.mypomodoro.db.mysql.MySQLConfigLoader;
  */
 public class Database {
 
+    private final ReentrantLock lock = new ReentrantLock();
     private Connection connection = null;
     private Statement statement = null;
     private String driverClassName = "org.sqlite.JDBC";
@@ -29,7 +29,6 @@ public class Database {
     private String longInteger = "INTEGER";
     public String selectStatementSeqId = "SELECT seq FROM sqlite_sequence WHERE name = 'activities'";
     public String sequenceIdName = "seq";
-
     /*
      Postgresql
      autoIncrementKeyword = "???";
@@ -37,6 +36,7 @@ public class Database {
      selectStatementSeqId = "SELECT CURRVAL(pg_get_serial_sequence('activities','id'))";
      sequenceIdName = "pg_get_serial_sequence";
      */
+
     public Database() {
         try {
             MySQLConfigLoader.loadProperties();
@@ -48,7 +48,7 @@ public class Database {
                 autoIncrementKeyword = "AUTO_INCREMENT";
                 longInteger = "BIGINT";
                 selectStatementSeqId = "SELECT LAST_INSERT_ID()";
-                sequenceIdName = "last_insert_id()";                
+                sequenceIdName = "last_insert_id()";
             }
         } catch (IOException ex) {
             // do nothing
@@ -82,7 +82,6 @@ public class Database {
     }
 
     public void update(String sql) {
-
         try {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -92,13 +91,11 @@ public class Database {
 
     public ResultSet query(String sql) {
         ResultSet rs = null;
-
         try {
             rs = statement.executeQuery(sql);
         } catch (SQLException e) {
             System.err.println(e);
         }
-
         return rs;
     }
 
@@ -172,23 +169,6 @@ public class Database {
             }
         }
     }
-
-    public void resetData() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                update("begin;");
-                update("DELETE from activities;");
-                update("commit;");
-                Main.updateLists();
-                Main.updateView();
-            }
-        });
-
-    }
-
-    private final ReentrantLock lock = new ReentrantLock();
 
     public void lock() {
         lock.lock();

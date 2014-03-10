@@ -23,10 +23,6 @@ public class ActivitiesDAO {
         database.createActivitiesTable();
     }
 
-    public void removeAll() {
-        database.resetData();
-    }
-
     public int insert(Activity newActivity) {
         int id = -1;
         String insertSQL = "INSERT INTO activities VALUES ( " + "NULL, "
@@ -239,6 +235,17 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
+    
+    public void deleteAll() {
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update("DELETE from activities;");
+        } finally {
+            database.update("Commit;");
+            database.unlock();
+        }
+    }
 
     // Activities, TODOs and Reports
     public Activity getActivity(int ID) {
@@ -284,7 +291,7 @@ public class ActivitiesDAO {
         }
     }
 
-    // move all ToDos back to Report list
+    // move all ToDos to Report list
     public void completeAllTODOs() {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'true',"

@@ -35,8 +35,8 @@ public final class ReportList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(-1);
         act.setIsCompleted(true);
+        act.setDateCompleted(new Date());
         if (act.getId() == -1) {
-            act.setDateCompleted(new Date());
             act.setId(act.databaseInsert());
         } else {
             act.databaseUpdate();
@@ -61,7 +61,9 @@ public final class ReportList extends AbstractActivities {
     }
 
     public void reopenAll() {
-        ActivityList.getList().addAll(activities);
+        for (Activity activity : activities) {
+            ActivityList.getList().add(activity);
+        }
         ActivitiesDAO.getInstance().reopenAllReports();
         removeAll();
     }

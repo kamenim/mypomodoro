@@ -38,7 +38,7 @@ public class Activity {
      * date the activity is completed
      *
      */
-    private Date dateCompleted;
+    private Date dateCompleted = new Date(0);
     /**
      * name of the author who entered the activity into the database set by the
      * constructor

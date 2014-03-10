@@ -1,7 +1,6 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
-import java.awt.Container;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
@@ -9,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
@@ -95,8 +95,10 @@ public class MyPomodoroView extends JFrame {
         Main.updateView();
     }
 
-    public final void setWindow(Container e) {
-        updateView();
+    public final void setWindow(JPanel e) {
+        if (e instanceof AbstractActivitiesPanel) {        
+            ((AbstractActivitiesPanel)e).refresh();
+        }
         setContentPane(new WindowPanel(iconBar, e));
         menuBar.revalidate();
     }

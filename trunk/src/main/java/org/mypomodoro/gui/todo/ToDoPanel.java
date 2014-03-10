@@ -43,7 +43,6 @@ import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
@@ -643,6 +642,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         return pomodoroTime;
     }
 
+    // TODO problem with iconlabels not refreshed when list empty (when completing or moving tasks)
     public void refreshIconLabels() {
         if (table.getRowCount() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();

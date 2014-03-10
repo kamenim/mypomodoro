@@ -56,7 +56,9 @@ public final class ToDoList extends AbstractActivities {
     }
 
     public void moveAll() {
-        ActivityList.getList().addAll(activities);
+        for (Activity activity : activities) {
+            ActivityList.getList().add(activity);
+        }
         ActivitiesDAO.getInstance().moveAllTODOs();
         removeAll();
     }
@@ -67,7 +69,9 @@ public final class ToDoList extends AbstractActivities {
     }
 
     public void completeAll() {
-        ReportList.getList().addAll(activities);
+        for (Activity activity : activities) {
+            ReportList.getList().add(activity);
+        }
         ActivitiesDAO.getInstance().completeAllTODOs();
         removeAll();
     }
