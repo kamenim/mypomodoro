@@ -105,6 +105,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
             textMap.remove("storypoints");
             textMap.remove("iteration");
         }
+        textMap.remove("date_completed");
     }
 
     public JLabel getIconLabel() {

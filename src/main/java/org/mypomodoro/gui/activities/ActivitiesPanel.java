@@ -112,12 +112,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-
-        ComboBoxCellRenderer typeComboBoxCellRenderer = new ComboBoxCellRenderer(types, true);
-        //typeComboBoxCellRenderer.setMinimumSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
-        //typeComboBoxCellRenderer.setPreferredSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
-        //typeComboBoxCellRenderer.setMaximumSize(new Dimension(table.getColumnModel().getColumn(ID_KEY - 5).getWidth()-20, typeComboBoxCellRenderer.getHeight()));
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(typeComboBoxCellRenderer);
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
         table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
         // Estimated combo box
         Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
@@ -175,9 +170,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(80);
-        // Set min width of type column
-        // TODO make the combo box resize with the cell
-        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(100);
+        // Set width of column type
+        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(200);
+        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(200);
+        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(200);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);

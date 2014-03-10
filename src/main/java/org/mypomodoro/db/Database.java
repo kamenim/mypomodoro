@@ -24,10 +24,19 @@ public class Database {
     private String connectionStatement = "jdbc:sqlite:pomodoro.db";
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
-    private static String databaseServer = SQLLITE;
+    // Database specific
     private String autoIncrementKeyword = "AUTOINCREMENT";
     private String longInteger = "INTEGER";
+    public String selectStatementSeqId = "SELECT seq FROM sqlite_sequence WHERE name = 'activities'";
+    public String sequenceIdName = "seq";
 
+    /*
+     Postgresql
+     autoIncrementKeyword = "???";
+     longInteger = "???";
+     selectStatementSeqId = "SELECT CURRVAL(pg_get_serial_sequence('activities','id'))";
+     sequenceIdName = "pg_get_serial_sequence";
+     */
     public Database() {
         try {
             MySQLConfigLoader.loadProperties();
@@ -35,7 +44,11 @@ public class Database {
                 driverClassName = "com.mysql.jdbc.Driver";
                 connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
                         + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();
-                databaseServer = MYSQL;
+                // Database specific
+                autoIncrementKeyword = "AUTO_INCREMENT";
+                longInteger = "BIGINT";
+                selectStatementSeqId = "SELECT LAST_INSERT_ID()";
+                sequenceIdName = "last_insert_id()";                
             }
         } catch (IOException ex) {
             // do nothing
@@ -82,7 +95,7 @@ public class Database {
 
         try {
             rs = statement.executeQuery(sql);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println(e);
         }
 
@@ -95,11 +108,6 @@ public class Database {
     }
 
     public void createActivitiesTable() {
-        if (databaseServer.equals(MYSQL)) {
-            autoIncrementKeyword = "AUTO_INCREMENT";
-            longInteger = "BIGINT";
-        }
-
         String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
                 + "id INTEGER PRIMARY KEY " + autoIncrementKeyword + ", "
                 + "name TEXT, "
@@ -107,6 +115,7 @@ public class Database {
                 + "notes TEXT, "
                 + "author TEXT, " + "place TEXT, "
                 + "date_added " + longInteger + ", "
+                + "date_completed " + longInteger + ", "
                 + "estimated_poms INTEGER, "
                 + "actual_poms INTEGER, "
                 + "overestimated_poms INTEGER, "
@@ -179,27 +188,6 @@ public class Database {
 
     }
 
-    /*public static void main(String[] args) throws Exception {
-     Database db = new Database();
-     db.close();
-     System.out.println("to_do:");
-     ToDoList list = ToDoList.getList();
-     for (Activity a : list) {
-     System.out.println(a);
-     }
-
-     System.out.println("act:");
-     ActivityList list2 = ActivityList.getList();
-     for (Activity a : list2) {
-     System.out.println(a);
-     }
-
-     System.out.println("reports:");
-     Iterator<Activity> iterator = ReportList.getList().iterator();
-     while (iterator.hasNext()) {
-     System.out.println(iterator.next());
-     }
-     }*/
     private final ReentrantLock lock = new ReentrantLock();
 
     public void lock() {

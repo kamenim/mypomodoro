@@ -64,12 +64,13 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        // replace date
-        textMap.put("date", Labels.getString("Common.Date") + ": "
+        // date completed with time
+        textMap.put("date_completed", Labels.getString("Common.Date") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDate())
-                + " " + DateUtil.getFormatedTime(activity.getDate())
-                + (activity.isUnplanned() ? "]" : "") + "\n");
+                + DateUtil.getFormatedDate(activity.getDateCompleted())
+                + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
+                + (activity.isUnplanned() ? "]" : "") + "\n");        
+        textMap.remove("date");
         // add additional info
         textMap.put("real", Labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms() + "\n");
         textMap.put("diffi", Labels.getString("ReportListPanel.Diff I") + ": " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "\n");

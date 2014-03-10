@@ -62,15 +62,15 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
         add(moveButton, gbc);
     }
-    
+
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         if (ControlPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
-        } else {
             textMap.remove("date");
         }
+        textMap.remove("date_completed");
     }
 }

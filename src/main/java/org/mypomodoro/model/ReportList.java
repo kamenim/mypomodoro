@@ -35,9 +35,9 @@ public final class ReportList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(-1);
         act.setIsCompleted(true);
-        act.setDate(new Date());
         if (act.getId() == -1) {
-            act.databaseInsert();
+            act.setDateCompleted(new Date());
+            act.setId(act.databaseInsert());
         } else {
             act.databaseUpdate();
         }
