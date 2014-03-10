@@ -97,6 +97,10 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         add(datePicker, c);
+        if (ControlPanel.preferences.getAgileMode()) {
+            dateLabel.setVisible(false);
+            datePicker.setVisible(false);
+        }
     }
 
     protected void addName(int gridy) {

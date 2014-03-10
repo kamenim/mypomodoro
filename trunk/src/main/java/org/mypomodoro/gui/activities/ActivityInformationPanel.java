@@ -32,6 +32,10 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate())
                 + (activity.isUnplanned() ? "]" : "") + "\n");
+        textMap.put("date_completed", Labels.getString("Common.Date") + ": "
+                + (activity.isUnplanned() ? "U [" : "")
+                + DateUtil.getFormatedDate(activity.getDateCompleted())
+                + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
         textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
         textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms()

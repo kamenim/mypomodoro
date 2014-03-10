@@ -31,10 +31,14 @@ public class Activity {
     private String place;
     /**
      * date the activity is entered into database set by Java in constructor
-     * (not needed in GUI)
      *
      */
     private Date date;
+    /**
+     * date the activity is completed
+     *
+     */
+    private Date dateCompleted;
     /**
      * name of the author who entered the activity into the database set by the
      * constructor
@@ -238,6 +242,7 @@ public class Activity {
             this.author = rs.getString("author");
             this.place = rs.getString("place");
             this.date = new Date(rs.getLong("date_added"));
+            this.dateCompleted = new Date(rs.getLong("date_completed"));
             this.estimatedPoms = rs.getInt("estimated_poms");
             this.actualPoms = rs.getInt("actual_poms");
             this.overestimatedPoms = rs.getInt("overestimated_poms");
@@ -266,6 +271,10 @@ public class Activity {
     public Date getDate() {
         return date;
     }
+    
+    public Date getDateCompleted() {
+        return dateCompleted;
+    }    
 
     public String getDescription() {
         return description;
@@ -332,6 +341,10 @@ public class Activity {
     }
 
     // SETTERS
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
@@ -374,6 +387,10 @@ public class Activity {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+    
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
     }
 
     public void setName(String name) {
@@ -425,28 +442,28 @@ public class Activity {
         return estimatedPoms + overestimatedPoms >= 0;
     }
 
-    public void databaseInsert() {
-        ActivitiesDAO.getInstance().insert(this);
+    public int databaseInsert() {        
         // update lists
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
-        PlaceList.addPlace(getPlace());
+        PlaceList.addPlace(getPlace());        
+        return ActivitiesDAO.getInstance().insert(this);
     }
 
     public void databaseUpdate() {
-        ActivitiesDAO.getInstance().update(this);
         // update lists
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
+        ActivitiesDAO.getInstance().update(this);
     }
 
     public void databaseDelete() {
-        ActivitiesDAO.getInstance().delete(this);
         // update lists
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
+        ActivitiesDAO.getInstance().delete(this);
     }
 
     public boolean alreadyExists() {

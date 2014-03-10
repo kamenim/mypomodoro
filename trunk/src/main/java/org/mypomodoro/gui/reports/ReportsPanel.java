@@ -304,7 +304,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         for (int i = 0; i < ReportList.getList().size() && iterator.hasNext(); i++) {
             Activity currentActivity = iterator.next();
             tableData[i][0] = currentActivity.isUnplanned();
-            tableData[i][1] = currentActivity.getDate(); // date formated via custom renderer (DateRenderer)
+            tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
             //tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
             tableData[i][2] = currentActivity.getName();
             tableData[i][3] = currentActivity.getType();

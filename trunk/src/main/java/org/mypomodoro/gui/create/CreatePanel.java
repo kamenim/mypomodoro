@@ -119,6 +119,7 @@ public class CreatePanel extends JPanel {
 
     protected void validActivityAction(Activity newActivity) {
         ActivityList.getList().add(newActivity);
+        //panel.refresh(); // refresh the activity list panel to get the ID of the newly created activity inserted in the table
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
