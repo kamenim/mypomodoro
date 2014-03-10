@@ -101,6 +101,7 @@ public class ImportPanel extends JPanel {
                 } else if (importInputForm.isFileExcelOpenXMLFormat()) {
                     importExcelx(fileName);
                 }
+                panel.refresh();
                 String title = Labels.getString("ReportListPanel.Import");
                 String message = Labels.getString(
                         "ReportListPanel.Data imported",
@@ -210,23 +211,23 @@ public class ImportPanel extends JPanel {
     }
 
     private void insertData(String[] line) throws Exception {
-        Activity newReport = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
+        Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
                 !line[0].equals("0"), panel instanceof ReportsPanel);
         try {
-            newReport.setStoryPoints(Float.parseFloat(line[16]));
-            newReport.setIteration(Integer.parseInt(line[17]));
-            newReport.setPriority(Integer.parseInt(line[18]));
+            newActivity.setStoryPoints(Float.parseFloat(line[16]));
+            newActivity.setIteration(Integer.parseInt(line[17]));
+            newActivity.setPriority(Integer.parseInt(line[18]));
         } catch (NumberFormatException e) {
-            newReport.setStoryPoints(0);
-            newReport.setIteration(-1);
-            newReport.setPriority(-1);
+            newActivity.setStoryPoints(0);
+            newActivity.setIteration(-1);
+            newActivity.setPriority(-1);
         } catch (ArrayIndexOutOfBoundsException e) {
-            newReport.setStoryPoints(0);
-            newReport.setIteration(-1);
-            newReport.setPriority(-1);
+            newActivity.setStoryPoints(0);
+            newActivity.setIteration(-1);
+            newActivity.setPriority(-1);
         }
-        panel.addActivity(newReport);
+        panel.addActivity(newActivity);
     }
 }

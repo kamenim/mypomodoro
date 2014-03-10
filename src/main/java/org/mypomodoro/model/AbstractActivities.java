@@ -13,10 +13,6 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         activities.add(activity);
     }
 
-    public void addAll(LinkedList<Activity> acts) {
-        activities.addAll(acts);
-    }
-
     public boolean isEmpty() {
         return activities.isEmpty();
     }

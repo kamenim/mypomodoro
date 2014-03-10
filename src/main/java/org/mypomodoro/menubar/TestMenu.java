@@ -9,6 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.ControlPanel;
@@ -38,8 +39,9 @@ public class TestMenu extends JMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ActivitiesDAO.getInstance().removeAll();
-                    view.updateView();
+                    ActivitiesDAO.getInstance().deleteAll();
+                    Main.updateLists();
+                    Main.updateView();
                 }
             });
         }
@@ -50,10 +52,10 @@ public class TestMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         private void createTestData() {
-            SwingUtilities.invokeLater(new Runnable() {
+            //SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
+                //@Override
+                //public void run() {
                     String[] authors = {"Brian", "Paul", "Bobby", "Jordan",
                         "Rick"};
                     String[] place = {"GGC", "School", "Work", "Home",
@@ -87,9 +89,7 @@ public class TestMenu extends JMenu {
                     cal.set(Calendar.MILLISECOND, 0);
                     Date currentDateAtMidnight = cal.getTime();
 
-                    // insert data into the activitylist
                     for (int i = 0; i < alSize; i++) {
-
                         Activity a = new Activity(place[rand.nextInt(12)],
                                 authors[rand.nextInt(5)],
                                 name[rand.nextInt(4)],
@@ -100,9 +100,9 @@ public class TestMenu extends JMenu {
                                 iteration[rand.nextInt(7)],
                                 currentDateAtMidnight);
                         a.databaseInsert();
-                    }
-                }
-            });
+                    }                    
+                //}
+            //});
         }
 
         public TestDataItem(final MyPomodoroView view) {
@@ -112,8 +112,8 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    // TODO fix display of test data in Activity list
-                    view.updateView();
+                    Main.updateLists(); // this comes first
+                    Main.updateView();
                 }
             });
         }
