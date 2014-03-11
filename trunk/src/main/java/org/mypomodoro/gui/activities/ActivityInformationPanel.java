@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.activities;
 
+import java.awt.Color;
 import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -10,7 +11,7 @@ import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
+import org.mypomodoro.util.TimeConverter;
 
 /**
  * Activity information panel
@@ -38,9 +39,11 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
         textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
-        textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " + activity.getEstimatedPoms()
+        textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " 
+                + activity.getActualPoms() + " / "
+                + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
-                + " (" + getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
+                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
         if (ControlPanel.preferences.getAgileMode()) {
             textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
             textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + activity.getIteration() + "\n");
@@ -88,5 +91,10 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
     @Override
     public boolean isMultipleSelectionAllowed() {
         return true;
+    }
+    
+    @Override
+    public void setForegroundColor(Color color) {
+        informationArea.setForeground(color);
     }
 }

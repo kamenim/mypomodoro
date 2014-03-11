@@ -104,6 +104,8 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
                 preferencesInputFormPanel.agileModeBox.setSelected(false);
+                preferencesInputFormPanel.plainHoursBox.setSelected(true);
+                preferencesInputFormPanel.effectiveHoursBox.setSelected(false);
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
                 updatePreferences();
                 disableSaveButton();
@@ -186,6 +188,7 @@ public class ControlPanel extends JPanel {
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
         preferences.setAgileMode(preferencesInputFormPanel.agileModeBox.isSelected());
+        preferences.setPlainHours(preferencesInputFormPanel.plainHoursBox.isSelected());
         preferences.updatePreferences();
     }
 }

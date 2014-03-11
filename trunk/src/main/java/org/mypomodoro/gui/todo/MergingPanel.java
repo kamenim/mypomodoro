@@ -111,8 +111,7 @@ public class MergingPanel extends CreatePanel {
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
-            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)
-            // TODO fix problem with estimated
+            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)            
             if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
                 newActivity.setEstimatedPoms(actualPoms + 1);
             }
@@ -121,9 +120,7 @@ public class MergingPanel extends CreatePanel {
             }
             if (mergingInputFormPanel.isDateToday()) {
                 message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-                panel.addActivity(newActivity);
-                // TODO how to set the priority of the new activity (use the highest priority among the merged activities?)
-                // TODO select that activity in the table after refresh?                
+                panel.addActivity(newActivity);                
                 panel.reorderByPriority();
                 panel.refresh();
                 panel.refreshRemaining();

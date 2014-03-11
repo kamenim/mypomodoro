@@ -1,5 +1,6 @@
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,6 +16,7 @@ import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -26,6 +28,8 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     private static final long serialVersionUID = 20110814L;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private  MoveToDoButton moveButton;
+    private  CompleteToDoButton completeButton;
 
     public DetailsPanel(ToDoPanel todoPanel) {
         setLayout(new GridBagLayout());
@@ -42,7 +46,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        MoveToDoButton moveButton = new MoveToDoButton("<<<", todoPanel);
+        moveButton = new MoveToDoButton("<<<", todoPanel);
         moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
         add(moveButton, gbc);
     }
@@ -95,7 +99,8 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        add(new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), todoPanel), gbc);
+        completeButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), todoPanel);
+        add(completeButton, gbc);
     }
 
     @Override
@@ -110,5 +115,24 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
 
     public JLabel getIconLabel() {
         return iconLabel;
+    }
+    
+    public void disableButtons() {
+        moveButton.setEnabled(false);
+        moveButton.setOpaque(false);
+        moveButton.setForeground(Color.GRAY);
+        completeButton.setEnabled(false);
+        completeButton.setOpaque(false);
+        completeButton.setForeground(Color.GRAY);
+        
+    }
+    
+    public void enableButtons() {
+        moveButton.setEnabled(true);
+        moveButton.setOpaque(true);
+        moveButton.setForeground(ColorUtil.BLACK);
+        completeButton.setEnabled(true);
+        completeButton.setOpaque(true);
+        completeButton.setForeground(ColorUtil.BLACK);
     }
 }

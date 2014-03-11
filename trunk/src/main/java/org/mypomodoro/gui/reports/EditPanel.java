@@ -86,7 +86,6 @@ public class EditPanel extends CreatePanel {
         // update details panel
         information.selectInfo(activity);
         information.showInfo();
-        // TODO update the details pane
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
         JOptionPane.showConfirmDialog(Main.gui, message, title,

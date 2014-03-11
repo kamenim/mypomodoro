@@ -8,7 +8,7 @@ import org.mypomodoro.util.DateUtil;
  * Preference Object stores all user preferences.
  *
  */
-public class Preferences {
+public final class Preferences {
 
     public Preferences() {
         refresh();
@@ -80,6 +80,11 @@ public class Preferences {
      */
     public static final boolean AGILE = false;
     private boolean agileMode = AGILE;
+    /**
+     * Plain hours
+     */
+    public static final boolean PLAIN = true;
+    private boolean plainHours = PLAIN;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -133,6 +138,10 @@ public class Preferences {
     public boolean getAgileMode() {
         return agileMode;
     }
+    
+    public boolean getPlainHours() {
+        return plainHours;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -185,6 +194,10 @@ public class Preferences {
 
     public void setAgileMode(boolean value) {
         agileMode = value;
+    }
+    
+    public void setPlainHours(boolean value) {
+        plainHours = value;
     }
 
     public void refresh() {

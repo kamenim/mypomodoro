@@ -37,6 +37,8 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox systemTrayMessageBox;
     protected final JCheckBox alwaysOnTopBox;
     protected final JCheckBox agileModeBox;
+    protected final JCheckBox plainHoursBox;
+    protected final JCheckBox effectiveHoursBox;
 
     public PreferencesInputForm(final ControlPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(),
@@ -181,39 +183,82 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
+        plainHoursBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Plain hours"),
+                ControlPanel.preferences.getPlainHours());
+        plainHoursBox.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+                if (effectiveHoursBox.isSelected()) {
+                    effectiveHoursBox.setSelected(false);
+                }
+            }
+        }); 
+        effectiveHoursBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Effective hours"),
+                !ControlPanel.preferences.getPlainHours());
+        effectiveHoursBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+                if (plainHoursBox.isSelected()) {
+                    plainHoursBox.setSelected(false);
+                }
+            }
+        });
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        addAgileMode(gbc);
+        gbc.gridy = 1;
         gbc.weighty = .5;
         gbc.fill = GridBagConstraints.BOTH;
         add(pomodoroSlider, gbc);
-        gbc.gridy = 1;
-        add(shortBreakSlider, gbc);
         gbc.gridy = 2;
-        add(longBreakSlider, gbc);
+        add(shortBreakSlider, gbc);
         gbc.gridy = 3;
-        add(maxNbPomPerActivitySlider, gbc);
+        add(longBreakSlider, gbc);
         gbc.gridy = 4;
-        add(maxNbPomPerDaySlider, gbc);
+        add(maxNbPomPerActivitySlider, gbc);
         gbc.gridy = 5;
-        add(nbPomPerSetSlider, gbc);
+        add(maxNbPomPerDaySlider, gbc);
         gbc.gridy = 6;
-        gbc.gridwidth = 2;
-        addSounds(gbc);
+        add(nbPomPerSetSlider, gbc);
         gbc.gridy = 7;
         gbc.gridwidth = 2;
-        addLocales(gbc);
+        addSounds(gbc);
         gbc.gridy = 8;
+        gbc.gridwidth = 2;
+        addLocales(gbc);
+        gbc.gridy = 9;
         gbc.gridwidth = 2;
         if (SystemTray.isSupported()) {
             addSystemTray(gbc);
         }
-        gbc.gridy = 9;
-        gbc.gridwidth = 2;
-        addAlwaysOnTop(gbc);
         gbc.gridy = 10;
         gbc.gridwidth = 2;
-        addAgileMode(gbc);
+        addPlainHours(gbc);
+    }
+    
+    private void addAgileMode(GridBagConstraints gbc) {
+        JPanel agileMode = new JPanel();
+        agileMode.setLayout(new GridBagLayout());
+        GridBagConstraints gbcAgileMode = new GridBagConstraints();
+        gbcAgileMode.fill = GridBagConstraints.HORIZONTAL;
+        gbcAgileMode.anchor = GridBagConstraints.NORTH;
+        gbcAgileMode.gridx = 0;
+        gbcAgileMode.gridy = 0;
+        agileMode.add(agileModeBox, gbcAgileMode);
+        gbcAgileMode.gridx = 1;
+        gbcAgileMode.gridy = 0;
+        agileMode.add(alwaysOnTopBox, gbcAgileMode);
+        add(agileMode, gbc);
     }
 
     private void addSounds(GridBagConstraints gbc) {
@@ -257,28 +302,19 @@ public class PreferencesInputForm extends JPanel {
         systemTray.add(systemTrayMessageBox, gbcSystemTray);
         add(systemTray, gbc);
     }
-
-    private void addAlwaysOnTop(GridBagConstraints gbc) {
-        JPanel alwaysOnTop = new JPanel();
-        alwaysOnTop.setLayout(new GridBagLayout());
-        GridBagConstraints gbcAlwaysOnTop = new GridBagConstraints();
-        gbcAlwaysOnTop.fill = GridBagConstraints.HORIZONTAL;
-        gbcAlwaysOnTop.anchor = GridBagConstraints.NORTH;
-        gbcAlwaysOnTop.gridx = 0;
-        gbcAlwaysOnTop.gridy = 0;
-        alwaysOnTop.add(alwaysOnTopBox, gbcAlwaysOnTop);
-        add(alwaysOnTop, gbc);
-    }
-
-    private void addAgileMode(GridBagConstraints gbc) {
-        JPanel agileMode = new JPanel();
-        agileMode.setLayout(new GridBagLayout());
-        GridBagConstraints gbcAgileMode = new GridBagConstraints();
-        gbcAgileMode.fill = GridBagConstraints.HORIZONTAL;
-        gbcAgileMode.anchor = GridBagConstraints.NORTH;
-        gbcAgileMode.gridx = 0;
-        gbcAgileMode.gridy = 0;
-        agileMode.add(agileModeBox, gbcAgileMode);
-        add(agileMode, gbc);
+    
+    private void addPlainHours(GridBagConstraints gbc) {
+        JPanel plainHours = new JPanel();
+        plainHours.setLayout(new GridBagLayout());
+        GridBagConstraints gbcSystemTray = new GridBagConstraints();
+        gbcSystemTray.fill = GridBagConstraints.HORIZONTAL;
+        gbcSystemTray.anchor = GridBagConstraints.NORTH;
+        gbcSystemTray.gridx = 0;
+        gbcSystemTray.gridy = 0;
+        plainHours.add(plainHoursBox, gbcSystemTray);
+        gbcSystemTray.gridx = 1;
+        gbcSystemTray.gridy = 0;
+        plainHours.add(effectiveHoursBox, gbcSystemTray);
+        add(plainHours, gbc);
     }
 }

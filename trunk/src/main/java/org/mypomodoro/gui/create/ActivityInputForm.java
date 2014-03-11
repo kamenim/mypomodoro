@@ -403,6 +403,10 @@ public class ActivityInputForm extends JPanel {
     protected void displayLength(int estimatedPomodoros) {
         String effectiveHours = convertToTime(calculateEffectiveHours(estimatedPomodoros));
         String plainHours = convertToTime(calculatePlainHours(estimatedPomodoros));
-        estimatedLengthLabel.setText(effectiveHours + " (" + Labels.getString("Common.Effective hours") + ") / " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+        if (ControlPanel.preferences.getPlainHours()) {
+            estimatedLengthLabel.setText(" " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+        } else {
+            estimatedLengthLabel.setText(" " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");
+        }        
     }
 }
