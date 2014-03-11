@@ -30,7 +30,6 @@ public class ViewMenu extends JMenu {
         }
     }
     
-    // TODO change keywords in Agile mode?
     class ActivityListItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;

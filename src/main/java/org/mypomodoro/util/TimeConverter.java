@@ -30,9 +30,12 @@ public class TimeConverter {
     }
 
     public static String getLength(int pomodoros) {
-        String effectiveHours = convertToTime(calculateEffectiveHours(pomodoros));
-        String plainHours = convertToTime(calculatePlainHours(pomodoros));
-        String length = effectiveHours + " / " + plainHours;
+        String length = "";
+        if (ControlPanel.preferences.getPlainHours()) {
+            length = convertToTime(calculatePlainHours(pomodoros));
+        } else {
+            length = convertToTime(calculateEffectiveHours(pomodoros));
+        }
         return length;
     }
 }

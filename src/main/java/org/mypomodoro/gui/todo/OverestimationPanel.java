@@ -29,22 +29,22 @@ public class OverestimationPanel extends JPanel {
     protected final OverestimationInputForm overestimationInputFormPanel = new OverestimationInputForm();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final ToDoPanel todoPanel;
-    private final ActivityInformation information;
+    private final ToDoPanel panel;
+    private final ActivityInformation detailsPanel;
 
-    public OverestimationPanel(ToDoPanel todoPanel, ActivityInformation information) {
-        this.todoPanel = todoPanel;
-        this.information = information;
+    public OverestimationPanel(ToDoPanel panel, ActivityInformation detailsPanel) {
+        this.panel = panel;
+        this.detailsPanel = detailsPanel;
         
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addToDoIconPanel();
         addOverestimationInputFormPanel();
-        addSaveButton(todoPanel);
+        addSaveButton();
     }
 
-    private void addSaveButton(final ToDoPanel todoPanel) {
+    private void addSaveButton() {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
@@ -56,7 +56,7 @@ public class OverestimationPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveOverestimation(todoPanel, overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1);
+                saveOverestimation();
             }
         });
         add(changeButton, gbc);
@@ -85,7 +85,8 @@ public class OverestimationPanel extends JPanel {
         add(overestimationInputFormPanel, gbc);
     }
 
-    public void saveOverestimation(ToDoPanel panel, int overestimatedPomodoros) {
+    public void saveOverestimation() {
+        int overestimatedPomodoros = overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1;
         int row = panel.getTable().getSelectedRow();
         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         Activity selectedToDo = panel.getActivityById(id);
@@ -95,9 +96,10 @@ public class OverestimationPanel extends JPanel {
         selectedToDo.databaseUpdate();
         panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm index = 3 (the renderer will do the rest)
         // update details panel
-        information.selectInfo(selectedToDo);
-        information.showInfo();
+        detailsPanel.selectInfo(selectedToDo);
+        detailsPanel.showInfo();
         panel.refreshRemaining();
+        panel.refreshIconLabels();
         overestimationInputFormPanel.reset();
         String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
         String message = Labels.getString(

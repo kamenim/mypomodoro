@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
-import java.util.Date;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -22,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.ControlPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -55,6 +55,7 @@ public class Pomodoro {
     private long longBreakLength = POMODORO_LONG_LENGTH;
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
+    private final ActivityInformation detailsPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
     private long time = pomodoroLength;
@@ -62,14 +63,16 @@ public class Pomodoro {
     private Clip clip;
     private boolean isMute = false;
 
-    public Pomodoro(ToDoPanel todoPanel) {
-        pomodoroTime = todoPanel.getPomodoroTime();
+    public Pomodoro(ToDoPanel panel, ActivityInformation detailsPanel) {
+        this.panel = panel;
+        this.detailsPanel = detailsPanel;
+        
+        pomodoroTime = panel.getPomodoroTime();
         pomodoroTime.setText(sdf.format(pomodoroLength));
-        pomodoroTimer = new Timer(SECOND, new UpdateAction());
-        this.panel = todoPanel;
+        pomodoroTimer = new Timer(SECOND, new UpdateAction());        
     }
 
-    public void start() {
+    public void start() {        
         pomodoroTimer.start();
         if (ControlPanel.preferences.getTicking() && !isMute) {
             tick();
@@ -133,12 +136,10 @@ public class Pomodoro {
                 if (ControlPanel.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
-                Activity currentToDo = ToDoList.getList().getById(currentToDoId);
                 if (inPomodoro()) {
                     // increment real poms
-                    currentToDo.incrementPoms();
-                    currentToDo.setDate(new Date());
-                    currentToDo.databaseUpdate();
+                    getCurrentToDo().incrementPoms();
+                    getCurrentToDo().databaseUpdate();
                     pomSetNumber++;
                     // break time
                     if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
@@ -161,11 +162,18 @@ public class Pomodoro {
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
                     inpomodoro = false;
+                    // update details panel
+                    detailsPanel.selectInfo(getCurrentToDo());
+                    detailsPanel.showInfo();
                     panel.refreshIconLabels();
                     panel.refreshRemaining();
                     panel.getTable().repaint(); // trigger row renderers
                 } else {
-                    if (currentToDo.isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    if (panel.getTable().getSelectedRowCount() == 1) {
+                        int row = panel.getTable().getSelectedRow();
+                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    }
+                    if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
                         if (isSystemTray()) {

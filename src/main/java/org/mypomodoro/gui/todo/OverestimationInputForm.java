@@ -107,6 +107,10 @@ public class OverestimationInputForm extends JPanel {
     private void displayLength(int overestimatedPomodoros) {
         String effectiveHours = convertToTime(calculateEffectiveHours(overestimatedPomodoros));
         String plainHours = convertToTime(calculatePlainHours(overestimatedPomodoros));
-        overestimatedLengthLabel.setText("+ " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ") / + " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+        if (ControlPanel.preferences.getPlainHours()) {
+            overestimatedLengthLabel.setText("+ " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+        } else {
+            overestimatedLengthLabel.setText("+ " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");
+        }
     }
 }

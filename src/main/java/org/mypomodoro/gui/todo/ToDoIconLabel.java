@@ -18,9 +18,15 @@ public class ToDoIconLabel {
     static public void showIconLabel(JLabel iconLabel, Activity activity) {
         showIconLabel(iconLabel, activity, ColorUtil.BLACK);
     }
-
+    
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {
-        iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
+        showIconLabel(iconLabel, activity, color, true);
+    }
+
+    static public void showIconLabel(JLabel iconLabel, Activity activity, Color color, boolean showName) {
+        if (showName) {
+            iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
+        }
         iconLabel.setForeground(color);
         int estimatedPoms = activity.getEstimatedPoms();
         int realPoms = activity.getActualPoms();

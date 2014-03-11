@@ -12,6 +12,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -66,6 +67,11 @@ public class CommentPanel extends ActivityInformationPanel {
     public void selectInfo(Activity activity) {
         // NO template for user stories and epics here (see other CommentPanel classes)        
         textMap.put("comment", activity.getNotes());
+        if (activity.isFinished()) {
+            informationArea.setForeground(ColorUtil.GREEN);
+        } else {
+            informationArea.setForeground(ColorUtil.BLACK);            
+        }
     }
 
     @Override

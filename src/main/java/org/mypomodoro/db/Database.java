@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.SwingUtilities;
 
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 
@@ -141,7 +140,8 @@ public class Database {
                 + "system_tray BOOLEAN DEFAULT 1, "
                 + "system_tray_msg BOOLEAN DEFAULT 1, "
                 + "always_on_top BOOLEAN DEFAULT 0, "
-                + "agile_mode BOOLEAN DEFAULT 0" + ");";
+                + "agile_mode BOOLEAN DEFAULT 0, "
+                + "plain_hours BOOLEAN DEFAULT 1" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
     }
@@ -150,13 +150,13 @@ public class Database {
         String selectPreferencesSQL = "SELECT * FROM preferences;";
         ResultSet rs = query(selectPreferencesSQL);
         try {
-            if (rs != null && !rs.next()) { // make sure there is no row in the result set
+            if (!rs.next()) { // make sure there is no row in the result set
                 String insertPreferencesSQL = "INSERT INTO preferences ("
                         + "pom_length,short_break_length,long_break_length,"
                         + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
-                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode) "
+                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode,plain_hours) "
                         + "VALUES ("
-                        + "25,5,20,5,10,4,1,1,'en_US',1,1,0,0);";
+                        + "25,5,20,5,10,4,1,1,'en_US',1,1,0,0,1);";
                 update(insertPreferencesSQL);
             }
         } catch (SQLException e) {

@@ -502,6 +502,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = ReportList.getList().getById(id);
+            if (activity != null && activity.isFinished()) {
+                renderer.setForeground(ColorUtil.GREEN);
+            }
             return renderer;
         }
     }
