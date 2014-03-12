@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
@@ -61,7 +61,7 @@ public class OverestimationInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         // In Agile mode you should be able to overestimate your task by half day or even one day
-        String items[] = ControlPanel.preferences.getAgileMode() ? new String[ControlPanel.preferences.getMaxNbPomPerDay()] : new String[5];
+        String items[] = PreferencesPanel.preferences.getAgileMode() ? new String[PreferencesPanel.preferences.getMaxNbPomPerDay()] : new String[5];
         for (int i = 0; i < items.length; i++) {
             items[i] = "+ " + (i + 1);
         }
@@ -107,7 +107,7 @@ public class OverestimationInputForm extends JPanel {
     private void displayLength(int overestimatedPomodoros) {
         String effectiveHours = convertToTime(calculateEffectiveHours(overestimatedPomodoros));
         String plainHours = convertToTime(calculatePlainHours(overestimatedPomodoros));
-        if (ControlPanel.preferences.getPlainHours()) {
+        if (PreferencesPanel.preferences.getPlainHours()) {
             overestimatedLengthLabel.setText("+ " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {
             overestimatedLengthLabel.setText("+ " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");

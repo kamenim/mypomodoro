@@ -13,7 +13,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
@@ -28,8 +28,8 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     private static final long serialVersionUID = 20110814L;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private  MoveToDoButton moveButton;
-    private  CompleteToDoButton completeButton;
+    private MoveToDoButton moveButton;
+    private CompleteToDoButton completeButton;
 
     public DetailsPanel(ToDoPanel todoPanel) {
         setLayout(new GridBagLayout());
@@ -106,7 +106,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
         }
@@ -116,7 +116,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     public JLabel getIconLabel() {
         return iconLabel;
     }
-    
+
     public void disableButtons() {
         moveButton.setEnabled(false);
         moveButton.setOpaque(false);
@@ -124,9 +124,9 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         completeButton.setEnabled(false);
         completeButton.setOpaque(false);
         completeButton.setForeground(Color.GRAY);
-        
+
     }
-    
+
     public void enableButtons() {
         moveButton.setEnabled(true);
         moveButton.setOpaque(true);

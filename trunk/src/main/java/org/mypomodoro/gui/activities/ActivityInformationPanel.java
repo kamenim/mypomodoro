@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -39,12 +39,12 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
         textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
-        textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": " 
+        textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": "
                 + activity.getActualPoms() + " / "
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
             textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + activity.getIteration() + "\n");
         }
@@ -92,7 +92,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
     public boolean isMultipleSelectionAllowed() {
         return true;
     }
-    
+
     @Override
     public void setForegroundColor(Color color) {
         informationArea.setForeground(color);

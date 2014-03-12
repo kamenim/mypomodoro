@@ -36,7 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
 
 /**
@@ -64,7 +64,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Author"),
         Labels.getString("Common.Place"),
         Labels.getString("Common.Description"),
-        Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+        Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};

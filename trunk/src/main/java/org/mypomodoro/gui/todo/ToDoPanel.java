@@ -9,7 +9,10 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.DefaultRowSorter;
+import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -21,7 +24,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -37,7 +43,7 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -112,6 +118,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private void init() {
         table.setRowHeight(30);
 
+        // Enable drag and drop
+        table.setDragEnabled(true);
+        table.setDropMode(DropMode.INSERT_ROWS);
+        table.setTransferHandler(new ToDoTransferHandler(this));
+
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -123,7 +134,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new CustomTableRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
-        if (!ControlPanel.preferences.getAgileMode()) {
+        if (!PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -140,7 +151,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
@@ -187,6 +198,40 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 }
             }
+
+            // Drag to change priority
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // check if priority column is already sorted
+                // if not, force the user to do so
+                boolean isPriorityColumnSorted = true;
+                for (int i = 0; i < table.getRowCount() - 1; i++) {
+                    if ((Integer) table.getValueAt(i, 0) != (Integer) table.getValueAt(i + 1, 0) - 1) {
+                        isPriorityColumnSorted = false;
+                    }
+                }
+                if (!isPriorityColumnSorted) {
+                    String title = Labels.getString("ToDoListPanel.Sort by priority");
+                    String message = Labels.getString("ToDoListPanel.ToDos must first be sorted by priority. Sort now?");
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                    if (reply == JOptionPane.OK_OPTION) {
+                        int currentlySelectedRow = table.convertRowIndexToModel(table.getSelectedRow());
+                        // sort progamatically the priority column
+                        table.setAutoCreateRowSorter(true);
+                        DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
+                        ArrayList list = new ArrayList();
+                        list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
+                        sorter.setSortKeys(list);
+                        sorter.sort();
+                        // select previously selected activity
+                        table.setRowSelectionInterval(currentlySelectedRow, currentlySelectedRow);
+                    }
+                } else {
+                    TransferHandler handler = table.getTransferHandler();
+                    handler.exportAsDrag(table, e, TransferHandler.MOVE);
+                }
+            }
         });
 
         // diactivate/gray out all tabs (except import)
@@ -207,9 +252,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
+        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
                 + " (" + ToDoList.getListSize() + ")";
-        if (ControlPanel.preferences.getAgileMode()
+        if (PreferencesPanel.preferences.getAgileMode()
                 && ToDoList.getListSize() > 0) {
             titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
         }
@@ -277,7 +322,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         add(wrapInBackgroundImage(
                 timerPanel,
-                ControlPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
+                PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
@@ -312,7 +357,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         //controlPane.setMinimumSize(PANE_DIMENSION);
         //controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Unplanned"), unplannedPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merging"), mergingPanel);
@@ -498,7 +543,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 new ActivityInformationTableListener(ToDoList.getList(),
                         table, commentPanel, ID_KEY));
     }
-
+    
     @Override
     public void refresh() {
         try {
@@ -576,8 +621,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        if (ControlPanel.preferences.getTicking()
-                || ControlPanel.preferences.getRinging()) {
+        if (PreferencesPanel.preferences.getTicking()
+                || PreferencesPanel.preferences.getRinging()) {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.anchor = GridBagConstraints.EAST;

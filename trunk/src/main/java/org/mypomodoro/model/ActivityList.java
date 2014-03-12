@@ -2,7 +2,7 @@ package org.mypomodoro.model;
 
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 
 /**
  * Activity list
@@ -35,8 +35,8 @@ public final class ActivityList extends AbstractActivities {
     @Override
     public void add(Activity act) {
         act.setPriority(-1);
-        act.setIsCompleted(false);         
-        if (ControlPanel.preferences.getAgileMode()) {
+        act.setIsCompleted(false);
+        if (PreferencesPanel.preferences.getAgileMode()) {
             act.setDate(new Date(0));
         }
         act.setDateCompleted(new Date(0));

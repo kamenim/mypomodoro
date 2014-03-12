@@ -20,7 +20,7 @@ public final class TimerValueSlider extends JPanel {
     private final JLabel label = new JLabel();
     private String text = "";
 
-    public TimerValueSlider(final ControlPanel controlPanel, int min, int max,
+    public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, String name, final int recommendedMin,
             final int recommendedMax, final int unit) {
         setLayout(new GridBagLayout());

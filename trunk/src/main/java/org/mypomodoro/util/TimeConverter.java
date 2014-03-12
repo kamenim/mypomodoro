@@ -1,6 +1,6 @@
 package org.mypomodoro.util;
 
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 
 /**
  * Time converter utility class
@@ -17,21 +17,21 @@ public class TimeConverter {
 
     // only pomodoros length
     public static int calculateEffectiveHours(int estimate) {
-        return estimate * ControlPanel.preferences.getPomodoroLength();
+        return estimate * PreferencesPanel.preferences.getPomodoroLength();
     }
 
     // pomodoros length + breaks
     public static int calculatePlainHours(int estimate) {
-        int nbLongBreaks = estimate / ControlPanel.preferences.getNbPomPerSet(); // one long break per set
+        int nbLongBreaks = estimate / PreferencesPanel.preferences.getNbPomPerSet(); // one long break per set
         int nbShortbreaks = estimate - nbLongBreaks; // on short break per pomodoro minus the long breaks
         return calculateEffectiveHours(estimate)
-                + nbShortbreaks * ControlPanel.preferences.getShortBreakLength()
-                + nbLongBreaks * ControlPanel.preferences.getLongBreakLength();
+                + nbShortbreaks * PreferencesPanel.preferences.getShortBreakLength()
+                + nbLongBreaks * PreferencesPanel.preferences.getLongBreakLength();
     }
 
     public static String getLength(int pomodoros) {
         String length = "";
-        if (ControlPanel.preferences.getPlainHours()) {
+        if (PreferencesPanel.preferences.getPlainHours()) {
             length = convertToTime(calculatePlainHours(pomodoros));
         } else {
             length = convertToTime(calculateEffectiveHours(pomodoros));

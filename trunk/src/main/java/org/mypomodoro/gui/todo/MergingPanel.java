@@ -8,7 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
@@ -119,14 +119,14 @@ public class MergingPanel extends CreatePanel {
                 newActivity.setActualPoms(actualPoms);
             }
             if (mergingInputFormPanel.isDateToday()) {
-                message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-                panel.addActivity(newActivity);                
+                message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+                panel.addActivity(newActivity);
                 panel.reorderByPriority();
                 panel.refresh();
                 panel.refreshRemaining();
                 clearForm();
             } else {
-                message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
+                message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
                 validation.setVisible(false);
                 super.validActivityAction(newActivity); // validation and clear form
             }
@@ -151,7 +151,7 @@ public class MergingPanel extends CreatePanel {
     public void clearForm() {
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             mergingInputFormPanel.setStoryPoints(0);
             mergingInputFormPanel.setIterations(0);
         }

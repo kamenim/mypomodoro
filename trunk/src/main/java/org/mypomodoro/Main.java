@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.mypomodoro.db.Database;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
@@ -30,7 +30,7 @@ import org.mypomodoro.util.RestartMac;
 public class Main {
 
     public static final Database database = new Database();
-    public final static ControlPanel controlPanel = new ControlPanel();
+    public final static PreferencesPanel controlPanel = new PreferencesPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportsPanel reportListPanel = new ReportsPanel();
@@ -116,7 +116,7 @@ public class Main {
         gui.pack();
         gui.setLocationRelativeTo(null); // center the component onscreen
         gui.setVisible(true);
-        if (org.mypomodoro.gui.ControlPanel.preferences.getAlwaysOnTop()) {
+        if (org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
             gui.setAlwaysOnTop(true);
         }
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {

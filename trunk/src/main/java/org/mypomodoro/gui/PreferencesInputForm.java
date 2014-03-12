@@ -40,7 +40,7 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox plainHoursBox;
     protected final JCheckBox effectiveHoursBox;
 
-    public PreferencesInputForm(final ControlPanel controlPanel) {
+    public PreferencesInputForm(final PreferencesPanel controlPanel) {
         setBorder(new TitledBorder(new EtchedBorder(),
                 Labels.getString("PreferencesPanel.Preferences")));
         setMinimumSize(PANEL_DIMENSION);
@@ -54,45 +54,43 @@ public class PreferencesInputForm extends JPanel {
         int unitMinute = 0;
         int unitPomodoro = 1;
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45,
-                ControlPanel.preferences.getPomodoroLength(),
+                PreferencesPanel.preferences.getPomodoroLength(),
                 Labels.getString("PreferencesPanel.Pomodoro Length") + ": ",
                 25, 30, unitMinute);
         shortBreakSlider = new TimerValueSlider(controlPanel, 1, 15,
-                ControlPanel.preferences.getShortBreakLength(),
+                PreferencesPanel.preferences.getShortBreakLength(),
                 Labels.getString("PreferencesPanel.Short Break Length") + ": ",
                 3, 5, unitMinute);
         longBreakSlider = new TimerValueSlider(controlPanel, 5, 45,
-                ControlPanel.preferences.getLongBreakLength(),
+                PreferencesPanel.preferences.getLongBreakLength(),
                 Labels.getString("PreferencesPanel.Long Break Length") + ": ",
                 15, 30, unitMinute);
-
-        int maxNbPomPerActivity = 7;
-        int initMaxNbPomPerActivity = 5;
+// TODO refactor the constants
+        final int maxNbPomPerActivity = 7;
+        final int initMaxNbPomPerActivity = 5;
+        final int maxNbPomPerActivityAgileMode = 24; // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
+        final int initMaxNbPomPerActivityAgileMode = 20;
         final int maxNbPomPerDay = 12;
         final int initMaxNbPomPerDay = 10;
-        // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
-        if (ControlPanel.preferences.getAgileMode()) {
-            maxNbPomPerActivity = maxNbPomPerDay * 2;
-            initMaxNbPomPerActivity = initMaxNbPomPerDay * 2;
-        }
-        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivity,
-                ControlPanel.preferences.getMaxNbPomPerActivity(),
+        // TODO center the sliders
+        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
+                PreferencesPanel.preferences.getMaxNbPomPerActivity(),
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",
-                1, initMaxNbPomPerActivity, unitPomodoro);
+                1, initMaxNbPomPerActivityAgileMode, unitPomodoro);
         maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerDay,
-                ControlPanel.preferences.getMaxNbPomPerDay(),
+                PreferencesPanel.preferences.getMaxNbPomPerDay(),
                 Labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1,
                 initMaxNbPomPerDay, unitPomodoro);
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5,
-                ControlPanel.preferences.getNbPomPerSet(),
+                PreferencesPanel.preferences.getNbPomPerSet(),
                 Labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4,
                 unitPomodoro);
         tickingBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.ticking"),
-                ControlPanel.preferences.getTicking());
+                PreferencesPanel.preferences.getTicking());
         ringingBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.ringing"),
-                ControlPanel.preferences.getRinging());
+                PreferencesPanel.preferences.getRinging());
         tickingBox.addActionListener(new ActionListener() {
 
             @Override
@@ -113,7 +111,7 @@ public class PreferencesInputForm extends JPanel {
         localesComboBox = new JComboBox(locales.toArray());
         for (int i = 0; i < locales.size(); i++) {
             if (locales.get(i).getLocale().equals(
-                    ControlPanel.preferences.getLocale())) {
+                    PreferencesPanel.preferences.getLocale())) {
                 localesComboBox.setSelectedIndex(i);
             }
         }
@@ -127,10 +125,10 @@ public class PreferencesInputForm extends JPanel {
         });
         systemTrayBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.System Tray"),
-                ControlPanel.preferences.getSystemTray());
+                PreferencesPanel.preferences.getSystemTray());
         systemTrayMessageBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Popup Message"),
-                ControlPanel.preferences.getSystemTrayMessage());
+                PreferencesPanel.preferences.getSystemTrayMessage());
         systemTrayBox.addActionListener(new ActionListener() {
 
             @Override
@@ -155,7 +153,7 @@ public class PreferencesInputForm extends JPanel {
         });
         alwaysOnTopBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Always On Top"),
-                ControlPanel.preferences.getAlwaysOnTop());
+                PreferencesPanel.preferences.getAlwaysOnTop());
         alwaysOnTopBox.addActionListener(new ActionListener() {
 
             @Override
@@ -166,18 +164,18 @@ public class PreferencesInputForm extends JPanel {
         });
         agileModeBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Agile.Agile Mode"),
-                ControlPanel.preferences.getAgileMode());
+                PreferencesPanel.preferences.getAgileMode());
         agileModeBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent event) {
                 // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
                 if (agileModeBox.isSelected()) {
-                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay * 2);
-                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() > 1 ? maxNbPomPerDaySlider.getSliderValue() * 2 : 1);
+                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivityAgileMode);
+                    maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivityAgileMode);
                 } else {
-                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerDay);
-                    maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() / 2);
+                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivity);
+                    maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivity);
                 }
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
@@ -185,7 +183,7 @@ public class PreferencesInputForm extends JPanel {
         });
         plainHoursBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Plain hours"),
-                ControlPanel.preferences.getPlainHours());
+                PreferencesPanel.preferences.getPlainHours());
         plainHoursBox.addActionListener(new ActionListener() {
 
             @Override
@@ -196,10 +194,10 @@ public class PreferencesInputForm extends JPanel {
                     effectiveHoursBox.setSelected(false);
                 }
             }
-        }); 
+        });
         effectiveHoursBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Effective hours"),
-                !ControlPanel.preferences.getPlainHours());
+                !PreferencesPanel.preferences.getPlainHours());
         effectiveHoursBox.addActionListener(new ActionListener() {
 
             @Override
@@ -211,7 +209,7 @@ public class PreferencesInputForm extends JPanel {
                 }
             }
         });
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -245,7 +243,7 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridwidth = 2;
         addPlainHours(gbc);
     }
-    
+
     private void addAgileMode(GridBagConstraints gbc) {
         JPanel agileMode = new JPanel();
         agileMode.setLayout(new GridBagLayout());
@@ -302,7 +300,7 @@ public class PreferencesInputForm extends JPanel {
         systemTray.add(systemTrayMessageBox, gbcSystemTray);
         add(systemTray, gbc);
     }
-    
+
     private void addPlainHours(GridBagConstraints gbc) {
         JPanel plainHours = new JPanel();
         plainHours.setLayout(new GridBagLayout());

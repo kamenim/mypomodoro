@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.model.Activity;
@@ -36,7 +36,7 @@ public class ExportInputForm extends JPanel {
     private JComboBox fileFormatComboBox = new JComboBox();
     private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
-    protected String defaultFileName = "myPomodoro";
+    protected String defaultFileName = "myAgilePomodoro";
     private final FileFormat CSVFormat = new FileFormat("CSV",
             FileFormat.CSVExtention);
     private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
@@ -535,7 +535,7 @@ public class ExportInputForm extends JPanel {
             Labels.getString("Common.Author"),
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),
-            Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+            Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
             Labels.getString("Agile.Common.Story Points"),
             Labels.getString("Agile.Common.Iteration"),
             Labels.getString("Common.Priority"),

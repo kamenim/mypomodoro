@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.jdesktop.swingx.JXDatePicker;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.model.Activity;
@@ -76,7 +76,7 @@ public class ActivityInputForm extends JPanel {
         addName(++gridy);
         addType(++gridy);
         addEstimatedPoms(++gridy);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             addStoryPoints(++gridy);
             addIterations(++gridy);
         }
@@ -97,7 +97,7 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         add(datePicker, c);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             dateLabel.setVisible(false);
             datePicker.setVisible(false);
         }
@@ -137,8 +137,8 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        Integer[] items = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
-        for (int i = 0; i <= ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+        Integer[] items = new Integer[PreferencesPanel.preferences.getMaxNbPomPerActivity() + 1];
+        for (int i = 0; i <= PreferencesPanel.preferences.getMaxNbPomPerActivity(); i++) {
             items[i] = i;
         }
         estimatedPomodoros = new JComboBox(items);
@@ -321,7 +321,7 @@ public class ActivityInputForm extends JPanel {
         Date dateActivity = datePicker.getDate();
         Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             float storypoint = (Float) storyPoints.getSelectedItem();
             int iteration = (Integer) iterations.getSelectedItem();
             activity = new Activity(place, author, name, description, type,
@@ -403,10 +403,10 @@ public class ActivityInputForm extends JPanel {
     protected void displayLength(int estimatedPomodoros) {
         String effectiveHours = convertToTime(calculateEffectiveHours(estimatedPomodoros));
         String plainHours = convertToTime(calculatePlainHours(estimatedPomodoros));
-        if (ControlPanel.preferences.getPlainHours()) {
+        if (PreferencesPanel.preferences.getPlainHours()) {
             estimatedLengthLabel.setText(" " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {
             estimatedLengthLabel.setText(" " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");
-        }        
+        }
     }
 }

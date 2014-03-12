@@ -35,7 +35,7 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
@@ -115,8 +115,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new ComboBoxCellRenderer(types, true));
         table.getColumnModel().getColumn(ID_KEY - 5).setCellEditor(new ComboBoxCellEditor(types, true));
         // Estimated combo box
-        Integer[] poms = new Integer[ControlPanel.preferences.getMaxNbPomPerActivity() + 1];
-        for (int i = 0; i <= ControlPanel.preferences.getMaxNbPomPerActivity(); i++) {
+        Integer[] poms = new Integer[PreferencesPanel.preferences.getMaxNbPomPerActivity() + 1];
+        for (int i = 0; i <= PreferencesPanel.preferences.getMaxNbPomPerActivity(); i++) {
             poms[i] = i;
         }
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new EstimatedComboBoxCellRenderer(poms, false));
@@ -133,7 +133,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(iterations, false));
         table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
-        if (!ControlPanel.preferences.getAgileMode()) {
+        if (!PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -150,7 +150,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
         }
         // hide unplanned and date in Agile mode
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -232,9 +232,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
+        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
                 + " (" + ActivityList.getListSize() + ")";
-        if (org.mypomodoro.gui.ControlPanel.preferences.getAgileMode()
+        if (org.mypomodoro.gui.PreferencesPanel.preferences.getAgileMode()
                 && ActivityList.getListSize() > 0) {
             titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ActivityList.getList().getStoryPoints();
         }
@@ -283,7 +283,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         EditPanel editPanel = new EditPanel(this, detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
@@ -373,7 +373,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                         act.setType(data.toString());
                         act.databaseUpdate();
                         // load template for user stories
-                        if (ControlPanel.preferences.getAgileMode()) {
+                        if (PreferencesPanel.preferences.getAgileMode()) {
                             commentPanel.selectInfo(act);
                             commentPanel.showInfo();
                         }

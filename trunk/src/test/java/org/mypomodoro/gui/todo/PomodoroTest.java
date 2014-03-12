@@ -12,7 +12,6 @@ public class PomodoroTest {
     private String beginingText;
     //private Pomodoro pomodoro;
     private JLabel label;
-	
 
     @Before
     public void setUpPomodoro() throws InterruptedException {
@@ -29,12 +28,12 @@ public class PomodoroTest {
         assertEquals(label.getText(), beginingText);
     }
     /*
-    @Test
-    public void shouldUpdateTheLabelWithSecondsFormat() throws Exception {
-    assertEquals(label.getText(), "24:59");
-    Thread.sleep(1000);
-    assertEquals(label.getText(), "24:58");
-    }
+     @Test
+     public void shouldUpdateTheLabelWithSecondsFormat() throws Exception {
+     assertEquals(label.getText(), "24:59");
+     Thread.sleep(1000);
+     assertEquals(label.getText(), "24:58");
+     }
      * 
      */
 }

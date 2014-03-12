@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 
@@ -53,7 +53,7 @@ public class MoveButton extends AbstractPomodoroButton {
                     Activity selectedActivity = panel.getActivityById(id);
                     if (panel instanceof ActivitiesPanel) {
                         String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                        if (!ControlPanel.preferences.getAgileMode()) {
+                        if (!PreferencesPanel.preferences.getAgileMode()) {
                             if (!selectedActivity.isDateToday()) {
                                 String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                                 String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
@@ -69,7 +69,7 @@ public class MoveButton extends AbstractPomodoroButton {
                                 String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
                                 String message = Labels.getString(
                                         "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                        org.mypomodoro.gui.ControlPanel.preferences.getMaxNbPomPerDay());
+                                        org.mypomodoro.gui.PreferencesPanel.preferences.getMaxNbPomPerDay());
                                 int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                         title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                                 if (reply == JOptionPane.YES_OPTION) {
@@ -93,6 +93,6 @@ public class MoveButton extends AbstractPomodoroButton {
 
     private boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
         int nbTotalEstimatedPom = ToDoList.getList().getNbTotalEstimatedPom() + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
-        return nbTotalEstimatedPom > ControlPanel.preferences.getMaxNbPomPerDay();
+        return nbTotalEstimatedPom > PreferencesPanel.preferences.getMaxNbPomPerDay();
     }
 }

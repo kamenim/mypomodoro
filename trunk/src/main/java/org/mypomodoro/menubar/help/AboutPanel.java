@@ -88,7 +88,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        JLabel title = new JLabel("myPomodoro");
+        JLabel title = new JLabel("myAgilePomodoro"); // TODO update images mypomodoro --> myagilepomodoro
         title.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize() + 24));
         panel.add(title, gbcpanel);

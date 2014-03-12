@@ -34,7 +34,7 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
 import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -119,7 +119,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer());
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(dtcr);
         // hide story points and iteration in 'classic' mode
-        if (!ControlPanel.preferences.getAgileMode()) {
+        if (!PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -136,7 +136,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -235,7 +235,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         if (ReportList.getListSize() > 0) {
             titleReportsList += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
         }
-        if (ControlPanel.preferences.getAgileMode()
+        if (PreferencesPanel.preferences.getAgileMode()
                 && ReportList.getListSize() > 0) {
             titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
         }
@@ -284,7 +284,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         EditPanel editPanel = new EditPanel(detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
-        controlPane.add(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);

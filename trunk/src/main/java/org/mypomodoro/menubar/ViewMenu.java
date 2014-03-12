@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -25,17 +25,17 @@ public class ViewMenu extends JMenu {
         add(new ActivityListItem());
         add(new ToDoListItem());
         add(new ReportListItem());
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             add(new BurndownChartItem());
         }
     }
-    
+
     class ActivityListItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
 
         public ActivityListItem() {
-            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
+            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     ActionEvent.ALT_MASK));
@@ -60,7 +60,7 @@ public class ViewMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public ToDoListItem() {
-            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
+            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
             // Adds Keyboard Shortcut Alt-T
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     ActionEvent.ALT_MASK));
@@ -85,7 +85,7 @@ public class ViewMenu extends JMenu {
         private static final long serialVersionUID = 20110814L;
 
         public ReportListItem() {
-            super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
+            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
             // Adds Keyboard Shortcut Alt-R
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                     ActionEvent.ALT_MASK));

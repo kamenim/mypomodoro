@@ -18,7 +18,7 @@ public class ToDoIconLabel {
     static public void showIconLabel(JLabel iconLabel, Activity activity) {
         showIconLabel(iconLabel, activity, ColorUtil.BLACK);
     }
-    
+
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {
         showIconLabel(iconLabel, activity, color, true);
     }

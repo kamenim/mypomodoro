@@ -61,18 +61,18 @@ public class MyPomodoroView extends JFrame {
     }
 
     public MyPomodoroView() {
-        super("myPomodoro " + MYPOMODORO_VERSION);
+        super("myAgilePomodoro " + MYPOMODORO_VERSION);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(ImageIcons.MAIN_ICON.getImage());
         setJMenuBar(menuBar);
         setWindow(new SplashScreen());
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         if (SystemTray.isSupported()
-                && ControlPanel.preferences.getSystemTray()) {
+                && PreferencesPanel.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             SystemTray sysTray = SystemTray.getSystemTray();
             trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(),
-                    "myPomodoro");
+                    "myAgilePomodoro");
             trayIcon.setImageAutoSize(true);
             trayIcon.addMouseListener(new MouseAdapter() {
 
@@ -95,9 +95,10 @@ public class MyPomodoroView extends JFrame {
         Main.updateView();
     }
 
-    public final void setWindow(JPanel e) {
-        if (e instanceof AbstractActivitiesPanel) {        
-            ((AbstractActivitiesPanel)e).refresh();
+    public final void setWindow(JPanel e) {                
+        if (e instanceof AbstractActivitiesPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
+            // TODO refresh from database ? Better for concurrent work
+            ((AbstractActivitiesPanel) e).refresh();
         }
         setContentPane(new WindowPanel(iconBar, e));
         menuBar.revalidate();

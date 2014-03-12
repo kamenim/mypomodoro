@@ -31,10 +31,11 @@ public final class Preferences {
     public static final int LBLENGTH = 20;
     private int longBreakLength = LBLENGTH;
     /**
-     * Max nb pomodoros per activity
+     * Max nb pomodoros per activity (Agile mode) Classic mode --> 5
      */
-    public static final int MNPPACTIVITY = 5;
-    private int maxNbPomPerActivity = MNPPACTIVITY;
+    public static final int INITMNPPACTIVITY = 20;
+    public static final int MNPPACTIVITY = 24;
+    private int maxNbPomPerActivity = INITMNPPACTIVITY;
     /**
      * Max nb pomodoros per day
      */
@@ -138,7 +139,7 @@ public final class Preferences {
     public boolean getAgileMode() {
         return agileMode;
     }
-    
+
     public boolean getPlainHours() {
         return plainHours;
     }
@@ -195,7 +196,7 @@ public final class Preferences {
     public void setAgileMode(boolean value) {
         agileMode = value;
     }
-    
+
     public void setPlainHours(boolean value) {
         plainHours = value;
     }
