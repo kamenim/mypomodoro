@@ -11,7 +11,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -52,7 +52,7 @@ public class FileMenu extends JMenu {
                     view.getIconBar().unHighlightIcon(selectedIcon);
                     view.setWindow(selectedIcon.getPanel());
                 }
-                view.setWindow(new ControlPanel());
+                view.setWindow(new PreferencesPanel());
             }
         }
     }
@@ -92,6 +92,7 @@ public class FileMenu extends JMenu {
             addActionListener(new MenuItemListener());
         }
 
+        // TODO Change the license content regarding Pomodoro and Agile
         class MenuItemListener implements ActionListener {
 
             @Override

@@ -91,9 +91,9 @@ public class ItemLocale {
             // Do nothing
         } finally {
             if (vLocales.isEmpty()) {
-                vLocales.add(new ItemLocale(ControlPanel.preferences.getLocale(), ControlPanel.preferences.getLocale().getDisplayLanguage()
+                vLocales.add(new ItemLocale(PreferencesPanel.preferences.getLocale(), PreferencesPanel.preferences.getLocale().getDisplayLanguage()
                         + " ("
-                        + ControlPanel.preferences.getLocale().getDisplayCountry() + ")"));
+                        + PreferencesPanel.preferences.getLocale().getDisplayCountry() + ")"));
             }
         }
         return vLocales;

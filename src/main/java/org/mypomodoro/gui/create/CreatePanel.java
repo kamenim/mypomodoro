@@ -18,7 +18,7 @@ import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.SaveButton;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -123,7 +123,7 @@ public class CreatePanel extends JPanel {
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
-        validation.setText(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
+        validation.setText(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }
 
     public void saveActivity(Activity newActivity) {
@@ -160,7 +160,7 @@ public class CreatePanel extends JPanel {
     public void clearForm() {
         inputFormPanel.setNameField("");
         inputFormPanel.setEstimatedPomodoro(0);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             inputFormPanel.setStoryPoints(0);
             inputFormPanel.setIterations(0);
         }

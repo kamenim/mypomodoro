@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 
 import org.mypomodoro.model.Activity;
@@ -20,7 +20,7 @@ public class CompleteToDoButton extends AbstractPomodoroButton {
     private static final long serialVersionUID = 20110814L;
 
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
-        super(Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
+        super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         addActionListener(new ActionListener() {
 
             @Override

@@ -19,7 +19,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
-public class ControlPanel extends JPanel {
+public class PreferencesPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     public static Preferences preferences = new Preferences();
@@ -33,7 +33,7 @@ public class ControlPanel extends JPanel {
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel;
 
-    public ControlPanel() {
+    public PreferencesPanel() {
         preferences.loadPreferences();
         Locale locale = new Locale(preferences.getLocale().getLanguage(),
                 preferences.getLocale().getCountry(), preferences.getLocale().getVariant());
@@ -94,7 +94,8 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.pomodoroSlider.setSliderValue(Preferences.PLENGTH);
                 preferencesInputFormPanel.shortBreakSlider.setSliderValue(Preferences.SBLENGTH);
                 preferencesInputFormPanel.longBreakSlider.setSliderValue(Preferences.LBLENGTH);
-                preferencesInputFormPanel.maxNbPomPerActivitySlider.setSliderValue(Preferences.MNPPACTIVITY);
+                preferencesInputFormPanel.maxNbPomPerActivitySlider.changeSlider(Preferences.MNPPACTIVITY);
+                preferencesInputFormPanel.maxNbPomPerActivitySlider.setSliderValue(Preferences.INITMNPPACTIVITY);
                 preferencesInputFormPanel.maxNbPomPerDaySlider.setSliderValue(Preferences.MNPPDAY);
                 preferencesInputFormPanel.nbPomPerSetSlider.setSliderValue(Preferences.NPPSet);
                 preferencesInputFormPanel.tickingBox.setSelected(true);
@@ -103,7 +104,7 @@ public class ControlPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
-                preferencesInputFormPanel.agileModeBox.setSelected(false);
+                preferencesInputFormPanel.agileModeBox.setSelected(true);
                 preferencesInputFormPanel.plainHoursBox.setSelected(true);
                 preferencesInputFormPanel.effectiveHoursBox.setSelected(false);
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");

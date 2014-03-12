@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
@@ -138,12 +138,11 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public Iterable<Activity> getReports() {
+    public Iterable<Activity> getTODOs() {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs;
-            rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_completed ASC;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -163,11 +162,12 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public Iterable<Activity> getTODOs() {
+    public Iterable<Activity> getReports() {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority;");
+            ResultSet rs;
+            rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_completed ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -235,7 +235,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void deleteAll() {
         try {
             database.lock();
@@ -277,7 +277,7 @@ public class ActivitiesDAO {
     public void moveAllTODOs() {
         String updateSQL = "UPDATE activities SET "
                 + "priority = -1";
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             updateSQL += ",date_added = " + new Date(0).getTime();
         }
         updateSQL += " WHERE priority > -1 AND is_complete = 'false';";
@@ -313,7 +313,7 @@ public class ActivitiesDAO {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'false',"
                 + "date_completed = " + new Date(0).getTime();
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             updateSQL += ",date_added = " + new Date(0).getTime();
         }
         updateSQL += " WHERE priority = -1 AND is_complete = 'true';";

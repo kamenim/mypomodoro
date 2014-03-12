@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -119,7 +119,7 @@ public class UnplannedPanel extends CreatePanel {
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message;
         if (unplannedInputFormPanel.isDateToday()) {
-            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
             newActivity.setPriority(ToDoList.getListSize() + 1);
             panel.addActivity(newActivity);
             // get current selected row
@@ -130,7 +130,7 @@ public class UnplannedPanel extends CreatePanel {
             panel.refreshRemaining();
             clearForm();
         } else {
-            message = Labels.getString((ControlPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
+            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
         }
@@ -159,7 +159,7 @@ public class UnplannedPanel extends CreatePanel {
         unplannedInputFormPanel.setInterruption(0);
         unplannedInputFormPanel.setNameField("");
         unplannedInputFormPanel.setEstimatedPomodoro(1);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             unplannedInputFormPanel.setStoryPoints(0);
             unplannedInputFormPanel.setIterations(0);
         }

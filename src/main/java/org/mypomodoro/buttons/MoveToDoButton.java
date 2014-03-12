@@ -32,7 +32,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
 
     public void move(final ToDoPanel panel) {
         if (panel.getTable().getSelectedRowCount() > 0) {
-            if (!panel.getPomodoro().inPomodoro() 
+            if (!panel.getPomodoro().inPomodoro()
                     && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
                 panel.moveAll();
                 panel.refresh();

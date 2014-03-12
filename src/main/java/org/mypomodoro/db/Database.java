@@ -131,7 +131,7 @@ public class Database {
                 + "pom_length INTEGER DEFAULT 25, "
                 + "short_break_length INTEGER DEFAULT 5, "
                 + "long_break_length INTEGER DEFAULT 20, "
-                + "max_nb_pom_per_activity INTEGER DEFAULT 5, "
+                + "max_nb_pom_per_activity INTEGER DEFAULT 20, "
                 + "max_nb_pom_per_day INTEGER DEFAULT 10, "
                 + "nb_pom_per_set INTEGER DEFAULT 4, "
                 + "ticking BOOLEAN DEFAULT 1, "
@@ -140,7 +140,7 @@ public class Database {
                 + "system_tray BOOLEAN DEFAULT 1, "
                 + "system_tray_msg BOOLEAN DEFAULT 1, "
                 + "always_on_top BOOLEAN DEFAULT 0, "
-                + "agile_mode BOOLEAN DEFAULT 0, "
+                + "agile_mode BOOLEAN DEFAULT 1, "
                 + "plain_hours BOOLEAN DEFAULT 1" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
@@ -156,7 +156,7 @@ public class Database {
                         + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
                         + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode,plain_hours) "
                         + "VALUES ("
-                        + "25,5,20,5,10,4,1,1,'en_US',1,1,0,0,1);";
+                        + "25,5,20,20,10,4,1,1,'en_US',1,1,0,1,1);";
                 update(insertPreferencesSQL);
             }
         } catch (SQLException e) {

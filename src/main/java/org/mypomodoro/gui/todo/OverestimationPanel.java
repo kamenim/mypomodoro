@@ -35,7 +35,7 @@ public class OverestimationPanel extends JPanel {
     public OverestimationPanel(ToDoPanel panel, ActivityInformation detailsPanel) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
-        
+
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 

@@ -11,7 +11,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;

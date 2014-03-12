@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
@@ -271,10 +271,10 @@ public class Activity {
     public Date getDate() {
         return date;
     }
-    
+
     public Date getDateCompleted() {
         return dateCompleted;
-    }    
+    }
 
     public String getDescription() {
         return description;
@@ -344,7 +344,7 @@ public class Activity {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
@@ -388,7 +388,7 @@ public class Activity {
     public void setDate(Date date) {
         this.date = date;
     }
-    
+
     public void setDateCompleted(Date dateCompleted) {
         this.dateCompleted = dateCompleted;
     }
@@ -442,11 +442,11 @@ public class Activity {
         return estimatedPoms + overestimatedPoms >= 0;
     }
 
-    public int databaseInsert() {        
+    public int databaseInsert() {
         // update lists
         TypeList.addType(getType());
         AuthorList.addAuthor(getAuthor());
-        PlaceList.addPlace(getPlace());        
+        PlaceList.addPlace(getPlace());
         return ActivitiesDAO.getInstance().insert(this);
     }
 
@@ -490,7 +490,7 @@ public class Activity {
     }
 
     public boolean isStory() {
-        return ControlPanel.preferences.getAgileMode()
+        return PreferencesPanel.preferences.getAgileMode()
                 && (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
     }
 }

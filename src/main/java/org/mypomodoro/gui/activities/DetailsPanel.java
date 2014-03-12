@@ -10,7 +10,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -67,7 +67,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        if (ControlPanel.preferences.getAgileMode()) {
+        if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
             textMap.remove("date");
@@ -76,7 +76,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
-            informationArea.setForeground(ColorUtil.BLACK);            
+            informationArea.setForeground(ColorUtil.BLACK);
         }
     }
 }

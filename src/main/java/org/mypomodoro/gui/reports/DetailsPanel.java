@@ -70,7 +70,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted())
                 + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "\n");        
+                + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.remove("date");
         // add additional info
         textMap.put("real", Labels.getString("ReportListPanel.Real Pomodoros") + ": " + activity.getActualPoms() + "\n");
@@ -81,7 +81,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
-            informationArea.setForeground(ColorUtil.BLACK);            
+            informationArea.setForeground(ColorUtil.BLACK);
         }
     }
 }

@@ -1,13 +1,13 @@
 package org.mypomodoro.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 public abstract class AbstractActivities implements Iterable<Activity> {
 
-    protected LinkedList<Activity> activities = new LinkedList<Activity>();
+    protected ArrayList<Activity> activities = new ArrayList<Activity>();
 
     public void add(Activity activity) {
         activities.add(activity);

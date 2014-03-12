@@ -70,7 +70,7 @@ public class CommentPanel extends ActivityInformationPanel {
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
-            informationArea.setForeground(ColorUtil.BLACK);            
+            informationArea.setForeground(ColorUtil.BLACK);
         }
     }
 

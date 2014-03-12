@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -66,7 +66,7 @@ public class CommentPanel extends ActivityInformationPanel {
     @Override
     public void selectInfo(Activity activity) {
         // template for user stories and epics
-        if (ControlPanel.preferences.getAgileMode()
+        if (PreferencesPanel.preferences.getAgileMode()
                 && activity.getNotes().trim().length() == 0
                 && activity.isStory()) {
             StringBuilder text = new StringBuilder();
@@ -88,7 +88,7 @@ public class CommentPanel extends ActivityInformationPanel {
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
-            informationArea.setForeground(ColorUtil.BLACK);            
+            informationArea.setForeground(ColorUtil.BLACK);
         }
     }
 

@@ -13,7 +13,7 @@ public class ActivityInformationTableListener implements ListSelectionListener {
     private final ActivityInformation information;
     private final int idKey;
     private final AbstractActivities activities;
-    
+
     public ActivityInformationTableListener(AbstractActivities activities,
             JTable table, ActivityInformation information, int idKey) {
         this.activities = activities;
@@ -23,7 +23,7 @@ public class ActivityInformationTableListener implements ListSelectionListener {
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {        
+    public void valueChanged(ListSelectionEvent e) {
         if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
             String info = "";
             int[] rows = table.getSelectedRows();

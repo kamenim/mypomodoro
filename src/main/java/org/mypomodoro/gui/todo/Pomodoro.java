@@ -22,7 +22,7 @@ import javax.swing.Timer;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.ControlPanel;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.model.Activity;
@@ -40,9 +40,9 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTE = 60 * SECOND;
-    private final long POMODORO_LENGTH = ControlPanel.preferences.getPomodoroLength() * MINUTE;
-    private final long POMODORO_BREAK_LENGTH = ControlPanel.preferences.getShortBreakLength() * MINUTE;
-    private final long POMODORO_LONG_LENGTH = ControlPanel.preferences.getLongBreakLength() * MINUTE;
+    private final long POMODORO_LENGTH = PreferencesPanel.preferences.getPomodoroLength() * MINUTE;
+    private final long POMODORO_BREAK_LENGTH = PreferencesPanel.preferences.getShortBreakLength() * MINUTE;
+    private final long POMODORO_LONG_LENGTH = PreferencesPanel.preferences.getLongBreakLength() * MINUTE;
     /*Test
      private final long POMODORO_LENGTH = 10 * SECOND;
      private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
@@ -66,15 +66,15 @@ public class Pomodoro {
     public Pomodoro(ToDoPanel panel, ActivityInformation detailsPanel) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
-        
+
         pomodoroTime = panel.getPomodoroTime();
         pomodoroTime.setText(sdf.format(pomodoroLength));
-        pomodoroTimer = new Timer(SECOND, new UpdateAction());        
+        pomodoroTimer = new Timer(SECOND, new UpdateAction());
     }
 
-    public void start() {        
+    public void start() {
         pomodoroTimer.start();
-        if (ControlPanel.preferences.getTicking() && !isMute) {
+        if (PreferencesPanel.preferences.getTicking() && !isMute) {
             tick();
         }
         if (isSystemTray()) {
@@ -133,7 +133,7 @@ public class Pomodoro {
                 popupTime();
             } else {
                 stopSound();
-                if (ControlPanel.preferences.getRinging() && !isMute) {
+                if (PreferencesPanel.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
                 if (inPomodoro()) {
@@ -142,7 +142,7 @@ public class Pomodoro {
                     getCurrentToDo().databaseUpdate();
                     pomSetNumber++;
                     // break time
-                    if (pomSetNumber == ControlPanel.preferences.getNbPomPerSet()) {
+                    if (pomSetNumber == PreferencesPanel.preferences.getNbPomPerSet()) {
                         goInLongBreak();
                         pomSetNumber = 0;
                         if (isSystemTray()) {
@@ -183,7 +183,7 @@ public class Pomodoro {
                             MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                         }
                     } else {
-                        if (ControlPanel.preferences.getTicking() && !isMute) {
+                        if (PreferencesPanel.preferences.getTicking() && !isMute) {
                             tick();
                         }
                         timerPanel.setStartColor(ColorUtil.RED);
@@ -349,11 +349,11 @@ public class Pomodoro {
     }
 
     private boolean isSystemTray() {
-        return SystemTray.isSupported() && ControlPanel.preferences.getSystemTray();
+        return SystemTray.isSupported() && PreferencesPanel.preferences.getSystemTray();
     }
 
     private boolean isSystemTrayMessage() {
-        return SystemTray.isSupported() && ControlPanel.preferences.getSystemTrayMessage();
+        return SystemTray.isSupported() && PreferencesPanel.preferences.getSystemTrayMessage();
     }
 
     public void mute() {
