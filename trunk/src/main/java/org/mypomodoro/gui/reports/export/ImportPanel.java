@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
-
 import java.io.FileWriter;
 import java.io.InputStream;
 import javax.swing.JButton;
@@ -33,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -227,14 +225,15 @@ public class ImportPanel extends JPanel {
     }
 
     private void insertData(String[] line) throws Exception {
-        Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
-                org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
-                Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
+        Activity newActivity = new Activity(line[15], line[14], line[5], line[16], line[13], Integer.parseInt(line[6]),
+                org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[7]), Integer.parseInt(line[8]),
+                Integer.parseInt(line[11]), Integer.parseInt(line[12]), line[17],
                 !line[0].equals("0"), panel instanceof ReportsPanel);
+        newActivity.setDateCompleted(org.mypomodoro.util.DateUtil.getDate(line[3] + " " + line[4], importInputForm.getDatePattern()));
         try {
-            newActivity.setStoryPoints(Float.parseFloat(line[16]));
-            newActivity.setIteration(Integer.parseInt(line[17]));
-            newActivity.setPriority(Integer.parseInt(line[18]));
+            newActivity.setStoryPoints(Float.parseFloat(line[18]));
+            newActivity.setIteration(Integer.parseInt(line[19]));
+            newActivity.setPriority(Integer.parseInt(line[20]));
         } catch (NumberFormatException e) {
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
