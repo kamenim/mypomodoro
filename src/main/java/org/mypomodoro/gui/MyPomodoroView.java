@@ -21,21 +21,22 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.menubar.FileMenu;
 import org.mypomodoro.menubar.HelpMenu;
 import org.mypomodoro.menubar.TestMenu;
 import org.mypomodoro.menubar.ViewMenu;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ToDoList;
 
 /**
  * Application GUI for myPomodoro.
@@ -113,7 +114,14 @@ public class MyPomodoroView extends JFrame {
 
     public final void setWindow(JPanel e) {
         if (e instanceof AbstractActivitiesPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
-            // TODO refresh from database ? Better for concurrent work
+            // Refresh from database
+            if (e instanceof ActivitiesPanel) {
+                ActivityList.getList().refresh();
+            } else if (e instanceof ToDoPanel) {
+                ToDoList.getList().refresh();                
+            } else if (e instanceof ReportsPanel) {
+                ReportList.getList().refresh();                
+            }                    
             ((AbstractActivitiesPanel) e).refresh();
         }
         setContentPane(new WindowPanel(iconBar, e));

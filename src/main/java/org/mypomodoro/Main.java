@@ -19,20 +19,18 @@ package org.mypomodoro;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import org.mypomodoro.db.Database;
-import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.burndownchart.BurndownPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
@@ -70,6 +68,20 @@ public class Main {
         ActivityList.getList().refresh();
         ToDoList.getList().refresh();
         ReportList.getList().refresh();
+    }
+    
+    public static void updateActivityListView() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                activitiesPanel.refresh();
+            }
+        });
+    }
+
+    public static void updateActivityList() {
+        ActivityList.getList().refresh();
     }
 
     /**
