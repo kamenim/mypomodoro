@@ -21,7 +21,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -104,7 +102,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        JLabel title = new JLabel("myAgilePomodoro"); // TODO update images mypomodoro --> myagilepomodoro
+        JLabel title = new JLabel("myAgilePomodoro");
         title.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize() + 24));
         panel.add(title, gbcpanel);

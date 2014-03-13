@@ -23,10 +23,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Date;
 import java.util.Iterator;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
@@ -45,6 +51,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -236,6 +243,28 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
+        
+        // Activate delete key stroke
+        InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = table.getActionMap();
+        class deleteAction extends AbstractAction {
+            
+            final AbstractActivitiesPanel panel;
+
+            public deleteAction(AbstractActivitiesPanel panel) {
+                this.panel = panel;
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
+                b.doClick();
+            }
+        }
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        am.put("Delete", new deleteAction(this));        
+
         // Refresh panel border
         setPanelBorder();
 

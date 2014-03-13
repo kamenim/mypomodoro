@@ -19,14 +19,12 @@ package org.mypomodoro.buttons;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JOptionPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
-
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -56,7 +54,7 @@ public class MoveButton extends AbstractPomodoroButton {
     public void move(final AbstractActivitiesPanel panel) {
         if (panel.getTable().getSelectedRowCount() > 0) {
             if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()
-                    && panel instanceof ReportsPanel) { // complete all at once                       
+                    && panel instanceof ReportsPanel) { // complete all at once                
                 panel.moveAll();
                 panel.refresh();
             } else {

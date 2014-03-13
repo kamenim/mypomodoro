@@ -75,7 +75,7 @@ public class RestartMac {
     /**
      * Restarts YourApplication.app on Mac OS X
      *
-     * @param argc
+     * @param argv
      */
     public RestartMac(int argv) {
         this.argv = argv;
