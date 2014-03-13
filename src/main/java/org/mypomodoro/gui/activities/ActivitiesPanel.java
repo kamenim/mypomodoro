@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -47,14 +46,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.TypeList;
-import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.gui.reports.export.ExportPanel;
+import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -178,9 +176,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(0).setMaxWidth(30);
             table.getColumnModel().getColumn(0).setMinWidth(30);
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
-            table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(90);
+            table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(90);
+            table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(90);
         }
         // Set width of column estimated
         table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(80);

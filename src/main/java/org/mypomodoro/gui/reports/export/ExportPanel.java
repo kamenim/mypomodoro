@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.reports.export;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -23,27 +24,20 @@ import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.mypomodoro.buttons.AbstractPomodoroButton;
-import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.Labels;
-
-import au.com.bytecode.opencsv.CSVWriter;
-import java.util.ArrayList;
-import javax.swing.JScrollPane;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
@@ -51,9 +45,12 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.reports.export.ExportInputForm.activityToArray;
+import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 
 /**
  * Panel to export reports
@@ -67,6 +64,8 @@ public class ExportPanel extends JPanel {
     private final AbstractActivitiesPanel panel;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString("Common.Date"),
+        Labels.getString("ReportListPanel.Time"),
+        Labels.getString("Common.Date completed"),
         Labels.getString("ReportListPanel.Time"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Estimated"),

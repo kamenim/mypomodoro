@@ -46,7 +46,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -163,9 +162,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 10).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 10).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 10).setPreferredWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 10).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 10).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 10).setPreferredWidth(90);
         // Set width of estimated, real, diff I/II
         table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(60);
         table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(60);

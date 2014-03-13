@@ -52,7 +52,9 @@ public final class ToDoList extends AbstractActivities {
         act.setPriority(size() + 1);
         act.setIsCompleted(false);
         act.setDateCompleted(new Date(0));
-        act.setDate(new Date());
+        if (act.getDate().getTime() == 0) { // avoid resetting the date when importing todos
+            act.setDate(new Date());
+        }
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {
