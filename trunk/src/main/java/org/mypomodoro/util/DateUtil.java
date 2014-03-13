@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Date utility class
@@ -46,7 +47,9 @@ public class DateUtil {
     }
 
     public static String getFormatedDate(Date date, String pattern) {
-        return new SimpleDateFormat(pattern, locale).format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return sdf.format(date);
     }
 
     public static String getFormatedTime(Date date) {
@@ -55,7 +58,9 @@ public class DateUtil {
     }
 
     public static String getFormatedTime(Date date, String pattern) {
-        return new SimpleDateFormat(pattern, locale).format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return sdf.format(date);
     }
 
     public static boolean isUSLocale() {
@@ -70,7 +75,9 @@ public class DateUtil {
      */
     public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
-        return new SimpleDateFormat(datePattern + " " + timePattern).parse(formatedDateTime);
+        SimpleDateFormat sdf = new SimpleDateFormat(datePattern + " " + timePattern);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return sdf.parse(formatedDateTime);
     }
 
     public boolean isDateToday(Date date) {

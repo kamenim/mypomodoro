@@ -262,6 +262,7 @@ public class ExportPanel extends JPanel {
                     XSSFCellStyle cellStyle = workbook.createCellStyle();
                     XSSFDataFormat dataFormat = workbook.createDataFormat();
                     cellStyle.setDataFormat(dataFormat.getFormat("0.0"));
+                    cell.setCellStyle(cellStyle);
                     cell.setCellValue((Float) entries[i]);
                 } else if (entries[i] instanceof Boolean) {
                     cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
