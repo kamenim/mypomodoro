@@ -51,7 +51,7 @@ public final class ReportList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(-1);
         act.setIsCompleted(true);
-        if (act.getDateCompleted().getTime() == 0) { // avoid resetting the date when importing reports
+        if (act.getDateCompleted().getTime() == 0) { // prevent resetting the date when importing reports
             act.setDateCompleted(new Date());
         }
         if (act.getId() == -1) {
