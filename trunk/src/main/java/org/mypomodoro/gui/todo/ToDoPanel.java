@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
@@ -18,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -40,7 +55,6 @@ import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
@@ -114,7 +128,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         addTabPane(gbc);
     }
 
-    // TODO add drag and drop to change priority (dont loose focus on selected row)
     private void init() {
         table.setRowHeight(30);
 
@@ -252,11 +265,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
-                + " (" + ToDoList.getListSize() + ")";
-        if (PreferencesPanel.preferences.getAgileMode()
-                && ToDoList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
+        String titleActivitiesList = "";
+        if (ToDoList.getListSize() > 0) {
+            titleActivitiesList += Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
+                    + " (" + ToDoList.getListSize() + ")";
+            if (PreferencesPanel.preferences.getAgileMode()) {
+                titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
+            }
         }
         setBorder(new TitledBorder(new EtchedBorder(), titleActivitiesList));
     }
@@ -309,6 +324,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         }
                         refreshIconLabels();
                         refreshRemaining();
+                        setPanelBorder();
                     }
                 });
     }
@@ -543,7 +559,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 new ActivityInformationTableListener(ToDoList.getList(),
                         table, commentPanel, ID_KEY));
     }
-    
+
     @Override
     public void refresh() {
         try {
@@ -678,9 +694,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         return pomodoroTime;
     }
 
-    // TODO problem with iconlabels not refreshed when list empty (when completing or moving tasks)
     public void refreshIconLabels() {
-        if (table.getRowCount() > 0) {
+        if (ToDoList.getListSize() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED, false);
