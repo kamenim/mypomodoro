@@ -1,10 +1,3 @@
-package org.mypomodoro.util;
-
-import java.util.Arrays;
-
-import javax.swing.JOptionPane;
-import org.mypomodoro.Main;
-
 /**
  * Bare Bones Browser Launch for Java Utility class to open a web page from a
  * Swing application in the user's default browser. Supports: Mac OS X,
@@ -14,6 +7,12 @@ import org.mypomodoro.Main;
  * @author Dem Pilafian Public Domain Software -- Free to Use as You Like
  * @version 3.0, February 7, 2010
  */
+package org.mypomodoro.util;
+
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import org.mypomodoro.Main;
+
 public class BareBonesBrowserLaunch {
 
     static final String[] browsers = {"google-chrome", "firefox", "opera",

@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.mypomodoro.gui;
 
 import java.awt.Dimension;
@@ -7,13 +23,11 @@ import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 import org.mypomodoro.util.Labels;
 
 /**
@@ -47,10 +61,7 @@ public class PreferencesInputForm extends JPanel {
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTH;
-
+        gbc.fill = GridBagConstraints.CENTER;
         int unitMinute = 0;
         int unitPomodoro = 1;
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45,
@@ -65,14 +76,12 @@ public class PreferencesInputForm extends JPanel {
                 PreferencesPanel.preferences.getLongBreakLength(),
                 Labels.getString("PreferencesPanel.Long Break Length") + ": ",
                 15, 30, unitMinute);
-// TODO refactor the constants
         final int maxNbPomPerActivity = 7;
         final int initMaxNbPomPerActivity = 5;
         final int maxNbPomPerActivityAgileMode = 24; // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
         final int initMaxNbPomPerActivityAgileMode = 20;
         final int maxNbPomPerDay = 12;
-        final int initMaxNbPomPerDay = 10;
-        // TODO center the sliders
+        final int initMaxNbPomPerDay = 10;        
         maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
                 PreferencesPanel.preferences.getMaxNbPomPerActivity(),
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",
