@@ -19,10 +19,8 @@ package org.mypomodoro.gui.todo;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Date;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -140,6 +138,7 @@ public class UnplannedPanel extends CreatePanel {
             panel.addActivity(newActivity);
             // get current selected row
             int row = panel.getTable().convertRowIndexToModel(panel.getTable().getSelectedRow());
+            // TODO insert row instead of refresh ?
             panel.refresh();
             // reselect previously selected row
             panel.getTable().setRowSelectionInterval(row, row);

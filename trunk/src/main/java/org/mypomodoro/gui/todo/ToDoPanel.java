@@ -23,14 +23,17 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.util.ArrayList;
 import java.util.Iterator;
-import javax.swing.DefaultRowSorter;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,9 +41,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
@@ -48,6 +50,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -190,8 +193,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        // Add tooltip 
-        table.addMouseMotionListener(new MouseMotionAdapter() {
+        // Add tooltip and drag and drop
+        // we had to implement our own MouseInputAdapter in order to manage the Mouse release event        
+        class CustomInputAdapter extends MouseInputAdapter {
+            
+            final AbstractActivitiesPanel panel;
+
+            public CustomInputAdapter(AbstractActivitiesPanel panel) {
+                this.panel = panel;
+            }
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -212,43 +222,58 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
 
-            // Drag to change priority
             @Override
             public void mouseDragged(MouseEvent e) {
+                // force selection
+                table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
+                // TODO problem index after sorting
                 // check if priority column is already sorted
                 // if not, force the user to do so
-                boolean isPriorityColumnSorted = true;
-                for (int i = 0; i < table.getRowCount() - 1; i++) {
-                    if ((Integer) table.getValueAt(i, 0) != (Integer) table.getValueAt(i + 1, 0) - 1) {
-                        isPriorityColumnSorted = false;
-                    }
-                }
-                if (!isPriorityColumnSorted) {
+                if (table.getSelectedRowCount() == 1 && !isSorted()) {
                     String title = Labels.getString("ToDoListPanel.Sort by priority");
                     String message = Labels.getString("ToDoListPanel.ToDos must first be sorted by priority. Sort now?");
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                     if (reply == JOptionPane.OK_OPTION) {
-                        int currentlySelectedRow = table.convertRowIndexToModel(table.getSelectedRow());
+                        int currentlySelectedRow = table.getSelectedRow();
                         // sort progamatically the priority column
-                        table.setAutoCreateRowSorter(true);
+                        /*table.setAutoCreateRowSorter(true);
                         DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
                         ArrayList list = new ArrayList();
                         list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
                         sorter.setSortKeys(list);
                         sorter.sort();
                         // select previously selected activity
-                        table.setRowSelectionInterval(currentlySelectedRow, currentlySelectedRow);
+                        table.setRowSelectionInterval(table.convertRowIndexToModel(currentlySelectedRow), table.convertRowIndexToModel(currentlySelectedRow));*/
+                        panel.refresh();
                     }
-                } else {
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (table.getSelectedRowCount() == 1 && isSorted()) {
                     TransferHandler handler = table.getTransferHandler();
                     handler.exportAsDrag(table, e, TransferHandler.MOVE);
                 }
             }
-        });
+
+            private boolean isSorted() {
+                boolean sorted = true;
+                for (int i = 0; i < table.getRowCount() - 1; i++) {
+                    if ((Integer) table.getValueAt(i, 0) != (Integer) table.getValueAt(i + 1, 0) - 1) {
+                        sorted = false;
+                    }
+                }
+                return sorted;
+            }
+        }
+
+        table.addMouseMotionListener(new CustomInputAdapter(this));
 
         // diactivate/gray out all tabs (except import)
-        if (ToDoList.getListSize() == 0) {
+        if (ToDoList.getListSize()
+                == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                 if (index == 5) { // import tab
                     continue;
@@ -259,6 +284,20 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
+
+        // Activate Control A
+        InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
+        class selectAllAction extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table.selectAll();
+            }
+        }
+        am.put("Control A", new selectAllAction());
+
         // Refresh panel border
         setPanelBorder();
     }
@@ -339,7 +378,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
-                new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png")),
+                new ImageIcon(Main.class
+                        .getResource("/images/myPomodoroIconNoTime250.png")),
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -415,7 +455,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             // this is mandatory to get columns with integers properly sorted
             @Override
-            public Class getColumnClass(int column) {
+            public Class
+                    getColumnClass(int column) {
                 switch (column) {
                     case 0:
                         return Integer.class;
@@ -431,40 +472,40 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         return String.class;
                 }
             }
+
         };
 
         // listener on editable cells
-        tableModel.addTableModelListener(new TableModelListener() {
+        tableModel.addTableModelListener(
+                new TableModelListener() {
 
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) {
-                    int row = e.getFirstRow();
-                    int column = e.getColumn();
-                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
-                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                    Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 4) { // Title (can't be empty)
-                        if (data.toString().trim().length() == 0) {
-                            // reset the original value. Title can't be empty.
-                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
-                        } else {
-                            act.setName(data.toString());
-                            act.databaseUpdate();
-                            ToDoList.getList().update(act);
-                            refreshIconLabels();
-                            detailsPanel.selectInfo(act);
-                            detailsPanel.showInfo();
+                    @Override
+                    public void tableChanged(TableModelEvent e
+                    ) {
+                        if (e.getType() == TableModelEvent.UPDATE) {
+                            int row = e.getFirstRow();
+                            int column = e.getColumn();
+                            AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
+                            Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
+                            Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                            Activity act = Activity.getActivity(ID.intValue());
+                            if (column == ID_KEY - 4) { // Title (can't be empty)
+                                if (data.toString().trim().length() == 0) {
+                                    // reset the original value. Title can't be empty.
+                                    model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
+                                } else {
+                                    act.setName(data.toString());
+                                    act.databaseUpdate();
+                                    ToDoList.getList().update(act);
+                                    refreshIconLabels();
+                                    detailsPanel.selectInfo(act);
+                                    detailsPanel.showInfo();
+                                }
+                            }
                         }
                     }
-                } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
-                    int lastRow = e.getLastRow(); // no need for convertRowIndexToModel
-                    int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
-                    table.setRowSelectionInterval(row, row);
                 }
-            }
-        });
+        );
         return tableModel;
     }
 
@@ -478,10 +519,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         return ID_KEY;
     }
 
-    // use convertRowIndexToModel to avoid the sorting of columns to mess with the move/deletion
     @Override
     public void removeRow(int rowIndex) {
-        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
+        if (table.getRowCount() > 0) {
+            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
+            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View           
+        }
     }
 
     @Override
@@ -546,6 +590,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     public void reorderByPriority() {
         ToDoList.getList().reorderByPriority();
+        for (int row = 0; row < activitiesTableModel.getRowCount(); row++) {
+            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = getActivityById(id);
+            activitiesTableModel.setValueAt(activity.getPriority(), row, 0); // priority column index = 0            
+        }
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPanel) {

@@ -24,6 +24,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -94,6 +95,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
+    
+    private InputMap im = null;
 
     public ReportsPanel() {
         setLayout(new GridBagLayout());
@@ -243,8 +246,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             table.setRowSelectionInterval(0, 0);
         }
         
-        // Activate delete key stroke
-        InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        // Activate Delete key stroke
+        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
+        // Then is ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
+        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         class deleteAction extends AbstractAction {
             
@@ -263,6 +269,16 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
         am.put("Delete", new deleteAction(this));
+        // Activate Control A
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
+        class selectAllAction extends AbstractAction {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table.selectAll();
+            }
+        }
+        am.put("Control A", new selectAllAction());
         
         // Refresh panel border
         setPanelBorder();
@@ -299,6 +315,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
+                        
+                        // See above for reason to set WHEN_FOCUSED here
+                        table.setInputMap(JTable.WHEN_FOCUSED, im);
+                        
                         if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
@@ -433,10 +453,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     // update info
                     detailsPanel.selectInfo(act);
                     detailsPanel.showInfo();
-                } else if (e.getType() == TableModelEvent.DELETE && table.getRowCount() > 0) { // row removed; select following row                    
-                    int lastRow = e.getLastRow(); // no need for convertRowIndexToModel                    
-                    int row = table.getRowCount() == lastRow ? lastRow - 1 : lastRow;
-                    table.setRowSelectionInterval(row, row);
                 }
                 // diactivate/gray out all tabs (except import)
                 if (ReportList.getListSize() == 0) {
@@ -462,10 +478,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         return ID_KEY;
     }
 
-    // use convertRowIndexToModel to avoid sorting to mess up with the deletion
     @Override
     public void removeRow(int rowIndex) {
-        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex));
+        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
+        if (table.getRowCount() > 0) {
+            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
+            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View           
+        }
     }
 
     @Override
