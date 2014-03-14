@@ -18,7 +18,6 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.util.Date;
-
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
@@ -26,7 +25,6 @@ import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
-
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -138,6 +136,7 @@ public class MergingPanel extends CreatePanel {
                 message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
                 panel.addActivity(newActivity);
                 panel.reorderByPriority();
+                // TODO insert row instead of refresh?
                 panel.refresh();
                 panel.refreshRemaining();
                 clearForm();

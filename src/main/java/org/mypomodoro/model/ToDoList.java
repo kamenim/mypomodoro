@@ -52,7 +52,7 @@ public final class ToDoList extends AbstractActivities {
         act.setPriority(size() + 1);
         act.setIsCompleted(false);
         act.setDateCompleted(new Date(0));
-        act.setDate(new Date());        
+        act.setDate(new Date());
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {
@@ -94,12 +94,14 @@ public final class ToDoList extends AbstractActivities {
 
     // set new priorities
     public void reorderByPriority() {
-        sortByPriority();
+        sortByPriority(); // sort what is left of the ToDos (after delete, complete...)
         int increment = 1;
         for (Activity activity : activities) {
-            activity.setPriority(increment);
-            update(activity);
-            activity.databaseUpdate();
+            if (activity.getPriority() != increment) { // optimization
+                activity.setPriority(increment);
+                update(activity);
+                activity.databaseUpdate();
+            }
             increment++;
         }
     }

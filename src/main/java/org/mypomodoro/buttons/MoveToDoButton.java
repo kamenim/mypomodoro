@@ -19,9 +19,7 @@ package org.mypomodoro.buttons;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import org.mypomodoro.gui.todo.ToDoPanel;
-
 import org.mypomodoro.model.Activity;
 
 /**
@@ -71,11 +69,6 @@ public class MoveToDoButton extends AbstractPomodoroButton {
             }
             // reorder                            
             panel.reorderByPriority();
-            for (int row = 0; row < panel.getTable().getModel().getRowCount(); row++) {
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity activity = panel.getActivityById(id);
-                panel.getTable().getModel().setValueAt(activity.getPriority(), panel.getTable().convertRowIndexToModel(row), 0); // priority column index = 0
-            }
         }
     }
 }
