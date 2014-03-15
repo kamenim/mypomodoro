@@ -18,6 +18,7 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -42,8 +43,8 @@ public class BurndownPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         JTabbedPane burdownChartPane = new JTabbedPane();
         BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
-        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
-        BurndownChartPanel burndownChart = new BurndownChartPanel();
+        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);        
+        BurndownChartPanel burndownChart = new BurndownChartPanel(new Date(), new Date());
         burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
         add(burdownChartPane, gbc);
     }

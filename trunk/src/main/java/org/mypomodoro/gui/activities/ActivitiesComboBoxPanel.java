@@ -52,16 +52,13 @@ class ActivitiesComboBoxPanel extends JPanel {
 
     class ComboBoxFloatRenderer extends DefaultListCellRenderer {
 
-        public ComboBoxFloatRenderer() {
-        }
-
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             String text;
             if (value.toString().equals("0.5")) {
                 text = "1/2";
             } else {
-                text = Math.round((Float) value) + "";
+                text = Math.round((Float)value) + "";
             }
             setText(text);
             return this;
@@ -70,14 +67,24 @@ class ActivitiesComboBoxPanel extends JPanel {
 
     class ComboBoxEstimatedLengthRenderer extends DefaultListCellRenderer {
 
-        public ComboBoxEstimatedLengthRenderer() {
-        }
-
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             String length = getLength(Integer.parseInt(value.toString()));
             setToolTipText(length);
             return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        }
+    }
+    
+    class ComboBoxIterationRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            String text = value.toString();
+            if (value.toString().equals("-1")) {
+                text = " ";
+            }
+            setText(text);
+            return this;
         }
     }
 }

@@ -62,8 +62,8 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
-import org.mypomodoro.gui.reports.export.ExportPanel;
-import org.mypomodoro.gui.reports.export.ImportPanel;
+import org.mypomodoro.gui.export.ExportPanel;
+import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -150,7 +150,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new CustomTableRenderer()); // title                
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new CustomTableRenderer()); // iteration
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
         if (!PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
@@ -667,6 +667,20 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 text = "1/2";
             } else {
                 text = Math.round((Float) value) + "";
+            }
+            renderer.setText(text);
+            return renderer;
+        }
+    }
+    
+     class IterationCellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            String text = value.toString();
+            if (value.toString().equals("-1")) {
+                text = "";
             }
             renderer.setText(text);
             return renderer;
