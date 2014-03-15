@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.Component;
-import org.mypomodoro.gui.create.list.TypeComboBox;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -26,7 +25,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -37,11 +35,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-
 import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
+import org.mypomodoro.gui.create.list.TypeComboBox;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
@@ -241,6 +239,7 @@ public class ActivityInputForm extends JPanel {
             its[i] = i - 1;
         }
         iterations = new JComboBox(its);
+        iterations.setRenderer(new IterationComboBoxRenderer());
         ++gridy;
         c.gridx = 0;
         c.gridy = gridy;
@@ -251,6 +250,24 @@ public class ActivityInputForm extends JPanel {
         c.weighty = 0.5;
         iterations.setBackground(ColorUtil.WHITE);
         add(iterations, c);
+    }
+    
+    class IterationComboBoxRenderer extends BasicComboBoxRenderer {
+
+        public IterationComboBoxRenderer() {
+            super();
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            String text = value.toString();
+            if (value.toString().equals("-1")) {
+                text = "";
+            }
+            setText(text);
+            return this;
+        }
     }
 
     protected void addAuthor(int gridy) {

@@ -18,9 +18,11 @@ package org.mypomodoro.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.joda.time.DateTime;
 
 /**
  * Date utility class
@@ -80,9 +82,37 @@ public class DateUtil {
         return sdf.parse(formatedDateTime);
     }
 
-    public boolean isDateToday(Date date) {
+    private boolean isDateToday(Date date) {
         String datePickerFormat = DateUtil.getFormatedDate(date);
         String todayFormat = DateUtil.getFormatedDate(new Date());
         return datePickerFormat.equalsIgnoreCase(todayFormat);
+    }
+
+    /**
+     * Returns an ordered list of days of month between two dates
+     *
+     * @param dateStart
+     * @param dateEnd
+     * @return array list of days of months
+     */
+    public static ArrayList<Integer> getDaysOfMonth(Date dateStart, Date dateEnd) {
+        DateTime start = new DateTime(dateStart.getTime());
+        DateTime end = new DateTime(dateEnd.getTime());
+        ArrayList<Integer> days = new ArrayList<Integer>();
+        while (start.isBefore(end) || start.isEqual(end)) {
+            days.add(start.dayOfMonth().get());
+            start = start.plusDays(1);
+        }
+        return days;
+    }
+
+    /**
+     * Returns the day of month of a date
+     *
+     * @param date
+     * @return day of month
+     */
+    public static int convertToDay(Date date) {
+        return new DateTime(date.getTime()).dayOfMonth().get();
     }
 }

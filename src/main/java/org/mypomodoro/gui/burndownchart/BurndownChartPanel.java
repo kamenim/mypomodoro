@@ -18,7 +18,7 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
+import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -32,21 +32,21 @@ public class BurndownChartPanel extends JPanel {
     private BurndownChart burndownChart;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public BurndownChartPanel() {
+    public BurndownChartPanel(Date dateStart, Date dateEnd) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        addBurndownChart();
+        addBurndownChart(dateStart, dateEnd);
     }
 
-    private void addBurndownChart() {
+    private void addBurndownChart(Date dateStart, Date dateEnd) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        burndownChart = new BurndownChart();
+        burndownChart = new BurndownChart(dateStart, dateEnd);
         add(burndownChart, gbc);
     }
 }

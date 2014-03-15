@@ -59,8 +59,8 @@ import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.TypeList;
-import org.mypomodoro.gui.reports.export.ExportPanel;
-import org.mypomodoro.gui.reports.export.ImportPanel;
+import org.mypomodoro.gui.export.ExportPanel;
+import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -155,8 +155,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         for (int i = 0; i <= 101; i++) {
             iterations[i] = i - 1;
         }
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new ComboBoxCellRenderer(iterations, false));
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new ComboBoxCellEditor(iterations, false));
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationComboBoxCellRenderer(iterations, false));
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new IterationComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
         if (!PreferencesPanel.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);

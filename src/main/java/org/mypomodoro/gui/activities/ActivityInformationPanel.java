@@ -62,7 +62,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
                 + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
         if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
-            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + activity.getIteration() + "\n");
+            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "\n");
         }
         textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n");
         textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "\n");

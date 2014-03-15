@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
@@ -228,6 +227,33 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activity;
+    }
+    
+    public ArrayList<Activity> getToDosAndReportsByDates(Date startDate, Date endDate) {
+        ArrayList<Activity> activities = new ArrayList<Activity>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT * FROM activities "
+                    + "WHERE priority > -1 OR is_complete = 'true' "
+                    + "AND date_added >= " + startDate.getTime() + " "
+                    + "AND date_added <= " + endDate.getTime() + ";");
+            try {
+                while (rs.next()) {
+                    activities.add(new Activity(rs));
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            } finally {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return activities;
     }
 
     public void deleteAllReports() {
