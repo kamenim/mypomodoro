@@ -64,6 +64,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
+import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -206,6 +207,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
+        
+        // add tooltip to header columns
+        CustomTableHeader customTableHeader = new CustomTableHeader(table);
+        customTableHeader.setToolTipsText(columnNames);        
+        table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 
         table.addMouseMotionListener(new MouseMotionAdapter() {
@@ -299,7 +305,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 && ReportList.getListSize() > 0) {
             titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
         }
-        setBorder(new TitledBorder(new EtchedBorder(), titleReportsList));
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));        
+        setBorder(titledborder);
     }
 
     private void addReportsTable(GridBagConstraints gbc) {

@@ -55,6 +55,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
@@ -66,6 +67,7 @@ import org.mypomodoro.gui.reports.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
@@ -105,7 +107,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public ToDoPanel() {
         setLayout(new GridBagLayout());
 
-        table = new JTable(activitiesTableModel) {
+        table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
 
@@ -193,16 +195,21 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
+
+        // add tooltip to header columns
+        CustomTableHeader customTableHeader = new CustomTableHeader(table);
+        customTableHeader.setToolTipsText(columnNames);                
+        table.setTableHeader(customTableHeader);
+
         // Add tooltip and drag and drop
         // we had to implement our own MouseInputAdapter in order to manage the Mouse release event        
         class CustomInputAdapter extends MouseInputAdapter {
-            
-            final AbstractActivitiesPanel panel;
 
-            public CustomInputAdapter(AbstractActivitiesPanel panel) {
-                this.panel = panel;
-            }
+            /*final AbstractActivitiesPanel panel;
 
+             public CustomInputAdapter(AbstractActivitiesPanel panel) {
+             this.panel = panel;
+             }*/
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
@@ -218,15 +225,18 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         table.setToolTipText(value);
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse
+                    // do nothing. This may happen when removing rows and yet using the mouse outside the table
+                } catch (IndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse outside the table
                 }
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
+                int rowToDrag = table.convertRowIndexToModel(table.getSelectedRow()); // get reference from model
                 // force selection
-                table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow());
-                // TODO problem index after sorting
+                table.setRowSelectionInterval(table.getSelectedRow(), table.getSelectedRow()); // select in the view
+                // TODO problem with dragging after manual sorting of one of the other columns
                 // check if priority column is already sorted
                 // if not, force the user to do so
                 if (table.getSelectedRowCount() == 1 && !isSorted()) {
@@ -235,17 +245,18 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                     if (reply == JOptionPane.OK_OPTION) {
-                        int currentlySelectedRow = table.getSelectedRow();
-                        // sort progamatically the priority column
-                        /*table.setAutoCreateRowSorter(true);
-                        DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
-                        ArrayList list = new ArrayList();
-                        list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
-                        sorter.setSortKeys(list);
-                        sorter.sort();
+                        // sort programatically the priority column
+                        //table.setAutoCreateRowSorter(true);
+                        /*DefaultRowSorter sorter = ((DefaultRowSorter) table.getRowSorter());
+                         ArrayList list = new ArrayList();
+                         list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
+                         sorter.setSortKeys(list);
+                         sorter.sort();*/ // sort the view
                         // select previously selected activity
-                        table.setRowSelectionInterval(table.convertRowIndexToModel(currentlySelectedRow), table.convertRowIndexToModel(currentlySelectedRow));*/
-                        panel.refresh();
+                        // Refresh table (ordered by priority)
+                        table.setModel(getTableModel());
+                        init();
+                        table.setRowSelectionInterval(rowToDrag, rowToDrag); // select in the view
                     }
                 }
             }
@@ -263,13 +274,14 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 for (int i = 0; i < table.getRowCount() - 1; i++) {
                     if ((Integer) table.getValueAt(i, 0) != (Integer) table.getValueAt(i + 1, 0) - 1) {
                         sorted = false;
+                        break;
                     }
                 }
                 return sorted;
             }
         }
 
-        table.addMouseMotionListener(new CustomInputAdapter(this));
+        table.addMouseMotionListener(new CustomInputAdapter());
 
         // diactivate/gray out all tabs (except import)
         if (ToDoList.getListSize()
@@ -312,7 +324,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
             }
         }
-        setBorder(new TitledBorder(new EtchedBorder(), titleActivitiesList));
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));        
+        setBorder(titledborder);
     }
 
     private void addToDoTable(GridBagConstraints gbc) {
