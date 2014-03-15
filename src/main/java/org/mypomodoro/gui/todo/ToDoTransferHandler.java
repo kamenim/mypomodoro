@@ -44,8 +44,7 @@ public class ToDoTransferHandler extends TransferHandler {
     public boolean canImport(TransferHandler.TransferSupport support) {
         return true;
     }
-
-    // TODO problem with dragging after manual sorting of one of the other columns
+    
     @Override
     public boolean importData(TransferHandler.TransferSupport info) {
         JTable.DropLocation dropLocation = (JTable.DropLocation) info.getDropLocation();
@@ -55,19 +54,19 @@ public class ToDoTransferHandler extends TransferHandler {
                     Object[] myObject = (Object[]) info.getTransferable().getTransferData(ToDoRowTransferable.DATA_ROW);
                     int fromRow = (Integer) myObject[0];
                     Object[] data = (Object[]) ((ArrayList<Object>) myObject[1]).toArray();
-                    panel.removeRow(fromRow);
+                    ((DefaultTableModel)panel.getTable().getModel()).removeRow(fromRow);
                     int toRow = dropLocation.getRow();
-                    toRow = (toRow == 0) ? toRow : toRow - 1;
+                    toRow = (toRow < fromRow) ? toRow : toRow - 1;
                     ((DefaultTableModel) panel.getTable().getModel()).insertRow(toRow, data);
-                    panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow);
                     for (int row = 0; row < panel.getTable().getModel().getRowCount(); row++) {
                         Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
                         Activity activity = panel.getActivityById(id);
-                        panel.getTable().getModel().setValueAt(row + 1, row, 0);
+                        panel.getTable().getModel().setValueAt(row + 1, row, 0); // set the value in the model
                         activity.setPriority(row + 1);
                         activity.databaseUpdate();
                         ToDoList.getList().update(activity);
                     }
+                    panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow);                    
                     return true;
                 } catch (UnsupportedFlavorException e) {
                     // do nothing
