@@ -32,6 +32,7 @@ public class PlaceComboBox extends AbstractComboBox {
 
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                Object selectedItem = getEditor().getItem(); // the combo bow is editable
                 removeAllItems();
                 for (String place : PlaceList.getPlaces()) {
                     addItem(place);

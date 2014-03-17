@@ -44,12 +44,12 @@ import org.mypomodoro.util.RestartMac;
 public class Main {
 
     public static final Database database = new Database();
-    public final static PreferencesPanel controlPanel = new PreferencesPanel();
+    public static final PreferencesPanel controlPanel = new PreferencesPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportsPanel reportListPanel = new ReportsPanel();
     public static final BurndownPanel burndownPanel = new BurndownPanel();
-    public final static ReentrantLock datalock = new ReentrantLock();
+    public static final ReentrantLock datalock = new ReentrantLock();
     public static final MyPomodoroView gui = new MyPomodoroView();
 
     public static void updateView() {
@@ -65,11 +65,17 @@ public class Main {
     }
 
     public static void updateLists() {
-        ActivityList.getList().refresh();
-        ToDoList.getList().refresh();
-        ReportList.getList().refresh();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                ActivityList.getList().refresh();
+                ToDoList.getList().refresh();
+                ReportList.getList().refresh();
+            }
+        });
     }
-    
+
     public static void updateActivityListView() {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -81,7 +87,13 @@ public class Main {
     }
 
     public static void updateActivityList() {
-        ActivityList.getList().refresh();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                ActivityList.getList().refresh();
+            }
+        });
     }
 
     /**

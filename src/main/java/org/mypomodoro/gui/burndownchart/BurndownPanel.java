@@ -41,11 +41,11 @@ public class BurndownPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane burdownChartPane = new JTabbedPane();
-        BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartPane);
-        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);        
-        BurndownChartPanel burndownChart = new BurndownChartPanel(new Date(), new Date());
-        burdownChartPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChart));
-        add(burdownChartPane, gbc);
+        JTabbedPane burdownChartTabbedPane = new JTabbedPane();
+        BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartTabbedPane);
+        burdownChartTabbedPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);        
+        BurndownChartPanel burndownChartPanel = new BurndownChartPanel(new Date(), new Date());
+        burdownChartTabbedPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChartPanel));
+        add(burdownChartTabbedPane, gbc);
     }
 }

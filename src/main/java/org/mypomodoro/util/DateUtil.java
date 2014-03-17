@@ -21,8 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeConstants;
 
 /**
  * Date utility class
@@ -48,9 +49,10 @@ public class DateUtil {
         return getFormatedDate(date, pattern);
     }
 
+    // TODO check time zone issue with export dates
     public static String getFormatedDate(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }
 
@@ -61,7 +63,7 @@ public class DateUtil {
 
     public static String getFormatedTime(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }
 
@@ -78,14 +80,38 @@ public class DateUtil {
     public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern + " " + timePattern);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.parse(formatedDateTime);
     }
 
-    private boolean isDateToday(Date date) {
-        String datePickerFormat = DateUtil.getFormatedDate(date);
-        String todayFormat = DateUtil.getFormatedDate(new Date());
-        return datePickerFormat.equalsIgnoreCase(todayFormat);
+    /*
+     * Check if a date is today
+     * 
+     * @param date
+     */
+    public static boolean isDateToday(Date date) {
+        DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
+        return dateComparator.compare(date, new Date()) == 0;
+    }
+    
+    /*
+     * Check if a date is in the past
+     * 
+     * @param date
+     */
+    public static boolean inPast(Date date) {
+        DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
+        return dateComparator.compare(date, new Date()) < -1;
+    }
+    
+    /*
+     * Check if a date is in the future
+     * 
+     * @param date
+     */
+    public static boolean inFuture(Date date) {
+        DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
+        return dateComparator.compare(date, new Date()) > 0;
     }
 
     /**
@@ -104,6 +130,39 @@ public class DateUtil {
             start = start.plusDays(1);
         }
         return days;
+    }
+
+    /**
+     * Returns an ordered list of days of month between two dates
+     *
+     * @param dateStart
+     * @param dateEnd
+     * @return array list of days of months
+     */
+    public static ArrayList<Integer> newgetDaysOfMonth(Date dateStart, Date dateEnd, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
+        DateTime start = new DateTime(dateStart.getTime());
+        DateTime end = new DateTime(dateEnd.getTime());
+        ArrayList<Integer> days = new ArrayList<Integer>();
+        while ((start.isBefore(end) || start.isEqual(end)) && !isExcluded(start, excludeSaturdays, excludeSundays, excludeDates)) {
+            days.add(start.dayOfMonth().get());
+            start = start.plusDays(1);
+        }
+        return days;
+    }
+
+    private static boolean isExcluded(DateTime dateTime, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
+        boolean isExcluded = false;
+        if (dateTime.getDayOfWeek() != DateTimeConstants.SATURDAY || dateTime.getDayOfWeek() != DateTimeConstants.SUNDAY) { // excluding saturdays and sundays
+            isExcluded = true;
+        } else {
+            for (Date excludeDate : excludeDates) {
+                if (new DateTime(excludeDate).dayOfYear() == dateTime.dayOfYear()) {
+                    isExcluded = true;
+                    break;
+                }
+            }
+        }
+        return isExcluded;
     }
 
     /**

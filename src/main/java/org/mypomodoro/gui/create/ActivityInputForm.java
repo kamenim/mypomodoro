@@ -35,13 +35,13 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.gui.create.list.TypeComboBox;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.calculateEffectiveHours;
@@ -64,8 +64,7 @@ public class ActivityInputForm extends JPanel {
     protected JComboBox types = new JComboBox();
     protected JComboBox authors = new JComboBox();
     protected JComboBox places = new JComboBox();
-    protected final JXDatePicker datePicker = new JXDatePicker(
-            Labels.getLocale());
+    protected final DatePicker datePicker = new DatePicker(Labels.getLocale());
     protected int activityId = -1;
     protected final JLabel estimatedLengthLabel = new JLabel("", JLabel.LEFT);
 
@@ -101,8 +100,7 @@ public class ActivityInputForm extends JPanel {
 
     protected void addDate(int gridy) {
         final FormLabel dateLabel = new FormLabel(
-                Labels.getString("Common.Date") + "*: ");
-        datePicker.setDate(new Date());
+                Labels.getString("Common.Date scheduled") + "*: ");        
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -221,13 +219,14 @@ public class ActivityInputForm extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String text;
             if (value.toString().equals("0.5")) {
                 text = "1/2";
             } else {
                 text = Math.round((Float) value) + "";
             }
-            setText(text);
+            setText(text);            
             return this;
         }
     }
@@ -261,6 +260,7 @@ public class ActivityInputForm extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String text = value.toString();
             if (value.toString().equals("-1")) {
                 text = "";
@@ -352,6 +352,7 @@ public class ActivityInputForm extends JPanel {
         place = place != null ? place.trim() : "";
         int estimatedPoms = (Integer) estimatedPomodoros.getSelectedItem();
         Date dateActivity = datePicker.getDate();
+        System.err.println("date today ? =" + DateUtil.isDateToday(dateActivity));
         Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
         if (PreferencesPanel.preferences.getAgileMode()) {
@@ -420,17 +421,15 @@ public class ActivityInputForm extends JPanel {
     }
 
     public void setDate(Date value) {
-        datePicker.setDate(value);
+        datePicker.setDateWithBounds(value);
     }
 
     public void setActivityId(int value) {
         activityId = value;
     }
-
+    
     public boolean isDateToday() {
-        String datePickerFormat = DateUtil.getFormatedDate(datePicker.getDate());
-        String todayFormat = DateUtil.getFormatedDate(new Date());
-        return datePickerFormat.equalsIgnoreCase(todayFormat);
+        return DateUtil.isDateToday(datePicker.getDate());        
     }
 
     protected void displayLength(int estimatedPomodoros) {

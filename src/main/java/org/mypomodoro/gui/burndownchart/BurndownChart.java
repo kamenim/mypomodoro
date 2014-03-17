@@ -60,27 +60,29 @@ import org.mypomodoro.util.Labels;
 public class BurndownChart extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JFreeChart chart;
+    private final JFreeChart burndownChart;
     private ArrayList<Activity> activities = new ArrayList<Activity>();
     private ArrayList<Integer> XAxisValues = new ArrayList<Integer>();
     private float totalStoryPoints = 0;
 
     public BurndownChart(Date dateStart, Date dateEnd) {
         // Retrieve ToDos and Reports between dateStart and dateEnd
-        activities = ActivitiesDAO.getInstance().getToDosAndReportsByDates(dateStart, dateEnd);
+        activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
         XAxisValues = getXAxisValues(dateStart, dateEnd);
         for (Activity activity : activities) {
             totalStoryPoints += activity.getStoryPoints();
         }
+        System.err.println("totalStoryPoints = " + totalStoryPoints);
         CategoryDataset dataset = createTargetDataset();
-        chart = createChart(dataset);
-        ChartPanel chartPanel = new ChartPanel(chart);
+        burndownChart = createChart(dataset);
+        ChartPanel chartPanel = new ChartPanel(burndownChart);
         add(chartPanel);
     }
-    
+
     // TODO exclude week end and days off
     private ArrayList<Integer> getXAxisValues(Date dateStart, Date dateEnd) {
         return DateUtil.getDaysOfMonth(dateStart, dateEnd);
+        //return DateUtil.getDaysOfMonth(dateStart, dateEnd, true, true, new ArrayList<Date>());
         //return new String[]{"6 AUG.", "7 AUG.", "8 AUG.", "9 AUG.", "10 AUG.", "13 AUG.", "14 AUG.", "15 AUG.", "16 AUG.", "17 AUG.", "20 AUG.", "21 AUG.", "22 AUG.", "23 AUG.", "24 AUG."};
         //return new String[]{"6", "7", "8", "9", "10", "13", "14", "15", "16", "17", "20", "21", "22", "23", "24"};
     }
@@ -124,7 +126,7 @@ public class BurndownChart extends JPanel {
             float storyPoints = totalStoryPoints;
             for (Activity activity : activities) {
                 if (DateUtil.convertToDay(activity.getDateCompleted()) == day) {
-                    storyPoints -= activity.getStoryPoints();                    
+                    storyPoints -= activity.getStoryPoints();
                 }
             }
             dataset.addValue(storyPoints, label, day);
@@ -188,9 +190,9 @@ public class BurndownChart extends JPanel {
                 new JLabel().getFont().getSize()));
         rangeAxis.setAutoRangeIncludesZero(true);
         rangeAxis.setAxisLineVisible(false);
-        rangeAxis.setRange(0, 350);
+        rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 10); // make the axis slightly higher (1/10th higher) than the higher value
         TickUnits customUnits = new TickUnits();
-        customUnits.add(new NumberTickUnit(50));
+        customUnits.add(new NumberTickUnit(5));
         rangeAxis.setStandardTickUnits(customUnits);
         rangeAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize() + 1));
@@ -256,7 +258,7 @@ public class BurndownChart extends JPanel {
         int imageWidth = 800;
         int imageHeight = 600;
         try {
-            ChartUtilities.saveChartAsPNG(new File(fileName), chart, imageWidth, imageHeight);
+            ChartUtilities.saveChartAsPNG(new File(fileName), burndownChart, imageWidth, imageHeight);
         } catch (IOException ex) {
             String title = Labels.getString("Common.Error");
             String message = Labels.getString("ReportListPanel.Chart.Image creation failed");

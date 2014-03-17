@@ -229,14 +229,13 @@ public class ActivitiesDAO {
         return activity;
     }
     
-    public ArrayList<Activity> getToDosAndReportsByDates(Date startDate, Date endDate) {
+    public ArrayList<Activity> getToDosAndReportsForChart(Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority > -1 OR is_complete = 'true' "
-                    + "AND date_added >= " + startDate.getTime() + " "
-                    + "AND date_added <= " + endDate.getTime() + ";");
+                    + "WHERE (priority > -1 OR is_complete = 'true') "
+                    + "AND date_completed <= " + endDate.getTime() + ";");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -318,11 +317,8 @@ public class ActivitiesDAO {
     // move all ToDos back to Activity list
     public void moveAllTODOs() {
         String updateSQL = "UPDATE activities SET "
-                + "priority = -1";
-        if (PreferencesPanel.preferences.getAgileMode()) {
-            updateSQL += ",date_added = " + new Date(0).getTime();
-        }
-        updateSQL += " WHERE priority > -1 AND is_complete = 'false';";
+                + "priority = -1"
+                + " WHERE priority > -1 AND is_complete = 'false';";
         try {
             database.lock();
             database.update("begin;");
@@ -354,11 +350,8 @@ public class ActivitiesDAO {
     public void reopenAllReports() {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'false',"
-                + "date_completed = " + new Date(0).getTime();
-        if (PreferencesPanel.preferences.getAgileMode()) {
-            updateSQL += ",date_added = " + new Date(0).getTime();
-        }
-        updateSQL += " WHERE priority = -1 AND is_complete = 'true';";
+                + "date_completed = " + new Date(0).getTime()
+                + " WHERE priority = -1 AND is_complete = 'true';";
         try {
             database.lock();
             database.update("begin;");

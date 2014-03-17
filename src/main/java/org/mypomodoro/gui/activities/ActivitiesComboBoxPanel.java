@@ -54,6 +54,7 @@ class ActivitiesComboBoxPanel extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String text;
             if (value.toString().equals("0.5")) {
                 text = "1/2";
@@ -79,6 +80,7 @@ class ActivitiesComboBoxPanel extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String text = value.toString();
             if (value.toString().equals("-1")) {
                 text = " ";
