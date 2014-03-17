@@ -85,6 +85,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
+    // TODO remove column overestimated
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -99,7 +100,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
-    private int mouseHoverRow = -1;
+    private int mouseHoverRow = 0;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -119,8 +120,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
                     ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
                 } else {
-                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));
-                    
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));                    
                 }
                 return c;
             }
@@ -223,7 +223,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[1] = Labels.getString("Common.Date scheduled");
+        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Date scheduled");
+        cloneColumnNames[ID_KEY - 4] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
 

@@ -103,7 +103,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel);
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
-    private int mouseHoverRow = -1;
+    private int mouseHoverRow = 0;
 
     public ToDoPanel() {
         setLayout(new GridBagLayout());
@@ -124,8 +124,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
                     ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
                 } else {
-                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));
-                    
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));                    
                 }
                 return c;
             }
@@ -206,7 +205,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
-        customTableHeader.setToolTipsText(columnNames);                
+        String[] cloneColumnNames = columnNames.clone();
+        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
+        customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip and drag and drop

@@ -70,7 +70,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Title"),
         Labels.getString("Common.Estimated"),
         Labels.getString("Common.Overestimated"),
-        Labels.getString("ReportListPanel.Real"),
+        Labels.getString("Common.Real"),
         Labels.getString("ReportListPanel.Diff I"),
         Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("ToDoListPanel.Internal"),
