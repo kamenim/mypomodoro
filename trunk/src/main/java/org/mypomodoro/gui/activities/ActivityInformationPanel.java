@@ -47,11 +47,11 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
     public void selectInfo(Activity activity) {
         textMap.put("date", (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDate())
+                + DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy")
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("date_completed", Labels.getString("Common.Date completed") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDateCompleted())
+                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
         textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");

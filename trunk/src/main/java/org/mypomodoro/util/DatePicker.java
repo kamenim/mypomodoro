@@ -35,7 +35,7 @@ public final class DatePicker extends JXDatePicker {
         getEditor().setEditable(false);
         getEditor().setBackground(ColorUtil.WHITE);
     }
-    
+
     // Workaround to prevent from having empty text field when selecting a date outside of boundaries 
     @Override
     public void setDate(Date date) {
@@ -49,9 +49,8 @@ public final class DatePicker extends JXDatePicker {
 
     public void setDateWithBounds(Date date) {
         this.setDate(date);
-        
-            Calendar calendar = getMonthView().getCalendar();
-            calendar.setTime(DateUtil.inFuture(date) ? new Date() : date);
-            getMonthView().setLowerBound(calendar.getTime());
+        Calendar calendar = getMonthView().getCalendar();
+        calendar.setTime(DateUtil.inFuture(date) ? new Date() : date);
+        getMonthView().setLowerBound(calendar.getTime());
     }
 }

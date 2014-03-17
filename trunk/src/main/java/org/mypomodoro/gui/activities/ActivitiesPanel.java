@@ -44,6 +44,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -51,6 +52,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
@@ -82,7 +84,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private final JTable table;
+    private final JXTable table;
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -93,16 +95,15 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
     public static int ID_KEY = 8;
-
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
-    
     private InputMap im = null;
+    private int mouseHoverRow = -1;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
-        table = new JTable(activitiesTableModel) {
+        table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
 
@@ -113,6 +114,13 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                 } else {
                     ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
+                }
+                if (row == mouseHoverRow) {                    
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
+                    ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+                } else {
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));
+                    
                 }
                 return c;
             }
@@ -211,14 +219,14 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        
+
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[1] = Labels.getString("Common.Date scheduled");
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
-        
+
         // Add tooltip 
         table.addMouseMotionListener(new MouseMotionAdapter() {
 
@@ -235,7 +243,15 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (columnIndex == ID_KEY - 4) { // estimated
                         String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
+                    } else if (columnIndex == ID_KEY - 7) { // date
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
+                        Activity activity = getActivityById(id);
+                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy");
+                        table.setToolTipText(value);
+                    } else {
+                        table.setToolTipText(""); // this way tooltip won't stick
                     }
+                    mouseHoverRow = rowIndex;
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 } catch (IndexOutOfBoundsException ex) {
@@ -256,21 +272,21 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
-        
+
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then is ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         class deleteAction extends AbstractAction {
-            
+
             final AbstractActivitiesPanel panel;
 
             public deleteAction(AbstractActivitiesPanel panel) {
                 this.panel = panel;
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
@@ -283,14 +299,14 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 table.selectAll();
             }
         }
         am.put("Control A", new selectAllAction());
-                
+
         // Refresh panel border
         setPanelBorder();
 
@@ -306,9 +322,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         if (org.mypomodoro.gui.PreferencesPanel.preferences.getAgileMode()
                 && ActivityList.getListSize() > 0) {
             titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ActivityList.getList().getStoryPoints();
-        }        
+        }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));        
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
@@ -326,10 +342,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        
+
                         // See above for reason to set WHEN_FOCUSED here
                         table.setInputMap(JTable.WHEN_FOCUSED, im);
-                        
+
                         if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
@@ -503,7 +519,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void removeRow(int rowIndex) {
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
-            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;            
+            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
             table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View           
         }
     }
