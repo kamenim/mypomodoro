@@ -52,9 +52,6 @@ public final class ActivityList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(-1);
         act.setIsCompleted(false);
-        if (PreferencesPanel.preferences.getAgileMode()) {
-            act.setDate(new Date(0));
-        }
         act.setDateCompleted(new Date(0));
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());

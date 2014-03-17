@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 /**
- * Panel that displays a burndown chart
+ * Panel that displays the charts
  *
  */
 public class BurndownChartPanel extends JPanel {

@@ -102,9 +102,6 @@ public class TestMenu extends JMenu {
                     cal.set(Calendar.SECOND, 0);
                     cal.set(Calendar.MILLISECOND, 0);
                     Date currentDateAtMidnight = cal.getTime();
-                    if (PreferencesPanel.preferences.getAgileMode()) {
-                        currentDateAtMidnight = new Date(0);
-                    }
                     for (int i = 0; i < alSize; i++) {
                         Activity a = new Activity(place[rand.nextInt(12)],
                                 authors[rand.nextInt(5)],
@@ -115,6 +112,7 @@ public class TestMenu extends JMenu {
                                 storypoint[rand.nextInt(23)],
                                 iteration[rand.nextInt(7)],
                                 currentDateAtMidnight);
+                        
                         a.databaseInsert();
                     }
                 }
@@ -128,9 +126,8 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    // TODO problem with display of test data
                     Main.updateActivityList();
-                    Main.updateActivityListView();                    
+                    Main.updateActivityListView();
                 }
             });
         }

@@ -21,15 +21,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,11 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
-import org.jdesktop.swingx.JXDatePicker;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.gui.create.list.TypeComboBox;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -55,46 +48,48 @@ public class BurndownChartInputForm extends JPanel {
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 20);
     private static final Dimension IMAGE_SIZE_DIMENSION = new Dimension(30, 20);
     private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
-    private GridBagConstraints c = new GridBagConstraints();
+    private final GridBagConstraints c = new GridBagConstraints();
     // Dates form
-    protected final JXDatePicker startDatePicker = new JXDatePicker(
-            Labels.getLocale());
-    protected final JXDatePicker endDatePicker = new JXDatePicker(
-            Labels.getLocale());
+    protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());
+    protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
+    // Exclusion form
+    private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Saturdays"), true);
+    private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Sundays"), true);
+    private final JLabel excludeDays = new JLabel();    
     // Type form
-    private JPanel typesInputFormPanel = new JPanel();
-    protected final List<TypeComboBox> types = new ArrayList<TypeComboBox>();
-    protected final List<JPanel> typePanelList = new ArrayList<JPanel>();
+    //private final JPanel typesInputFormPanel = new JPanel();
+    //protected final List<TypeComboBox> types = new ArrayList<TypeComboBox>();
+    //protected final List<JPanel> typePanelList = new ArrayList<JPanel>();
     // Chart form
-    private JPanel chartInputFormPanel = new JPanel();
+    private final JPanel chartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
-    private String defaultPrimaryYAxisName = Labels.getString("ReportListPanel.Chart.Remaining working hours");
+    private final String defaultPrimaryYAxisName = Labels.getString("ReportListPanel.Chart.Remaining working hours");
     private JTextField primaryYAxisLegend = new JTextField();
-    private String defaultPrimaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Remaining");
+    private final String defaultPrimaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Remaining");
     private JTextField primaryYAxisColor = new JTextField();
-    private Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
+    private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     private JTextField secondaryYAxisName = new JTextField();
-    private String defaultSecondaryYAxisName = Labels.getString("ReportListPanel.Chart.Completed tasks %");
+    private final String defaultSecondaryYAxisName = Labels.getString("ReportListPanel.Chart.Completed tasks %");
     private JTextField secondaryYAxisLegend = new JTextField();
-    private String defaultSecondaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Completed");
+    private final String defaultSecondaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Completed");
     private JTextField secondaryYAxisColor = new JTextField();
-    private Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
+    private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
     private JTextField targetLegend = new JTextField();
-    private String defaultTargetLegend = Labels.getString("ReportListPanel.Chart.Target");
+    private final String defaultTargetLegend = Labels.getString("ReportListPanel.Chart.Target");
     private JTextField targetColor = new JTextField();
-    private Color defaultTargetColor = ColorUtil.BLACK;
+    private final Color defaultTargetColor = ColorUtil.BLACK;
     // Image form
-    private JPanel imageInputFormPanel = new JPanel();
-    private JPanel imageSizePanel = new JPanel();
+    private final JPanel imageInputFormPanel = new JPanel();
+    private final JPanel imageSizePanel = new JPanel();
     private JTextField imageName = new JTextField();
-    private String defaultImageName = "";
+    private final String defaultImageName = "";
     private JComboBox imageFormatComboBox = new JComboBox();
     private final ImageFormat PNGFormat = new ImageFormat("PNG",
             ImageFormat.PNGExtention);
     private final ImageFormat JPGFormat = new ImageFormat("JPG",
             ImageFormat.JPGExtention);
-    private JTextField imageWidth = new JTextField();
-    private JTextField imageHeight = new JTextField();
+    private final JTextField imageWidth = new JTextField();
+    private final JTextField imageHeight = new JTextField();
     protected int defaultImageWidth = 800;
     protected int defaultImageHeight = 600;
 
@@ -103,7 +98,8 @@ public class BurndownChartInputForm extends JPanel {
         setLayout(new GridBagLayout());
 
         addDatesInputForm();
-        addTypeInputFormPanel();
+        addExclusionInputForm();
+        //addTypeInputFormPanel();
         addChartInputFormPanel();
         addImageInputFormPanel();
     }
@@ -113,8 +109,7 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        FormLabel dateslabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Dates") + "*: ");
+        FormLabel dateslabel = new FormLabel(Labels.getString("ReportListPanel.Chart.Dates") + "*: ");
         dateslabel.setMinimumSize(LABEL_DIMENSION);
         dateslabel.setPreferredSize(LABEL_DIMENSION);
         add(dateslabel, c);
@@ -122,17 +117,40 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        startDatePicker.setDate(new Date());
+        startDatePicker.setDate(new Date()); // do no set dates with bounds (setDateWithBounds)
+        startDatePicker.setBackground(ColorUtil.WHITE);
+        startDatePicker.getEditor().setEditable(false);
         add(startDatePicker, c);
         c.gridx = 2;
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        endDatePicker.setDate(new Date());
+        endDatePicker.setDate(new Date()); // do no set dates with bounds (setDateWithBounds)
         add(endDatePicker, c);
     }
+    
+    private void addExclusionInputForm() {
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        FormLabel exclusionlabel = new FormLabel(Labels.getString("ReportListPanel.Chart.Exclusion") + "*: ");
+        exclusionlabel.setMinimumSize(LABEL_DIMENSION);
+        exclusionlabel.setPreferredSize(LABEL_DIMENSION);
+        add(exclusionlabel, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        add(excludeSaturdays, c);
+        c.gridx = 2;
+        c.gridy = 1;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        add(excludeSaturdays, c);
+    }
 
-    private void addTypeInputFormPanel() {
+    /*private void addTypeInputFormPanel() {
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 1.0;
@@ -181,13 +199,13 @@ public class BurndownChartInputForm extends JPanel {
             cTypePanel.gridwidth = 2;
         }
         JButton plus = new JButton("+");
-        /*plus.addMouseListener(new MouseAdapter() {
+        //plus.addMouseListener(new MouseAdapter() {
 
-         @Override
-         public void mouseClicked(MouseEvent e) {
-         addTypesPanels(cTypePanels, gridY + 1);
-         }
-         });*/
+         //@Override
+         //public void mouseClicked(MouseEvent e) {
+         //addTypesPanels(cTypePanels, gridY + 1);
+         //}
+         //});
         plus.addActionListener(new ActionListener() {
 
             @Override
@@ -218,7 +236,7 @@ public class BurndownChartInputForm extends JPanel {
         types.add(type);
         typePanelList.add(typePanel);
         typesInputFormPanel.add(typePanel, cTypePanels);
-    }
+    }*/
 
     private void addChartInputFormPanel() {
         c.gridx = 0;

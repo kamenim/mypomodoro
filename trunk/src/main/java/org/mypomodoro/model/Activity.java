@@ -487,9 +487,7 @@ public class Activity {
     }
 
     public boolean isDateToday() {
-        String dateActivityFormat = DateUtil.getFormatedDate(getDate());
-        String todayFormat = DateUtil.getFormatedDate(new Date());
-        return dateActivityFormat.equalsIgnoreCase(todayFormat);
+        return DateUtil.isDateToday(getDate());        
     }
 
     // Activity (not a ToDo nor a Report)

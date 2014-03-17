@@ -86,7 +86,6 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
-            textMap.remove("date");
         }
         textMap.remove("date_completed");
         if (activity.isFinished()) {
