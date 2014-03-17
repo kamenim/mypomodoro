@@ -44,6 +44,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -51,6 +52,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
@@ -78,7 +80,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private final JTable table;
+    private final JXTable table;
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -93,15 +95,14 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         "ID"};
     //Labels.getString("ReportListPanel.Time")
     public static int ID_KEY = 11;
-
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
-    
     private InputMap im = null;
+    private int mouseHoverRow = -1;
 
     public ReportsPanel() {
         setLayout(new GridBagLayout());
-        table = new JTable(activitiesTableModel) {
+        table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
 
@@ -112,6 +113,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                 } else {
                     ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
+                }
+                if (row == mouseHoverRow) {                    
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
+                    ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+                } else {
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));
+                    
                 }
                 return c;
             }
@@ -232,11 +240,17 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                         String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
                     } else if (columnIndex == ID_KEY - 10) { // date and time
-                        String value = DateUtil.getFormatedDate((Date) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
-                        value += " " + DateUtil.getFormatedTime((Date) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
+                        Activity activity = getActivityById(id);
+                        String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
                         table.setToolTipText(value);
+                    } else {
+                        table.setToolTipText(""); // this way tooltip won't stick
                     }
+                    mouseHoverRow = rowIndex;
                 } catch (ArrayIndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
+                } catch (IndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 }
             }
@@ -256,7 +270,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then is ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();

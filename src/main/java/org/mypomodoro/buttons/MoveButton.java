@@ -69,8 +69,8 @@ public class MoveButton extends AbstractPomodoroButton {
                         String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                         if (!PreferencesPanel.preferences.getAgileMode()) {
                             if (!selectedActivity.isDateToday()) {
-                                String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
-                                String message = Labels.getString("ManagerListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
+                                String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
+                                String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
                                 int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                         title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                                 if (reply == JOptionPane.NO_OPTION) {
@@ -80,9 +80,9 @@ public class MoveButton extends AbstractPomodoroButton {
                                 }
                             }
                             if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
-                                String title = Labels.getString("ManagerListPanel.Add activity to ToDo List");
+                                String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                 String message = Labels.getString(
-                                        "ManagerListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
+                                        "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                                         org.mypomodoro.gui.PreferencesPanel.preferences.getMaxNbPomPerDay());
                                 int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                         title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);

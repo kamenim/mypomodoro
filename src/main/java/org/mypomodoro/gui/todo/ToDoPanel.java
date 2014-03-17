@@ -47,6 +47,7 @@ import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -83,7 +84,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     //private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
-    private final JTable table;
+    private final JXTable table;
     private static final String[] columnNames = {Labels.getString("Common.Priority"),
         "U",
         Labels.getString("Common.Title"),
@@ -92,7 +93,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
     public static int ID_KEY = 6;
-
     private final JLabel pomodoroTime = new JLabel();
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
@@ -103,6 +103,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel);
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
+    private int mouseHoverRow = -1;
 
     public ToDoPanel() {
         setLayout(new GridBagLayout());
@@ -118,6 +119,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                 } else {
                     ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
+                }
+                if (row == mouseHoverRow) {                    
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
+                    ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+                } else {
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));
+                    
                 }
                 return c;
             }
@@ -223,7 +231,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (columnIndex == ID_KEY - 3) { // estimated
                         String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
+                    } else {
+                        table.setToolTipText(""); // this way tooltip won't stick
                     }
+                    mouseHoverRow = rowIndex;
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse outside the table
                 } catch (IndexOutOfBoundsException ex) {

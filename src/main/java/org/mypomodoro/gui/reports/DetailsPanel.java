@@ -28,7 +28,6 @@ import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
