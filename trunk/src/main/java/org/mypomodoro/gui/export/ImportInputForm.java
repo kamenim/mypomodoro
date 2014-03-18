@@ -51,29 +51,29 @@ public class ImportInputForm extends ExportInputForm {
                 Labels.getString("ReportListPanel.File") + "*: ");
         fileNamelabel.setMinimumSize(LABEL_DIMENSION);
         fileNamelabel.setPreferredSize(LABEL_DIMENSION);
-        add(fileNamelabel, c);
+        exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
         c.gridy = 1;
         c.weighty = 0.5;
         JPanel fileChooserPanel = new JPanel();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
+        GridBagConstraints gbcf = new GridBagConstraints();
+        gbcf.gridx = 0;
+        gbcf.gridy = 0;
+        gbcf.fill = GridBagConstraints.NONE;
         fileName.setMinimumSize(LABEL_DIMENSION);
         fileName.setPreferredSize(LABEL_DIMENSION);
         fileName.setEditable(false);
         fileName.setBackground(ColorUtil.WHITE);
         fileName.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize()));
-        fileChooserPanel.add(fileName, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        fileChooserPanel.add(new JLabel(" "), gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
+        fileChooserPanel.add(fileName, gbcf);
+        gbcf.gridx = 1;
+        gbcf.gridy = 0;
+        gbcf.fill = GridBagConstraints.NONE;
+        fileChooserPanel.add(new JLabel(" "), gbcf);
+        gbcf.gridx = 2;
+        gbcf.gridy = 0;
+        gbcf.fill = GridBagConstraints.NONE;
         JDialog d = new JDialog();
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
         Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
@@ -91,8 +91,8 @@ public class ImportInputForm extends ExportInputForm {
                 }
             }
         });
-        fileChooserPanel.add(browseButton, gbc);
-        fileChooserPanel.setLayout(new GridBagLayout());
-        add(fileChooserPanel, c);
+        fileChooserPanel.add(browseButton, gbcf);
+        fileChooserPanel.setLayout(new GridBagLayout());       
+        exportFormPanel.add(fileChooserPanel, c);
     }
 }

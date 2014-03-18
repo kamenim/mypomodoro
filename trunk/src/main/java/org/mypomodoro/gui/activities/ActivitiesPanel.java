@@ -370,6 +370,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
+        // TODO problem with dimension of the panel in full screen mode
         controlPane.setMinimumSize(PANE_DIMENSION);
         controlPane.setPreferredSize(PANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);

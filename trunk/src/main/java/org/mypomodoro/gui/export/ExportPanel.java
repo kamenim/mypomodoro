@@ -17,14 +17,26 @@
 package org.mypomodoro.gui.export;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.FileContent;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.ParentReference;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JButton;
@@ -150,11 +162,17 @@ public class ExportPanel extends JPanel {
                     exportExcel(fileName, act);
                 } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
                     exportExcelx(fileName, act);
+                } else if (exportInputForm.isFileGoogleDriveFormat()) {
+                    exportSpreadsheetToGoogleDrive(fileName, act);
                 }
                 String title = Labels.getString("ReportListPanel.Export");
                 String message = Labels.getString(
                         "ReportListPanel.Data exported to file {0}",
                         fileName);
+                if (exportInputForm.isFileGoogleDriveFormat()) {
+                    message = Labels.getString(
+                            "ReportListPanel.Data exported to Google Drive");
+                }
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
@@ -162,7 +180,89 @@ public class ExportPanel extends JPanel {
                 String message = Labels.getString("ReportListPanel.Export failed");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                writeErrorFile(ex.toString());
             }
+        }
+    }
+
+    private void writeErrorFile(String error) {
+        try {
+            FileWriter fstream = new FileWriter("errorExport.txt");
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(error);
+            out.close();
+        } catch (IOException e) {
+            // Do nothing
+        }
+    }
+
+    private void exportSpreadsheetToGoogleDrive(String fileName, Iterator<Activity> act)
+            throws IOException {
+        exportCSV(fileName, act);
+
+        HttpTransport httpTransport = new NetHttpTransport();
+        JsonFactory jsonFactory = new com.google.api.client.json.jackson2.JacksonFactory();
+
+        String clientId = "731621862832-oofrfpliv0275s2lfucd63tcmm4t4js3.apps.googleusercontent.com";
+        String clientSecret = "mVtt-Bq4fIRjMCoHfPoLB007";
+        String redirectURI = "urn:ietf:wg:oauth:2.0:oob";
+        //String authorisationCode = "4/VvsV56NxUzv_-sOfuI6xv8bvF_Tr.UvxzHmZiB2oSYKs_1NgQtmUlEjipiQI";
+        String authorisationCode = exportInputForm.getAuthorisationCode();
+
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                httpTransport, jsonFactory, clientId, clientSecret, Arrays.asList(DriveScopes.DRIVE))
+                .setAccessType("online")
+                .setApprovalPrompt("auto").build();
+
+        // Get authorisation code
+        if (authorisationCode.length() == 0) {
+            /*String url = flow.newAuthorizationUrl().setRedirectUri(redirectURI).build();
+             System.out.println("Please open the following URL in your browser then type the authorization code:");
+             System.out.println("  " + url);
+             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+             String code = br.readLine();
+             exportInputForm.showAuthForm();
+            */
+        } else {
+            GoogleTokenResponse response = flow.newTokenRequest(authorisationCode).setRedirectUri(redirectURI).execute();
+            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
+            Drive service = new Drive.Builder(httpTransport, jsonFactory, credential).setApplicationName("myAgilePomodoro").build();
+
+            // File's metadata.
+            com.google.api.services.drive.model.File googleFile = new com.google.api.services.drive.model.File();
+            googleFile.setTitle(fileName);
+            googleFile.setDescription("myAgilePomodoro file");
+            googleFile.setMimeType("text/csv");
+
+            // Set the parent folder.
+            String parentId = null;
+            if (parentId != null && parentId.length() > 0) {
+                googleFile.setParents(Arrays.asList(new ParentReference().setId(parentId)));
+            }
+
+            // File's content.        
+            String path = "./" + fileName;
+            java.io.File csvFile = new java.io.File(fileName);
+            FileContent mediaContent = new FileContent("text/csv", csvFile);
+            // convert and insert CVS file to Google Drive
+            com.google.api.services.drive.model.File csvConvertedFile = service.files().insert(googleFile, mediaContent).setConvert(true).execute();
+
+        //System.out.println("File ID: %s" + csvConvertedFile.getId());
+            //file uploaded
+            //share the file
+         /*Permission permission = new Permission();
+             permission.setValue("");
+             permission.setType("anyone");
+             permission.setRole("reader");
+             Property newProperty = new Property();
+             newProperty.setVisibility("PUBLIC");
+             try {
+             service.permissions().insert(file.getId(), permission).execute();
+             service.properties().insert(file.getId(), newProperty).execute();
+             } catch (Exception e) {
+             log.error("An error occurred: " + e);
+             }*/
+            //exportInputForm.showExportForm();
         }
     }
 

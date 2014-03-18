@@ -45,7 +45,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
-
+// TODO allow concurrent work by reading the status of the activity in the database on Start, Stop and break time
 /**
  * This class keeps the logic for setting a timer for a pomodoro and the breaks
  * after that.

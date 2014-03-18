@@ -25,14 +25,14 @@ import javax.swing.JTabbedPane;
 import org.mypomodoro.util.Labels;
 
 /**
- * Burndown Panel
+ * Burndown tabbed Panel
  *
  */
-public class BurndownPanel extends JPanel {
+public class BurndownTabbedPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    public BurndownPanel() {
+    public BurndownTabbedPanel() {
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();

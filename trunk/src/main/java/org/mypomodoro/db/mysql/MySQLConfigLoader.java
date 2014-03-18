@@ -23,8 +23,7 @@ import java.util.Properties;
 /**
  * Loader for MySQL config properties file
  *
- * ./ - the root directory where the program is located |__ mypomodoro.jar |__
- * mysql.properties
+ * File mysql.properties is located where mypomodoro.jar is
  *
  */
 public class MySQLConfigLoader {
