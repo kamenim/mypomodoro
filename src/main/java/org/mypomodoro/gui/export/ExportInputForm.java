@@ -27,8 +27,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.model.Activity;
@@ -51,12 +49,14 @@ public class ExportInputForm extends JPanel {
     private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
     protected String defaultFileName = "myAgilePomodoro";
-    private final FileFormat CSVFormat = new FileFormat("CSV",
+    private final FileFormat CSVFormat = new FileFormat(FileFormat.CSVFormatName,
             FileFormat.CSVExtention);
     private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
             FileFormat.ExcelExtention);
     private final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
             FileFormat.ExcelOpenXMLExtention);
+    private final FileFormat GoogleDriveFormat = new FileFormat(FileFormat.GoogleDriveFormatName,
+            FileFormat.CSVExtention);
     private final Separator commaSeparator = new Separator(0,
             Labels.getString("ReportListPanel.Comma"), ',');
     private final Separator tabSeparator = new Separator(1,
@@ -71,21 +71,33 @@ public class ExportInputForm extends JPanel {
     private final String excelPatterns = "m/d/yy";
     private final JPanel excelPatternsPanel = new JPanel();
     //private final JPanel columnsPanel = new JPanel();
+    private final GridBagConstraints gbc = new GridBagConstraints();
+    protected final JPanel exportFormPanel = new JPanel();
+    private final JPanel authorisationFormPanel = new JPanel();
 
     public ExportInputForm() {
-        setBorder(new TitledBorder(new EtchedBorder(), ""));
         setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        addExportForm();
+        addAuthorisationForm();
+    }
 
+    private void addExportForm() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        exportFormPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
         // Header
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        FormLabel headerlabel = new FormLabel(
-                Labels.getString("ReportListPanel.Header") + ": ");
+        FormLabel headerlabel = new FormLabel(Labels.getString("ReportListPanel.Header") + ": ");
         headerlabel.setMinimumSize(LABEL_DIMENSION);
         headerlabel.setPreferredSize(LABEL_DIMENSION);
-        add(headerlabel, c);
+        exportFormPanel.add(headerlabel, c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
@@ -93,22 +105,21 @@ public class ExportInputForm extends JPanel {
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
         headerCheckBox.setBackground(ColorUtil.WHITE);
-        add(headerCheckBox, c);
+        exportFormPanel.add(headerCheckBox, c);
         // File name
         addFileField(c);
         // File formats
         c.gridx = 0;
         c.gridy = 2;
         c.weighty = 0.5;
-        FormLabel fileFormatLabel = new FormLabel(
-                Labels.getString("ReportListPanel.File format") + "*: ");
+        FormLabel fileFormatLabel = new FormLabel(Labels.getString("ReportListPanel.File format") + "*: ");
         fileFormatLabel.setMinimumSize(LABEL_DIMENSION);
         fileFormatLabel.setPreferredSize(LABEL_DIMENSION);
-        add(fileFormatLabel, c);
+        exportFormPanel.add(fileFormatLabel, c);
         c.gridx = 1;
         c.gridy = 2;
         c.weighty = 0.5;
-        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
+        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, GoogleDriveFormat};
         fileFormatComboBox = new JComboBox(fileFormats);
         fileFormatComboBox.addActionListener(new ActionListener() {
 
@@ -134,7 +145,7 @@ public class ExportInputForm extends JPanel {
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setBackground(ColorUtil.WHITE);
-        add(fileFormatComboBox, c);
+        exportFormPanel.add(fileFormatComboBox, c);
         // Date patterns
         c.gridx = 0;
         c.gridy = 3;
@@ -143,7 +154,7 @@ public class ExportInputForm extends JPanel {
                 Labels.getString("ReportListPanel.Date pattern") + "*: ");
         datePatternLabel.setMinimumSize(LABEL_DIMENSION);
         datePatternLabel.setPreferredSize(LABEL_DIMENSION);
-        add(datePatternLabel, c);
+        exportFormPanel.add(datePatternLabel, c);
         c.gridx = 1;
         c.gridy = 3;
         c.weighty = 0.5;
@@ -158,7 +169,7 @@ public class ExportInputForm extends JPanel {
                 Labels.getString("ReportListPanel.Separator") + "*: ");
         fileFormatLabel.setMinimumSize(LABEL_DIMENSION);
         fileFormatLabel.setPreferredSize(LABEL_DIMENSION);
-        add(separatorLabel, c);
+        exportFormPanel.add(separatorLabel, c);
         c.gridx = 1;
         c.gridy = 4;
         c.weighty = 0.5;
@@ -197,13 +208,23 @@ public class ExportInputForm extends JPanel {
         separatorComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setBackground(ColorUtil.WHITE);
-        add(separatorComboBox, c);
+        exportFormPanel.add(separatorComboBox, c);
         // Columns
         /*c.gridx = 0;
          c.gridy = 5;
          c.weighty = 0.5;
          c.gridwidth = 2;
          addColumnsComboBoxes(c);*/
+        add(exportFormPanel, gbc);
+    }
+
+    private void addAuthorisationForm() {
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        authorisationFormPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        add(authorisationFormPanel, gbc);
+        authorisationFormPanel.setVisible(false);
     }
 
     /*private void addColumnsComboBoxes(GridBagConstraints c) {
@@ -245,7 +266,7 @@ public class ExportInputForm extends JPanel {
      }
      });
      }
-     add(columnsPanel, c);
+     exportFormPanel.add(columnsPanel, c);
      }*/
     private void addPaternsComboBox(GridBagConstraints c) {
         patternsPanel.setLayout(new GridBagLayout());
@@ -280,8 +301,7 @@ public class ExportInputForm extends JPanel {
         gbc.gridx = 8;
         gbc.gridy = 0;
         patternsPanel.add(patterns.getDatePatternsComboBox3(), gbc);
-        add(patternsPanel, c);
-
+        exportFormPanel.add(patternsPanel, c);
     }
 
     private void addExcelPaternsComboBox(GridBagConstraints c) {
@@ -294,7 +314,7 @@ public class ExportInputForm extends JPanel {
         gbc.gridy = 0;
         excelPatternsPanel.add(new JLabel(excelPatterns), gbc);
         excelPatternsPanel.setBackground(ColorUtil.WHITE);
-        add(excelPatternsPanel, c);
+        exportFormPanel.add(excelPatternsPanel, c);
     }
 
     public String getFileExtention() {
@@ -311,6 +331,10 @@ public class ExportInputForm extends JPanel {
 
     public boolean isFileExcelOpenXMLFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelOpenXMLFormat();
+    }
+
+    public boolean isFileGoogleDriveFormat() {
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).isGoogleDriveFormat();
     }
 
     public String getFileName() {
@@ -349,8 +373,11 @@ public class ExportInputForm extends JPanel {
     private class FileFormat {
 
         public static final String CSVExtention = "csv";
+        public static final String CSVFormatName = "CSV";
         public static final String ExcelExtention = "xls";
         public static final String ExcelOpenXMLExtention = "xlsx";
+        public static final String GoogleDriveFormatName = "Google Drive";
+
         private final String formatName;
         private final String extention;
 
@@ -364,7 +391,7 @@ public class ExportInputForm extends JPanel {
         }
 
         public boolean isCSVFormat() {
-            return extention.equals(CSVExtention);
+            return extention.equals(CSVExtention) && formatName.equals(CSVFormatName);
         }
 
         public boolean isExcelFormat() {
@@ -373,6 +400,10 @@ public class ExportInputForm extends JPanel {
 
         public boolean isExcelOpenXMLFormat() {
             return extention.equals(ExcelOpenXMLExtention);
+        }
+
+        public boolean isGoogleDriveFormat() {
+            return extention.equals(CSVExtention) && formatName.equals(GoogleDriveFormatName);
         }
 
         @Override
@@ -494,7 +525,7 @@ public class ExportInputForm extends JPanel {
                 Labels.getString("ReportListPanel.File name") + "*: ");
         fileNamelabel.setMinimumSize(LABEL_DIMENSION);
         fileNamelabel.setPreferredSize(LABEL_DIMENSION);
-        add(fileNamelabel, c);
+        exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
         c.gridy = 1;
         c.weighty = 0.5;
@@ -502,7 +533,7 @@ public class ExportInputForm extends JPanel {
         fileName.setText(defaultFileName);
         fileName.setMinimumSize(COMBO_BOX_DIMENSION);
         fileName.setPreferredSize(COMBO_BOX_DIMENSION);
-        add(fileName, c);
+        exportFormPanel.add(fileName, c);
     }
 
     private class Column {
@@ -635,5 +666,9 @@ public class ExportInputForm extends JPanel {
             attributes[20] = activity.getPriority();
             return attributes;
         }
+    }
+
+    public String getAuthorisationCode() {
+        return "";
     }
 }

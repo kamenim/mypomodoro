@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -134,11 +135,11 @@ public class ImportPanel extends JPanel {
 
     private void writeErrorFile(String error) {
         try {
-            FileWriter fstream = new FileWriter("error.txt");
+            FileWriter fstream = new FileWriter("errorImport.txt");
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(error);
             out.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             // Do nothing
         }
     }
