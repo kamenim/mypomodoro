@@ -109,16 +109,12 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                } else {
-                    ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
-                }
-                if (row == mouseHoverRow) {                    
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
+                if (row == mouseHoverRow && !isRowSelected(row)) {
+                    ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                     ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
                 } else {
-                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));                    
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLUE_ROW));
                 }
                 return c;
             }
@@ -214,13 +210,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
         }
-        
+
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 10] = Labels.getString("Common.Date completed");
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        customTableHeader.setToolTipsText(cloneColumnNames);        
+        customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 
@@ -267,7 +263,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
-        
+
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
         // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
@@ -275,13 +271,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         class deleteAction extends AbstractAction {
-            
+
             final AbstractActivitiesPanel panel;
 
             public deleteAction(AbstractActivitiesPanel panel) {
                 this.panel = panel;
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
@@ -294,14 +290,14 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 table.selectAll();
             }
         }
         am.put("Control A", new selectAllAction());
-        
+
         // Refresh panel border
         setPanelBorder();
 
@@ -322,7 +318,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));        
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
@@ -339,10 +335,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        
+
                         // See above for reason to set WHEN_FOCUSED here
                         table.setInputMap(JTable.WHEN_FOCUSED, im);
-                        
+
                         if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             controlPane.setEnabledAt(1, false); // edit
@@ -623,8 +619,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
-     class IterationCellRenderer extends CustomTableRenderer {
+
+    class IterationCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

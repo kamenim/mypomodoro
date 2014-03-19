@@ -26,7 +26,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.ParentReference;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -61,6 +60,7 @@ import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
+import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -74,6 +74,7 @@ public class ExportPanel extends JPanel {
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final AbstractActivitiesPanel panel;
+    private JButton cancelButton;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString("Common.Date"),
         Labels.getString("ReportListPanel.Time"),
@@ -102,12 +103,13 @@ public class ExportPanel extends JPanel {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
+        addCancelButton();
         addExportInputForm();
         addExportButton();
     }
 
     private void addExportButton() {
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
@@ -122,18 +124,34 @@ public class ExportPanel extends JPanel {
                 if (exportInputForm.getFileName().length() == 0) {
                     exportInputForm.initFileName();
                 }
-                // When selected, make sur the editable field is set
-                if (exportInputForm.getEditableSeparatorText().length() == 0) {
-                    exportInputForm.initSeparatorComboBox();
-                }
                 export();
             }
         });
         add(exportButton, gbc);
     }
 
-    private void addExportInputForm() {
+    private void addCancelButton() {
         gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        cancelButton = new AbstractPomodoroButton(
+                Labels.getString("Common.Cancel"));
+        cancelButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportInputForm.showExportForm();
+                cancelButton.setVisible(false);
+            }
+        });
+        add(cancelButton, gbc);
+        cancelButton.setVisible(false);
+    }
+
+    private void addExportInputForm() {
+        gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -156,25 +174,28 @@ public class ExportPanel extends JPanel {
                 String fileName = exportInputForm.getFileName() + "."
                         + exportInputForm.getFileExtention();
                 Iterator<Activity> act = activities.iterator();
+                boolean exportOK = false;
                 if (exportInputForm.isFileCSVFormat()) {
-                    exportCSV(fileName, act);
+                    exportOK = exportCSV(fileName, act);
                 } else if (exportInputForm.isFileExcelFormat()) {
-                    exportExcel(fileName, act);
+                    exportOK = exportExcel(fileName, act);
                 } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
-                    exportExcelx(fileName, act);
+                    exportOK = exportExcelx(fileName, act);
                 } else if (exportInputForm.isFileGoogleDriveFormat()) {
-                    exportSpreadsheetToGoogleDrive(fileName, act);
+                    exportOK = exportToGoogleDrive(fileName, act);
                 }
-                String title = Labels.getString("ReportListPanel.Export");
-                String message = Labels.getString(
-                        "ReportListPanel.Data exported to file {0}",
-                        fileName);
-                if (exportInputForm.isFileGoogleDriveFormat()) {
-                    message = Labels.getString(
-                            "ReportListPanel.Data exported to Google Drive");
+                if (exportOK) {
+                    String title = Labels.getString("ReportListPanel.Export");
+                    String message = Labels.getString(
+                            "ReportListPanel.Data exported to file {0}",
+                            fileName);
+                    if (exportInputForm.isFileGoogleDriveFormat()) {
+                        message = Labels.getString(
+                                "ReportListPanel.Data exported to Google Drive");
+                    }
+                    JOptionPane.showConfirmDialog(Main.gui, message, title,
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Export failed");
@@ -196,77 +217,7 @@ public class ExportPanel extends JPanel {
         }
     }
 
-    private void exportSpreadsheetToGoogleDrive(String fileName, Iterator<Activity> act)
-            throws IOException {
-        exportCSV(fileName, act);
-
-        HttpTransport httpTransport = new NetHttpTransport();
-        JsonFactory jsonFactory = new com.google.api.client.json.jackson2.JacksonFactory();
-
-        String clientId = "731621862832-oofrfpliv0275s2lfucd63tcmm4t4js3.apps.googleusercontent.com";
-        String clientSecret = "mVtt-Bq4fIRjMCoHfPoLB007";
-        String redirectURI = "urn:ietf:wg:oauth:2.0:oob";
-        //String authorisationCode = "4/VvsV56NxUzv_-sOfuI6xv8bvF_Tr.UvxzHmZiB2oSYKs_1NgQtmUlEjipiQI";
-        String authorisationCode = exportInputForm.getAuthorisationCode();
-
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                httpTransport, jsonFactory, clientId, clientSecret, Arrays.asList(DriveScopes.DRIVE))
-                .setAccessType("online")
-                .setApprovalPrompt("auto").build();
-
-        // Get authorisation code
-        if (authorisationCode.length() == 0) {
-            /*String url = flow.newAuthorizationUrl().setRedirectUri(redirectURI).build();
-             System.out.println("Please open the following URL in your browser then type the authorization code:");
-             System.out.println("  " + url);
-             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-             String code = br.readLine();
-             exportInputForm.showAuthForm();
-            */
-        } else {
-            GoogleTokenResponse response = flow.newTokenRequest(authorisationCode).setRedirectUri(redirectURI).execute();
-            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
-            Drive service = new Drive.Builder(httpTransport, jsonFactory, credential).setApplicationName("myAgilePomodoro").build();
-
-            // File's metadata.
-            com.google.api.services.drive.model.File googleFile = new com.google.api.services.drive.model.File();
-            googleFile.setTitle(fileName);
-            googleFile.setDescription("myAgilePomodoro file");
-            googleFile.setMimeType("text/csv");
-
-            // Set the parent folder.
-            String parentId = null;
-            if (parentId != null && parentId.length() > 0) {
-                googleFile.setParents(Arrays.asList(new ParentReference().setId(parentId)));
-            }
-
-            // File's content.        
-            String path = "./" + fileName;
-            java.io.File csvFile = new java.io.File(fileName);
-            FileContent mediaContent = new FileContent("text/csv", csvFile);
-            // convert and insert CVS file to Google Drive
-            com.google.api.services.drive.model.File csvConvertedFile = service.files().insert(googleFile, mediaContent).setConvert(true).execute();
-
-        //System.out.println("File ID: %s" + csvConvertedFile.getId());
-            //file uploaded
-            //share the file
-         /*Permission permission = new Permission();
-             permission.setValue("");
-             permission.setType("anyone");
-             permission.setRole("reader");
-             Property newProperty = new Property();
-             newProperty.setVisibility("PUBLIC");
-             try {
-             service.permissions().insert(file.getId(), permission).execute();
-             service.properties().insert(file.getId(), newProperty).execute();
-             } catch (Exception e) {
-             log.error("An error occurred: " + e);
-             }*/
-            //exportInputForm.showExportForm();
-        }
-    }
-
-    private void exportCSV(String fileName, Iterator<Activity> act)
+    private boolean exportCSV(String fileName, Iterator<Activity> act)
             throws IOException {
         CSVWriter writer = new CSVWriter(new FileWriter(fileName),
                 exportInputForm.getSeparator());
@@ -281,9 +232,10 @@ public class ExportPanel extends JPanel {
             writer.writeNext(entries);
         }
         writer.close();
+        return true;
     }
 
-    private void exportExcel(String fileName, Iterator<Activity> act)
+    private boolean exportExcel(String fileName, Iterator<Activity> act)
             throws IOException {
         FileOutputStream fileOut = new FileOutputStream(fileName);
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -331,9 +283,10 @@ public class ExportPanel extends JPanel {
         workbook.write(fileOut);
         fileOut.flush();
         fileOut.close();
+        return true;
     }
 
-    private void exportExcelx(String fileName, Iterator<Activity> act)
+    private boolean exportExcelx(String fileName, Iterator<Activity> act)
             throws IOException {
         FileOutputStream fileOut = new FileOutputStream(fileName);
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -383,5 +336,49 @@ public class ExportPanel extends JPanel {
         workbook.write(fileOut);
         fileOut.flush();
         fileOut.close();
+        return true;
+    }
+
+    private boolean exportToGoogleDrive(String fileName, Iterator<Activity> act)
+            throws IOException {
+        HttpTransport httpTransport = new NetHttpTransport();
+        JsonFactory jsonFactory = new com.google.api.client.json.jackson2.JacksonFactory();
+        String clientId = GoogleConfigLoader.getClientId();
+        String clientSecret = GoogleConfigLoader.getClientSecret();
+        String redirectURI = GoogleConfigLoader.getRedirectURI();
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                httpTransport, jsonFactory, clientId, clientSecret, Arrays.asList(DriveScopes.DRIVE))
+                .setAccessType("online")
+                .setApprovalPrompt("auto").build();
+        String authorisationCode = exportInputForm.getAuthorisationCode();
+        if (authorisationCode.length() == 0) {
+            // Retrieve authorisation code URL
+            String authorisationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).build();
+            exportInputForm.setAuthorisationCodeUrl(authorisationUrl);
+            exportInputForm.showAuthorisationForm();
+            cancelButton.setVisible(true);
+            return false;
+        } else {
+            // Set Google Drive service
+            GoogleTokenResponse response = flow.newTokenRequest(authorisationCode).setRedirectUri(redirectURI).execute();
+            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
+            Drive service = new Drive.Builder(httpTransport, jsonFactory, credential).setApplicationName("myAgilePomodoro").build();
+            // Set file's metadata.
+            com.google.api.services.drive.model.File googleFile = new com.google.api.services.drive.model.File();
+            googleFile.setTitle(fileName);
+            googleFile.setDescription("myAgilePomodoro file");
+            googleFile.setMimeType("text/csv");
+            // Send file
+            exportCSV(fileName, act); // first, export the data to a csv file
+            String path = "./" + fileName;
+            java.io.File csvFile = new java.io.File(fileName);
+            FileContent mediaContent = new FileContent("text/csv", csvFile);
+            // convert and send the file to Google Drive
+            com.google.api.services.drive.model.File csvConvertedFile = service.files().insert(googleFile, mediaContent).setConvert(true).execute();
+            // reset the form
+            exportInputForm.showExportForm();
+            cancelButton.setVisible(false);
+            return true;
+        }
     }
 }

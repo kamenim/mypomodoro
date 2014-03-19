@@ -32,8 +32,8 @@ public class AbstractPomodoroButton extends JButton { // TODO set minimum size/p
         setRolloverEnabled(true);
         // set all button size
         /*int buttonSize = 200;
-        setMinimumSize(new Dimension(100, 100));
-        setMaximumSize(new Dimension(100, 100));
-        setPreferredSize(new Dimension(100, 100));*/
+         setMinimumSize(new Dimension(100, 100));
+         setMaximumSize(new Dimension(100, 100));
+         setPreferredSize(new Dimension(100, 100));*/
     }
 }

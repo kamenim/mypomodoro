@@ -118,10 +118,10 @@ public class MyPomodoroView extends JFrame {
             if (e instanceof ActivitiesPanel) {
                 ActivityList.getList().refresh();
             } else if (e instanceof ToDoPanel) {
-                ToDoList.getList().refresh();                
+                ToDoList.getList().refresh();
             } else if (e instanceof ReportsPanel) {
-                ReportList.getList().refresh();                
-            }                    
+                ReportList.getList().refresh();
+            }
             ((AbstractActivitiesPanel) e).refresh();
         }
         setContentPane(new WindowPanel(iconBar, e));

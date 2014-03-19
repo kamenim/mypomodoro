@@ -44,7 +44,7 @@ public class ToDoTransferHandler extends TransferHandler {
     public boolean canImport(TransferHandler.TransferSupport support) {
         return true;
     }
-    
+
     @Override
     public boolean importData(TransferHandler.TransferSupport info) {
         JTable.DropLocation dropLocation = (JTable.DropLocation) info.getDropLocation();
@@ -54,7 +54,7 @@ public class ToDoTransferHandler extends TransferHandler {
                     Object[] myObject = (Object[]) info.getTransferable().getTransferData(ToDoRowTransferable.DATA_ROW);
                     int fromRow = (Integer) myObject[0];
                     Object[] data = (Object[]) ((ArrayList<Object>) myObject[1]).toArray();
-                    ((DefaultTableModel)panel.getTable().getModel()).removeRow(fromRow);
+                    ((DefaultTableModel) panel.getTable().getModel()).removeRow(fromRow);
                     int toRow = dropLocation.getRow();
                     toRow = (toRow < fromRow) ? toRow : toRow - 1;
                     ((DefaultTableModel) panel.getTable().getModel()).insertRow(toRow, data);
@@ -66,7 +66,7 @@ public class ToDoTransferHandler extends TransferHandler {
                         activity.databaseUpdate();
                         ToDoList.getList().update(activity);
                     }
-                    panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow);                    
+                    panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow);
                     return true;
                 } catch (UnsupportedFlavorException e) {
                     // do nothing

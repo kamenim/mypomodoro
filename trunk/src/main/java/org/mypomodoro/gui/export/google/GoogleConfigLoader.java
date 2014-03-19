@@ -14,23 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.db.mysql;
+package org.mypomodoro.gui.export.google;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Loader for MySQL config properties file
+ * Loader for Google config properties file
  *
- * File mysql.properties is located where mypomodoro.jar is
+ * File google.properties is located where mypomodoro.jar is
  *
  */
-public class MySQLConfigLoader {
+public class GoogleConfigLoader {
 
     private static final Properties properties = new Properties();
 
-    public MySQLConfigLoader() {
+    public GoogleConfigLoader() {
         try {
             loadProperties();
         } catch (IOException ex) {
@@ -39,29 +39,25 @@ public class MySQLConfigLoader {
     }
 
     public static void loadProperties() throws IOException {
-        String path = "./mysql.properties";
+        String path = "./google.properties";
         FileInputStream file = new FileInputStream(path);
         properties.load(file);
         file.close();
     }
 
     public static boolean isValid() {
-        return getPassword() != null && getUser() != null && getHost() != null && getDatabase() != null;
+        return getClientId() != null && getClientSecret() != null && getRedirectURI() != null;
     }
 
-    public static String getPassword() { // may be empty
-        return properties.getProperty("password");
+    public static String getClientId() {
+        return properties.getProperty("clientid");
     }
 
-    public static String getUser() { // eg root
-        return properties.getProperty("user");
+    public static String getClientSecret() {
+        return properties.getProperty("clientsecret");
     }
 
-    public static String getHost() { // eg 127.0.0.1:3306
-        return properties.getProperty("host");
-    }
-
-    public static String getDatabase() { // eg pomodoro
-        return properties.getProperty("database");
+    public static String getRedirectURI() {
+        return properties.getProperty("redirecturi");
     }
 }

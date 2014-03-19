@@ -92,7 +92,12 @@ public class ImportInputForm extends ExportInputForm {
             }
         });
         fileChooserPanel.add(browseButton, gbcf);
-        fileChooserPanel.setLayout(new GridBagLayout());       
+        fileChooserPanel.setLayout(new GridBagLayout());
         exportFormPanel.add(fileChooserPanel, c);
+    }
+
+    @Override
+    public Object[] getFileFormats() {
+        return new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
     }
 }
