@@ -112,7 +112,7 @@ public class TestMenu extends JMenu {
                                 storypoint[rand.nextInt(23)],
                                 iteration[rand.nextInt(7)],
                                 currentDateAtMidnight);
-                        
+
                         a.databaseInsert();
                     }
                 }

@@ -30,6 +30,7 @@ import org.mypomodoro.gui.PreferencesPanel;
 public class TypeList extends AbstractList {
 
     private static ArrayList<String> types = new ArrayList<String>();
+
     public static void initTypes() {
         types = ActivitiesDAO.getInstance().getTypes();
         if (PreferencesPanel.preferences.getAgileMode()) {

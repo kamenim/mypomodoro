@@ -55,7 +55,7 @@ public class BurndownChartInputForm extends JPanel {
     // Exclusion form
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Sundays"), true);
-    private final JLabel excludeDays = new JLabel();    
+    private final JLabel excludeDays = new JLabel();
     // Type form
     //private final JPanel typesInputFormPanel = new JPanel();
     //protected final List<TypeComboBox> types = new ArrayList<TypeComboBox>();
@@ -128,7 +128,7 @@ public class BurndownChartInputForm extends JPanel {
         endDatePicker.setDate(new Date()); // do no set dates with bounds (setDateWithBounds)
         add(endDatePicker, c);
     }
-    
+
     private void addExclusionInputForm() {
         c.gridx = 0;
         c.gridy = 1;
@@ -151,93 +151,92 @@ public class BurndownChartInputForm extends JPanel {
     }
 
     /*private void addTypeInputFormPanel() {
-        c.gridx = 0;
-        c.gridy = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        c.anchor = GridBagConstraints.NORTH;
-        FormLabel typelabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Type") + "*: ");
-        typelabel.setMinimumSize(LABEL_DIMENSION);
-        typelabel.setPreferredSize(LABEL_DIMENSION);
-        add(typelabel, c);
-        c.gridx = 1;
-        c.gridy = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        c.gridwidth = 2;
-        c.anchor = GridBagConstraints.WEST;
-        typesInputFormPanel.setLayout(new GridBagLayout());
-        GridBagConstraints cTypePanels = new GridBagConstraints();
-        addTypesPanels(cTypePanels);
-        add(typesInputFormPanel, c);
-    }
+     c.gridx = 0;
+     c.gridy = 1;
+     c.weightx = 1.0;
+     c.weighty = 0.5;
+     c.anchor = GridBagConstraints.NORTH;
+     FormLabel typelabel = new FormLabel(
+     Labels.getString("ReportListPanel.Chart.Type") + "*: ");
+     typelabel.setMinimumSize(LABEL_DIMENSION);
+     typelabel.setPreferredSize(LABEL_DIMENSION);
+     add(typelabel, c);
+     c.gridx = 1;
+     c.gridy = 1;
+     c.weightx = 1.0;
+     c.weighty = 0.5;
+     c.gridwidth = 2;
+     c.anchor = GridBagConstraints.WEST;
+     typesInputFormPanel.setLayout(new GridBagLayout());
+     GridBagConstraints cTypePanels = new GridBagConstraints();
+     addTypesPanels(cTypePanels);
+     add(typesInputFormPanel, c);
+     }
 
-    private void addTypesPanels(GridBagConstraints cTypePanels) {
-        addTypesPanels(cTypePanels, 0);
-    }
+     private void addTypesPanels(GridBagConstraints cTypePanels) {
+     addTypesPanels(cTypePanels, 0);
+     }
 
-    private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
-        cTypePanels.gridx = 0;
-        cTypePanels.gridy = gridY;
-        cTypePanels.anchor = GridBagConstraints.WEST;
-        JPanel typePanel = new JPanel();
-        typePanel.setLayout(new GridBagLayout());
-        GridBagConstraints cTypePanel = new GridBagConstraints();
-        TypeComboBox type = new TypeComboBox();
-        type.setMinimumSize(COMBO_BOX_DIMENSION);
-        type.setPreferredSize(COMBO_BOX_DIMENSION);
-        type.setEditable(true);
-        type.setBackground(ColorUtil.WHITE);
-        type.setFont(new Font(type.getFont().getName(), Font.PLAIN, type.getFont().getSize()));
-        cTypePanel.gridx = 0;
-        cTypePanel.gridy = 0;
-        typePanel.add(type, cTypePanel);
-        cTypePanel.gridx = 1;
-        cTypePanel.gridy = 0;
-        if (gridY == 0) {
-            cTypePanel.gridwidth = 2;
-        }
-        JButton plus = new JButton("+");
-        //plus.addMouseListener(new MouseAdapter() {
+     private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
+     cTypePanels.gridx = 0;
+     cTypePanels.gridy = gridY;
+     cTypePanels.anchor = GridBagConstraints.WEST;
+     JPanel typePanel = new JPanel();
+     typePanel.setLayout(new GridBagLayout());
+     GridBagConstraints cTypePanel = new GridBagConstraints();
+     TypeComboBox type = new TypeComboBox();
+     type.setMinimumSize(COMBO_BOX_DIMENSION);
+     type.setPreferredSize(COMBO_BOX_DIMENSION);
+     type.setEditable(true);
+     type.setBackground(ColorUtil.WHITE);
+     type.setFont(new Font(type.getFont().getName(), Font.PLAIN, type.getFont().getSize()));
+     cTypePanel.gridx = 0;
+     cTypePanel.gridy = 0;
+     typePanel.add(type, cTypePanel);
+     cTypePanel.gridx = 1;
+     cTypePanel.gridy = 0;
+     if (gridY == 0) {
+     cTypePanel.gridwidth = 2;
+     }
+     JButton plus = new JButton("+");
+     //plus.addMouseListener(new MouseAdapter() {
 
-         //@Override
-         //public void mouseClicked(MouseEvent e) {
-         //addTypesPanels(cTypePanels, gridY + 1);
-         //}
-         //});
-        plus.addActionListener(new ActionListener() {
+     //@Override
+     //public void mouseClicked(MouseEvent e) {
+     //addTypesPanels(cTypePanels, gridY + 1);
+     //}
+     //});
+     plus.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addTypesPanels(cTypePanels, gridY + 1);
-            }
-        });
-        plus.setMinimumSize(new Dimension(44, 20));
-        plus.setPreferredSize(new Dimension(44, 20));
-        typePanel.add(plus, cTypePanel);
-        if (gridY > 0) {
-            cTypePanel.gridx = 2;
-            cTypePanel.gridy = 0;
-            JButton minus = new JButton("-");
-            minus.addActionListener(new ActionListener() {
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     addTypesPanels(cTypePanels, gridY + 1);
+     }
+     });
+     plus.setMinimumSize(new Dimension(44, 20));
+     plus.setPreferredSize(new Dimension(44, 20));
+     typePanel.add(plus, cTypePanel);
+     if (gridY > 0) {
+     cTypePanel.gridx = 2;
+     cTypePanel.gridy = 0;
+     JButton minus = new JButton("-");
+     minus.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    typePanelList.get(gridY).setVisible(false);
-                    typePanelList.remove(gridY);
-                    types.remove(gridY);
-                }
-            });
-            minus.setMinimumSize(new Dimension(44, 20));
-            minus.setPreferredSize(new Dimension(44, 20));
-            typePanel.add(minus, cTypePanel);
-        }
-        types.add(type);
-        typePanelList.add(typePanel);
-        typesInputFormPanel.add(typePanel, cTypePanels);
-    }*/
-
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     typePanelList.get(gridY).setVisible(false);
+     typePanelList.remove(gridY);
+     types.remove(gridY);
+     }
+     });
+     minus.setMinimumSize(new Dimension(44, 20));
+     minus.setPreferredSize(new Dimension(44, 20));
+     typePanel.add(minus, cTypePanel);
+     }
+     types.add(type);
+     typePanelList.add(typePanel);
+     typesInputFormPanel.add(typePanel, cTypePanels);
+     }*/
     private void addChartInputFormPanel() {
         c.gridx = 0;
         c.gridy = 2;

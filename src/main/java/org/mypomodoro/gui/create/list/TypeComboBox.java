@@ -31,14 +31,14 @@ public class TypeComboBox extends AbstractComboBox {
         addPopupMenuListener(new PopupMenuListener() {
 
             @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {                
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 Object selectedItem = getEditor().getItem(); // the combo bow is editable
-                removeAllItems();                
+                removeAllItems();
                 for (String type : TypeList.getTypes()) {
                     addItem(type);
                 }
-                tooltipRenderer.setTooltips((ArrayList) TypeList.getTypes());                
-                setSelectedItem(selectedItem);                   
+                tooltipRenderer.setTooltips((ArrayList) TypeList.getTypes());
+                setSelectedItem(selectedItem);
             }
 
             @Override

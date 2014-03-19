@@ -16,12 +16,18 @@
  */
 package org.mypomodoro.gui.export;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
+import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -29,7 +35,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -49,11 +57,11 @@ public class ExportInputForm extends JPanel {
     private FormLabel separatorLabel = new FormLabel("");
     private JComboBox separatorComboBox = new JComboBox();
     protected String defaultFileName = "myAgilePomodoro";
-    private final FileFormat CSVFormat = new FileFormat(FileFormat.CSVFormatName,
+    public final FileFormat CSVFormat = new FileFormat(FileFormat.CSVFormatName,
             FileFormat.CSVExtention);
-    private final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
+    public final FileFormat ExcelFormat = new FileFormat("XLS (Excel 2003)",
             FileFormat.ExcelExtention);
-    private final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
+    public final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
             FileFormat.ExcelOpenXMLExtention);
     private final FileFormat GoogleDriveFormat = new FileFormat(FileFormat.GoogleDriveFormatName,
             FileFormat.CSVExtention);
@@ -74,6 +82,9 @@ public class ExportInputForm extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     protected final JPanel exportFormPanel = new JPanel();
     private final JPanel authorisationFormPanel = new JPanel();
+    // Google Drive
+    private JTextField authorisationCodeTextField = new JTextField();
+    private JTextField authorisationUrlTextField = new JTextField("");
 
     public ExportInputForm() {
         setLayout(new GridBagLayout());
@@ -83,6 +94,7 @@ public class ExportInputForm extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         addExportForm();
         addAuthorisationForm();
+        authorisationFormPanel.setVisible(false);
     }
 
     private void addExportForm() {
@@ -119,7 +131,7 @@ public class ExportInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 2;
         c.weighty = 0.5;
-        Object fileFormats[] = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, GoogleDriveFormat};
+        Object fileFormats[] = getFileFormats();
         fileFormatComboBox = new JComboBox(fileFormats);
         fileFormatComboBox.addActionListener(new ActionListener() {
 
@@ -132,8 +144,16 @@ public class ExportInputForm extends JPanel {
                     separatorComboBox.setVisible(false);
                     datePatternLabel.setVisible(false);
                     excelPatternsPanel.setVisible(false);
-
                 } else {
+                    if (selectedFormat.equals(GoogleDriveFormat)) {
+                        separatorComboBox.removeItem(tabSeparator);
+                        separatorComboBox.removeItem(semicolonSeparator);
+                        separatorComboBox.removeItem(editableSeparator);
+                    } else {
+                        separatorComboBox.addItem(tabSeparator);
+                        separatorComboBox.addItem(semicolonSeparator);
+                        separatorComboBox.addItem(editableSeparator);
+                    }
                     patternsPanel.setVisible(true);
                     separatorLabel.setVisible(true);
                     separatorComboBox.setVisible(true);
@@ -218,13 +238,79 @@ public class ExportInputForm extends JPanel {
         add(exportFormPanel, gbc);
     }
 
+    public Object[] getFileFormats() {
+        Object[] fileFormat;
+        if (GoogleConfigLoader.isValid()) {
+            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, GoogleDriveFormat};
+        } else {
+            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
+        }
+        return fileFormat;
+    }
+
     private void addAuthorisationForm() {
         gbc.gridx = 0;
         gbc.gridy = 1;
         authorisationFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        FormLabel authorisationLabel = new FormLabel(
+                Labels.getString("ReportListPanel.Please open the following URL in your browser then type the authorization code") + ": ");
+        authorisationLabel.setMinimumSize(new Dimension(500, 25));
+        authorisationLabel.setPreferredSize(new Dimension(500, 25));
+        authorisationFormPanel.add(authorisationLabel, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        authorisationUrlTextField.setSelectionColor(ColorUtil.BLUE_ROW);
+        authorisationUrlTextField.setEnabled(true); // make it copiable
+        authorisationUrlTextField.setEditable(false);
+        authorisationUrlTextField.setMargin(new Insets(10, 10, 10, 10));
+        authorisationUrlTextField.setCaretPosition(0);
+        // underline url
+        Font font = authorisationUrlTextField.getFont();
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        authorisationUrlTextField.setFont(font.deriveFont(attributes));
+        authorisationUrlTextField.setForeground(Color.BLUE);
+        authorisationUrlTextField.setMinimumSize(new Dimension(500, 50));
+        authorisationUrlTextField.setPreferredSize(new Dimension(500, 50));
+        class customerMouseListener extends MouseAdapter {
+
+            JTextField urlTextField;
+
+            public customerMouseListener(JTextField urlTextField) {
+                this.urlTextField = urlTextField;
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BareBonesBrowserLaunch.openURL(urlTextField.getText().trim());
+            }
+        }
+        authorisationUrlTextField.addMouseListener(new customerMouseListener(authorisationUrlTextField));
+        authorisationFormPanel.add(authorisationUrlTextField, c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weighty = 0.5;
+        c.gridwidth = 1;
+        FormLabel authorisationCodeLabel = new FormLabel(
+                Labels.getString("ReportListPanel.Authorisation code") + "*: ");
+        authorisationCodeLabel.setMinimumSize(LABEL_DIMENSION);
+        authorisationCodeLabel.setPreferredSize(LABEL_DIMENSION);
+        authorisationFormPanel.add(authorisationCodeLabel, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        c.weighty = 0.5;
+        c.gridwidth = 1;
+        authorisationCodeTextField = new JTextField();
+        authorisationCodeTextField.setMinimumSize(COMBO_BOX_DIMENSION);
+        authorisationCodeTextField.setPreferredSize(COMBO_BOX_DIMENSION);
+        authorisationFormPanel.add(authorisationCodeTextField, c);
         add(authorisationFormPanel, gbc);
-        authorisationFormPanel.setVisible(false);
     }
 
     /*private void addColumnsComboBoxes(GridBagConstraints c) {
@@ -354,10 +440,6 @@ public class ExportInputForm extends JPanel {
         return ((Separator) separatorComboBox.getSelectedItem()).getSeparator();
     }
 
-    public String getEditableSeparatorText() {
-        return editableSeparator.getSeparatorText();
-    }
-
     public boolean isHeaderSelected() {
         return headerCheckBox.isSelected();
     }
@@ -370,7 +452,7 @@ public class ExportInputForm extends JPanel {
         separatorComboBox.setSelectedIndex(commaSeparator.getSeparatorIndex());
     }
 
-    private class FileFormat {
+    public class FileFormat {
 
         public static final String CSVExtention = "csv";
         public static final String CSVFormatName = "CSV";
@@ -668,7 +750,28 @@ public class ExportInputForm extends JPanel {
         }
     }
 
+    public void showAuthorisationForm() {
+        exportFormPanel.setVisible(false);
+        authorisationFormPanel.setVisible(true);
+    }
+
+    public void showExportForm() {
+        exportFormPanel.setVisible(true);
+        authorisationFormPanel.setVisible(false);
+        setAuthorisationCode("");
+        setAuthorisationCodeUrl("");
+    }
+
+    public void setAuthorisationCodeUrl(String authorisationUrl) {
+        this.authorisationUrlTextField.setText(authorisationUrl);
+        this.authorisationUrlTextField.setCaretPosition(0);
+    }
+
+    private void setAuthorisationCode(String authorisationCode) {
+        this.authorisationCodeTextField.setText(authorisationCode);
+    }
+
     public String getAuthorisationCode() {
-        return "";
+        return authorisationCodeTextField.getText().trim();
     }
 }

@@ -81,7 +81,7 @@ public class PreferencesInputForm extends JPanel {
         final int maxNbPomPerActivityAgileMode = 24; // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
         final int initMaxNbPomPerActivityAgileMode = 20;
         final int maxNbPomPerDay = 12;
-        final int initMaxNbPomPerDay = 10;        
+        final int initMaxNbPomPerDay = 10;
         maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
                 PreferencesPanel.preferences.getMaxNbPomPerActivity(),
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",

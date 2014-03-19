@@ -100,7 +100,7 @@ public class ActivityInputForm extends JPanel {
 
     protected void addDate(int gridy) {
         final FormLabel dateLabel = new FormLabel(
-                Labels.getString("Common.Date scheduled") + "*: ");        
+                Labels.getString("Common.Date scheduled") + "*: ");
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
@@ -226,7 +226,7 @@ public class ActivityInputForm extends JPanel {
             } else {
                 text = Math.round((Float) value) + "";
             }
-            setText(text);            
+            setText(text);
             return this;
         }
     }
@@ -250,7 +250,7 @@ public class ActivityInputForm extends JPanel {
         iterations.setBackground(ColorUtil.WHITE);
         add(iterations, c);
     }
-    
+
     class IterationComboBoxRenderer extends BasicComboBoxRenderer {
 
         public IterationComboBoxRenderer() {
@@ -427,9 +427,9 @@ public class ActivityInputForm extends JPanel {
     public void setActivityId(int value) {
         activityId = value;
     }
-    
+
     public boolean isDateToday() {
-        return DateUtil.isDateToday(datePicker.getDate());        
+        return DateUtil.isDateToday(datePicker.getDate());
     }
 
     protected void displayLength(int estimatedPomodoros) {

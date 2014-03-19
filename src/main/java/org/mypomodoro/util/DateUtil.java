@@ -93,7 +93,7 @@ public class DateUtil {
         DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
         return dateComparator.compare(date, new Date()) == 0;
     }
-    
+
     /*
      * Check if a date is in the past
      * 
@@ -103,7 +103,7 @@ public class DateUtil {
         DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
         return dateComparator.compare(date, new Date()) < -1;
     }
-    
+
     /*
      * Check if a date is in the future
      * 

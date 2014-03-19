@@ -38,7 +38,7 @@ class ActivitiesComboBoxPanel extends JPanel {
     protected JLabel label = new JLabel();
 
     // Generic constructor
-    public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {        
+    public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
         setLayout(new GridBagLayout());
         comboBox = new JComboBox<E>(data);
         setOpaque(true);
@@ -60,7 +60,7 @@ class ActivitiesComboBoxPanel extends JPanel {
             if (value.toString().equals("0.5")) {
                 text = "1/2";
             } else {
-                text = Math.round((Float)value) + "";
+                text = Math.round((Float) value) + "";
             }
             setText(text);
             return this;
@@ -76,7 +76,7 @@ class ActivitiesComboBoxPanel extends JPanel {
             return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         }
     }
-    
+
     class ComboBoxIterationRenderer extends DefaultListCellRenderer {
 
         @Override

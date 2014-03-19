@@ -228,7 +228,7 @@ public class ActivitiesDAO {
         }
         return activity;
     }
-    
+
     public ArrayList<Activity> getToDosAndReportsForChart(Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {

@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.mypomodoro.db.Database;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
@@ -30,6 +31,7 @@ import org.mypomodoro.gui.burndownchart.BurndownTabbedPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
+import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
@@ -43,6 +45,8 @@ import org.mypomodoro.util.RestartMac;
  */
 public class Main {
 
+    public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
+    public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     public static final Database database = new Database();
     public static final PreferencesPanel controlPanel = new PreferencesPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
@@ -105,6 +109,7 @@ public class Main {
             new RestartMac(1);
             return;
         }
+
         initLists();
         SwingUtilities.invokeLater(new Runnable() {
 

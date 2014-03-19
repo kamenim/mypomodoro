@@ -38,7 +38,7 @@ public final class TimerValueSlider extends JPanel {
             int val, String name, final int recommendedMin,
             final int recommendedMax, final int unit) {
         setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();        
+        GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         add(new JLabel(name));

@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.db;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -53,20 +52,15 @@ public class Database {
      */
 
     public Database() {
-        try {
-            MySQLConfigLoader.loadProperties();
-            if (MySQLConfigLoader.isValid()) {
-                driverClassName = "com.mysql.jdbc.Driver";
-                connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
-                        + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();
-                // Database specific
-                autoIncrementKeyword = "AUTO_INCREMENT";
-                longInteger = "BIGINT";
-                selectStatementSeqId = "SELECT LAST_INSERT_ID()";
-                sequenceIdName = "last_insert_id()";
-            }
-        } catch (IOException ex) {
-            // do nothing
+        if (MySQLConfigLoader.isValid()) {
+            driverClassName = "com.mysql.jdbc.Driver";
+            connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
+                    + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();
+            // Database specific
+            autoIncrementKeyword = "AUTO_INCREMENT";
+            longInteger = "BIGINT";
+            selectStatementSeqId = "SELECT LAST_INSERT_ID()";
+            sequenceIdName = "last_insert_id()";
         }
         // Connect to database
         try {

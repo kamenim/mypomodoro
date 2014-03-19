@@ -487,7 +487,7 @@ public class Activity {
     }
 
     public boolean isDateToday() {
-        return DateUtil.isDateToday(getDate());        
+        return DateUtil.isDateToday(getDate());
     }
 
     // Activity (not a ToDo nor a Report)

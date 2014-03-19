@@ -111,16 +111,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                } else {
-                    ((JComponent) c).setBackground(row % 2 == 0 ? Color.white : ColorUtil.YELLOW_ROW); // rows with even/odd number
-                }
-                if (row == mouseHoverRow) {                    
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLACK));
+                if (row == mouseHoverRow && !isRowSelected(row)) {
+                    ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                     ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
                 } else {
-                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLACK));                    
+                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLUE_ROW));
                 }
                 return c;
             }

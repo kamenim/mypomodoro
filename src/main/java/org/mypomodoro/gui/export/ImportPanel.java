@@ -85,10 +85,6 @@ public class ImportPanel extends JPanel {
                 if (importInputForm.getFileName().length() == 0) {
                     importInputForm.initFileName();
                 }
-                if (importInputForm.getEditableSeparatorText().length() == 0) { // editable
-                    // field
-                    importInputForm.initSeparatorComboBox();
-                }
                 importData();
             }
         });
