@@ -21,9 +21,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Date;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -41,7 +42,7 @@ import org.mypomodoro.util.Labels;
  * Export form
  *
  */
-public class BurndownChartInputForm extends JPanel {
+public class CreateInputForm extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
@@ -53,8 +54,8 @@ public class BurndownChartInputForm extends JPanel {
     protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());
     protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
     // Exclusion form
-    private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Saturdays"), true);
-    private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("ReportListPanel.Chart.Sundays"), true);
+    private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
+    private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);
     private final JLabel excludeDays = new JLabel();
     // Type form
     //private final JPanel typesInputFormPanel = new JPanel();
@@ -63,19 +64,19 @@ public class BurndownChartInputForm extends JPanel {
     // Chart form
     private final JPanel chartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
-    private final String defaultPrimaryYAxisName = Labels.getString("ReportListPanel.Chart.Remaining working hours");
+    private final String defaultPrimaryYAxisName = Labels.getString("BurndownChartPanel.Remaining working hours");
     private JTextField primaryYAxisLegend = new JTextField();
-    private final String defaultPrimaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Remaining");
+    private final String defaultPrimaryYAxisLegend = Labels.getString("BurndownChartPanel.Remaining");
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     private JTextField secondaryYAxisName = new JTextField();
-    private final String defaultSecondaryYAxisName = Labels.getString("ReportListPanel.Chart.Completed tasks %");
+    private final String defaultSecondaryYAxisName = Labels.getString("BurndownChartPanel.Completed tasks %");
     private JTextField secondaryYAxisLegend = new JTextField();
-    private final String defaultSecondaryYAxisLegend = Labels.getString("ReportListPanel.Chart.Completed");
+    private final String defaultSecondaryYAxisLegend = Labels.getString("BurndownChartPanel.Completed");
     private JTextField secondaryYAxisColor = new JTextField();
     private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
     private JTextField targetLegend = new JTextField();
-    private final String defaultTargetLegend = Labels.getString("ReportListPanel.Chart.Target");
+    private final String defaultTargetLegend = Labels.getString("BurndownChartPanel.Target");
     private JTextField targetColor = new JTextField();
     private final Color defaultTargetColor = ColorUtil.BLACK;
     // Image form
@@ -93,9 +94,13 @@ public class BurndownChartInputForm extends JPanel {
     protected int defaultImageWidth = 800;
     protected int defaultImageHeight = 600;
 
-    public BurndownChartInputForm() {
-        setBorder(new TitledBorder(new EtchedBorder(), ""));
+    public CreateInputForm() {
+        //setBorder(new TitledBorder(new EtchedBorder(), ""));
         setLayout(new GridBagLayout());
+        // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
 
         addDatesInputForm();
         addExclusionInputForm();
@@ -109,7 +114,7 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        FormLabel dateslabel = new FormLabel(Labels.getString("ReportListPanel.Chart.Dates") + "*: ");
+        FormLabel dateslabel = new FormLabel(Labels.getString("BurndownChartPanel.Dates") + "*: ");
         dateslabel.setMinimumSize(LABEL_DIMENSION);
         dateslabel.setPreferredSize(LABEL_DIMENSION);
         add(dateslabel, c);
@@ -117,16 +122,34 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        startDatePicker.setDate(new Date()); // do no set dates with bounds (setDateWithBounds)
-        startDatePicker.setBackground(ColorUtil.WHITE);
-        startDatePicker.getEditor().setEditable(false);
-        add(startDatePicker, c);
-        c.gridx = 2;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        endDatePicker.setDate(new Date()); // do no set dates with bounds (setDateWithBounds)
-        add(endDatePicker, c);
+        JPanel dates = new JPanel();
+        dates.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        startDatePicker.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
+            }
+        });
+        dates.add(startDatePicker, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        endDatePicker.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startDatePicker.setDateWithUpperBounds(endDatePicker.getDate());
+            }
+        });
+        dates.add(endDatePicker, gbc);
+        add(dates, c);
     }
 
     private void addExclusionInputForm() {
@@ -134,7 +157,7 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 1;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        FormLabel exclusionlabel = new FormLabel(Labels.getString("ReportListPanel.Chart.Exclusion") + "*: ");
+        FormLabel exclusionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Exclusion") + "*: ");
         exclusionlabel.setMinimumSize(LABEL_DIMENSION);
         exclusionlabel.setPreferredSize(LABEL_DIMENSION);
         add(exclusionlabel, c);
@@ -142,108 +165,39 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 1;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        add(excludeSaturdays, c);
-        c.gridx = 2;
-        c.gridy = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        add(excludeSaturdays, c);
+        JPanel exclusion = new JPanel();
+        exclusion.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        exclusion.add(excludeSaturdays, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        exclusion.add(excludeSundays, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        //JList list = new JList();
+        //list.add("test");//
+        JLabel label = new JLabel("test");
+        exclusion.add(label, gbc);
+        add(exclusion, c);
     }
 
-    /*private void addTypeInputFormPanel() {
-     c.gridx = 0;
-     c.gridy = 1;
-     c.weightx = 1.0;
-     c.weighty = 0.5;
-     c.anchor = GridBagConstraints.NORTH;
-     FormLabel typelabel = new FormLabel(
-     Labels.getString("ReportListPanel.Chart.Type") + "*: ");
-     typelabel.setMinimumSize(LABEL_DIMENSION);
-     typelabel.setPreferredSize(LABEL_DIMENSION);
-     add(typelabel, c);
-     c.gridx = 1;
-     c.gridy = 1;
-     c.weightx = 1.0;
-     c.weighty = 0.5;
-     c.gridwidth = 2;
-     c.anchor = GridBagConstraints.WEST;
-     typesInputFormPanel.setLayout(new GridBagLayout());
-     GridBagConstraints cTypePanels = new GridBagConstraints();
-     addTypesPanels(cTypePanels);
-     add(typesInputFormPanel, c);
-     }
-
-     private void addTypesPanels(GridBagConstraints cTypePanels) {
-     addTypesPanels(cTypePanels, 0);
-     }
-
-     private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
-     cTypePanels.gridx = 0;
-     cTypePanels.gridy = gridY;
-     cTypePanels.anchor = GridBagConstraints.WEST;
-     JPanel typePanel = new JPanel();
-     typePanel.setLayout(new GridBagLayout());
-     GridBagConstraints cTypePanel = new GridBagConstraints();
-     TypeComboBox type = new TypeComboBox();
-     type.setMinimumSize(COMBO_BOX_DIMENSION);
-     type.setPreferredSize(COMBO_BOX_DIMENSION);
-     type.setEditable(true);
-     type.setBackground(ColorUtil.WHITE);
-     type.setFont(new Font(type.getFont().getName(), Font.PLAIN, type.getFont().getSize()));
-     cTypePanel.gridx = 0;
-     cTypePanel.gridy = 0;
-     typePanel.add(type, cTypePanel);
-     cTypePanel.gridx = 1;
-     cTypePanel.gridy = 0;
-     if (gridY == 0) {
-     cTypePanel.gridwidth = 2;
-     }
-     JButton plus = new JButton("+");
-     //plus.addMouseListener(new MouseAdapter() {
-
-     //@Override
-     //public void mouseClicked(MouseEvent e) {
-     //addTypesPanels(cTypePanels, gridY + 1);
-     //}
-     //});
-     plus.addActionListener(new ActionListener() {
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     addTypesPanels(cTypePanels, gridY + 1);
-     }
-     });
-     plus.setMinimumSize(new Dimension(44, 20));
-     plus.setPreferredSize(new Dimension(44, 20));
-     typePanel.add(plus, cTypePanel);
-     if (gridY > 0) {
-     cTypePanel.gridx = 2;
-     cTypePanel.gridy = 0;
-     JButton minus = new JButton("-");
-     minus.addActionListener(new ActionListener() {
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     typePanelList.get(gridY).setVisible(false);
-     typePanelList.remove(gridY);
-     types.remove(gridY);
-     }
-     });
-     minus.setMinimumSize(new Dimension(44, 20));
-     minus.setPreferredSize(new Dimension(44, 20));
-     typePanel.add(minus, cTypePanel);
-     }
-     types.add(type);
-     typePanelList.add(typePanel);
-     typesInputFormPanel.add(typePanel, cTypePanels);
-     }*/
     private void addChartInputFormPanel() {
         c.gridx = 0;
         c.gridy = 2;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        c.gridwidth = 3;
-        chartInputFormPanel.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Chart.Chart")));
+        c.gridwidth = 2;
+        TitledBorder border = new TitledBorder(new EtchedBorder(), Labels.getString("BurndownChartPanel.Chart"));
+        border.setTitleFont(new Font(chartInputFormPanel.getFont().getName(), Font.BOLD, chartInputFormPanel.getFont().getSize()));
+        chartInputFormPanel.setBorder(border);
         chartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
         addChartFields(cChart);
@@ -255,8 +209,10 @@ public class BurndownChartInputForm extends JPanel {
         c.gridy = 3;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        c.gridwidth = 3;
-        imageInputFormPanel.setBorder(new TitledBorder(new EtchedBorder(), Labels.getString("ReportListPanel.Chart.Image")));
+        c.gridwidth = 2;
+        TitledBorder border = new TitledBorder(new EtchedBorder(), Labels.getString("BurndownChartPanel.Image"));
+        border.setTitleFont(new Font(imageInputFormPanel.getFont().getName(), Font.BOLD, imageInputFormPanel.getFont().getSize()));
+        imageInputFormPanel.setBorder(border);
         imageInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cImage = new GridBagConstraints();
         addImageFields(cImage);
@@ -270,7 +226,7 @@ public class BurndownChartInputForm extends JPanel {
         cChart.gridy = 0;
         //cChart.weighty = 0.5;
         FormLabel primaryYAxisLabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Hours") + ": ");
+                Labels.getString("BurndownChartPanel.Hours") + ": ");
         primaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         primaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
         chartInputFormPanel.add(primaryYAxisLabel, cChart);
@@ -315,7 +271,7 @@ public class BurndownChartInputForm extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Color newColor = JColorChooser.showDialog(
                         primaryYAxisColor,
-                        Labels.getString("ReportListPanel.Chart.Choose a color"),
+                        Labels.getString("BurndownChartPanel.Choose a color"),
                         primaryYAxisColor.getBackground());
                 if (newColor != null) {
                     primaryYAxisColor.setBackground(newColor);
@@ -330,7 +286,7 @@ public class BurndownChartInputForm extends JPanel {
         cChart.gridy = 3;
         //cChart.weighty = 0.5;
         FormLabel secondaryYAxisLabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Tasks") + ": ");
+                Labels.getString("BurndownChartPanel.Tasks") + ": ");
         secondaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         secondaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
         chartInputFormPanel.add(secondaryYAxisLabel, cChart);
@@ -375,7 +331,7 @@ public class BurndownChartInputForm extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Color newColor = JColorChooser.showDialog(
                         secondaryYAxisColor,
-                        Labels.getString("ReportListPanel.Chart.Choose a color"),
+                        Labels.getString("BurndownChartPanel.Choose a color"),
                         secondaryYAxisColor.getBackground());
                 if (newColor != null) {
                     secondaryYAxisColor.setBackground(newColor);
@@ -390,7 +346,7 @@ public class BurndownChartInputForm extends JPanel {
         cChart.gridy = 6;
         //cChart.weighty = 0.5;
         FormLabel targetLabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Target") + ": ");
+                Labels.getString("BurndownChartPanel.Target") + ": ");
         targetLabel.setMinimumSize(LABEL_DIMENSION);
         targetLabel.setPreferredSize(LABEL_DIMENSION);
         chartInputFormPanel.add(targetLabel, cChart);
@@ -422,7 +378,7 @@ public class BurndownChartInputForm extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Color newColor = JColorChooser.showDialog(
                         targetColor,
-                        Labels.getString("ReportListPanel.Chart.Choose a color"),
+                        Labels.getString("BurndownChartPanel.Choose a color"),
                         targetColor.getBackground());
                 if (newColor != null) {
                     targetColor.setBackground(newColor);
@@ -438,7 +394,7 @@ public class BurndownChartInputForm extends JPanel {
         cImage.gridy = 0;
         //cImage.weighty = 0.5;
         FormLabel imageNamelabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Name") + ": ");
+                Labels.getString("BurndownChartPanel.Name") + ": ");
         imageNamelabel.setMinimumSize(LABEL_DIMENSION);
         imageNamelabel.setPreferredSize(LABEL_DIMENSION);
         imageInputFormPanel.add(imageNamelabel, cImage);
@@ -455,7 +411,7 @@ public class BurndownChartInputForm extends JPanel {
         cImage.gridy = 1;
         //cImage.weighty = 0.5;
         FormLabel imageFormatLabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Format") + ": ");
+                Labels.getString("BurndownChartPanel.Format") + ": ");
         imageFormatLabel.setMinimumSize(LABEL_DIMENSION);
         imageFormatLabel.setPreferredSize(LABEL_DIMENSION);
         imageInputFormPanel.add(imageFormatLabel, cImage);
@@ -473,7 +429,7 @@ public class BurndownChartInputForm extends JPanel {
         cImage.gridy = 2;
         //cImage.weighty = 0.5;
         FormLabel imageSizelabel = new FormLabel(
-                Labels.getString("ReportListPanel.Chart.Size") + ": ");
+                Labels.getString("BurndownChartPanel.Size") + ": ");
         imageSizelabel.setMinimumSize(LABEL_DIMENSION);
         imageSizelabel.setPreferredSize(LABEL_DIMENSION);
         imageInputFormPanel.add(imageSizelabel, cImage);
@@ -554,4 +510,92 @@ public class BurndownChartInputForm extends JPanel {
             return formatName;
         }
     }
+
+    /*private void addTypeInputFormPanel() {
+     c.gridx = 0;
+     c.gridy = 1;
+     c.weightx = 1.0;
+     c.weighty = 0.5;
+     c.anchor = GridBagConstraints.NORTH;
+     FormLabel typelabel = new FormLabel(
+     Labels.getString("BurndownChartPanel.Type") + "*: ");
+     typelabel.setMinimumSize(LABEL_DIMENSION);
+     typelabel.setPreferredSize(LABEL_DIMENSION);
+     add(typelabel, c);
+     c.gridx = 1;
+     c.gridy = 1;
+     c.weightx = 1.0;
+     c.weighty = 0.5;
+     c.gridwidth = 2;
+     c.anchor = GridBagConstraints.WEST;
+     typesInputFormPanel.setLayout(new GridBagLayout());
+     GridBagConstraints cTypePanels = new GridBagConstraints();
+     addTypesPanels(cTypePanels);
+     add(typesInputFormPanel, c);
+     }
+
+     private void addTypesPanels(GridBagConstraints cTypePanels) {
+     addTypesPanels(cTypePanels, 0);
+     }
+
+     private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
+     cTypePanels.gridx = 0;
+     cTypePanels.gridy = gridY;
+     cTypePanels.anchor = GridBagConstraints.WEST;
+     JPanel typePanel = new JPanel();
+     typePanel.setLayout(new GridBagLayout());
+     GridBagConstraints cTypePanel = new GridBagConstraints();
+     TypeComboBox type = new TypeComboBox();
+     type.setMinimumSize(COMBO_BOX_DIMENSION);
+     type.setPreferredSize(COMBO_BOX_DIMENSION);
+     type.setEditable(true);
+     type.setBackground(ColorUtil.WHITE);
+     type.setFont(new Font(type.getFont().getName(), Font.PLAIN, type.getFont().getSize()));
+     cTypePanel.gridx = 0;
+     cTypePanel.gridy = 0;
+     typePanel.add(type, cTypePanel);
+     cTypePanel.gridx = 1;
+     cTypePanel.gridy = 0;
+     if (gridY == 0) {
+     cTypePanel.gridwidth = 2;
+     }
+     JButton plus = new JButton("+");
+     //plus.addMouseListener(new MouseAdapter() {
+
+     //@Override
+     //public void mouseClicked(MouseEvent e) {
+     //addTypesPanels(cTypePanels, gridY + 1);
+     //}
+     //});
+     plus.addActionListener(new ActionListener() {
+
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     addTypesPanels(cTypePanels, gridY + 1);
+     }
+     });
+     plus.setMinimumSize(new Dimension(44, 20));
+     plus.setPreferredSize(new Dimension(44, 20));
+     typePanel.add(plus, cTypePanel);
+     if (gridY > 0) {
+     cTypePanel.gridx = 2;
+     cTypePanel.gridy = 0;
+     JButton minus = new JButton("-");
+     minus.addActionListener(new ActionListener() {
+
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     typePanelList.get(gridY).setVisible(false);
+     typePanelList.remove(gridY);
+     types.remove(gridY);
+     }
+     });
+     minus.setMinimumSize(new Dimension(44, 20));
+     minus.setPreferredSize(new Dimension(44, 20));
+     typePanel.add(minus, cTypePanel);
+     }
+     types.add(type);
+     typePanelList.add(typePanel);
+     typesInputFormPanel.add(typePanel, cTypePanels);
+     }*/
 }

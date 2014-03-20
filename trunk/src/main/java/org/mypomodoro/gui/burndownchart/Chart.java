@@ -57,7 +57,7 @@ import org.mypomodoro.util.Labels;
  * http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
  *
  */
-public class BurndownChart extends JPanel {
+public class Chart extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private final JFreeChart burndownChart;
@@ -65,7 +65,7 @@ public class BurndownChart extends JPanel {
     private ArrayList<Integer> XAxisValues = new ArrayList<Integer>();
     private float totalStoryPoints = 0;
 
-    public BurndownChart(Date dateStart, Date dateEnd) {
+    public Chart(Date dateStart, Date dateEnd) {
         // Retrieve ToDos and Reports between dateStart and dateEnd
         activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
         XAxisValues = getXAxisValues(dateStart, dateEnd);
@@ -261,7 +261,7 @@ public class BurndownChart extends JPanel {
             ChartUtilities.saveChartAsPNG(new File(fileName), burndownChart, imageWidth, imageHeight);
         } catch (IOException ex) {
             String title = Labels.getString("Common.Error");
-            String message = Labels.getString("ReportListPanel.Chart.Image creation failed");
+            String message = Labels.getString("BurndownChartPanel.Image creation failed");
             JOptionPane.showConfirmDialog(Main.gui, message, title,
                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
         }

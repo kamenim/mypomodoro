@@ -102,7 +102,7 @@ public class TestMenu extends JMenu {
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(23)],
                                 iteration[rand.nextInt(7)],
-                                new Date(0));
+                                new Date());
                         a.databaseInsert();
                     }
                 }

@@ -31,7 +31,6 @@ public final class DatePicker extends JXDatePicker {
 
     public DatePicker(Locale locale) {
         super(new Date(), locale);
-        setDateWithBounds(new Date());
         getEditor().setEditable(false);
         getEditor().setBackground(ColorUtil.WHITE);
     }
@@ -47,10 +46,19 @@ public final class DatePicker extends JXDatePicker {
         }
     }
 
-    public void setDateWithBounds(Date date) {
-        this.setDate(date);
+    public void setDateWithLowerBounds(Date date) {
         Calendar calendar = getMonthView().getCalendar();
-        calendar.setTime(DateUtil.inFuture(date) ? new Date() : date);
+        calendar.setTime(date);
         getMonthView().setLowerBound(calendar.getTime());
+    }
+    
+     public void setDateWithUpperBounds(Date date) {
+        Calendar calendar = getMonthView().getCalendar();
+        calendar.setTime(date);
+        getMonthView().setUpperBound(calendar.getTime());
+    }
+    
+    public void setTodayWithLowerBounds() {
+        setDateWithLowerBounds(new Date());
     }
 }
