@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -27,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -210,11 +210,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         // we had to implement our own MouseInputAdapter in order to manage the Mouse release event        
         class CustomInputAdapter extends MouseInputAdapter {
 
-            /*final AbstractActivitiesPanel panel;
-
-             public CustomInputAdapter(AbstractActivitiesPanel panel) {
-             this.panel = panel;
-             }*/
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
@@ -329,7 +324,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             titleActivitiesList += Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
                     + " (" + ToDoList.getListSize() + ")";
             if (PreferencesPanel.preferences.getAgileMode()) {
-                titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ToDoList.getList().getStoryPoints();
+                DecimalFormat df = new DecimalFormat("0.#");
+                titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);

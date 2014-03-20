@@ -27,6 +27,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
@@ -317,7 +318,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 + " (" + ActivityList.getListSize() + ")";
         if (org.mypomodoro.gui.PreferencesPanel.preferences.getAgileMode()
                 && ActivityList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ActivityList.getList().getStoryPoints();
+            DecimalFormat df = new DecimalFormat("0.#");            
+            titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
         titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
