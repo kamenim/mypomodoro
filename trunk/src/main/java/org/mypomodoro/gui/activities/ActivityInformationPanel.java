@@ -48,30 +48,30 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         textMap.put("date", (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ": "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDate())
-                + (activity.isUnplanned() ? "]" : "") + "\n");
+                + (activity.isUnplanned() ? "]" : ""));
         textMap.put("date_completed", Labels.getString("Common.Date completed") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "\n");
+                + (activity.isUnplanned() ? "]" : ""));
         // Date reopened
         textMap.put("date_reopened", Labels.getString("Common.Date reopened") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "\n");
-        textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName() + "\n");
-        textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "\n");
+                + (activity.isUnplanned() ? "]" : ""));
+        textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName());
+        textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()));
         textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": "
                 + activity.getActualPoms() + " / "
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
-                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")\n");
+                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")");
         if (PreferencesPanel.preferences.getAgileMode()) {
-            textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()) + "\n");
-            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "\n");
+            textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()));
+            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() == -1 ? "-" : activity.getIteration()));
         }
-        textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "\n");
-        textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "\n");
-        textMap.put("description", Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "\n");
+        textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()));
+        textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()));
+        textMap.put("description", Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         Iterator<String> keySetIterator = textMap.keySet().iterator();
         while (keySetIterator.hasNext()) {
             String key = keySetIterator.next();
-            informationArea.append(textMap.get(key));
+            informationArea.append(textMap.get(key) + "\n");
         }
         // disable auto scrolling
         informationArea.setCaretPosition(0);

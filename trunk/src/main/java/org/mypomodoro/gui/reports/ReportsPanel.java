@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.reports;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,6 +27,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
@@ -315,7 +315,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         }
         if (PreferencesPanel.preferences.getAgileMode()
                 && ReportList.getListSize() > 0) {
-            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + ReportList.getList().getStoryPoints();
+            DecimalFormat df = new DecimalFormat("0.#");
+            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);
         titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
