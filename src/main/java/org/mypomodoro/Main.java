@@ -27,7 +27,7 @@ import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.burndownchart.BurndownTabbedPanel;
+import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
@@ -52,7 +52,7 @@ public class Main {
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportsPanel reportListPanel = new ReportsPanel();
-    public static final BurndownTabbedPanel burndownPanel = new BurndownTabbedPanel();
+    public static final TabbedPanel burndownPanel = new TabbedPanel();
     public static final ReentrantLock datalock = new ReentrantLock();
     public static final MyPomodoroView gui = new MyPomodoroView();
 

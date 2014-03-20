@@ -18,34 +18,32 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Date;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import org.mypomodoro.util.Labels;
+import javax.swing.border.EtchedBorder;
 
 /**
- * Burndown tabbed Panel
+ * Panel that displays the charts
  *
  */
-public class BurndownTabbedPanel extends JPanel {
+public class ChartPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public BurndownTabbedPanel() {
+    public ChartPanel(Chart chart) {
         setLayout(new GridBagLayout());
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        addChart(chart);
+    }
+
+    private void addChart(Chart chart) {
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane burdownChartTabbedPane = new JTabbedPane();
-        BurndownChartInputPanel burndownChartInputPanel = new BurndownChartInputPanel(burdownChartTabbedPane);
-        burdownChartTabbedPane.add(Labels.getString("ReportListPanel.Chart.Create"), burndownChartInputPanel);
-        BurndownChartPanel burndownChartPanel = new BurndownChartPanel(new Date(), new Date());
-        burdownChartTabbedPane.add(Labels.getString("ReportListPanel.Chart.Chart"), new JScrollPane(burndownChartPanel));
-        add(burdownChartTabbedPane, gbc);
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        add(chart, gbc);
     }
 }

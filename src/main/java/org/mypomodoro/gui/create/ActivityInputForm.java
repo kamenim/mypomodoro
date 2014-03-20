@@ -107,7 +107,8 @@ public class ActivityInputForm extends JPanel {
         add(dateLabel, c);
         c.gridx = 1;
         c.gridy = gridy;
-        c.weighty = 0.5;
+        c.weighty = 0.5;        
+        datePicker.setTodayWithLowerBounds();
         add(datePicker, c);
         if (PreferencesPanel.preferences.getAgileMode()) {
             dateLabel.setVisible(false);
@@ -420,7 +421,8 @@ public class ActivityInputForm extends JPanel {
     }
 
     public void setDate(Date value) {
-        datePicker.setDateWithBounds(value);
+        datePicker.setDate(value);
+        datePicker.setTodayWithLowerBounds();
     }
 
     public void setActivityId(int value) {
