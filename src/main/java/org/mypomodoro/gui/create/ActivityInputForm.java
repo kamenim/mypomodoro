@@ -352,7 +352,6 @@ public class ActivityInputForm extends JPanel {
         place = place != null ? place.trim() : "";
         int estimatedPoms = (Integer) estimatedPomodoros.getSelectedItem();
         Date dateActivity = datePicker.getDate();
-        System.err.println("date today ? =" + DateUtil.isDateToday(dateActivity));
         Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
         if (PreferencesPanel.preferences.getAgileMode()) {

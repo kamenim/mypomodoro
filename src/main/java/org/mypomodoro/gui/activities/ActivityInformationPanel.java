@@ -37,7 +37,6 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
 
     protected final JTextArea informationArea = new JTextArea();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
-    protected StringBuilder info = new StringBuilder();
 
     public ActivityInformationPanel() {
         informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin
@@ -45,11 +44,17 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
 
     @Override
     public void selectInfo(Activity activity) {
+        textMap = new LinkedHashMap<String, String>();
         textMap.put("date", (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy")
+                + DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDate())
                 + (activity.isUnplanned() ? "]" : "") + "\n");
         textMap.put("date_completed", Labels.getString("Common.Date completed") + ": "
+                + (activity.isUnplanned() ? "U [" : "")
+                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
+                + (activity.isUnplanned() ? "]" : "") + "\n");
+        // Date reopened
+        textMap.put("date_reopened", Labels.getString("Common.Date reopened") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : "") + "\n");
@@ -71,13 +76,12 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
 
     @Override
     public void showInfo() {
-        info = new StringBuilder();
+        clearInfo();
         Iterator<String> keySetIterator = textMap.keySet().iterator();
         while (keySetIterator.hasNext()) {
             String key = keySetIterator.next();
-            info.append(textMap.get(key));
+            informationArea.append(textMap.get(key));
         }
-        informationArea.setText(info.toString());
         // disable auto scrolling
         informationArea.setCaretPosition(0);
     }

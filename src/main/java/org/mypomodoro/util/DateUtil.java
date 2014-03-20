@@ -52,6 +52,7 @@ public class DateUtil {
     // TODO check time zone issue with export dates
     public static String getFormatedDate(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
+        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }
@@ -63,6 +64,7 @@ public class DateUtil {
 
     public static String getFormatedTime(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
+        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }
@@ -80,6 +82,7 @@ public class DateUtil {
     public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
         String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern + " " + timePattern);
+        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.parse(formatedDateTime);
     }
@@ -173,5 +176,18 @@ public class DateUtil {
      */
     public static int convertToDay(Date date) {
         return new DateTime(date.getTime()).dayOfMonth().get();
+    }
+
+    /**
+     * Compares two dates
+     *
+     * @param date1
+     * @param date2
+     * @return true is dates are equal
+     */
+    public static boolean isSameDay(Date date1, Date date2) {
+        DateTime dateTime1 = new DateTime(date1);
+        DateTime dateTime2 = new DateTime(date2);
+        return dateTime1.withTimeAtStartOfDay().isEqual(dateTime2.withTimeAtStartOfDay());
     }
 }

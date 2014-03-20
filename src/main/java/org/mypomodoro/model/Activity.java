@@ -483,7 +483,7 @@ public class Activity {
     }
 
     public boolean alreadyExists() {
-        return ActivitiesDAO.getInstance().getActivityByNameAndDate(this) != null;
+        return ActivitiesDAO.getInstance().getActivityByName(this) != null;
     }
 
     public boolean isDateToday() {

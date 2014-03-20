@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -562,6 +561,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         ActivityList.getList().add(activity);
     }
 
+    // TODO listener fired twice when row selected
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),

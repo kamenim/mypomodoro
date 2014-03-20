@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 
 public class ActivitiesDAO {
@@ -202,14 +201,13 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public Activity getActivityByNameAndDate(Activity newActivity) {
+    public Activity getActivityByName(Activity newActivity) {
         Activity activity = null;
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false' "
-                    + "AND name = '" + newActivity.getName().replace("'", "''") + "' "
-                    + "AND date_added = " + newActivity.getDate().getTime() + ";");
+                    + "AND name = '" + newActivity.getName().replace("'", "''") + "';");
             try {
                 while (rs.next()) {
                     activity = new Activity(rs);
@@ -350,7 +348,7 @@ public class ActivitiesDAO {
     public void reopenAllReports() {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = 'false',"
-                + "date_completed = " + new Date(0).getTime()
+                + "date_completed = " + new Date().getTime()
                 + " WHERE priority = -1 AND is_complete = 'true';";
         try {
             database.lock();
