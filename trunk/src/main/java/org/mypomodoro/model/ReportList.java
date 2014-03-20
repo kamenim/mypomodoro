@@ -18,6 +18,7 @@ package org.mypomodoro.model;
 
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.util.DateUtil;
 
 /**
  * Report list
@@ -51,10 +52,7 @@ public final class ReportList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(-1);
         act.setIsCompleted(true);
-        // TODO review this condition
-        if (act.getDateCompleted().getTime() == 0) { // prevent resetting the date when importing reports
-            act.setDateCompleted(new Date());
-        }
+        act.setDateCompleted(new Date());
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {
@@ -75,12 +73,14 @@ public final class ReportList extends AbstractActivities {
 
     // move from Report list to Activity list
     public void reopen(Activity activity) {
+        activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)  
         ActivityList.getList().add(activity);
         remove(activity);
     }
 
     public void reopenAll() {
         for (Activity activity : activities) {
+            activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)            
             ActivityList.getList().add(activity);
         }
         ActivitiesDAO.getInstance().reopenAllReports();

@@ -19,6 +19,7 @@ package org.mypomodoro.gui.activities;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Date;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
@@ -29,6 +30,7 @@ import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -83,6 +85,9 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
+        if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+            textMap.remove("date_reopened");
+        }
         if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");

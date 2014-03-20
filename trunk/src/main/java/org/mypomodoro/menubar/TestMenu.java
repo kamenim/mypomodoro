@@ -93,15 +93,6 @@ public class TestMenu extends JMenu {
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4, 5};
                     java.util.Random rand = new java.util.Random();
                     int alSize = 10;
-
-                    Date date = new Date();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    cal.set(Calendar.MILLISECOND, 0);
-                    Date currentDateAtMidnight = cal.getTime();
                     for (int i = 0; i < alSize; i++) {
                         Activity a = new Activity(place[rand.nextInt(12)],
                                 authors[rand.nextInt(5)],
@@ -111,8 +102,7 @@ public class TestMenu extends JMenu {
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(23)],
                                 iteration[rand.nextInt(7)],
-                                currentDateAtMidnight);
-
+                                new Date(0));
                         a.databaseInsert();
                     }
                 }
