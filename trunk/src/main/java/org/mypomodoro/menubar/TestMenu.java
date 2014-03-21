@@ -18,11 +18,14 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
@@ -39,7 +42,19 @@ public class TestMenu extends JMenu {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
         add(new JSeparator());
-        add(new ResetDataItem(view));
+        add(new ResetDataItem(view));      
+        addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            }
+        });
     }
 
     // resets all the data files.

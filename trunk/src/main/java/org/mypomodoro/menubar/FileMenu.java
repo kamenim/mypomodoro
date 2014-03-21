@@ -18,13 +18,19 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.PreferencesPanel;
@@ -44,7 +50,19 @@ public class FileMenu extends JMenu {
         add(new ControlPanelItem());
         add(new CreateActivityItem());
         add(new JSeparator());
-        add(new ExitItem());
+        add(new ExitItem());      
+        addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            }
+        });
     }
 
     class ControlPanelItem extends JMenuItem {
