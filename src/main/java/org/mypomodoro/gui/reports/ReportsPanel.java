@@ -111,7 +111,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);                    
+                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
@@ -314,12 +314,42 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
                 + ReportList.getListSize() + ")";
         if (ReportList.getListSize() > 0) {
-            titleReportsList += " - " + Labels.getString("ReportListPanel.Accuracy") + ": " + getAccuracy() + "%";
-        }
-        if (PreferencesPanel.preferences.getAgileMode()
-                && ReportList.getListSize() > 0) {
-            DecimalFormat df = new DecimalFormat("0.#");
-            titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
+            titleReportsList += " - " + Labels.getString("Common.Estimated") + ": ";
+            titleReportsList += ReportList.getList().getNbRealPom();
+            titleReportsList += " / " + ReportList.getList().getNbEstimatedPom();
+            if (ReportList.getList().getNbOverestimatedPom() > 0) {
+                titleReportsList += " + " + ReportList.getList().getNbOverestimatedPom();
+            }
+            titleReportsList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + ReportList.getList().getAccuracy() + "%)";
+            if (PreferencesPanel.preferences.getAgileMode()) {
+                DecimalFormat df = new DecimalFormat("0.#");
+                titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
+            }
+            if (table.getSelectedRowCount() > 1) {
+                int[] rows = table.getSelectedRows();
+                int estimated = 0;
+                int overestimated = 0;
+                int real = 0;
+                float storypoints = 0;
+                for (int row : rows) {
+                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+                    Activity selectedActivity = getActivityById(id);
+                    estimated += selectedActivity.getEstimatedPoms();
+                    overestimated += selectedActivity.getOverestimatedPoms();
+                    real += selectedActivity.getActualPoms();
+                    storypoints += selectedActivity.getStoryPoints();
+                }
+                titleReportsList += " >>> ";
+                titleReportsList += Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
+                if (overestimated > 0) {
+                    titleReportsList += " + " + overestimated;
+                }
+                titleReportsList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%)";
+                if (PreferencesPanel.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }                
+            }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);
         titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
@@ -360,6 +390,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                                 controlPane.setEnabledAt(index, true);
                             }
                         }
+                        setPanelBorder();
                     }
                 });
     }
@@ -654,20 +685,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             renderer.setText(text);
             return renderer;
         }
-    }
-
-    private int getAccuracy() {
-        Iterator<Activity> act = ReportList.getList().iterator();
-        int estover = 0;
-        int real = 0;
-        Activity activity;
-        while (act.hasNext()) {
-            activity = act.next();
-            estover += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
-            real += activity.getActualPoms();
-        }
-        int accuracy = Math.round(((float) real / (float) estover) * 100);
-        return accuracy;
     }
 
     public void saveComment(String comment) {

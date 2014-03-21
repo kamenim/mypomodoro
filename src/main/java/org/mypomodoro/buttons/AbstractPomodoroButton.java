@@ -22,7 +22,7 @@ import javax.swing.JButton;
  * Template button
  *
  */
-public class AbstractPomodoroButton extends JButton { // TODO set minimum size/preferred size of all buttons
+public class AbstractPomodoroButton extends JButton {
 
     private static final long serialVersionUID = 20110814L;
 

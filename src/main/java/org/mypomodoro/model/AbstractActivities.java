@@ -110,6 +110,22 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         }
         return nbEstimatedPom;
     }
+    
+    public int getNbOverestimatedPom() {
+        int nbOvestimatedPom = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            nbOvestimatedPom += it.next().getOverestimatedPoms();
+        }
+        return nbOvestimatedPom;
+    }
+    
+    public int getNbRealPom() {
+        int nbRealPom = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            nbRealPom += it.next().getActualPoms();
+        }
+        return nbRealPom;
+    }
 
     public int getNbTotalEstimatedPom() {
         int nbEstimatedPom = 0;
