@@ -203,7 +203,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
-        String[] cloneColumnNames = columnNames.clone();
+        String[] cloneColumnNames = columnNames.clone();        
+        cloneColumnNames[ID_KEY - 5] = Labels.getString("ToDoListPanel.Unplanned");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
