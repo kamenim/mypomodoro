@@ -199,9 +199,9 @@ public class PreferencesInputForm extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
-                if (effectiveHoursBox.isSelected()) {
-                    effectiveHoursBox.setSelected(false);
-                }
+                plainHoursBox.setSelected(effectiveHoursBox.isSelected());                
+                effectiveHoursBox.setSelected(!plainHoursBox.isSelected()); 
+                
             }
         });
         effectiveHoursBox = new JCheckBox(
@@ -213,9 +213,8 @@ public class PreferencesInputForm extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
-                if (plainHoursBox.isSelected()) {
-                    plainHoursBox.setSelected(false);
-                }
+                effectiveHoursBox.setSelected(plainHoursBox.isSelected());
+                plainHoursBox.setSelected(!effectiveHoursBox.isSelected());                                    
             }
         });
 
