@@ -22,6 +22,8 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -46,7 +48,8 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        unplannedInputFormPanel.setEstimatedPomodoro(1);
+        unplannedInputFormPanel.setEstimatedPomodoro(1);        
+        setBorder(new TitledBorder(new EtchedBorder(), ""));
         addToDoIconPanel();
     }
 

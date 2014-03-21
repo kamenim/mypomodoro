@@ -18,6 +18,8 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import javax.swing.JOptionPane;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -42,7 +44,8 @@ public class EditPanel extends CreatePanel {
 
     public EditPanel(ActivitiesPanel activitiesPanel, ActivityInformation information) {
         this.activitiesPanel = activitiesPanel;
-        this.information = information;
+        this.information = information;        
+        setBorder(new TitledBorder(new EtchedBorder(), ""));
     }
 
     @Override

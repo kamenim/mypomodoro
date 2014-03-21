@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,7 +39,10 @@ class ActivitiesComboBoxPanel extends JPanel {
     // Generic constructor
     public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
         setLayout(new GridBagLayout());
-        comboBox = new JComboBox<E>(data);
+        comboBox = new JComboBox();
+        for (E d : data) { // jdk 7 : simply use comboBox = new JComboBox<E>(data);
+            comboBox.addItem(d);
+        }
         setOpaque(true);
         comboBox.setEditable(editable);
         if (data instanceof String[]) {
