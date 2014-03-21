@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -271,9 +272,9 @@ public class ExportInputForm extends JPanel {
         authorisationUrlTextField.setCaretPosition(0);
         // underline url
         Font font = authorisationUrlTextField.getFont();
-        Map attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        authorisationUrlTextField.setFont(font.deriveFont(attributes));
+        Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+        map.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        authorisationUrlTextField.setFont(font.deriveFont(map));
         authorisationUrlTextField.setForeground(Color.BLUE);
         authorisationUrlTextField.setMinimumSize(new Dimension(500, 50));
         authorisationUrlTextField.setPreferredSize(new Dimension(500, 50));

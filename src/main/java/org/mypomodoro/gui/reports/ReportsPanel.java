@@ -110,12 +110,14 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (row == mouseHoverRow && !isRowSelected(row)) {
+                if (isRowSelected(row)) {
+                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);                    
+                } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                     ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
                 } else {
-                    ((JComponent) c).setBorder(new MatteBorder(0, 0, 0, 0, ColorUtil.BLUE_ROW));
+                    ((JComponent) c).setBorder(null);
                 }
                 return c;
             }
