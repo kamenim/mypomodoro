@@ -51,7 +51,6 @@ import static org.mypomodoro.util.TimeConverter.convertToTime;
 public class ActivityInputForm extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
-    protected static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
     protected static final Dimension TEXT_AREA_DIMENSION = new Dimension(300, 50);
     protected static final Dimension TEXT_FIELD_DIMENSION = new Dimension(300, 25);
     protected static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
@@ -73,13 +72,13 @@ public class ActivityInputForm extends JPanel {
     }
 
     public ActivityInputForm(int gridy) {
-        setBorder(new TitledBorder(new EtchedBorder(), ""));
-        setMinimumSize(PANEL_DIMENSION);
-        setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
-
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
+                
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        setBorder(titledborder);
 
         addForm(gridy);
     }

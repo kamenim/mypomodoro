@@ -82,7 +82,8 @@ import static org.mypomodoro.util.TimeConverter.getLength;
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
+    private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
     // TODO remove column overestimated
@@ -332,7 +333,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new JScrollPane(table), gbc);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        add(scrollPane, gbc);
 
         // Add listener to record selected row id
         table.getSelectionModel().addListSelectionListener(
@@ -367,9 +371,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        // TODO problem with dimension of the panel in full screen mode
-        controlPane.setMinimumSize(PANE_DIMENSION);
-        controlPane.setPreferredSize(PANE_DIMENSION);
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         EditPanel editPanel = new EditPanel(this, detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);

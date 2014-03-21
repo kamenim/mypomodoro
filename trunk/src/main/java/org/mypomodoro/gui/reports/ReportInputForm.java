@@ -23,7 +23,8 @@ public class ReportInputForm extends ActivityInputForm {
 
     private static final long serialVersionUID = 20110814L;
 
-    public ReportInputForm() {
+    public ReportInputForm() {        
+        setBorder(null); // reset border set in ActivityInputForm
     }
 
     @Override
@@ -41,7 +42,6 @@ public class ReportInputForm extends ActivityInputForm {
     @Override
     public Activity getActivityFromFields() {
         Activity report = Activity.getActivity(activityId);
-
         String author = (String) authors.getSelectedItem();
         author = author != null ? author.trim() : "";
         report.setAuthor(author);
@@ -49,7 +49,6 @@ public class ReportInputForm extends ActivityInputForm {
         place = place != null ? place.trim() : "";
         report.setPlace(place);
         report.setDescription(descriptionField.getText().trim());
-
         return report;
     }
 }

@@ -23,7 +23,8 @@ public class EditInputForm extends ActivityInputForm {
 
     private static final long serialVersionUID = 20110814L;
 
-    public EditInputForm() {
+    public EditInputForm() {        
+        setBorder(null); // reset border set in ActivityInputForm
     }
 
     @Override
@@ -42,7 +43,6 @@ public class EditInputForm extends ActivityInputForm {
     @Override
     public Activity getActivityFromFields() {
         Activity activity = Activity.getActivity(activityId);
-
         activity.setDate(datePicker.getDate());
         String author = (String) authors.getSelectedItem();
         author = author != null ? author.trim() : "";
@@ -51,7 +51,6 @@ public class EditInputForm extends ActivityInputForm {
         place = place != null ? place.trim() : "";
         activity.setPlace(place);
         activity.setDescription(descriptionField.getText().trim());
-
         return activity;
     }
 }

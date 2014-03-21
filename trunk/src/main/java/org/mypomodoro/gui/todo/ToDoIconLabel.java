@@ -40,6 +40,7 @@ public class ToDoIconLabel {
     }
 
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color, boolean showName) {
+        iconLabel.setToolTipText(activity.getName());
         if (showName) {
             iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
         }
@@ -53,7 +54,7 @@ public class ToDoIconLabel {
 
         // Trim (add three points at the end of the row) when too many pomodoros
         boolean trimIconLabel = false;
-        int nbMaxPoms = 10;
+        int nbMaxPoms = 10; // max number of pomodoro icon to display 
         if (estimatedPoms + overestimatedPoms > nbMaxPoms) {
             if (estimatedPoms > nbMaxPoms) {
                 estimatedPoms = nbMaxPoms;
@@ -125,7 +126,7 @@ public class ToDoIconLabel {
         iconLabel.setHorizontalTextPosition(JLabel.LEFT);
     }
 
-    static public void clearIconLabel(JLabel iconLabel) {
+    static public void clearIconLabel(JLabel iconLabel) {        
         iconLabel.setText("");
         iconLabel.setIcon(null);
     }
