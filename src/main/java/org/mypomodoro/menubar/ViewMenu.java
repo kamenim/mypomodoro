@@ -18,11 +18,14 @@ package org.mypomodoro.menubar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.MenuSelectionManager;
 import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.MyIcon;
@@ -43,7 +46,19 @@ public class ViewMenu extends JMenu {
         add(new ReportListItem());
         if (PreferencesPanel.preferences.getAgileMode()) {
             add(new BurndownChartItem());
-        }
+        }      
+        addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            }
+        });
     }
 
     class ActivityListItem extends JMenuItem {
