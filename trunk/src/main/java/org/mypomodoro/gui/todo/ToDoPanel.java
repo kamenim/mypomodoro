@@ -116,7 +116,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);                    
+                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
@@ -322,9 +322,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     @Override
     public void setPanelBorder() {
         String titleActivitiesList = "";
-        if (ToDoList.getListSize() > 0) {
             titleActivitiesList += Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
-                    + " (" + ToDoList.getListSize() + ")";
+                    + " (" + ToDoList.getListSize() + ")";            
+        if (ToDoList.getListSize() > 0) {
+            titleActivitiesList += " - " + Labels.getString("Common.Estimated") + ": " + ToDoList.getList().getNbEstimatedPom();
+            if (ToDoList.getList().getNbOverestimatedPom() > 0) {
+                titleActivitiesList += " + " + ToDoList.getList().getNbOverestimatedPom();
+            }
             if (PreferencesPanel.preferences.getAgileMode()) {
                 DecimalFormat df = new DecimalFormat("0.#");
                 titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());

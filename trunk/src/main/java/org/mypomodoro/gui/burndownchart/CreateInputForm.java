@@ -220,8 +220,7 @@ public class CreateInputForm extends JPanel {
         //c.gridwidth = 2;        
         burnupChartCheckBox.setFocusPainted(false);
         ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, BorderFactory.createEtchedBorder());
-        burnupChartInputFormPanel.setBorder(border);
-        
+        burnupChartInputFormPanel.setBorder(border);        
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
         addBurndupChartFields(cChart);
