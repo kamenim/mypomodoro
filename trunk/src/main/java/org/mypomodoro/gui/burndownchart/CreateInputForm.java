@@ -25,16 +25,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.Labels;
 
@@ -61,20 +61,26 @@ public class CreateInputForm extends JPanel {
     //private final JPanel typesInputFormPanel = new JPanel();
     //protected final List<TypeComboBox> types = new ArrayList<TypeComboBox>();
     //protected final List<JPanel> typePanelList = new ArrayList<JPanel>();
-    // Chart form
-    private final JPanel chartInputFormPanel = new JPanel();
+    // Burndown Chart form
+    private final JPanel burndownChartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
     private final String defaultPrimaryYAxisName = Labels.getString("BurndownChartPanel.Remaining working hours");
     private JTextField primaryYAxisLegend = new JTextField();
     private final String defaultPrimaryYAxisLegend = Labels.getString("BurndownChartPanel.Remaining");
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
+    final JCheckBox burndownChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burndown Chart"), true);
+    // Burn-up Chart form
+    private final JPanel burnupChartInputFormPanel = new JPanel();
     private JTextField secondaryYAxisName = new JTextField();
     private final String defaultSecondaryYAxisName = Labels.getString("BurndownChartPanel.Completed tasks %");
     private JTextField secondaryYAxisLegend = new JTextField();
     private final String defaultSecondaryYAxisLegend = Labels.getString("BurndownChartPanel.Completed");
     private JTextField secondaryYAxisColor = new JTextField();
     private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
+    final JCheckBox burnupChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burn-up Chart"), true);
+    // Target Chart form
+    private final JPanel targetInputFormPanel = new JPanel();
     private JTextField targetLegend = new JTextField();
     private final String defaultTargetLegend = Labels.getString("BurndownChartPanel.Target");
     private JTextField targetColor = new JTextField();
@@ -105,7 +111,9 @@ public class CreateInputForm extends JPanel {
         addDatesInputForm();
         addExclusionInputForm();
         //addTypeInputFormPanel();
-        addChartInputFormPanel();
+        addBurndownChartInputFormPanel();
+        addBurnupChartInputFormPanel();
+        addTargetInputFormPanel();
         addImageInputFormPanel();
     }
 
@@ -113,19 +121,19 @@ public class CreateInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
-        c.weighty = 0.5;
-        FormLabel dateslabel = new FormLabel(Labels.getString("BurndownChartPanel.Dates") + "*: ");
-        dateslabel.setMinimumSize(LABEL_DIMENSION);
-        dateslabel.setPreferredSize(LABEL_DIMENSION);
-        add(dateslabel, c);
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
+        c.weighty = 0.5;        
         JPanel dates = new JPanel();
         dates.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        FormLabel dateslabel = new FormLabel(Labels.getString("BurndownChartPanel.Dates") + "*: ");
+        dateslabel.setMinimumSize(LABEL_DIMENSION);
+        dateslabel.setPreferredSize(LABEL_DIMENSION);
         gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        dates.add(dateslabel, gbc);
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
@@ -137,7 +145,7 @@ public class CreateInputForm extends JPanel {
             }
         });
         dates.add(startDatePicker, gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
@@ -157,28 +165,28 @@ public class CreateInputForm extends JPanel {
         c.gridy = 1;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        FormLabel exclusionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Exclusion") + "*: ");
-        exclusionlabel.setMinimumSize(LABEL_DIMENSION);
-        exclusionlabel.setPreferredSize(LABEL_DIMENSION);
-        add(exclusionlabel, c);
-        c.gridx = 1;
-        c.gridy = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
         JPanel exclusion = new JPanel();
         exclusion.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        FormLabel exclusionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Exclusion") + "*: ");
+        exclusionlabel.setMinimumSize(LABEL_DIMENSION);
+        exclusionlabel.setPreferredSize(LABEL_DIMENSION);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        exclusion.add(excludeSaturdays, gbc);
+        exclusion.add(exclusionlabel, gbc);        
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        exclusion.add(excludeSundays, gbc);
+        exclusion.add(excludeSaturdays, gbc);
         gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        exclusion.add(excludeSundays, gbc);
+        gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
@@ -189,29 +197,62 @@ public class CreateInputForm extends JPanel {
         add(exclusion, c);
     }
 
-    private void addChartInputFormPanel() {
+    private void addBurndownChartInputFormPanel() {
         c.gridx = 0;
         c.gridy = 2;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        c.gridwidth = 2;
-        TitledBorder border = new TitledBorder(new EtchedBorder(), Labels.getString("BurndownChartPanel.Chart"));
-        border.setTitleFont(new Font(chartInputFormPanel.getFont().getName(), Font.BOLD, chartInputFormPanel.getFont().getSize()));
-        chartInputFormPanel.setBorder(border);
-        chartInputFormPanel.setLayout(new GridBagLayout());
+        //c.gridwidth = 2;        
+        burndownChartCheckBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, BorderFactory.createEtchedBorder());        
+        burndownChartInputFormPanel.setBorder(border);
+        burndownChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
-        addChartFields(cChart);
-        add(chartInputFormPanel, c);
+        addBurndownChartFields(cChart);
+        add(burndownChartInputFormPanel, c);
     }
 
-    private void addImageInputFormPanel() {
+    private void addBurnupChartInputFormPanel() {
         c.gridx = 0;
         c.gridy = 3;
         c.weightx = 1.0;
         c.weighty = 0.5;
-        c.gridwidth = 2;
-        TitledBorder border = new TitledBorder(new EtchedBorder(), Labels.getString("BurndownChartPanel.Image"));
-        border.setTitleFont(new Font(imageInputFormPanel.getFont().getName(), Font.BOLD, imageInputFormPanel.getFont().getSize()));
+        //c.gridwidth = 2;        
+        burnupChartCheckBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, BorderFactory.createEtchedBorder());
+        burnupChartInputFormPanel.setBorder(border);
+        
+        burnupChartInputFormPanel.setLayout(new GridBagLayout());
+        GridBagConstraints cChart = new GridBagConstraints();
+        addBurndupChartFields(cChart);
+        add(burnupChartInputFormPanel, c);
+    }
+
+    private void addTargetInputFormPanel() {
+        c.gridx = 0;
+        c.gridy = 4;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        //c.gridwidth = 2;
+        final JCheckBox checkBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
+        checkBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(checkBox, targetInputFormPanel, BorderFactory.createEtchedBorder());
+        targetInputFormPanel.setBorder(border);
+        targetInputFormPanel.setLayout(new GridBagLayout());
+        GridBagConstraints cChart = new GridBagConstraints();
+        addTargetFields(cChart);
+        add(targetInputFormPanel, c);
+    }
+
+    private void addImageInputFormPanel() {
+        c.gridx = 0;
+        c.gridy = 5;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        //c.gridwidth = 2;
+        final JCheckBox checkBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);
+        checkBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(checkBox, imageInputFormPanel, BorderFactory.createEtchedBorder());
         imageInputFormPanel.setBorder(border);
         imageInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cImage = new GridBagConstraints();
@@ -219,7 +260,7 @@ public class CreateInputForm extends JPanel {
         add(imageInputFormPanel, c);
     }
 
-    private void addChartFields(GridBagConstraints cChart) {
+    private void addBurndownChartFields(GridBagConstraints cChart) {
         // Primary Y axis
         // Name
         cChart.gridx = 0;
@@ -229,7 +270,7 @@ public class CreateInputForm extends JPanel {
                 Labels.getString("BurndownChartPanel.Hours") + ": ");
         primaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         primaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
-        chartInputFormPanel.add(primaryYAxisLabel, cChart);
+        burndownChartInputFormPanel.add(primaryYAxisLabel, cChart);
         cChart.gridx = 1;
         cChart.gridy = 0;
         //cChart.weighty = 0.5;
@@ -237,12 +278,12 @@ public class CreateInputForm extends JPanel {
         primaryYAxisName.setText(defaultPrimaryYAxisName);
         primaryYAxisName.setMinimumSize(COMBO_BOX_DIMENSION);
         primaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
-        chartInputFormPanel.add(primaryYAxisName, cChart);
+        burndownChartInputFormPanel.add(primaryYAxisName, cChart);
         // Legend
         cChart.gridx = 0;
         cChart.gridy = 1;
         //cChart.weighty = 0.5;
-        chartInputFormPanel.add(new FormLabel(""), cChart);
+        burndownChartInputFormPanel.add(new FormLabel(""), cChart);
         cChart.gridx = 1;
         cChart.gridy = 1;
         //cChart.weighty = 0.5;
@@ -250,12 +291,12 @@ public class CreateInputForm extends JPanel {
         primaryYAxisLegend.setText(defaultPrimaryYAxisLegend);
         primaryYAxisLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         primaryYAxisLegend.setPreferredSize(COMBO_BOX_DIMENSION);
-        chartInputFormPanel.add(primaryYAxisLegend, cChart);
+        burndownChartInputFormPanel.add(primaryYAxisLegend, cChart);
         // Color
         cChart.gridx = 0;
         cChart.gridy = 2;
         //cChart.weighty = 0.5;
-        chartInputFormPanel.add(new FormLabel(""), cChart);
+        burndownChartInputFormPanel.add(new FormLabel(""), cChart);
         cChart.gridx = 1;
         cChart.gridy = 2;
         //cChart.weighty = 0.5;
@@ -278,46 +319,48 @@ public class CreateInputForm extends JPanel {
                 }
             }
         });
-        chartInputFormPanel.add(primaryYAxisColor, cChart);
+        burndownChartInputFormPanel.add(primaryYAxisColor, cChart);
+    }
 
+    private void addBurndupChartFields(GridBagConstraints cChart) {
         // Secondary Y axis
         // Name
         cChart.gridx = 0;
-        cChart.gridy = 3;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         FormLabel secondaryYAxisLabel = new FormLabel(
                 Labels.getString("BurndownChartPanel.Tasks") + ": ");
         secondaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         secondaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
-        chartInputFormPanel.add(secondaryYAxisLabel, cChart);
+        burnupChartInputFormPanel.add(secondaryYAxisLabel, cChart);
         cChart.gridx = 1;
-        cChart.gridy = 3;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         secondaryYAxisName = new JTextField();
         secondaryYAxisName.setText(defaultSecondaryYAxisName);
         secondaryYAxisName.setMinimumSize(COMBO_BOX_DIMENSION);
         secondaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
-        chartInputFormPanel.add(secondaryYAxisName, cChart);
+        burnupChartInputFormPanel.add(secondaryYAxisName, cChart);
         // Legend
         cChart.gridx = 0;
-        cChart.gridy = 4;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
-        chartInputFormPanel.add(new FormLabel(""), cChart);
+        burnupChartInputFormPanel.add(new FormLabel(""), cChart);
         cChart.gridx = 1;
-        cChart.gridy = 4;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
         secondaryYAxisLegend = new JTextField();
         secondaryYAxisLegend.setText(defaultSecondaryYAxisLegend);
         secondaryYAxisLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         secondaryYAxisLegend.setPreferredSize(COMBO_BOX_DIMENSION);
-        chartInputFormPanel.add(secondaryYAxisLegend, cChart);
+        burnupChartInputFormPanel.add(secondaryYAxisLegend, cChart);
         // Color
         cChart.gridx = 0;
-        cChart.gridy = 5;
+        cChart.gridy = 2;
         //cChart.weighty = 0.5;
-        chartInputFormPanel.add(new FormLabel(""), cChart);
+        burnupChartInputFormPanel.add(new FormLabel(""), cChart);
         cChart.gridx = 1;
-        cChart.gridy = 5;
+        cChart.gridy = 2;
         //cChart.weighty = 0.5;
         cChart.anchor = GridBagConstraints.WEST;
         secondaryYAxisColor = new JTextField();
@@ -338,33 +381,35 @@ public class CreateInputForm extends JPanel {
                 }
             }
         });
-        chartInputFormPanel.add(secondaryYAxisColor, cChart);
+        burnupChartInputFormPanel.add(secondaryYAxisColor, cChart);
+    }
 
+    private void addTargetFields(GridBagConstraints cChart) {
         // Target
         // Legend
         cChart.gridx = 0;
-        cChart.gridy = 6;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         FormLabel targetLabel = new FormLabel(
                 Labels.getString("BurndownChartPanel.Target") + ": ");
         targetLabel.setMinimumSize(LABEL_DIMENSION);
         targetLabel.setPreferredSize(LABEL_DIMENSION);
-        chartInputFormPanel.add(targetLabel, cChart);
+        targetInputFormPanel.add(targetLabel, cChart);
         cChart.gridx = 1;
-        cChart.gridy = 6;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         targetLegend = new JTextField();
         targetLegend.setText(defaultTargetLegend);
         targetLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         targetLegend.setPreferredSize(COMBO_BOX_DIMENSION);
-        chartInputFormPanel.add(targetLegend, cChart);
+        targetInputFormPanel.add(targetLegend, cChart);
         // Color
         cChart.gridx = 0;
-        cChart.gridy = 7;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
-        chartInputFormPanel.add(new FormLabel(""), cChart);
+        targetInputFormPanel.add(new FormLabel(""), cChart);
         cChart.gridx = 1;
-        cChart.gridy = 7;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
         cChart.anchor = GridBagConstraints.WEST;
         targetColor = new JTextField();
@@ -385,7 +430,7 @@ public class CreateInputForm extends JPanel {
                 }
             }
         });
-        chartInputFormPanel.add(targetColor, cChart);
+        targetInputFormPanel.add(targetColor, cChart);
     }
 
     private void addImageFields(GridBagConstraints cImage) {
