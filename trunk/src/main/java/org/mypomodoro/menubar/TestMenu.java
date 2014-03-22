@@ -42,7 +42,7 @@ public class TestMenu extends JMenu {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
         add(new JSeparator());
-        add(new ResetDataItem(view));      
+        add(new ResetDataItem(view));
         addFocusListener(new FocusListener() {
 
             @Override

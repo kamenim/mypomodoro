@@ -44,7 +44,7 @@ public class EditPanel extends CreatePanel {
     private final ActivityInformation information;
 
     public EditPanel(ActivityInformation information) {
-        this.information = information;        
+        this.information = information;
         setBorder(new TitledBorder(new EtchedBorder(), ""));
     }
 

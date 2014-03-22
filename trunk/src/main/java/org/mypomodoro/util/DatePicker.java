@@ -51,13 +51,13 @@ public final class DatePicker extends JXDatePicker {
         calendar.setTime(date);
         getMonthView().setLowerBound(calendar.getTime());
     }
-    
-     public void setDateWithUpperBounds(Date date) {
+
+    public void setDateWithUpperBounds(Date date) {
         Calendar calendar = getMonthView().getCalendar();
         calendar.setTime(date);
         getMonthView().setUpperBound(calendar.getTime());
     }
-    
+
     public void setTodayWithLowerBounds() {
         setDateWithLowerBounds(new Date());
     }

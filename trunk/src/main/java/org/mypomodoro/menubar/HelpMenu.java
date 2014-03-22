@@ -46,7 +46,7 @@ public class HelpMenu extends JMenu {
         add(new ReportIssues());
         add(new CheckUpdates());
         add(new JSeparator());
-        add(new HelpAbout());      
+        add(new HelpAbout());
         addFocusListener(new FocusListener() {
 
             @Override

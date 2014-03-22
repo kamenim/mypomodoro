@@ -75,7 +75,7 @@ public class ActivityInputForm extends JPanel {
         setLayout(new GridBagLayout());
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
-                
+
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
         titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
@@ -106,7 +106,7 @@ public class ActivityInputForm extends JPanel {
         add(dateLabel, c);
         c.gridx = 1;
         c.gridy = gridy;
-        c.weighty = 0.5;        
+        c.weighty = 0.5;
         datePicker.setTodayWithLowerBounds();
         add(datePicker, c);
         if (PreferencesPanel.preferences.getAgileMode()) {

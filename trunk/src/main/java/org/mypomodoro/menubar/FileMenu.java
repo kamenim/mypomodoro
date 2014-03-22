@@ -50,7 +50,7 @@ public class FileMenu extends JMenu {
         add(new ControlPanelItem());
         add(new CreateActivityItem());
         add(new JSeparator());
-        add(new ExitItem());      
+        add(new ExitItem());
         addFocusListener(new FocusListener() {
 
             @Override

@@ -31,7 +31,7 @@ import org.mypomodoro.util.Labels;
 public class TabbedPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
-        
+
     private final Chart chart = new Chart(new Date(), new Date());
 
     public TabbedPanel() {

@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
@@ -64,7 +65,7 @@ public class ToDoTransferHandler extends TransferHandler {
                         // sort programatically the priority column
                         panel.getTable().setAutoCreateRowSorter(true);
                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getTable().getRowSorter());
-                        ArrayList list = new ArrayList();
+                        ArrayList<SortKey> list = new ArrayList<SortKey>();
                         list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
                         sorter.setSortKeys(list);
                         sorter.sort(); // sort the view
@@ -115,8 +116,7 @@ public class ToDoTransferHandler extends TransferHandler {
 
     private boolean isPriorityColumnSorted() {
         boolean sorted = true;
-        for (int i = 0; i < panel.getTable().getRowCount() - 1; i++) {
-            System.err.println(i);
+        for (int i = 0; i < panel.getTable().getRowCount() - 1; i++) {            
             // Look for the value of the priority in the View while column priority might have been moved around                    
             if ((Integer) panel.getTable().getValueAt(i, panel.getTable().convertColumnIndexToView(0)) != (Integer) panel.getTable().getValueAt(i + 1, panel.getTable().convertColumnIndexToView(0)) - 1) {
                 sorted = false;

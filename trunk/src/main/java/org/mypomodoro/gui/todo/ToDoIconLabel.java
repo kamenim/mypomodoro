@@ -126,7 +126,7 @@ public class ToDoIconLabel {
         iconLabel.setHorizontalTextPosition(JLabel.LEFT);
     }
 
-    static public void clearIconLabel(JLabel iconLabel) {        
+    static public void clearIconLabel(JLabel iconLabel) {
         iconLabel.setText("");
         iconLabel.setIcon(null);
     }
