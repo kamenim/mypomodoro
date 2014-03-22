@@ -216,7 +216,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
-        String[] cloneColumnNames = columnNames.clone();        
+        String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 11] = Labels.getString("ToDoListPanel.Unplanned");
         cloneColumnNames[ID_KEY - 10] = Labels.getString("Common.Date completed");
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
@@ -349,7 +349,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
-                }                
+                }
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);

@@ -53,7 +53,7 @@ public class CustomTableHeader extends JTableHeader {
             return super.getToolTipText(e);
         } else {
             return toolTipsText[modelColumnIndex];
-        }       
+        }
     }
 
     public void setToolTipsText(String[] myToolTipsText) {

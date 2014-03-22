@@ -48,7 +48,7 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        unplannedInputFormPanel.setEstimatedPomodoro(1);        
+        unplannedInputFormPanel.setEstimatedPomodoro(1);
         setBorder(new TitledBorder(new EtchedBorder(), ""));
         addToDoIconPanel();
     }

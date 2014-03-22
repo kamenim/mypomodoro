@@ -44,7 +44,7 @@ public class EditPanel extends CreatePanel {
 
     public EditPanel(ActivitiesPanel activitiesPanel, ActivityInformation information) {
         this.activitiesPanel = activitiesPanel;
-        this.information = information;        
+        this.information = information;
         setBorder(new TitledBorder(new EtchedBorder(), ""));
     }
 

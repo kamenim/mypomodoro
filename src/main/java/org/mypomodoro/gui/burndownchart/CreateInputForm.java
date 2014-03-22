@@ -121,7 +121,7 @@ public class CreateInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
-        c.weighty = 0.5;        
+        c.weighty = 0.5;
         JPanel dates = new JPanel();
         dates.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -175,7 +175,7 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        exclusion.add(exclusionlabel, gbc);        
+        exclusion.add(exclusionlabel, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
@@ -204,7 +204,7 @@ public class CreateInputForm extends JPanel {
         c.weighty = 0.5;
         //c.gridwidth = 2;        
         burndownChartCheckBox.setFocusPainted(false);
-        ComponentTitledBorder border = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, BorderFactory.createEtchedBorder());        
+        ComponentTitledBorder border = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, BorderFactory.createEtchedBorder());
         burndownChartInputFormPanel.setBorder(border);
         burndownChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
@@ -220,7 +220,7 @@ public class CreateInputForm extends JPanel {
         //c.gridwidth = 2;        
         burnupChartCheckBox.setFocusPainted(false);
         ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, BorderFactory.createEtchedBorder());
-        burnupChartInputFormPanel.setBorder(border);        
+        burnupChartInputFormPanel.setBorder(border);
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
         addBurndupChartFields(cChart);

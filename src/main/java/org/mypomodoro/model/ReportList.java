@@ -87,7 +87,7 @@ public final class ReportList extends AbstractActivities {
         ActivitiesDAO.getInstance().reopenAllReports();
         removeAll();
     }
-    
+
     public int getAccuracy() {
         int estover = 0;
         int real = 0;
