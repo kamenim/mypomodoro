@@ -95,7 +95,6 @@ public class Restart {
                     @Override
                     public void run() {
                         try {
-                            //System.err.println(cmd.toString());
                             Runtime.getRuntime().exec(cmd.toString());
                         } catch (IOException e) {
                         }
