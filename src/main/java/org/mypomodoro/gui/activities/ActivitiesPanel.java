@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -252,6 +253,34 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 } catch (IndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 }
+            }
+        });
+        // This is to address the case/event when the mouse exit the table
+        table.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mouseHoverRow = -1;
             }
         });
         // diactivate/gray out all tabs (except import)

@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -111,7 +112,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);                    
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
@@ -255,6 +256,36 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         });
+        // This is to address the case/event when the mouse exit the table
+        table.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mouseHoverRow = -1;
+            }
+        });
+        
+        
         // diactivate/gray out all tabs (except import)
         if (ReportList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {

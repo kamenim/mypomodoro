@@ -37,10 +37,10 @@ import javax.swing.border.EtchedBorder;
 public class CreateInputPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private CreateInputForm burndownChartInputForm;
+    private CreateInputForm createInputForm;
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JTabbedPane burdownChartPane;
-    private final Chart chart;
+    private Chart chart;
 
     public CreateInputPanel(JTabbedPane burdownChartPane, Chart chart) {
         this.burdownChartPane = burdownChartPane;
@@ -60,8 +60,8 @@ public class CreateInputPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        burndownChartInputForm = new CreateInputForm();
-        add(new JScrollPane(burndownChartInputForm), gbc);
+        createInputForm = new CreateInputForm();
+        add(new JScrollPane(createInputForm), gbc);
     }
 
     private void addCreateButton() {
@@ -75,15 +75,14 @@ public class CreateInputPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Create chart
-
+                // The image is created only if the name of the image is set
+                if (createInputForm.getImageName().length() != 0) {                    
+                    //chart = new Chart(createInputForm.getStartDate(), createInputForm.getEndDate());
+                    chart.make(createInputForm.getStartDate(), createInputForm.getEndDate());
+                    chart.saveImageChart(createInputForm.getImageName() + ".png");                    
+                }
                 // Switch to burndown chart pane
                 burdownChartPane.setSelectedIndex(1);
-
-                // The image is created only if the name of the image is set
-                if (burndownChartInputForm.getImageName().length() != 0) {
-                    //burndownChart.saveImageChart();
-                }
             }
         });
         add(createButton, gbc);

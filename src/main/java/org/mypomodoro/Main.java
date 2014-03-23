@@ -80,26 +80,6 @@ public class Main {
         });
     }
 
-    public static void updateActivityListView() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                activitiesPanel.refresh();
-            }
-        });
-    }
-
-    public static void updateActivityList() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                ActivityList.getList().refresh();
-            }
-        });
-    }
-
     /**
      * @param args the command line arguments
      */

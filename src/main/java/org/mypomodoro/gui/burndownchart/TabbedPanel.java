@@ -32,22 +32,23 @@ public class TabbedPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    private final Chart chart = new Chart(new Date(), new Date());
+    private final Chart chart = new Chart();
 
     public TabbedPanel() {
         setLayout(new GridBagLayout());
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        JTabbedPane burdownChartTabbedPane = new JTabbedPane();
-        CreateInputPanel createInputPanel = new CreateInputPanel(burdownChartTabbedPane, chart);
-        burdownChartTabbedPane.add(Labels.getString("BurndownChartPanel.Create"), createInputPanel);
+        JTabbedPane chartTabbedPane = new JTabbedPane();
+        CreateInputPanel createInputPanel = new CreateInputPanel(chartTabbedPane, chart);
+        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Create"), createInputPanel);
+        JPanel j = new JPanel();
+        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Check"), j);
         ChartPanel chartPanel = new ChartPanel(chart);
-        burdownChartTabbedPane.add(Labels.getString("BurndownChartPanel.Chart"), new JScrollPane(chartPanel));
-        add(burdownChartTabbedPane, gbc);
+        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Chart"), new JScrollPane(chartPanel));
+        add(chartTabbedPane, gbc);
     }
 }
