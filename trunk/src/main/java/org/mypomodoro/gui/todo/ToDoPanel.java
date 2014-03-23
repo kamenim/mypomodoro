@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -241,8 +242,35 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
+        table.addMouseMotionListener(new CustomInputAdapter());        
+        // This is to address the case/event when the mouse exit the table
+        table.addMouseListener(new MouseListener() {
 
-        table.addMouseMotionListener(new CustomInputAdapter());
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // do nothing
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mouseHoverRow = -1;
+            }
+        });
 
         // diactivate/gray out all tabs (except import)
         if (ToDoList.getListSize()

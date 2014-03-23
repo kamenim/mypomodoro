@@ -60,22 +60,40 @@ import org.mypomodoro.util.Labels;
 public class Chart extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private final JFreeChart burndownChart;
+    private JFreeChart burndownChart;
     private ArrayList<Activity> activities = new ArrayList<Activity>();
     private ArrayList<Integer> XAxisValues = new ArrayList<Integer>();
     private float totalStoryPoints = 0;
+    private ChartPanel chartPanel;
 
-    public Chart(Date dateStart, Date dateEnd) {
+    public Chart() {
+    }
+
+    /*public Chart(Date dateStart, Date dateEnd) {
+     // Retrieve ToDos and Reports between dateStart and dateEnd
+     activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
+     XAxisValues = getXAxisValues(dateStart, dateEnd);
+     for (Activity activity : activities) {
+     totalStoryPoints += activity.getStoryPoints();
+     }
+     System.err.println("totalStoryPoints = " + totalStoryPoints);
+     CategoryDataset dataset = createTargetDataset();
+     burndownChart = createChart(dataset);
+     chartPanel = new ChartPanel(burndownChart);        
+     }*/
+    public void make(Date dateStart, Date dateEnd) {
+        removeAll();
         // Retrieve ToDos and Reports between dateStart and dateEnd
         activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
         XAxisValues = getXAxisValues(dateStart, dateEnd);
+        totalStoryPoints = 0; //reset
         for (Activity activity : activities) {
             totalStoryPoints += activity.getStoryPoints();
         }
         System.err.println("totalStoryPoints = " + totalStoryPoints);
         CategoryDataset dataset = createTargetDataset();
         burndownChart = createChart(dataset);
-        ChartPanel chartPanel = new ChartPanel(burndownChart);
+        chartPanel = new ChartPanel(burndownChart);
         add(chartPanel);
     }
 
@@ -122,14 +140,15 @@ public class Chart extends JPanel {
          dataset.addValue(93, label, XAxisValues[12]);
          dataset.addValue(61, label, XAxisValues[13]);
          dataset.addValue(60, label, XAxisValues[14]);*/
+
+        float storyPoints = totalStoryPoints;
         for (Integer day : XAxisValues) {
-            float storyPoints = totalStoryPoints;
+            dataset.addValue(storyPoints, label, day);
             for (Activity activity : activities) {
                 if (DateUtil.convertToDay(activity.getDateCompleted()) == day) {
                     storyPoints -= activity.getStoryPoints();
                 }
             }
-            dataset.addValue(storyPoints, label, day);
         }
         return dataset;
     }
@@ -190,9 +209,20 @@ public class Chart extends JPanel {
                 new JLabel().getFont().getSize()));
         rangeAxis.setAutoRangeIncludesZero(true);
         rangeAxis.setAxisLineVisible(false);
-        rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 10); // make the axis slightly higher (1/10th higher) than the higher value
+        rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
         TickUnits customUnits = new TickUnits();
-        customUnits.add(new NumberTickUnit(5));
+        // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
+        int tick = 10;
+        int unit = 1;
+        while (totalStoryPoints > tick) {
+            if (totalStoryPoints > tick * 5) {
+                unit = unit * 10;
+            } else {
+                unit = unit * 5;
+            }
+            tick = tick * 10;
+        }
+        customUnits.add(new NumberTickUnit(unit));
         rangeAxis.setStandardTickUnits(customUnits);
         rangeAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize() + 1));
@@ -253,8 +283,7 @@ public class Chart extends JPanel {
         return chart;
     }
 
-    public void saveImageChart() {
-        String fileName = "mypomodoro.png";
+    public void saveImageChart(String fileName) {
         int imageWidth = 800;
         int imageHeight = 600;
         try {

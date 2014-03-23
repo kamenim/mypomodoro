@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -89,7 +90,7 @@ public class CreateInputForm extends JPanel {
     private final JPanel imageInputFormPanel = new JPanel();
     private final JPanel imageSizePanel = new JPanel();
     private JTextField imageName = new JTextField();
-    private final String defaultImageName = "";
+    private final String defaultImageName = "myAgilePomodoro";
     private JComboBox imageFormatComboBox = new JComboBox();
     private final ImageFormat PNGFormat = new ImageFormat("PNG",
             ImageFormat.PNGExtention);
@@ -156,6 +157,7 @@ public class CreateInputForm extends JPanel {
                 startDatePicker.setDateWithUpperBounds(endDatePicker.getDate());
             }
         });
+        endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
         dates.add(endDatePicker, gbc);
         add(dates, c);
     }
@@ -553,6 +555,14 @@ public class CreateInputForm extends JPanel {
         public String toString() {
             return formatName;
         }
+    }
+    
+    public Date getStartDate() {
+        return startDatePicker.getDate();
+    }
+    
+    public Date getEndDate() {
+        return endDatePicker.getDate();
     }
 
     /*private void addTypeInputFormPanel() {

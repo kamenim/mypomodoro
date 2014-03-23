@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.event.MouseListener;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;

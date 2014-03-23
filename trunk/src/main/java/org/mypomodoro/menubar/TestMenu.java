@@ -20,13 +20,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
+import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -85,39 +85,48 @@ public class TestMenu extends JMenu {
 
                 @Override
                 public void run() {
-                    String[] authors = {"Brian", "Paul", "Bobby", "Jordan",
-                        "Rick"};
-                    String[] place = {"GGC", "School", "Work", "Home",
-                        "Atlanta", "Chicago", "Seattle", "Boston",
-                        "Baltimore", "Philadelphia", "Los Angeles",
-                        "New York"};
-                    String[] name = {"Write SD Project Essay",
-                        "Finish Packaging Application",
-                        "Finish Application", "Complete Testing"};
-                    String[] description = {
-                        "Address software project development,"
-                        + " expected issues, potential alternatives, risk management "
-                        + "and implementation and testing strategies.",
-                        "Combine all jar files into a single executable jar",
-                        "Post all source and executables on Google Project Hosting",
-                        "Resolve most of the known bugs.",
-                        "Preform manual testing of GUI"};
-                    String[] type = {"Homework", "Work", "Testing",
-                        "Programming", "Distribution"};
-                    Float[] storypoint = new Float[]{0f, 0f, 0f, 0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f, 40f, 100f};
-                    Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4, 5};
+                    Float[] storypoint = new Float[]{0f, 0f, 0f, 0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
+                    Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
                     java.util.Random rand = new java.util.Random();
-                    int alSize = 10;
+                    int alSize = 300;
+                    int increment = 1;
                     for (int i = 0; i < alSize; i++) {
-                        Activity a = new Activity(place[rand.nextInt(12)],
-                                authors[rand.nextInt(5)],
-                                name[rand.nextInt(4)],
-                                description[rand.nextInt(5)],
-                                type[rand.nextInt(5)],
+                        int minusDay = rand.nextInt(20);
+                        Activity a = new Activity(
+                                "Place" + " " + rand.nextInt(10)+1,
+                                "Author" + " " + rand.nextInt(10)+1,
+                                "Task" + " " + (i + 1),
+                                "",
+                                "Type" + " " + rand.nextInt(10)+1,
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
-                                storypoint[rand.nextInt(23)],
-                                iteration[rand.nextInt(7)],
-                                new Date());
+                                storypoint[rand.nextInt(storypoint.length)],
+                                iteration[rand.nextInt(iteration.length)],
+                                (new DateTime(new Date()).minusDays(minusDay)).toDate());
+                        
+                        a.setIsCompleted(rand.nextBoolean());
+                        a.setOverestimatedPoms(rand.nextInt(3));
+                        a.setActualPoms(rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms()));
+                        if (a.getIteration() == -1) {
+                            a.setStoryPoints(0);
+                        }
+                        if (a.isCompleted()) { // Tasks for the Report list
+                            a.setDateCompleted((new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay+1))).toDate());
+                        } else { // Task for the Activity and ToDo list
+                            if (rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
+                                if (a.getIteration() >= 0) {
+                                    a.setIteration(iteration[iteration.length-1]); // use highest iteration number for tasks in the Iteration backlog
+                                }
+                                a.setPriority(increment);
+                                increment++;
+                            } else { // Tasks for the Activity list 
+                                if (a.getIteration() >= 0) {
+                                    a.setIteration(iteration[iteration.length-1]+1); // use unstarted iteration number
+                                }
+                                a.setOverestimatedPoms(0);
+                                a.setActualPoms(0);
+                                a.setDate(new Date());
+                            }
+                        }
                         a.databaseInsert();
                     }
                 }
@@ -125,14 +134,14 @@ public class TestMenu extends JMenu {
         }
 
         public TestDataItem(final MyPomodoroView view) {
-            super(Labels.getString("DataMenu.Populate Test Data"));
+            super(Labels.getString("DataMenu.Generate Test Data"));
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    Main.updateActivityList();
-                    Main.updateActivityListView();
+                    Main.updateLists();
+                    Main.updateView();
                 }
             });
         }

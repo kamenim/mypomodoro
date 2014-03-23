@@ -181,7 +181,7 @@ public class ActivitiesDAO {
         try {
             database.lock();
             ResultSet rs;
-            rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_completed ASC;");
+            rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_completed DESC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
