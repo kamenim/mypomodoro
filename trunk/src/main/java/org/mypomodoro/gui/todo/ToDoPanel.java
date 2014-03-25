@@ -28,11 +28,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
-import javax.swing.DefaultRowSorter;
 import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -46,10 +44,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
-import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -242,7 +237,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
-        table.addMouseMotionListener(new CustomInputAdapter());        
+        table.addMouseMotionListener(new CustomInputAdapter());
         // This is to address the case/event when the mouse exit the table
         table.addMouseListener(new MouseListener() {
 

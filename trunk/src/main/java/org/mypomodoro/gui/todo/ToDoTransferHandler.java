@@ -116,7 +116,7 @@ public class ToDoTransferHandler extends TransferHandler {
 
     private boolean isPriorityColumnSorted() {
         boolean sorted = true;
-        for (int i = 0; i < panel.getTable().getRowCount() - 1; i++) {            
+        for (int i = 0; i < panel.getTable().getRowCount() - 1; i++) {
             // Look for the value of the priority in the View while column priority might have been moved around                    
             if ((Integer) panel.getTable().getValueAt(i, panel.getTable().convertColumnIndexToView(0)) != (Integer) panel.getTable().getValueAt(i + 1, panel.getTable().convertColumnIndexToView(0)) - 1) {
                 sorted = false;

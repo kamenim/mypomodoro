@@ -45,8 +45,8 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.mypomodoro.Main;
-import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -61,33 +61,20 @@ public class Chart extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private JFreeChart burndownChart;
-    private ArrayList<Activity> activities = new ArrayList<Activity>();
     private ArrayList<Integer> XAxisValues = new ArrayList<Integer>();
     private float totalStoryPoints = 0;
     private ChartPanel chartPanel;
+    private final CreateInputForm createInputForm;
 
-    public Chart() {
+    public Chart(CreateInputForm createInputForm) {
+        this.createInputForm = createInputForm;
     }
 
-    /*public Chart(Date dateStart, Date dateEnd) {
-     // Retrieve ToDos and Reports between dateStart and dateEnd
-     activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
-     XAxisValues = getXAxisValues(dateStart, dateEnd);
-     for (Activity activity : activities) {
-     totalStoryPoints += activity.getStoryPoints();
-     }
-     System.err.println("totalStoryPoints = " + totalStoryPoints);
-     CategoryDataset dataset = createTargetDataset();
-     burndownChart = createChart(dataset);
-     chartPanel = new ChartPanel(burndownChart);        
-     }*/
-    public void make(Date dateStart, Date dateEnd) {
+    public void create() {
         removeAll();
-        // Retrieve ToDos and Reports between dateStart and dateEnd
-        activities = ActivitiesDAO.getInstance().getToDosAndReportsForChart(dateEnd);
-        XAxisValues = getXAxisValues(dateStart, dateEnd);
+        XAxisValues = getXAxisValues(createInputForm.getStartDate(), createInputForm.getEndDate());
         totalStoryPoints = 0; //reset
-        for (Activity activity : activities) {
+        for (Activity activity : ChartList.getList()) {
             totalStoryPoints += activity.getStoryPoints();
         }
         System.err.println("totalStoryPoints = " + totalStoryPoints);
@@ -144,7 +131,7 @@ public class Chart extends JPanel {
         float storyPoints = totalStoryPoints;
         for (Integer day : XAxisValues) {
             dataset.addValue(storyPoints, label, day);
-            for (Activity activity : activities) {
+            for (Activity activity : ChartList.getList()) {
                 if (DateUtil.convertToDay(activity.getDateCompleted()) == day) {
                     storyPoints -= activity.getStoryPoints();
                 }

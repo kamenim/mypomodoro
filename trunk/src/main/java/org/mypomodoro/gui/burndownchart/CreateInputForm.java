@@ -25,8 +25,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -37,6 +39,7 @@ import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.DatePicker;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -57,7 +60,8 @@ public class CreateInputForm extends JPanel {
     // Exclusion form
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);
-    private final JLabel excludeDays = new JLabel();
+    private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
+    private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     // Type form
     //private final JPanel typesInputFormPanel = new JPanel();
     //protected final List<TypeComboBox> types = new ArrayList<TypeComboBox>();
@@ -65,9 +69,9 @@ public class CreateInputForm extends JPanel {
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
-    private final String defaultPrimaryYAxisName = Labels.getString("BurndownChartPanel.Remaining working hours");
+    private final String defaultPrimaryYAxisName = Labels.getString("BurndownChartPanel.Story Points");
     private JTextField primaryYAxisLegend = new JTextField();
-    private final String defaultPrimaryYAxisLegend = Labels.getString("BurndownChartPanel.Remaining");
+    private final String defaultPrimaryYAxisLegend = Labels.getString("BurndownChartPanel.Story Points");
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     final JCheckBox burndownChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burndown Chart"), true);
@@ -86,6 +90,7 @@ public class CreateInputForm extends JPanel {
     private final String defaultTargetLegend = Labels.getString("BurndownChartPanel.Target");
     private JTextField targetColor = new JTextField();
     private final Color defaultTargetColor = ColorUtil.BLACK;
+    private final JCheckBox targetCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
     // Image form
     private final JPanel imageInputFormPanel = new JPanel();
     private final JPanel imageSizePanel = new JPanel();
@@ -98,8 +103,9 @@ public class CreateInputForm extends JPanel {
             ImageFormat.JPGExtention);
     private final JTextField imageWidth = new JTextField();
     private final JTextField imageHeight = new JTextField();
-    protected int defaultImageWidth = 800;
-    protected int defaultImageHeight = 600;
+    private final int defaultImageWidth = 800;
+    private final int defaultImageHeight = 600;
+    private final JCheckBox imageCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);
 
     public CreateInputForm() {
         //setBorder(new TitledBorder(new EtchedBorder(), ""));
@@ -108,7 +114,6 @@ public class CreateInputForm extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-
         addDatesInputForm();
         addExclusionInputForm();
         //addTypeInputFormPanel();
@@ -138,6 +143,7 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
+        startDatePicker.setTodayWithUpperBounds(); // no date in the future
         startDatePicker.addActionListener(new ActionListener() {
 
             @Override
@@ -150,6 +156,7 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
+        endDatePicker.setTodayWithUpperBounds(); // no date in the future
         endDatePicker.addActionListener(new ActionListener() {
 
             @Override
@@ -157,7 +164,7 @@ public class CreateInputForm extends JPanel {
                 startDatePicker.setDateWithUpperBounds(endDatePicker.getDate());
             }
         });
-        endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
+        //endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
         dates.add(endDatePicker, gbc);
         add(dates, c);
     }
@@ -167,6 +174,7 @@ public class CreateInputForm extends JPanel {
         c.gridy = 1;
         c.weightx = 1.0;
         c.weighty = 0.5;
+        // first line
         JPanel exclusion = new JPanel();
         exclusion.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -188,14 +196,50 @@ public class CreateInputForm extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         exclusion.add(excludeSundays, gbc);
-        gbc.gridx = 3;
-        gbc.gridy = 0;
+        // second line
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        //JList list = new JList();
-        //list.add("test");//
-        JLabel label = new JLabel("test");
-        exclusion.add(label, gbc);
+        final JLabel excludedDatesLabel = new JLabel();
+        excludeDatePicker.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                excludedDates.add(excludeDatePicker.getDate());
+                String text = "";
+                int increment = 1;
+                for (Date date : excludedDates) {
+                    if (increment > 1) {
+                        text += ", ";
+                    }
+                    text += DateUtil.getFormatedDate(date);
+                    increment++;
+                }
+                excludedDatesLabel.setText(text);
+            }
+        });
+        exclusion.add(excludeDatePicker, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        //gbc.gridwidth = 2;
+        exclusion.add(excludedDatesLabel, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        JButton reset = new JButton(Labels.getString("Common.Reset"));
+        reset.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                excludedDates.clear();
+                excludedDatesLabel.setText("");
+            }
+        });
+        exclusion.add(reset, gbc);
         add(exclusion, c);
     }
 
@@ -235,9 +279,8 @@ public class CreateInputForm extends JPanel {
         c.weightx = 1.0;
         c.weighty = 0.5;
         //c.gridwidth = 2;
-        final JCheckBox checkBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
-        checkBox.setFocusPainted(false);
-        ComponentTitledBorder border = new ComponentTitledBorder(checkBox, targetInputFormPanel, BorderFactory.createEtchedBorder());
+        targetCheckBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(targetCheckBox, targetInputFormPanel, BorderFactory.createEtchedBorder());
         targetInputFormPanel.setBorder(border);
         targetInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
@@ -251,9 +294,8 @@ public class CreateInputForm extends JPanel {
         c.weightx = 1.0;
         c.weighty = 0.5;
         //c.gridwidth = 2;
-        final JCheckBox checkBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);
-        checkBox.setFocusPainted(false);
-        ComponentTitledBorder border = new ComponentTitledBorder(checkBox, imageInputFormPanel, BorderFactory.createEtchedBorder());
+        imageCheckBox.setFocusPainted(false);
+        ComponentTitledBorder border = new ComponentTitledBorder(imageCheckBox, imageInputFormPanel, BorderFactory.createEtchedBorder());
         imageInputFormPanel.setBorder(border);
         imageInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cImage = new GridBagConstraints();
@@ -556,11 +598,11 @@ public class CreateInputForm extends JPanel {
             return formatName;
         }
     }
-    
+
     public Date getStartDate() {
         return startDatePicker.getDate();
     }
-    
+
     public Date getEndDate() {
         return endDatePicker.getDate();
     }
@@ -652,4 +694,31 @@ public class CreateInputForm extends JPanel {
      typePanelList.add(typePanel);
      typesInputFormPanel.add(typePanel, cTypePanels);
      }*/
+    public JCheckBox getExcludeSaturdays() {
+        return excludeSaturdays;
+    }
+
+    public JCheckBox getExcludeSundays() {
+        return excludeSundays;
+    }
+
+    public ArrayList<Date> getExcludedDates() {
+        return excludedDates;
+    }
+
+    public JCheckBox getBurndownChartCheckBox() {
+        return burndownChartCheckBox;
+    }
+
+    public JCheckBox getBurnupChartCheckBox() {
+        return burnupChartCheckBox;
+    }
+
+    public JCheckBox getTargetCheckBox() {
+        return targetCheckBox;
+    }
+
+    public JCheckBox getImageCheckBox() {
+        return imageCheckBox;
+    }
 }
