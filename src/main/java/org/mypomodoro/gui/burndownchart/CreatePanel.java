@@ -29,38 +29,38 @@ import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.util.Labels;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.model.ChartList;
 
 /**
  * Panel to generate burndown charts
  *
  */
-public class CreateInputPanel extends JPanel {
+public class CreatePanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
-    private CreateInputForm createInputForm;
-    private final GridBagConstraints gbc = new GridBagConstraints();
-    private final JTabbedPane burdownChartPane;
-    private Chart chart;
 
-    public CreateInputPanel(JTabbedPane burdownChartPane, Chart chart) {
-        this.burdownChartPane = burdownChartPane;
-        this.chart = chart;
+    private final JTabbedPane tabbedPane;
+    private final CreateInputForm createInputForm;
+    private final GridBagConstraints gbc = new GridBagConstraints();
+
+    public CreatePanel(JTabbedPane tabbedPane, CreateInputForm createInputForm) {
+        this.tabbedPane = tabbedPane;
+        this.createInputForm = createInputForm;
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        addBurndownChartInputForm();
+        addCreateInputForm();
         addCreateButton();
     }
 
-    private void addBurndownChartInputForm() {
+    private void addCreateInputForm() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        createInputForm = new CreateInputForm();
         add(new JScrollPane(createInputForm), gbc);
     }
 
@@ -68,21 +68,18 @@ public class CreateInputPanel extends JPanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        // gbc.fill = GridBagConstraints.NONE;
         JButton createButton = new AbstractPomodoroButton(
-                Labels.getString("BurndownChartPanel.Create"));
+                Labels.getString("BurndownChartPanel.Check"));
         createButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // The image is created only if the name of the image is set
-                if (createInputForm.getImageName().length() != 0) {                    
-                    //chart = new Chart(createInputForm.getStartDate(), createInputForm.getEndDate());
-                    chart.make(createInputForm.getStartDate(), createInputForm.getEndDate());
-                    chart.saveImageChart(createInputForm.getImageName() + ".png");                    
+                if (createInputForm.getBurndownChartCheckBox().isSelected()
+                        || createInputForm.getBurnupChartCheckBox().isSelected()) {
+                    ChartList.getList().refresh(createInputForm.getEndDate());
+                    tabbedPane.setEnabledAt(1, true);
+                    tabbedPane.setSelectedIndex(1);
                 }
-                // Switch to burndown chart pane
-                burdownChartPane.setSelectedIndex(1);
             }
         });
         add(createButton, gbc);

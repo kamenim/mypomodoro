@@ -93,16 +93,16 @@ public class TestMenu extends JMenu {
                     for (int i = 0; i < alSize; i++) {
                         int minusDay = rand.nextInt(20);
                         Activity a = new Activity(
-                                "Place" + " " + rand.nextInt(10)+1,
-                                "Author" + " " + rand.nextInt(10)+1,
+                                "Place" + " " + rand.nextInt(10) + 1,
+                                "Author" + " " + rand.nextInt(10) + 1,
                                 "Task" + " " + (i + 1),
                                 "",
-                                "Type" + " " + rand.nextInt(10)+1,
+                                "Type" + " " + rand.nextInt(10) + 1,
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
                                 (new DateTime(new Date()).minusDays(minusDay)).toDate());
-                        
+
                         a.setIsCompleted(rand.nextBoolean());
                         a.setOverestimatedPoms(rand.nextInt(3));
                         a.setActualPoms(rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms()));
@@ -110,17 +110,17 @@ public class TestMenu extends JMenu {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            a.setDateCompleted((new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay+1))).toDate());
+                            a.setDateCompleted((new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay + 1))).toDate());
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
-                                    a.setIteration(iteration[iteration.length-1]); // use highest iteration number for tasks in the Iteration backlog
+                                    a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }
                                 a.setPriority(increment);
                                 increment++;
                             } else { // Tasks for the Activity list 
                                 if (a.getIteration() >= 0) {
-                                    a.setIteration(iteration[iteration.length-1]+1); // use unstarted iteration number
+                                    a.setIteration(iteration[iteration.length - 1] + 1); // use unstarted iteration number
                                 }
                                 a.setOverestimatedPoms(0);
                                 a.setActualPoms(0);

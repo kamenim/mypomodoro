@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.reports;
+package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -34,9 +35,9 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -54,17 +55,15 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
-import org.mypomodoro.Main;
-import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
-import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
@@ -73,10 +72,10 @@ import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
- * GUI for viewing the Report List.
+ * GUI for viewing the Chart List.
  *
  */
-public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
+public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
@@ -88,21 +87,23 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
         Labels.getString("Common.Estimated"),
-        Labels.getString("Common.Overestimated"),
-        Labels.getString("Common.Real"),
-        Labels.getString("ReportListPanel.Diff I"),
-        Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
-    //Labels.getString("ReportListPanel.Time")
-    public static int ID_KEY = 11;
+    public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
+    private final JTabbedPane tabbedPane;
+    private final CreateInputForm createInputForm;
+    private final Chart chart;
 
-    public ReportsPanel() {
+    public CheckPanel(JTabbedPane tabbedPane, CreateInputForm createInputForm, Chart chart) {
+        this.tabbedPane = tabbedPane;
+        this.createInputForm = createInputForm;
+        this.chart = chart;
+
         setLayout(new GridBagLayout());
         table = new JXTable(activitiesTableModel) {
 
@@ -127,7 +128,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        addReportsTable(gbc);
+        addChartTable(gbc);
+        addCheckButton(gbc);
         addTabPane(gbc);
     }
 
@@ -141,14 +143,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 10).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
-        table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr); // type
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new EstimatedCellRenderer()); // estimated
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // title
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
@@ -180,36 +178,19 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 10).setMaxWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 10).setMinWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 10).setPreferredWidth(90);
-        // Set width of estimated, real, diff I/II
-        table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(40);
-        // Set width of column Time
-        /*table.getColumnModel().getColumn(2).setMaxWidth(60);
-         table.getColumnModel().getColumn(2).setMinWidth(60);
-         table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
+        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
+        // Set width of estimated
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(60);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(60);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(60);
         // Set min width of type column
-        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(100);
+        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // hide Overstimated column
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
@@ -218,9 +199,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 11] = Labels.getString("ToDoListPanel.Unplanned");
-        cloneColumnNames[ID_KEY - 10] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
+        cloneColumnNames[ID_KEY - 7] = Labels.getString("ToDoListPanel.Unplanned");
+        cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
+        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -233,14 +214,14 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 try {
                     int rowIndex = table.rowAtPoint(p);
                     int columnIndex = table.columnAtPoint(p);
-                    if (columnIndex == ID_KEY - 9 || columnIndex == ID_KEY - 8) {
+                    if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 7) { // estimated
+                    } else if (columnIndex == ID_KEY - 3) { // estimated
                         String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 10) { // date and time
+                    } else if (columnIndex == ID_KEY - 6) { // date and time
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
                         String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
@@ -286,9 +267,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         });
 
         // diactivate/gray out all tabs (except import)
-        if (ReportList.getListSize() == 0) {
+        if (ChartList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 3) { // import tab
+                if (index == 2) { // import tab
                     continue;
                 }
                 controlPane.setEnabledAt(index, false);
@@ -304,23 +285,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
-        class deleteAction extends AbstractAction {
-
-            final AbstractActivitiesPanel panel;
-
-            public deleteAction(AbstractActivitiesPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
-                b.doClick();
-            }
-        }
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
-        am.put("Delete", new deleteAction(this));
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
@@ -342,19 +306,18 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleReportsList = Labels.getString("ReportListPanel.Report List") + " ("
-                + ReportList.getListSize() + ")";
-        if (ReportList.getListSize() > 0) {
-            titleReportsList += " - " + Labels.getString("Common.Estimated") + ": ";
-            titleReportsList += ReportList.getList().getNbRealPom();
-            titleReportsList += " / " + ReportList.getList().getNbEstimatedPom();
-            if (ReportList.getList().getNbOverestimatedPom() > 0) {
-                titleReportsList += " + " + ReportList.getList().getNbOverestimatedPom();
+        String titleChartList = Labels.getString("BurndownChartPanel.Chart List") + " ("
+                + ChartList.getListSize() + ")";
+        if (ChartList.getListSize() > 0) {
+            titleChartList += " - " + Labels.getString("Common.Estimated") + ": ";
+            titleChartList += ChartList.getList().getNbRealPom();
+            titleChartList += " / " + ChartList.getList().getNbEstimatedPom();
+            if (ChartList.getList().getNbOverestimatedPom() > 0) {
+                titleChartList += " + " + ChartList.getList().getNbOverestimatedPom();
             }
-            titleReportsList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + ReportList.getList().getAccuracy() + "%)";
             if (PreferencesPanel.preferences.getAgileMode()) {
                 DecimalFormat df = new DecimalFormat("0.#");
-                titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
+                titleChartList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
             }
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
@@ -370,24 +333,23 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleReportsList += " >>> ";
-                titleReportsList += Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
+                titleChartList += " >>> ";
+                titleChartList += Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
                 if (overestimated > 0) {
-                    titleReportsList += " + " + overestimated;
+                    titleChartList += " + " + overestimated;
                 }
-                titleReportsList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%)";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleReportsList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    titleChartList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleReportsList);
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleChartList);
         titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
-    private void addReportsTable(GridBagConstraints gbc) {
+    private void addChartTable(GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
@@ -426,6 +388,27 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 });
     }
 
+    private void addCheckButton(GridBagConstraints gbc) {
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1;
+        JButton checkButton = new AbstractPomodoroButton(
+                Labels.getString("BurndownChartPanel.Create"));
+        checkButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chart.create();
+                if (createInputForm.getImageCheckBox().isSelected()) {
+                    chart.saveImageChart((createInputForm.getImageName().length() != 0 ? createInputForm.getImageName() : "myAgilePomodoro") + ".png");
+                }
+                tabbedPane.setEnabledAt(2, true);
+                tabbedPane.setSelectedIndex(2);
+            }
+        });
+        add(checkButton, gbc);
+    }
+
     private void addTabPane(GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -434,8 +417,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        EditPanel editPanel = new EditPanel(detailsPanel);
-        controlPane.add(Labels.getString("Common.Edit"), editPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);
@@ -445,44 +426,29 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         add(controlPane, gbc);
 
         showSelectedItemDetails(detailsPanel);
-        showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
-        int rowIndex = ReportList.getList().size();
+        int rowIndex = ChartList.getListSize();
         int colIndex = columnNames.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = ReportList.getList().iterator();
-        for (int i = 0; i < ReportList.getList().size() && iterator.hasNext(); i++) {
+        Iterator<Activity> iterator = ChartList.getList().iterator();
+        for (int i = 0; i < ChartList.getListSize() && iterator.hasNext(); i++) {
             Activity currentActivity = iterator.next();
             tableData[i][0] = currentActivity.isUnplanned();
-            tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
-            //tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
+            // change date render to display empty cell when task not completed
+            tableData[i][1] = currentActivity.isCompleted() ? currentActivity.getDateCompleted() : new Date(0); // date completed formated via custom renderer (DateRenderer)
             tableData[i][2] = currentActivity.getName();
             tableData[i][3] = currentActivity.getType();
             Integer poms = new Integer(currentActivity.getEstimatedPoms());
             tableData[i][4] = poms;
-            Integer overestimatedpoms = new Integer(currentActivity.getOverestimatedPoms());
-            tableData[i][5] = overestimatedpoms;
-            tableData[i][6] = currentActivity.getActualPoms();
-            tableData[i][7] = currentActivity.getActualPoms()
-                    - currentActivity.getEstimatedPoms();
-            tableData[i][8] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
-                    - currentActivity.getEstimatedPoms()
-                    - currentActivity.getOverestimatedPoms()
-                    : "";
-            tableData[i][9] = currentActivity.getStoryPoints();
-            tableData[i][10] = currentActivity.getIteration();
-            tableData[i][11] = currentActivity.getId();
+            tableData[i][5] = currentActivity.getStoryPoints();
+            tableData[i][6] = currentActivity.getIteration();
+            tableData[i][7] = currentActivity.getId();
         }
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 9;
-            }
 
             // this is mandatory to get columns with integers properly sorted
             @Override
@@ -495,16 +461,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     case 4:
                         return Integer.class;
                     case 5:
-                        return Integer.class;
-                    case 6:
-                        return Integer.class;
-                    case 7:
-                        return Integer.class;
-                    case 8:
-                        return Integer.class;
-                    case 9:
                         return Float.class;
-                    case 10:
+                    case 6:
                         return Integer.class;
                     default:
                         return String.class;
@@ -517,36 +475,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE) {
-                    int row = e.getFirstRow();
-                    int column = e.getColumn();
-                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
-                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                    Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 9) {
-                        if (data.toString().trim().length() == 0) {
-                            // reset the original value. Title can't be empty.
-                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 9);
-                        } else {
-                            act.setName(data.toString());
-                            act.databaseUpdate();
-                            // The customer resizer may resize the title column to fit the length of the new text
-                            ColumnResizer.adjustColumnPreferredWidths(table);
-                            table.revalidate();
-                        }
-                    }
-                    ReportList.getList().update(act);
-                    // Refresh panel border
-                    setPanelBorder();
-                    // update info
-                    detailsPanel.selectInfo(act);
-                    detailsPanel.showInfo();
-                }
                 // diactivate/gray out all tabs (except import)
-                if (ReportList.getListSize() == 0) {
+                if (ChartList.getListSize() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        if (index == 3) { // import tab
+                        if (index == 2) { // import tab
                             continue;
                         }
                         controlPane.setEnabledAt(index, false);
@@ -578,27 +510,27 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void move(Activity activity) {
-        ReportList.getList().reopen(activity);
+        // no use
     }
 
     @Override
     public void moveAll() {
-        ReportList.getList().reopenAll();
+        // no use
     }
 
     @Override
     public Activity getActivityById(int id) {
-        return ReportList.getList().getById(id);
+        return ChartList.getList().getById(id);
     }
 
     @Override
     public void delete(Activity activity) {
-        ReportList.getList().delete(activity);
+        // no use
     }
 
     @Override
     public void deleteAll() {
-        ReportList.getList().deleteAll();
+        // no use
     }
 
     @Override
@@ -613,24 +545,18 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void addActivity(Activity activity) {
-        ReportList.getList().add(activity);
+        // no use
     }
 
     private void showSelectedItemDetails(DetailsPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ReportList.getList(),
+                new ActivityInformationTableListener(ChartList.getList(),
                         table, informationPanel, ID_KEY));
-    }
-
-    private void showSelectedItemEdit(EditPanel editPanel) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ReportList.getList(), table,
-                        editPanel, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ReportList.getList(),
+                new ActivityInformationTableListener(ChartList.getList(),
                         table, commentPanel, ID_KEY));
     }
 
@@ -655,7 +581,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ReportList.getList().getById(id);
+            Activity activity = ChartList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
@@ -710,27 +636,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = value.toString();
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ReportList.getList().getById(id);
+            Activity activity = ChartList.getList().getById(id);
             Integer overestimatedpoms = activity.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);
             return renderer;
-        }
-    }
-
-    public void saveComment(String comment) {
-        int row = table.getSelectedRow();
-        if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity selectedReport = ReportList.getList().getById(id);
-            if (selectedReport != null) {
-                selectedReport.setNotes(comment);
-                selectedReport.databaseUpdate();
-                String title = Labels.getString("Common.Add comment");
-                String message = Labels.getString("Common.Comment saved");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            }
         }
     }
 }

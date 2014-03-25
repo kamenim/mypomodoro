@@ -61,4 +61,8 @@ public final class DatePicker extends JXDatePicker {
     public void setTodayWithLowerBounds() {
         setDateWithLowerBounds(new Date());
     }
+
+    public void setTodayWithUpperBounds() {
+        setDateWithUpperBounds(new Date());
+    }
 }

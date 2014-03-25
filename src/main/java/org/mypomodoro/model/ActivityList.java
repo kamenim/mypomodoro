@@ -16,9 +16,7 @@
  */
 package org.mypomodoro.model;
 
-import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.PreferencesPanel;
 
 /**
  * Activity list
