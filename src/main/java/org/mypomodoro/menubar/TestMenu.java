@@ -27,6 +27,7 @@ import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -85,7 +86,7 @@ public class TestMenu extends JMenu {
 
                 @Override
                 public void run() {
-                    Float[] storypoint = new Float[]{0f, 0f, 0f, 0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
+                    Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
                     java.util.Random rand = new java.util.Random();
                     int alSize = 300;
@@ -93,11 +94,11 @@ public class TestMenu extends JMenu {
                     for (int i = 0; i < alSize; i++) {
                         int minusDay = rand.nextInt(20);
                         Activity a = new Activity(
-                                "Place" + " " + rand.nextInt(10) + 1,
-                                "Author" + " " + rand.nextInt(10) + 1,
+                                "Place" + " " + (rand.nextInt(10) + 1),
+                                "Author" + " " + (rand.nextInt(10) + 1),
                                 "Task" + " " + (i + 1),
                                 "",
-                                "Type" + " " + rand.nextInt(10) + 1,
+                                "Type" + " " + (rand.nextInt(10) + 1),
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
@@ -105,12 +106,20 @@ public class TestMenu extends JMenu {
 
                         a.setIsCompleted(rand.nextBoolean());
                         a.setOverestimatedPoms(rand.nextInt(3));
-                        a.setActualPoms(rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms()));
+                        int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
+                        actual += (a.getEstimatedPoms() + a.getOverestimatedPoms() > actual) ? rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual) : 0; // give some weigth to actual so there are more real pomodoros
+                        a.setActualPoms(actual);
                         if (a.getIteration() == -1) {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            a.setDateCompleted((new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay + 1))).toDate());
+                            // TODO review this code
+                            Date date = (new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay + 1))).toDate();
+                            while (new DateTime(date).getDayOfWeek() == DateTimeConstants.SATURDAY
+                                    || new DateTime(date).getDayOfWeek() == DateTimeConstants.SUNDAY) { // excluding saturdays and sundays
+                                date = (new DateTime(date).plusDays(1)).toDate();
+                            }
+                            a.setDateCompleted(date);
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {

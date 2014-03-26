@@ -31,7 +31,6 @@ import javax.swing.table.JTableHeader;
 public class CustomTableHeader extends JTableHeader {
 
     private String[] toolTipsText;
-    private JTable table;
 
     public CustomTableHeader(JTable table) {
         super(table.getColumnModel());

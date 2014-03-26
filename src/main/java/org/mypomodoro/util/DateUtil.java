@@ -104,7 +104,7 @@ public class DateUtil {
      */
     public static boolean inPast(Date date) {
         DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
-        return dateComparator.compare(date, new Date()) < -1;
+        return dateComparator.compare(date, new Date()) == -1;
     }
 
     /*
@@ -114,7 +114,29 @@ public class DateUtil {
      */
     public static boolean inFuture(Date date) {
         DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
-        return dateComparator.compare(date, new Date()) > 0;
+        return dateComparator.compare(date, new Date()) == 1;
+    }
+
+    /*
+     * Check if a date1 is sooner than date2
+     * 
+     * @param date1
+     * @param date2
+     */
+    public static boolean isSooner(Date date1, Date date2) {
+        DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
+        return dateComparator.compare(date1, date2) == -1;
+    }
+    
+    /*
+     * Check if a date1 is sooner than date2
+     * 
+     * @param date1
+     * @param date2
+     */
+    public static boolean isEquals(Date date1, Date date2) {
+        DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
+        return dateComparator.compare(date1, date2) == 0;
     }
 
     /**
@@ -124,7 +146,7 @@ public class DateUtil {
      * @param dateEnd
      * @return array list of days of months
      */
-    public static ArrayList<Integer> getDaysOfMonth(Date dateStart, Date dateEnd) {
+    /*public static ArrayList<Integer> getDaysOfMonth(Date dateStart, Date dateEnd) {
         DateTime start = new DateTime(dateStart.getTime());
         DateTime end = new DateTime(dateEnd.getTime());
         ArrayList<Integer> days = new ArrayList<Integer>();
@@ -133,33 +155,50 @@ public class DateUtil {
             start = start.plusDays(1);
         }
         return days;
-    }
+    }*/
 
     /**
-     * Returns an ordered list of days of month between two dates
+     * Returns an ordered list of dates of month between two dates minus
+     * exclusions
      *
      * @param dateStart
      * @param dateEnd
-     * @return array list of days of months
+     * @param excludeSaturdays
+     * @param excludeSundays
+     * @param excludeDates
+     * @return array list of dates of months excluding some exceptions
      */
-    public static ArrayList<Integer> newgetDaysOfMonth(Date dateStart, Date dateEnd, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
+    public static ArrayList<Date> getDatesWithExclusions(Date dateStart, Date dateEnd, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
         DateTime start = new DateTime(dateStart.getTime());
         DateTime end = new DateTime(dateEnd.getTime());
-        ArrayList<Integer> days = new ArrayList<Integer>();
-        while ((start.isBefore(end) || start.isEqual(end)) && !isExcluded(start, excludeSaturdays, excludeSundays, excludeDates)) {
-            days.add(start.dayOfMonth().get());
+        ArrayList<Date> dates = new ArrayList<Date>();
+        while (start.isBefore(end) || start.isEqual(end)) {
+            if (!isExcluded(start, excludeSaturdays, excludeSundays, excludeDates)) {
+                dates.add(start.toDate());
+            }
             start = start.plusDays(1);
         }
-        return days;
+        return dates;
     }
 
+    /**
+     * Check if a date is part of the exclusion list
+     *
+     * @param dateTime
+     * @param excludeSaturdays
+     * @param excludeSundays
+     * @param excludeDates
+     * @return true if excluded
+     */
     private static boolean isExcluded(DateTime dateTime, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
         boolean isExcluded = false;
-        if (dateTime.getDayOfWeek() != DateTimeConstants.SATURDAY || dateTime.getDayOfWeek() != DateTimeConstants.SUNDAY) { // excluding saturdays and sundays
+        if (excludeSaturdays && dateTime.getDayOfWeek() == DateTimeConstants.SATURDAY) { // excluding saturdays
+            isExcluded = true;
+        } else if (excludeSundays && dateTime.getDayOfWeek() == DateTimeConstants.SUNDAY) { // excluding sundays
             isExcluded = true;
         } else {
             for (Date excludeDate : excludeDates) {
-                if (new DateTime(excludeDate).dayOfYear() == dateTime.dayOfYear()) {
+                if (isSameDay(excludeDate, dateTime.toDate())) {
                     isExcluded = true;
                     break;
                 }
@@ -174,7 +213,7 @@ public class DateUtil {
      * @param date
      * @return day of month
      */
-    public static int convertToDay(Date date) {
+    public static int convertToDayOfMonth(Date date) {
         return new DateTime(date.getTime()).dayOfMonth().get();
     }
 
@@ -189,5 +228,25 @@ public class DateUtil {
         DateTime dateTime1 = new DateTime(date1);
         DateTime dateTime2 = new DateTime(date2);
         return dateTime1.withTimeAtStartOfDay().isEqual(dateTime2.withTimeAtStartOfDay());
+    }
+
+    /**
+     * Returns the date at the start of the day
+     *
+     * @param date
+     * @return date at start of day
+     */
+    public static Date getDateAtStartOfDay(Date date) {
+        return new DateTime(date).withTimeAtStartOfDay().toDate();
+    }
+
+    /**
+     * Returns the date at midnight
+     *
+     * @param date
+     * @return date at midnight
+     */
+    public static Date getDateAtMidnight(Date date) {
+        return new DateTime(date).plusDays(1).withTimeAtStartOfDay().toDate();
     }
 }

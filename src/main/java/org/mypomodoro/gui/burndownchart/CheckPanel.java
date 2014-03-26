@@ -61,7 +61,6 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
-import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
@@ -199,6 +198,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
+        // TODO create label Common.Unplanned
         cloneColumnNames[ID_KEY - 7] = Labels.getString("ToDoListPanel.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
@@ -269,9 +269,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         // diactivate/gray out all tabs (except import)
         if (ChartList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 2) { // import tab
+                /*if (index == 2) { // import tab
                     continue;
-                }
+                }*/
                 controlPane.setEnabledAt(index, false);
             }
         } else {
@@ -371,10 +371,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
                         if (table.getSelectedRowCount() > 1) { // multiple selection
                             // diactivate/gray out unused tabs
-                            controlPane.setEnabledAt(1, false); // edit
-                            controlPane.setEnabledAt(2, false); // comment 
-                            if (controlPane.getSelectedIndex() == 1
-                            || controlPane.getSelectedIndex() == 2) {
+                            controlPane.setEnabledAt(1, false); // comment 
+                            if (controlPane.getSelectedIndex() == 1) {
                                 controlPane.setSelectedIndex(0); // switch to details panel
                             }
                         } else if (table.getSelectedRowCount() == 1) {
@@ -419,8 +417,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        ImportPanel importPanel = new ImportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
+        /*ImportPanel importPanel = new ImportPanel(this);
+        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);*/
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
@@ -478,9 +476,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 // diactivate/gray out all tabs (except import)
                 if (ChartList.getListSize() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        if (index == 2) { // import tab
+                        /*if (index == 2) { // import tab
                             continue;
-                        }
+                        }*/
                         controlPane.setEnabledAt(index, false);
                     }
                 }
@@ -581,6 +579,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            // replace with methid getActivityById
             Activity activity = ChartList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
@@ -636,6 +635,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = value.toString();
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            // replace with methid getActivityById
             Activity activity = ChartList.getList().getById(id);
             Integer overestimatedpoms = activity.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";

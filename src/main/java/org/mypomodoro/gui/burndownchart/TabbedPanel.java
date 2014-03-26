@@ -45,9 +45,9 @@ public class TabbedPanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         final JTabbedPane chartTabbedPane = new JTabbedPane();
-        CreatePanel createInputPanel = new CreatePanel(chartTabbedPane, createInputForm);
-        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Configure"), createInputPanel);
         CheckPanel checkPanel = new CheckPanel(chartTabbedPane, createInputForm, chart);
+        CreatePanel createInputPanel = new CreatePanel(chartTabbedPane, createInputForm, checkPanel);
+        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Configure"), createInputPanel);
         chartTabbedPane.add(Labels.getString("BurndownChartPanel.Check"), checkPanel);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartTabbedPane.add(Labels.getString("BurndownChartPanel.Create"), new JScrollPane(chartPanel));

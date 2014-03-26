@@ -35,6 +35,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
@@ -55,11 +56,13 @@ public class CreateInputForm extends JPanel {
     private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
     private final GridBagConstraints c = new GridBagConstraints();
     // Dates form
-    protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());
+    // TODO add ability to set dates in the future
+    protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());    
     protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
     // Exclusion form
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
-    private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);
+    private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);    
+    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), true);
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     // Type form
@@ -143,11 +146,14 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        startDatePicker.setTodayWithUpperBounds(); // no date in the future
         startDatePicker.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                // if end date is sooner than start date set end date to start date
+                if (DateUtil.isSooner(endDatePicker.getDate(), startDatePicker.getDate())) {
+                    endDatePicker.setDate(startDatePicker.getDate());
+                }
                 endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
             }
         });
@@ -156,15 +162,17 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        endDatePicker.setTodayWithUpperBounds(); // no date in the future
         endDatePicker.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                // if end date is sooner than start date set start date to end date
+                if (DateUtil.isSooner(endDatePicker.getDate(), startDatePicker.getDate())) {
+                    startDatePicker.setDate(endDatePicker.getDate());
+                }
                 startDatePicker.setDateWithUpperBounds(endDatePicker.getDate());
             }
         });
-        //endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
         dates.add(endDatePicker, gbc);
         add(dates, c);
     }
@@ -196,6 +204,11 @@ public class CreateInputForm extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         exclusion.add(excludeSundays, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
+        exclusion.add(excludeToDos, gbc); // excludes ToDos/Tasks of ToDo list/Iteration Backlog
         // second line
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -224,7 +237,7 @@ public class CreateInputForm extends JPanel {
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
-        //gbc.gridwidth = 2;
+        gbc.gridwidth = 2;
         exclusion.add(excludedDatesLabel, gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
@@ -700,6 +713,10 @@ public class CreateInputForm extends JPanel {
 
     public JCheckBox getExcludeSundays() {
         return excludeSundays;
+    }
+
+    public JCheckBox getExcludeToDos() {
+        return excludeToDos;
     }
 
     public ArrayList<Date> getExcludedDates() {
