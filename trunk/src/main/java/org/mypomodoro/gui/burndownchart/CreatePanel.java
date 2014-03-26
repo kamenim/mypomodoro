@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.util.Labels;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.model.ChartList;
 
@@ -41,11 +42,13 @@ public class CreatePanel extends JPanel {
 
     private final JTabbedPane tabbedPane;
     private final CreateInputForm createInputForm;
+    private final CheckPanel checkPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CreatePanel(JTabbedPane tabbedPane, CreateInputForm createInputForm) {
+    public CreatePanel(JTabbedPane tabbedPane, CreateInputForm createInputForm, CheckPanel checkPanel) {
         this.tabbedPane = tabbedPane;
         this.createInputForm = createInputForm;
+        this.checkPanel = checkPanel;
 
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -76,9 +79,26 @@ public class CreatePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (createInputForm.getBurndownChartCheckBox().isSelected()
                         || createInputForm.getBurnupChartCheckBox().isSelected()) {
-                    ChartList.getList().refresh(createInputForm.getEndDate());
                     tabbedPane.setEnabledAt(1, true);
                     tabbedPane.setSelectedIndex(1);
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (createInputForm.getExcludeToDos().isSelected()) {
+                                ChartList.getList().refresh(createInputForm.getStartDate(), createInputForm.getEndDate());
+                            } else {
+                                ChartList.getList().refresh(createInputForm.getEndDate());                                
+                            }
+                        }
+                    });
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            checkPanel.refresh();
+                        }
+                    });
                 }
             }
         });

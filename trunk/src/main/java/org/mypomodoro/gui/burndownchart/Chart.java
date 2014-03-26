@@ -44,6 +44,7 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -61,7 +62,7 @@ public class Chart extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private JFreeChart burndownChart;
-    private ArrayList<Integer> XAxisValues = new ArrayList<Integer>();
+    private ArrayList<Date> XAxisValues = new ArrayList<Date>();
     private float totalStoryPoints = 0;
     private ChartPanel chartPanel;
     private final CreateInputForm createInputForm;
@@ -84,25 +85,28 @@ public class Chart extends JPanel {
         add(chartPanel);
     }
 
-    // TODO exclude week end and days off
-    private ArrayList<Integer> getXAxisValues(Date dateStart, Date dateEnd) {
-        return DateUtil.getDaysOfMonth(dateStart, dateEnd);
-        //return DateUtil.getDaysOfMonth(dateStart, dateEnd, true, true, new ArrayList<Date>());
-        //return new String[]{"6 AUG.", "7 AUG.", "8 AUG.", "9 AUG.", "10 AUG.", "13 AUG.", "14 AUG.", "15 AUG.", "16 AUG.", "17 AUG.", "20 AUG.", "21 AUG.", "22 AUG.", "23 AUG.", "24 AUG."};
-        //return new String[]{"6", "7", "8", "9", "10", "13", "14", "15", "16", "17", "20", "21", "22", "23", "24"};
+    private ArrayList<Date> getXAxisValues(Date dateStart, Date dateEnd) {
+        return DateUtil.getDatesWithExclusions(dateStart, dateEnd,
+                createInputForm.getExcludeSaturdays().isSelected(),
+                createInputForm.getExcludeSundays().isSelected(),
+                createInputForm.getExcludedDates());
     }
 
     private CategoryDataset createTargetDataset() {
         String label = "Target";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        /*dataset.addValue(totalStoryPoints, label, XAxisValues[0]);
-         for (int i = 1; i < 14; i++) {
-         dataset.addValue(Math.round(320 - i * 320 / 14), label, XAxisValues[i]);
-         }
-         dataset.addValue(0, label, XAxisValues[14]);*/
-        dataset.addValue(totalStoryPoints, label, XAxisValues.get(0));
+        float storyPoints = totalStoryPoints;
+        // lower the total of story points by the number of points done the first day
+        for (Activity activity : ChartList.getList()) {
+            if (activity.isCompleted()
+                    && DateUtil.isEquals(activity.getDateCompleted(), XAxisValues.get(0))) {
+                storyPoints -= activity.getStoryPoints();
+            }
+        }
+        System.err.println("totalStoryPoints reduced = " + storyPoints);
+        dataset.addValue(storyPoints, label, XAxisValues.get(0)); // here : transform to day of the month
         for (int i = 1; i < XAxisValues.size() - 1; i++) {
-            dataset.addValue(Math.round(totalStoryPoints - i * (totalStoryPoints / (XAxisValues.size() - 1))), label, XAxisValues.get(i));
+            dataset.addValue(Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1))), label, XAxisValues.get(i));
         }
         dataset.addValue(0, label, XAxisValues.get(XAxisValues.size() - 1));
         return dataset;
@@ -111,30 +115,19 @@ public class Chart extends JPanel {
     private CategoryDataset createRemainingStoryPointsDataset() {
         String label = "StoryPoints";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        /*String[] XAxisValues = getXAxisValues();
-         dataset.addValue(320, label, XAxisValues[0]);
-         dataset.addValue(300, label, XAxisValues[1]);
-         dataset.addValue(275, label, XAxisValues[2]);
-         dataset.addValue(260, label, XAxisValues[3]);
-         dataset.addValue(252, label, XAxisValues[4]);
-         dataset.addValue(240, label, XAxisValues[5]);
-         dataset.addValue(211, label, XAxisValues[6]);
-         dataset.addValue(211, label, XAxisValues[7]);
-         dataset.addValue(180, label, XAxisValues[8]);
-         dataset.addValue(172, label, XAxisValues[9]);
-         dataset.addValue(155, label, XAxisValues[10]);
-         dataset.addValue(110, label, XAxisValues[11]);
-         dataset.addValue(93, label, XAxisValues[12]);
-         dataset.addValue(61, label, XAxisValues[13]);
-         dataset.addValue(60, label, XAxisValues[14]);*/
-
         float storyPoints = totalStoryPoints;
-        for (Integer day : XAxisValues) {
-            dataset.addValue(storyPoints, label, day);
+        for (Date date : XAxisValues) {
             for (Activity activity : ChartList.getList()) {
-                if (DateUtil.convertToDay(activity.getDateCompleted()) == day) {
+                if (activity.isCompleted()
+                        && DateUtil.isEquals(activity.getDateCompleted(), date)) {
                     storyPoints -= activity.getStoryPoints();
                 }
+            }
+            int day = new DateTime(date).dayOfMonth().get();
+            if (DateUtil.inFuture(date)) {
+                dataset.addValue((Number)0, label, day);
+            } else {
+                dataset.addValue((Number)storyPoints, label, day);
             }
         }
         return dataset;

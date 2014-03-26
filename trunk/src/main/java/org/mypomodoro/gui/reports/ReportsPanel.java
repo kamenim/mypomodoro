@@ -83,6 +83,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
+    // TODO remove column overestimated
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),

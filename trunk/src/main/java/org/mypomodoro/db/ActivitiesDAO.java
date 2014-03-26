@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 
 public class ActivitiesDAO {
 
@@ -226,14 +227,43 @@ public class ActivitiesDAO {
         }
         return activity;
     }
+    
+    public ArrayList<Activity> getReportsForChart(Date startDate, Date endDate) {
+        ArrayList<Activity> activities = new ArrayList<Activity>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT * FROM activities "
+                    + "WHERE is_complete = 'true' "
+                    + "AND date_completed >= " + DateUtil.getDateAtStartOfDay(startDate).getTime() + " "
+                    + "AND date_completed <= " + DateUtil.getDateAtMidnight(endDate).getTime() + " "
+                    + "ORDER BY date_completed DESC");
+            try {
+                while (rs.next()) {
+                    activities.add(new Activity(rs));
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            } finally {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return activities;
+    }
 
     public ArrayList<Activity> getToDosAndReportsForChart(Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE (priority > -1 OR is_complete = 'true') "
-                    + "AND date_completed <= " + endDate.getTime() + ";");
+                    + "WHERE priority > -1 OR (is_complete = 'true' "
+                    + "AND date_completed <= " + DateUtil.getDateAtMidnight(endDate).getTime() + ") "
+                    + "ORDER BY date_completed DESC");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
