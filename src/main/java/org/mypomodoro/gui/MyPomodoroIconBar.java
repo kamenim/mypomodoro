@@ -48,7 +48,7 @@ public class MyPomodoroIconBar extends JPanel {
         if (PreferencesPanel.preferences.getAgileMode()) {
             myIcons.add(MyIcon.getInstance(view,
                     Labels.getString("IconBar.Burndown Chart"), "burndownButton",
-                    view.getBurndownPanel()));
+                    view.getChartTabbedPanel()));
         }
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));

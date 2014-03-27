@@ -99,6 +99,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     //Labels.getString("ReportListPanel.Time")
     public static int ID_KEY = 11;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
+    private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
@@ -249,7 +250,18 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick
                     }
-                    mouseHoverRow = rowIndex;
+                    // Change of row
+                    if (mouseHoverRow != rowIndex) {
+                        if (table.getSelectedRowCount() == 1) {
+                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
+                            Activity activity = ReportList.getList().getById(id);
+                            detailsPanel.selectInfo(activity);
+                            detailsPanel.showInfo();
+                            commentPanel.selectInfo(activity);
+                            commentPanel.showInfo();
+                        }
+                        mouseHoverRow = rowIndex;
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 } catch (IndexOutOfBoundsException ex) {
@@ -282,6 +294,15 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (table.getSelectedRowCount() == 1) {
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+                    Activity activity = ReportList.getList().getById(id);
+                    detailsPanel.selectInfo(activity);
+                    detailsPanel.showInfo();
+                    commentPanel.selectInfo(activity);
+                    commentPanel.showInfo();
+                }
                 mouseHoverRow = -1;
             }
         });
@@ -437,7 +458,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         EditPanel editPanel = new EditPanel(detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -669,7 +689,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+            renderer.setText((value == null || DateUtil.isSameDay((Date)value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }
     }

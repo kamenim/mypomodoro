@@ -229,7 +229,18 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick
                     }
-                    mouseHoverRow = rowIndex;
+                    // Change of row
+                    if (mouseHoverRow != rowIndex) {
+                        if (table.getSelectedRowCount() == 1) {
+                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
+                            Activity activity = ToDoList.getList().getById(id);
+                            detailsPanel.selectInfo(activity);
+                            detailsPanel.showInfo();
+                            commentPanel.selectInfo(activity);
+                            commentPanel.showInfo();
+                        }
+                        mouseHoverRow = rowIndex;
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse outside the table
                 } catch (IndexOutOfBoundsException ex) {
@@ -263,6 +274,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (table.getSelectedRowCount() == 1) {
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+                    Activity activity = ToDoList.getList().getById(id);
+                    detailsPanel.selectInfo(activity);
+                    detailsPanel.showInfo();
+                    commentPanel.selectInfo(activity);
+                    commentPanel.showInfo();
+                }
                 mouseHoverRow = -1;
             }
         });

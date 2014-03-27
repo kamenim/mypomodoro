@@ -18,7 +18,6 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -62,7 +60,7 @@ public class CreateInputForm extends JPanel {
     // Exclusion form
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);    
-    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), true);
+    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), false);
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     // Type form
@@ -95,7 +93,7 @@ public class CreateInputForm extends JPanel {
     private final Color defaultTargetColor = ColorUtil.BLACK;
     private final JCheckBox targetCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
     // Image form
-    private final JPanel imageInputFormPanel = new JPanel();
+    /*private final JPanel imageInputFormPanel = new JPanel();
     private final JPanel imageSizePanel = new JPanel();
     private JTextField imageName = new JTextField();
     private final String defaultImageName = "myAgilePomodoro";
@@ -108,10 +106,9 @@ public class CreateInputForm extends JPanel {
     private final JTextField imageHeight = new JTextField();
     private final int defaultImageWidth = 800;
     private final int defaultImageHeight = 600;
-    private final JCheckBox imageCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);
+    private final JCheckBox imageCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);*/
 
-    public CreateInputForm() {
-        //setBorder(new TitledBorder(new EtchedBorder(), ""));
+    public CreateInputForm() {        
         setLayout(new GridBagLayout());
         // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
         c.weightx = 1;
@@ -119,11 +116,10 @@ public class CreateInputForm extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         addDatesInputForm();
         addExclusionInputForm();
-        //addTypeInputFormPanel();
         addBurndownChartInputFormPanel();
         addBurnupChartInputFormPanel();
         addTargetInputFormPanel();
-        addImageInputFormPanel();
+        //addImageInputFormPanel();
     }
 
     private void addDatesInputForm() {
@@ -301,7 +297,7 @@ public class CreateInputForm extends JPanel {
         add(targetInputFormPanel, c);
     }
 
-    private void addImageInputFormPanel() {
+    /*private void addImageInputFormPanel() {
         c.gridx = 0;
         c.gridy = 5;
         c.weightx = 1.0;
@@ -314,7 +310,7 @@ public class CreateInputForm extends JPanel {
         GridBagConstraints cImage = new GridBagConstraints();
         addImageFields(cImage);
         add(imageInputFormPanel, c);
-    }
+    }*/
 
     private void addBurndownChartFields(GridBagConstraints cChart) {
         // Primary Y axis
@@ -489,7 +485,73 @@ public class CreateInputForm extends JPanel {
         targetInputFormPanel.add(targetColor, cChart);
     }
 
-    private void addImageFields(GridBagConstraints cImage) {
+    private class ImageFormat {
+
+        public static final String PNGExtention = "png";
+        public static final String JPGExtention = "jpg";
+        private final String formatName;
+        private final String extention;
+
+        public ImageFormat(String formatName, String extention) {
+            this.formatName = formatName;
+            this.extention = extention;
+        }
+
+        public String getExtention() {
+            return extention;
+        }
+
+        public boolean isPNGFormat() {
+            return extention.equals(PNGExtention);
+        }
+
+        public boolean isJPGFormat() {
+            return extention.equals(JPGExtention);
+        }
+
+        @Override
+        public String toString() {
+            return formatName;
+        }
+    }
+
+    public Date getStartDate() {
+        return startDatePicker.getDate();
+    }
+
+    public Date getEndDate() {
+        return endDatePicker.getDate();
+    }
+   
+    public JCheckBox getExcludeSaturdays() {
+        return excludeSaturdays;
+    }
+
+    public JCheckBox getExcludeSundays() {
+        return excludeSundays;
+    }
+
+    public JCheckBox getExcludeToDos() {
+        return excludeToDos;
+    }
+
+    public ArrayList<Date> getExcludedDates() {
+        return excludedDates;
+    }
+
+    public JCheckBox getBurndownChartCheckBox() {
+        return burndownChartCheckBox;
+    }
+
+    public JCheckBox getBurnupChartCheckBox() {
+        return burnupChartCheckBox;
+    }
+
+    public JCheckBox getTargetCheckBox() {
+        return targetCheckBox;
+    }
+
+    /*private void addImageFields(GridBagConstraints cImage) {
         // Image name
         cImage.gridx = 0;
         cImage.gridy = 0;
@@ -582,160 +644,7 @@ public class CreateInputForm extends JPanel {
         imageName.setText(defaultImageName);
     }
 
-    private class ImageFormat {
-
-        public static final String PNGExtention = "png";
-        public static final String JPGExtention = "jpg";
-        private final String formatName;
-        private final String extention;
-
-        public ImageFormat(String formatName, String extention) {
-            this.formatName = formatName;
-            this.extention = extention;
-        }
-
-        public String getExtention() {
-            return extention;
-        }
-
-        public boolean isPNGFormat() {
-            return extention.equals(PNGExtention);
-        }
-
-        public boolean isJPGFormat() {
-            return extention.equals(JPGExtention);
-        }
-
-        @Override
-        public String toString() {
-            return formatName;
-        }
-    }
-
-    public Date getStartDate() {
-        return startDatePicker.getDate();
-    }
-
-    public Date getEndDate() {
-        return endDatePicker.getDate();
-    }
-
-    /*private void addTypeInputFormPanel() {
-     c.gridx = 0;
-     c.gridy = 1;
-     c.weightx = 1.0;
-     c.weighty = 0.5;
-     c.anchor = GridBagConstraints.NORTH;
-     FormLabel typelabel = new FormLabel(
-     Labels.getString("BurndownChartPanel.Type") + "*: ");
-     typelabel.setMinimumSize(LABEL_DIMENSION);
-     typelabel.setPreferredSize(LABEL_DIMENSION);
-     add(typelabel, c);
-     c.gridx = 1;
-     c.gridy = 1;
-     c.weightx = 1.0;
-     c.weighty = 0.5;
-     c.gridwidth = 2;
-     c.anchor = GridBagConstraints.WEST;
-     typesInputFormPanel.setLayout(new GridBagLayout());
-     GridBagConstraints cTypePanels = new GridBagConstraints();
-     addTypesPanels(cTypePanels);
-     add(typesInputFormPanel, c);
-     }
-
-     private void addTypesPanels(GridBagConstraints cTypePanels) {
-     addTypesPanels(cTypePanels, 0);
-     }
-
-     private void addTypesPanels(final GridBagConstraints cTypePanels, final int gridY) {
-     cTypePanels.gridx = 0;
-     cTypePanels.gridy = gridY;
-     cTypePanels.anchor = GridBagConstraints.WEST;
-     JPanel typePanel = new JPanel();
-     typePanel.setLayout(new GridBagLayout());
-     GridBagConstraints cTypePanel = new GridBagConstraints();
-     TypeComboBox type = new TypeComboBox();
-     type.setMinimumSize(COMBO_BOX_DIMENSION);
-     type.setPreferredSize(COMBO_BOX_DIMENSION);
-     type.setEditable(true);
-     type.setBackground(ColorUtil.WHITE);
-     type.setFont(new Font(type.getFont().getName(), Font.PLAIN, type.getFont().getSize()));
-     cTypePanel.gridx = 0;
-     cTypePanel.gridy = 0;
-     typePanel.add(type, cTypePanel);
-     cTypePanel.gridx = 1;
-     cTypePanel.gridy = 0;
-     if (gridY == 0) {
-     cTypePanel.gridwidth = 2;
-     }
-     JButton plus = new JButton("+");
-     //plus.addMouseListener(new MouseAdapter() {
-
-     //@Override
-     //public void mouseClicked(MouseEvent e) {
-     //addTypesPanels(cTypePanels, gridY + 1);
-     //}
-     //});
-     plus.addActionListener(new ActionListener() {
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     addTypesPanels(cTypePanels, gridY + 1);
-     }
-     });
-     plus.setMinimumSize(new Dimension(44, 20));
-     plus.setPreferredSize(new Dimension(44, 20));
-     typePanel.add(plus, cTypePanel);
-     if (gridY > 0) {
-     cTypePanel.gridx = 2;
-     cTypePanel.gridy = 0;
-     JButton minus = new JButton("-");
-     minus.addActionListener(new ActionListener() {
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     typePanelList.get(gridY).setVisible(false);
-     typePanelList.remove(gridY);
-     types.remove(gridY);
-     }
-     });
-     minus.setMinimumSize(new Dimension(44, 20));
-     minus.setPreferredSize(new Dimension(44, 20));
-     typePanel.add(minus, cTypePanel);
-     }
-     types.add(type);
-     typePanelList.add(typePanel);
-     typesInputFormPanel.add(typePanel, cTypePanels);
-     }*/
-    public JCheckBox getExcludeSaturdays() {
-        return excludeSaturdays;
-    }
-
-    public JCheckBox getExcludeSundays() {
-        return excludeSundays;
-    }
-
-    public JCheckBox getExcludeToDos() {
-        return excludeToDos;
-    }
-
-    public ArrayList<Date> getExcludedDates() {
-        return excludedDates;
-    }
-
-    public JCheckBox getBurndownChartCheckBox() {
-        return burndownChartCheckBox;
-    }
-
-    public JCheckBox getBurnupChartCheckBox() {
-        return burnupChartCheckBox;
-    }
-
-    public JCheckBox getTargetCheckBox() {
-        return targetCheckBox;
-    }
-
     public JCheckBox getImageCheckBox() {
         return imageCheckBox;
-    }
+    }*/
 }

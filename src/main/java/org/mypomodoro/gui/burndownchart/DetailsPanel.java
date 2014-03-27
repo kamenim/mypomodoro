@@ -70,6 +70,9 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         textMap.remove("date_reopened");
+        if (!activity.isCompleted()) {
+            textMap.remove("date_completed");
+        }
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
