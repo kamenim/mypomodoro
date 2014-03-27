@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.buttons.RemoveButton;
 
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
@@ -40,7 +41,6 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     public DetailsPanel(CheckPanel checkPanel) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-// TODO add remove button
         addRemoveButton(checkPanel);
         addInformationArea();
     }
@@ -50,7 +50,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        //add(new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel), gbc);
+        add(new RemoveButton(Labels.getString("BurndownChartPanel.Remove"), checkPanel), gbc);
     }
 
     private void addInformationArea() {

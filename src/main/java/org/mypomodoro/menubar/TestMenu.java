@@ -113,7 +113,6 @@ public class TestMenu extends JMenu {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            // TODO review this code
                             Date date = (new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay + 1))).toDate();
                             while (new DateTime(date).getDayOfWeek() == DateTimeConstants.SATURDAY
                                     || new DateTime(date).getDayOfWeek() == DateTimeConstants.SUNDAY) { // excluding saturdays and sundays
