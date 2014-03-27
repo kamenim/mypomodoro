@@ -61,7 +61,8 @@ import org.mypomodoro.util.Labels;
 public class Chart extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JFreeChart burndownChart;
+
+    private JFreeChart charts;
     private ArrayList<Date> XAxisValues = new ArrayList<Date>();
     private float totalStoryPoints = 0;
     private ChartPanel chartPanel;
@@ -71,20 +72,31 @@ public class Chart extends JPanel {
         this.createInputForm = createInputForm;
     }
 
+    /**
+     * Creates charts (burndown, burn-up, target line)
+     *
+     */
     public void create() {
         removeAll();
+        totalStoryPoints = 0;
         XAxisValues = getXAxisValues(createInputForm.getStartDate(), createInputForm.getEndDate());
-        totalStoryPoints = 0; //reset
         for (Activity activity : ChartList.getList()) {
             totalStoryPoints += activity.getStoryPoints();
         }
-        System.err.println("totalStoryPoints = " + totalStoryPoints);
-        CategoryDataset dataset = createTargetDataset();
-        burndownChart = createChart(dataset);
-        chartPanel = new ChartPanel(burndownChart);
+        CategoryDataset dataset = new DefaultCategoryDataset();
+        if (createInputForm.getTargetCheckBox().isSelected()) {
+            dataset = createTargetDataset();
+        }
+        charts = createChart(dataset);
+        chartPanel = new ChartPanel(charts);
         add(chartPanel);
     }
 
+    /**
+     * Retrieves list of dates minus exclusions
+     *
+     * @return list of dates
+     */
     private ArrayList<Date> getXAxisValues(Date dateStart, Date dateEnd) {
         return DateUtil.getDatesWithExclusions(dateStart, dateEnd,
                 createInputForm.getExcludeSaturdays().isSelected(),
@@ -92,48 +104,55 @@ public class Chart extends JPanel {
                 createInputForm.getExcludedDates());
     }
 
+    /**
+     * Creates target line
+     *
+     * @return dataset
+     */
     private CategoryDataset createTargetDataset() {
         String label = "Target";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
-        // lower the total of story points by the number of points done the first day
-        for (Activity activity : ChartList.getList()) {
-            if (activity.isCompleted()
-                    && DateUtil.isEquals(activity.getDateCompleted(), XAxisValues.get(0))) {
-                storyPoints -= activity.getStoryPoints();
-            }
-        }
-        System.err.println("totalStoryPoints reduced = " + storyPoints);
-        dataset.addValue(storyPoints, label, XAxisValues.get(0)); // here : transform to day of the month
+        dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
         for (int i = 1; i < XAxisValues.size() - 1; i++) {
-            dataset.addValue(Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1))), label, XAxisValues.get(i));
+            dataset.addValue((Number) (Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
         }
-        dataset.addValue(0, label, XAxisValues.get(XAxisValues.size() - 1));
+        dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
         return dataset;
     }
 
-    private CategoryDataset createRemainingStoryPointsDataset() {
+    /**
+     * Creates burndown chart
+     *
+     * @return dataset
+     */
+    private CategoryDataset createBurndownChartDataset() {
         String label = "StoryPoints";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
         for (Date date : XAxisValues) {
+            int day = new DateTime(date).dayOfMonth().get();
+            if (DateUtil.inFuture(date)) {
+                dataset.addValue((Number) 0, label, day);
+            } else {
+                dataset.addValue((Number) storyPoints, label, day);
+            }
             for (Activity activity : ChartList.getList()) {
                 if (activity.isCompleted()
                         && DateUtil.isEquals(activity.getDateCompleted(), date)) {
                     storyPoints -= activity.getStoryPoints();
                 }
             }
-            int day = new DateTime(date).dayOfMonth().get();
-            if (DateUtil.inFuture(date)) {
-                dataset.addValue((Number)0, label, day);
-            } else {
-                dataset.addValue((Number)storyPoints, label, day);
-            }
         }
         return dataset;
     }
 
-    private CategoryDataset createCompletedTasksDataset(Date dateStart, Date dateEnd) {
+    /**
+     * Creates burn-up chart
+     *
+     * @return dataset
+     */
+    private CategoryDataset createBurnupDataset() {
 
         String label = "Completed";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -182,84 +201,90 @@ public class Chart extends JPanel {
         plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-        // Customise the primary Y/Range axis
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setLabel("STORY POINTS");
-        rangeAxis.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
-        rangeAxis.setAutoRangeIncludesZero(true);
-        rangeAxis.setAxisLineVisible(false);
-        rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
-        TickUnits customUnits = new TickUnits();
-        // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
-        int tick = 10;
-        int unit = 1;
-        while (totalStoryPoints > tick) {
-            if (totalStoryPoints > tick * 5) {
-                unit = unit * 10;
-            } else {
-                unit = unit * 5;
-            }
-            tick = tick * 10;
-        }
-        customUnits.add(new NumberTickUnit(unit));
-        rangeAxis.setStandardTickUnits(customUnits);
-        rangeAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize() + 1));
-
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
         categoryAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize()));
 
-        // Customise the line renderer
-        LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-        renderer.setDrawOutlines(false);
-        renderer.setSeriesStroke(
-                0, new BasicStroke(
-                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                        1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-        renderer.setSeriesPaint(0, Color.BLACK);
+        // Burndown chart
+        if (createInputForm.getBurndownChartCheckBox().isSelected()) {
+            // Customise the primary Y/Range axis
+            NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+            rangeAxis.setLabel("STORY POINTS");
+            rangeAxis.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
+                    new JLabel().getFont().getSize()));
+            rangeAxis.setAutoRangeIncludesZero(true);
+            rangeAxis.setAxisLineVisible(false);
+            rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
+            TickUnits customUnits = new TickUnits();
+            // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
+            int tick = 10;
+            int unit = 1;
+            while (totalStoryPoints > tick) {
+                if (totalStoryPoints > tick * 5) {
+                    unit = unit * 10;
+                } else {
+                    unit = unit * 5;
+                }
+                tick = tick * 10;
+            }
+            customUnits.add(new NumberTickUnit(unit));
+            rangeAxis.setStandardTickUnits(customUnits);
+            rangeAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
+                    new JLabel().getFont().getSize() + 1));
+            // Add the custom bar layered renderer to plot
+            CategoryDataset dataset2 = createBurndownChartDataset();
+            plot.setDataset(2, dataset2);
+            plot.mapDatasetToRangeAxis(2, 0);
+            LayeredBarRenderer renderer2 = new LayeredBarRenderer();
+            renderer2.setSeriesPaint(0, new Color(249, 192, 9));
+            renderer2.setSeriesBarWidth(0, 1.0);
+            plot.setRenderer(2, renderer2);
+            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+            renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+        }
 
-        // Add the custom bar layered renderer to plot
-        CategoryDataset dataset2 = createRemainingStoryPointsDataset();
-        plot.setDataset(2, dataset2);
-        plot.mapDatasetToRangeAxis(2, 0);
-        LayeredBarRenderer renderer2 = new LayeredBarRenderer();
-        renderer2.setSeriesPaint(0, new Color(249, 192, 9));
-        renderer2.setSeriesBarWidth(0, 1.0);
-        plot.setRenderer(2, renderer2);
-        plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-        renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+        // Target line
+        if (createInputForm.getTargetCheckBox().isSelected()) {
+            // Customise the target line renderer     
+            LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+            renderer.setDrawOutlines(false);
+            renderer.setSeriesStroke(
+                    0, new BasicStroke(
+                            2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                            1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+            renderer.setSeriesPaint(0, Color.BLACK);
+        }
 
-        // Customise the secondary Y axis
-        NumberAxis rangeAxis2 = new NumberAxis();
-        rangeAxis2.setLabel("COMPLETED TASKS %");
-        rangeAxis2.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
-        rangeAxis2.setAutoRangeIncludesZero(true);
-        rangeAxis2.setAxisLineVisible(false);
-        rangeAxis2.setRange(0, 100);
-        TickUnits customUnits2 = new TickUnits();
-        customUnits2.add(new NumberTickUnit(20));
-        rangeAxis2.setStandardTickUnits(customUnits2);
-        rangeAxis2.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize() + 1));
-
-        // Add the secondary Y axis to plot
-        plot.setRangeAxis(1, rangeAxis2);
-
-        // Add the custom bar layered renderer to plot
-        /*CategoryDataset dataset3 = createCompletedTasksDataset();
-         plot.setDataset(1, dataset3);
-         plot.mapDatasetToRangeAxis(1, 1);
-         LayeredBarRenderer renderer3 = new LayeredBarRenderer();
-         renderer3.setSeriesPaint(0, new Color(228, 92, 17));
-         renderer3.setSeriesBarWidth(0, 0.7);
-         plot.setRenderer(1, renderer3);
-         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-         renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2} %", NumberFormat.getInstance()));*/
+        // Burn-up chart
+        if (createInputForm.getBurnupChartCheckBox().isSelected()) {
+            // Customise the secondary Y axis
+            NumberAxis rangeAxis2 = new NumberAxis();
+            rangeAxis2.setLabel("COMPLETED TASKS %");
+            rangeAxis2.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
+                    new JLabel().getFont().getSize()));
+            rangeAxis2.setAutoRangeIncludesZero(true);
+            rangeAxis2.setAxisLineVisible(false);
+            rangeAxis2.setRange(0, 100);
+            TickUnits customUnits2 = new TickUnits();
+            customUnits2.add(new NumberTickUnit(20));
+            rangeAxis2.setStandardTickUnits(customUnits2);
+            rangeAxis2.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
+                    new JLabel().getFont().getSize() + 1));
+            // Add the secondary Y axis to plot
+            plot.setRangeAxis(1, rangeAxis2);
+            // Add the custom bar layered renderer to plot
+            CategoryDataset dataset3 = createBurnupDataset();
+            plot.setDataset(1, dataset3);
+            plot.mapDatasetToRangeAxis(1, 1);
+            LayeredBarRenderer renderer3 = new LayeredBarRenderer();
+            renderer3.setSeriesPaint(0, new Color(228, 92, 17));
+            renderer3.setSeriesBarWidth(0, 0.7);
+            plot.setRenderer(1, renderer3);
+            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+            renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2} %", NumberFormat.getInstance()));
+        }
         return chart;
     }
 
@@ -267,7 +292,7 @@ public class Chart extends JPanel {
         int imageWidth = 800;
         int imageHeight = 600;
         try {
-            ChartUtilities.saveChartAsPNG(new File(fileName), burndownChart, imageWidth, imageHeight);
+            ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
         } catch (IOException ex) {
             String title = Labels.getString("Common.Error");
             String message = Labels.getString("BurndownChartPanel.Image creation failed");
