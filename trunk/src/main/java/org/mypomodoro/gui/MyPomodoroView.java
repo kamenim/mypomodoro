@@ -53,7 +53,7 @@ public class MyPomodoroView extends JFrame {
     private final CreatePanel createPanel = new CreatePanel();
     private final ReportsPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
-    public final TabbedPanel burndownPanel = Main.burndownPanel;
+    public final TabbedPanel chartTabbedPanel = Main.chartTabbedPanel;
     private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
     private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
@@ -69,8 +69,8 @@ public class MyPomodoroView extends JFrame {
         return reportListPanel;
     }
 
-    public TabbedPanel getBurndownPanel() {
-        return burndownPanel;
+    public TabbedPanel getChartTabbedPanel() {
+        return chartTabbedPanel;
     }
 
     public CreatePanel getCreatePanel() {

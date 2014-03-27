@@ -91,6 +91,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         "ID"};
     public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
+    private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
@@ -224,12 +225,27 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (columnIndex == ID_KEY - 6) { // date and time
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
+                        String value = "";
+                        // The following may happen as tasks of the ToDo list may be mixed with tasks from the Report list
+                        if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+                            value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
+                        }
                         table.setToolTipText(value);
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick
                     }
-                    mouseHoverRow = rowIndex;
+                    // Change of row
+                    if (mouseHoverRow != rowIndex) {
+                        if (table.getSelectedRowCount() == 1) {
+                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
+                            Activity activity = ChartList.getList().getById(id);
+                            detailsPanel.selectInfo(activity);
+                            detailsPanel.showInfo();
+                            commentPanel.selectInfo(activity);
+                            commentPanel.showInfo();
+                        }
+                        mouseHoverRow = rowIndex;
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // do nothing. This may happen when removing rows and yet using the mouse
                 } catch (IndexOutOfBoundsException ex) {
@@ -262,6 +278,15 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (table.getSelectedRowCount() == 1) {
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+                    Activity activity = ChartList.getList().getById(id);
+                    detailsPanel.selectInfo(activity);
+                    detailsPanel.showInfo();
+                    commentPanel.selectInfo(activity);
+                    commentPanel.showInfo();
+                }
                 mouseHoverRow = -1;
             }
         });
@@ -270,8 +295,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         if (ChartList.getListSize() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                 /*if (index == 2) { // import tab
-                    continue;
-                }*/
+                 continue;
+                 }*/
                 controlPane.setEnabledAt(index, false);
             }
         } else {
@@ -397,9 +422,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 chart.create();
-                if (createInputForm.getImageCheckBox().isSelected()) {
-                    chart.saveImageChart((createInputForm.getImageName().length() != 0 ? createInputForm.getImageName() : "myAgilePomodoro") + ".png");
-                }
+                /*if (createInputForm.getImageCheckBox().isSelected()) {
+                 chart.saveImageChart((createInputForm.getImageName().length() != 0 ? createInputForm.getImageName() : "myAgilePomodoro") + ".png");
+                 }*/
                 tabbedPane.setEnabledAt(2, true);
                 tabbedPane.setSelectedIndex(2);
             }
@@ -415,10 +440,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        CommentPanel commentPanel = new CommentPanel(this);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         /*ImportPanel importPanel = new ImportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);*/
+         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);*/
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         add(controlPane, gbc);
@@ -428,7 +452,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     private AbstractActivitiesTableModel getTableModel() {
-        int rowIndex = ChartList.getListSize();
+        int rowIndex = ChartList.getList().size();
         int colIndex = columnNames.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
         Iterator<Activity> iterator = ChartList.getList().iterator();
@@ -436,7 +460,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             Activity currentActivity = iterator.next();
             tableData[i][0] = currentActivity.isUnplanned();
             // change date render to display empty cell when task not completed
-            tableData[i][1] = currentActivity.isCompleted() ? currentActivity.getDateCompleted() : new Date(0); // date completed formated via custom renderer (DateRenderer)
+            tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
             tableData[i][2] = currentActivity.getName();
             tableData[i][3] = currentActivity.getType();
             Integer poms = new Integer(currentActivity.getEstimatedPoms());
@@ -448,6 +472,11 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
 
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+            
             // this is mandatory to get columns with integers properly sorted
             @Override
             public Class getColumnClass(int column) {
@@ -468,7 +497,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         };
 
-        // listener on editable cells
         tableModel.addTableModelListener(new TableModelListener() {
 
             @Override
@@ -476,9 +504,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 // diactivate/gray out all tabs (except import)
                 if (ChartList.getListSize() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        /*if (index == 2) { // import tab
-                            continue;
-                        }*/
                         controlPane.setEnabledAt(index, false);
                     }
                 }
@@ -593,7 +618,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null) ? "" : DateUtil.getFormatedDate((Date) value));
+            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }
     }

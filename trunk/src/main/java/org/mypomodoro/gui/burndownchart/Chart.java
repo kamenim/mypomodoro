@@ -182,13 +182,15 @@ public class Chart extends JPanel {
                 "",
                 "",
                 "",
-                dataset, // data
+                dataset, // Target data
                 PlotOrientation.VERTICAL, // orientation
                 true, // include legend
                 true, // tooltips
                 false // urls
         );
         chart.setBackgroundPaint(Color.WHITE);
+
+        // Legend
         LegendTitle legend = chart.getLegend();
         legend.setItemFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize()));
@@ -197,9 +199,6 @@ public class Chart extends JPanel {
         // Customise the plot
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         plot.setBackgroundPaint(Color.WHITE);
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
-        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
@@ -207,10 +206,17 @@ public class Chart extends JPanel {
         categoryAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                 new JLabel().getFont().getSize()));
 
+        // Horizontal/Grid lines
+        if (createInputForm.getBurndownChartCheckBox().isSelected()) {
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
+            plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+        }
+
         // Burndown chart
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         if (createInputForm.getBurndownChartCheckBox().isSelected()) {
             // Customise the primary Y/Range axis
-            NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
             rangeAxis.setLabel("STORY POINTS");
             rangeAxis.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                     new JLabel().getFont().getSize()));
@@ -243,6 +249,9 @@ public class Chart extends JPanel {
             plot.setRenderer(2, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+        } else {
+            // hide primary axis            
+            rangeAxis.setVisible(false);
         }
 
         // Target line
@@ -288,7 +297,7 @@ public class Chart extends JPanel {
         return chart;
     }
 
-    public void saveImageChart(String fileName) {
+    /*public void saveImageChart(String fileName) {
         int imageWidth = 800;
         int imageHeight = 600;
         try {
@@ -299,5 +308,5 @@ public class Chart extends JPanel {
             JOptionPane.showConfirmDialog(Main.gui, message, title,
                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
         }
-    }
+    }*/
 }

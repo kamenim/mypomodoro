@@ -52,7 +52,7 @@ public class Main {
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportsPanel reportListPanel = new ReportsPanel();
-    public static final TabbedPanel burndownPanel = new TabbedPanel();
+    public static final TabbedPanel chartTabbedPanel = new TabbedPanel();
     public static final ReentrantLock datalock = new ReentrantLock();
     public static final MyPomodoroView gui = new MyPomodoroView();
 
