@@ -25,8 +25,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -217,7 +217,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 7] = Labels.getString("ToDoListPanel.Unplanned");
+        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date scheduled");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
@@ -235,9 +235,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 3) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
                         table.setToolTipText(value);
                     } else if (columnIndex == ID_KEY - 6) { // date
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
@@ -267,27 +264,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             }
         });
         // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // do nothing
-            }
+        table.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseExited(MouseEvent e) {

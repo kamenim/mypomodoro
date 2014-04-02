@@ -141,7 +141,7 @@ public class UnplannedPanel extends CreatePanel {
             panel.addActivity(newActivity);
             // get current selected row
             int row = panel.getTable().convertRowIndexToModel(panel.getTable().getSelectedRow());
-            // TODO insert row instead of refresh ?
+            // refresh the whole table (dont bother to insert a new row)
             panel.refresh();
             // reselect previously selected row
             panel.getTable().setRowSelectionInterval(row, row);

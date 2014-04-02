@@ -54,7 +54,7 @@ public class CreatePanel extends JPanel {
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addCreateInputForm();
-        addCreateButton();
+        addCheckButton();
     }
 
     private void addCreateInputForm() {
@@ -67,7 +67,7 @@ public class CreatePanel extends JPanel {
         add(new JScrollPane(createInputForm), gbc);
     }
 
-    private void addCreateButton() {
+    private void addCheckButton() {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;

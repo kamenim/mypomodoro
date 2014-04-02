@@ -33,11 +33,12 @@ public class CustomTableHeader extends JTableHeader {
     private String[] toolTipsText;
 
     public CustomTableHeader(JTable table) {
-        super(table.getColumnModel());
-        this.table = table;
+        super(table.getColumnModel());        
+        setTable(table);
         setToolTipText(""); // default tooltip        
         setBackground(ColorUtil.BLACK);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+        // Center column title
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
         setDefaultRenderer(renderer);
@@ -48,11 +49,13 @@ public class CustomTableHeader extends JTableHeader {
         Point p = e.getPoint();
         int viewColumnIndex = columnAtPoint(p);
         int modelColumnIndex = table.convertColumnIndexToModel(viewColumnIndex);
+        String toolTipText;
         if (toolTipsText[modelColumnIndex].length() == 0) {
-            return super.getToolTipText(e);
+            toolTipText = super.getToolTipText(e);
         } else {
-            return toolTipsText[modelColumnIndex];
+            toolTipText = toolTipsText[modelColumnIndex];
         }
+        return toolTipText;
     }
 
     public void setToolTipsText(String[] myToolTipsText) {
