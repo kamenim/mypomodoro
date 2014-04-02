@@ -19,17 +19,13 @@ package org.mypomodoro.gui.burndownchart;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -45,11 +41,9 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.joda.time.DateTime;
-import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
-import org.mypomodoro.util.Labels;
 
 /**
  * Agile-like burndown chart
@@ -152,27 +146,24 @@ public class Chart extends JPanel {
      *
      * @return dataset
      */
-    private CategoryDataset createBurnupDataset() {
-
-        String label = "Completed";
+    private CategoryDataset createBurnupChartDataset() {
+        String label = "StoryPoints";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        /*String[] XAxisValues = getXAxisValues();
-         dataset.addValue(0, label, XAxisValues[0]);
-         dataset.addValue(4, label, XAxisValues[1]);
-         dataset.addValue(4, label, XAxisValues[2]);
-         dataset.addValue(5, label, XAxisValues[3]);
-         dataset.addValue(8, label, XAxisValues[4]);
-         dataset.addValue(12, label, XAxisValues[5]);
-         dataset.addValue(29, label, XAxisValues[6]);
-         dataset.addValue(31, label, XAxisValues[7]);
-         dataset.addValue(31, label, XAxisValues[8]);
-         dataset.addValue(31, label, XAxisValues[9]);
-         dataset.addValue(38, label, XAxisValues[10]);
-         dataset.addValue(45, label, XAxisValues[11]);
-         dataset.addValue(51, label, XAxisValues[12]);
-         dataset.addValue(72, label, XAxisValues[13]);
-         dataset.addValue(78, label, XAxisValues[14]);*/
-
+        float storyPoints = 0;
+        for (Date date : XAxisValues) {
+            int day = new DateTime(date).dayOfMonth().get();
+            if (DateUtil.inFuture(date)) {
+                dataset.addValue((Number) 0, label, day);
+            } else {
+                dataset.addValue((Number) storyPoints, label, day);
+            }
+            for (Activity activity : ChartList.getList()) {
+                if (activity.isCompleted()
+                        && DateUtil.isEquals(activity.getDateCompleted(), date)) {
+                    storyPoints += activity.getStoryPoints();
+                }
+            }
+        }
         return dataset;
     }
 
@@ -188,6 +179,8 @@ public class Chart extends JPanel {
                 true, // tooltips
                 false // urls
         );
+        
+        // Color
         chart.setBackgroundPaint(Color.WHITE);
 
         // Legend
@@ -270,21 +263,32 @@ public class Chart extends JPanel {
         if (createInputForm.getBurnupChartCheckBox().isSelected()) {
             // Customise the secondary Y axis
             NumberAxis rangeAxis2 = new NumberAxis();
-            rangeAxis2.setLabel("COMPLETED TASKS %");
+            rangeAxis2.setLabel("STORY POINTS");
             rangeAxis2.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                     new JLabel().getFont().getSize()));
             rangeAxis2.setAutoRangeIncludesZero(true);
             rangeAxis2.setAxisLineVisible(false);
-            rangeAxis2.setRange(0, 100);
+            rangeAxis2.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
             TickUnits customUnits2 = new TickUnits();
-            customUnits2.add(new NumberTickUnit(20));
+            // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
+            int tick = 10;
+            int unit = 1;
+            while (totalStoryPoints > tick) {
+                if (totalStoryPoints > tick * 5) {
+                    unit = unit * 10;
+                } else {
+                    unit = unit * 5;
+                }
+                tick = tick * 10;
+            }
+            customUnits2.add(new NumberTickUnit(unit));
             rangeAxis2.setStandardTickUnits(customUnits2);
             rangeAxis2.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
                     new JLabel().getFont().getSize() + 1));
             // Add the secondary Y axis to plot
             plot.setRangeAxis(1, rangeAxis2);
             // Add the custom bar layered renderer to plot
-            CategoryDataset dataset3 = createBurnupDataset();
+            CategoryDataset dataset3 = createBurnupChartDataset();
             plot.setDataset(1, dataset3);
             plot.mapDatasetToRangeAxis(1, 1);
             LayeredBarRenderer renderer3 = new LayeredBarRenderer();
@@ -292,21 +296,21 @@ public class Chart extends JPanel {
             renderer3.setSeriesBarWidth(0, 0.7);
             plot.setRenderer(1, renderer3);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-            renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2} %", NumberFormat.getInstance()));
-        }
+            renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+        }        
         return chart;
     }
 
     /*public void saveImageChart(String fileName) {
-        int imageWidth = 800;
-        int imageHeight = 600;
-        try {
-            ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
-        } catch (IOException ex) {
-            String title = Labels.getString("Common.Error");
-            String message = Labels.getString("BurndownChartPanel.Image creation failed");
-            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-        }
-    }*/
+     int imageWidth = 800;
+     int imageHeight = 600;
+     try {
+     ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
+     } catch (IOException ex) {
+     String title = Labels.getString("Common.Error");
+     String message = Labels.getString("BurndownChartPanel.Image creation failed");
+     JOptionPane.showConfirmDialog(Main.gui, message, title,
+     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+     }
+     }*/
 }

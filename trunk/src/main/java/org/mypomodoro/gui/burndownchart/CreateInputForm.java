@@ -54,9 +54,9 @@ public class CreateInputForm extends JPanel {
     private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
     private final GridBagConstraints c = new GridBagConstraints();
     // Dates form
-    // TODO add ability to set dates in the future
     protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());    
     protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
+    // TODO add iteration combo boxes
     // Exclusion form
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);    

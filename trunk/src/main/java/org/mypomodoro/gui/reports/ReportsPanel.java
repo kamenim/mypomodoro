@@ -25,6 +25,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
@@ -84,20 +85,19 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
     // TODO remove column overestimated
+    // TOD combine estimated and real columns
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
         Labels.getString("Common.Estimated"),
-        Labels.getString("Common.Overestimated"),
-        Labels.getString("Common.Real"),
         Labels.getString("ReportListPanel.Diff I"),
         Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
     //Labels.getString("ReportListPanel.Time")
-    public static int ID_KEY = 11;
+    public static int ID_KEY = 9;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -143,12 +143,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 10).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
         //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
-        table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(dtcr); // type
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new EstimatedCellRenderer()); // estimated
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // title
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new EstimatedCellRenderer()); // estimated        
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
@@ -182,16 +181,13 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 10).setMaxWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 10).setMinWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 10).setPreferredWidth(90);
-        // Set width of estimated, real, diff I/II
-        table.getColumnModel().getColumn(ID_KEY - 7).setMaxWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 7).setMinWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 7).setPreferredWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(40);
+        table.getColumnModel().getColumn(ID_KEY - 8).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 8).setPreferredWidth(90);
+        // Set width of estimated, diff I/II
+        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(40);
         table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(40);
         table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(40);
@@ -203,15 +199,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
          table.getColumnModel().getColumn(2).setMinWidth(60);
          table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
         // Set min width of type column
-        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(100);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(100);
         // hide ID column
         table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // hide Overstimated column
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
@@ -220,9 +212,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 11] = Labels.getString("ToDoListPanel.Unplanned");
-        cloneColumnNames[ID_KEY - 10] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
+        cloneColumnNames[ID_KEY - 9] = Labels.getString("Common.Unplanned");
+        cloneColumnNames[ID_KEY - 8] = Labels.getString("Common.Date completed");
+        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -235,14 +227,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 try {
                     int rowIndex = table.rowAtPoint(p);
                     int columnIndex = table.columnAtPoint(p);
-                    if (columnIndex == ID_KEY - 9 || columnIndex == ID_KEY - 8) {
+                    if (columnIndex == ID_KEY - 7 || columnIndex == ID_KEY - 6) {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 7) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 10) { // date and time
+                    } else if (columnIndex == ID_KEY - 8) { // date
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
                         String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
@@ -270,28 +259,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             }
         });
         // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // do nothing
-            }
-
+        table.addMouseListener(new MouseAdapter() {
+            
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
@@ -484,25 +453,22 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             tableData[i][3] = currentActivity.getType();
             Integer poms = new Integer(currentActivity.getEstimatedPoms());
             tableData[i][4] = poms;
-            Integer overestimatedpoms = new Integer(currentActivity.getOverestimatedPoms());
-            tableData[i][5] = overestimatedpoms;
-            tableData[i][6] = currentActivity.getActualPoms();
-            tableData[i][7] = currentActivity.getActualPoms()
-                    - currentActivity.getEstimatedPoms();
-            tableData[i][8] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
+            tableData[i][5] = currentActivity.getActualPoms()
+                    - currentActivity.getEstimatedPoms(); // Diff I
+            tableData[i][6] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
                     - currentActivity.getEstimatedPoms()
                     - currentActivity.getOverestimatedPoms()
-                    : "";
-            tableData[i][9] = currentActivity.getStoryPoints();
-            tableData[i][10] = currentActivity.getIteration();
-            tableData[i][11] = currentActivity.getId();
+                    : ""; // Diff II
+            tableData[i][7] = currentActivity.getStoryPoints();
+            tableData[i][8] = currentActivity.getIteration();
+            tableData[i][9] = currentActivity.getId();
         }
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 9;
+                return columnIndex == ID_KEY - 7;
             }
 
             // this is mandatory to get columns with integers properly sorted
@@ -520,12 +486,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     case 6:
                         return Integer.class;
                     case 7:
-                        return Integer.class;
-                    case 8:
-                        return Integer.class;
-                    case 9:
                         return Float.class;
-                    case 10:
+                    case 8:
                         return Integer.class;
                     default:
                         return String.class;
@@ -545,10 +507,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
                     Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
                     Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 9) {
+                    if (column == ID_KEY - 7) {
                         if (data.toString().trim().length() == 0) {
                             // reset the original value. Title can't be empty.
-                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 9);
+                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 7);
                         } else {
                             act.setName(data.toString());
                             act.databaseUpdate();
@@ -723,15 +685,16 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-
+    
     class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text = value.toString();
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ReportList.getList().getById(id);
+            String text = activity.getActualPoms() + " / ";
+            text += value.toString();
             Integer overestimatedpoms = activity.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);

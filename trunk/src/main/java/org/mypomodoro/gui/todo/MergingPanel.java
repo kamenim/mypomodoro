@@ -136,7 +136,7 @@ public class MergingPanel extends CreatePanel {
                 message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
                 panel.addActivity(newActivity);
                 panel.reorderByPriority();
-                // TODO insert row instead of refresh?
+                // refresh the whole table (dont bother to insert a new row)
                 panel.refresh();
                 panel.refreshRemaining();
                 clearForm();

@@ -25,8 +25,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
@@ -127,6 +127,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 return c;
             }
         };
+        
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -150,9 +151,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for title
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new CustomTableRenderer()); // title                
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // priority
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // title                
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
@@ -204,7 +207,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         // add tooltip to header columns
         CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 5] = Labels.getString("ToDoListPanel.Unplanned");
+        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
         table.setTableHeader(customTableHeader);
@@ -223,9 +226,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 3) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
-                        table.setToolTipText(value);
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick
                     }
@@ -238,6 +238,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                             detailsPanel.showInfo();
                             commentPanel.selectInfo(activity);
                             commentPanel.showInfo();
+                            refreshIconLabels(table.convertRowIndexToModel(rowIndex));
                         }
                         mouseHoverRow = rowIndex;
                     }
@@ -250,27 +251,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
         table.addMouseMotionListener(new CustomInputAdapter());
         // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // do nothing
-            }
+        table.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseExited(MouseEvent e) {
@@ -282,6 +263,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     detailsPanel.showInfo();
                     commentPanel.selectInfo(activity);
                     commentPanel.showInfo();
+                    refreshIconLabels();
                 }
                 mouseHoverRow = -1;
             }
@@ -460,7 +442,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Unplanned"), unplannedPanel);
+        controlPane.add(Labels.getString("Common.Unplanned"), unplannedPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merging"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -802,8 +784,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public JLabel getPomodoroTime() {
         return pomodoroTime;
     }
-
+    
     public void refreshIconLabels() {
+        refreshIconLabels(table.getSelectedRow());
+    }
+
+    public void refreshIconLabels(int row) {
         if (ToDoList.getListSize() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
@@ -817,7 +803,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
-                int row = table.getSelectedRow();
                 Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {

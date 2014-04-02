@@ -26,8 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -129,7 +129,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         addChartTable(gbc);
-        addCheckButton(gbc);
+        addCreateButton(gbc);
         addTabPane(gbc);
     }
 
@@ -182,9 +182,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
         table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
         // Set width of estimated
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(60);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(60);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
         // Set min width of type column
         table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
         // hide ID column
@@ -193,14 +193,14 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
+            //table.setAutoCreateRowSorter(true);
         }
 
+        // TODO problem with header (not working here)
         // add tooltip to header columns
-        CustomTableHeader customTableHeader = new CustomTableHeader(table);
-        String[] cloneColumnNames = columnNames.clone();
-        // TODO create label Common.Unplanned
-        cloneColumnNames[ID_KEY - 7] = Labels.getString("ToDoListPanel.Unplanned");
+        CustomTableHeader customTableHeader = new CustomTableHeader(table);        
+        String[] cloneColumnNames = columnNames.clone();        
+        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         customTableHeader.setToolTipsText(cloneColumnNames);
@@ -219,10 +219,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 3) { // estimated
-                        String value = getLength(Integer.parseInt(String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex))));
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 6) { // date and time
+                    } else if (columnIndex == ID_KEY - 6) { // date
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
                         String value = "";
@@ -254,27 +251,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         });
         // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // do nothing
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // do nothing
-            }
+        table.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseExited(MouseEvent e) {
@@ -411,7 +388,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 });
     }
 
-    private void addCheckButton(GridBagConstraints gbc) {
+    private void addCreateButton(GridBagConstraints gbc) {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
@@ -652,16 +629,16 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-
+    
     class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text = value.toString();
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            // replace with methid getActivityById
             Activity activity = ChartList.getList().getById(id);
+            String text = activity.getActualPoms() + " / ";
+            text += value.toString();
             Integer overestimatedpoms = activity.getOverestimatedPoms();
             text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
             renderer.setText(text);

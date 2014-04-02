@@ -35,14 +35,7 @@ public final class ChartList extends AbstractActivities {
     public void refresh() {
         //  no use
     }
-
-    /*private ChartList(Date endDate) {
-     this(null, endDate);
-     }
-
-     private ChartList(Date startDate, Date endDate) {
-     refresh(startDate, endDate);
-     }*/
+    
     public void refresh(Date endDate) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getToDosAndReportsForChart(endDate)) {
