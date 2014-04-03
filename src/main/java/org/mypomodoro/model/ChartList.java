@@ -36,16 +36,23 @@ public final class ChartList extends AbstractActivities {
         //  no use
     }
     
-    public void refresh(Date endDate) {
+    public void refreshEndDate(Date endDate) {
         removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getToDosAndReportsForChart(endDate)) {
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartEndDate(endDate)) {
             super.add(act);
         }
     }
 
-    public void refresh(Date startDate, Date endDate) {
+    public void refreshDateRange(Date startDate, Date endDate) {
         removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getReportsForChart(startDate, endDate)) {
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate)) {
+            super.add(act);
+        }
+    }
+    
+    public void refreshIterationRange(int startIteration, int endIteration) {
+        removeAll();
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartIterationRange(startIteration, endIteration)) {
             super.add(act);
         }
     }

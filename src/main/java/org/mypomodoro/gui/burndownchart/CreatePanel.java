@@ -85,10 +85,14 @@ public class CreatePanel extends JPanel {
 
                         @Override
                         public void run() {
-                            if (createInputForm.getExcludeToDos().isSelected()) {
-                                ChartList.getList().refresh(createInputForm.getStartDate(), createInputForm.getEndDate());
-                            } else {
-                                ChartList.getList().refresh(createInputForm.getEndDate());                                
+                            if (createInputForm.getDatesCheckBox().isSelected()) {
+                                if (createInputForm.getExcludeToDos().isSelected()) {
+                                    ChartList.getList().refreshDateRange(createInputForm.getStartDate(), createInputForm.getEndDate());
+                                } else {
+                                    ChartList.getList().refreshEndDate(createInputForm.getEndDate());                                
+                                }
+                            } else if (createInputForm.getIterationsCheckBox().isSelected()) {
+                                ChartList.getList().refreshIterationRange(createInputForm.getStartIteration(), createInputForm.getEndIteration());
                             }
                         }
                     });

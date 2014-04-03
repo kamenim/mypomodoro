@@ -68,7 +68,6 @@ import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * GUI for viewing the Chart List.
@@ -225,7 +224,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                         String value = "";
                         // The following may happen as tasks of the ToDo list may be mixed with tasks from the Report list
                         if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
-                            value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
+                            value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted());
                         }
                         table.setToolTipText(value);
                     } else {

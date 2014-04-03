@@ -21,8 +21,6 @@ import java.awt.GridBagConstraints;
 import javax.swing.JOptionPane;
 
 import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -45,7 +43,6 @@ public class EditPanel extends CreatePanel {
 
     public EditPanel(ActivityInformation information) {
         this.information = information;
-        setBorder(new TitledBorder(new EtchedBorder(), ""));
     }
 
     @Override
@@ -76,7 +73,7 @@ public class EditPanel extends CreatePanel {
                 enableSaveButton();
             }
         });
-        add(reportInputForm, gbc);
+        add(new JScrollPane(reportInputForm), gbc);
     }
 
     @Override

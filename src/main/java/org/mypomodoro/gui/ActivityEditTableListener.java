@@ -45,9 +45,9 @@ public class ActivityEditTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        int[] row = table.getSelectedRows();
-        if (row.length == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row[0]), idKey);
+        if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
             Activity activity = activities.getById(id);
             panel.fillOutInputForm(activity);
         } else {
