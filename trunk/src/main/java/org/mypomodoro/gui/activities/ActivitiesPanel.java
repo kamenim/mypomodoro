@@ -71,7 +71,6 @@ import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * GUI for viewing what is in the ActivityList. This can be changed later. Right
@@ -239,7 +238,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (columnIndex == ID_KEY - 6) { // date
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy");
+                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy");
                         table.setToolTipText(value);
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick

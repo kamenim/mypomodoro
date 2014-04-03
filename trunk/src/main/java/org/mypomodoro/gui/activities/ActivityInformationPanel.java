@@ -47,16 +47,16 @@ public class ActivityInformationPanel extends JPanel implements ActivityInformat
         textMap = new LinkedHashMap<String, String>();
         textMap.put("date", (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDate(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDate())
+                + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy")
                 + (activity.isUnplanned() ? "]" : ""));
         textMap.put("date_completed", Labels.getString("Common.Date completed") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
+                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : ""));
         // Date reopened
         textMap.put("date_reopened", Labels.getString("Common.Date reopened") + ": "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted())
+                + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : ""));
         textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName());
         textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()));

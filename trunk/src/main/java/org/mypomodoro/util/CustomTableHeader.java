@@ -20,20 +20,20 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTableHeader;
 
 /**
  * Custom header
  *
  */
-public class CustomTableHeader extends JTableHeader {
+public class CustomTableHeader extends JXTableHeader {
 
     private String[] toolTipsText;
 
-    public CustomTableHeader(JTable table) {
-        super(table.getColumnModel());        
+    public CustomTableHeader(JXTable table) {
+        super(table.getColumnModel());
         setTable(table);
         setToolTipText(""); // default tooltip        
         setBackground(ColorUtil.BLACK);
@@ -48,13 +48,15 @@ public class CustomTableHeader extends JTableHeader {
     public String getToolTipText(MouseEvent e) {
         Point p = e.getPoint();
         int viewColumnIndex = columnAtPoint(p);
-        int modelColumnIndex = table.convertColumnIndexToModel(viewColumnIndex);
-        String toolTipText;
-        if (toolTipsText[modelColumnIndex].length() == 0) {
-            toolTipText = super.getToolTipText(e);
-        } else {
-            toolTipText = toolTipsText[modelColumnIndex];
-        }
+        String toolTipText = "";
+        //if (table != null) {
+            int modelColumnIndex = table.convertColumnIndexToModel(viewColumnIndex);
+            if (toolTipsText[modelColumnIndex].length() == 0) {
+                toolTipText = super.getToolTipText(e);
+            } else {
+                toolTipText = toolTipsText[modelColumnIndex];
+            }
+        //}
         return toolTipText;
     }
 

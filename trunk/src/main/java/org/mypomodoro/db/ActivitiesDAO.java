@@ -157,7 +157,7 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority;");
+            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority ASC;");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -228,7 +228,7 @@ public class ActivitiesDAO {
         return activity;
     }
     
-    public ArrayList<Activity> getReportsForChart(Date startDate, Date endDate) {
+    public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
@@ -256,7 +256,7 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public ArrayList<Activity> getToDosAndReportsForChart(Date endDate) {
+    public ArrayList<Activity> getActivitiesForChartEndDate(Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
@@ -264,6 +264,33 @@ public class ActivitiesDAO {
                     + "WHERE priority > -1 OR (is_complete = 'true' "
                     + "AND date_completed <= " + DateUtil.getDateAtMidnight(endDate).getTime() + ") "
                     + "ORDER BY date_completed DESC");
+            try {
+                while (rs.next()) {
+                    activities.add(new Activity(rs));
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            } finally {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    System.err.println(e);
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return activities;
+    }
+    
+    public ArrayList<Activity> getActivitiesForChartIterationRange(int startIteration, int endIteration) {
+        ArrayList<Activity> activities = new ArrayList<Activity>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT * FROM activities "
+                    + "WHERE iteration >= " + startIteration + " "
+                    + "AND iteration <= " + endIteration + " "
+                    + "ORDER BY iteration ASC");
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -345,8 +372,8 @@ public class ActivitiesDAO {
     // move all ToDos back to Activity list
     public void moveAllTODOs() {
         String updateSQL = "UPDATE activities SET "
-                + "priority = -1"
-                + " WHERE priority > -1 AND is_complete = 'false';";
+                + "priority = -1 "
+                + "WHERE priority > -1 AND is_complete = 'false';";
         try {
             database.lock();
             database.update("begin;");
@@ -394,7 +421,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities ORDER BY type");
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities ORDER BY type ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("type");
@@ -421,7 +448,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT author FROM activities ORDER BY author");
+            ResultSet rs = database.query("SELECT DISTINCT author FROM activities ORDER BY author ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("author");
@@ -448,7 +475,7 @@ public class ActivitiesDAO {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT place FROM activities ORDER BY place");
+            ResultSet rs = database.query("SELECT DISTINCT place FROM activities ORDER BY place ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("place");

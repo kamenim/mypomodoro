@@ -27,7 +27,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -71,7 +70,6 @@ import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * GUI for viewing the Report List.
@@ -84,8 +82,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
-    // TODO remove column overestimated
-    // TOD combine estimated and real columns
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -234,7 +230,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (columnIndex == ID_KEY - 8) { // date
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
                         Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE dd MMM yyyy") + " " + DateUtil.getFormatedTime(activity.getDateCompleted());
+                        String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted());
                         table.setToolTipText(value);
                     } else {
                         table.setToolTipText(""); // this way tooltip won't stick

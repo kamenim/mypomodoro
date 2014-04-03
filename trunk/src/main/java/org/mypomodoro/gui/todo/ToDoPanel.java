@@ -70,7 +70,6 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * GUI for viewing what is in the ToDoList. This can be changed later. Right now

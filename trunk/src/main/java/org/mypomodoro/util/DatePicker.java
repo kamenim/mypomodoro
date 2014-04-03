@@ -40,9 +40,9 @@ public final class DatePicker extends JXDatePicker {
     public void setDate(Date date) {
         super.setDate(date);
         if (!getEditor().getText().isEmpty()) {
-            editorText = getEditor().getText();
+            editorText = getEditor().getText(); // record the last selected date
         } else {
-            getEditor().setText(editorText);
+            getEditor().setText(editorText); // set the last selected date instead of empty field
         }
     }
 

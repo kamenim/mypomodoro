@@ -421,7 +421,7 @@ public class ActivityInputForm extends JPanel {
 
     public void setDate(Date value) {
         datePicker.setDate(value);
-        datePicker.setTodayWithLowerBounds();
+        datePicker.setDateWithLowerBounds(value);
     }
 
     public void setActivityId(int value) {
