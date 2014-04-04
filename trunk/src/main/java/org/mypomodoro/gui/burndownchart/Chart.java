@@ -179,7 +179,7 @@ public class Chart extends JPanel {
                 true, // tooltips
                 false // urls
         );
-        
+
         // Color
         chart.setBackgroundPaint(Color.WHITE);
 
@@ -291,7 +291,7 @@ public class Chart extends JPanel {
             plot.setRenderer(1, renderer3);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
-        }        
+        }
         return chart;
     }
 

@@ -123,7 +123,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
-        textMap.remove("date_reopened");        
+        textMap.remove("date_reopened");
         if (PreferencesPanel.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");

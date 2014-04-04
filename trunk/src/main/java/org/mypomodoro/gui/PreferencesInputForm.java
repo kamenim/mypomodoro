@@ -53,14 +53,15 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox systemTrayMessageBox;
     protected final JCheckBox alwaysOnTopBox;
     protected final JCheckBox agileModeBox;
+    protected final JCheckBox pomodoroModeBox;
     protected final JCheckBox plainHoursBox;
     protected final JCheckBox effectiveHoursBox;
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences"));     
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences"));
         titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         setBorder(titledborder);
-        
+
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
@@ -182,16 +183,28 @@ public class PreferencesInputForm extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
-                if (agileModeBox.isSelected()) {
-                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivityAgileMode);
-                    maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivityAgileMode);
-                } else {
-                    maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivity);
-                    maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivity);
-                }
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
+                // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)                
+                maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivityAgileMode);
+                maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivityAgileMode);
+                agileModeBox.setSelected(true);
+                pomodoroModeBox.setSelected(false);
+            }
+        });
+        pomodoroModeBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Agile.Pomodoro Mode"),
+                !PreferencesPanel.preferences.getAgileMode());
+        pomodoroModeBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+                maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivity);
+                maxNbPomPerActivitySlider.setSliderValue(initMaxNbPomPerActivity);
+                pomodoroModeBox.setSelected(true);
+                agileModeBox.setSelected(false);
             }
         });
         plainHoursBox = new JCheckBox(
@@ -254,6 +267,9 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 10;
         gbc.gridwidth = 2;
         addPlainHours(gbc);
+        gbc.gridy = 11;
+        gbc.gridwidth = 2;
+        addAlwaysOnTop(gbc);
     }
 
     private void addAgileMode(GridBagConstraints gbc) {
@@ -267,7 +283,7 @@ public class PreferencesInputForm extends JPanel {
         agileMode.add(agileModeBox, gbcAgileMode);
         gbcAgileMode.gridx = 1;
         gbcAgileMode.gridy = 0;
-        agileMode.add(alwaysOnTopBox, gbcAgileMode);
+        agileMode.add(pomodoroModeBox, gbcAgileMode);
         add(agileMode, gbc);
     }
 
@@ -326,5 +342,17 @@ public class PreferencesInputForm extends JPanel {
         gbcSystemTray.gridy = 0;
         plainHours.add(effectiveHoursBox, gbcSystemTray);
         add(plainHours, gbc);
+    }
+
+    private void addAlwaysOnTop(GridBagConstraints gbc) {
+        JPanel alwaysOnTop = new JPanel();
+        alwaysOnTop.setLayout(new GridBagLayout());
+        GridBagConstraints gbcAgileMode = new GridBagConstraints();
+        gbcAgileMode.fill = GridBagConstraints.HORIZONTAL;
+        gbcAgileMode.anchor = GridBagConstraints.NORTH;
+        gbcAgileMode.gridx = 0;
+        gbcAgileMode.gridy = 0;
+        alwaysOnTop.add(alwaysOnTopBox, gbcAgileMode);
+        add(alwaysOnTop, gbc);
     }
 }

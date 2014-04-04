@@ -127,7 +127,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
             }
         }
     }
-    
+
     public void repaint() {
         container.repaint();
     }

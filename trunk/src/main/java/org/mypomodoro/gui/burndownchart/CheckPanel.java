@@ -196,10 +196,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
         // TODO problem with header (not working here)
         // add tooltip to header columns                
-        String[] cloneColumnNames = columnNames.clone();        
+        String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";        
+        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -446,7 +446,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
             }
-            
+
             // this is mandatory to get columns with integers properly sorted
             @Override
             public Class getColumnClass(int column) {
@@ -622,7 +622,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
+
     class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override

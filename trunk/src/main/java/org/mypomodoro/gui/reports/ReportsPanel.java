@@ -209,7 +209,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 9] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 8] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";        
+        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -255,7 +255,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         });
         // This is to address the case/event when the mouse exit the table
         table.addMouseListener(new MouseAdapter() {
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
@@ -647,7 +647,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date)value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
+            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }
     }
@@ -681,7 +681,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
+
     class EstimatedCellRenderer extends CustomTableRenderer {
 
         @Override

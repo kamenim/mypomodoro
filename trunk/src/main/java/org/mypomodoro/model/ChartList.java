@@ -35,7 +35,7 @@ public final class ChartList extends AbstractActivities {
     public void refresh() {
         //  no use
     }
-    
+
     public void refreshEndDate(Date endDate) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartEndDate(endDate)) {
@@ -49,7 +49,7 @@ public final class ChartList extends AbstractActivities {
             super.add(act);
         }
     }
-    
+
     public void refreshIterationRange(int startIteration, int endIteration) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartIterationRange(startIteration, endIteration)) {

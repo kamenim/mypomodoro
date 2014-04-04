@@ -126,7 +126,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 return c;
             }
         };
-        
+
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -207,7 +207,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);        
+        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip and drag and drop
@@ -782,7 +782,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public JLabel getPomodoroTime() {
         return pomodoroTime;
     }
-    
+
     public void refreshIconLabels() {
         refreshIconLabels(table.getSelectedRow());
     }

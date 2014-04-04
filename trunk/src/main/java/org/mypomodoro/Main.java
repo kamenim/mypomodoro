@@ -50,9 +50,9 @@ import org.mypomodoro.util.RestartMac;
  *
  */
 public class Main {
-    
+
     // Default font for the application
-    public static Font font = new Font("Ebrima", Font.PLAIN, 13);    
+    public static Font font = new Font("Ebrima", Font.PLAIN, 13);
 
     public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
@@ -64,7 +64,7 @@ public class Main {
     public static final TabbedPanel chartTabbedPanel = new TabbedPanel();
     public static final CreatePanel createPanel = new CreatePanel();
     public static final ReentrantLock datalock = new ReentrantLock();
-    public static final MyPomodoroView gui = new MyPomodoroView();    
+    public static final MyPomodoroView gui = new MyPomodoroView();
 
     public static void updateView() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -153,7 +153,7 @@ public class Main {
         gui.setVisible(true);
         if (org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
             gui.setAlwaysOnTop(true);
-        }                
+        }
         // Set font for dialog boxes
         setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
         // Set font for the containers and their components
@@ -164,7 +164,7 @@ public class Main {
         changeFont(reportListPanel, font);
         changeFont(chartTabbedPanel, font);
         changeFont(createPanel, font);
-        
+
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override
