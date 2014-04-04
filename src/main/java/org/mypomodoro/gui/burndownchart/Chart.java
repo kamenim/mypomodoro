@@ -22,7 +22,6 @@ import java.awt.Font;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -41,6 +40,7 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.joda.time.DateTime;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
@@ -185,8 +185,7 @@ public class Chart extends JPanel {
 
         // Legend
         LegendTitle legend = chart.getLegend();
-        legend.setItemFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
+        legend.setItemFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         //chart.removeLegend();
 
         // Customise the plot
@@ -196,8 +195,7 @@ public class Chart extends JPanel {
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
-        categoryAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
+        categoryAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
 
         // Horizontal/Grid lines
         if (createInputForm.getBurndownChartCheckBox().isSelected()) {
@@ -211,8 +209,7 @@ public class Chart extends JPanel {
         if (createInputForm.getBurndownChartCheckBox().isSelected()) {
             // Customise the primary Y/Range axis
             rangeAxis.setLabel("STORY POINTS");
-            rangeAxis.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                    new JLabel().getFont().getSize()));
+            rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis.setAutoRangeIncludesZero(true);
             rangeAxis.setAxisLineVisible(false);
             rangeAxis.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
@@ -230,8 +227,7 @@ public class Chart extends JPanel {
             }
             customUnits.add(new NumberTickUnit(unit));
             rangeAxis.setStandardTickUnits(customUnits);
-            rangeAxis.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                    new JLabel().getFont().getSize() + 1));
+            rangeAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
             // Add the custom bar layered renderer to plot
             CategoryDataset dataset2 = createBurndownChartDataset();
             plot.setDataset(2, dataset2);
@@ -264,8 +260,7 @@ public class Chart extends JPanel {
             // Customise the secondary Y axis
             NumberAxis rangeAxis2 = new NumberAxis();
             rangeAxis2.setLabel("STORY POINTS");
-            rangeAxis2.setLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                    new JLabel().getFont().getSize()));
+            rangeAxis2.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis2.setAutoRangeIncludesZero(true);
             rangeAxis2.setAxisLineVisible(false);
             rangeAxis2.setRange(0, totalStoryPoints + totalStoryPoints / 100); // add 1% margin on top
@@ -283,8 +278,7 @@ public class Chart extends JPanel {
             }
             customUnits2.add(new NumberTickUnit(unit));
             rangeAxis2.setStandardTickUnits(customUnits2);
-            rangeAxis2.setTickLabelFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                    new JLabel().getFont().getSize() + 1));
+            rangeAxis2.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
             // Add the secondary Y axis to plot
             plot.setRangeAxis(1, rangeAxis2);
             // Add the custom bar layered renderer to plot

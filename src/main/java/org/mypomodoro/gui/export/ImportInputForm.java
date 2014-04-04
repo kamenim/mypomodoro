@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -64,8 +65,7 @@ public class ImportInputForm extends ExportInputForm {
         fileName.setPreferredSize(LABEL_DIMENSION);
         fileName.setEditable(false);
         fileName.setBackground(ColorUtil.WHITE);
-        fileName.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
+        fileName.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         fileChooserPanel.add(fileName, gbcf);
         gbcf.gridx = 1;
         gbcf.gridy = 0;
@@ -77,8 +77,7 @@ public class ImportInputForm extends ExportInputForm {
         JDialog d = new JDialog();
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
         Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
-        browseButton.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize()));
+        browseButton.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         browseButton.addActionListener(new ActionListener() {
 
             @Override

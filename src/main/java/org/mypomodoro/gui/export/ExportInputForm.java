@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
@@ -271,10 +272,9 @@ public class ExportInputForm extends JPanel {
         authorisationUrlTextField.setMargin(new Insets(10, 10, 10, 10));
         authorisationUrlTextField.setCaretPosition(0);
         // underline url
-        Font font = authorisationUrlTextField.getFont();
         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
         map.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        authorisationUrlTextField.setFont(font.deriveFont(map));
+        authorisationUrlTextField.setFont(Main.font.deriveFont(map));
         authorisationUrlTextField.setForeground(Color.BLUE);
         authorisationUrlTextField.setMinimumSize(new Dimension(500, 50));
         authorisationUrlTextField.setPreferredSize(new Dimension(500, 50));
@@ -679,8 +679,7 @@ public class ExportInputForm extends JPanel {
             }
             columnsComboBox = new JComboBox(columns);
             columnsComboBox.setBackground(ColorUtil.WHITE);
-            columnsComboBox.setFont(new Font(columnsComboBox.getFont().getName(), Font.PLAIN,
-                    columnsComboBox.getFont().getSize() - 2));
+            columnsComboBox.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize() - 2));
         }
 
         public JComboBox getColumnsComboBox() {

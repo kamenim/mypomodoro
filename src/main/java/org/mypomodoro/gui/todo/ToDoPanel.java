@@ -119,7 +119,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+                    ((JComponent) c).setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -204,11 +204,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
 
         // add tooltip to header columns
-        CustomTableHeader customTableHeader = new CustomTableHeader(table);
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        customTableHeader.setToolTipsText(cloneColumnNames);
+        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);        
         table.setTableHeader(customTableHeader);
 
         // Add tooltip and drag and drop
@@ -226,7 +225,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         value = value.length() > 0 ? value : null;
                         table.setToolTipText(value);
                     } else {
-                        table.setToolTipText(""); // this way tooltip won't stick
+                        table.setToolTipText(null); // this way tooltip won't stick
                     }
                     // Change of row
                     if (mouseHoverRow != rowIndex) {
@@ -269,10 +268,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         });
 
         // diactivate/gray out all tabs (except import)
-        if (ToDoList.getListSize()
-                == 0) {
+        if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
                 if (index == 5) { // import tab
+                    controlPane.setSelectedIndex(index);
                     continue;
                 }
                 controlPane.setEnabledAt(index, false);
@@ -337,7 +336,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         setBorder(titledborder);
     }
 
@@ -654,7 +653,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);

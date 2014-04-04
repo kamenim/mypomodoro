@@ -35,6 +35,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
@@ -75,10 +76,6 @@ public class ActivityInputForm extends JPanel {
         setLayout(new GridBagLayout());
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
-
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
-        setBorder(titledborder);
 
         addForm(gridy);
     }
@@ -143,7 +140,7 @@ public class ActivityInputForm extends JPanel {
         types.setMinimumSize(COMBO_BOX_DIMENSION);
         types.setPreferredSize(COMBO_BOX_DIMENSION);
         types.setEditable(true);
-        types.setFont(new Font(types.getFont().getName(), Font.PLAIN, types.getFont().getSize()));
+        types.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
         add(types, c);
     }
 
@@ -285,7 +282,7 @@ public class ActivityInputForm extends JPanel {
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
         authors.setEditable(true);
-        authors.setFont(new Font(authors.getFont().getName(), Font.PLAIN, authors.getFont().getSize()));
+        authors.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
         add(authors, c);
     }
 
@@ -304,7 +301,7 @@ public class ActivityInputForm extends JPanel {
         places.setMinimumSize(COMBO_BOX_DIMENSION);
         places.setPreferredSize(COMBO_BOX_DIMENSION);
         places.setEditable(true);
-        places.setFont(new Font(places.getFont().getName(), Font.PLAIN, places.getFont().getSize()));
+        places.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
         add(places, c);
     }
 
@@ -318,14 +315,14 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        descriptionField.setFont(this.getFont());
+        descriptionField.setFont(Main.font);
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
         descriptionField.setMargin(new Insets(3, 3, 3, 3)); // margin
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);
-        description.setFont(getFont());
+        description.setFont(Main.font);
         add(description, c);
     }
 

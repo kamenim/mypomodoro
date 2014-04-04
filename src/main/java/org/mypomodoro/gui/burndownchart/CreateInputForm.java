@@ -64,11 +64,13 @@ public class CreateInputForm extends JPanel {
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     final JCheckBox datesCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Dates"), true);
+    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, BorderFactory.createEtchedBorder());
     // Iterations form
     private final JPanel iterationsInputFormPanel = new JPanel();
     private final JComboBox startIteration = new JComboBox();
     private final JComboBox endIteration = new JComboBox();
     final JCheckBox iterationsCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Iterations"), true);
+    final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, BorderFactory.createEtchedBorder());
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
@@ -109,8 +111,6 @@ public class CreateInputForm extends JPanel {
      private final int defaultImageWidth = 800;
      private final int defaultImageHeight = 600;
      private final JCheckBox imageCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);*/
-    final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, BorderFactory.createEtchedBorder());
-    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, BorderFactory.createEtchedBorder());
 
     public CreateInputForm() {
         setLayout(new GridBagLayout());
@@ -698,8 +698,8 @@ public class CreateInputForm extends JPanel {
      cImageSize.gridx = 0;
      cImageSize.gridy = 0;
      imageWidth.setText("" + defaultImageWidth);
-     imageWidth.setFont(new Font(imageHeight.getFont().getName(), Font.BOLD,
-     imageHeight.getFont().getSize()));
+     imageWidth.setFont(new Font(Main.font.getName(), Font.BOLD,
+     Main.font.getSize()));
      imageWidth.setMinimumSize(IMAGE_SIZE_DIMENSION);
      imageWidth.setPreferredSize(IMAGE_SIZE_DIMENSION);
      imageSizePanel.add(imageWidth, cImageSize);
@@ -709,8 +709,8 @@ public class CreateInputForm extends JPanel {
      cImageSize.gridx = 2;
      cImageSize.gridy = 0;
      imageHeight.setText("" + defaultImageHeight);
-     imageHeight.setFont(new Font(imageHeight.getFont().getName(), Font.BOLD,
-     imageHeight.getFont().getSize()));
+     imageHeight.setFont(new Font(Main.font.getName(), Font.BOLD,
+     Main.font.getSize()));
      imageHeight.setMinimumSize(IMAGE_SIZE_DIMENSION);
      imageHeight.setPreferredSize(IMAGE_SIZE_DIMENSION);
      imageSizePanel.add(imageHeight, cImageSize);

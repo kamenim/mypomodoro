@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
@@ -63,7 +64,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         moveButton = new MoveToDoButton("<<<", todoPanel);
-        moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
+        moveButton.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 4));
         add(moveButton, gbc);
     }
 

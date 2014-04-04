@@ -65,6 +65,7 @@ public class TestMenu extends JMenu {
 
         public ResetDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Clear All Data"));
+            setFont(Main.font);
             addActionListener(new ActionListener() {
 
                 @Override
@@ -143,6 +144,7 @@ public class TestMenu extends JMenu {
 
         public TestDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Generate Test Data"));
+            setFont(Main.font);
             addActionListener(new ActionListener() {
 
                 @Override

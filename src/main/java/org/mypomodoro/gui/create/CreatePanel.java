@@ -28,6 +28,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -54,6 +56,10 @@ public class CreatePanel extends JPanel {
 
     public CreatePanel() {
         setLayout(new GridBagLayout());
+        
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
+        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        setBorder(titledborder);
 
         addInputFormPanel();
         addSaveButton();
@@ -137,7 +143,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
-        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+        validation.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         validation.setText(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }
 
@@ -164,7 +170,7 @@ public class CreatePanel extends JPanel {
 
     protected void invalidActivityAction() {
         validation.setForeground(ColorUtil.RED);
-        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD, validation.getFont().getSize()));
+        validation.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         validation.setText(Labels.getString("Common.Title is mandatory"));
     }
 

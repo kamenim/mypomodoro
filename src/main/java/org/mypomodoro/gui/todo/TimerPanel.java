@@ -49,11 +49,9 @@ public class TimerPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
     private final JLabel pomodoroTime;
-    private final ToDoPanel panel;
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
-        this.panel = panel;
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
@@ -92,6 +90,8 @@ public class TimerPanel extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTH;
+        // TODO problem with the way with set font in Main
+        //pomodoroTime.setFont(Main.font.deriveFont(40f));        
         pomodoroTime.setFont(pomodoroTime.getFont().deriveFont(40f));
         add(pomodoroTime, gbc);
     }
@@ -124,7 +124,8 @@ public class TimerPanel extends JPanel {
         Border compound = new CompoundBorder(line, margin);
         startButton.setBorder(compound);
         startButton.setFocusPainted(false); // removes borders around text
-        startButton.setFont(startButton.getFont().deriveFont(20f));
+        // startButton.setFont(Main.font.deriveFont(20f));
+        startButton.setFont(startButton.getFont().deriveFont(20f));        
         startButton.addActionListener(new ActionListener() {
 
             @Override

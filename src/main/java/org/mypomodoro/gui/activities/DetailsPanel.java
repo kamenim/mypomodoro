@@ -23,6 +23,7 @@ import java.util.Date;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
@@ -78,7 +79,7 @@ public class DetailsPanel extends ActivityInformationPanel implements ActivityIn
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         MoveButton moveButton = new MoveButton(">>>", activitiesPanel);
-        moveButton.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 4));
+        moveButton.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 4));
         add(moveButton, gbc);
     }
 
