@@ -56,7 +56,7 @@ public class CreatePanel extends JPanel {
 
     public CreatePanel() {
         setLayout(new GridBagLayout());
-        
+
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
         titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         setBorder(titledborder);

@@ -106,11 +106,11 @@ public class AboutPanel extends JDialog {
         title.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 24));
         panel.add(title, gbcpanel);
         /*gbcpanel.gridx = 0;
-        gbcpanel.gridy = 1;
-        gbcpanel.fill = GridBagConstraints.BOTH;
-        JLabel version = new JLabel(MyPomodoroView.MYPOMODORO_VERSION);
-        version.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize() + 2));
-        panel.add(version, gbcpanel);*/
+         gbcpanel.gridy = 1;
+         gbcpanel.fill = GridBagConstraints.BOTH;
+         JLabel version = new JLabel(MyPomodoroView.MYPOMODORO_VERSION);
+         version.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize() + 2));
+         panel.add(version, gbcpanel);*/
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 1;
         gbcpanel.fill = GridBagConstraints.BOTH;

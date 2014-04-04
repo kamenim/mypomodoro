@@ -125,7 +125,7 @@ public class TimerPanel extends JPanel {
         startButton.setBorder(compound);
         startButton.setFocusPainted(false); // removes borders around text
         // startButton.setFont(Main.font.deriveFont(20f));
-        startButton.setFont(startButton.getFont().deriveFont(20f));        
+        startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {
 
             @Override

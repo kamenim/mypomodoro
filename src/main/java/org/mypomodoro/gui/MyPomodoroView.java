@@ -77,7 +77,7 @@ public class MyPomodoroView extends JFrame {
     public CreatePanel getCreatePanel() {
         return createPanel;
     }
-    
+
     public PreferencesPanel getPreferencesPanel() {
         return preferencesPanel;
     }

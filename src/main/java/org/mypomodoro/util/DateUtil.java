@@ -127,7 +127,7 @@ public class DateUtil {
         DateTimeComparator dateComparator = DateTimeComparator.getDateOnlyInstance();
         return dateComparator.compare(date1, date2) == -1;
     }
-    
+
     /*
      * Check if a date1 is sooner than date2
      * 
@@ -147,16 +147,15 @@ public class DateUtil {
      * @return array list of days of months
      */
     /*public static ArrayList<Integer> getDaysOfMonth(Date dateStart, Date dateEnd) {
-        DateTime start = new DateTime(dateStart.getTime());
-        DateTime end = new DateTime(dateEnd.getTime());
-        ArrayList<Integer> days = new ArrayList<Integer>();
-        while (start.isBefore(end) || start.isEqual(end)) {
-            days.add(start.dayOfMonth().get());
-            start = start.plusDays(1);
-        }
-        return days;
-    }*/
-
+     DateTime start = new DateTime(dateStart.getTime());
+     DateTime end = new DateTime(dateEnd.getTime());
+     ArrayList<Integer> days = new ArrayList<Integer>();
+     while (start.isBefore(end) || start.isEqual(end)) {
+     days.add(start.dayOfMonth().get());
+     start = start.plusDays(1);
+     }
+     return days;
+     }*/
     /**
      * Returns an ordered list of dates of month between two dates minus
      * exclusions

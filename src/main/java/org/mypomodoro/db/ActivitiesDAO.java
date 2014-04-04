@@ -227,7 +227,7 @@ public class ActivitiesDAO {
         }
         return activity;
     }
-    
+
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
@@ -282,7 +282,7 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-    
+
     public ArrayList<Activity> getActivitiesForChartIterationRange(int startIteration, int endIteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {

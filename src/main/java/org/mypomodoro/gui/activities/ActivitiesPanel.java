@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -86,6 +87,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
+    private final JScrollPane scrollPane;
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -103,6 +105,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
+        
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -125,9 +128,19 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
-
+        scrollPane = new JScrollPane(table);
         addActivitiesTable(gbc);
+        // TODO make splitPane works
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                           scrollPane, controlPane);
+        splitPane.setOneTouchExpandable(true);
+        //splitPane.setContinuousLayout(true);
+        //splitPane.setResizeWeight(0.5);
+        add(splitPane, gbc);
         addTabPane(gbc);
+        
+        
+        
     }
 
     private void init() {
@@ -383,7 +396,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         add(scrollPane, gbc);
@@ -666,7 +678,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date)value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
+            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
             return renderer;
         }
     }

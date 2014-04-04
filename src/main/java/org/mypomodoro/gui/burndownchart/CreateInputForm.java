@@ -133,7 +133,7 @@ public class CreateInputForm extends JPanel {
         c.weighty = 0.5;
         //c.gridwidth = 2;        
         datesCheckBox.setFocusPainted(false);
-        datesCheckBox.setSelected(true);      
+        datesCheckBox.setSelected(true);
         datesCheckBox.addActionListener(new ActionListener() {
 
             @Override
