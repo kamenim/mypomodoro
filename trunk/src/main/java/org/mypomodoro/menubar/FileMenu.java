@@ -21,9 +21,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -71,6 +68,7 @@ public class FileMenu extends JMenu {
 
         public ControlPanelItem() {
             super(Labels.getString("FileMenu.Preferences"));
+            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-P
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                     ActionEvent.ALT_MASK));
@@ -86,7 +84,8 @@ public class FileMenu extends JMenu {
                     view.getIconBar().unHighlightIcon(selectedIcon);
                     view.setWindow(selectedIcon.getPanel());
                 }
-                view.setWindow(new PreferencesPanel());
+                PreferencesPanel preferencesPanel = view.getPreferencesPanel();
+                view.setWindow(preferencesPanel);
             }
         }
     }
@@ -97,6 +96,7 @@ public class FileMenu extends JMenu {
 
         public CreateActivityItem() {
             super(Labels.getString("FileMenu.New Activity"));
+            setFont(Main.font);
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
             addActionListener(new MenuItemListener());
@@ -122,6 +122,7 @@ public class FileMenu extends JMenu {
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
+            setFont(Main.font);
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
             addActionListener(new MenuItemListener());
         }

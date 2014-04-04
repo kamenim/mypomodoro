@@ -17,6 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.SystemTray;
@@ -28,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -55,8 +57,10 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox effectiveHoursBox;
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
-        setBorder(new TitledBorder(new EtchedBorder(),
-                Labels.getString("PreferencesPanel.Preferences")));
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences"));     
+        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        setBorder(titledborder);
+        
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());

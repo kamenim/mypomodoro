@@ -103,18 +103,16 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JLabel title = new JLabel("myAgilePomodoro");
-        title.setFont(new Font(new JLabel().getFont().getName(), Font.BOLD,
-                new JLabel().getFont().getSize() + 24));
+        title.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 24));
         panel.add(title, gbcpanel);
-        gbcpanel.gridx = 0;
+        /*gbcpanel.gridx = 0;
         gbcpanel.gridy = 1;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JLabel version = new JLabel(MyPomodoroView.MYPOMODORO_VERSION);
-        version.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN,
-                new JLabel().getFont().getSize() + 2));
-        panel.add(version, gbcpanel);
+        version.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize() + 2));
+        panel.add(version, gbcpanel);*/
         gbcpanel.gridx = 0;
-        gbcpanel.gridy = 2;
+        gbcpanel.gridy = 1;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JButton checkButton = new JButton(
                 Labels.getString("AboutPanel.Check for Updates"));
@@ -127,7 +125,7 @@ public class AboutPanel extends JDialog {
         });
         panel.add(checkButton, gbcpanel);
         gbcpanel.gridx = 0;
-        gbcpanel.gridy = 3;
+        gbcpanel.gridy = 2;
         gbcpanel.fill = GridBagConstraints.BOTH;
         String about = Labels.getString("AboutPanel.myPomodoro is a time management tool");
         JTextArea aboutTextArea = new JTextArea();
@@ -135,13 +133,12 @@ public class AboutPanel extends JDialog {
         aboutTextArea.setLineWrap(true);
         aboutTextArea.setWrapStyleWord(true);
         aboutTextArea.setText(about);
-        aboutTextArea.setFont(new Font(new JLabel().getFont().getName(),
-                Font.PLAIN, new JLabel().getFont().getSize()));
+        aboutTextArea.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
         aboutTextArea.setOpaque(false);
         aboutTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
         panel.add(aboutTextArea, gbcpanel);
         gbcpanel.gridx = 0;
-        gbcpanel.gridy = 4;
+        gbcpanel.gridy = 3;
         gbcpanel.fill = GridBagConstraints.BOTH;
         String credits = Labels.getString("AboutPanel.Credits");
         JTextArea creditsTextArea = new JTextArea();
@@ -149,8 +146,7 @@ public class AboutPanel extends JDialog {
         creditsTextArea.setLineWrap(true);
         creditsTextArea.setWrapStyleWord(true);
         creditsTextArea.setText(credits);
-        creditsTextArea.setFont(new Font(new JLabel().getFont().getName(),
-                Font.PLAIN, new JLabel().getFont().getSize()));
+        creditsTextArea.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
         creditsTextArea.setOpaque(false);
         creditsTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
         panel.add(creditsTextArea, gbcpanel);
@@ -171,8 +167,7 @@ public class AboutPanel extends JDialog {
         JEditorPane editorPane = new JEditorPane("text/html", license);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
                 Boolean.TRUE);
-        editorPane.setFont(new Font(new JLabel().getFont().getName(),
-                Font.PLAIN, new JLabel().getFont().getSize() - 4));
+        editorPane.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize() - 4));
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
         editorPane.addHyperlinkListener(new HyperlinkListener() {

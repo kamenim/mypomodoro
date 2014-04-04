@@ -50,7 +50,8 @@ public class MyPomodoroView extends JFrame {
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "3.0";
     private final ToDoPanel toDoPanel = Main.toDoPanel;
-    private final CreatePanel createPanel = new CreatePanel();
+    private final CreatePanel createPanel = Main.createPanel;
+    private final PreferencesPanel preferencesPanel = Main.preferencesPanel;
     private final ReportsPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
     public final TabbedPanel chartTabbedPanel = Main.chartTabbedPanel;
@@ -75,6 +76,10 @@ public class MyPomodoroView extends JFrame {
 
     public CreatePanel getCreatePanel() {
         return createPanel;
+    }
+    
+    public PreferencesPanel getPreferencesPanel() {
+        return preferencesPanel;
     }
 
     public MyPomodoroView() {

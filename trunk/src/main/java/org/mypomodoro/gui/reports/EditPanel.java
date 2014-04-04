@@ -43,6 +43,8 @@ public class EditPanel extends CreatePanel {
 
     public EditPanel(ActivityInformation information) {
         this.information = information;
+        
+        setBorder(null);
     }
 
     @Override

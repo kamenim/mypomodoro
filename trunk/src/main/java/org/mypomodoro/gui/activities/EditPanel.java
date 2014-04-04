@@ -44,6 +44,8 @@ public class EditPanel extends CreatePanel {
     public EditPanel(ActivitiesPanel activitiesPanel, ActivityInformation information) {
         this.activitiesPanel = activitiesPanel;
         this.information = information;
+        
+        setBorder(null);
     }
 
     @Override

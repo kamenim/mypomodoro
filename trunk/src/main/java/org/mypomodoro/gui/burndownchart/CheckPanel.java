@@ -55,6 +55,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -95,12 +96,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
-    private final CreateInputForm createInputForm;
     private final Chart chart;
 
-    public CheckPanel(JTabbedPane tabbedPane, CreateInputForm createInputForm, Chart chart) {
+    public CheckPanel(JTabbedPane tabbedPane, Chart chart) {
         this.tabbedPane = tabbedPane;
-        this.createInputForm = createInputForm;
         this.chart = chart;
 
         setLayout(new GridBagLayout());
@@ -116,7 +115,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+                    ((JComponent) c).setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -192,17 +191,16 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
-            //table.setAutoCreateRowSorter(true);
+            table.setAutoCreateRowSorter(true);
         }
 
         // TODO problem with header (not working here)
-        // add tooltip to header columns
-        CustomTableHeader customTableHeader = new CustomTableHeader(table);        
+        // add tooltip to header columns                
         String[] cloneColumnNames = columnNames.clone();        
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        customTableHeader.setToolTipsText(cloneColumnNames);
+        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";        
+        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 
@@ -228,7 +226,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                         }
                         table.setToolTipText(value);
                     } else {
-                        table.setToolTipText(""); // this way tooltip won't stick
+                        table.setToolTipText(null); // this way tooltip won't stick
                     }
                     // Change of row
                     if (mouseHoverRow != rowIndex) {
@@ -268,11 +266,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         });
 
         // diactivate/gray out all tabs (except import)
-        if (ChartList.getListSize() == 0) {
+        if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                /*if (index == 2) { // import tab
-                 continue;
-                 }*/
                 controlPane.setEnabledAt(index, false);
             }
         } else {
@@ -346,7 +341,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleChartList);
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         setBorder(titledborder);
     }
 
@@ -435,7 +430,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         for (int i = 0; i < ChartList.getListSize() && iterator.hasNext(); i++) {
             Activity currentActivity = iterator.next();
             tableData[i][0] = currentActivity.isUnplanned();
-            // change date render to display empty cell when task not completed
             tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
             tableData[i][2] = currentActivity.getName();
             tableData[i][3] = currentActivity.getType();
@@ -577,7 +571,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()) : table.getFont());
+            renderer.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             // replace with methid getActivityById

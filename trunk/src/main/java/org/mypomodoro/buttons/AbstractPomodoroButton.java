@@ -16,7 +16,9 @@
  */
 package org.mypomodoro.buttons;
 
+import java.awt.Font;
 import javax.swing.JButton;
+import org.mypomodoro.Main;
 
 /**
  * Template button
@@ -30,5 +32,6 @@ public class AbstractPomodoroButton extends JButton {
         super(label);
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
+        setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
     }
 }

@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.ColorUtil;
 
 public class SplashScreen extends JPanel {
@@ -32,7 +33,7 @@ public class SplashScreen extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         JLabel title = new JLabel("");
-        title.setFont(title.getFont().deriveFont(48f));
+        title.setFont(Main.font.deriveFont(48f));
         title.setForeground(ColorUtil.RED);
 
         c.gridx = 0;

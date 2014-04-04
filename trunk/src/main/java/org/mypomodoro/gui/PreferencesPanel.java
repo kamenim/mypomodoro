@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.RestartButton;
@@ -146,8 +147,7 @@ public class PreferencesPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
         validation.setForeground(ColorUtil.BLACK);
-        validation.setFont(new Font(validation.getFont().getName(), Font.BOLD,
-                validation.getFont().getSize()));
+        validation.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
         GridBagConstraints vgbc = new GridBagConstraints();
         vgbc.gridx = 0;
         vgbc.gridy = 0;
@@ -159,8 +159,7 @@ public class PreferencesPanel extends JPanel {
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { // no restart button for Mac OS (does not work - see RestartMac classe)
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
             restartLabel.setForeground(ColorUtil.BLACK);
-            restartLabel.setFont(new Font(restartLabel.getFont().getName(), Font.BOLD,
-                    restartLabel.getFont().getSize()));
+            restartLabel.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             validPanel.add(restartLabel, vgbc);
         } else {
             validPanel.add(restartButton, vgbc);

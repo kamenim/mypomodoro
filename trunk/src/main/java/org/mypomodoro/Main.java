@@ -16,18 +16,24 @@
  */
 package org.mypomodoro;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ComponentEvent;
+import java.util.Enumeration;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
+import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
@@ -44,17 +50,21 @@ import org.mypomodoro.util.RestartMac;
  *
  */
 public class Main {
+    
+    // Default font for the application
+    public static Font font = new Font("Ebrima", Font.PLAIN, 13);    
 
     public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     public static final Database database = new Database();
-    public static final PreferencesPanel controlPanel = new PreferencesPanel();
+    public static final PreferencesPanel preferencesPanel = new PreferencesPanel();
     public static final ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static final ToDoPanel toDoPanel = new ToDoPanel();
     public static final ReportsPanel reportListPanel = new ReportsPanel();
     public static final TabbedPanel chartTabbedPanel = new TabbedPanel();
+    public static final CreatePanel createPanel = new CreatePanel();
     public static final ReentrantLock datalock = new ReentrantLock();
-    public static final MyPomodoroView gui = new MyPomodoroView();
+    public static final MyPomodoroView gui = new MyPomodoroView();    
 
     public static void updateView() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -143,7 +153,18 @@ public class Main {
         gui.setVisible(true);
         if (org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
             gui.setAlwaysOnTop(true);
-        }
+        }                
+        // Set font for dialog boxes
+        setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
+        // Set font for the containers and their components
+        changeFont(gui, font);
+        changeFont(preferencesPanel, font);
+        changeFont(activitiesPanel, font);
+        changeFont(toDoPanel, font);
+        changeFont(reportListPanel, font);
+        changeFont(chartTabbedPanel, font);
+        changeFont(createPanel, font);
+        
         gui.addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override
@@ -156,5 +177,26 @@ public class Main {
                 gui.setSize(dGUI);
             }
         });
+    }
+
+    // Default font
+    public static void setUIFont(FontUIResource f) {
+        Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value != null && value instanceof FontUIResource) {
+                UIManager.put(key, f);
+            }
+        }
+    }
+
+    public static void changeFont(Component component, Font font) {
+        component.setFont(font);
+        if (component instanceof Container) {
+            for (Component child : ((Container) component).getComponents()) {
+                changeFont(child, font);
+            }
+        }
     }
 }
