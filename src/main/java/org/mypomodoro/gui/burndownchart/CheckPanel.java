@@ -40,6 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -81,6 +82,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
+    private final JPanel scrollPane = new JPanel();
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -125,10 +127,36 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
 
-        addChartTable(gbc);
-        addCreateButton(gbc);
-        addTabPane(gbc);
+        // Top pane
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        addChartTable(c);
+        addCreateButton(c);
+
+        // Bottom pane
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
+        addTabPane();
+
+        // Split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(0.5);
+        add(splitPane, gbc);
     }
 
     private void init() {
@@ -351,10 +379,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-        add(scrollPane, gbc);
+        JScrollPane pane = new JScrollPane(table);
+        pane.setMinimumSize(PANE_DIMENSION);
+        pane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.add(pane, gbc);
 
         table.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
@@ -400,24 +428,16 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 tabbedPane.setSelectedIndex(2);
             }
         });
-        add(checkButton, gbc);
+        scrollPane.add(checkButton, gbc);
     }
 
-    private void addTabPane(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
+    private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         /*ImportPanel importPanel = new ImportPanel(this);
          controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);*/
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        add(controlPane, gbc);
-
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
     }

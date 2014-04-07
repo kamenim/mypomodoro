@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -81,9 +82,11 @@ import org.mypomodoro.util.Labels;
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
-    //private static final Dimension PANE_DIMENSION = new Dimension(400, 50);
+    private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 25);
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
+    private final JPanel scrollPane = new JPanel();
     private static final String[] columnNames = {Labels.getString("Common.Priority"),
         "U",
         Labels.getString("Common.Title"),
@@ -130,12 +133,38 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
 
-        addToDoTable(gbc);
-        addTimerPanel(gbc);
-        addRemainingPomodoroPanel(gbc);
-        addToDoIconPanel(gbc);
-        addTabPane(gbc);
+        // Top pane
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        addToDoTable(c);
+        addTimerPanel(c);
+        addRemainingPomodoroPanel(c);
+        addToDoIconPanel(c);
+
+        // Bottom pane                
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
+        addTabPane();
+
+        // Split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(0.5);
+        add(splitPane, gbc);
     }
 
     private void init() {
@@ -347,7 +376,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weighty = 0.7;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new JScrollPane(table), gbc);
+        scrollPane.add(new JScrollPane(table), gbc);
 
         // Add listener to record selected row id and manage pomodoro timer
         table.getSelectionModel().addListSelectionListener(
@@ -400,7 +429,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-        add(wrapInBackgroundImage(
+        scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 new ImageIcon(Main.class
@@ -415,7 +444,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 0.7;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
-        add(pomodorosRemainingLabel, gbc);
+        scrollPane.add(pomodorosRemainingLabel, gbc);
         PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
     }
 
@@ -425,18 +454,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
-        add(iconLabel, gbc);
+        scrollPane.add(iconLabel, gbc);
     }
 
-    private void addTabPane(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        //controlPane.setMinimumSize(PANE_DIMENSION);
-        //controlPane.setPreferredSize(PANE_DIMENSION);
+    private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
@@ -446,8 +467,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        add(controlPane, gbc);
-
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
     }

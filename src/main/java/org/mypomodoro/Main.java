@@ -194,8 +194,8 @@ public class Main {
 
     public static void changeFont(Component component, Font font) {
         component.setFont(font);
-        if (component instanceof Container &&
-                !(component instanceof TimerPanel)) {
+        if (component instanceof Container
+                && !(component instanceof TimerPanel)) {
             for (Component child : ((Container) component).getComponents()) {
                 changeFont(child, font);
             }
