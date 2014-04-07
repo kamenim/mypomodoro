@@ -88,6 +88,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
     private final JXTable table;
     private final JScrollPane scrollPane;
+    private final JTabbedPane controlPane = new JTabbedPane();
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -99,13 +100,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
-    private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
-        
+
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -128,23 +128,28 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         init();
 
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        // Top pane
         scrollPane = new JScrollPane(table);
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
-        addActivitiesTable(gbc);
-        
-        controlPane.setMinimumSize(PANE_DIMENSION);
-        // TODO make splitPane works
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                           scrollPane, controlPane);
+
+        // Bottom pane
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
+        addTabPane();
+
+        // Split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
         splitPane.setOneTouchExpandable(true);
-        //splitPane.setContinuousLayout(true);
-        //splitPane.setResizeWeight(0.5);
+        splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(0.5);
         add(splitPane, gbc);
-        addTabPane(gbc);
-        
-        
-        
     }
 
     private void init() {
@@ -296,6 +301,34 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 mouseHoverRow = -1;
             }
         });
+
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+
+                        // See above for reason to set WHEN_FOCUSED here
+                        table.setInputMap(JTable.WHEN_FOCUSED, im);
+
+                        if (table.getSelectedRowCount() > 1) { // multiple selection
+                            // diactivate/gray out unused tabs
+                            controlPane.setEnabledAt(1, false); // edit
+                            controlPane.setEnabledAt(2, false); // comment
+                            if (controlPane.getSelectedIndex() == 1
+                            || controlPane.getSelectedIndex() == 2) {
+                                controlPane.setSelectedIndex(0); // switch to details panel
+                            }
+                        } else if (table.getSelectedRowCount() == 1) {
+                            // activate all panels
+                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                controlPane.setEnabledAt(index, true);
+                            }
+                        }
+                        setPanelBorder();
+                    }
+                });
+
         // diactivate/gray out all tabs (except import)
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
@@ -394,50 +427,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         setBorder(titledborder);
     }
 
-    private void addActivitiesTable(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.5;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(scrollPane, gbc);
-
-        // Add listener to record selected row id
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-
-                        // See above for reason to set WHEN_FOCUSED here
-                        table.setInputMap(JTable.WHEN_FOCUSED, im);
-
-                        if (table.getSelectedRowCount() > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            controlPane.setEnabledAt(1, false); // edit
-                            controlPane.setEnabledAt(2, false); // comment
-                            if (controlPane.getSelectedIndex() == 1
-                            || controlPane.getSelectedIndex() == 2) {
-                                controlPane.setSelectedIndex(0); // switch to details panel
-                            }
-                        } else if (table.getSelectedRowCount() == 1) {
-                            // activate all panels
-                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                controlPane.setEnabledAt(index, true);
-                            }
-                        }
-                        setPanelBorder();
-                    }
-                });
-    }
-
-    private void addTabPane(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
+    private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         EditPanel editPanel = new EditPanel(this, detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
@@ -446,8 +436,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        add(controlPane, gbc);
-
         showSelectedItemDetails(detailsPanel);
         showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
