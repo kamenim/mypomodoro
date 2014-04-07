@@ -129,7 +129,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
         scrollPane = new JScrollPane(table);
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
         addActivitiesTable(gbc);
+        
+        controlPane.setMinimumSize(PANE_DIMENSION);
         // TODO make splitPane works
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                            scrollPane, controlPane);
@@ -396,8 +400,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
         add(scrollPane, gbc);
 
         // Add listener to record selected row id

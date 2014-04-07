@@ -39,6 +39,7 @@ import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.gui.reports.ReportsPanel;
+import org.mypomodoro.gui.todo.TimerPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
@@ -193,7 +194,8 @@ public class Main {
 
     public static void changeFont(Component component, Font font) {
         component.setFont(font);
-        if (component instanceof Container) {
+        if (component instanceof Container &&
+                !(component instanceof TimerPanel)) {
             for (Component child : ((Container) component).getComponents()) {
                 changeFont(child, font);
             }
