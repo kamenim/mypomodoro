@@ -30,6 +30,7 @@ import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.MyPomodoroView;
+import static org.mypomodoro.gui.MyPomodoroView.MYPOMODORO_VERSION;
 import org.mypomodoro.menubar.help.AboutPanel;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.util.Labels;
@@ -187,7 +188,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AboutPanel dialog = new AboutPanel(new JDialog(), Labels.getString("HelpMenu.About myPomodoro"));
+                AboutPanel dialog = new AboutPanel(new JDialog(), Labels.getString("HelpMenu.About myPomodoro") + " " + MYPOMODORO_VERSION);
                 if (!org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
                     dialog.setModal(true); // modal except when Main.gui is set to be always on top (won't work)
                 }
