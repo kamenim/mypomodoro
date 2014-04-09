@@ -508,6 +508,10 @@ public class ChooseInputForm extends JPanel {
     public JCheckBox getTargetCheckBox() {
         return targetCheckBox;
     }
+    
+    public JCheckBox getBurnupTargetCheckBox() {
+        return burnupTargetCheckBox;
+    }
 
     public JCheckBox getScopeCheckBox() {
         return scopeCheckBox;
