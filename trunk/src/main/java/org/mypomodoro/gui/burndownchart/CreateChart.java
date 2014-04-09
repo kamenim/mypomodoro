@@ -108,7 +108,7 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurndownTargetDataset() {
-        String label = "Target";
+        String label = chooseInputForm.getTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
         dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
@@ -125,7 +125,7 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurnupTargetDataset() {
-        String label = "Target";
+        String label = chooseInputForm.getBurnupTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
         dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
@@ -142,7 +142,7 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurnupScopeDataset() {
-        String label = "Scope";
+        String label = chooseInputForm.getScopeLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate()));
         for (int i = 0; i < XAxisValues.size(); i++) {
@@ -160,7 +160,7 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurndownChartDataset() {
-        String label = "StoryPoints";
+        String label = chooseInputForm.getPrimaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
         for (Date date : XAxisValues) {
@@ -186,7 +186,7 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurnupChartDataset() {
-        String label = "StoryPoints";
+        String label = chooseInputForm.getSecondaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = 0;
         for (Date date : XAxisValues) {
@@ -256,19 +256,16 @@ public class CreateChart extends JPanel {
         categoryAxis.setAxisLineVisible(false);
         categoryAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
 
-        // Horizontal/Grid lines
-        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) {
-            plot.setRangeGridlinesVisible(true);
-            plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
-            plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
-        }
-
         //////////////////// X-AXIS //////////////////////////
         // Burndown chart
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // BURNDOWN
+        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // BURNDOWN            
+            // Horizontal/Grid lines for burndown
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
+            plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             // Customise the primary Y/Range axis
-            rangeAxis.setLabel("STORY POINTS");
+            rangeAxis.setLabel(chooseInputForm.getPrimaryYAxisName());
             rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis.setAutoRangeIncludesZero(true);
             rangeAxis.setAxisLineVisible(false);
@@ -293,7 +290,8 @@ public class CreateChart extends JPanel {
             plot.setDataset(4, dataset2);
             plot.mapDatasetToRangeAxis(4, 0);
             LayeredBarRenderer renderer2 = new LayeredBarRenderer();
-            renderer2.setSeriesPaint(0, new Color(249, 192, 9));
+            //renderer2.setSeriesPaint(0, new Color(249, 192, 9));
+            renderer2.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());            
             renderer2.setSeriesBarWidth(0, 1.0);
             plot.setRenderer(4, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
@@ -306,13 +304,13 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                renderer.setSeriesPaint(0, Color.BLACK);
+                renderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
             }
         } else if (chooseInputForm.getBurnupChartCheckBox().isSelected()
                 && chooseInputForm.getScopeCheckBox().isSelected()) { // Burnup scope
             CategoryDataset dataset2 = createBurnupScopeDataset();
             // Customise the primary Y/Range axis
-            rangeAxis.setLabel("SCOPE");
+            rangeAxis.setLabel(chooseInputForm.getScopePrimaryYAxisName());
             rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis.setAutoRangeIncludesZero(true);
             rangeAxis.setAxisLineVisible(false);
@@ -341,7 +339,7 @@ public class CreateChart extends JPanel {
                     0, new BasicStroke(
                             2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                             1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-            renderer2.setSeriesPaint(0, Color.RED);
+            renderer2.setSeriesPaint(0, chooseInputForm.getScopeColor());
             // the following two lines make values being displayed onto the chart along the line
             renderer2.setBaseItemLabelsVisible(true);
             renderer2.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
@@ -357,8 +355,8 @@ public class CreateChart extends JPanel {
         // Burn-up chart
         if (chooseInputForm.getBurnupChartCheckBox().isSelected()) {
             // Customise the secondary Y axis
-            NumberAxis rangeAxis2 = new NumberAxis();
-            rangeAxis2.setLabel("STORY POINTS");
+            NumberAxis rangeAxis2 = new NumberAxis();            
+            rangeAxis2.setLabel(chooseInputForm.getSecondaryYAxisName());
             rangeAxis2.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis2.setAutoRangeIncludesZero(true);
             rangeAxis2.setAxisLineVisible(false);
@@ -377,15 +375,23 @@ public class CreateChart extends JPanel {
             }
             customUnits2.add(new NumberTickUnit(unit));
             rangeAxis2.setStandardTickUnits(customUnits2);
+            // Horizontal/Grid lines for burndup
+            if (!chooseInputForm.getBurndownChartCheckBox().isSelected()) {
+                rangeAxis.setRange(rangeAxis2.getRange());
+                rangeAxis.setStandardTickUnits(customUnits2);
+                plot.setRangeGridlinesVisible(true);
+                plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
+                plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+            }
             rangeAxis2.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
             // Add the secondary Y axis to plot
-            plot.setRangeAxis(1, rangeAxis2);
+            plot.setRangeAxis(1, rangeAxis2);            
             // Add the custom bar layered renderer to plot
             CategoryDataset dataset3 = createBurnupChartDataset();
             plot.setDataset(3, dataset3);
             plot.mapDatasetToRangeAxis(3, 1);
             LayeredBarRenderer renderer3 = new LayeredBarRenderer();
-            renderer3.setSeriesPaint(0, new Color(228, 92, 17));
+            renderer3.setSeriesPaint(0, chooseInputForm.getSecondaryYAxisColor());
             renderer3.setSeriesBarWidth(0, 0.7);
             plot.setRenderer(3, renderer3);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
@@ -401,7 +407,7 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                renderer.setSeriesPaint(0, Color.BLACK);
+                renderer.setSeriesPaint(0, chooseInputForm.getBurnupTargetColor());
                 plot.setRenderer(2, renderer);
             }
         }
