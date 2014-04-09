@@ -377,8 +377,8 @@ public class CreateChart extends JPanel {
             rangeAxis2.setStandardTickUnits(customUnits2);
             // Horizontal/Grid lines for burndup
             if (!chooseInputForm.getBurndownChartCheckBox().isSelected()) {
-                rangeAxis.setRange(rangeAxis2.getRange());
-                rangeAxis.setStandardTickUnits(customUnits2);
+                //rangeAxis.setRange(rangeAxis2.getRange());
+                //rangeAxis.setStandardTickUnits(customUnits2);
                 plot.setRangeGridlinesVisible(true);
                 plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
                 plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
@@ -397,7 +397,7 @@ public class CreateChart extends JPanel {
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
             // Target line
-            if (chooseInputForm.getTargetCheckBox().isSelected()) {
+            if (chooseInputForm.getBurnupTargetCheckBox().isSelected()) {
                 CategoryDataset targetDataset = createBurnupTargetDataset();
                 plot.setDataset(2, targetDataset);
                 plot.mapDatasetToRangeAxis(2, 1);

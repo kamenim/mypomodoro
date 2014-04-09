@@ -62,7 +62,7 @@ public class TabbedPanel extends JPanel {
             public void stateChanged(ChangeEvent e) {
                 int selectedTabIndex = chartTabbedPane.getSelectedIndex();
                 while (selectedTabIndex < chartTabbedPane.getTabCount()) {
-                    chartTabbedPane.setEnabledAt(selectedTabIndex + 1, false);
+                    chartTabbedPane.setEnabledAt(selectedTabIndex, false);
                     selectedTabIndex++;
                 }
             }
