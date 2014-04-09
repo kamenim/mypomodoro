@@ -80,8 +80,6 @@ public class ChooseInputForm extends JPanel {
     private final JCheckBox burnupTargetCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
     // Burn-up Scope Line form
     private final JPanel scopeInputFormPanel = new JPanel();
-    private JTextField scopePrimaryYAxisName = new JTextField();
-    private final String defaultScopePrimaryYAxisName = Labels.getString("BurndownChartPanel.Story Points");
     private JTextField scopeLegend = new JTextField();
     private final String defaultScopeLegend = Labels.getString("BurndownChartPanel.Scope");
     private JTextField scopeColor = new JTextField();
@@ -429,26 +427,9 @@ public class ChooseInputForm extends JPanel {
 
     private void addScopeFields() {
         GridBagConstraints cChart = new GridBagConstraints();
-        // Name
-        cChart.gridx = 0;
-        cChart.gridy = 0;
-        //cChart.weighty = 0.5;
-        FormLabel primaryYAxisLabel = new FormLabel(
-                "Y1-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
-        primaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
-        primaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
-        scopeInputFormPanel.add(primaryYAxisLabel, cChart);
-        cChart.gridx = 1;
-        cChart.gridy = 0;
-        //cChart.weighty = 0.5;
-        scopePrimaryYAxisName = new JTextField();
-        scopePrimaryYAxisName.setText(defaultScopePrimaryYAxisName);
-        scopePrimaryYAxisName.setMinimumSize(COMBO_BOX_DIMENSION);
-        scopePrimaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
-        scopeInputFormPanel.add(scopePrimaryYAxisName, cChart);
         // Legend
         cChart.gridx = 0;
-        cChart.gridy = 1;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         FormLabel legendLabel = new FormLabel(
                 "X-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
@@ -456,7 +437,7 @@ public class ChooseInputForm extends JPanel {
         legendLabel.setPreferredSize(LABEL_DIMENSION);
         scopeInputFormPanel.add(legendLabel, cChart);
         cChart.gridx = 1;
-        cChart.gridy = 1;
+        cChart.gridy = 0;
         //cChart.weighty = 0.5;
         scopeLegend = new JTextField();
         scopeLegend.setText(defaultScopeLegend);
@@ -465,7 +446,7 @@ public class ChooseInputForm extends JPanel {
         scopeInputFormPanel.add(scopeLegend, cChart);
         // Color
         cChart.gridx = 0;
-        cChart.gridy = 2;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
         FormLabel colorLabel = new FormLabel(
                 Labels.getString("BurndownChartPanel.Color") + ": ");
@@ -473,7 +454,7 @@ public class ChooseInputForm extends JPanel {
         colorLabel.setPreferredSize(LABEL_DIMENSION);
         scopeInputFormPanel.add(colorLabel, cChart);
         cChart.gridx = 1;
-        cChart.gridy = 2;
+        cChart.gridy = 1;
         //cChart.weighty = 0.5;
         cChart.anchor = GridBagConstraints.WEST;
         scopeColor = new JTextField();
@@ -555,10 +536,6 @@ public class ChooseInputForm extends JPanel {
 
     public String getScopeLegend() {
         return scopeLegend.getText();
-    }
-    
-    public String getScopePrimaryYAxisName() {
-        return scopePrimaryYAxisName.getText();
     }
 
     public String getPrimaryYAxisLegend() {

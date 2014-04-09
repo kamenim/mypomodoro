@@ -210,17 +210,15 @@ public class CreateChart extends JPanel {
      * Creates charts
      *
      * Rendering index order (value to be set on methods : setDataset,
-     * mapDatasetToRangeAxis and setRenderer for each renderer) 
-     * 0 : target burndown (see ChartFactory.createLineChart) 
-     * 1 : scope burnup (on top of target burnup) 
-     * 2 : target burnup (on top of burnup) 
-     * 3 : burnup (on top of burndown) 
-     * 4 : burndown
+     * mapDatasetToRangeAxis and setRenderer for each renderer) 0 : target
+     * burndown (see ChartFactory.createLineChart) 1 : scope burnup (on top of
+     * target burnup) 2 : target burnup (on top of burnup) 3 : burnup (on top of
+     * burndown) 4 : burndown
      *
      * @param dataset the primary target dataset
      */
     private JFreeChart createChart() {
-        
+
         // Primary target dataset
         CategoryDataset dataset = null;
         if (chooseInputForm.getBurndownChartCheckBox().isSelected()
@@ -290,8 +288,7 @@ public class CreateChart extends JPanel {
             plot.setDataset(4, dataset2);
             plot.mapDatasetToRangeAxis(4, 0);
             LayeredBarRenderer renderer2 = new LayeredBarRenderer();
-            //renderer2.setSeriesPaint(0, new Color(249, 192, 9));
-            renderer2.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());            
+            renderer2.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());
             renderer2.setSeriesBarWidth(0, 1.0);
             plot.setRenderer(4, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
@@ -305,47 +302,8 @@ public class CreateChart extends JPanel {
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
                 renderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
+                plot.setRenderer(0, renderer);
             }
-        } else if (chooseInputForm.getBurnupChartCheckBox().isSelected()
-                && chooseInputForm.getScopeCheckBox().isSelected()) { // Burnup scope
-            CategoryDataset dataset2 = createBurnupScopeDataset();
-            // Customise the primary Y/Range axis
-            rangeAxis.setLabel(chooseInputForm.getScopePrimaryYAxisName());
-            rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
-            rangeAxis.setAutoRangeIncludesZero(true);
-            rangeAxis.setAxisLineVisible(false);
-            rangeAxis.setRange(0, maxSumStoryPointsForScopeLine + maxSumStoryPointsForScopeLine / 100); // add 1% margin on top
-            TickUnits customUnits = new TickUnits();
-            // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
-            int tick = 10;
-            int unit = 1;
-            while (maxSumStoryPointsForScopeLine > tick) {
-                if (maxSumStoryPointsForScopeLine > tick * 5) {
-                    unit = unit * 10;
-                } else {
-                    unit = unit * 5;
-                }
-                tick = tick * 10;
-            }
-            customUnits.add(new NumberTickUnit(unit));
-            rangeAxis.setStandardTickUnits(customUnits);
-            rangeAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
-            // Add the custom line renderer to plot
-            plot.setDataset(1, dataset2);
-            plot.mapDatasetToRangeAxis(1, 0);
-            LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-            renderer2.setDrawOutlines(false);
-            renderer2.setSeriesStroke(
-                    0, new BasicStroke(
-                            2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                            1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-            renderer2.setSeriesPaint(0, chooseInputForm.getScopeColor());
-            // the following two lines make values being displayed onto the chart along the line
-            renderer2.setBaseItemLabelsVisible(true);
-            renderer2.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
-            plot.setRenderer(1, renderer2);
-            //plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-            renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
         } else {
             // hide primary axis            
             rangeAxis.setVisible(false);
@@ -355,7 +313,7 @@ public class CreateChart extends JPanel {
         // Burn-up chart
         if (chooseInputForm.getBurnupChartCheckBox().isSelected()) {
             // Customise the secondary Y axis
-            NumberAxis rangeAxis2 = new NumberAxis();            
+            NumberAxis rangeAxis2 = new NumberAxis();
             rangeAxis2.setLabel(chooseInputForm.getSecondaryYAxisName());
             rangeAxis2.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
             rangeAxis2.setAutoRangeIncludesZero(true);
@@ -375,21 +333,25 @@ public class CreateChart extends JPanel {
             }
             customUnits2.add(new NumberTickUnit(unit));
             rangeAxis2.setStandardTickUnits(customUnits2);
-            // Horizontal/Grid lines for burndup
-            if (!chooseInputForm.getBurndownChartCheckBox().isSelected()) {
-                //rangeAxis.setRange(rangeAxis2.getRange());
-                //rangeAxis.setStandardTickUnits(customUnits2);
+            rangeAxis2.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
+            // Add the secondary Y axis to plot
+            if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // when burndown, range axis for the burnup on the right
+                plot.setRangeAxis(1, rangeAxis2);
+                CategoryDataset dataset3 = createBurnupChartDataset();
+                plot.setDataset(3, dataset3);
+                plot.mapDatasetToRangeAxis(3, 1);
+            } else { // no burndown, range axis for the burnup on the left
+                plot.setRangeAxis(0, rangeAxis2);
+                CategoryDataset dataset3 = createBurnupChartDataset();
+                plot.setDataset(3, dataset3);
+                plot.mapDatasetToRangeAxis(3, 0);
+                // Horizontal/Grid lines for burndup            
                 plot.setRangeGridlinesVisible(true);
                 plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
                 plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             }
-            rangeAxis2.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
-            // Add the secondary Y axis to plot
-            plot.setRangeAxis(1, rangeAxis2);            
             // Add the custom bar layered renderer to plot
-            CategoryDataset dataset3 = createBurnupChartDataset();
-            plot.setDataset(3, dataset3);
-            plot.mapDatasetToRangeAxis(3, 1);
+
             LayeredBarRenderer renderer3 = new LayeredBarRenderer();
             renderer3.setSeriesPaint(0, chooseInputForm.getSecondaryYAxisColor());
             renderer3.setSeriesBarWidth(0, 0.7);
@@ -400,8 +362,12 @@ public class CreateChart extends JPanel {
             if (chooseInputForm.getBurnupTargetCheckBox().isSelected()) {
                 CategoryDataset targetDataset = createBurnupTargetDataset();
                 plot.setDataset(2, targetDataset);
-                plot.mapDatasetToRangeAxis(2, 1);
-                LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+                if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // when burndown, range axis for the target on the right
+                    plot.mapDatasetToRangeAxis(2, 1);
+                } else { // no burndown, range axis for the target on the left
+                    plot.mapDatasetToRangeAxis(2, 0);  
+                }
+                LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
                 renderer.setDrawOutlines(false);
                 renderer.setSeriesStroke(
                         0, new BasicStroke(
@@ -409,6 +375,30 @@ public class CreateChart extends JPanel {
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
                 renderer.setSeriesPaint(0, chooseInputForm.getBurnupTargetColor());
                 plot.setRenderer(2, renderer);
+            }
+            if (chooseInputForm.getScopeCheckBox().isSelected()) { // Burnup scope
+                NumberAxis rangeAxis3 = new NumberAxis();
+                CategoryDataset dataset2 = createBurnupScopeDataset();
+                rangeAxis3.setAutoRangeIncludesZero(true);
+                rangeAxis3.setAxisLineVisible(false);                
+                rangeAxis3.setRange(0, maxSumStoryPointsForScopeLine + maxSumStoryPointsForScopeLine / 100); // add 1% margin on top
+                rangeAxis3.setVisible(false); // hide tick values                
+                // Add the custom line renderer to plot
+                plot.setRangeAxis(1, rangeAxis3);
+                plot.setDataset(1, dataset2);
+                plot.mapDatasetToRangeAxis(1, 1); // range axis for the scope on the right
+                LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
+                renderer2.setDrawOutlines(false);
+                renderer2.setSeriesStroke(
+                        0, new BasicStroke(
+                                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                                1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+                renderer2.setSeriesPaint(0, chooseInputForm.getScopeColor());
+                // the following two lines make values being displayed onto the chart along the scope line
+                renderer2.setBaseItemLabelsVisible(true);
+                renderer2.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
+                plot.setRenderer(1, renderer2);
+                renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
             }
         }
         return chart;
