@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
@@ -228,57 +229,48 @@ public class ActivitiesDAO {
         return activity;
     }
 
-    public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate) {
+    public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
-        try {
-            database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE is_complete = 'true' "
-                    + "AND date_completed >= " + DateUtil.getDateAtStartOfDay(startDate).getTime() + " "
-                    + "AND date_completed <= " + DateUtil.getDateAtMidnight(endDate).getTime() + " "
-                    + "ORDER BY date_completed DESC");
+        if (datesToBeIncluded.size() > 0) {
             try {
-                while (rs.next()) {
-                    activities.add(new Activity(rs));
+                database.lock();
+                String query = "SELECT * FROM activities WHERE ";
+                if (!excludeToDos) {
+                    query += "priority > -1 OR (";
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
-            } finally {
+                query += "is_complete = 'true' ";
+                int increment = 1;
+                query += "AND (";
+                for (Date date : datesToBeIncluded) {
+                    if (increment > 1) {
+                        query += " OR ";
+                    }
+                    query += "(date_completed >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
+                    query += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
+                    increment++;
+                }
+                query += ")";           
+                if (!excludeToDos) {
+                    query += ")";
+                }
+                query += " ORDER BY date_completed DESC";  // from newest to oldest
+                ResultSet rs = database.query(query);
                 try {
-                    rs.close();
+                    while (rs.next()) {
+                        activities.add(new Activity(rs));
+                    }
                 } catch (SQLException e) {
                     System.err.println(e);
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (SQLException e) {
+                        System.err.println(e);
+                    }
                 }
-            }
-        } finally {
-            database.unlock();
-        }
-        return activities;
-    }
-
-    public ArrayList<Activity> getActivitiesForChartEndDate(Date endDate) {
-        ArrayList<Activity> activities = new ArrayList<Activity>();
-        try {
-            database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority > -1 OR (is_complete = 'true' "
-                    + "AND date_completed <= " + DateUtil.getDateAtMidnight(endDate).getTime() + ") "
-                    + "ORDER BY date_completed DESC");
-            try {
-                while (rs.next()) {
-                    activities.add(new Activity(rs));
-                }
-            } catch (SQLException e) {
-                System.err.println(e);
             } finally {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
-                }
+                database.unlock();
             }
-        } finally {
-            database.unlock();
         }
         return activities;
     }
@@ -290,7 +282,7 @@ public class ActivitiesDAO {
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE iteration >= " + startIteration + " "
                     + "AND iteration <= " + endIteration + " "
-                    + "ORDER BY iteration ASC");
+                    + "ORDER BY iteration ASC"); // from lowest to highest
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -308,6 +300,37 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return activities;
+    }
+
+    public ArrayList<Float> getSumOfStoryPointsOfActivitiesDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded) {
+        ArrayList<Float> storyPoints = new ArrayList<Float>();
+        if (datesToBeIncluded.size() > 0) {
+            try {
+                database.lock();
+                for (Date date : datesToBeIncluded) {
+                    // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
+                    ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
+                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis() + " "
+                            + "ORDER BY date_added ASC"); // from oldest to newest
+                    try {
+                        while (rs.next()) {
+                            storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
+                        }
+                    } catch (SQLException e) {
+                        System.err.println(e);
+                    } finally {
+                        try {
+                            rs.close();
+                        } catch (SQLException e) {
+                            System.err.println(e);
+                        }
+                    }
+                }
+            } finally {
+                database.unlock();
+            }
+        }
+        return storyPoints;
     }
 
     public void deleteAllReports() {

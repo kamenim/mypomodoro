@@ -27,7 +27,6 @@ import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MyPomodoroView;
@@ -103,9 +102,8 @@ public class TestMenu extends JMenu {
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
-                                (new DateTime(new Date()).minusDays(minusDay)).toDate());
-
-                        a.setIsCompleted(rand.nextBoolean());
+                                (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate());  // any date in the past 20 days
+                        a.setIsCompleted(rand.nextBoolean());                        
                         a.setOverestimatedPoms(rand.nextInt(3));
                         int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
                         actual += (a.getEstimatedPoms() + a.getOverestimatedPoms() > actual) ? rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual) : 0; // give some weigth to actual so there are more real pomodoros
@@ -114,11 +112,7 @@ public class TestMenu extends JMenu {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            Date date = (new DateTime(a.getDate()).plusDays(rand.nextInt(minusDay + 1))).toDate();
-                            while (new DateTime(date).getDayOfWeek() == DateTimeConstants.SATURDAY
-                                    || new DateTime(date).getDayOfWeek() == DateTimeConstants.SUNDAY) { // excluding saturdays and sundays
-                                date = (new DateTime(date).plusDays(1)).toDate();
-                            }
+                            Date date = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day)
                             a.setDateCompleted(date);
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
@@ -133,7 +127,6 @@ public class TestMenu extends JMenu {
                                 }
                                 a.setOverestimatedPoms(0);
                                 a.setActualPoms(0);
-                                a.setDate(new Date());
                             }
                         }
                         a.databaseInsert();

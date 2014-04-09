@@ -156,20 +156,21 @@ public class DateUtil {
      }
      return days;
      }*/
+    
     /**
      * Returns an ordered list of dates of month between two dates minus
      * exclusions
      *
-     * @param dateStart
-     * @param dateEnd
+     * @param startDate
+     * @param endDate
      * @param excludeSaturdays
      * @param excludeSundays
      * @param excludeDates
      * @return array list of dates of months excluding some exceptions
      */
-    public static ArrayList<Date> getDatesWithExclusions(Date dateStart, Date dateEnd, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
-        DateTime start = new DateTime(dateStart.getTime());
-        DateTime end = new DateTime(dateEnd.getTime());
+    public static ArrayList<Date> getDatesWithExclusions(Date startDate, Date endDate, boolean excludeSaturdays, boolean excludeSundays, ArrayList<Date> excludeDates) {
+        DateTime start = new DateTime(startDate.getTime());
+        DateTime end = new DateTime(endDate.getTime());
         ArrayList<Date> dates = new ArrayList<Date>();
         while (start.isBefore(end) || start.isEqual(end)) {
             if (!isExcluded(start, excludeSaturdays, excludeSundays, excludeDates)) {

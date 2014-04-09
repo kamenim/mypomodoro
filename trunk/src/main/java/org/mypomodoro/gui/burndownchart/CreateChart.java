@@ -30,6 +30,8 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
@@ -41,18 +43,20 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.joda.time.DateTime;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
 
 /**
- * Agile-like burndown chart
+ * Burndown, burnup, target and scope line charts
  *
  * Code examples (JFreeChart) :
  * http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
  *
  */
-public class Chart extends JPanel {
+public class CreateChart extends JPanel {
+// TODO legend on charts?
 
     private static final long serialVersionUID = 1L;
 
@@ -60,28 +64,28 @@ public class Chart extends JPanel {
     private ArrayList<Date> XAxisValues = new ArrayList<Date>();
     private float totalStoryPoints = 0;
     private ChartPanel chartPanel;
-    private final CreateInputForm createInputForm;
+    private final ChooseInputForm chooseInputForm;
+    private final ConfigureInputForm configureInputForm;
+    private float maxSumStoryPointsForScopeLine = 0;
 
-    public Chart(CreateInputForm createInputForm) {
-        this.createInputForm = createInputForm;
+    public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
+        this.chooseInputForm = chooseInputForm;
+        this.configureInputForm = configureInputForm;
     }
 
+    // TODO Main.font necessary here?
     /**
-     * Creates charts (burndown, burn-up, target line)
+     * Creates charts
      *
      */
     public void create() {
         removeAll();
         totalStoryPoints = 0;
-        XAxisValues = getXAxisValues(createInputForm.getStartDate(), createInputForm.getEndDate());
+        XAxisValues = getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
         for (Activity activity : ChartList.getList()) {
             totalStoryPoints += activity.getStoryPoints();
         }
-        CategoryDataset dataset = new DefaultCategoryDataset();
-        if (createInputForm.getTargetCheckBox().isSelected()) {
-            dataset = createTargetDataset();
-        }
-        charts = createChart(dataset);
+        charts = createChart();
         chartPanel = new ChartPanel(charts);
         add(chartPanel);
     }
@@ -93,17 +97,17 @@ public class Chart extends JPanel {
      */
     private ArrayList<Date> getXAxisValues(Date dateStart, Date dateEnd) {
         return DateUtil.getDatesWithExclusions(dateStart, dateEnd,
-                createInputForm.getExcludeSaturdays().isSelected(),
-                createInputForm.getExcludeSundays().isSelected(),
-                createInputForm.getExcludedDates());
+                configureInputForm.getExcludeSaturdays().isSelected(),
+                configureInputForm.getExcludeSundays().isSelected(),
+                configureInputForm.getExcludedDates());
     }
 
     /**
-     * Creates target line
+     * Creates burndown/ burn-up target line chart
      *
      * @return dataset
      */
-    private CategoryDataset createTargetDataset() {
+    private CategoryDataset createBurndownTargetDataset() {
         String label = "Target";
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
@@ -112,6 +116,41 @@ public class Chart extends JPanel {
             dataset.addValue((Number) (Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
         }
         dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
+        return dataset;
+    }
+
+    /**
+     * Creates burndown/ burn-up target line chart
+     *
+     * @return dataset
+     */
+    private CategoryDataset createBurnupTargetDataset() {
+        String label = "Target";
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        float storyPoints = totalStoryPoints;
+        dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
+        for (int i = 1; i < XAxisValues.size() - 1; i++) {
+            dataset.addValue((Number) (Math.round(i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+        }
+        dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
+        return dataset;
+    }
+
+    /**
+     * Creates burn-up Scope line chart
+     *
+     * @return dataset
+     */
+    private CategoryDataset createBurnupScopeDataset() {
+        String label = "Scope";
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate()));
+        for (int i = 0; i < XAxisValues.size(); i++) {
+            dataset.addValue((Number) sumOfStoryPoints.get(i), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+            if (maxSumStoryPointsForScopeLine < (Float) sumOfStoryPoints.get(i)) {
+                maxSumStoryPointsForScopeLine = (Float) sumOfStoryPoints.get(i);
+            }
+        }
         return dataset;
     }
 
@@ -167,13 +206,33 @@ public class Chart extends JPanel {
         return dataset;
     }
 
-    private JFreeChart createChart(final CategoryDataset dataset) {
+    /**
+     * Creates charts
+     *
+     * Rendering index order (value to be set on methods : setDataset,
+     * mapDatasetToRangeAxis and setRenderer for each renderer) 
+     * 0 : target burndown (see ChartFactory.createLineChart) 
+     * 1 : scope burnup (on top of target burnup) 
+     * 2 : target burnup (on top of burnup) 
+     * 3 : burnup (on top of burndown) 
+     * 4 : burndown
+     *
+     * @param dataset the primary target dataset
+     */
+    private JFreeChart createChart() {
+        
+        // Primary target dataset
+        CategoryDataset dataset = null;
+        if (chooseInputForm.getBurndownChartCheckBox().isSelected()
+                && chooseInputForm.getTargetCheckBox().isSelected()) {
+            dataset = createBurndownTargetDataset();
+        }
 
         JFreeChart chart = ChartFactory.createLineChart(
                 "",
                 "",
                 "",
-                dataset, // Target data
+                dataset, // burndown target dataset (Rendering index order = 0)
                 PlotOrientation.VERTICAL, // orientation
                 true, // include legend
                 true, // tooltips
@@ -198,15 +257,16 @@ public class Chart extends JPanel {
         categoryAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
 
         // Horizontal/Grid lines
-        if (createInputForm.getBurndownChartCheckBox().isSelected()) {
+        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) {
             plot.setRangeGridlinesVisible(true);
             plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
             plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
         }
 
+        //////////////////// X-AXIS //////////////////////////
         // Burndown chart
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        if (createInputForm.getBurndownChartCheckBox().isSelected()) {
+        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // BURNDOWN
             // Customise the primary Y/Range axis
             rangeAxis.setLabel("STORY POINTS");
             rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
@@ -230,33 +290,72 @@ public class Chart extends JPanel {
             rangeAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
             // Add the custom bar layered renderer to plot
             CategoryDataset dataset2 = createBurndownChartDataset();
-            plot.setDataset(2, dataset2);
-            plot.mapDatasetToRangeAxis(2, 0);
+            plot.setDataset(4, dataset2);
+            plot.mapDatasetToRangeAxis(4, 0);
             LayeredBarRenderer renderer2 = new LayeredBarRenderer();
             renderer2.setSeriesPaint(0, new Color(249, 192, 9));
             renderer2.setSeriesBarWidth(0, 1.0);
-            plot.setRenderer(2, renderer2);
+            plot.setRenderer(4, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+            renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+            // Target line
+            if (chooseInputForm.getTargetCheckBox().isSelected()) {
+                LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+                renderer.setDrawOutlines(false);
+                renderer.setSeriesStroke(
+                        0, new BasicStroke(
+                                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                                1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+                renderer.setSeriesPaint(0, Color.BLACK);
+            }
+        } else if (chooseInputForm.getBurnupChartCheckBox().isSelected()
+                && chooseInputForm.getScopeCheckBox().isSelected()) { // Burnup scope
+            CategoryDataset dataset2 = createBurnupScopeDataset();
+            // Customise the primary Y/Range axis
+            rangeAxis.setLabel("SCOPE");
+            rangeAxis.setLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+            rangeAxis.setAutoRangeIncludesZero(true);
+            rangeAxis.setAxisLineVisible(false);
+            rangeAxis.setRange(0, maxSumStoryPointsForScopeLine + maxSumStoryPointsForScopeLine / 100); // add 1% margin on top
+            TickUnits customUnits = new TickUnits();
+            // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
+            int tick = 10;
+            int unit = 1;
+            while (maxSumStoryPointsForScopeLine > tick) {
+                if (maxSumStoryPointsForScopeLine > tick * 5) {
+                    unit = unit * 10;
+                } else {
+                    unit = unit * 5;
+                }
+                tick = tick * 10;
+            }
+            customUnits.add(new NumberTickUnit(unit));
+            rangeAxis.setStandardTickUnits(customUnits);
+            rangeAxis.setTickLabelFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize() + 1));
+            // Add the custom line renderer to plot
+            plot.setDataset(1, dataset2);
+            plot.mapDatasetToRangeAxis(1, 0);
+            LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
+            renderer2.setDrawOutlines(false);
+            renderer2.setSeriesStroke(
+                    0, new BasicStroke(
+                            2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                            1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+            renderer2.setSeriesPaint(0, Color.RED);
+            // the following two lines make values being displayed onto the chart along the line
+            renderer2.setBaseItemLabelsVisible(true);
+            renderer2.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
+            plot.setRenderer(1, renderer2);
+            //plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             renderer2.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
         } else {
             // hide primary axis            
             rangeAxis.setVisible(false);
         }
 
-        // Target line
-        if (createInputForm.getTargetCheckBox().isSelected()) {
-            // Customise the target line renderer     
-            LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-            renderer.setDrawOutlines(false);
-            renderer.setSeriesStroke(
-                    0, new BasicStroke(
-                            2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                            1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-            renderer.setSeriesPaint(0, Color.BLACK);
-        }
-
+        //////////////////// Y-AXIS //////////////////////////
         // Burn-up chart
-        if (createInputForm.getBurnupChartCheckBox().isSelected()) {
+        if (chooseInputForm.getBurnupChartCheckBox().isSelected()) {
             // Customise the secondary Y axis
             NumberAxis rangeAxis2 = new NumberAxis();
             rangeAxis2.setLabel("STORY POINTS");
@@ -283,14 +382,28 @@ public class Chart extends JPanel {
             plot.setRangeAxis(1, rangeAxis2);
             // Add the custom bar layered renderer to plot
             CategoryDataset dataset3 = createBurnupChartDataset();
-            plot.setDataset(1, dataset3);
-            plot.mapDatasetToRangeAxis(1, 1);
+            plot.setDataset(3, dataset3);
+            plot.mapDatasetToRangeAxis(3, 1);
             LayeredBarRenderer renderer3 = new LayeredBarRenderer();
             renderer3.setSeriesPaint(0, new Color(228, 92, 17));
             renderer3.setSeriesBarWidth(0, 0.7);
-            plot.setRenderer(1, renderer3);
+            plot.setRenderer(3, renderer3);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             renderer3.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+            // Target line
+            if (chooseInputForm.getTargetCheckBox().isSelected()) {
+                CategoryDataset targetDataset = createBurnupTargetDataset();
+                plot.setDataset(2, targetDataset);
+                plot.mapDatasetToRangeAxis(2, 1);
+                LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+                renderer.setDrawOutlines(false);
+                renderer.setSeriesStroke(
+                        0, new BasicStroke(
+                                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                                1.0f, new float[]{10.0f, 6.0f}, 0.0f));
+                renderer.setSeriesPaint(0, Color.BLACK);
+                plot.setRenderer(2, renderer);
+            }
         }
         return chart;
     }

@@ -25,19 +25,19 @@ import javax.swing.border.EtchedBorder;
  * Panel that displays the charts
  *
  */
-public class ChartPanel extends JPanel {
+public class CreateChartPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public ChartPanel(Chart chart) {
+    public CreateChartPanel(CreateChart chart) {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addChart(chart);
     }
 
-    private void addChart(Chart chart) {
+    private void addChart(CreateChart chart) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
