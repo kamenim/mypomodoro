@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -36,16 +37,9 @@ public final class ChartList extends AbstractActivities {
         //  no use
     }
 
-    public void refreshEndDate(Date endDate) {
+    public void refreshDateRange(Date startDate, Date endDate,  ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartEndDate(endDate)) {
-            super.add(act);
-        }
-    }
-
-    public void refreshDateRange(Date startDate, Date endDate) {
-        removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate)) {
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos)) {
             super.add(act);
         }
     }

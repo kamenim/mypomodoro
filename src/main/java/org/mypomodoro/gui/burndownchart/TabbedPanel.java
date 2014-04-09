@@ -33,8 +33,9 @@ public class TabbedPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    private final CreateInputForm createInputForm = new CreateInputForm();
-    private final Chart chart = new Chart(createInputForm);
+    private final ChooseInputForm chooseInputForm = new ChooseInputForm();
+    private final ConfigureInputForm configureInputForm = new ConfigureInputForm();
+    private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);
 
     public TabbedPanel() {
         setLayout(new GridBagLayout());
@@ -46,22 +47,25 @@ public class TabbedPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         final JTabbedPane chartTabbedPane = new JTabbedPane();
         CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
-        CreatePanel createInputPanel = new CreatePanel(chartTabbedPane, createInputForm, checkPanel);
-        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Configure"), createInputPanel);
-        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Check"), checkPanel);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartTabbedPane.add(Labels.getString("BurndownChartPanel.Create"), new JScrollPane(chartPanel));
+        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, checkPanel);
+        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm);
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configureInputPanel);
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Check"), checkPanel);
+        CreateChartPanel chartPanel = new CreateChartPanel(chart);
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Create"), new JScrollPane(chartPanel));
         chartTabbedPane.setEnabledAt(1, false);
         chartTabbedPane.setEnabledAt(2, false);
+        chartTabbedPane.setEnabledAt(3, false);
         chartTabbedPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int selectedTabIndex = chartTabbedPane.getSelectedIndex();
-                if (selectedTabIndex == 0) {
-                    chartTabbedPane.setEnabledAt(1, false);
-                    chartTabbedPane.setEnabledAt(2, false);
-                } else if (selectedTabIndex == 1) {
-                    chartTabbedPane.setEnabledAt(2, false);
+                if (selectedTabIndex < 2) {
+                    chartTabbedPane.setEnabledAt(2, false); // check
+                    chartTabbedPane.setEnabledAt(3, false); // create
+                } else if (selectedTabIndex == 2) {
+                    chartTabbedPane.setEnabledAt(3, false); // create
                 }
             }
         });

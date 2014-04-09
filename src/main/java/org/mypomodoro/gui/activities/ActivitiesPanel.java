@@ -81,7 +81,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
-
+// TODO cosmetic make title of column appear entirely when maximizing the app
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);

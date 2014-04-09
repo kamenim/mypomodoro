@@ -98,9 +98,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
-    private final Chart chart;
+    private final CreateChart chart;
 
-    public CheckPanel(JTabbedPane tabbedPane, Chart chart) {
+    public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
         this.chart = chart;
 
@@ -424,8 +424,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 /*if (createInputForm.getImageCheckBox().isSelected()) {
                  chart.saveImageChart((createInputForm.getImageName().length() != 0 ? createInputForm.getImageName() : "myAgilePomodoro") + ".png");
                  }*/
-                tabbedPane.setEnabledAt(2, true);
-                tabbedPane.setSelectedIndex(2);
+                tabbedPane.setEnabledAt(3, true);
+                tabbedPane.setSelectedIndex(3);
             }
         });
         scrollPane.add(checkButton, gbc);

@@ -89,9 +89,7 @@ public class TimerPanel extends JPanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.3;
-        gbc.anchor = GridBagConstraints.SOUTH;
-        // TODO problem with the way with set font in Main
-        //pomodoroTime.setFont(Main.font.deriveFont(40f));        
+        gbc.anchor = GridBagConstraints.SOUTH;       
         pomodoroTime.setFont(pomodoroTime.getFont().deriveFont(40f));
         add(pomodoroTime, gbc);
     }
@@ -123,8 +121,7 @@ public class TimerPanel extends JPanel {
         Border margin = new EmptyBorder(5, 15, 5, 15);
         Border compound = new CompoundBorder(line, margin);
         startButton.setBorder(compound);
-        startButton.setFocusPainted(false); // removes borders around text
-        // startButton.setFont(Main.font.deriveFont(20f));
+        startButton.setFocusPainted(false); // removes borders around text        
         startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {
 
