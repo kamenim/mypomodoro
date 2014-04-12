@@ -65,7 +65,7 @@ public class ConfigureInputForm extends JPanel {
     private final JComboBox startIteration = new JComboBox();
     private final JComboBox endIteration = new JComboBox();
     final JCheckBox iterationsCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Iterations"), true);
-    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, BorderFactory.createEtchedBorder());    
+    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, BorderFactory.createEtchedBorder());
     // Image form
     /*private final JPanel imageInputFormPanel = new JPanel();
      private final JPanel imageSizePanel = new JPanel();
@@ -136,7 +136,7 @@ public class ConfigureInputForm extends JPanel {
         iterationsInputFormPanel.setLayout(new GridBagLayout());
         addIterationsFields();
         add(iterationsInputFormPanel, c);
-    }   
+    }
 
     /*private void addImageInputFormPanel() {
      c.gridx = 0;
@@ -338,7 +338,7 @@ public class ConfigureInputForm extends JPanel {
         iterations.add(endIteration, iterationsgbc);
         iterationsInputFormPanel.add(iterations, cChart);
     }
-   
+
     // Getters
     public Date getStartDate() {
         return startDatePicker.getDate();
@@ -434,8 +434,8 @@ public class ConfigureInputForm extends JPanel {
      cImageSize.gridx = 0;
      cImageSize.gridy = 0;
      imageWidth.setText("" + defaultImageWidth);
-     imageWidth.setFont(new Font(Main.font.getName(), Font.BOLD,
-     Main.font.getSize()));
+     imageWidth.setFont(new Font(getFont().getName(), Font.BOLD,
+     getFont().getSize()));
      imageWidth.setMinimumSize(IMAGE_SIZE_DIMENSION);
      imageWidth.setPreferredSize(IMAGE_SIZE_DIMENSION);
      imageSizePanel.add(imageWidth, cImageSize);
@@ -445,8 +445,8 @@ public class ConfigureInputForm extends JPanel {
      cImageSize.gridx = 2;
      cImageSize.gridy = 0;
      imageHeight.setText("" + defaultImageHeight);
-     imageHeight.setFont(new Font(Main.font.getName(), Font.BOLD,
-     Main.font.getSize()));
+     imageHeight.setFont(new Font(getFont().getName(), Font.BOLD,
+     getFont().getSize()));
      imageHeight.setMinimumSize(IMAGE_SIZE_DIMENSION);
      imageHeight.setPreferredSize(IMAGE_SIZE_DIMENSION);
      imageSizePanel.add(imageHeight, cImageSize);

@@ -68,7 +68,6 @@ public class HelpMenu extends JMenu {
 
         public HelpUserGuide() {
             super(Labels.getString("HelpMenu.Download User Guide"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 
@@ -89,7 +88,6 @@ public class HelpMenu extends JMenu {
 
         public HelpPomodoroMenu() {
             super(Labels.getString("HelpMenu.Pomodoro Technique"));
-            setFont(Main.font);
             add(new HelpPomodoroTechnique());
             add(new HelpPomodoroBook());
         }
@@ -101,7 +99,6 @@ public class HelpMenu extends JMenu {
 
         public HelpPomodoroTechnique() {
             super(Labels.getString("HelpMenu.Pomodoro Technique Official Website"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 
@@ -122,7 +119,6 @@ public class HelpMenu extends JMenu {
 
         public HelpPomodoroBook() {
             super(Labels.getString("HelpMenu.Pomodoro Technique Official Book"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 
@@ -142,7 +138,6 @@ public class HelpMenu extends JMenu {
 
         public ReportIssues() {
             super(Labels.getString("HelpMenu.Report Issues"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 
@@ -161,7 +156,6 @@ public class HelpMenu extends JMenu {
 
         public CheckUpdates() {
             super(Labels.getString("AboutPanel.Check for Updates"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 
@@ -180,7 +174,6 @@ public class HelpMenu extends JMenu {
 
         public HelpAbout() {
             super(Labels.getString("HelpMenu.About"));
-            setFont(Main.font);
             addActionListener(new MenuItemListener());
         }
 

@@ -29,7 +29,7 @@ public class PlaceList extends AbstractList {
 
     private static List<String> places = new ArrayList<String>();
 
-    public static void initPlaces() {
+    public static void refresh() {
         places = ActivitiesDAO.getInstance().getPlaces();
     }
 

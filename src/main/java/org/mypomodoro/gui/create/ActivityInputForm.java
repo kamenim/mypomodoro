@@ -140,7 +140,7 @@ public class ActivityInputForm extends JPanel {
         types.setMinimumSize(COMBO_BOX_DIMENSION);
         types.setPreferredSize(COMBO_BOX_DIMENSION);
         types.setEditable(true);
-        types.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
+        types.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
         add(types, c);
     }
 
@@ -282,7 +282,7 @@ public class ActivityInputForm extends JPanel {
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
         authors.setEditable(true);
-        authors.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
+        authors.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
         add(authors, c);
     }
 
@@ -301,7 +301,7 @@ public class ActivityInputForm extends JPanel {
         places.setMinimumSize(COMBO_BOX_DIMENSION);
         places.setPreferredSize(COMBO_BOX_DIMENSION);
         places.setEditable(true);
-        places.setFont(new Font(Main.font.getName(), Font.PLAIN, Main.font.getSize()));
+        places.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
         add(places, c);
     }
 
@@ -315,14 +315,12 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        descriptionField.setFont(Main.font);
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
         descriptionField.setMargin(new Insets(3, 3, 3, 3)); // margin
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);
-        description.setFont(Main.font);
         add(description, c);
     }
 

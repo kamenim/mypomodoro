@@ -105,6 +105,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         this.chart = chart;
 
         setLayout(new GridBagLayout());
+
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -117,7 +118,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+                    ((JComponent) c).setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -222,14 +223,17 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             table.setAutoCreateRowSorter(true);
         }
 
-        // TODO problem with header (not working here)
-        // add tooltip to header columns                
+        // Add tooltip to header columns
+        // Something is not quite right here : the header doesn't look like the headers of the other tables and rendering doesn't work...
+        // ...untill the header of another table is rendered (weird behaviour). This has something to do with this component being nested in JTabbedPane
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
+        // We set the background to null so we can see the headers (replacing setBackground with setBorder on custom table cell renderer in CustomTableHeader would not work)
+        customTableHeader.setBackground(null);
 
         // Add tooltip for Title and Type colums 
         table.addMouseMotionListener(new MouseMotionAdapter() {
@@ -330,19 +334,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleChartList = Labels.getString("BurndownChartPanel.Chart List") + " ("
-                + ChartList.getListSize() + ")";
+        String titleActivitiesList = Labels.getString("BurndownChartPanel.Chart List");
         if (ChartList.getListSize() > 0) {
-            titleChartList += " - " + Labels.getString("Common.Estimated") + ": ";
-            titleChartList += ChartList.getList().getNbRealPom();
-            titleChartList += " / " + ChartList.getList().getNbEstimatedPom();
-            if (ChartList.getList().getNbOverestimatedPom() > 0) {
-                titleChartList += " + " + ChartList.getList().getNbOverestimatedPom();
-            }
-            if (PreferencesPanel.preferences.getAgileMode()) {
-                DecimalFormat df = new DecimalFormat("0.#");
-                titleChartList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
-            }
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
                 int estimated = 0;
@@ -357,19 +350,32 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleChartList += " >>> ";
-                titleChartList += Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
+                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ChartList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
                 if (overestimated > 0) {
-                    titleChartList += " + " + overestimated;
+                    titleActivitiesList += " + " + overestimated;
                 }
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleChartList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
+            } else {
+                titleActivitiesList += " (" + ChartList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
+                titleActivitiesList += ChartList.getList().getNbRealPom();
+                titleActivitiesList += " / " + ChartList.getList().getNbEstimatedPom();
+                if (ChartList.getList().getNbOverestimatedPom() > 0) {
+                    titleActivitiesList += " + " + ChartList.getList().getNbOverestimatedPom();
+                }
+                if (PreferencesPanel.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
                 }
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleChartList);
-        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
+        titledborder.setTitleFont(
+                new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
@@ -469,7 +475,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
             // this is mandatory to get columns with integers properly sorted
             @Override
-            public Class getColumnClass(int column) {
+            public Class
+                    getColumnClass(int column) {
                 switch (column) {
                     case 0:
                         return Boolean.class;
@@ -485,20 +492,24 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                         return String.class;
                 }
             }
+
         };
 
-        tableModel.addTableModelListener(new TableModelListener() {
+        tableModel.addTableModelListener(
+                new TableModelListener() {
 
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                // diactivate/gray out all tabs (except import)
-                if (ChartList.getListSize() == 0) {
-                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        controlPane.setEnabledAt(index, false);
+                    @Override
+                    public void tableChanged(TableModelEvent e
+                    ) {
+                        // diactivate/gray out all tabs (except import)
+                        if (ChartList.getListSize() == 0) {
+                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                controlPane.setEnabledAt(index, false);
+                            }
+                        }
                     }
                 }
-            }
-        });
+        );
         return tableModel;
     }
 
@@ -591,7 +602,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
+            renderer.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             // replace with methid getActivityById

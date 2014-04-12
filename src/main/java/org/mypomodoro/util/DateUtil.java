@@ -156,7 +156,6 @@ public class DateUtil {
      }
      return days;
      }*/
-    
     /**
      * Returns an ordered list of dates of month between two dates minus
      * exclusions

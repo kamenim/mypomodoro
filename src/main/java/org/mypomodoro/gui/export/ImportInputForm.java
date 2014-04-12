@@ -65,7 +65,7 @@ public class ImportInputForm extends ExportInputForm {
         fileName.setPreferredSize(LABEL_DIMENSION);
         fileName.setEditable(false);
         fileName.setBackground(ColorUtil.WHITE);
-        fileName.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        fileName.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         fileChooserPanel.add(fileName, gbcf);
         gbcf.gridx = 1;
         gbcf.gridy = 0;
@@ -77,7 +77,7 @@ public class ImportInputForm extends ExportInputForm {
         JDialog d = new JDialog();
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
         Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
-        browseButton.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        browseButton.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         browseButton.addActionListener(new ActionListener() {
 
             @Override

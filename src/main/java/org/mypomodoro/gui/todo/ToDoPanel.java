@@ -80,6 +80,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
+// TODO panel border : display estimated done
+    // TODO problem with multiple selection and pomodoro starting : loosing current selected
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
@@ -122,7 +124,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+                    ((JComponent) c).setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -329,18 +331,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = "";
-        titleActivitiesList += Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List")
-                + " (" + ToDoList.getListSize() + ")";
+        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
         if (ToDoList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Common.Estimated") + ": " + ToDoList.getList().getNbEstimatedPom();
-            if (ToDoList.getList().getNbOverestimatedPom() > 0) {
-                titleActivitiesList += " + " + ToDoList.getList().getNbOverestimatedPom();
-            }
-            if (PreferencesPanel.preferences.getAgileMode()) {
-                DecimalFormat df = new DecimalFormat("0.#");
-                titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
-            }
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
                 int estimated = 0;
@@ -353,8 +345,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " >>> ";
-                titleActivitiesList += Labels.getString("Common.Estimated") + ": " + estimated;
+                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ToDoList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
@@ -362,10 +354,20 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+            } else {
+                titleActivitiesList += " (" + ToDoList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + ToDoList.getList().getNbEstimatedPom();
+                if (ToDoList.getList().getNbOverestimatedPom() > 0) {
+                    titleActivitiesList += " + " + ToDoList.getList().getNbOverestimatedPom();
+                }
+                if (PreferencesPanel.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
+                }
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
@@ -598,7 +600,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    // comleteAll is used only if no pomodoro is running (see MoveToDoButton)
+    // moveAll is used only if no pomodoro is running (see MoveToDoButton)
     @Override
     public void moveAll() {
         ToDoList.getList().moveAll();
@@ -672,7 +674,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
+            renderer.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);

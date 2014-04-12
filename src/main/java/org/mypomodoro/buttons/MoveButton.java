@@ -20,17 +20,19 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
- * Move button
+ * Move button for activities and reports panels For ToDo panel see
+ * MoveToDoButton
  *
  */
 public class MoveButton extends AbstractPomodoroButton {
@@ -50,24 +52,37 @@ public class MoveButton extends AbstractPomodoroButton {
             }
         });
     }
+// TODO optimize usage of setPanelBorder on all panels
 
     public void move(final AbstractActivitiesPanel panel) {
-        if (panel.getTable().getSelectedRowCount() > 0) {
-            if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()
-                    && panel instanceof ReportsPanel) { // complete all at once                
-                panel.moveAll();
-                panel.refresh();
-            } else {
-                boolean agreedToMorePomodoros = false;
-                int increment = 0;
-                int[] rows = panel.getTable().getSelectedRows();
-                for (int row : rows) {
-                    row = row - increment;
-                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                    Activity selectedActivity = panel.getActivityById(id);
-                    if (panel instanceof ActivitiesPanel) {
-                        String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                        if (!PreferencesPanel.preferences.getAgileMode()) {
+        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        if (selectedRowCount > 0) {
+            new Thread() { // This new thread is necessary for updating the progress bar
+                @Override
+                public void run() {
+                    // Disable button
+                    setEnabled(false);
+                    // Set progress bar
+                    Main.gui.getProgressBar().setVisible(true);
+                    Main.gui.getProgressBar().setValue(0);
+                    Main.gui.getProgressBar().setMaximum(selectedRowCount);
+                    // Start wait cursor
+                    WaitCursor.startWaitCursor();
+                    // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
+                    /*if (selectedRowCount == panel.getTable().getRowCount()
+                     && panel instanceof ReportsPanel) { // reopen all at once                
+                     panel.moveAll();
+                     panel.refresh();
+                     } else {*/
+                    boolean agreedToMorePomodoros = false;
+                    int increment = 0;
+                    int[] rows = panel.getTable().getSelectedRows();
+                    for (int row : rows) {
+                        row = row - increment;
+                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                        Activity selectedActivity = panel.getActivityById(id);
+                        if (panel instanceof ActivitiesPanel && !PreferencesPanel.preferences.getAgileMode()) {
+                            String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                             if (!selectedActivity.isDateToday()) {
                                 String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                 String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
@@ -93,15 +108,43 @@ public class MoveButton extends AbstractPomodoroButton {
                                 }
                             }
                         }
+                        panel.move(selectedActivity);
+                        // removing a row requires decreasing the row index number
+                        panel.removeRow(row);
+                        increment++;
+                        final int progressValue = increment;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.gui.getProgressBar().setValue(progressValue); // % - required to see the progress
+                                Main.gui.getProgressBar().setString("" + progressValue); // task
+                                if (progressValue == selectedRowCount) {
+                                    Main.gui.getProgressBar().setString("Done"); // TODO translate string "Done"
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                sleep(1000); // wait one second before hiding the progress bar
+                                            } catch (InterruptedException ex) {
+                                                // do nothing
+                                            }
+                                            // hide progress bar
+                                            Main.gui.getProgressBar().setVisible(false);
+                                        }
+                                    }.start();
+                                }
+                            }
+                        });
                     }
-                    panel.move(selectedActivity);
-                    // removing a row requires decreasing  the row index number
-                    panel.removeRow(row);
-                    increment++;
+                    //}
+                    // Refresh panel border
+                    panel.setPanelBorder();
+                    // Enable button
+                    setEnabled(true);
+                    // Stop wait cursor
+                    WaitCursor.stopWaitCursor();
                 }
-            }
-            // Refresh panel border
-            panel.setPanelBorder();
+            }.start();
         }
     }
 

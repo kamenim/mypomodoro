@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
@@ -59,8 +60,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
-import org.mypomodoro.gui.ActivityEditTableListener;
-import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -81,7 +80,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
-// TODO cosmetic make title of column appear entirely when maximizing the app
+
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
@@ -118,7 +117,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+                    ((JComponent) c).setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -240,7 +239,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date scheduled");
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        //customTableHeader.setToolTipsText(cloneColumnNames);
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -307,7 +305,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-
+                        System.err.println(table.getSelectedRowCount());
                         // See above for reason to set WHEN_FOCUSED here
                         table.setInputMap(JTable.WHEN_FOCUSED, im);
 
@@ -388,17 +386,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List")
-                + " (" + ActivityList.getListSize() + ")";
+        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
         if (ActivityList.getListSize() > 0) {
-            titleActivitiesList += " - " + Labels.getString("Common.Estimated") + ": " + ActivityList.getList().getNbEstimatedPom();
-            if (ActivityList.getList().getNbOverestimatedPom() > 0) {
-                titleActivitiesList += " + " + ActivityList.getList().getNbOverestimatedPom();
-            }
-            if (PreferencesPanel.preferences.getAgileMode()) {
-                DecimalFormat df = new DecimalFormat("0.#");
-                titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
-            }
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
                 int estimated = 0;
@@ -411,8 +400,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " >>> ";
-                titleActivitiesList += Labels.getString("Common.Estimated") + ": " + estimated;
+                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ActivityList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
@@ -420,10 +409,20 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+            } else {
+                titleActivitiesList += " (" + ActivityList.getListSize() + ")";
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + ActivityList.getList().getNbEstimatedPom();
+                if (ActivityList.getList().getNbOverestimatedPom() > 0) {
+                    titleActivitiesList += " + " + ActivityList.getList().getNbOverestimatedPom();
+                }
+                if (PreferencesPanel.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
+                }
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         setBorder(titledborder);
     }
 
@@ -526,6 +525,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (column == ID_KEY - 3) { // Estimated
                         act.setEstimatedPoms((Integer) data);
                         act.databaseUpdate();
+                        // Refresh panel border
+                        setPanelBorder();
                     } else if (column == ID_KEY - 2) { // Story Points
                         act.setStoryPoints((Float) data);
                         act.databaseUpdate();
@@ -536,8 +537,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                         act.databaseUpdate();
                     }
                     ActivityList.getList().update(act);
-                    // Refresh panel border
-                    setPanelBorder();
                     // update info
                     detailsPanel.selectInfo(act);
                     detailsPanel.showInfo();
@@ -615,23 +614,22 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         ActivityList.getList().add(activity);
     }
 
-    // TODO listener fired twice when row selected
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ActivityList.getList(),
-                        table, detailsPane, ID_KEY));
+        /*table.getSelectionModel().addListSelectionListener(
+         new ActivityInformationTableListener(ActivityList.getList(),
+         table, detailsPane, ID_KEY));*/
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ActivityList.getList(), table,
-                        editPane, ID_KEY));
+        /*table.getSelectionModel().addListSelectionListener(
+         new ActivityEditTableListener(ActivityList.getList(), table,
+         editPane, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ActivityList.getList(),
-                        table, commentPanel, ID_KEY));
+        /*table.getSelectionModel().addListSelectionListener(
+         new ActivityInformationTableListener(ActivityList.getList(),
+         table, commentPanel, ID_KEY));*/
     }
 
     @Override
@@ -652,7 +650,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
+            renderer.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ActivityList.getList().getById(id);

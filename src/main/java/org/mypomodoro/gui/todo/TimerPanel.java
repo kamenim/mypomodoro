@@ -89,7 +89,7 @@ public class TimerPanel extends JPanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.3;
-        gbc.anchor = GridBagConstraints.SOUTH;       
+        gbc.anchor = GridBagConstraints.SOUTH;
         pomodoroTime.setFont(pomodoroTime.getFont().deriveFont(40f));
         add(pomodoroTime, gbc);
     }

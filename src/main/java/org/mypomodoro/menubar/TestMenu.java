@@ -27,12 +27,12 @@ import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 public class TestMenu extends JMenu {
 
@@ -64,14 +64,13 @@ public class TestMenu extends JMenu {
 
         public ResetDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Clear All Data"));
-            setFont(Main.font);
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     ActivitiesDAO.getInstance().deleteAll();
-                    Main.updateLists();
-                    Main.updateView();
+                    view.updateLists();
+                    view.updateViews();
                 }
             });
         }
@@ -86,6 +85,8 @@ public class TestMenu extends JMenu {
 
                 @Override
                 public void run() {
+                    WaitCursor.startWaitCursor();
+
                     Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
                     java.util.Random rand = new java.util.Random();
@@ -103,7 +104,7 @@ public class TestMenu extends JMenu {
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
                                 (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate());  // any date in the past 20 days
-                        a.setIsCompleted(rand.nextBoolean());                        
+                        a.setIsCompleted(rand.nextBoolean());
                         a.setOverestimatedPoms(rand.nextInt(3));
                         int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
                         actual += (a.getEstimatedPoms() + a.getOverestimatedPoms() > actual) ? rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual) : 0; // give some weigth to actual so there are more real pomodoros
@@ -115,7 +116,7 @@ public class TestMenu extends JMenu {
                             Date date = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day)
                             a.setDateCompleted(date);
                         } else { // Task for the Activity and ToDo list
-                            if (rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
+                            if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }
@@ -131,20 +132,20 @@ public class TestMenu extends JMenu {
                         }
                         a.databaseInsert();
                     }
+                    WaitCursor.stopWaitCursor();
                 }
             });
         }
 
         public TestDataItem(final MyPomodoroView view) {
             super(Labels.getString("DataMenu.Generate Test Data"));
-            setFont(Main.font);
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    Main.updateLists();
-                    Main.updateView();
+                    view.updateLists();
+                    view.updateViews();
                 }
             });
         }
