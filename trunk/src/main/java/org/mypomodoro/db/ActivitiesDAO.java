@@ -249,7 +249,7 @@ public class ActivitiesDAO {
                     query += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
                     increment++;
                 }
-                query += ")";           
+                query += ")";
                 if (!excludeToDos) {
                     query += ")";
                 }

@@ -73,8 +73,8 @@ public class ChoosePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                    tabbedPane.setEnabledAt(1, true);
-                    tabbedPane.setSelectedIndex(1);                
+                tabbedPane.setEnabledAt(1, true);
+                tabbedPane.setSelectedIndex(1);
             }
         });
         add(createButton, gbc);

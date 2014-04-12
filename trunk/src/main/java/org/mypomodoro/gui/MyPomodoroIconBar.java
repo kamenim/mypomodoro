@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.Main;
 
 import org.mypomodoro.util.Labels;
 
@@ -70,17 +69,15 @@ public class MyPomodoroIconBar extends JPanel {
     public void highlightIcon(MyIcon icon) {
         if (highlightedIcon != null) {
             highlightedIcon.unhighlight();
-            highlightedIcon.setFont(Main.font);
         }
         icon.highlight();
-        icon.setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        icon.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         highlightedIcon = icon;
     }
 
     public void unHighlightIcon(MyIcon icon) {
         if (highlightedIcon != null) {
             highlightedIcon.unhighlight();
-            highlightedIcon.setFont(Main.font);
         }
     }
 

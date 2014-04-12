@@ -31,7 +31,7 @@ public class TypeList extends AbstractList {
 
     private static ArrayList<String> types = new ArrayList<String>();
 
-    public static void initTypes() {
+    public static void refresh() {
         types = ActivitiesDAO.getInstance().getTypes();
         if (PreferencesPanel.preferences.getAgileMode()) {
             types.add("User Story");

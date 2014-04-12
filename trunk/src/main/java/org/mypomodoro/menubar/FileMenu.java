@@ -68,7 +68,6 @@ public class FileMenu extends JMenu {
 
         public ControlPanelItem() {
             super(Labels.getString("FileMenu.Preferences"));
-            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-P
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                     ActionEvent.ALT_MASK));
@@ -96,7 +95,6 @@ public class FileMenu extends JMenu {
 
         public CreateActivityItem() {
             super(Labels.getString("FileMenu.New Activity"));
-            setFont(Main.font);
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
             addActionListener(new MenuItemListener());
@@ -122,7 +120,6 @@ public class FileMenu extends JMenu {
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
-            setFont(Main.font);
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
             addActionListener(new MenuItemListener());
         }

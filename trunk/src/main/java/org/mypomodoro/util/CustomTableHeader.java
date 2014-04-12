@@ -17,12 +17,11 @@
 package org.mypomodoro.util;
 
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -36,12 +35,17 @@ import org.mypomodoro.Main;
  */
 public class CustomTableHeader extends JXTableHeader {
 
+    public CustomTableHeader() {
+    }
+
+    ;
+    
     public CustomTableHeader(JXTable table, String[] toolTips) {
         setColumnModel(table.getColumnModel());
         setBackground(ColorUtil.BLACK);
-        setFont(new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()));
+        setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
         // add tooltips
-        ColumnHeaderToolTips tips = new ColumnHeaderToolTips();
+        ColumnHeaderToolTips tips = new ColumnHeaderToolTips(table);
         for (int c = 0; c < table.getColumnCount(); c++) {
             TableColumn col = table.getColumnModel().getColumn(c);
             tips.setToolTip(col, toolTips[c]);
@@ -54,12 +58,14 @@ public class CustomTableHeader extends JXTableHeader {
     }
 }
 
-class ColumnHeaderToolTips extends MouseMotionAdapter {
+class ColumnHeaderToolTips extends MouseAdapter {
 
+    final JXTable table;
+    final Map tips;
     TableColumn curCol;
-    Map tips;
 
-    ColumnHeaderToolTips() {
+    ColumnHeaderToolTips(JXTable table) {
+        this.table = table;
         this.tips = new HashMap();
     }
 
@@ -74,7 +80,6 @@ class ColumnHeaderToolTips extends MouseMotionAdapter {
     @Override
     public void mouseMoved(MouseEvent evt) {
         JXTableHeader header = (JXTableHeader) evt.getSource();
-        JTable table = header.getTable();
         TableColumnModel colModel = table.getColumnModel();
         int vColIndex = colModel.getColumnIndexAtX(evt.getX());
         TableColumn col = null;

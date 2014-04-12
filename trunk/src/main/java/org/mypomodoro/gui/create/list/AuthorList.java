@@ -29,7 +29,7 @@ public class AuthorList extends AbstractList {
 
     private static List<String> authors = new ArrayList<String>();
 
-    public static void initAuthors() {
+    public static void refresh() {
         authors = ActivitiesDAO.getInstance().getAuthors();
     }
 

@@ -489,7 +489,7 @@ public class ChooseInputForm extends JPanel {
     public JCheckBox getTargetCheckBox() {
         return targetCheckBox;
     }
-    
+
     public JCheckBox getBurnupTargetCheckBox() {
         return burnupTargetCheckBox;
     }
@@ -545,5 +545,5 @@ public class ChooseInputForm extends JPanel {
     public String getSecondaryYAxisLegend() {
         return secondaryYAxisLegend.getText();
     }
-    
+
 }

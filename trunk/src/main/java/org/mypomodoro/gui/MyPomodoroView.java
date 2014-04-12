@@ -17,6 +17,10 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
@@ -24,6 +28,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
@@ -37,12 +44,13 @@ import org.mypomodoro.menubar.ViewMenu;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.ColorUtil;
 
 /**
  * Application GUI for myPomodoro.
  *
  */
-public class MyPomodoroView extends JFrame {
+public final class MyPomodoroView extends JFrame {
 
     private static final long serialVersionUID = 20110814L;
     public static final int FRAME_WIDTH = 780;
@@ -54,7 +62,8 @@ public class MyPomodoroView extends JFrame {
     private final PreferencesPanel preferencesPanel = Main.preferencesPanel;
     private final ReportsPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
-    public final TabbedPanel chartTabbedPanel = Main.chartTabbedPanel;
+    private final TabbedPanel chartTabbedPanel = Main.chartTabbedPanel;
+    private JProgressBar progressBar;
     private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
     private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
 
@@ -82,6 +91,10 @@ public class MyPomodoroView extends JFrame {
         return preferencesPanel;
     }
 
+    public JProgressBar getProgressBar() {
+        return progressBar;
+    }
+
     public MyPomodoroView() {
         super("myAgilePomodoro " + MYPOMODORO_VERSION);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,6 +102,11 @@ public class MyPomodoroView extends JFrame {
         setJMenuBar(menuBar);
         setWindow(new SplashScreen());
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        // Update static lists and views        
+        updateLists();
+        updateViews();
+        updateComboBoxLists();
+        // Set system tray
         if (SystemTray.isSupported()
                 && PreferencesPanel.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -113,8 +131,16 @@ public class MyPomodoroView extends JFrame {
         }
     }
 
-    public void updateView() {
-        Main.updateView();
+    public void updateLists() {
+        Main.updateLists();
+    }
+
+    public void updateViews() {
+        Main.updateViews();
+    }
+
+    public void updateComboBoxLists() {
+        Main.updateComboBoxLists();
     }
 
     public final void setWindow(JPanel e) {
@@ -137,11 +163,32 @@ public class MyPomodoroView extends JFrame {
 
         private static final long serialVersionUID = 20110814L;
 
+        // TODO improve display of progress bar (layout)
         public MyPomodoroMenuBar() {
             add(new FileMenu(MyPomodoroView.this));
             add(new ViewMenu(MyPomodoroView.this));
             add(new TestMenu(MyPomodoroView.this));
             add(new HelpMenu());
+            JPanel progressBarPanel = new JPanel();
+            progressBarPanel.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 3, 0, 3), 0, 0);
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            // Set colors before the 
+            UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
+            UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
+            UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
+            UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar
+            progressBar = new JProgressBar();
+            progressBar.setOpaque(true); // required to get colors being displayed
+            progressBar.setStringPainted(true); // required to get colors being displayed
+            //progressBar.setMinimum(0);
+            //progressBar.setMaximum(100);
+            progressBar.setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
+            progressBar.setFont(getFont().deriveFont(Font.BOLD));
+            progressBar.setVisible(false);
+            progressBarPanel.add(progressBar, gbc);
+            add(progressBarPanel);
             setBorder(null);
         }
     }

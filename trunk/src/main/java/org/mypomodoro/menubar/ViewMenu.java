@@ -26,7 +26,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.MyIcon;
@@ -68,7 +67,6 @@ public class ViewMenu extends JMenu {
 
         public ActivityListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
-            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-A
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     ActionEvent.ALT_MASK));
@@ -79,7 +77,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateView();
+                view.updateViews();
                 MyIcon activityListIcon = view.getIconBar().getIcon(1);
                 view.getIconBar().highlightIcon(activityListIcon);
                 view.setWindow(activityListIcon.getPanel());
@@ -94,7 +92,6 @@ public class ViewMenu extends JMenu {
 
         public ToDoListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
-            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-T
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     ActionEvent.ALT_MASK));
@@ -105,7 +102,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateView();
+                view.updateViews();
                 MyIcon toDoListIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(toDoListIcon);
                 view.setWindow(toDoListIcon.getPanel());
@@ -120,7 +117,6 @@ public class ViewMenu extends JMenu {
 
         public ReportListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
-            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-R
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                     ActionEvent.ALT_MASK));
@@ -131,7 +127,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateView();
+                view.updateViews();
                 MyIcon reportListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(reportListIcon);
                 view.setWindow(reportListIcon.getPanel());
@@ -146,7 +142,6 @@ public class ViewMenu extends JMenu {
 
         public BurndownChartItem() {
             super(Labels.getString("ViewMenu.Burndown Chart"));
-            setFont(Main.font);
             // Adds Keyboard Shortcut Alt-B
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
                     ActionEvent.ALT_MASK));
@@ -157,7 +152,7 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateView();
+                view.updateViews();
                 MyIcon burndownChartIcon = view.getIconBar().getIcon(4);
                 view.getIconBar().highlightIcon(burndownChartIcon);
                 view.setWindow(burndownChartIcon.getPanel());

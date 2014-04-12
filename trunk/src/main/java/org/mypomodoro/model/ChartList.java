@@ -37,7 +37,7 @@ public final class ChartList extends AbstractActivities {
         //  no use
     }
 
-    public void refreshDateRange(Date startDate, Date endDate,  ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
+    public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos)) {
             super.add(act);

@@ -38,8 +38,8 @@ class ComboBoxCellRenderer extends ActivitiesComboBoxPanel implements TableCellR
         if (value != null) {
             comboBox.setSelectedItem(value);
         }
-        comboBox.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
-        label.setFont(isSelected ? new Font(Main.font.getName(), Font.BOLD, Main.font.getSize()) : Main.font);
+        comboBox.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
+        label.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
         return this;
     }
 }
