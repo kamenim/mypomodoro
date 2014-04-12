@@ -147,7 +147,7 @@ public class PreferencesPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
         validation.setForeground(ColorUtil.BLACK);
-        validation.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        validation.setFont(getFont().deriveFont(Font.BOLD));
         GridBagConstraints vgbc = new GridBagConstraints();
         vgbc.gridx = 0;
         vgbc.gridy = 0;
@@ -159,7 +159,7 @@ public class PreferencesPanel extends JPanel {
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { // no restart button for Mac OS (does not work - see RestartMac classe)
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
             restartLabel.setForeground(ColorUtil.BLACK);
-            restartLabel.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+            restartLabel.setFont(getFont().deriveFont(Font.BOLD));
             validPanel.add(restartLabel, vgbc);
         } else {
             validPanel.add(restartButton, vgbc);

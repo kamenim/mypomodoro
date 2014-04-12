@@ -116,7 +116,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -419,7 +419,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         setBorder(titledborder);
     }
 
@@ -633,7 +633,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
+            renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ReportList.getList().getById(id);

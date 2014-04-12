@@ -59,7 +59,7 @@ public class PreferencesInputForm extends JPanel {
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences"));
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         setBorder(titledborder);
 
         setMinimumSize(PANEL_DIMENSION);

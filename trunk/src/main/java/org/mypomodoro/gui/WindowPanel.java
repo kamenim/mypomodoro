@@ -25,10 +25,11 @@ public class WindowPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    public WindowPanel(JPanel iconBar, Container panel) {
+    public WindowPanel(JPanel iconBar, JPanel progressBar, Container panel) {
         setLayout(new BorderLayout());
         setOpaque(true);
         add(iconBar, BorderLayout.NORTH);
+        add(progressBar);
         add(panel, BorderLayout.CENTER);
     }
 }

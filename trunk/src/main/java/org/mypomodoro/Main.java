@@ -16,8 +16,6 @@
  */
 package org.mypomodoro;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ComponentEvent;
@@ -38,7 +36,6 @@ import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.todo.TimerPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
@@ -53,8 +50,9 @@ public class Main {
 
     // Database
     public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
-    public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     public static final Database database = new Database(); // create database if necessary
+    // Google drive
+    public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // GUI
     public static PreferencesPanel preferencesPanel;
     public static ActivitiesPanel activitiesPanel;
@@ -66,6 +64,7 @@ public class Main {
 
     // Default font for the application
     public static Font font = new Font("Ebrima", Font.PLAIN, 13);
+    //public static Font font = new Font("Gigi", Font.PLAIN, 13); // for testing
 
     /**
      * @param args the command line arguments
@@ -82,8 +81,6 @@ public class Main {
 
             @Override
             public void run() {
-                // Set global font (before initialising the gui)
-                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Substance look and feel not that nice... (enable dependency in pom.xml)  
                 /*try {
                  JFrame.setDefaultLookAndFeelDecorated(true);
@@ -101,6 +98,9 @@ public class Main {
                 } catch (UnsupportedLookAndFeelException ex) {
                     // cross platform look and feel is used by default by the JVM
                 }
+                // Set global font (before initialising the gui)
+                // This must be done after the setLookAndFeel for the font to be also set on OptionPane dialog.. don't ask.
+                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 //}
                 // init the gui AFTER setting the UIManager and font
                 preferencesPanel = new PreferencesPanel();
@@ -146,6 +146,10 @@ public class Main {
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
+     if (key.toString().contains("JOptionPane")) {
+      System.out.println(key + " = " + value);
+     }
+    
             if (value != null && value instanceof FontUIResource) {
                 UIManager.put(key, f);
             }

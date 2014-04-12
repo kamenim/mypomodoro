@@ -140,7 +140,7 @@ public class ActivityInputForm extends JPanel {
         types.setMinimumSize(COMBO_BOX_DIMENSION);
         types.setPreferredSize(COMBO_BOX_DIMENSION);
         types.setEditable(true);
-        types.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
+        types.setFont(getFont().deriveFont(Font.PLAIN));
         add(types, c);
     }
 
@@ -282,7 +282,7 @@ public class ActivityInputForm extends JPanel {
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
         authors.setEditable(true);
-        authors.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
+        authors.setFont(getFont().deriveFont(Font.PLAIN));
         add(authors, c);
     }
 
@@ -301,7 +301,7 @@ public class ActivityInputForm extends JPanel {
         places.setMinimumSize(COMBO_BOX_DIMENSION);
         places.setPreferredSize(COMBO_BOX_DIMENSION);
         places.setEditable(true);
-        places.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
+        places.setFont(getFont().deriveFont(Font.PLAIN));
         add(places, c);
     }
 

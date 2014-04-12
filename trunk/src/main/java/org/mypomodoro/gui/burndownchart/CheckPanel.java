@@ -118,7 +118,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                    ((JComponent) c).setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
@@ -232,8 +232,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
-        // We set the background to null so we can see the headers (replacing setBackground with setBorder on custom table cell renderer in CustomTableHeader would not work)
-        customTableHeader.setBackground(null);
 
         // Add tooltip for Title and Type colums 
         table.addMouseMotionListener(new MouseMotionAdapter() {
@@ -374,8 +372,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(
-                new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         setBorder(titledborder);
     }
 
@@ -602,7 +599,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
+            renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             // replace with methid getActivityById

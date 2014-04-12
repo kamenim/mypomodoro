@@ -78,11 +78,8 @@ public class FileMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MyIcon selectedIcon = view.getIconBar().getSelectedIcon();
-                if (selectedIcon != null) {
-                    view.getIconBar().unHighlightIcon(selectedIcon);
-                    view.setWindow(selectedIcon.getPanel());
-                }
+                // Preferences : unhighlight the current hightlighted icon                
+                view.getIconBar().unHighlightIcon();
                 PreferencesPanel preferencesPanel = view.getPreferencesPanel();
                 view.setWindow(preferencesPanel);
             }

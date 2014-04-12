@@ -679,7 +679,7 @@ public class ExportInputForm extends JPanel {
             }
             columnsComboBox = new JComboBox(columns);
             columnsComboBox.setBackground(ColorUtil.WHITE);
-            columnsComboBox.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize() - 2));
+            columnsComboBox.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 2));
         }
 
         public JComboBox getColumnsComboBox() {

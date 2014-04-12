@@ -241,7 +241,7 @@ public class CreateChart extends JPanel {
 
         // Legend
         LegendTitle legend = chart.getLegend();
-        legend.setItemFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        legend.setItemFont(getFont().deriveFont(Font.BOLD));
         //chart.removeLegend();
 
         // Customise the plot
@@ -251,7 +251,7 @@ public class CreateChart extends JPanel {
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
-        categoryAxis.setTickLabelFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD));
 
         //////////////////// X-AXIS //////////////////////////
         // Burndown chart
@@ -263,7 +263,7 @@ public class CreateChart extends JPanel {
             plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             // Customise the primary Y/Range axis
             burndownRangeAxis.setLabel(chooseInputForm.getPrimaryYAxisName());
-            burndownRangeAxis.setLabelFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+            burndownRangeAxis.setLabelFont(getFont().deriveFont(Font.BOLD));
             burndownRangeAxis.setAutoRangeIncludesZero(true);
             burndownRangeAxis.setAxisLineVisible(false);
             float burndownRange = totalStoryPoints;
@@ -282,7 +282,7 @@ public class CreateChart extends JPanel {
             }
             burndownCustomUnits.add(new NumberTickUnit(unit));
             burndownRangeAxis.setStandardTickUnits(burndownCustomUnits);
-            burndownRangeAxis.setTickLabelFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize() + 1));
+            burndownRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 1));
             // Add the custom bar layered renderer to plot
             CategoryDataset burndownDataset = createBurndownChartDataset();
             plot.setDataset(4, burndownDataset);
@@ -312,7 +312,7 @@ public class CreateChart extends JPanel {
         if (chooseInputForm.getBurnupChartCheckBox().isSelected()) {
             NumberAxis burnupRangeAxis = new NumberAxis();
             burnupRangeAxis.setLabel(chooseInputForm.getSecondaryYAxisName());
-            burnupRangeAxis.setLabelFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+            burnupRangeAxis.setLabelFont(getFont().deriveFont(Font.BOLD));
             burnupRangeAxis.setAutoRangeIncludesZero(true);
             burnupRangeAxis.setAxisLineVisible(false);
             float burnupRange = totalStoryPoints;
@@ -342,7 +342,7 @@ public class CreateChart extends JPanel {
             }
             burnupCustomUnits.add(new NumberTickUnit(unit));
             burnupRangeAxis.setStandardTickUnits(burnupCustomUnits);
-            burnupRangeAxis.setTickLabelFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize() + 1));
+            burnupRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 1));
             // when burndown, add the secondary Y axis to plot for burnup
             CategoryDataset burnupDataset = createBurnupChartDataset();
             if (chooseInputForm.getBurndownChartCheckBox().isSelected()) {
