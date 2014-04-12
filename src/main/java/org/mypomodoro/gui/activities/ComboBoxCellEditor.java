@@ -55,8 +55,8 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.setBackground(table.getSelectionBackground());
         comboBox.setSelectedItem(value);
-        comboBox.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
-        label.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
+        comboBox.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
+        label.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
         return this;
     }
 

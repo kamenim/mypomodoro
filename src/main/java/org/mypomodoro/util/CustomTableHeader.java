@@ -43,7 +43,7 @@ public class CustomTableHeader extends JXTableHeader {
     public CustomTableHeader(JXTable table, String[] toolTips) {
         setColumnModel(table.getColumnModel());
         setBackground(ColorUtil.BLACK);
-        setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        setFont(getFont().deriveFont(Font.BOLD));
         // add tooltips
         ColumnHeaderToolTips tips = new ColumnHeaderToolTips(table);
         for (int c = 0; c < table.getColumnCount(); c++) {

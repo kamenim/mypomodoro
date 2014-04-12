@@ -27,13 +27,13 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.util.Labels;
 
-public class MyPomodoroIconBar extends JPanel {
+public class IconBar extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final ArrayList<MyIcon> myIcons = new ArrayList<MyIcon>();
     private MyIcon highlightedIcon;
 
-    public MyPomodoroIconBar(MyPomodoroView view) {
+    public IconBar(MyPomodoroView view) {
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Create"), "createButton",
                 view.getCreatePanel()));
@@ -51,12 +51,10 @@ public class MyPomodoroIconBar extends JPanel {
                     Labels.getString("IconBar.Burndown Chart"), "burndownButton",
                     view.getChartTabbedPanel()));
         }
-
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(getWidth(), 80));
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0.5;
@@ -67,17 +65,16 @@ public class MyPomodoroIconBar extends JPanel {
     }
 
     public void highlightIcon(MyIcon icon) {
-        if (highlightedIcon != null) {
-            highlightedIcon.unhighlight();
-        }
+        unHighlightIcon();
         icon.highlight();
-        icon.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        icon.setFont(getFont().deriveFont(Font.BOLD));
         highlightedIcon = icon;
     }
 
-    public void unHighlightIcon(MyIcon icon) {
+    public void unHighlightIcon() {
         if (highlightedIcon != null) {
             highlightedIcon.unhighlight();
+            highlightedIcon.setFont(getFont().deriveFont(Font.PLAIN));
         }
     }
 

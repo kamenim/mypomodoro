@@ -181,7 +181,7 @@ public class HelpMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AboutPanel dialog = new AboutPanel(new JDialog(), Labels.getString("HelpMenu.About myPomodoro") + " " + MYPOMODORO_VERSION);
+                AboutPanel dialog = new AboutPanel(Labels.getString("HelpMenu.About myPomodoro") + " " + MYPOMODORO_VERSION);
                 if (!org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
                     dialog.setModal(true); // modal except when Main.gui is set to be always on top (won't work)
                 }

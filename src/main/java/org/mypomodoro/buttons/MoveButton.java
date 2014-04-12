@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
@@ -64,8 +65,8 @@ public class MoveButton extends AbstractPomodoroButton {
                     setEnabled(false);
                     // Set progress bar
                     Main.gui.getProgressBar().setVisible(true);
-                    Main.gui.getProgressBar().setValue(0);
-                    Main.gui.getProgressBar().setMaximum(selectedRowCount);
+                    Main.gui.getProgressBar().getBar().setValue(0);
+                    Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
                     // Start wait cursor
                     WaitCursor.startWaitCursor();
                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
@@ -116,10 +117,10 @@ public class MoveButton extends AbstractPomodoroButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().setString("" + progressValue); // task
+                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                Main.gui.getProgressBar().getBar().setString("" + progressValue); // task
                                 if (progressValue == selectedRowCount) {
-                                    Main.gui.getProgressBar().setString("Done"); // TODO translate string "Done"
+                                    Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
                                     new Thread() {
                                         @Override
                                         public void run() {

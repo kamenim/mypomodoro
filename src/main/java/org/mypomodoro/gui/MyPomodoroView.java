@@ -63,9 +63,9 @@ public final class MyPomodoroView extends JFrame {
     private final ReportsPanel reportListPanel = Main.reportListPanel;
     private final ActivitiesPanel activityListPanel = Main.activitiesPanel;
     private final TabbedPanel chartTabbedPanel = Main.chartTabbedPanel;
-    private JProgressBar progressBar;
-    private final MyPomodoroMenuBar menuBar = new MyPomodoroMenuBar();
-    private final MyPomodoroIconBar iconBar = new MyPomodoroIconBar(this);
+    private final MenuBar menuBar = new MenuBar();
+    private final IconBar iconBar = new IconBar(this);
+    private final ProgressBar progressBar = new ProgressBar();
 
     public ToDoPanel getToDoPanel() {
         return toDoPanel;
@@ -91,7 +91,7 @@ public final class MyPomodoroView extends JFrame {
         return preferencesPanel;
     }
 
-    public JProgressBar getProgressBar() {
+    public ProgressBar getProgressBar() {
         return progressBar;
     }
 
@@ -155,22 +155,32 @@ public final class MyPomodoroView extends JFrame {
             }
             ((AbstractActivitiesPanel) e).refresh();
         }
-        setContentPane(new WindowPanel(iconBar, e));
+        setContentPane(new WindowPanel(iconBar, progressBar, e));
         menuBar.revalidate();
     }
 
-    class MyPomodoroMenuBar extends JMenuBar {
+    class MenuBar extends JMenuBar {
 
         private static final long serialVersionUID = 20110814L;
 
-        // TODO improve display of progress bar (layout)
-        public MyPomodoroMenuBar() {
+        public MenuBar() {
             add(new FileMenu(MyPomodoroView.this));
             add(new ViewMenu(MyPomodoroView.this));
             add(new TestMenu(MyPomodoroView.this));
             add(new HelpMenu());
-            JPanel progressBarPanel = new JPanel();
-            progressBarPanel.setLayout(new GridBagLayout());
+            setBorder(null);
+        }
+    }
+    
+    public class ProgressBar extends JPanel {
+
+        private static final long serialVersionUID = 20110814L;
+        
+        private final JProgressBar bar = new JProgressBar();
+
+        public ProgressBar() {
+            setVisible(false);
+            setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 3, 0, 3), 0, 0);
             gbc.gridx = 0;
             gbc.gridy = 0;
@@ -178,22 +188,23 @@ public final class MyPomodoroView extends JFrame {
             UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
             UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
             UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
-            UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar
-            progressBar = new JProgressBar();
-            progressBar.setOpaque(true); // required to get colors being displayed
-            progressBar.setStringPainted(true); // required to get colors being displayed
+            UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar            
+            bar.setOpaque(true); // required to get colors being displayed
+            bar.setStringPainted(true); // required to get colors being displayed
             //progressBar.setMinimum(0);
             //progressBar.setMaximum(100);
-            progressBar.setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-            progressBar.setFont(getFont().deriveFont(Font.BOLD));
-            progressBar.setVisible(false);
-            progressBarPanel.add(progressBar, gbc);
-            add(progressBarPanel);
+            bar.setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
+            bar.setFont(getFont().deriveFont(Font.BOLD));            
+            add(bar, gbc);
             setBorder(null);
+        }
+        
+        public JProgressBar getBar() {
+            return bar;
         }
     }
 
-    public MyPomodoroIconBar getIconBar() {
+    public IconBar getIconBar() {
         return iconBar;
     }
 }

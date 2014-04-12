@@ -34,7 +34,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ImageIcons;
-import org.mypomodoro.gui.MyPomodoroView;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -51,8 +50,9 @@ public class AboutPanel extends JDialog {
     public static final int FRAME_HEIGHT = 360;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public AboutPanel(JDialog frame, String str) {
-        super(frame, str);
+    public AboutPanel(String str) {
+        setTitle(str);
+        setFont(Main.font); // this is the only place where the font has to be set manually
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setIconImage(ImageIcons.MAIN_ICON.getImage());
         setResizable(false);
@@ -103,13 +103,13 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JLabel title = new JLabel("myAgilePomodoro");
-        title.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize() + 24));
+        title.setFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 24));
         panel.add(title, gbcpanel);
         /*gbcpanel.gridx = 0;
          gbcpanel.gridy = 1;
          gbcpanel.fill = GridBagConstraints.BOTH;
          JLabel version = new JLabel(MyPomodoroView.MYPOMODORO_VERSION);
-         version.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize() + 2));
+         version.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 2));
          panel.add(version, gbcpanel);*/
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 1;
@@ -133,7 +133,7 @@ public class AboutPanel extends JDialog {
         aboutTextArea.setLineWrap(true);
         aboutTextArea.setWrapStyleWord(true);
         aboutTextArea.setText(about);
-        aboutTextArea.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
+        aboutTextArea.setFont(getFont().deriveFont(Font.PLAIN));
         aboutTextArea.setOpaque(false);
         aboutTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
         panel.add(aboutTextArea, gbcpanel);
@@ -146,7 +146,7 @@ public class AboutPanel extends JDialog {
         creditsTextArea.setLineWrap(true);
         creditsTextArea.setWrapStyleWord(true);
         creditsTextArea.setText(credits);
-        creditsTextArea.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize()));
+        creditsTextArea.setFont(getFont().deriveFont(Font.PLAIN));
         creditsTextArea.setOpaque(false);
         creditsTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
         panel.add(creditsTextArea, gbcpanel);
@@ -167,7 +167,7 @@ public class AboutPanel extends JDialog {
         JEditorPane editorPane = new JEditorPane("text/html", license);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
                 Boolean.TRUE);
-        editorPane.setFont(new Font(getFont().getName(), Font.PLAIN, getFont().getSize() - 4));
+        editorPane.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 4));
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
         editorPane.addHyperlinkListener(new HyperlinkListener() {

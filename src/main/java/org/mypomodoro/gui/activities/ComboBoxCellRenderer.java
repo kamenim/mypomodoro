@@ -20,7 +20,6 @@ import java.awt.Component;
 import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import org.mypomodoro.Main;
 
 /**
  *
@@ -38,8 +37,8 @@ class ComboBoxCellRenderer extends ActivitiesComboBoxPanel implements TableCellR
         if (value != null) {
             comboBox.setSelectedItem(value);
         }
-        comboBox.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
-        label.setFont(isSelected ? new Font(getFont().getName(), Font.BOLD, getFont().getSize()) : getFont());
+        comboBox.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
+        label.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
         return this;
     }
 }

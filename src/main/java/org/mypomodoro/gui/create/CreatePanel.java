@@ -58,7 +58,7 @@ public class CreatePanel extends JPanel {
         setLayout(new GridBagLayout());
 
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
-        titledborder.setTitleFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         setBorder(titledborder);
 
         addInputFormPanel();
@@ -143,7 +143,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
-        validation.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        validation.setFont(getFont().deriveFont(Font.BOLD));
         validation.setText(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }
 
@@ -170,7 +170,7 @@ public class CreatePanel extends JPanel {
 
     protected void invalidActivityAction() {
         validation.setForeground(ColorUtil.RED);
-        validation.setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+        validation.setFont(getFont().deriveFont(Font.BOLD));
         validation.setText(Labels.getString("Common.Title is mandatory"));
     }
 
