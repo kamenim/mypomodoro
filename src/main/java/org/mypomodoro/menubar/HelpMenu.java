@@ -21,7 +21,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
@@ -29,8 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.gui.MyPomodoroView;
-import static org.mypomodoro.gui.MyPomodoroView.MYPOMODORO_VERSION;
+import org.mypomodoro.gui.MainPanel;
+import static org.mypomodoro.gui.MainPanel.MYPOMODORO_VERSION;
 import org.mypomodoro.menubar.help.AboutPanel;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.util.Labels;
@@ -76,7 +75,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://sourceforge.net/projects/mypomodoro/files/myPomodoro%20" + MyPomodoroView.MYPOMODORO_VERSION);
+                        "http://sourceforge.net/projects/mypomodoro/files/myPomodoro%20" + MainPanel.MYPOMODORO_VERSION);
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }

@@ -59,6 +59,8 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityEditTableListener;
+import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -79,11 +81,12 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
+// TODO fix problem rendering (BOLD)
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
-    private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
+    private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
     private final JScrollPane scrollPane;
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -104,6 +107,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
 
+        activitiesTableModel = getTableModel();
+
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -120,10 +125,16 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
+                ((JComponent) c).setForeground(ColorUtil.BLACK);
                 return c;
             }
         };
-        init();
+
+        // Set up table listeners once anf for all
+        setUpTable();
+
+        // Init table (data model and rendering)
+        initTable();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -150,7 +161,142 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         add(splitPane, gbc);
     }
 
-    private void init() {
+    // add all listener once and for all
+    private void setUpTable() {
+        // add tooltip to header columns
+        String[] cloneColumnNames = columnNames.clone();
+        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
+        cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date scheduled");
+        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
+        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
+        table.setTableHeader(customTableHeader);
+
+        // Add tooltip 
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                try {
+                    int rowIndex = table.rowAtPoint(p);
+                    int columnIndex = table.columnAtPoint(p);
+                    if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
+                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
+                        value = value.length() > 0 ? value : null;
+                        table.setToolTipText(value);
+                    } else if (columnIndex == ID_KEY - 6) { // date
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
+                        Activity activity = getActivityById(id);
+                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy");
+                        table.setToolTipText(value);
+                    } else {
+                        table.setToolTipText(null); // this way tooltip won't stick
+                    }
+                    // Change of row
+                    if (mouseHoverRow != rowIndex) {
+                        if (table.getSelectedRowCount() == 1) {
+                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
+                            Activity activity = ActivityList.getList().getById(id);
+                            detailsPanel.selectInfo(activity);
+                            detailsPanel.showInfo();
+                            commentPanel.selectInfo(activity);
+                            commentPanel.showInfo();
+                        }
+                        mouseHoverRow = rowIndex;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
+                } catch (IndexOutOfBoundsException ex) {
+                    // do nothing. This may happen when removing rows and yet using the mouse
+                }
+            }
+        });
+        // This is to address the case/event when the mouse exit the table
+        table.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (table.getSelectedRowCount() == 1) {
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+                    Activity activity = ActivityList.getList().getById(id);
+                    detailsPanel.selectInfo(activity);
+                    detailsPanel.showInfo();
+                    commentPanel.selectInfo(activity);
+                    commentPanel.showInfo();
+                }
+                mouseHoverRow = -1;
+            }
+        });
+
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (table.getSelectedRowCount() > 0) {
+                            System.err.println(e);
+                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                                System.err.println(table.getSelectedRowCount());
+                                // See above for reason to set WHEN_FOCUSED here
+                                table.setInputMap(JTable.WHEN_FOCUSED, im);
+
+                                if (table.getSelectedRowCount() > 1) { // multiple selection
+                                    // diactivate/gray out unused tabs
+                                    controlPane.setEnabledAt(1, false); // edit
+                                    controlPane.setEnabledAt(2, false); // comment
+                                    if (controlPane.getSelectedIndex() == 1
+                                    || controlPane.getSelectedIndex() == 2) {
+                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                    }
+                                } else if (table.getSelectedRowCount() == 1) {
+                                    // activate all panels
+                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                        controlPane.setEnabledAt(index, true);
+                                    }
+                                }
+                                setPanelBorder();
+                            }
+                        }
+                    }
+                });
+
+        // Activate Delete key stroke
+        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
+        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
+        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = table.getActionMap();
+        class deleteAction extends AbstractAction {
+
+            final AbstractActivitiesPanel panel;
+
+            public deleteAction(AbstractActivitiesPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
+                b.doClick();
+            }
+        }
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        am.put("Delete", new deleteAction(this));
+        // Activate Control A
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
+        class selectAllAction extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table.selectAll();
+            }
+        }
+        am.put("Control A", new selectAllAction());
+    }
+
+    private void initTable() {
         table.setRowHeight(30);
 
         // Make table allowing multiple selections
@@ -233,99 +379,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             table.setAutoCreateRowSorter(true);
         }
 
-        // add tooltip to header columns
-        String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
-        cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date scheduled");
-        cloneColumnNames[ID_KEY - 3] = Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
-        table.setTableHeader(customTableHeader);
-
-        // Add tooltip 
-        table.addMouseMotionListener(new MouseMotionAdapter() {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Point p = e.getPoint();
-                try {
-                    int rowIndex = table.rowAtPoint(p);
-                    int columnIndex = table.columnAtPoint(p);
-                    if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
-                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
-                        value = value.length() > 0 ? value : null;
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 6) { // date
-                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
-                        Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy");
-                        table.setToolTipText(value);
-                    } else {
-                        table.setToolTipText(null); // this way tooltip won't stick
-                    }
-                    // Change of row
-                    if (mouseHoverRow != rowIndex) {
-                        if (table.getSelectedRowCount() == 1) {
-                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
-                            Activity activity = ActivityList.getList().getById(id);
-                            detailsPanel.selectInfo(activity);
-                            detailsPanel.showInfo();
-                            commentPanel.selectInfo(activity);
-                            commentPanel.showInfo();
-                        }
-                        mouseHoverRow = rowIndex;
-                    }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse
-                } catch (IndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse
-                }
-            }
-        });
-        // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Reset to currently selected task
-                if (table.getSelectedRowCount() == 1) {
-                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
-                    Activity activity = ActivityList.getList().getById(id);
-                    detailsPanel.selectInfo(activity);
-                    detailsPanel.showInfo();
-                    commentPanel.selectInfo(activity);
-                    commentPanel.showInfo();
-                }
-                mouseHoverRow = -1;
-            }
-        });
-
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        System.err.println(table.getSelectedRowCount());
-                        // See above for reason to set WHEN_FOCUSED here
-                        table.setInputMap(JTable.WHEN_FOCUSED, im);
-
-                        if (table.getSelectedRowCount() > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            controlPane.setEnabledAt(1, false); // edit
-                            controlPane.setEnabledAt(2, false); // comment
-                            if (controlPane.getSelectedIndex() == 1
-                            || controlPane.getSelectedIndex() == 2) {
-                                controlPane.setSelectedIndex(0); // switch to details panel
-                            }
-                        } else if (table.getSelectedRowCount() == 1) {
-                            // activate all panels
-                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                controlPane.setEnabledAt(index, true);
-                            }
-                        }
-                        setPanelBorder();
-                    }
-                });
-
         // diactivate/gray out all tabs (except import)
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
@@ -336,44 +389,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 controlPane.setEnabledAt(index, false);
             }
         } else {
-            //table.requestFocus();
             // select first activity
             table.setRowSelectionInterval(0, 0);
         }
-
-        // Activate Delete key stroke
-        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
-        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
-        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = table.getActionMap();
-        class deleteAction extends AbstractAction {
-
-            final AbstractActivitiesPanel panel;
-
-            public deleteAction(AbstractActivitiesPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
-                b.doClick();
-            }
-        }
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
-        am.put("Delete", new deleteAction(this));
-        // Activate Control A
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
-        class selectAllAction extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                table.selectAll();
-            }
-        }
-        am.put("Control A", new selectAllAction());
 
         // Refresh panel border
         setPanelBorder();
@@ -613,33 +631,30 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         ActivityList.getList().add(activity);
     }
 
+    // TODO review ajusting of following listeners
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
-        /*table.getSelectionModel().addListSelectionListener(
-         new ActivityInformationTableListener(ActivityList.getList(),
-         table, detailsPane, ID_KEY));*/
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityInformationTableListener(ActivityList.getList(),
+                        table, detailsPane, ID_KEY));
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
-        /*table.getSelectionModel().addListSelectionListener(
-         new ActivityEditTableListener(ActivityList.getList(), table,
-         editPane, ID_KEY));*/
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityEditTableListener(ActivityList.getList(), table,
+                        editPane, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
-        /*table.getSelectionModel().addListSelectionListener(
-         new ActivityInformationTableListener(ActivityList.getList(),
-         table, commentPanel, ID_KEY));*/
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityInformationTableListener(ActivityList.getList(),
+                        table, commentPanel, ID_KEY));
     }
 
     @Override
     public void refresh() {
-        try {
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-        } catch (Exception e) {
-            // do nothing
-        }
-        init();
+        activitiesTableModel = getTableModel();
+        table.setModel(activitiesTableModel);
+        initTable();
     }
 
     // selected row BOLD

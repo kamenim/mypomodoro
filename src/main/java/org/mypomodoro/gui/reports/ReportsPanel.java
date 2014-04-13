@@ -120,6 +120,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
+                ((JComponent) c).setForeground(ColorUtil.BLACK);
                 return c;
             }
         };

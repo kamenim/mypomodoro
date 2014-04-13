@@ -27,13 +27,17 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.util.Labels;
 
+/**
+ * Icon bar
+ *
+ */
 public class IconBar extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
     private final ArrayList<MyIcon> myIcons = new ArrayList<MyIcon>();
     private MyIcon highlightedIcon;
 
-    public IconBar(MyPomodoroView view) {
+    public IconBar(MainPanel view) {
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Create"), "createButton",
                 view.getCreatePanel()));
@@ -76,10 +80,6 @@ public class IconBar extends JPanel {
             highlightedIcon.unhighlight();
             highlightedIcon.setFont(getFont().deriveFont(Font.PLAIN));
         }
-    }
-
-    public MyIcon getSelectedIcon() {
-        return highlightedIcon;
     }
 
     public MyIcon getIcon(int i) {

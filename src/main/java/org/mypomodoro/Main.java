@@ -26,8 +26,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
-import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.ProgressBar;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -40,6 +41,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.RestartMac;
 
 /**
@@ -55,12 +57,13 @@ public class Main {
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // GUI
     public static PreferencesPanel preferencesPanel;
+    public static CreatePanel createPanel;
     public static ActivitiesPanel activitiesPanel;
     public static ToDoPanel toDoPanel;
     public static ReportsPanel reportListPanel;
     public static TabbedPanel chartTabbedPanel;
-    public static CreatePanel createPanel;
-    public static MyPomodoroView gui;
+    public static ProgressBar progressBar;
+    public static MainPanel gui;
 
     // Default font for the application
     public static Font font = new Font("Ebrima", Font.PLAIN, 13);
@@ -98,18 +101,26 @@ public class Main {
                 } catch (UnsupportedLookAndFeelException ex) {
                     // cross platform look and feel is used by default by the JVM
                 }
-                // Set global font (before initialising the gui)
-                // This must be done after the setLookAndFeel for the font to be also set on OptionPane dialog.. don't ask.
-                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 //}
+                // Set global font (before intantiacing the component and the gui)
+                // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)
+                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
+                // Set progress bar font (before intantiacing the progress bar)
+                UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
+                UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
+                UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
+                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar 
                 // init the gui AFTER setting the UIManager and font
                 preferencesPanel = new PreferencesPanel();
+                createPanel = new CreatePanel();
                 activitiesPanel = new ActivitiesPanel();
                 toDoPanel = new ToDoPanel();
                 reportListPanel = new ReportsPanel();
                 chartTabbedPanel = new TabbedPanel();
-                createPanel = new CreatePanel();
-                gui = new MyPomodoroView();
+                progressBar = new ProgressBar();
+                gui = new MainPanel();
+                // Load combo boxes data (type, author...)
+                updateComboBoxLists();
                 /*
                  * Old fashion way to center the component onscreen
                  * Dimension screenSize
@@ -146,10 +157,6 @@ public class Main {
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
-     if (key.toString().contains("JOptionPane")) {
-      System.out.println(key + " = " + value);
-     }
-    
             if (value != null && value instanceof FontUIResource) {
                 UIManager.put(key, f);
             }

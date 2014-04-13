@@ -48,6 +48,7 @@ import org.mypomodoro.util.Labels;
  */
 public class CreatePanel extends JPanel {
 
+    // TODO implement Enter keystroke to save form
     private static final long serialVersionUID = 20110814L;
     protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
     protected final JLabel validation = new JLabel("");

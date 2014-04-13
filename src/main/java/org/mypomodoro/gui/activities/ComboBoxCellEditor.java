@@ -27,7 +27,6 @@ import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
-import org.mypomodoro.Main;
 
 /**
  *
