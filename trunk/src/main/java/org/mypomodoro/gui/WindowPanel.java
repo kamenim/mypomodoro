@@ -17,7 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.CardLayout;
 
 import javax.swing.JPanel;
 
@@ -25,11 +25,26 @@ public class WindowPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
 
-    public WindowPanel(JPanel iconBar, JPanel progressBar, Container panel) {
+    CardLayout cardLayout = new CardLayout();
+    final JPanel mainPanel = new JPanel(cardLayout);
+
+    public WindowPanel(JPanel iconBar, MainPanel view) {
         setLayout(new BorderLayout());
         setOpaque(true);
         add(iconBar, BorderLayout.NORTH);
-        add(progressBar);
-        add(panel, BorderLayout.CENTER);
+        add(view.getProgressBar(), BorderLayout.AFTER_LAST_LINE);
+        SplashScreen splashScreen = new SplashScreen();
+        mainPanel.add(splashScreen, splashScreen.getClass().getName());
+        mainPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
+        mainPanel.add(view.getCreatePanel(), view.getCreatePanel().getClass().getName());
+        mainPanel.add(view.getActivityListPanel(), view.getActivityListPanel().getClass().getName());
+        mainPanel.add(view.getToDoPanel(), view.getToDoPanel().getClass().getName());
+        mainPanel.add(view.getReportListPanel(), view.getReportListPanel().getClass().getName());
+        mainPanel.add(view.getChartTabbedPanel(), view.getChartTabbedPanel().getClass().getName());
+        add(mainPanel, BorderLayout.CENTER);
+    }
+
+    public void showPanel(String name) {
+        cardLayout.show(mainPanel, name);
     }
 }

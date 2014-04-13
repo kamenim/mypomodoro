@@ -17,78 +17,42 @@
 package org.mypomodoro.util;
 
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXTableHeader;
-import org.mypomodoro.Main;
+import javax.swing.table.JTableHeader;
 
 /**
  * Custom header
  *
  */
-public class CustomTableHeader extends JXTableHeader {
+public class CustomTableHeader extends JTableHeader {
 
-    public CustomTableHeader() {
-    }
+    private final String[] toolTips;
+    private final JTable customTable;
 
-    ;
-    
-    public CustomTableHeader(JXTable table, String[] toolTips) {
+    public CustomTableHeader(JTable table, String[] toolTips) {
+        this.customTable = table; // setTable(table) / getTable() won't do any good
+        this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
         setBackground(ColorUtil.BLACK);
-        setFont(getFont().deriveFont(Font.BOLD));
-        // add tooltips
-        ColumnHeaderToolTips tips = new ColumnHeaderToolTips(table);
-        for (int c = 0; c < table.getColumnCount(); c++) {
-            TableColumn col = table.getColumnModel().getColumn(c);
-            tips.setToolTip(col, toolTips[c]);
-        }
-        addMouseMotionListener(tips);
-        // Center column title
+        setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
         setDefaultRenderer(renderer);
     }
-}
-
-class ColumnHeaderToolTips extends MouseAdapter {
-
-    final JXTable table;
-    final Map tips;
-    TableColumn curCol;
-
-    ColumnHeaderToolTips(JXTable table) {
-        this.table = table;
-        this.tips = new HashMap();
-    }
-
-    public void setToolTip(TableColumn col, String tooltip) {
-        if (tooltip == null) {
-            tips.remove(col);
-        } else {
-            tips.put(col, tooltip);
-        }
-    }
 
     @Override
-    public void mouseMoved(MouseEvent evt) {
-        JXTableHeader header = (JXTableHeader) evt.getSource();
-        TableColumnModel colModel = table.getColumnModel();
-        int vColIndex = colModel.getColumnIndexAtX(evt.getX());
-        TableColumn col = null;
-        if (vColIndex >= 0) {
-            col = colModel.getColumn(vColIndex);
-        }
-        if (col != curCol) {
-            header.setToolTipText((String) tips.get(col));
-            curCol = col;
+    public String getToolTipText(MouseEvent e) {
+        Point p = e.getPoint();
+        int viewColumnIndex = columnAtPoint(p);
+        int modelColumnIndex = customTable.convertColumnIndexToModel(viewColumnIndex);
+        if (toolTips[modelColumnIndex].length() == 0) {
+            return super.getToolTipText(e);
+        } else {
+            return toolTips[modelColumnIndex];
         }
     }
 }

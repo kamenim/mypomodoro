@@ -50,9 +50,13 @@ public final class ReportList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
+        add(act, new Date());
+    }
+
+    public void add(Activity act, Date date) {
         act.setPriority(-1);
         act.setIsCompleted(true);
-        act.setDateCompleted(new Date());
+        act.setDateCompleted(date);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {

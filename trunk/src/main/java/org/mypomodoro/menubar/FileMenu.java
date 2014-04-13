@@ -32,16 +32,16 @@ import org.mypomodoro.Main;
 
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.MyIcon;
-import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
 
 public class FileMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
-    private final MyPomodoroView view;
+    private final MainPanel view;
 
-    public FileMenu(final MyPomodoroView view) {
+    public FileMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.File"));
         this.view = view;
         add(new ControlPanelItem());
@@ -80,8 +80,7 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 // Preferences : unhighlight the current hightlighted icon                
                 view.getIconBar().unHighlightIcon();
-                PreferencesPanel preferencesPanel = view.getPreferencesPanel();
-                view.setWindow(preferencesPanel);
+                view.setWindow(view.getPreferencesPanel());
             }
         }
     }
@@ -103,7 +102,7 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 MyIcon ii = view.getIconBar().getIcon(0);
                 view.getIconBar().highlightIcon(ii);
-                view.setWindow(ii.getPanel());
+                //view.setWindow(ii.getPanel());
                 CreatePanel createPanel = view.getCreatePanel();
                 createPanel.clearForm();
                 view.setWindow(createPanel);

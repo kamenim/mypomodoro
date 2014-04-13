@@ -29,16 +29,16 @@ import javax.swing.MenuSelectionManager;
 import org.mypomodoro.gui.PreferencesPanel;
 
 import org.mypomodoro.gui.MyIcon;
-import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.util.Labels;
 
 //View Menu
 public class ViewMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
-    private final MyPomodoroView view;
+    private final MainPanel view;
 
-    public ViewMenu(final MyPomodoroView view) {
+    public ViewMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.View"));
         this.view = view;
         add(new ActivityListItem());
@@ -73,6 +73,7 @@ public class ViewMenu extends JMenu {
             addActionListener(new MenuItemListener());
         }
 
+        // TODO only update the corresponding view
         class MenuItemListener implements ActionListener {
 
             @Override
@@ -80,7 +81,7 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon activityListIcon = view.getIconBar().getIcon(1);
                 view.getIconBar().highlightIcon(activityListIcon);
-                view.setWindow(activityListIcon.getPanel());
+                //view.setWindow(activityListIcon.getPanel());
                 view.setWindow(view.getActivityListPanel());
             }
         }
@@ -105,7 +106,7 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon toDoListIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(toDoListIcon);
-                view.setWindow(toDoListIcon.getPanel());
+                //view.setWindow(toDoListIcon.getPanel());
                 view.setWindow(view.getToDoPanel());
             }
         }
@@ -130,7 +131,7 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon reportListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(reportListIcon);
-                view.setWindow(reportListIcon.getPanel());
+                //view.setWindow(reportListIcon.getPanel());
                 view.setWindow(view.getReportListPanel());
             }
         }
@@ -155,7 +156,7 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon burndownChartIcon = view.getIconBar().getIcon(4);
                 view.getIconBar().highlightIcon(burndownChartIcon);
-                view.setWindow(burndownChartIcon.getPanel());
+                view.setWindow(view.getChartTabbedPanel());
             }
         }
     }

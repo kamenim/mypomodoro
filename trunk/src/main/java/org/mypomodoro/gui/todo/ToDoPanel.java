@@ -86,7 +86,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 25);
-    private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
+    private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
     private final JPanel scrollPane = new JPanel();
     private static final String[] columnNames = {Labels.getString("Common.Priority"),
@@ -112,6 +112,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public ToDoPanel() {
         setLayout(new GridBagLayout());
 
+        activitiesTableModel = getTableModel();
+
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -128,11 +130,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
+                ((JComponent) c).setForeground(ColorUtil.BLACK);
                 return c;
             }
         };
 
-        init();
+        // Set up table listeners once anf for all
+        setUpTable();
+
+        // Init table (data model and rendering)
+        initTable();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -169,71 +176,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         add(splitPane, gbc);
     }
 
-    private void init() {
-        table.setRowHeight(30);
-
-        // Enable drag and drop
-        table.setDragEnabled(true);
-        table.setDropMode(DropMode.INSERT_ROWS);
-        table.setTransferHandler(new ToDoTransferHandler(this));
-
-        // Make table allowing multiple selections
-        table.setRowSelectionAllowed(true);
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
-        // set custom render for title
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // priority
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // title                
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
-        // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
-        } else {
-            // Set width of columns story points, iteration
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
-        }
-        // hide unplanned in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
-        } else {
-            // Set width of columns Unplanned
-            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(30);
-            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(30);
-            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(30);
-        }
-        // Set width of column priority
-        table.getColumnModel().getColumn(0).setMaxWidth(40);
-        table.getColumnModel().getColumn(0).setMinWidth(40);
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        // Set width of column estimated
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
-        // hide ID column
-        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // enable sorting
-        if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
-        }
-
+    // add all listener once and for all
+    private void setUpTable() {
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
@@ -298,19 +242,54 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             }
         });
 
-        // diactivate/gray out all tabs (except import)
-        if (table.getRowCount() == 0) {
-            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 5) { // import tab
-                    controlPane.setSelectedIndex(index);
-                    continue;
-                }
-                controlPane.setEnabledAt(index, false);
-            }
-        } else {
-            // select first activity
-            table.setRowSelectionInterval(0, 0);
-        }
+        // Add listener to record selected row id and manage pomodoro timer
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (table.getSelectedRowCount() > 0) {
+                            System.err.println(e);
+                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                                System.err.println(table.getSelectedRowCount());
+                                if (table.getSelectedRowCount() > 1) { // multiple selection
+                                    // diactivate/gray out unused tabs
+                                    controlPane.setEnabledAt(1, false); // comment
+                                    controlPane.setEnabledAt(2, false); // overestimation
+                                    controlPane.setEnabledAt(3, false); // unplanned                            
+                                    controlPane.setEnabledAt(4, true); // merging
+                                    if (controlPane.getSelectedIndex() == 1
+                                    || controlPane.getSelectedIndex() == 2
+                                    || controlPane.getSelectedIndex() == 3) {
+                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                    }
+                                    if (!pomodoro.getTimer().isRunning()) {
+                                        pomodoro.setCurrentToDoId(-1); // this will disable the start button
+                                    }
+                                } else if (table.getSelectedRowCount() == 1) {
+                                    int row = table.getSelectedRow();
+                                    // activate all panels
+                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                        if (index == 4) {
+                                            controlPane.setEnabledAt(4, false); // merging
+                                            if (controlPane.getSelectedIndex() == 4) {
+                                                controlPane.setSelectedIndex(0); // switch to details panel
+                                            }
+                                        } else {
+                                            controlPane.setEnabledAt(index, true);
+                                        }
+                                    }
+                                    if (!pomodoro.inPomodoro()) {
+                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
+                                    }
+                                }
+                                refreshIconLabels();
+                                refreshRemaining();
+                                setPanelBorder();
+                            }
+                        }
+                    }
+                });
 
         // Activate Control A
         InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
@@ -324,6 +303,86 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         am.put("Control A", new selectAllAction());
+    }
+
+    private void initTable() {
+        table.setRowHeight(30);
+
+        // Enable drag and drop
+        table.setDragEnabled(true);
+        table.setDropMode(DropMode.INSERT_ROWS);
+        table.setTransferHandler(new ToDoTransferHandler(this));
+
+        // Make table allowing multiple selections
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
+        // set custom render for title
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // priority
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // title                
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
+        // hide story points and iteration in 'classic' mode
+        if (!PreferencesPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+        } else {
+            // Set width of columns story points, iteration
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
+        }
+        // hide unplanned in Agile mode
+        if (PreferencesPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
+        } else {
+            // Set width of columns Unplanned
+            table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(30);
+            table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(30);
+            table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(30);
+        }
+        // Set width of column priority
+        table.getColumnModel().getColumn(0).setMaxWidth(40);
+        table.getColumnModel().getColumn(0).setMinWidth(40);
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        // Set width of column estimated
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // enable sorting
+        if (table.getModel().getRowCount() > 0) {
+            table.setAutoCreateRowSorter(true);
+        }
+
+        // diactivate/gray out all tabs (except import)
+        if (table.getRowCount() == 0) {
+            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                if (index == 5) { // import tab
+                    controlPane.setSelectedIndex(index);
+                    continue;
+                }
+                controlPane.setEnabledAt(index, false);
+            }
+        } else {
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
+        }
 
         // Refresh panel border
         setPanelBorder();
@@ -379,49 +438,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
         scrollPane.add(new JScrollPane(table), gbc);
-
-        // Add listener to record selected row id and manage pomodoro timer
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        if (table.getSelectedRowCount() > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            controlPane.setEnabledAt(1, false); // comment
-                            controlPane.setEnabledAt(2, false); // overestimation
-                            controlPane.setEnabledAt(3, false); // unplanned                            
-                            controlPane.setEnabledAt(4, true); // merging
-                            if (controlPane.getSelectedIndex() == 1
-                            || controlPane.getSelectedIndex() == 2
-                            || controlPane.getSelectedIndex() == 3) {
-                                controlPane.setSelectedIndex(0); // switch to details panel
-                            }
-                            if (!pomodoro.getTimer().isRunning()) {
-                                pomodoro.setCurrentToDoId(-1); // this will disable the start button
-                            }
-                        } else if (table.getSelectedRowCount() == 1) {
-                            int row = table.getSelectedRow();
-                            // activate all panels
-                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                if (index == 4) {
-                                    controlPane.setEnabledAt(4, false); // merging
-                                    if (controlPane.getSelectedIndex() == 4) {
-                                        controlPane.setSelectedIndex(0); // switch to details panel
-                                    }
-                                } else {
-                                    controlPane.setEnabledAt(index, true);
-                                }
-                            }
-                            if (!pomodoro.inPomodoro()) {
-                                pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
-                            }
-                        }
-                        refreshIconLabels();
-                        refreshRemaining();
-                        setPanelBorder();
-                    }
-                });
     }
 
     private void addTimerPanel(GridBagConstraints gbc) {
@@ -658,13 +674,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        try {
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-        } catch (Exception e) {
-            // do nothing
-        }
-        init();
+        activitiesTableModel = getTableModel();
+        table.setModel(activitiesTableModel);
+        initTable();
     }
 
     // selected row BOLD

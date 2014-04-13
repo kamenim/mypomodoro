@@ -40,7 +40,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.ActivityInformation;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.ImageIcons;
-import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -96,9 +96,9 @@ public class Pomodoro {
         }
         if (isSystemTray()) {
             if (isSystemTrayMessage()) {
-                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
             }
-            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
         panel.refreshIconLabels();
@@ -113,10 +113,10 @@ public class Pomodoro {
         stopSound();
         if (inPomodoro() && isSystemTray()) {
             if (isSystemTrayMessage()) {
-                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
+                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Stopped"), TrayIcon.MessageType.NONE);
             }
-            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Stopped"));
-            MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Stopped"));
+            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
         panel.refreshIconLabels();
@@ -164,17 +164,17 @@ public class Pomodoro {
                         pomSetNumber = 0;
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
-                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
                             }
-                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
                         }
                     } else {
                         goInShortBreak();
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
-                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
                             }
-                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
@@ -195,9 +195,9 @@ public class Pomodoro {
                         timerPanel.setStart();
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
-                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
                             }
-                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                         }
                     } else {
                         if (PreferencesPanel.preferences.getTicking() && !isMute) {
@@ -207,9 +207,9 @@ public class Pomodoro {
                         inpomodoro = true;
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
-                                MyPomodoroView.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
                             }
-                            MyPomodoroView.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
                         panel.refreshIconLabels();
@@ -417,9 +417,9 @@ public class Pomodoro {
         String now = sdf.format(time);
         pomodoroTime.setText(now);
         if (inPomodoro() && isSystemTray()) {
-            MyPomodoroView.trayIcon.setToolTip(now);
+            MainPanel.trayIcon.setToolTip(now);
             int progressiveTrayIndex = (int) ((double) ((tmpPomodoroLength - time)) / (double) tmpPomodoroLength * 8);
-            MyPomodoroView.trayIcon.setImage(ImageIcons.MAIN_ICON_PROGRESSIVE[progressiveTrayIndex].getImage());
+            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON_PROGRESSIVE[progressiveTrayIndex].getImage());
         }
     }
 
@@ -432,7 +432,7 @@ public class Pomodoro {
                 && isSystemTrayMessage()) {
             for (int i = fiveMinutes; i < tmpPomodoroLength; i = i + tenMinutes) {
                 if (time == i) {
-                    MyPomodoroView.trayIcon.displayMessage("", now, TrayIcon.MessageType.NONE);
+                    MainPanel.trayIcon.displayMessage("", now, TrayIcon.MessageType.NONE);
                 }
             }
         }

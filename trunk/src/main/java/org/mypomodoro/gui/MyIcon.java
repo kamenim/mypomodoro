@@ -35,7 +35,7 @@ public class MyIcon extends JLabel {
         return new ImageIcon(Main.class.getResource(path));
     }
 
-    public static MyIcon getInstance(final MyPomodoroView view, String text,
+    public static MyIcon getInstance(final MainPanel view, String text,
             String fileName, JPanel p) {
         String onPath = "/images/" + fileName + "2.png";
         String offPath = "/images/" + fileName + ".png";
@@ -56,7 +56,7 @@ public class MyIcon extends JLabel {
         setIcon(off);
     }
 
-    public MyIcon(final MyPomodoroView view, String Text, ImageIcon on,
+    public MyIcon(final MainPanel view, String Text, ImageIcon on,
             ImageIcon off, JPanel p) {
         super(Text, off, CENTER);
         this.off = off;

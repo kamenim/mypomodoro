@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.model;
 
+import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -48,8 +49,13 @@ public final class ActivityList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
+        add(act, act.getDate()); // date cretion / schedule
+    }
+
+    public void add(Activity act, Date date) {
         act.setPriority(-1);
         act.setIsCompleted(false);
+        act.setDate(date);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {

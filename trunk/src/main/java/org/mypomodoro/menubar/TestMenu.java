@@ -27,10 +27,14 @@ import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
+import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.MyPomodoroView;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -38,7 +42,7 @@ public class TestMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
 
-    public TestMenu(final MyPomodoroView view) {
+    public TestMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
         add(new JSeparator());
@@ -57,44 +61,31 @@ public class TestMenu extends JMenu {
         });
     }
 
-    // resets all the data files.
-    class ResetDataItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
-
-        public ResetDataItem(final MyPomodoroView view) {
-            super(Labels.getString("DataMenu.Clear All Data"));
-            addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ActivitiesDAO.getInstance().deleteAll();
-                    view.updateLists();
-                    view.updateViews();
-                }
-            });
-        }
-    }
-
     class TestDataItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
 
         private void createTestData() {
-            SwingUtilities.invokeLater(new Runnable() {
-
+            new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
+                    final int alSize = 300;
+                    // Disable item menu
+                    setEnabled(false);
+                    // Set progress bar
+                    Main.gui.getProgressBar().setVisible(true);
+                    Main.gui.getProgressBar().getBar().setValue(0);
+                    Main.gui.getProgressBar().getBar().setMaximum(alSize);
+                    // Start wait cursor
                     WaitCursor.startWaitCursor();
 
                     Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
                     java.util.Random rand = new java.util.Random();
-                    int alSize = 300;
-                    int increment = 1;
+                    //int increment = 1;
                     for (int i = 0; i < alSize; i++) {
                         int minusDay = rand.nextInt(20);
-                        Activity a = new Activity(
+                        final Activity a = new Activity(
                                 "Place" + " " + (rand.nextInt(10) + 1),
                                 "Author" + " " + (rand.nextInt(10) + 1),
                                 "Task" + " " + (i + 1),
@@ -113,38 +104,89 @@ public class TestMenu extends JMenu {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            Date date = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day)
-                            a.setDateCompleted(date);
+                            Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day)
+                            //a.setDateCompleted(date);
+                            ReportList.getList().add(a, dateCompleted);
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }
-                                a.setPriority(increment);
-                                increment++;
+                                //a.setPriority(increment);
+                                ToDoList.getList().add(a);
+                                //increment++;
                             } else { // Tasks for the Activity list 
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1] + 1); // use unstarted iteration number
                                 }
                                 a.setOverestimatedPoms(0);
                                 a.setActualPoms(0);
+                                ActivityList.getList().add(a, a.getDate());
                             }
                         }
-                        a.databaseInsert();
+
+                        final int progressValue = i + 1;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                Main.gui.getProgressBar().getBar().setString(a.getName()); // task
+                                if (progressValue == alSize) {
+                                    Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                sleep(1000); // wait one second before hiding the progress bar
+                                            } catch (InterruptedException ex) {
+                                                // do nothing
+                                            }
+                                            // hide progress bar
+                                            Main.gui.getProgressBar().getBar().setString("");
+                                            Main.gui.getProgressBar().setVisible(false);
+                                        }
+                                    }.start();
+                                }
+                            }
+                        });
                     }
+                    // Enable item menu
+                    setEnabled(true);
+                    // Stop wait cursor
                     WaitCursor.stopWaitCursor();
                 }
-            });
+            }.start();
         }
 
-        public TestDataItem(final MyPomodoroView view) {
+        public TestDataItem(final MainPanel view) {
             super(Labels.getString("DataMenu.Generate Test Data"));
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
+                    view.updateComboBoxLists();
+                    // TODO fix update of views
+                    view.updateViews();
+                }
+            });
+        }
+    }
+
+    // resets all the data files.
+    class ResetDataItem extends JMenuItem {
+
+        private static final long serialVersionUID = 20110814L;
+
+        public ResetDataItem(final MainPanel view) {
+            super(Labels.getString("DataMenu.Clear All Data"));
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ActivitiesDAO.getInstance().deleteAll();
                     view.updateLists();
+                    view.updateComboBoxLists();
                     view.updateViews();
                 }
             });

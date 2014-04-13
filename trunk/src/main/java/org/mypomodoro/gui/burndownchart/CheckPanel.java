@@ -56,7 +56,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
-import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -122,6 +121,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
+                ((JComponent) c).setForeground(ColorUtil.BLACK);
                 return c;
             }
         };
@@ -224,8 +224,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         }
 
         // Add tooltip to header columns
-        // Something is not quite right here : the header doesn't look like the headers of the other tables and rendering doesn't work...
-        // ...untill the header of another table is rendered (weird behaviour). This has something to do with this component being nested in JTabbedPane
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 6] = Labels.getString("Common.Date completed");
