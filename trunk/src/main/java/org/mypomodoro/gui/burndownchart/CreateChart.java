@@ -42,7 +42,6 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.joda.time.DateTime;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -58,6 +57,7 @@ import org.mypomodoro.util.DateUtil;
 public class CreateChart extends JPanel {
 // TODO legend on charts?
 // TODO Scope line should not join burnup unless same value
+// TODO Axis X should be empty when no data submitted
 // Iterations
 
     private static final long serialVersionUID = 1L;
