@@ -18,13 +18,16 @@ package org.mypomodoro.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.lang.Thread.sleep;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Delete button
@@ -37,31 +40,75 @@ public class DeleteButton extends AbstractPomodoroButton {
     public DeleteButton(final String title, final String message, final AbstractActivitiesPanel panel) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
-
+// TODO problem with removing data and progress bar in Reports list (same with removing rows from CheckPanel)
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (panel.getTable().getSelectedRowCount() > 0) {
-                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if (reply == JOptionPane.YES_OPTION) {
-                        if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        
-                            panel.deleteAll();
-                            panel.refresh();
-                        } else {
-                            int increment = 0;
-                            int[] rows = panel.getTable().getSelectedRows();
-                            for (int row : rows) {
-                                row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedActivity = panel.getActivityById(id);
-                                panel.delete(selectedActivity);
-                                // removing a row requires decreasing  the row index number
-                                panel.removeRow(row);
-                                increment++;
+                final int selectedRowCount = panel.getTable().getSelectedRowCount();
+                if (selectedRowCount > 0) {
+                    new Thread() { // This new thread is necessary for updating the progress bar
+                        @Override
+                        public void run() {
+                            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                // Disable button
+                                setEnabled(false);
+                                // Set progress bar
+                                Main.gui.getProgressBar().setVisible(true);
+                                Main.gui.getProgressBar().getBar().setValue(0);
+                                Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                                /*if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        
+                                 panel.deleteAll();
+                                 panel.refresh();
+                                 } else {*/
+                                int increment = 0;
+                                int[] rows = panel.getTable().getSelectedRows();
+                                for (int row : rows) {
+                                    row = row - increment;
+                                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                    Activity selectedActivity = panel.getActivityById(id);
+                                    panel.delete(selectedActivity);
+                                    // removing a row requires decreasing  the row index number
+                                    panel.removeRow(row);
+                                    increment++;
+                                    final int progressValue = increment;
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                            Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                        }
+                                    });
+                                }
+                                //}
+                                // Close progress bar
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    sleep(1000); // wait one second before hiding the progress bar
+                                                } catch (InterruptedException ex) {
+                                                    // do nothing
+                                                }
+                                                // hide progress bar
+                                                Main.gui.getProgressBar().getBar().setString(null);
+                                                Main.gui.getProgressBar().setVisible(false);
+                                            }
+                                        }.start();
+                                    }
+                                });
+                                // Refresh panel border
+                                panel.setPanelBorder();
+                                // Enable button
+                                setEnabled(true);
+                                // Stop wait cursor
+                                WaitCursor.stopWaitCursor();
                             }
                         }
-                        // Refresh panel border
-                        panel.setPanelBorder();
-                    }
+                    }.start();
                 }
             }
         });

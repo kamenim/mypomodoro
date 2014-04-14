@@ -37,7 +37,7 @@ public class SaveButton extends AbstractPomodoroButton {
         // These two lines are required to enable Enter evrywhere in the form (including text fields and textarea) once the save button is enabled
         registerKeyboardAction(save,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
-                JComponent.WHEN_IN_FOCUSED_WINDOW);        
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
         registerKeyboardAction(save,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);

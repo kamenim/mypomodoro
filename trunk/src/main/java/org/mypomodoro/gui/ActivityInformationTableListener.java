@@ -40,21 +40,25 @@ public class ActivityInformationTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
-            String info = "";
-            int[] rows = table.getSelectedRows();
-            for (int row : rows) {
-                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-                Activity selectedActivity = activities.getById(id);
-                info += selectedActivity.getName() + "\n";
+        if (table.getSelectedRowCount() > 0) {
+            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+                    String info = "";
+                    int[] rows = table.getSelectedRows();
+                    for (int row : rows) {
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                        Activity selectedActivity = activities.getById(id);
+                        info += selectedActivity.getName() + "\n";
+                    }
+                    information.showInfo(info);
+                } else if (table.getSelectedRowCount() == 1) {
+                    int row = table.getSelectedRow();
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                    Activity activity = activities.getById(id);
+                    information.selectInfo(activity);
+                    information.showInfo();
+                }
             }
-            information.showInfo(info);
-        } else if (table.getSelectedRowCount() == 1) {
-            int row = table.getSelectedRow();
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-            Activity activity = activities.getById(id);
-            information.selectInfo(activity);
-            information.showInfo();
         } else {
             information.clearInfo();
         }

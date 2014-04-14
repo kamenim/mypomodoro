@@ -51,7 +51,7 @@ public final class ToDoList extends AbstractActivities {
     public void add(Activity act) {
         act.setPriority(size() + 1);
         act.setIsCompleted(false);
-        act.setDateCompleted(new Date(0)); // reset the reopened date (if any)
+        act.setDateCompleted(new Date(0)); // erase the reopened date (if any)
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {
@@ -66,7 +66,7 @@ public final class ToDoList extends AbstractActivities {
     }
 
     public void move(Activity act) {
-        ActivityList.getList().add(act); // this sets the priority and update the database
+        ActivityList.getList().add(act); // set the priority and update the database
         remove(act);
     }
 

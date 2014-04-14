@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -59,7 +60,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                     // Set progress bar
                     Main.gui.getProgressBar().setVisible(true);
                     Main.gui.getProgressBar().getBar().setValue(0);
-                    Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro()? selectedRowCount - 1 : selectedRowCount);
+                    Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                     // Start wait cursor
                     WaitCursor.startWaitCursor();
                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
@@ -75,7 +76,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                         Activity selectedToDo = panel.getActivityById(id);
                         // excluding current running task
-                        if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {                            
+                        if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                             continue;
                         }
                         panel.move(selectedToDo);
@@ -87,7 +88,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                             @Override
                             public void run() {
                                 Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro()? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
                             }
                         });
                     }
@@ -96,7 +97,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString("Reordering..."); // TODO translate string "Reordering"
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Reordering"));
 
                         }
                     });
@@ -106,7 +107,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
                             new Thread() {
                                 @Override
                                 public void run() {

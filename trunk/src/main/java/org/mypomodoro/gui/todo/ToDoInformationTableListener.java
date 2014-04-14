@@ -43,25 +43,29 @@ public class ToDoInformationTableListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
-            String info = "";
-            int[] rows = table.getSelectedRows();
-            for (int row : rows) {
-                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-                Activity selectedToDo = activities.getById(id);
-                // excluding current running task
-                if (pomodoro.inPomodoro() && selectedToDo.getId() == pomodoro.getCurrentToDo().getId()) {
-                    continue;
+        if (table.getSelectedRowCount() > 0) {
+            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+                    String info = "";
+                    int[] rows = table.getSelectedRows();
+                    for (int row : rows) {
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                        Activity selectedToDo = activities.getById(id);
+                        // excluding current running task
+                        if (pomodoro.inPomodoro() && selectedToDo.getId() == pomodoro.getCurrentToDo().getId()) {
+                            continue;
+                        }
+                        info += selectedToDo.getName() + "\n";
+                    }
+                    information.showInfo(info);
+                } else if (table.getSelectedRowCount() == 1) {
+                    int row = table.getSelectedRow();
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                    Activity activity = activities.getById(id);
+                    information.selectInfo(activity);
+                    information.showInfo();
                 }
-                info += selectedToDo.getName() + "\n";
             }
-            information.showInfo(info);
-        } else if (table.getSelectedRowCount() == 1) {
-            int row = table.getSelectedRow();
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-            Activity activity = activities.getById(id);
-            information.selectInfo(activity);
-            information.showInfo();
         } else {
             information.clearInfo();
         }

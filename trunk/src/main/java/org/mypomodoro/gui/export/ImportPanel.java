@@ -54,6 +54,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ImportPanel extends JPanel {
+// TODO add progress bar?
 
     private static final long serialVersionUID = 20110814L;
     protected final ImportInputForm importInputForm = new ImportInputForm();

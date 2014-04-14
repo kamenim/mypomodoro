@@ -83,7 +83,7 @@ public class TestMenu extends JMenu {
 
                     Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
-                    java.util.Random rand = new java.util.Random();                    
+                    java.util.Random rand = new java.util.Random();
                     for (int i = 0; i < nbTask; i++) {
                         int minusDay = rand.nextInt(20);
                         final Activity a = new Activity(
@@ -95,7 +95,7 @@ public class TestMenu extends JMenu {
                                 rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
-                                (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate());  // any date in the past 20 days
+                                (!PreferencesPanel.preferences.getAgileMode() ? new Date() : (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate()));  // any date in the past 20 days
                         a.setIsCompleted(rand.nextBoolean());
                         a.setOverestimatedPoms(rand.nextInt(3));
                         int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
@@ -106,7 +106,7 @@ public class TestMenu extends JMenu {
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
                             Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day) 
-                            ReportList.getList().add(a, dateCompleted);                            
+                            ReportList.getList().add(a, dateCompleted);
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
@@ -129,13 +129,13 @@ public class TestMenu extends JMenu {
                                 Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress
                                 Main.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + nbTask); // task
                             }
-                        });                        
+                        });
                     }
                     // Close progress bar
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.progressBar.getBar().setString("Done"); // TODO translate string "Done"
+                            Main.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
                             new Thread() {
                                 @Override
                                 public void run() {
@@ -151,7 +151,7 @@ public class TestMenu extends JMenu {
                             }.start();
 
                         }
-                    });                   
+                    });
                     // Enable item menu
                     setEnabled(true);
                     // Stop wait cursor
