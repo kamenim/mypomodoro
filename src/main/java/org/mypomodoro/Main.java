@@ -102,10 +102,10 @@ public class Main {
                     // cross platform look and feel is used by default by the JVM
                 }
                 //}
-                // Set global font (before intantiacing the component and the gui)
+                // Set global font (before intanstiating the components and the gui)
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
-                // Set progress bar font (before intantiacing the progress bar)
+                // Set progress bar font (before intanstiating the progress bar)
                 UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
                 UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
                 UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
@@ -174,6 +174,36 @@ public class Main {
             }
         });
     }
+    
+    /*public static void updateActivityListView() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                activitiesPanel.refresh();
+            }
+        });
+    }
+    
+    public static void updateToDoListView() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                toDoPanel.refresh();
+            }
+        });
+    }
+    
+    public static void updateReportListView() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                reportListPanel.refresh();
+            }
+        });
+    }*/
 
     public static void updateLists() {
         SwingUtilities.invokeLater(new Runnable() {

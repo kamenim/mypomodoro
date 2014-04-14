@@ -42,6 +42,8 @@ public class TestMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
 
+    private final int nbTask = 300;
+
     public TestMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataItem(view));
@@ -61,6 +63,7 @@ public class TestMenu extends JMenu {
         });
     }
 
+    // create test data
     class TestDataItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
@@ -69,21 +72,19 @@ public class TestMenu extends JMenu {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
-                    final int alSize = 300;
                     // Disable item menu
                     setEnabled(false);
                     // Set progress bar
-                    Main.gui.getProgressBar().setVisible(true);
-                    Main.gui.getProgressBar().getBar().setValue(0);
-                    Main.gui.getProgressBar().getBar().setMaximum(alSize);
+                    Main.progressBar.setVisible(true);
+                    Main.progressBar.getBar().setValue(0);
+                    Main.progressBar.getBar().setMaximum(nbTask);
                     // Start wait cursor
                     WaitCursor.startWaitCursor();
 
                     Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
-                    java.util.Random rand = new java.util.Random();
-                    //int increment = 1;
-                    for (int i = 0; i < alSize; i++) {
+                    java.util.Random rand = new java.util.Random();                    
+                    for (int i = 0; i < nbTask; i++) {
                         int minusDay = rand.nextInt(20);
                         final Activity a = new Activity(
                                 "Place" + " " + (rand.nextInt(10) + 1),
@@ -104,17 +105,14 @@ public class TestMenu extends JMenu {
                             a.setStoryPoints(0);
                         }
                         if (a.isCompleted()) { // Tasks for the Report list
-                            Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day)
-                            //a.setDateCompleted(date);
-                            ReportList.getList().add(a, dateCompleted);
+                            Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day) 
+                            ReportList.getList().add(a, dateCompleted);                            
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }
-                                //a.setPriority(increment);
                                 ToDoList.getList().add(a);
-                                //increment++;
                             } else { // Tasks for the Activity list 
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1] + 1); // use unstarted iteration number
@@ -124,56 +122,59 @@ public class TestMenu extends JMenu {
                                 ActivityList.getList().add(a, a.getDate());
                             }
                         }
-
                         final int progressValue = i + 1;
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().getBar().setString(a.getName()); // task
-                                if (progressValue == alSize) {
-                                    Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ex) {
-                                                // do nothing
-                                            }
-                                            // hide progress bar
-                                            Main.gui.getProgressBar().getBar().setString("");
-                                            Main.gui.getProgressBar().setVisible(false);
-                                        }
-                                    }.start();
-                                }
+                                Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                Main.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + nbTask); // task
                             }
-                        });
+                        });                        
                     }
+                    // Close progress bar
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Main.progressBar.getBar().setString("Done"); // TODO translate string "Done"
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sleep(1000); // wait one second before hiding the progress bar
+                                    } catch (InterruptedException ex) {
+                                        // do nothing
+                                    }
+                                    // hide progress bar
+                                    Main.progressBar.getBar().setString(null);
+                                    Main.progressBar.setVisible(false);
+                                }
+                            }.start();
+
+                        }
+                    });                   
                     // Enable item menu
                     setEnabled(true);
                     // Stop wait cursor
                     WaitCursor.stopWaitCursor();
+                    // Updating views at once (updating individual view in the loop is likely to create ConcurrentModificationException exceptions)
+                    Main.updateViews(); // this has to be done inside the current thread
                 }
             }.start();
         }
 
         public TestDataItem(final MainPanel view) {
-            super(Labels.getString("DataMenu.Generate Test Data"));
+            super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     createTestData();
-                    view.updateComboBoxLists();
-                    // TODO fix update of views
-                    view.updateViews();
                 }
             });
         }
     }
 
-    // resets all the data files.
+    // delete all data
     class ResetDataItem extends JMenuItem {
 
         private static final long serialVersionUID = 20110814L;
@@ -185,9 +186,8 @@ public class TestMenu extends JMenu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     ActivitiesDAO.getInstance().deleteAll();
-                    view.updateLists();
-                    view.updateComboBoxLists();
-                    view.updateViews();
+                    Main.updateLists();
+                    Main.updateViews();
                 }
             });
         }

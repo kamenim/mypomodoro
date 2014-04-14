@@ -117,27 +117,32 @@ public class MoveButton extends AbstractPomodoroButton {
                             @Override
                             public void run() {
                                 Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().getBar().setString("" + progressValue); // task
-                                if (progressValue == selectedRowCount) {
-                                    Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ex) {
-                                                // do nothing
-                                            }
-                                            // hide progress bar
-                                            Main.gui.getProgressBar().getBar().setString("");
-                                            Main.gui.getProgressBar().setVisible(false);
-                                        }
-                                    }.start();
-                                }
+                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                             }
                         });
                     }
                     //}
+                    // Close progress bar
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sleep(1000); // wait one second before hiding the progress bar
+                                    } catch (InterruptedException ex) {
+                                        // do nothing
+                                    }
+                                    // hide progress bar
+                                    Main.gui.getProgressBar().getBar().setString(null);
+                                    Main.gui.getProgressBar().setVisible(false);
+                                }
+                            }.start();
+
+                        }
+                    });
                     // Refresh panel border
                     panel.setPanelBorder();
                     // Enable button

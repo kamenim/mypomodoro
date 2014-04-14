@@ -22,12 +22,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Locale;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.mypomodoro.Main;
+import javax.swing.KeyStroke;
 
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.buttons.RestartButton;
@@ -82,16 +86,27 @@ public class PreferencesPanel extends JPanel {
     }
 
     protected void addSaveButton() {
-        saveButton.addActionListener(new ActionListener() {
+        // Save action
+        Action save = new AbstractAction() {
 
             @Override
-            public void actionPerformed(ActionEvent event) {
+            public void actionPerformed(ActionEvent e) {
                 setValidation(Labels.getString("PreferencesPanel.Preferences saved.") + " ");
                 updatePreferences();
                 disableSaveButton();
                 validPanel.setVisible(true);
             }
-        });
+        };
+        // Listener for mouse action
+        saveButton.addActionListener(save);
+        // Keystroke for keyboard action
+        // These two lines are required to enable Enter evrywhere in the form (including text fields and textarea) once the save button is enabled
+        saveButton.registerKeyboardAction(save,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        saveButton.registerKeyboardAction(save,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.5;
@@ -122,6 +137,7 @@ public class PreferencesPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
                 preferencesInputFormPanel.agileModeBox.setSelected(true);
+                preferencesInputFormPanel.pomodoroModeBox.setSelected(false);
                 preferencesInputFormPanel.plainHoursBox.setSelected(true);
                 preferencesInputFormPanel.effectiveHoursBox.setSelected(false);
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
