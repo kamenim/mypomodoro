@@ -18,17 +18,25 @@ package org.mypomodoro.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mypomodoro.Main;
 
 /**
  * Restart application Code found at
- * http://java.dzone.com/articles/programmatically-restart-java Code modified to
- * support non Hotspot VM implementation, EXE wrapper file Also, support for
- * spaces and special characters in the path
+ * http://java.dzone.com/articles/programmatically-restart-java
+ *
+ * Code modified to support non Hotspot VM implementation, EXE wrapper file and
+ * changes since java 6u45
+ * http://www.oracle.com/technetwork/java/javase/6u45-relnotes-1932876.html
+ * (arguments required to be passed to Runtime.getRuntime().exec as String
+ * array)
+ *
+ * Also support for spaces and special characters in the path
  *
  */
 public class Restart {
@@ -50,42 +58,43 @@ public class Restart {
             new RestartMac(0);
         } else {
             try {
+                // init the command to execute, add the vm args
+                final ArrayList<String> cmd = new ArrayList<String>();
                 // java binary
                 String java = System.getProperty("java.home") + "/bin/java";
+                cmd.add(java);
                 // vm arguments
                 List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-                StringBuilder vmArgsOneLine = new StringBuilder();
                 for (String arg : vmArguments) {
                     // if it's the agent argument : we ignore it otherwise the
                     // address of the old application and the new one will be in conflict
                     if (!arg.contains("-agentlib")) {
-                        vmArgsOneLine.append(arg);
-                        vmArgsOneLine.append(" ");
+                        cmd.add(arg);
                     }
                 }
-                // init the command to execute, add the vm args
-                final StringBuilder cmd = new StringBuilder("\"" + java + "\" " + vmArgsOneLine);
-
                 // program main and program arguments
                 String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
                 String pathFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding                        
-
+                pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding
                 if (pathFile.endsWith(".exe")) { // EXE wrapper
-                    cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
+                    cmd.add("-jar");
+                    cmd.add(new File(pathFile).toString());
                 } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
-                    if (pathFile.endsWith(".jar")) { // Jar file                   
-                        cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
+                    if (pathFile.endsWith(".jar")) { // Jar file  
+                        cmd.add("-jar");
+                        cmd.add(new File(pathFile).toString());
                     } else { // Class file (running in IDE like Netbeans)
-                        cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+                        cmd.add("-cp");
+                        cmd.add(System.getProperty("java.class.path"));
+                        cmd.add(mainCommand[0]);
                         // Program arguments
                         for (int i = 1; i < mainCommand.length; i++) {
-                            cmd.append(" ");
-                            cmd.append(mainCommand[i]);
+                            cmd.add(mainCommand[i]);
                         }
                     }
                 } else { // Non Hotspot VM implementation
-                    cmd.append("-jar " + "\"" + new File(pathFile) + "\"");
+                    cmd.add("-jar");
+                    cmd.add(new File(pathFile).toString());
                 }
 
                 // execute the command in a shutdown hook, to be sure that all the
@@ -95,7 +104,7 @@ public class Restart {
                     @Override
                     public void run() {
                         try {
-                            Runtime.getRuntime().exec(cmd.toString());
+                            Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
                         } catch (IOException e) {
                         }
                     }
@@ -106,7 +115,7 @@ public class Restart {
                 }
                 // exit
                 System.exit(0);
-            } catch (Exception e) {
+            } catch (UnsupportedEncodingException e) {
                 // something went wrong
                 throw new IOException("Error while trying to restart the application", e);
             }

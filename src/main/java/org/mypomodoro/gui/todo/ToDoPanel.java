@@ -82,6 +82,7 @@ import org.mypomodoro.util.Labels;
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 // TODO panel border : display estimated done
     // TODO problem with multiple selection and pomodoro starting : loosing current selected
+    // TODO current task not displayed in red
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
