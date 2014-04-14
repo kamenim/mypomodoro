@@ -29,7 +29,6 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 /**

@@ -32,7 +32,6 @@ public class WindowPanel extends JPanel {
         setLayout(new BorderLayout());
         setOpaque(true);
         add(iconBar, BorderLayout.NORTH);
-        add(view.getProgressBar(), BorderLayout.AFTER_LAST_LINE);
         SplashScreen splashScreen = new SplashScreen();
         mainPanel.add(splashScreen, splashScreen.getClass().getName());
         mainPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
@@ -42,6 +41,7 @@ public class WindowPanel extends JPanel {
         mainPanel.add(view.getReportListPanel(), view.getReportListPanel().getClass().getName());
         mainPanel.add(view.getChartTabbedPanel(), view.getChartTabbedPanel().getClass().getName());
         add(mainPanel, BorderLayout.CENTER);
+        add(view.getProgressBar(), BorderLayout.SOUTH);
     }
 
     public void showPanel(String name) {

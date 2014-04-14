@@ -16,6 +16,9 @@
  */
 package org.mypomodoro.buttons;
 
+import java.awt.event.KeyEvent;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import org.mypomodoro.gui.SaveListener;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
@@ -26,6 +29,17 @@ public class SaveButton extends AbstractPomodoroButton {
 
     public SaveButton(CreatePanel panel) {
         super(Labels.getString("Common.Save"));
-        addActionListener(new SaveListener(panel));
+        // Save action
+        SaveListener save = new SaveListener(panel);
+        // Listener for mouse action
+        addActionListener(save);
+        // Keystrokes for keyboard action
+        // These two lines are required to enable Enter evrywhere in the form (including text fields and textarea) once the save button is enabled
+        registerKeyboardAction(save,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);        
+        registerKeyboardAction(save,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 }

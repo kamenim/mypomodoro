@@ -41,10 +41,8 @@ public class ProgressBar extends JPanel {
         setPreferredSize(new Dimension(getWidth(), 30));
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 10), 0, 0);
-        bar.setOpaque(true); // required for custom colors to be displayed
+        //bar.setOpaque(true); // required for custom colors to be displayed
         bar.setStringPainted(true); // required for custom colors to be displayed
-        //progressBar.setMinimum(0);
-        //progressBar.setMaximum(100);
         bar.setFont(getFont().deriveFont(Font.BOLD));
         add(bar, c);
         setBorder(null);

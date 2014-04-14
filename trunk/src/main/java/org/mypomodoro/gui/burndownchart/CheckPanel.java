@@ -79,7 +79,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
-    private AbstractActivitiesTableModel activitiesTableModel = getTableModel();
+    private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
     private final JPanel scrollPane = new JPanel();
     private static final String[] columnNames = {"U",
@@ -105,6 +105,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
         setLayout(new GridBagLayout());
 
+        activitiesTableModel = getTableModel();
+
         table = new JXTable(activitiesTableModel) {
 
             private static final long serialVersionUID = 1L;
@@ -125,7 +127,12 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 return c;
             }
         };
-        init();
+
+        // Set up table listeners once anf for all
+        setUpTable();
+
+        // Init table (data model and rendering)
+        initTable();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -160,69 +167,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         add(splitPane, gbc);
     }
 
-    private void init() {
-        table.setRowHeight(30);
-
-        // Make table allowing multiple selections
-        table.setRowSelectionAllowed(true);
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
-        // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // type
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
-        // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
-        } else {
-            // Set width of columns story points, iteration
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
-        }
-        // hide unplanned in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(0).setMaxWidth(0);
-            table.getColumnModel().getColumn(0).setMinWidth(0);
-            table.getColumnModel().getColumn(0).setPreferredWidth(0);
-        } else {
-            // Set width of column Unplanned
-            table.getColumnModel().getColumn(0).setMaxWidth(30);
-            table.getColumnModel().getColumn(0).setMinWidth(30);
-            table.getColumnModel().getColumn(0).setPreferredWidth(30);
-        }
-        // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
-        // Set width of estimated
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
-        // Set min width of type column
-        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
-        // hide ID column
-        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
-        // enable sorting
-        if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
-        }
-
+    // add all listener once and for all
+    private void setUpTable() {
         // Add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
@@ -293,16 +239,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         });
 
-        // diactivate/gray out all tabs (except import)
-        if (table.getRowCount() == 0) {
-            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                controlPane.setEnabledAt(index, false);
-            }
-        } else {
-            // select first activity
-            table.setRowSelectionInterval(0, 0);
-        }
-
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
         // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
@@ -319,6 +255,80 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
         am.put("Control A", new selectAllAction());
+    }
+
+    private void initTable() {
+        table.setRowHeight(30);
+
+        // Make table allowing multiple selections
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // Centre columns
+        CustomTableRenderer dtcr = new CustomTableRenderer();
+        // set custom render for dates
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // title
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated
+        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
+        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
+        // hide story points and iteration in 'classic' mode
+        if (!PreferencesPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+        } else {
+            // Set width of columns story points, iteration
+            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
+            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
+        }
+        // hide unplanned in Agile mode
+        if (PreferencesPanel.preferences.getAgileMode()) {
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setPreferredWidth(0);
+        } else {
+            // Set width of column Unplanned
+            table.getColumnModel().getColumn(0).setMaxWidth(30);
+            table.getColumnModel().getColumn(0).setMinWidth(30);
+            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        }
+        // Set width of column Date
+        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
+        // Set width of estimated
+        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(80);
+        // Set min width of type column
+        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(100);
+        // hide ID column
+        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
+        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        // enable sorting
+        if (table.getModel().getRowCount() > 0) {
+            table.setAutoCreateRowSorter(true);
+        }
+
+        // diactivate/gray out all tabs (except import)
+        if (table.getRowCount() == 0) {
+            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                controlPane.setEnabledAt(index, false);
+            }
+        } else {
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
+        }
 
         // Refresh panel border
         setPanelBorder();
@@ -390,23 +400,26 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
+                        if (table.getSelectedRowCount() > 0) {
+                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                                // See above for reason to set WHEN_FOCUSED here
+                                table.setInputMap(JTable.WHEN_FOCUSED, im);
 
-                        // See above for reason to set WHEN_FOCUSED here
-                        table.setInputMap(JTable.WHEN_FOCUSED, im);
-
-                        if (table.getSelectedRowCount() > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            controlPane.setEnabledAt(1, false); // comment 
-                            if (controlPane.getSelectedIndex() == 1) {
-                                controlPane.setSelectedIndex(0); // switch to details panel
-                            }
-                        } else if (table.getSelectedRowCount() == 1) {
-                            // activate all panels
-                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                controlPane.setEnabledAt(index, true);
+                                if (table.getSelectedRowCount() > 1) { // multiple selection
+                                    // diactivate/gray out unused tabs
+                                    controlPane.setEnabledAt(1, false); // comment 
+                                    if (controlPane.getSelectedIndex() == 1) {
+                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                    }
+                                } else if (table.getSelectedRowCount() == 1) {
+                                    // activate all panels
+                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                        controlPane.setEnabledAt(index, true);
+                                    }
+                                }
+                                setPanelBorder();
                             }
                         }
-                        setPanelBorder();
                     }
                 });
     }
@@ -581,13 +594,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        try {
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-        } catch (Exception e) {
-            // do nothing
-        }
-        init();
+        activitiesTableModel = getTableModel();
+        table.setModel(activitiesTableModel);
+        initTable();
     }
 
     // selected row BOLD
