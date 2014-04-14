@@ -401,7 +401,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if (table.getSelectedRowCount() > 0) {
+                            System.err.println(e);
                             if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                                System.err.println(table.getSelectedRowCount());
                                 // See above for reason to set WHEN_FOCUSED here
                                 table.setInputMap(JTable.WHEN_FOCUSED, im);
 

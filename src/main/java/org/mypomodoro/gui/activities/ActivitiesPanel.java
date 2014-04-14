@@ -631,7 +631,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         ActivityList.getList().add(activity);
     }
 
-    // TODO review ajusting of following listeners
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),

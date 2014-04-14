@@ -174,37 +174,36 @@ public class Main {
             }
         });
     }
-    
+
     /*public static void updateActivityListView() {
-        SwingUtilities.invokeLater(new Runnable() {
+     SwingUtilities.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                activitiesPanel.refresh();
-            }
-        });
-    }
+     @Override
+     public void run() {
+     activitiesPanel.refresh();
+     }
+     });
+     }
     
-    public static void updateToDoListView() {
-        SwingUtilities.invokeLater(new Runnable() {
+     public static void updateToDoListView() {
+     SwingUtilities.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                toDoPanel.refresh();
-            }
-        });
-    }
+     @Override
+     public void run() {
+     toDoPanel.refresh();
+     }
+     });
+     }
     
-    public static void updateReportListView() {
-        SwingUtilities.invokeLater(new Runnable() {
+     public static void updateReportListView() {
+     SwingUtilities.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                reportListPanel.refresh();
-            }
-        });
-    }*/
-
+     @Override
+     public void run() {
+     reportListPanel.refresh();
+     }
+     });
+     }*/
     public static void updateLists() {
         SwingUtilities.invokeLater(new Runnable() {
 

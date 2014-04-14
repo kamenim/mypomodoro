@@ -46,10 +46,12 @@ public class ActivityEditTableListener implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (table.getSelectedRowCount() == 1) {
-            int row = table.getSelectedRow();
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-            Activity activity = activities.getById(id);
-            panel.fillOutInputForm(activity);
+            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                int row = table.getSelectedRow();
+                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
+                Activity activity = activities.getById(id);
+                panel.fillOutInputForm(activity);
+            }
         } else {
             panel.clearForm();
         }

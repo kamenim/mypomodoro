@@ -126,7 +126,7 @@ public class MoveButton extends AbstractPomodoroButton {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString("Done"); // TODO translate string "Done"
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
                             new Thread() {
                                 @Override
                                 public void run() {
