@@ -69,6 +69,7 @@ import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing the Chart List.
@@ -230,10 +231,12 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 if (table.getSelectedRowCount() == 1) {
                     Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
                     Activity activity = ChartList.getList().getById(id);
-                    detailsPanel.selectInfo(activity);
-                    detailsPanel.showInfo();
-                    commentPanel.selectInfo(activity);
-                    commentPanel.showInfo();
+                    if (activity != null) {
+                        detailsPanel.selectInfo(activity);
+                        detailsPanel.showInfo();
+                        commentPanel.selectInfo(activity);
+                        commentPanel.showInfo();
+                    }
                 }
                 mouseHoverRow = -1;
             }
@@ -401,9 +404,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if (table.getSelectedRowCount() > 0) {
-                            System.err.println(e);
+                            //System.err.println(e);
                             if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                                System.err.println(table.getSelectedRowCount());
+                                //System.err.println(table.getSelectedRowCount());
                                 // See above for reason to set WHEN_FOCUSED here
                                 table.setInputMap(JTable.WHEN_FOCUSED, im);
 
@@ -415,8 +418,11 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                                     }
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
-                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
                                         controlPane.setEnabledAt(index, true);
+                                    }
+                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                                        controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                 }
                                 setPanelBorder();
@@ -597,9 +603,21 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        activitiesTableModel = getTableModel();
-        table.setModel(activitiesTableModel);
-        initTable();
+        boolean alreadyStarted = false;
+        try {
+            // Start wait cursor
+            alreadyStarted = WaitCursor.startWaitCursor();
+            activitiesTableModel = getTableModel();
+            table.setModel(activitiesTableModel);
+            initTable();
+        } catch (Exception e) {
+            // do nothing 
+        } finally {
+            if (!alreadyStarted) {
+                // Stop wait cursor
+                WaitCursor.stopWaitCursor();
+            }
+        }
     }
 
     // selected row BOLD
@@ -611,7 +629,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);            
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ChartList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);

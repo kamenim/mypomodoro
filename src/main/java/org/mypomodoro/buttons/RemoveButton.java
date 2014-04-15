@@ -83,10 +83,11 @@ public class RemoveButton extends AbstractPomodoroButton {
                         });
                     }
                     // Close progress bar
+                    final int progressCount = increment;
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                             new Thread() {
                                 @Override
                                 public void run() {

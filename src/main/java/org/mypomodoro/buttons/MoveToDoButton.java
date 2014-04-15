@@ -104,10 +104,11 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                     // reorder                            
                     panel.reorderByPriority();
                     // Close progress bar
+                    final int progressCount = increment;
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                             new Thread() {
                                 @Override
                                 public void run() {
@@ -123,6 +124,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                             }.start();
                         }
                     });
+                    // TODO should refresh the original and the target panels
                     // Refresh panel border
                     panel.setPanelBorder();
                     // Enable button

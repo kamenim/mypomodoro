@@ -71,6 +71,7 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing what is in the ToDoList. This can be changed later. Right now
@@ -233,10 +234,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 if (table.getSelectedRowCount() == 1) {
                     Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
                     Activity activity = ToDoList.getList().getById(id);
-                    detailsPanel.selectInfo(activity);
-                    detailsPanel.showInfo();
-                    commentPanel.selectInfo(activity);
-                    commentPanel.showInfo();
+                    if (activity != null) {
+                        detailsPanel.selectInfo(activity);
+                        detailsPanel.showInfo();
+                        commentPanel.selectInfo(activity);
+                        commentPanel.showInfo();
+                    }
                     refreshIconLabels();
                 }
                 mouseHoverRow = -1;
@@ -250,9 +253,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if (table.getSelectedRowCount() > 0) {
-                            System.err.println(e);
+                            //System.err.println(e);
                             if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                                System.err.println(table.getSelectedRowCount());
+                                //System.err.println(table.getSelectedRowCount());
                                 if (table.getSelectedRowCount() > 1) { // multiple selection
                                     // diactivate/gray out unused tabs
                                     controlPane.setEnabledAt(1, false); // comment
@@ -270,7 +273,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                 } else if (table.getSelectedRowCount() == 1) {
                                     int row = table.getSelectedRow();
                                     // activate all panels
-                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
                                         if (index == 4) {
                                             controlPane.setEnabledAt(4, false); // merging
                                             if (controlPane.getSelectedIndex() == 4) {
@@ -279,6 +282,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         } else {
                                             controlPane.setEnabledAt(index, true);
                                         }
+                                    }
+                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                                        controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                     if (!pomodoro.inPomodoro()) {
                                         pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
@@ -676,9 +682,21 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        activitiesTableModel = getTableModel();
-        table.setModel(activitiesTableModel);
-        initTable();
+        boolean alreadyStarted = false;
+        try {
+            // Start wait cursor
+            alreadyStarted = WaitCursor.startWaitCursor();
+            activitiesTableModel = getTableModel();
+            table.setModel(activitiesTableModel);
+            initTable();
+        } catch (Exception e) {
+            // do nothing 
+        } finally {
+            if (!alreadyStarted) {
+                // Stop wait cursor
+                WaitCursor.stopWaitCursor();
+            }
+        }
     }
 
     // selected row BOLD
