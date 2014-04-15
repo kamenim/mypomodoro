@@ -103,6 +103,7 @@ public class MergingPanel extends CreatePanel {
             int[] rows = panel.getTable().getSelectedRows();
             int increment = 0;
             for (int row : rows) {
+                // removing a row requires decreasing the row index number
                 row = row - increment;
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedToDo = panel.getActivityById(id);
@@ -118,14 +119,14 @@ public class MergingPanel extends CreatePanel {
                 }
                 actualPoms += selectedToDo.getActualPoms();
                 panel.delete(selectedToDo);
-                // removing a row requires decreasing the row index number
                 panel.removeRow(row);
                 increment++;
             }
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
-            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)            
+            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)  
+            // TODO review the estimation and overestimation set on merge task
             if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
                 newActivity.setEstimatedPoms(actualPoms + 1);
             }

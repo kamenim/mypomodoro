@@ -109,7 +109,7 @@ public class Main {
                 UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
                 UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
                 UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
-                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar 
+                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar
                 // init the gui AFTER setting the UIManager and font
                 preferencesPanel = new PreferencesPanel();
                 createPanel = new CreatePanel();

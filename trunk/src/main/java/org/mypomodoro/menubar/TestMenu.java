@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Date;
+import java.util.Random;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
@@ -83,7 +84,10 @@ public class TestMenu extends JMenu {
 
                     Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                     Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
-                    java.util.Random rand = new java.util.Random();
+                    Random rand = new Random();
+                    int activityListValue = 0;
+                    int todoListValue = 0;
+                    int reportListValue = 0;
                     for (int i = 0; i < nbTask; i++) {
                         int minusDay = rand.nextInt(20);
                         final Activity a = new Activity(
@@ -107,12 +111,14 @@ public class TestMenu extends JMenu {
                         if (a.isCompleted()) { // Tasks for the Report list
                             Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day) 
                             ReportList.getList().add(a, dateCompleted);
+                            reportListValue++;
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }
                                 ToDoList.getList().add(a);
+                                todoListValue++;
                             } else { // Tasks for the Activity list 
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1] + 1); // use unstarted iteration number
@@ -120,14 +126,25 @@ public class TestMenu extends JMenu {
                                 a.setOverestimatedPoms(0);
                                 a.setActualPoms(0);
                                 ActivityList.getList().add(a, a.getDate());
+                                activityListValue++;
                             }
                         }
                         final int progressValue = i + 1;
+                        final StringBuilder progressText = new StringBuilder();
+                        progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
+                        progressText.append(Integer.toString(activityListValue));
+                        progressText.append(" | ");
+                        progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
+                        progressText.append(Integer.toString(todoListValue));
+                        progressText.append(" | ");
+                        progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
+                        progressText.append(Integer.toString(reportListValue));
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress
-                                Main.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + nbTask); // task
+                                Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
+                                Main.progressBar.getBar().setString(progressText.toString()); // task
+                                //Main.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + nbTask); // task
                             }
                         });
                     }

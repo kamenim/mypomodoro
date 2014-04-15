@@ -535,6 +535,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void removeRow(int rowIndex) {
+        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
@@ -610,8 +611,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            // replace with methid getActivityById
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);            
             Activity activity = ChartList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
@@ -667,11 +667,13 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ChartList.getList().getById(id);
-            String text = activity.getActualPoms() + " / ";
-            text += value.toString();
-            Integer overestimatedpoms = activity.getOverestimatedPoms();
-            text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
-            renderer.setText(text);
+            if (activity != null) {
+                String text = activity.getActualPoms() + " / ";
+                text += value.toString();
+                Integer overestimatedpoms = activity.getOverestimatedPoms();
+                text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
+                renderer.setText(text);
+            }
             return renderer;
         }
     }

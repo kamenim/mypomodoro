@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -65,7 +64,6 @@ public class ImportInputForm extends ExportInputForm {
         fileName.setPreferredSize(LABEL_DIMENSION);
         fileName.setEditable(false);
         fileName.setBackground(ColorUtil.WHITE);
-        fileName.setFont(getFont().deriveFont(Font.BOLD));
         fileChooserPanel.add(fileName, gbcf);
         gbcf.gridx = 1;
         gbcf.gridy = 0;
