@@ -1,7 +1,6 @@
 package org.mypomodoro.util;
 
 import java.awt.Cursor;
-import java.awt.event.*;
 import org.mypomodoro.Main;
 
 /**
@@ -10,13 +9,23 @@ import org.mypomodoro.Main;
  */
 public class WaitCursor {
 
+    private static boolean started = false;
+
     /**
      * Start wait cursor
      *
+     * @return true if already started
      */
-    public static void startWaitCursor() {
-        Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Main.gui.getGlassPane().setVisible(true);
+    public static boolean startWaitCursor() {
+        boolean alreadyStarted = false;
+        if (!started) {
+            Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Main.gui.getGlassPane().setVisible(true);
+            started = true;
+        } else {
+            alreadyStarted = true;
+        }
+        return alreadyStarted;
     }
 
     /**
@@ -26,5 +35,6 @@ public class WaitCursor {
     public static void stopWaitCursor() {
         Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         Main.gui.getGlassPane().setVisible(false);
+        started = false;
     }
 }

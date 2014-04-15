@@ -167,7 +167,6 @@ public class ImportPanel extends JPanel {
             int increment = 0;
             String[] line;
             while ((line = reader.readNext()) != null) {
-                System.err.println("toto2");
                 insertData(line);
                 increment++;
                 final int progressValue = increment;

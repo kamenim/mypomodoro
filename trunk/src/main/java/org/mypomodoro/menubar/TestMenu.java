@@ -88,6 +88,7 @@ public class TestMenu extends JMenu {
                     int activityListValue = 0;
                     int todoListValue = 0;
                     int reportListValue = 0;
+                    final StringBuilder progressText = new StringBuilder();
                     for (int i = 0; i < nbTask; i++) {
                         int minusDay = rand.nextInt(20);
                         final Activity a = new Activity(
@@ -130,7 +131,7 @@ public class TestMenu extends JMenu {
                             }
                         }
                         final int progressValue = i + 1;
-                        final StringBuilder progressText = new StringBuilder();
+                        progressText.setLength(0); // reset string builder
                         progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
                         progressText.append(Integer.toString(activityListValue));
                         progressText.append(" | ");
@@ -152,7 +153,7 @@ public class TestMenu extends JMenu {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
+                            Main.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressText + ")");
                             new Thread() {
                                 @Override
                                 public void run() {

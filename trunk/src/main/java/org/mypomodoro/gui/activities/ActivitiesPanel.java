@@ -72,6 +72,7 @@ import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing what is in the ActivityList. This can be changed later. Right
@@ -220,10 +221,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 if (table.getSelectedRowCount() == 1) {
                     Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
                     Activity activity = ActivityList.getList().getById(id);
-                    detailsPanel.selectInfo(activity);
-                    detailsPanel.showInfo();
-                    commentPanel.selectInfo(activity);
-                    commentPanel.showInfo();
+                    if (activity != null) {
+                        detailsPanel.selectInfo(activity);
+                        detailsPanel.showInfo();
+                        commentPanel.selectInfo(activity);
+                        commentPanel.showInfo();
+                    }
                 }
                 mouseHoverRow = -1;
             }
@@ -235,9 +238,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if (table.getSelectedRowCount() > 0) {
-                            System.err.println(e);
+                            //System.err.println(e);
                             if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                                System.err.println(table.getSelectedRowCount());
+                                //System.err.println(table.getSelectedRowCount());
                                 // See above for reason to set WHEN_FOCUSED here
                                 table.setInputMap(JTable.WHEN_FOCUSED, im);
 
@@ -251,8 +254,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                     }
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
-                                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
                                         controlPane.setEnabledAt(index, true);
+                                    }
+                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                                        controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                 }
                                 setPanelBorder();
@@ -581,7 +587,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public int getIdKey() {
         return ID_KEY;
     }
-    
+
     @Override
     public void removeRow(int rowIndex) {
         table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
@@ -652,9 +658,21 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        activitiesTableModel = getTableModel();
-        table.setModel(activitiesTableModel);
-        initTable();
+        boolean alreadyStarted = false;
+        try {
+            // Start wait cursor
+            alreadyStarted = WaitCursor.startWaitCursor();
+            activitiesTableModel = getTableModel();
+            table.setModel(activitiesTableModel);
+            initTable();
+        } catch (Exception e) {
+            // do nothing 
+        } finally {
+            if (!alreadyStarted) {
+                // Stop wait cursor
+                WaitCursor.stopWaitCursor();
+            }
+        }
     }
 
     // selected row BOLD
