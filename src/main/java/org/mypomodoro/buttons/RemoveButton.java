@@ -66,11 +66,11 @@ public class RemoveButton extends AbstractPomodoroButton {
                     int increment = 0;
                     int[] rows = panel.getTable().getSelectedRows();
                     for (int row : rows) {
+                        // removing a row requires decreasing the row index number
                         row = row - increment;
                         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                         Activity selectedActivity = panel.getActivityById(id);
                         ChartList.getList().remove(selectedActivity);
-                        // removing a row requires decreasing the row index number
                         panel.removeRow(row);
                         increment++;
                         final int progressValue = increment;

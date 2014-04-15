@@ -581,9 +581,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public int getIdKey() {
         return ID_KEY;
     }
-
+    
     @Override
     public void removeRow(int rowIndex) {
+        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;

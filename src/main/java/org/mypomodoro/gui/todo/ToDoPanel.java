@@ -585,6 +585,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void removeRow(int rowIndex) {
+        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
@@ -692,9 +693,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);
             Activity currentToDo = pomodoro.getCurrentToDo();
-            if (pomodoro.inPomodoro() && toDo.getId() == currentToDo.getId()) {
+            if (toDo != null && pomodoro.inPomodoro() && toDo.getId() == currentToDo.getId()) {
                 renderer.setForeground(ColorUtil.RED);
-            } else if (toDo.isFinished()) {
+            } else if (toDo != null && toDo.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             } else {
                 renderer.setForeground(ColorUtil.BLACK);
@@ -740,11 +741,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);
-            String text = toDo.getActualPoms() + " / ";
-            text += value.toString();
-            Integer overestimatedpoms = toDo.getOverestimatedPoms();
-            text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
-            renderer.setText(text);
+            if (toDo != null) {
+                String text = toDo.getActualPoms() + " / ";
+                text += value.toString();
+                Integer overestimatedpoms = toDo.getOverestimatedPoms();
+                text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
+                renderer.setText(text);
+            }
             return renderer;
         }
     }
@@ -800,12 +803,14 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getSelectedRowCount() == 1) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
             Activity selectedActivity = ToDoList.getList().getById(id);
-            selectedActivity.setNotes(comment);
-            selectedActivity.databaseUpdate();
-            String title = Labels.getString("Common.Add comment");
-            String message = Labels.getString("Common.Comment saved");
-            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (selectedActivity != null) {
+                selectedActivity.setNotes(comment);
+                selectedActivity.databaseUpdate();
+                String title = Labels.getString("Common.Add comment");
+                String message = Labels.getString("Common.Comment saved");
+                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 

@@ -27,10 +27,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -48,6 +52,7 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel to import reports
@@ -103,30 +108,35 @@ public class ImportPanel extends JPanel {
     }
 
     private void importData() {
-        String fileName = importInputForm.getFileName(); // path
+        final String fileName = importInputForm.getFileName(); // path
         if (fileName != null && fileName.length() > 0) {
-            try {
-                if (importInputForm.isFileCSVFormat()) {
-                    importCSV(fileName);
-                } else if (importInputForm.isFileExcelFormat()) {
-                    importExcel(fileName);
-                } else if (importInputForm.isFileExcelOpenXMLFormat()) {
-                    importExcelx(fileName);
+            new Thread() { // This new thread is necessary for updating the progress bar
+                @Override
+                public void run() {
+                    try {
+                        if (importInputForm.isFileCSVFormat()) {
+                            importCSV(fileName);
+                        } else if (importInputForm.isFileExcelFormat()) {
+                            importExcel(fileName);
+                        } else if (importInputForm.isFileExcelOpenXMLFormat()) {
+                            importExcelx(fileName);
+                        }
+                        panel.refresh();
+                        /*String title = Labels.getString("ReportListPanel.Import");
+                         String message = Labels.getString(
+                         "ReportListPanel.Data imported",
+                         fileName);
+                         JOptionPane.showConfirmDialog(Main.gui, message, title,
+                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
+                    } catch (Exception ex) {
+                        String title = Labels.getString("Common.Error");
+                        String message = Labels.getString("ReportListPanel.Import failed. See error log.");
+                        JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                        writeErrorFile(ex.toString());
+                    }
                 }
-                panel.refresh();
-                String title = Labels.getString("ReportListPanel.Import");
-                String message = Labels.getString(
-                        "ReportListPanel.Data imported",
-                        fileName);
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                String title = Labels.getString("Common.Error");
-                String message = Labels.getString("ReportListPanel.Import failed. See error log.");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-                writeErrorFile(ex.toString());
-            }
+            }.start();
         }
     }
 
@@ -142,10 +152,56 @@ public class ImportPanel extends JPanel {
     }
 
     private void importCSV(String fileName) throws Exception {
-        CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
-        String[] line;
-        while ((line = reader.readNext()) != null) {
-            insertData(line);
+        CSVReader readerCount = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
+        final int rowCount = readerCount.readAll().size();
+        // Close stream
+        readerCount.close();
+        if (rowCount > 0) {
+            CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
+            // Set progress bar
+            Main.gui.getProgressBar().setVisible(true);
+            Main.gui.getProgressBar().getBar().setValue(0);
+            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            // Start wait cursor
+            WaitCursor.startWaitCursor();
+            int increment = 0;
+            String[] line;
+            while ((line = reader.readNext()) != null) {
+                System.err.println("toto2");
+                insertData(line);
+                increment++;
+                final int progressValue = increment;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                    }
+                });
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                sleep(1000); // wait one second before hiding the progress bar
+                            } catch (InterruptedException ex) {
+                                // do nothing
+                            }
+                            // hide progress bar
+                            Main.gui.getProgressBar().getBar().setString(null);
+                            Main.gui.getProgressBar().setVisible(false);
+                        }
+                    }.start();
+                }
+            });
+            // Stop wait cursor
+            WaitCursor.stopWaitCursor();
+            // Close stream
+            reader.close();
         }
     }
 
@@ -157,14 +213,54 @@ public class ImportPanel extends JPanel {
         if (importInputForm.isHeaderSelected()) {
             sheet.removeRow(sheet.getRow(0));
         }
-        for (Row row : sheet) {
-            String[] line = new String[21];
-            int i = 0;
-            for (Cell cell : row) {
-                line[i] = getCellContent(cell, eval);
-                i++;
+        final int rowCount = sheet.getPhysicalNumberOfRows();
+        if (rowCount > 0) {
+            // Set progress bar
+            Main.gui.getProgressBar().setVisible(true);
+            Main.gui.getProgressBar().getBar().setValue(0);
+            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            // Start wait cursor
+            WaitCursor.startWaitCursor();
+            int increment = 0;
+            for (Row row : sheet) {
+                String[] line = new String[21];
+                int i = 0;
+                for (Cell cell : row) {
+                    line[i] = getCellContent(cell, eval);
+                    i++;
+                }
+                insertData(line);
+                increment++;
+                final int progressValue = increment;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                    }
+                });
             }
-            insertData(line);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                sleep(1000); // wait one second before hiding the progress bar
+                            } catch (InterruptedException ex) {
+                                // do nothing
+                            }
+                            // hide progress bar
+                            Main.gui.getProgressBar().getBar().setString(null);
+                            Main.gui.getProgressBar().setVisible(false);
+                        }
+                    }.start();
+                }
+            });
+            // Stop wait cursor
+            WaitCursor.stopWaitCursor();
         }
         myxls.close();
     }
@@ -177,14 +273,54 @@ public class ImportPanel extends JPanel {
         if (importInputForm.isHeaderSelected()) {
             sheet.removeRow(sheet.getRow(0));
         }
-        for (Row row : sheet) {
-            String[] line = new String[21];
-            int i = 0;
-            for (Cell cell : row) {
-                line[i] = getCellContent(cell, eval);
-                i++;
+        final int rowCount = sheet.getPhysicalNumberOfRows();
+        if (rowCount > 0) {
+            // Set progress bar
+            Main.gui.getProgressBar().setVisible(true);
+            Main.gui.getProgressBar().getBar().setValue(0);
+            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            // Start wait cursor
+            WaitCursor.startWaitCursor();
+            int increment = 0;
+            for (Row row : sheet) {
+                String[] line = new String[21];
+                int i = 0;
+                for (Cell cell : row) {
+                    line[i] = getCellContent(cell, eval);
+                    i++;
+                }
+                insertData(line);
+                increment++;
+                final int progressValue = increment;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                    }
+                });
             }
-            insertData(line);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                sleep(1000); // wait one second before hiding the progress bar
+                            } catch (InterruptedException ex) {
+                                // do nothing
+                            }
+                            // hide progress bar
+                            Main.gui.getProgressBar().getBar().setString(null);
+                            Main.gui.getProgressBar().setVisible(false);
+                        }
+                    }.start();
+                }
+            });
+            // Stop wait cursor
+            WaitCursor.stopWaitCursor();
         }
         myxlsx.close();
     }
