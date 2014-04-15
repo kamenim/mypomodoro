@@ -73,7 +73,6 @@ public class ViewMenu extends JMenu {
             addActionListener(new MenuItemListener());
         }
 
-        // TODO only update the corresponding view
         class MenuItemListener implements ActionListener {
 
             @Override
@@ -81,7 +80,6 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon activityListIcon = view.getIconBar().getIcon(1);
                 view.getIconBar().highlightIcon(activityListIcon);
-                //view.setWindow(activityListIcon.getPanel());
                 view.setWindow(view.getActivityListPanel());
             }
         }
@@ -106,7 +104,6 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon toDoListIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(toDoListIcon);
-                //view.setWindow(toDoListIcon.getPanel());
                 view.setWindow(view.getToDoPanel());
             }
         }
@@ -131,7 +128,6 @@ public class ViewMenu extends JMenu {
                 view.updateViews();
                 MyIcon reportListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(reportListIcon);
-                //view.setWindow(reportListIcon.getPanel());
                 view.setWindow(view.getReportListPanel());
             }
         }
