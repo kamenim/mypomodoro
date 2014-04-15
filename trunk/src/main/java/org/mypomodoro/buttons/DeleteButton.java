@@ -40,7 +40,7 @@ public class DeleteButton extends AbstractPomodoroButton {
     public DeleteButton(final String title, final String message, final AbstractActivitiesPanel panel) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
-// TODO problem with removing data and progress bar in Reports list (same with removing rows from CheckPanel)
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 final int selectedRowCount = panel.getTable().getSelectedRowCount();
