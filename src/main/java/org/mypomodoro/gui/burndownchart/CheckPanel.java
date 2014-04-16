@@ -103,8 +103,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
     private final CreateChart chart;    
-    // Border
-    TitledBorder titledborder = new TitledBorder(new EtchedBorder());    
 
     public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
@@ -140,10 +138,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
-        
-        // Set border        
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        setBorder(titledborder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -252,6 +246,41 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 mouseHoverRow = -1;
             }
         });
+        
+                table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (table.getSelectedRowCount() > 0) {
+                            //System.err.println(e);
+                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                                //System.err.println(table.getSelectedRowCount());
+                                // See above for reason to set WHEN_FOCUSED here
+                                table.setInputMap(JTable.WHEN_FOCUSED, im);
+
+                                if (table.getSelectedRowCount() > 1) { // multiple selection
+                                    // diactivate/gray out unused tabs
+                                    controlPane.setEnabledAt(1, false); // comment 
+                                    if (controlPane.getSelectedIndex() == 1) {
+                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                    }
+                                } else if (table.getSelectedRowCount() == 1) {
+                                    // activate all panels
+                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
+                                        controlPane.setEnabledAt(index, true);
+                                    }
+                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                    }
+                                }
+                                setPanelBorder();
+                            }
+                        } else {
+                            setPanelBorder();
+                        }
+                    }
+                });
 
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
@@ -334,9 +363,13 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             table.setAutoCreateRowSorter(true);
         }
 
-        // diactivate/gray out all tabs (except import)
+        // diactivate/gray out all tabs (except export)
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                if (index == 2) { // export tab
+                    controlPane.setSelectedIndex(index);
+                    continue;
+                }
                 controlPane.setEnabledAt(index, false);
             }
         } else {
@@ -393,6 +426,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder());
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         titledborder.setTitle(titleActivitiesList);
         setBorder(titledborder);        
     }
@@ -407,41 +442,6 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         pane.setMinimumSize(PANE_DIMENSION);
         pane.setPreferredSize(PANE_DIMENSION);
         scrollPane.add(pane, gbc);
-
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        if (table.getSelectedRowCount() > 0) {
-                            //System.err.println(e);
-                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                                //System.err.println(table.getSelectedRowCount());
-                                // See above for reason to set WHEN_FOCUSED here
-                                table.setInputMap(JTable.WHEN_FOCUSED, im);
-
-                                if (table.getSelectedRowCount() > 1) { // multiple selection
-                                    // diactivate/gray out unused tabs
-                                    controlPane.setEnabledAt(1, false); // comment 
-                                    if (controlPane.getSelectedIndex() == 1) {
-                                        controlPane.setSelectedIndex(0); // switch to details panel
-                                    }
-                                } else if (table.getSelectedRowCount() == 1) {
-                                    // activate all panels
-                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
-                                        controlPane.setEnabledAt(index, true);
-                                    }
-                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                        controlPane.setSelectedIndex(0); // switch to details panel
-                                    }
-                                }
-                                setPanelBorder();
-                            }
-                        } else {                            
-                            setPanelBorder();
-                        }
-                    }
-                });
     }
 
     private void addCreateButton(GridBagConstraints gbc) {
@@ -530,8 +530,11 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                     public void tableChanged(TableModelEvent e
                     ) {
                         // diactivate/gray out all tabs (except import)
-                        if (ChartList.getListSize() == 0) {
+                        if (table.getRowCount() == 0) {
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                if (index == 2) { // export panel
+                                    continue;
+                                }
                                 controlPane.setEnabledAt(index, false);
                             }
                         }

@@ -290,7 +290,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                 }                            
                                 setPanelBorder();
                             }
-                        } else {                            
+                        } else {               
                             setPanelBorder();
                         }
                     }
@@ -592,9 +592,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     detailsPanel.showInfo();
                 }
                 // diactivate/gray out all tabs (except import)
-                if (ActivityList.getListSize() == 0) {
+                if (table.getRowCount() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        if (index == 3) { // import tab
+                        if (index == 3) { // import panel
                             continue;
                         }
                         controlPane.setEnabledAt(index, false);
