@@ -102,19 +102,32 @@ public class TestMenu extends JMenu {
                                 iteration[rand.nextInt(iteration.length)],
                                 (!PreferencesPanel.preferences.getAgileMode() ? new Date() : (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate()));  // any date in the past 20 days
                         a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
-                        a.setOverestimatedPoms(rand.nextInt(3));
-                        int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
-                        actual += (a.getEstimatedPoms() + a.getOverestimatedPoms() > actual) ? rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual) : 0; // give some weigth to actual so there are more real pomodoros
+                        a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
+                        int actual = rand.nextInt(a.getEstimatedPoms());
+                        if (a.getOverestimatedPoms() > 0) {
+                            actual = a.getEstimatedPoms() + rand.nextInt(a.getOverestimatedPoms());
+                        } else {
+                            actual += rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual); // give some weigth to actual so there are more real pomodoros for completed tasks
+                        }
                         a.setActualPoms(actual);
                         if (a.getIteration() == -1) {
                             a.setStoryPoints(0);
                         }
-                        if (a.isCompleted()) { // Tasks for the Report list
+                        if (a.isCompleted()) { // Tasks for the Report list                             
+                            actual = actual == 0 ? 1 : actual;
+                            if (rand.nextBoolean()) { // once in a while set finished
+                                actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                            }
+                            a.setActualPoms(actual);
                             Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day) 
                             ReportList.getList().add(a, dateCompleted);
                             reportListValue++;
                         } else { // Task for the Activity and ToDo list
                             if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
+                                if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while set finished
+                                    actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                                    a.setActualPoms(actual);
+                                }
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }

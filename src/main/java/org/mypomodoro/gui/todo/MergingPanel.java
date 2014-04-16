@@ -98,6 +98,8 @@ public class MergingPanel extends CreatePanel {
         String title = Labels.getString("ToDoListPanel.Merge ToDos");
         String message;
         StringBuilder comments = new StringBuilder();
+        int estimatedPoms = 0;
+        int overestimatedPoms = 0;
         int actualPoms = 0;
         if (panel.getTable().getSelectedRowCount() > 0) {
             int[] rows = panel.getTable().getSelectedRows();
@@ -117,6 +119,8 @@ public class MergingPanel extends CreatePanel {
                     comments.append(selectedToDo.getNotes());
                     comments.append("\n\n");
                 }
+                estimatedPoms += selectedToDo.getEstimatedPoms();
+                overestimatedPoms += selectedToDo.getOverestimatedPoms();
                 actualPoms += selectedToDo.getActualPoms();
                 panel.delete(selectedToDo);
                 panel.removeRow(row);
@@ -125,12 +129,11 @@ public class MergingPanel extends CreatePanel {
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
-            // make sure the estimate of the new activity is at least one pomodoro higher than the sum of pomodoros already done (if any)  
-            // TODO review the estimation and overestimation set on merge task
-            if (actualPoms > 0 && newActivity.getEstimatedPoms() <= actualPoms) {
-                newActivity.setEstimatedPoms(actualPoms + 1);
-            }
+            // make sure the estimate of the new activity is at least equals to the sum of pomodoros already done
             if (actualPoms > 0) {
+                if (newActivity.getEstimatedPoms() < actualPoms) {
+                    newActivity.setOverestimatedPoms(actualPoms - newActivity.getEstimatedPoms());
+                }
                 newActivity.setActualPoms(actualPoms);
             }
             if (mergingInputFormPanel.isDateToday()) {
