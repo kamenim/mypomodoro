@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import org.mypomodoro.util.ProgressBar;
 import java.awt.AWTException;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;

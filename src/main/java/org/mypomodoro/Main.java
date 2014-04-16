@@ -28,7 +28,7 @@ import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.PreferencesPanel;
-import org.mypomodoro.gui.ProgressBar;
+import org.mypomodoro.util.ProgressBar;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;

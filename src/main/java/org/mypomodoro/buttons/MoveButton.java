@@ -52,7 +52,6 @@ public class MoveButton extends AbstractPomodoroButton {
             }
         });
     }
-// TODO optimize usage of setPanelBorder on all panels
 
     public void move(final AbstractActivitiesPanel panel) {
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
@@ -143,8 +142,6 @@ public class MoveButton extends AbstractPomodoroButton {
                             }.start();
                         }
                     });
-                    // Refresh panel border
-                    panel.setPanelBorder();
                     // Enable button
                     setEnabled(true);
                     // Stop wait cursor

@@ -97,7 +97,7 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Reordering"));
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
 
                         }
                     });
@@ -124,9 +124,6 @@ public class MoveToDoButton extends AbstractPomodoroButton {
                             }.start();
                         }
                     });
-                    // TODO should refresh the original and the target panels
-                    // Refresh panel border
-                    panel.setPanelBorder();
                     // Enable button
                     setEnabled(true);
                     // Stop wait cursor

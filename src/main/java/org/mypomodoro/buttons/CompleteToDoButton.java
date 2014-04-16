@@ -92,7 +92,7 @@ public class CompleteToDoButton extends AbstractPomodoroButton {
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Reordering"));
+                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
 
                                     }
                                 });
@@ -119,8 +119,6 @@ public class CompleteToDoButton extends AbstractPomodoroButton {
                                         }.start();
                                     }
                                 });
-                                // Refresh panel border
-                                panel.setPanelBorder();
                                 // Enable button
                                 setEnabled(true);
                                 // Stop wait cursor

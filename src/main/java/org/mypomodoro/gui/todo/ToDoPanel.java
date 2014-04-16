@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -35,6 +36,7 @@ import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -67,8 +69,10 @@ import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -110,6 +114,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
+    // Border
+    final JButton titledButton = new JButton();
+    final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));    
+    final ImageIcon icon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     public ToDoPanel() {
         setLayout(new GridBagLayout());
@@ -142,6 +150,25 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
+        
+        // Set border
+        //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
+        titledButton.setIcon(icon);
+        titledButton.setBorder(null);
+        titledButton.setContentAreaFilled(false);
+        titledButton.setOpaque(true);
+        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
+        titledButton.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Refresh from database
+                titledButton.setEnabled(false);
+                ToDoList.getList().refresh();
+                refresh(); // this will enable the button
+            }
+        });
+        setBorder(titledborder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -175,6 +202,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
+        splitPane.setBorder(null);
         add(splitPane, gbc);
     }
 
@@ -294,6 +322,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                 refreshRemaining();
                                 setPanelBorder();
                             }
+                        } else {
+                            refreshIconLabels();
+                            refreshRemaining();
+                            setPanelBorder();
                         }
                     }
                 });
@@ -432,9 +464,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        setBorder(titledborder);
+        // Update titled border          
+        titledButton.setText(titleActivitiesList);
+        titledborder.repaint();
     }
 
     private void addToDoTable(GridBagConstraints gbc) {
@@ -696,6 +728,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }
+            titledButton.setEnabled(true);
         }
     }
 

@@ -101,7 +101,7 @@ public class TestMenu extends JMenu {
                                 storypoint[rand.nextInt(storypoint.length)],
                                 iteration[rand.nextInt(iteration.length)],
                                 (!PreferencesPanel.preferences.getAgileMode() ? new Date() : (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate()));  // any date in the past 20 days
-                        a.setIsCompleted(rand.nextBoolean());
+                        a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
                         a.setOverestimatedPoms(rand.nextInt(3));
                         int actual = rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms());
                         actual += (a.getEstimatedPoms() + a.getOverestimatedPoms() > actual) ? rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual) : 0; // give some weigth to actual so there are more real pomodoros
@@ -114,7 +114,7 @@ public class TestMenu extends JMenu {
                             ReportList.getList().add(a, dateCompleted);
                             reportListValue++;
                         } else { // Task for the Activity and ToDo list
-                            if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // Tasks for the ToDo list (make it shorter than the other two lists)
+                            if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
                                 if (a.getIteration() >= 0) {
                                     a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                 }

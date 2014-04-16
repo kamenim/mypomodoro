@@ -17,18 +17,19 @@
 package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
@@ -59,13 +60,13 @@ public class ConfigureInputForm extends JPanel {
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     final JCheckBox datesCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Dates"), true);
-    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, BorderFactory.createEtchedBorder());
+    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     // Iterations form
     private final JPanel iterationsInputFormPanel = new JPanel();
     private final JComboBox startIteration = new JComboBox();
     private final JComboBox endIteration = new JComboBox();
     final JCheckBox iterationsCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Iterations"), true);
-    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, BorderFactory.createEtchedBorder());
+    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     // Image form
     /*private final JPanel imageInputFormPanel = new JPanel();
      private final JPanel imageSizePanel = new JPanel();
