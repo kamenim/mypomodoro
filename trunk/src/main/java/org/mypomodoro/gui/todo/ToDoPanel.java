@@ -51,7 +51,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputAdapter;
@@ -69,7 +68,6 @@ import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
@@ -85,9 +83,9 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
-// TODO panel border : display estimated done
+    // TODO panel border : display estimated done
     // TODO problem with multiple selection and pomodoro starting : loosing current selected
-    // TODO current task not displayed in red
+    // TODO problem with selection and pomodoro stopped : loosing current in-pomodoro task
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
@@ -131,16 +129,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {
+                if (isRowSelected(row)) {                    
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                     ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     ((JComponent) c).setBorder(null);
                 }
-                ((JComponent) c).setForeground(ColorUtil.BLACK);
                 return c;
             }
         };
@@ -748,6 +746,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
@@ -757,8 +756,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 renderer.setForeground(ColorUtil.RED);
             } else if (toDo != null && toDo.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
-            } else {
-                renderer.setForeground(ColorUtil.BLACK);
             }
             return renderer;
         }

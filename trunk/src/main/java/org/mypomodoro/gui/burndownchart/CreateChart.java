@@ -45,6 +45,7 @@ import org.joda.time.DateTime;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 
 /**
@@ -237,7 +238,7 @@ public class CreateChart extends JPanel {
         );
 
         // Color
-        chart.setBackgroundPaint(Color.WHITE);
+        chart.setBackgroundPaint(ColorUtil.WHITE);
 
         // Legend
         LegendTitle legend = chart.getLegend();
@@ -246,7 +247,7 @@ public class CreateChart extends JPanel {
 
         // Customise the plot
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.setBackgroundPaint(Color.WHITE);
+        plot.setBackgroundPaint(ColorUtil.WHITE);
 
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
