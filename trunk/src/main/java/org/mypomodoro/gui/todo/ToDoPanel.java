@@ -116,7 +116,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private int mouseHoverRow = 0;
     // Border
     final JButton titledButton = new JButton();
-    final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));    
+    final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     final ImageIcon icon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     public ToDoPanel() {
@@ -150,7 +150,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
-        
+
         // Set border
         //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
         titledButton.setIcon(icon);
@@ -159,7 +159,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         titledButton.setOpaque(true);
         titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
         titledButton.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Refresh from database
@@ -603,6 +603,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         detailsPanel.showInfo();
                                     }
                                 }
+                            }
+                        }
+                        // diactivate/gray out all tabs (except import)
+                        if (table.getRowCount() == 0) {
+                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                                if (index == 3) { // import panel
+                                    continue;
+                                }
+                                controlPane.setEnabledAt(index, false);
                             }
                         }
                     }
