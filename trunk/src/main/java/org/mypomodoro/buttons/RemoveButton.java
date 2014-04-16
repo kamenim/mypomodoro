@@ -103,8 +103,6 @@ public class RemoveButton extends AbstractPomodoroButton {
                             }.start();
                         }
                     });
-                    // Refresh panel border
-                    panel.setPanelBorder();
                     // Enable button
                     setEnabled(true);
                     // Stop wait cursor

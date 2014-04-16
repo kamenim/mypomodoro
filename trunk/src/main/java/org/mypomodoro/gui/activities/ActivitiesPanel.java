@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -33,7 +34,9 @@ import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,7 +50,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -69,6 +71,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
+import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -103,7 +106,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private InputMap im = null;
-    private int mouseHoverRow = 0;
+    private int mouseHoverRow = 0;    
+    // Border
+    final JButton titledButton = new JButton();
+    final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    final ImageIcon icon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -136,6 +143,25 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
+        
+        // Set border
+        //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
+        titledButton.setIcon(icon);
+        titledButton.setBorder(null);
+        titledButton.setContentAreaFilled(false);
+        titledButton.setOpaque(true);
+        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
+        titledButton.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Refresh from database
+                titledButton.setEnabled(false);
+                ActivityList.getList().refresh();
+                refresh(); // this will enable the button
+            }
+        });
+        setBorder(titledborder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -159,6 +185,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
+        splitPane.setBorder(null);
         add(splitPane, gbc);
     }
 
@@ -260,9 +287,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                }
+                                }                            
                                 setPanelBorder();
                             }
+                        } else {                            
+                            setPanelBorder();
                         }
                     }
                 });
@@ -444,9 +473,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        setBorder(titledborder);
+        // Update titled border          
+        titledButton.setText(titleActivitiesList);
+        titledborder.repaint();
     }
 
     private void addTabPane() {
@@ -548,18 +577,16 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                     } else if (column == ID_KEY - 3) { // Estimated
                         act.setEstimatedPoms((Integer) data);
                         act.databaseUpdate();
-                        // Refresh panel border
-                        setPanelBorder();
                     } else if (column == ID_KEY - 2) { // Story Points
                         act.setStoryPoints((Float) data);
                         act.databaseUpdate();
-                        // Refresh panel border
-                        setPanelBorder();
                     } else if (column == ID_KEY - 1) { // Iteration                        
                         act.setIteration(Integer.parseInt(data.toString()));
                         act.databaseUpdate();
                     }
                     ActivityList.getList().update(act);
+                    // Refresh panel border after updating the list
+                    setPanelBorder();
                     // update info
                     detailsPanel.selectInfo(act);
                     detailsPanel.showInfo();
@@ -672,6 +699,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }
+            titledButton.setEnabled(true);
         }
     }
 

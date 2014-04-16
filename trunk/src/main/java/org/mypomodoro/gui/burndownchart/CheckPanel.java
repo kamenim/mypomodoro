@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -56,6 +57,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractPomodoroButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -63,9 +65,11 @@ import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
+import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -98,7 +102,9 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
-    private final CreateChart chart;
+    private final CreateChart chart;    
+    // Border
+    TitledBorder titledborder = new TitledBorder(new EtchedBorder());    
 
     public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
@@ -134,6 +140,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
+        
+        // Set border        
+        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
+        setBorder(titledborder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -165,6 +175,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
+        splitPane.setBorder(null);
         add(splitPane, gbc);
     }
 
@@ -382,9 +393,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), titleActivitiesList);
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        setBorder(titledborder);
+        titledborder.setTitle(titleActivitiesList);
+        setBorder(titledborder);        
     }
 
     private void addChartTable(GridBagConstraints gbc) {
@@ -427,6 +437,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                                 }
                                 setPanelBorder();
                             }
+                        } else {                            
+                            setPanelBorder();
                         }
                     }
                 });

@@ -35,6 +35,15 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         container.addMouseListener(this);
         container.addMouseMotionListener(this);
     }
+    
+    public ComponentTitledBorder(Component comp, JComponent container, Border border, Font f) {
+        this.comp = comp;
+        this.container = container;
+        this.border = border;
+        container.addMouseListener(this);
+        container.addMouseMotionListener(this);
+        this.comp.setFont(f);
+    }
 
     @Override
     public boolean isBorderOpaque() {
@@ -130,5 +139,9 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
 
     public void repaint() {
         container.repaint();
+    }
+    
+    public void setTitleFont(Font f) {
+        comp.setFont(f);
     }
 }

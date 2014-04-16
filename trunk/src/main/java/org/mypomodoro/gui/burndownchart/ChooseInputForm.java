@@ -18,6 +18,7 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -29,6 +30,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
@@ -54,7 +56,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     final JCheckBox burndownChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burndown Chart"), true);
-    private final ComponentTitledBorder borderBurndownChart = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, BorderFactory.createEtchedBorder());
+    private final ComponentTitledBorder borderBurndownChart = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     // Burndown Target Line form
     private final JPanel targetInputFormPanel = new JPanel();
     private JTextField targetLegend = new JTextField();
@@ -85,7 +87,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField scopeColor = new JTextField();
     private final Color defaultScopeColor = ColorUtil.BLACK;
     private final JCheckBox scopeCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Scope"), true);
-    private final ComponentTitledBorder borderScope = new ComponentTitledBorder(scopeCheckBox, scopeInputFormPanel, BorderFactory.createEtchedBorder());
+    private final ComponentTitledBorder borderScope = new ComponentTitledBorder(scopeCheckBox, scopeInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
 
     public ChooseInputForm() {
         setLayout(new GridBagLayout());
@@ -120,7 +122,7 @@ public class ChooseInputForm extends JPanel {
         // Target
         targetCheckBox.setFocusPainted(false);
         targetCheckBox.setSelected(true);
-        ComponentTitledBorder border = new ComponentTitledBorder(targetCheckBox, targetInputFormPanel, BorderFactory.createEtchedBorder());
+        ComponentTitledBorder border = new ComponentTitledBorder(targetCheckBox, targetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
         targetInputFormPanel.setBorder(border);
         targetInputFormPanel.setLayout(new GridBagLayout());
         addTargetFields();
@@ -139,7 +141,7 @@ public class ChooseInputForm extends JPanel {
         // Burnup        
         burnupChartCheckBox.setFocusPainted(false);
         burnupChartCheckBox.setSelected(false);
-        ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, BorderFactory.createEtchedBorder());
+        ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
         burnupChartInputFormPanel.setBorder(border);
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
@@ -147,7 +149,7 @@ public class ChooseInputForm extends JPanel {
         // Target
         burnupTargetCheckBox.setFocusPainted(false);
         burnupTargetCheckBox.setSelected(true);
-        border = new ComponentTitledBorder(burnupTargetCheckBox, burnupTargetInputFormPanel, BorderFactory.createEtchedBorder());
+        border = new ComponentTitledBorder(burnupTargetCheckBox, burnupTargetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
         burnupTargetInputFormPanel.setBorder(border);
         burnupTargetInputFormPanel.setLayout(new GridBagLayout());
         addBurnupTargetFields();
