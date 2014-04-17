@@ -18,10 +18,10 @@ package org.mypomodoro.gui.create.list;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JList;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import org.mypomodoro.util.ColorUtil;
 
 /**
  * Template list combo box
@@ -30,27 +30,24 @@ import javax.swing.JList;
 public class AbstractComboBox extends JComboBox {
 
     private static final long serialVersionUID = 20110814L;
-    final ComboboxToolTipRenderer tooltipRenderer = new ComboboxToolTipRenderer();
+    final ComboBoxToolTipRenderer tooltipRenderer = new ComboBoxToolTipRenderer();
 
-    protected AbstractComboBox() {
+    public AbstractComboBox() {
         setRenderer(tooltipRenderer);
     }
 
-    protected class ComboboxToolTipRenderer extends DefaultListCellRenderer {
+    protected class ComboBoxToolTipRenderer extends AbstractComboBoxRenderer {
 
         ArrayList tooltips;
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
-
-            JComponent comp = (JComponent) super.getListCellRendererComponent(list,
-                    value, index, isSelected, cellHasFocus);
-
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (-1 < index && null != value && null != tooltips) {
                 list.setToolTipText((String) tooltips.get(index));
             }
-            return comp;
+            return this;
         }
 
         public void setTooltips(ArrayList tooltips) {

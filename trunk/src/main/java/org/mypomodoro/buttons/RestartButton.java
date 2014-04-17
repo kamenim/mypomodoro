@@ -27,7 +27,7 @@ import org.mypomodoro.util.Restart;
  * Restart button
  *
  */
-public class RestartButton extends AbstractPomodoroButton {
+public class RestartButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
 

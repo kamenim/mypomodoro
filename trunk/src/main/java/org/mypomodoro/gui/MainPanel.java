@@ -114,20 +114,8 @@ public final class MainPanel extends JFrame {
         Main.updateViews();
     }
 
-    public void updateComboBoxLists() {
-        Main.updateComboBoxLists();
-    }
-
     public final void setWindow(JPanel e) {
         if (e instanceof AbstractActivitiesPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
-            // Refresh from database
-            /*if (e instanceof ActivitiesPanel) {
-             ActivityList.getList().refresh();
-             } else if (e instanceof ToDoPanel) {
-             ToDoList.getList().refresh();
-             } else if (e instanceof ReportsPanel) {
-             ReportList.getList().refresh();
-             }*/
             ((AbstractActivitiesPanel) e).refresh();
         }
         windowPanel.showPanel(e.getClass().getName());

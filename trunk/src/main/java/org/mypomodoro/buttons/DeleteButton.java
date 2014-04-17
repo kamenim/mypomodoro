@@ -33,14 +33,14 @@ import org.mypomodoro.util.WaitCursor;
  * Delete button
  *
  */
-public class DeleteButton extends AbstractPomodoroButton {
+public class DeleteButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
 
     public DeleteButton(final String title, final String message, final AbstractActivitiesPanel panel) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 final int selectedRowCount = panel.getTable().getSelectedRowCount();

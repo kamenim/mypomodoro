@@ -34,8 +34,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
@@ -167,6 +167,7 @@ public class ExportInputForm extends JPanel {
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setBackground(ColorUtil.WHITE);
+        fileFormatComboBox.setRenderer(new AbstractComboBoxRenderer());
         exportFormPanel.add(fileFormatComboBox, c);
         // Date patterns
         c.gridx = 0;
@@ -230,6 +231,7 @@ public class ExportInputForm extends JPanel {
         separatorComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setBackground(ColorUtil.WHITE);
+        separatorComboBox.setRenderer(new AbstractComboBoxRenderer());
         exportFormPanel.add(separatorComboBox, c);
         // Columns
         /*c.gridx = 0;
@@ -564,11 +566,11 @@ public class ExportInputForm extends JPanel {
                 datePatternsComboBox2.setSelectedIndex(3);
                 datePatternsComboBox3.setSelectedIndex(7);
             }
-            datePatternsComboBox1.setBackground(ColorUtil.WHITE);
-            dateSeparatorComboBox1.setBackground(ColorUtil.WHITE);
-            datePatternsComboBox2.setBackground(ColorUtil.WHITE);
-            dateSeparatorComboBox2.setBackground(ColorUtil.WHITE);
-            datePatternsComboBox3.setBackground(ColorUtil.WHITE);
+            datePatternsComboBox1.setRenderer(new AbstractComboBoxRenderer());
+            dateSeparatorComboBox1.setRenderer(new AbstractComboBoxRenderer());
+            datePatternsComboBox2.setRenderer(new AbstractComboBoxRenderer());
+            dateSeparatorComboBox2.setRenderer(new AbstractComboBoxRenderer());
+            datePatternsComboBox3.setRenderer(new AbstractComboBoxRenderer());
         }
 
         public JComboBox getDatePatternsComboBox1() {

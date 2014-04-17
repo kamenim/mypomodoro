@@ -129,7 +129,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {                    
+                if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                     ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
@@ -160,10 +160,17 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Refresh from database
-                titledButton.setEnabled(false);
-                ToDoList.getList().refresh();
-                refresh(); // this will enable the button
+                if (!WaitCursor.isStarted()) {
+                    // Start wait cursor
+                    WaitCursor.startWaitCursor();
+                    // Refresh from database
+                    titledButton.setEnabled(false);
+                    ToDoList.getList().refresh();
+                    refresh();
+                    titledButton.setEnabled(true);
+                    // Stop wait cursor
+                    WaitCursor.stopWaitCursor();
+                }
             }
         });
         setBorder(titledborder);
@@ -721,21 +728,19 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        boolean alreadyStarted = false;
-        try {
+        if (!WaitCursor.isStarted()) {
             // Start wait cursor
-            alreadyStarted = WaitCursor.startWaitCursor();
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-            initTable();
-        } catch (Exception e) {
-            // do nothing 
-        } finally {
-            if (!alreadyStarted) {
+            WaitCursor.startWaitCursor();
+            try {
+                activitiesTableModel = getTableModel();
+                table.setModel(activitiesTableModel);
+                initTable();
+            } catch (Exception e) {
+                // do nothing 
+            } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }
-            titledButton.setEnabled(true);
         }
     }
 

@@ -85,7 +85,6 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
-// TODO fix problem rendering (BOLD)
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
@@ -106,7 +105,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private InputMap im = null;
-    private int mouseHoverRow = 0;    
+    private int mouseHoverRow = 0;
     // Border
     final JButton titledButton = new JButton();
     final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
@@ -143,7 +142,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
-        
+
         // Set border
         //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
         titledButton.setIcon(icon);
@@ -152,13 +151,20 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         titledButton.setOpaque(true);
         titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
         titledButton.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Refresh from database
-                titledButton.setEnabled(false);
-                ActivityList.getList().refresh();
-                refresh(); // this will enable the button
+                if (!WaitCursor.isStarted()) {
+                    // Start wait cursor
+                    WaitCursor.startWaitCursor();
+                    titledButton.setEnabled(false);
+                    // Refresh from database
+                    ActivityList.getList().refresh();
+                    refresh();
+                    titledButton.setEnabled(true);
+                    // Stop wait cursor
+                    WaitCursor.stopWaitCursor();
+                }
             }
         });
         setBorder(titledborder);
@@ -191,6 +197,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     // add all listener once and for all
     private void setUpTable() {
+        table.setBackground(ColorUtil.WHITE);
+        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        table.setForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);
+
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
@@ -287,10 +298,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                }                            
+                                }
                                 setPanelBorder();
                             }
-                        } else {               
+                        } else {
                             setPanelBorder();
                         }
                     }
@@ -575,8 +586,11 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
                         table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
                     } else if (column == ID_KEY - 3) { // Estimated
-                        act.setEstimatedPoms((Integer) data);
-                        act.databaseUpdate();
+                        int estimated = (Integer) data;
+                        if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                            act.setEstimatedPoms(estimated);
+                            act.databaseUpdate();
+                        }
                     } else if (column == ID_KEY - 2) { // Story Points
                         act.setStoryPoints((Float) data);
                         act.databaseUpdate();
@@ -685,21 +699,19 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        boolean alreadyStarted = false;
-        try {
+        if (!WaitCursor.isStarted()) {
             // Start wait cursor
-            alreadyStarted = WaitCursor.startWaitCursor();
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-            initTable();
-        } catch (Exception e) {
-            // do nothing 
-        } finally {
-            if (!alreadyStarted) {
+            WaitCursor.startWaitCursor();
+            try {
+                activitiesTableModel = getTableModel();
+                table.setModel(activitiesTableModel);
+                initTable();
+            } catch (Exception e) {
+                // do nothing 
+            } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }
-            titledButton.setEnabled(true);
         }
     }
 

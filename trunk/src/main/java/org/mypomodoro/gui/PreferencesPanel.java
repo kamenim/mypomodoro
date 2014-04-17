@@ -33,7 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.model.Preferences;
 import org.mypomodoro.util.ColorUtil;
@@ -60,9 +60,9 @@ public class PreferencesPanel extends JPanel {
                 preferences.getLocale().getCountry(), preferences.getLocale().getVariant());
         labels = new Labels(locale);
         dateUtil = new DateUtil(locale);
-        saveButton = new AbstractPomodoroButton(Labels.getString("Common.Save"));
+        saveButton = new AbstractButton(Labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
-        resetButton = new AbstractPomodoroButton(
+        resetButton = new AbstractButton(
                 Labels.getString("Common.Reset"));
         restartButton = new RestartButton();
         restartButton.setVisible(false);
