@@ -56,7 +56,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -98,7 +98,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
-    private final CreateChart chart;    
+    private final CreateChart chart;
 
     public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
@@ -115,7 +115,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {                    
+                if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
                     ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
@@ -242,8 +242,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 mouseHoverRow = -1;
             }
         });
-        
-                table.getSelectionModel().addListSelectionListener(
+
+        table.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
 
                     @Override
@@ -425,7 +425,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder());
         titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         titledborder.setTitle(titleActivitiesList);
-        setBorder(titledborder);        
+        setBorder(titledborder);
     }
 
     private void addChartTable(GridBagConstraints gbc) {
@@ -444,7 +444,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        JButton checkButton = new AbstractPomodoroButton(
+        JButton checkButton = new AbstractButton(
                 Labels.getString("BurndownChartPanel.Create"));
         checkButton.addActionListener(new ActionListener() {
 
@@ -614,17 +614,16 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        boolean alreadyStarted = false;
-        try {
+        if (!WaitCursor.isStarted()) {
             // Start wait cursor
-            alreadyStarted = WaitCursor.startWaitCursor();
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-            initTable();
-        } catch (Exception e) {
-            // do nothing 
-        } finally {
-            if (!alreadyStarted) {
+            WaitCursor.startWaitCursor();
+            try {
+                activitiesTableModel = getTableModel();
+                table.setModel(activitiesTableModel);
+                initTable();
+            } catch (Exception e) {
+                // do nothing 
+            } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }

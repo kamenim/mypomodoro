@@ -32,11 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.gui.create.list.TypeComboBox;
@@ -151,6 +149,7 @@ public class ActivityInputForm extends JPanel {
             items[i] = i;
         }
         estimatedPomodoros = new JComboBox(items);
+        estimatedPomodoros.setRenderer(new AbstractComboBoxRenderer());
         displayLength(0);
         // Estimated Poms Description and TextField
         ++gridy;
@@ -207,27 +206,6 @@ public class ActivityInputForm extends JPanel {
         add(storyPoints, c);
     }
 
-    class StoryPointsComboBoxRenderer extends BasicComboBoxRenderer {
-
-        public StoryPointsComboBoxRenderer() {
-            super();
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            String text;
-            if (value.toString().equals("0.5")) {
-                text = "1/2";
-            } else {
-                text = Math.round((Float) value) + "";
-            }
-            setText(text);
-            return this;
-        }
-    }
-
     protected void addIterations(int gridy) {
         // init iterations combo box
         Integer[] its = new Integer[102];
@@ -248,7 +226,28 @@ public class ActivityInputForm extends JPanel {
         add(iterations, c);
     }
 
-    class IterationComboBoxRenderer extends BasicComboBoxRenderer {
+    class StoryPointsComboBoxRenderer extends AbstractComboBoxRenderer {
+
+        public StoryPointsComboBoxRenderer() {
+            super();
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            String text;
+            if (value.toString().equals("0.5")) {
+                text = "1/2";
+            } else {
+                text = Math.round((Float) value) + "";
+            }
+            setText(text);
+            return this;
+        }
+    }
+
+    class IterationComboBoxRenderer extends AbstractComboBoxRenderer {
 
         public IterationComboBoxRenderer() {
             super();

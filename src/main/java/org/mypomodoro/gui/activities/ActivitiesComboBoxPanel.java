@@ -25,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import org.mypomodoro.util.ColorUtil;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
@@ -53,7 +54,20 @@ class ActivitiesComboBoxPanel extends JPanel {
         add(label);
     }
 
-    class ComboBoxFloatRenderer extends DefaultListCellRenderer {
+    class DefaultComboBoxRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (isSelected) {
+                setBackground(ColorUtil.BLUE_ROW);
+            }
+            setForeground(comboBox.getForeground());
+            return this;
+        }
+    }
+
+    class ComboBoxFloatRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -69,17 +83,18 @@ class ActivitiesComboBoxPanel extends JPanel {
         }
     }
 
-    class ComboBoxEstimatedLengthRenderer extends DefaultListCellRenderer {
+    class ComboBoxEstimatedLengthRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String length = getLength(Integer.parseInt(value.toString()));
             setToolTipText(length);
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            return this;
         }
     }
 
-    class ComboBoxIterationRenderer extends DefaultListCellRenderer {
+    class ComboBoxIterationRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

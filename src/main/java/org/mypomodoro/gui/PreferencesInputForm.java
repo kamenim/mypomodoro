@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -309,6 +310,7 @@ public class PreferencesInputForm extends JPanel {
         gbcLocales.anchor = GridBagConstraints.NORTH;
         gbcLocales.gridx = 0;
         gbcLocales.gridy = 0;
+        localesComboBox.setRenderer(new AbstractComboBoxRenderer());
         locales.add(localesComboBox, gbcLocales);
         add(locales, gbc);
     }

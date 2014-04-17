@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
@@ -318,6 +319,7 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
+        startIteration.setRenderer(new AbstractComboBoxRenderer());
         iterations.add(startIteration, iterationsgbc);
         iterationsgbc.gridx = 2;
         iterationsgbc.gridy = 0;
@@ -336,6 +338,7 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
+        endIteration.setRenderer(new AbstractComboBoxRenderer());
         iterations.add(endIteration, iterationsgbc);
         iterationsInputFormPanel.add(iterations, cChart);
     }

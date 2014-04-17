@@ -45,7 +45,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
@@ -79,7 +79,7 @@ public class ImportPanel extends JPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         // gbc.fill = GridBagConstraints.NONE;
-        JButton importButton = new AbstractPomodoroButton(
+        JButton importButton = new AbstractButton(
                 Labels.getString("ReportListPanel.Import"));
         importButton.addActionListener(new ActionListener() {
 
@@ -110,27 +110,34 @@ public class ImportPanel extends JPanel {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
-                    try {
-                        if (importInputForm.isFileCSVFormat()) {
-                            importCSV(fileName);
-                        } else if (importInputForm.isFileExcelFormat()) {
-                            importExcel(fileName);
-                        } else if (importInputForm.isFileExcelOpenXMLFormat()) {
-                            importExcelx(fileName);
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        try {
+                            if (importInputForm.isFileCSVFormat()) {
+                                importCSV(fileName);
+                            } else if (importInputForm.isFileExcelFormat()) {
+                                importExcel(fileName);
+                            } else if (importInputForm.isFileExcelOpenXMLFormat()) {
+                                importExcelx(fileName);
+                            }
+                            panel.refresh();
+                            /*String title = Labels.getString("ReportListPanel.Import");
+                             String message = Labels.getString(
+                             "ReportListPanel.Data imported",
+                             fileName);
+                             JOptionPane.showConfirmDialog(Main.gui, message, title,
+                             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
+                        } catch (Exception ex) {
+                            String title = Labels.getString("Common.Error");
+                            String message = Labels.getString("ReportListPanel.Import failed. See error log.");
+                            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                            writeErrorFile(ex.toString());
+                        } finally {
+                            // Stop wait cursor
+                            WaitCursor.stopWaitCursor();
                         }
-                        panel.refresh();
-                        /*String title = Labels.getString("ReportListPanel.Import");
-                         String message = Labels.getString(
-                         "ReportListPanel.Data imported",
-                         fileName);
-                         JOptionPane.showConfirmDialog(Main.gui, message, title,
-                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
-                    } catch (Exception ex) {
-                        String title = Labels.getString("Common.Error");
-                        String message = Labels.getString("ReportListPanel.Import failed. See error log.");
-                        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-                        writeErrorFile(ex.toString());
                     }
                 }
             }.start();
@@ -159,8 +166,6 @@ public class ImportPanel extends JPanel {
             Main.gui.getProgressBar().setVisible(true);
             Main.gui.getProgressBar().getBar().setValue(0);
             Main.gui.getProgressBar().getBar().setMaximum(rowCount);
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
             int increment = 0;
             String[] line;
             while ((line = reader.readNext()) != null) {
@@ -194,8 +199,6 @@ public class ImportPanel extends JPanel {
                     }.start();
                 }
             });
-            // Stop wait cursor
-            WaitCursor.stopWaitCursor();
             // Close stream
             reader.close();
         }
@@ -215,8 +218,6 @@ public class ImportPanel extends JPanel {
             Main.gui.getProgressBar().setVisible(true);
             Main.gui.getProgressBar().getBar().setValue(0);
             Main.gui.getProgressBar().getBar().setMaximum(rowCount);
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
             int increment = 0;
             for (Row row : sheet) {
                 String[] line = new String[21];
@@ -255,8 +256,6 @@ public class ImportPanel extends JPanel {
                     }.start();
                 }
             });
-            // Stop wait cursor
-            WaitCursor.stopWaitCursor();
         }
         myxls.close();
     }
@@ -275,8 +274,6 @@ public class ImportPanel extends JPanel {
             Main.gui.getProgressBar().setVisible(true);
             Main.gui.getProgressBar().getBar().setValue(0);
             Main.gui.getProgressBar().getBar().setMaximum(rowCount);
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
             int increment = 0;
             for (Row row : sheet) {
                 String[] line = new String[21];
@@ -315,8 +312,6 @@ public class ImportPanel extends JPanel {
                     }.start();
                 }
             });
-            // Stop wait cursor
-            WaitCursor.stopWaitCursor();
         }
         myxlsx.close();
     }

@@ -23,19 +23,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
+import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.util.ColorUtil;
 
 /**
- *
+ * Combo Box Cell Editor
  *
  */
 class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEditor {
 
     public <E> ComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
+
+        comboBox.setRenderer(new DefaultListCellRenderer());
+
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,10 +59,19 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        this.setBackground(table.getSelectionBackground());
+        setBackground(table.getSelectionBackground());
+        setForeground(ColorUtil.BLACK);
+        comboBox.setFont(getFont().deriveFont(Font.BOLD));
+        comboBox.setForeground(ColorUtil.BLACK);
+        label.setFont(getFont().deriveFont(Font.BOLD));
+        label.setForeground(ColorUtil.BLACK);
+        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
+        Activity activity = ActivityList.getList().getById(id);
+        if (activity != null && activity.isFinished()) {
+            comboBox.setForeground(ColorUtil.GREEN);
+            label.setForeground(ColorUtil.GREEN);
+        }
         comboBox.setSelectedItem(value);
-        comboBox.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
-        label.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
         return this;
     }
 

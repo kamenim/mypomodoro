@@ -31,7 +31,7 @@ import org.mypomodoro.util.WaitCursor;
  * Move button
  *
  */
-public class MoveToDoButton extends AbstractPomodoroButton {
+public class MoveToDoButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
@@ -55,79 +55,83 @@ public class MoveToDoButton extends AbstractPomodoroButton {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
-                    // Disable button
-                    setEnabled(false);
-                    // Set progress bar
-                    Main.gui.getProgressBar().setVisible(true);
-                    Main.gui.getProgressBar().getBar().setValue(0);
-                    Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                    // Start wait cursor
-                    WaitCursor.startWaitCursor();
-                    // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        // Disable button
+                        setEnabled(false);
+                        // Set progress bar
+                        Main.gui.getProgressBar().setVisible(true);
+                        Main.gui.getProgressBar().getBar().setValue(0);
+                        Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                        // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                     /*if (!panel.getPomodoro().inPomodoro()
-                     && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
-                     panel.moveAll();
-                     panel.refresh();
-                     } else {*/
-                    int increment = 0;
-                    int[] rows = panel.getTable().getSelectedRows();
-                    for (int row : rows) {
-                        // removing a row requires decreasing the row index number
-                        row = row - increment;
-                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                        Activity selectedToDo = panel.getActivityById(id);
-                        // excluding current running task
-                        if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                            continue;
+                         && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
+                         panel.moveAll();
+                         panel.refresh();
+                         } else {*/
+                        int increment = 0;
+                        int[] rows = panel.getTable().getSelectedRows();
+                        for (int row : rows) {
+                            // removing a row requires decreasing the row index number
+                            row = row - increment;
+                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                            Activity selectedToDo = panel.getActivityById(id);
+                            // excluding current running task
+                            if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                continue;
+                            }
+                            panel.move(selectedToDo);
+                            panel.removeRow(row);
+                            increment++;
+                            final int progressValue = increment;
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                    Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                }
+                            });
                         }
-                        panel.move(selectedToDo);
-                        panel.removeRow(row);
-                        increment++;
-                        final int progressValue = increment;
+                        //}
+                        // Indicate reordoring by priority in progress bar
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+
                             }
                         });
-                    }
-                    //}
-                    // Indicate reordoring by priority in progress bar
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-
-                        }
-                    });
-                    // reorder                            
-                    panel.reorderByPriority();
-                    // Close progress bar
-                    final int progressCount = increment;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        sleep(1000); // wait one second before hiding the progress bar
-                                    } catch (InterruptedException ex) {
-                                        // do nothing
+                        // reorder                            
+                        panel.reorderByPriority();
+                        // Close progress bar
+                        final int progressCount = increment;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000); // wait one second before hiding the progress bar
+                                        } catch (InterruptedException ex) {
+                                            // do nothing
+                                        }
+                                        // hide progress bar
+                                        Main.gui.getProgressBar().getBar().setString(null);
+                                        Main.gui.getProgressBar().setVisible(false);
                                     }
-                                    // hide progress bar
-                                    Main.gui.getProgressBar().getBar().setString(null);
-                                    Main.gui.getProgressBar().setVisible(false);
-                                }
-                            }.start();
-                        }
-                    });
-                    // Enable button
-                    setEnabled(true);
-                    // Stop wait cursor
-                    WaitCursor.stopWaitCursor();
+                                }.start();
+                            }
+                        });
+                        // Enable button
+                        setEnabled(true);
+                        // Stop wait cursor
+                        WaitCursor.stopWaitCursor();
+                        // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh
+                        Main.gui.getActivityListPanel().refresh();
+                    }
                 }
             }.start();
         }

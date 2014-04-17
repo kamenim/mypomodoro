@@ -104,7 +104,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
-    private int mouseHoverRow = 0;    
+    private int mouseHoverRow = 0;
     // Border
     final JButton titledButton = new JButton();
     final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
@@ -131,7 +131,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     ((JComponent) c).setBorder(null);
-                }                
+                }
                 return c;
             }
         };
@@ -141,7 +141,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Init table (data model and rendering)
         initTable();
-        
+
         // Set border
         //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
         titledButton.setIcon(icon);
@@ -150,13 +150,20 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         titledButton.setOpaque(true);
         titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
         titledButton.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Refresh from database
-                titledButton.setEnabled(false);
-                ReportList.getList().refresh();
-                refresh(); // this will enable the button
+                if (!WaitCursor.isStarted()) {
+                    // Start wait cursor
+                    WaitCursor.startWaitCursor();
+                    // Refresh from database
+                    titledButton.setEnabled(false);
+                    ReportList.getList().refresh();
+                    refresh();
+                    titledButton.setEnabled(true);
+                    // Stop wait cursor
+                    WaitCursor.stopWaitCursor();
+                }
             }
         });
         setBorder(titledborder);
@@ -288,7 +295,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                                 }
                                 setPanelBorder();
                             }
-                        } else {                            
+                        } else {
                             setPanelBorder();
                         }
                     }
@@ -470,7 +477,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
                 }
             }
-        }        
+        }
         // Update titled border          
         titledButton.setText(titleActivitiesList);
         titledborder.repaint();
@@ -669,21 +676,19 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
-        boolean alreadyStarted = false;
-        try {
+        if (!WaitCursor.isStarted()) {
             // Start wait cursor
-            alreadyStarted = WaitCursor.startWaitCursor();
-            activitiesTableModel = getTableModel();
-            table.setModel(activitiesTableModel);
-            initTable();
-        } catch (Exception e) {
-            // do nothing 
-        } finally {
-            if (!alreadyStarted) {
+            WaitCursor.startWaitCursor();
+            try {
+                activitiesTableModel = getTableModel();
+                table.setModel(activitiesTableModel);
+                initTable();
+            } catch (Exception e) {
+                // do nothing 
+            } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();
             }
-            titledButton.setEnabled(true);
         }
     }
 
@@ -699,7 +704,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ReportList.getList().getById(id);
-            if (activity != null && activity.isFinished()) {                
+            if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
             return renderer;

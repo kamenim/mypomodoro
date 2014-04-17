@@ -56,7 +56,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
@@ -114,7 +114,7 @@ public class ExportPanel extends JPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         // gbc.fill = GridBagConstraints.NONE;
-        JButton exportButton = new AbstractPomodoroButton(
+        JButton exportButton = new AbstractButton(
                 Labels.getString("ReportListPanel.Export"));
         exportButton.addActionListener(new ActionListener() {
 
@@ -136,7 +136,7 @@ public class ExportPanel extends JPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        cancelButton = new AbstractPomodoroButton(
+        cancelButton = new AbstractButton(
                 Labels.getString("Common.Cancel"));
         cancelButton.addActionListener(new ActionListener() {
 

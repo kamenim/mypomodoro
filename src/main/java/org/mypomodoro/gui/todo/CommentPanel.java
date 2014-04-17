@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -58,7 +58,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         // gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new AbstractPomodoroButton(
+        JButton changeButton = new AbstractButton(
                 Labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 

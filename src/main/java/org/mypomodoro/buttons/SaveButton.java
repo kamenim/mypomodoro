@@ -23,7 +23,7 @@ import org.mypomodoro.gui.SaveListener;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
 
-public class SaveButton extends AbstractPomodoroButton {
+public class SaveButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
 

@@ -25,6 +25,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -35,7 +36,7 @@ import org.mypomodoro.util.WaitCursor;
  * MoveToDoButton
  *
  */
-public class MoveButton extends AbstractPomodoroButton {
+public class MoveButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
@@ -59,93 +60,101 @@ public class MoveButton extends AbstractPomodoroButton {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
-                    // Disable button
-                    setEnabled(false);
-                    // Set progress bar
-                    Main.gui.getProgressBar().setVisible(true);
-                    Main.gui.getProgressBar().getBar().setValue(0);
-                    Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
-                    // Start wait cursor
-                    WaitCursor.startWaitCursor();
-                    // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        // Disable button
+                        setEnabled(false);
+                        // Set progress bar
+                        Main.gui.getProgressBar().setVisible(true);
+                        Main.gui.getProgressBar().getBar().setValue(0);
+                        Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                        // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                     /*if (selectedRowCount == panel.getTable().getRowCount()
-                     && panel instanceof ReportsPanel) { // reopen all at once                
-                     panel.moveAll();
-                     panel.refresh();
-                     } else {*/
-                    boolean agreedToMorePomodoros = false;
-                    int increment = 0;
-                    int[] rows = panel.getTable().getSelectedRows();
-                    for (int row : rows) {
-                        // removing a row requires decreasing the row index number
-                        row = row - increment;
-                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                        Activity selectedActivity = panel.getActivityById(id);
-                        if (panel instanceof ActivitiesPanel && !PreferencesPanel.preferences.getAgileMode()) {
-                            String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                            if (!selectedActivity.isDateToday()) {
-                                String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
-                                String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
-                                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                if (reply == JOptionPane.NO_OPTION) {
-                                    continue; // go to the next one
-                                } else if (reply == JOptionPane.CLOSED_OPTION) {
-                                    break;
+                         && panel instanceof ReportsPanel) { // reopen all at once                
+                         panel.moveAll();
+                         panel.refresh();
+                         } else {*/
+                        boolean agreedToMorePomodoros = false;
+                        int increment = 0;
+                        int[] rows = panel.getTable().getSelectedRows();
+                        for (int row : rows) {
+                            // removing a row requires decreasing the row index number
+                            row = row - increment;
+                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                            Activity selectedActivity = panel.getActivityById(id);
+                            if (panel instanceof ActivitiesPanel && !PreferencesPanel.preferences.getAgileMode()) {
+                                String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+                                if (!selectedActivity.isDateToday()) {
+                                    String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
+                                    String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
+                                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                    if (reply == JOptionPane.NO_OPTION) {
+                                        continue; // go to the next one
+                                    } else if (reply == JOptionPane.CLOSED_OPTION) {
+                                        break;
+                                    }
+                                }
+                                if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
+                                    String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
+                                    String message = Labels.getString(
+                                            "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
+                                            org.mypomodoro.gui.PreferencesPanel.preferences.getMaxNbPomPerDay());
+                                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        agreedToMorePomodoros = true;
+                                    } else {
+                                        break; // get out of the loop
+                                    }
                                 }
                             }
-                            if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
-                                String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
-                                String message = Labels.getString(
-                                        "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                        org.mypomodoro.gui.PreferencesPanel.preferences.getMaxNbPomPerDay());
-                                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                if (reply == JOptionPane.YES_OPTION) {
-                                    agreedToMorePomodoros = true;
-                                } else {
-                                    break; // get out of the loop
+                            panel.move(selectedActivity);
+                            panel.removeRow(row);
+                            increment++;
+                            final int progressValue = increment;
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                    Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                 }
-                            }
+                            });
                         }
-                        panel.move(selectedActivity);
-                        panel.removeRow(row);
-                        increment++;
-                        final int progressValue = increment;
+                        //}
+                        // Close progress bar
+                        final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000); // wait one second before hiding the progress bar
+                                        } catch (InterruptedException ex) {
+                                            // do nothing
+                                        }
+                                        // hide progress bar
+                                        Main.gui.getProgressBar().getBar().setString(null);
+                                        Main.gui.getProgressBar().setVisible(false);
+                                    }
+                                }.start();
                             }
                         });
-                    }
-                    //}
-                    // Close progress bar
-                    final int progressCount = increment;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        sleep(1000); // wait one second before hiding the progress bar
-                                    } catch (InterruptedException ex) {
-                                        // do nothing
-                                    }
-                                    // hide progress bar
-                                    Main.gui.getProgressBar().getBar().setString(null);
-                                    Main.gui.getProgressBar().setVisible(false);
-                                }
-                            }.start();
+                        // Enable button
+                        setEnabled(true);
+                        // Stop wait cursor
+                        WaitCursor.stopWaitCursor();
+                        // After cursor stops, refresh Activity/Report List (target list) in case the user is waiting for the list to refresh
+                        if (panel instanceof ActivitiesPanel) {
+                            Main.gui.getToDoPanel().refresh();
+                        } else if (panel instanceof ReportsPanel) { // reopen tasks
+                            Main.gui.getActivityListPanel().refresh();
                         }
-                    });
-                    // Enable button
-                    setEnabled(true);
-                    // Stop wait cursor
-                    WaitCursor.stopWaitCursor();
+                    }
                 }
             }.start();
         }

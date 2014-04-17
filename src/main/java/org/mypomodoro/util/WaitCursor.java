@@ -14,18 +14,11 @@ public class WaitCursor {
     /**
      * Start wait cursor
      *
-     * @return true if already started
      */
-    public static boolean startWaitCursor() {
-        boolean alreadyStarted = false;
-        if (!started) {
-            Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            Main.gui.getGlassPane().setVisible(true);
-            started = true;
-        } else {
-            alreadyStarted = true;
-        }
-        return alreadyStarted;
+    public static void startWaitCursor() {
+        Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Main.gui.getGlassPane().setVisible(true);
+        started = true;
     }
 
     /**
@@ -36,5 +29,9 @@ public class WaitCursor {
         Main.gui.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         Main.gui.getGlassPane().setVisible(false);
         started = false;
+    }
+
+    public static boolean isStarted() {
+        return started;
     }
 }

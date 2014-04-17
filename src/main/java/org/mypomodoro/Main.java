@@ -119,6 +119,7 @@ public class Main {
                 chartTabbedPanel = new TabbedPanel();
                 progressBar = new ProgressBar();
                 gui = new MainPanel();
+                updateComboBoxLists();
                 // Load combo boxes data (type, author...)
                 //updateComboBoxLists();
                 /*

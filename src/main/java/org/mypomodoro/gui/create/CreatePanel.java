@@ -34,7 +34,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.buttons.AbstractPomodoroButton;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.model.Activity;
@@ -110,7 +110,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new AbstractPomodoroButton(Labels.getString("Common.Reset"));
+        JButton clearButton = new AbstractButton(Labels.getString("Common.Reset"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override
