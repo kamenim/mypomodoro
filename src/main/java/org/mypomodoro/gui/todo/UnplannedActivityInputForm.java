@@ -17,10 +17,10 @@
 package org.mypomodoro.gui.todo;
 
 import javax.swing.JComboBox;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 public class UnplannedActivityInputForm extends ActivityInputForm {
@@ -45,11 +45,11 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridy = 0;
         c.weighty = 0.5;
         String items[] = new String[3];
-        items[0] = "";
+        items[0] = " ";
         items[1] = internal;
         items[2] = external;
         interruptions = new JComboBox(items);
-        interruptions.setBackground(ColorUtil.WHITE);
+        interruptions.setRenderer(new AbstractComboBoxRenderer());
         add(interruptions, c);
     }
 

@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -56,6 +57,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -99,6 +101,8 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private int mouseHoverRow = 0;
     private final JTabbedPane tabbedPane;
     private final CreateChart chart;
+    // Unplanned
+    final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
 
     public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
@@ -117,10 +121,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     ((JComponent) c).setBorder(null);
@@ -306,6 +310,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // title
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // type
@@ -552,11 +557,12 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void removeRow(int rowIndex) {
-        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
+        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View           
+            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
+            table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row           
         }
     }
 
@@ -644,6 +650,28 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             Activity activity = ChartList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
+            }
+            /* Strikethrough task with no estimation
+             if (activity != null && activity.getEstimatedPoms() == 0) {
+             // underline url
+             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+             renderer.setFont(getFont().deriveFont(map));
+             }*/
+            return renderer;
+        }
+    }
+    
+    class UnplannedRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if ((Boolean) value) {
+                renderer.setIcon(unplannedIcon);
+                renderer.setText("");
+            } else {
+                renderer.setText("");
             }
             return renderer;
         }

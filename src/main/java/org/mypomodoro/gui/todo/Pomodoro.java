@@ -32,6 +32,8 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -75,10 +77,12 @@ public class Pomodoro {
     private final ActivityInformation detailsPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
+    private int currentToDoRow = -1;
     private long time = pomodoroLength;
     private boolean inpomodoro = false;
     private Clip clip;
     private boolean isMute = false;
+    
 
     public Pomodoro(ToDoPanel panel, ActivityInformation detailsPanel) {
         this.panel = panel;
@@ -185,10 +189,11 @@ public class Pomodoro {
                     panel.refreshIconLabels();
                     panel.refreshRemaining();
                     panel.getTable().repaint(); // trigger row renderers
-                } else {
+                } else { // Starting new pomodoro
                     if (panel.getTable().getSelectedRowCount() == 1) {
                         int row = panel.getTable().getSelectedRow();
                         currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                        currentToDoRow = row;
                     }
                     if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
@@ -305,7 +310,11 @@ public class Pomodoro {
             } finally {
                 ain.close();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            // no sound
+        } catch (UnsupportedAudioFileException e) {
+            // no sound
+        } catch (LineUnavailableException e) {
             // no sound
         }
     }
@@ -325,7 +334,15 @@ public class Pomodoro {
     public Activity getCurrentToDo() {
         return ToDoList.getList().getById(currentToDoId);
     }
+    
+    public void setCurrentToDoRow(int row) {
+        currentToDoRow = row;
+    }
 
+    public int getCurrentToDoRow() {
+        return currentToDoRow;
+    }
+    
     public void setTimerPanel(TimerPanel timerPanel) {
         this.timerPanel = timerPanel;
     }

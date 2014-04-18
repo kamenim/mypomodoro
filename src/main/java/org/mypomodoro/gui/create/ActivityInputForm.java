@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.mypomodoro.gui.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
@@ -259,7 +258,7 @@ public class ActivityInputForm extends JPanel {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             String text = value.toString();
             if (value.toString().equals("-1")) {
-                text = "";
+                text = " ";
             }
             setText(text);
             return this;

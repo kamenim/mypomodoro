@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
@@ -103,6 +104,7 @@ public class OverestimationInputForm extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
+        overestimatedPomodoros.setRenderer(new AbstractComboBoxRenderer());
         overestimatedPanel.add(overestimatedPomodoros, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
