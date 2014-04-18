@@ -507,4 +507,31 @@ public class Activity {
         return PreferencesPanel.preferences.getAgileMode()
                 && (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
     }
+    
+    public boolean hasChanged() {
+        Activity act = ActivitiesDAO.getInstance().getActivity(getId());
+        return act == null || !equals(act);
+    }
+    
+    public boolean equals(Activity a) {
+        System.err.println("test");
+        return a.getName().equalsIgnoreCase(getName()) &&
+            a.getType().equalsIgnoreCase(getType()) &&
+            a.getDescription().equalsIgnoreCase(getDescription()) &&
+            a.getNotes().equalsIgnoreCase(getNotes()) &&
+            a.getAuthor().equalsIgnoreCase(getAuthor()) &&
+            a.getPlace().equalsIgnoreCase(getPlace()) &&
+            a.getDate().getTime() == getDate().getTime() &&
+            a.getDateCompleted().getTime() == getDateCompleted().getTime() &&
+            a.getEstimatedPoms() == getEstimatedPoms() &&
+            a.getActualPoms() == getActualPoms() &&
+            a.getOverestimatedPoms() == getOverestimatedPoms() &&
+            a.isCompleted() == isCompleted() &&
+            a.isUnplanned() == isUnplanned() &&
+            a.getNumInterruptions() == getNumInterruptions() &&
+            a.getPriority() == getPriority() &&
+            a.getNumInternalInterruptions() == getNumInternalInterruptions() &&
+            a.getStoryPoints() == getStoryPoints() &&
+            a.getIteration() == getIteration();
+    }
 }

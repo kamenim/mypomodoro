@@ -102,7 +102,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     private final JTabbedPane tabbedPane;
     private final CreateChart chart;
     // Unplanned
-    final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
 
     public CheckPanel(JTabbedPane tabbedPane, CreateChart chart) {
         this.tabbedPane = tabbedPane;
@@ -220,10 +220,10 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                         }
                         mouseHoverRow = rowIndex;
                     }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse
-                } catch (IndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                    // This may happen when removing rows and yet using the mouse
+                } catch (IndexOutOfBoundsException ignoreds) {
+                    // This may happen when removing rows and yet using the mouse
                 }
             }
         });
@@ -627,8 +627,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
                 initTable();
-            } catch (Exception e) {
-                // do nothing 
+            } catch (Exception ignored) {
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

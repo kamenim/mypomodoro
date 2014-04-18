@@ -51,8 +51,7 @@ public class FileMenu extends JMenu {
         addFocusListener(new FocusListener() {
 
             @Override
-            public void focusGained(FocusEvent e) {
-                // do nothing
+            public void focusGained(FocusEvent ignored) {
             }
 
             @Override

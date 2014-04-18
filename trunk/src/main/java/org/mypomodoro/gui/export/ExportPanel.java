@@ -212,8 +212,7 @@ public class ExportPanel extends JPanel {
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(error);
             out.close();
-        } catch (IOException e) {
-            // Do nothing
+        } catch (IOException ignored) {
         }
     }
 

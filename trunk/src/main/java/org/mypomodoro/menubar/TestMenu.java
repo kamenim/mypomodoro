@@ -53,8 +53,7 @@ public class TestMenu extends JMenu {
         addFocusListener(new FocusListener() {
 
             @Override
-            public void focusGained(FocusEvent e) {
-                // do nothing
+            public void focusGained(FocusEvent ignored) {
             }
 
             @Override
@@ -173,8 +172,7 @@ public class TestMenu extends JMenu {
                                     public void run() {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
-                                        } catch (InterruptedException ex) {
-                                            // do nothing
+                                        } catch (InterruptedException ignored) {
                                         }
                                         // hide progress bar
                                         Main.progressBar.getBar().setString(null);

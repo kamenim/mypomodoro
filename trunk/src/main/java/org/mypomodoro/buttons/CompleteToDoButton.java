@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.PreferencesPanel;
-import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -111,8 +110,7 @@ public class CompleteToDoButton extends AbstractButton {
                                                 public void run() {
                                                     try {
                                                         sleep(1000); // wait one second before hiding the progress bar
-                                                    } catch (InterruptedException ex) {
-                                                        // do nothing
+                                                    } catch (InterruptedException ignored) {
                                                     }
                                                     // hide progress bar
                                                     Main.gui.getProgressBar().getBar().setString(null);

@@ -150,8 +150,7 @@ public class ImportPanel extends JPanel {
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(error);
             out.close();
-        } catch (IOException e) {
-            // Do nothing
+        } catch (IOException ignored) {
         }
     }
 
@@ -189,8 +188,7 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ex) {
-                                // do nothing
+                            } catch (InterruptedException ignored) {
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -246,8 +244,7 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ex) {
-                                // do nothing
+                            } catch (InterruptedException ignored) {
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -302,8 +299,7 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ex) {
-                                // do nothing
+                            } catch (InterruptedException ignored) {
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);

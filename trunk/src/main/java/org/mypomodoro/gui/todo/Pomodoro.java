@@ -34,6 +34,7 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -47,7 +48,6 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
-// TODO allow concurrent work by reading the status of the activity in the database on Start, Stop and break time
 
 /**
  * This class keeps the logic for setting a timer for a pomodoro and the breaks
@@ -77,12 +77,11 @@ public class Pomodoro {
     private final ActivityInformation detailsPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
-    private int currentToDoRow = -1;
     private long time = pomodoroLength;
     private boolean inpomodoro = false;
     private Clip clip;
     private boolean isMute = false;
-    
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     public Pomodoro(ToDoPanel panel, ActivityInformation detailsPanel) {
         this.panel = panel;
@@ -106,7 +105,7 @@ public class Pomodoro {
         }
         inpomodoro = true;
         panel.refreshIconLabels();
-        panel.getTable().repaint(); // trigger row renderers
+        panel.getTable().repaint(); // trigger row renderers      
     }
 
     public void stop() {
@@ -189,36 +188,44 @@ public class Pomodoro {
                     panel.refreshIconLabels();
                     panel.refreshRemaining();
                     panel.getTable().repaint(); // trigger row renderers
-                } else { // Starting new pomodoro
-                    if (panel.getTable().getSelectedRowCount() == 1) {
+                } else {
+                    if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
-                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                        currentToDoRow = row;
+                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                        
                     }
-                    if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    // Retrieve activity from the database in case it's changed (concurrent work : another use may have worked on it)                                       
+                    if (getCurrentToDo().hasChanged()) {
                         stop();
                         timerPanel.setStart();
-                        if (isSystemTray()) {
-                            if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
-                            }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
-                        }
+                        String title = Labels.getString("ToDoListPanel.ToDo changed");
+                        String message = Labels.getString("ToDoListPanel.The ToDo has changed");
+                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, refreshIcon);
                     } else {
-                        if (PreferencesPanel.preferences.getTicking() && !isMute) {
-                            tick();
-                        }
-                        timerPanel.setStartColor(ColorUtil.RED);
-                        inpomodoro = true;
-                        if (isSystemTray()) {
-                            if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                        if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                            stop();
+                            timerPanel.setStart();
+                            if (isSystemTray()) {
+                                if (isSystemTrayMessage()) {
+                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                                }
+                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                             }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                        } else {
+                            if (PreferencesPanel.preferences.getTicking() && !isMute) {
+                                tick();
+                            }
+                            timerPanel.setStartColor(ColorUtil.RED);
+                            inpomodoro = true;
+                            if (isSystemTray()) {
+                                if (isSystemTrayMessage()) {
+                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                                }
+                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                            }
+                            goInPomodoro();
+                            panel.refreshIconLabels();
+                            panel.getTable().repaint(); // trigger row renderers
                         }
-                        goInPomodoro();
-                        panel.refreshIconLabels();
-                        panel.getTable().repaint(); // trigger row renderers
                     }
                 }
             }
@@ -334,15 +341,7 @@ public class Pomodoro {
     public Activity getCurrentToDo() {
         return ToDoList.getList().getById(currentToDoId);
     }
-    
-    public void setCurrentToDoRow(int row) {
-        currentToDoRow = row;
-    }
 
-    public int getCurrentToDoRow() {
-        return currentToDoRow;
-    }
-    
     public void setTimerPanel(TimerPanel timerPanel) {
         this.timerPanel = timerPanel;
     }
