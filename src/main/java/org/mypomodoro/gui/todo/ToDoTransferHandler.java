@@ -89,8 +89,8 @@ public class ToDoTransferHandler extends TransferHandler {
                             }
                         }
                         return true;
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        // do nothing. This should never happen as the TableChanged method in ToDoPanel already handles the problem of column been equals to -1 while moving
+                    } catch (ArrayIndexOutOfBoundsException ignored) {
+                        // This should never happen as the TableChanged method in ToDoPanel already handles the problem of column been equals to -1 while moving
                     }
                 }
             }

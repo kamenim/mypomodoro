@@ -100,8 +100,7 @@ public final class MainPanel extends JFrame {
             });
             try {
                 sysTray.add(trayIcon);
-            } catch (AWTException e) {
-                // do nothing
+            } catch (AWTException ignored) {
             }
         }
     }

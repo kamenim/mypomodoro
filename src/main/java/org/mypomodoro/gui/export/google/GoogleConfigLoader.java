@@ -33,8 +33,7 @@ public class GoogleConfigLoader {
     public GoogleConfigLoader() {
         try {
             loadProperties();
-        } catch (IOException ex) {
-            // do nothing
+        } catch (IOException ignored) {
         }
     }
 

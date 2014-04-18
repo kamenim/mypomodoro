@@ -101,10 +101,8 @@ public class ItemLocale {
                     }
                 }
             }
-        } catch (IOException e) {
-            // Do nothing
-        } catch (URISyntaxException e) {
-            // Do nothing
+        } catch (IOException ignored) {
+        } catch (URISyntaxException ignored) {
         } finally {
             if (vLocales.isEmpty()) {
                 vLocales.add(new ItemLocale(PreferencesPanel.preferences.getLocale(), PreferencesPanel.preferences.getLocale().getDisplayLanguage()

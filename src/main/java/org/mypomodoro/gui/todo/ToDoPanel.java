@@ -113,11 +113,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
     // Border
-    final JButton titledButton = new JButton();
-    final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-    final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final JButton titledButton = new JButton();
+    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     // Unplanned
-    final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    // Selected row
+    private int currentSelectedRow = 0;
 
     public ToDoPanel() {
         setLayout(new GridBagLayout());
@@ -245,10 +247,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         }
                         mouseHoverRow = rowIndex;
                     }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse outside the table
-                } catch (IndexOutOfBoundsException ex) {
-                    // do nothing. This may happen when removing rows and yet using the mouse outside the table
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                    // This may happen when removing rows and yet using the mouse outside the table
+                } catch (IndexOutOfBoundsException ignored) {
+                    // This may happen when removing rows and yet using the mouse outside the table
                 }
             }
         }
@@ -300,6 +302,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     }
                                 } else if (table.getSelectedRowCount() == 1) {
                                     int row = table.getSelectedRow();
+                                    currentSelectedRow = row;
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
                                         if (index == 4) {
@@ -315,8 +318,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                     if (!pomodoro.inPomodoro()) {
-                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
-                                        pomodoro.setCurrentToDoRow(row);
+                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));                                        
                                     }
                                 }
                                 refreshIconLabels();
@@ -421,16 +423,15 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 controlPane.setEnabledAt(index, false);
             }
         } else {
-            if (pomodoro.inPomodoro()) {
-                System.err.println("pomodoro.getCurrentToDoRow()=" +pomodoro.getCurrentToDoRow());
-                int currentRow = table.convertRowIndexToView(pomodoro.getCurrentToDoRow());
+            //if (pomodoro.inPomodoro()) {
+                int currentRow = table.convertRowIndexToView(currentSelectedRow);
                 table.setRowSelectionInterval(currentRow, currentRow);
                 table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-            } else {
+            /*} else {
                 // select first activity
                 table.setRowSelectionInterval(0, 0);
                 table.scrollRectToVisible(table.getCellRect(0, 0, true));
-            }
+            }*/
         }
 
         // Refresh panel border
@@ -645,16 +646,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
-            int currentRow = pomodoro.getCurrentToDoRow() > rowIndex ? pomodoro.getCurrentToDoRow() - 1 : pomodoro.getCurrentToDoRow();
-            pomodoro.setCurrentToDoRow(currentRow);
-            if (pomodoro.inPomodoro()) {
-                table.setRowSelectionInterval(table.convertRowIndexToView(currentRow), table.convertRowIndexToView(currentRow)); // ...while selecting in the View
-                table.scrollRectToVisible(table.getCellRect(table.convertRowIndexToView(currentRow), 0, true));
-            } else {
+            int currentRow = table.convertRowIndexToView(currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow);
+            //pomodoro.setCurrentToDoRow(currentRow);
+            //if (pomodoro.inPomodoro()) {
+                table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+                table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            /*} else {
                 rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
                 table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
                 table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row
-            }
+            }*/
         }
     }
 
@@ -755,8 +756,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
                 initTable();
-            } catch (Exception e) {
-                // do nothing 
+            } catch (Exception ignored) {
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

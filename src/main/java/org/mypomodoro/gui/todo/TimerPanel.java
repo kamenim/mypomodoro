@@ -25,6 +25,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -49,6 +50,7 @@ public class TimerPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
     private final JLabel pomodoroTime;
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
@@ -130,19 +132,26 @@ public class TimerPanel extends JPanel {
                 Activity currentToDo = pomodoro.getCurrentToDo();
                 if (currentToDo != null) {
                     if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
-                        if (currentToDo.isFinished()) {
-                            String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
-                            message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                            JOptionPane.showMessageDialog(Main.gui, message);
-                        } else if (currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms() != 0) {
-                            pomodoro.start();
-                            startButton.setText(Labels.getString("ToDoListPanel.Stop"));
-                            startButton.setForeground(ColorUtil.RED);
-                            Border line = new LineBorder(ColorUtil.RED, 2);
-                            Border margin = new EmptyBorder(5, 15, 5, 15);
-                            Border compound = new CompoundBorder(line, margin);
-                            startButton.setBorder(compound);
-                            pomodoroTime.setForeground(ColorUtil.RED);
+                        // Retrieve activity from the database in case it's changed (concurrent work : another use may have worked on it)                                       
+                        if (currentToDo.hasChanged()) {
+                            String title = Labels.getString("ToDoListPanel.ToDo changed");
+                            String message = Labels.getString("ToDoListPanel.The ToDo has changed");
+                            JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, refreshIcon);
+                        } else {
+                            if (currentToDo.isFinished()) {
+                                String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
+                                message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
+                                JOptionPane.showMessageDialog(Main.gui, message);
+                            } else if (currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms() != 0) {
+                                pomodoro.start();
+                                startButton.setText(Labels.getString("ToDoListPanel.Stop"));
+                                startButton.setForeground(ColorUtil.RED);
+                                Border line = new LineBorder(ColorUtil.RED, 2);
+                                Border margin = new EmptyBorder(5, 15, 5, 15);
+                                Border compound = new CompoundBorder(line, margin);
+                                startButton.setBorder(compound);
+                                pomodoroTime.setForeground(ColorUtil.RED);
+                            }
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));

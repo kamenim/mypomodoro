@@ -115,8 +115,7 @@ public class MoveToDoButton extends AbstractButton {
                                     public void run() {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
-                                        } catch (InterruptedException ex) {
-                                            // do nothing
+                                        } catch (InterruptedException ignored) {
                                         }
                                         // hide progress bar
                                         Main.gui.getProgressBar().getBar().setString(null);

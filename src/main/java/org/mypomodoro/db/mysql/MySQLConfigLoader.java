@@ -33,8 +33,7 @@ public class MySQLConfigLoader {
     public MySQLConfigLoader() {
         try {
             loadProperties();
-        } catch (IOException ex) {
-            // do nothing
+        } catch (IOException ignored) {
         }
     }
 
