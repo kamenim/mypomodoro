@@ -109,7 +109,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     // Border
     final JButton titledButton = new JButton();
     final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-    final ImageIcon icon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    // Unplanned
+    final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));    
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -125,10 +127,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     ((JComponent) c).setBorder(null);
@@ -145,7 +147,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Set border
         //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
-        titledButton.setIcon(icon);
+        titledButton.setIcon(refreshIcon);
         titledButton.setBorder(null);
         titledButton.setContentAreaFilled(false);
         titledButton.setOpaque(true);
@@ -154,17 +156,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!WaitCursor.isStarted()) {
-                    // Start wait cursor
-                    WaitCursor.startWaitCursor();
-                    titledButton.setEnabled(false);
-                    // Refresh from database
-                    ActivityList.getList().refresh();
-                    refresh();
-                    titledButton.setEnabled(true);
-                    // Stop wait cursor
-                    WaitCursor.stopWaitCursor();
-                }
+                titledButton.setEnabled(false);
+                // Refresh from database
+                refresh(true);
+                titledButton.setEnabled(true);
             }
         });
         setBorder(titledborder);
@@ -350,6 +345,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // set custom render for dates
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new CustomTableRenderer()); // title
         // type combo box
@@ -631,11 +627,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void removeRow(int rowIndex) {
-        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
+        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View           
+            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
+            table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row          
         }
     }
 
@@ -699,10 +696,17 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 
     @Override
     public void refresh() {
+        refresh(false);
+    }
+
+    public void refresh(boolean fromDatabase) {
         if (!WaitCursor.isStarted()) {
             // Start wait cursor
             WaitCursor.startWaitCursor();
             try {
+                if (fromDatabase) {
+                    ActivityList.getList().refresh();
+                }
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
                 initTable();
@@ -729,6 +733,28 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             Activity activity = ActivityList.getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
+            }
+            /* Strikethrough task with no estimation
+             if (activity != null && activity.getEstimatedPoms() == 0) {
+             // underline url
+             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+             renderer.setFont(getFont().deriveFont(map));
+             }*/
+            return renderer;
+        }
+    }
+
+    class UnplannedRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if ((Boolean) value) {
+                renderer.setIcon(unplannedIcon);
+                renderer.setText("");
+            } else {
+                renderer.setText("");
             }
             return renderer;
         }

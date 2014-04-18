@@ -19,10 +19,11 @@ package org.mypomodoro.gui.activities;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+import javax.swing.border.EmptyBorder;
 import org.mypomodoro.util.ColorUtil;
 
 /**
- *
+ * Combo box renderer fro most of the combo boxes
  *
  */
 public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
@@ -31,11 +32,12 @@ public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (isSelected) {
-            setBackground(ColorUtil.BLUE_ROW);
+            setBackground(ColorUtil.BLUE_ROW);            
         } else {
             setBackground(ColorUtil.WHITE);
         }
         setForeground(ColorUtil.BLACK);
+        setBorder(new EmptyBorder(0,3,0,0));
         return this;
     }
 }
