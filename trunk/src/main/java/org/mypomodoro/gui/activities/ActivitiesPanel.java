@@ -85,7 +85,7 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
-
+// TODO problem with drag and drop : the row that is moved is not highlighted
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
@@ -111,7 +111,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     // Unplanned
-    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));    
+    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    // Selected row
+    private int currentSelectedRow = 0;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -285,6 +287,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -293,6 +296,8 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
+                                    currentSelectedRow = table.getSelectedRow();
+                                    table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true)); // when sorting columns, focus on selected row
                                 }
                                 setPanelBorder();
                             }
@@ -432,7 +437,10 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             }
         } else {
             // select first activity
-            table.setRowSelectionInterval(0, 0);
+            int currentRow = table.convertRowIndexToView(currentSelectedRow);
+            table.setRowSelectionInterval(currentRow, currentRow);
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            //table.setRowSelectionInterval(0, 0);
         }
 
         // Refresh panel border
@@ -630,9 +638,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
         table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
-            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row          
+            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
+            table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            /*rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
+             table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
+             table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row*/
         }
     }
 
