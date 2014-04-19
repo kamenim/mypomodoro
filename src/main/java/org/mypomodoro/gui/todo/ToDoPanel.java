@@ -84,8 +84,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     // TODO panel border : display estimated done
-    // TODO problem with multiple selection and pomodoro starting : loosing current selected
-    // TODO problem with selection and pomodoro stopped : loosing current in-pomodoro task
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
@@ -164,10 +162,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                    titledButton.setEnabled(false);
-                    // Refresh from database
-                    refresh(true);
-                    titledButton.setEnabled(true);                    
+                titledButton.setEnabled(false);
+                // Refresh from database
+                refresh(true);
+                titledButton.setEnabled(true);
             }
         });
         setBorder(titledborder);
@@ -300,9 +298,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     if (!pomodoro.getTimer().isRunning()) {
                                         pomodoro.setCurrentToDoId(-1); // this will disable the start button
                                     }
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
                                 } else if (table.getSelectedRowCount() == 1) {
-                                    int row = table.getSelectedRow();
-                                    currentSelectedRow = row;
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
                                         if (index == 4) {
@@ -318,8 +315,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                     if (!pomodoro.inPomodoro()) {
-                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));                                        
+                                        int row = table.getSelectedRow();
+                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
                                     }
+                                    currentSelectedRow = table.getSelectedRow();
+                                    table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true)); // when sorting columns, focus on selected row 
                                 }
                                 refreshIconLabels();
                                 refreshRemaining();
@@ -424,14 +424,14 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             }
         } else {
             //if (pomodoro.inPomodoro()) {
-                int currentRow = table.convertRowIndexToView(currentSelectedRow);
-                table.setRowSelectionInterval(currentRow, currentRow);
-                table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            int currentRow = table.convertRowIndexToView(currentSelectedRow);
+            table.setRowSelectionInterval(currentRow, currentRow);
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
             /*} else {
-                // select first activity
-                table.setRowSelectionInterval(0, 0);
-                table.scrollRectToVisible(table.getCellRect(0, 0, true));
-            }*/
+             // select first activity
+             table.setRowSelectionInterval(0, 0);
+             table.scrollRectToVisible(table.getCellRect(0, 0, true));
+             }*/
         }
 
         // Refresh panel border
@@ -646,16 +646,14 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
-            int currentRow = table.convertRowIndexToView(currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow);
-            //pomodoro.setCurrentToDoRow(currentRow);
-            //if (pomodoro.inPomodoro()) {
-                table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-                table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
+            table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
             /*} else {
-                rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-                table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
-                table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row
-            }*/
+             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
+             table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
+             table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row
+             }*/
         }
     }
 
@@ -739,12 +737,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 new ActivityInformationTableListener(ToDoList.getList(),
                         table, commentPanel, ID_KEY));
     }
-    
+
     @Override
     public void refresh() {
         refresh(false);
     }
-    
+
     public void refresh(boolean fromDatabase) {
         if (!WaitCursor.isStarted()) {
             // Start wait cursor
@@ -791,8 +789,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
              }*/
             return renderer;
         }
-    }    
-    
+    }
+
     class UnplannedRenderer extends CustomTableRenderer {
 
         @Override
