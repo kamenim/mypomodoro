@@ -138,7 +138,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 newActivity.setActualPoms(actualPoms);
             }
-            final String title = Labels.getString("ToDoListPanel.Merge ToDos");            
+            final String title = Labels.getString("ToDoListPanel.Merge ToDos");
             if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
                 panel.addActivity(newActivity);
                 new Thread() { // This new thread is necessary for updating the progress bar
@@ -189,7 +189,7 @@ public class MergingPanel extends CreatePanel {
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }.start();
@@ -236,7 +236,7 @@ public class MergingPanel extends CreatePanel {
                             // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh
                             Main.gui.getActivityListPanel().refresh();
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }.start();

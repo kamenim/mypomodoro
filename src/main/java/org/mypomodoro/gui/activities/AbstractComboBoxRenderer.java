@@ -32,12 +32,12 @@ public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (isSelected) {
-            setBackground(ColorUtil.BLUE_ROW);            
+            setBackground(ColorUtil.BLUE_ROW);
         } else {
             setBackground(ColorUtil.WHITE);
         }
         setForeground(ColorUtil.BLACK);
-        setBorder(new EmptyBorder(0,3,0,0));
+        setBorder(new EmptyBorder(0, 3, 0, 0));
         return this;
     }
 }

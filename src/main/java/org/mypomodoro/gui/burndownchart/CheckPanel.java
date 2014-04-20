@@ -660,7 +660,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
+
     class UnplannedRenderer extends CustomTableRenderer {
 
         @Override
