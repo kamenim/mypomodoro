@@ -107,7 +107,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private int mouseHoverRow = 0;
     // Border
     private final JButton titledButton = new JButton();
-    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));    
+    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     // Unplanned
     private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
@@ -155,10 +155,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                    titledButton.setEnabled(false);
-                    // Refresh from database
-                    refresh(true);
-                    titledButton.setEnabled(true);                    
+                titledButton.setEnabled(false);
+                // Refresh from database
+                refresh(true);
+                titledButton.setEnabled(true);
             }
         });
         setBorder(titledborder);
@@ -675,7 +675,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     public void refresh() {
         refresh(false);
     }
-    
+
     public void refresh(boolean fromDatabase) {
         if (!WaitCursor.isStarted()) {
             // Start wait cursor
@@ -720,7 +720,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
+
     class UnplannedRenderer extends CustomTableRenderer {
 
         @Override

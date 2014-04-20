@@ -191,7 +191,7 @@ public class Pomodoro {
                 } else {
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
-                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                        
+                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     }
                     // Retrieve activity from the database in case it's changed (concurrent work : another use may have worked on it)                                       
                     if (getCurrentToDo().hasChanged()) {

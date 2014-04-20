@@ -110,6 +110,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
+    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
     // Border
     private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
@@ -436,7 +437,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Refresh panel border
         setPanelBorder();
-        
+
         // Refresh remaining panel
         setPanelRemaining();
     }
@@ -503,8 +504,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
-                new ImageIcon(Main.class
-                        .getResource("/images/myPomodoroIconNoTime250.png")),
+                pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING), gbc);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -888,18 +888,33 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             backgroundPanel.add(timerPanel, gbc);
         }
 
-        // create a label to paint the background image
-        JLabel backgroundImage = new JLabel(backgroundIcon);
+        // Set background image in a button to be able to add a action to it
+        final JButton pomodoroButton = new JButton();
+        pomodoroButton.setEnabled(true);
+        pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // tooltip doesn't work here
+        pomodoroButton.setIcon(pomodoroIcon);
+        pomodoroButton.setBorder(null);
+        pomodoroButton.setContentAreaFilled(false);
+        pomodoroButton.setOpaque(false);
+        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
+        pomodoroButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+            }
+        });
 
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
-        backgroundImage.setPreferredSize(new Dimension(250, 240));
-        backgroundImage.setMinimumSize(new Dimension(260, 250));
+        pomodoroButton.setPreferredSize(new Dimension(250, 240));
+        pomodoroButton.setMinimumSize(new Dimension(260, 250));
 
-        backgroundImage.setVerticalAlignment(verticalAlignment);
-        backgroundImage.setHorizontalAlignment(horizontalAlignment);
+        pomodoroButton.setVerticalAlignment(verticalAlignment);
+        pomodoroButton.setHorizontalAlignment(horizontalAlignment);
 
-        backgroundPanel.add(backgroundImage, gbc);
+        backgroundPanel.add(pomodoroButton, gbc);
 
         return backgroundPanel;
     }
@@ -991,8 +1006,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public void setPanelRemaining() {
         PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
     }
-    
+
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row; // no matter if a pomodoro is currently running
+    }
+
+    // TODO use this method as much as possible
+    public void showCurrentSelectedRow() {
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 }

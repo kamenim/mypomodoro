@@ -86,6 +86,7 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
 // TODO problem with drag and drop : the row that is moved is not highlighted
+
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
