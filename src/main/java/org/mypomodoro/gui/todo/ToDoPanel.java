@@ -241,7 +241,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                             detailsPanel.showInfo();
                             commentPanel.selectInfo(activity);
                             commentPanel.showInfo();
-                            refreshIconLabels(table.convertRowIndexToModel(rowIndex));
+                            setIconLabels(table.convertRowIndexToModel(rowIndex));
                         }
                         mouseHoverRow = rowIndex;
                     }
@@ -268,7 +268,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         commentPanel.selectInfo(activity);
                         commentPanel.showInfo();
                     }
-                    refreshIconLabels();
+                    setIconLabels();
                 }
                 mouseHoverRow = -1;
             }
@@ -321,13 +321,13 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     currentSelectedRow = table.getSelectedRow();
                                     table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true)); // when sorting columns, focus on selected row 
                                 }
-                                refreshIconLabels();
-                                refreshRemaining();
+                                setIconLabels();
+                                setPanelRemaining();
                                 setPanelBorder();
                             }
                         } else {
-                            refreshIconLabels();
-                            refreshRemaining();
+                            setIconLabels();
+                            setPanelRemaining();
                             setPanelBorder();
                         }
                     }
@@ -436,6 +436,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
         // Refresh panel border
         setPanelBorder();
+        
+        // Refresh remaining panel
+        setPanelRemaining();
     }
 
     @Override
@@ -609,7 +612,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         act.setName(data.toString());
                                         act.databaseUpdate();
                                         ToDoList.getList().update(act);
-                                        refreshIconLabels();
+                                        setIconLabels();
                                         detailsPanel.selectInfo(act);
                                         detailsPanel.showInfo();
                                     }
@@ -924,11 +927,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         return pomodoroTime;
     }
 
-    public void refreshIconLabels() {
-        refreshIconLabels(table.getSelectedRow());
+    public void setIconLabels() {
+        setIconLabels(table.getSelectedRow());
     }
 
-    public void refreshIconLabels(int row) {
+    public void setIconLabels(int row) {
         if (ToDoList.getListSize() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (pomodoro.inPomodoro()) {
@@ -985,7 +988,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         }
     }
 
-    public void refreshRemaining() {
+    public void setPanelRemaining() {
         PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
+    }
+    
+    public void setCurrentSelectedRow(int row) {
+        currentSelectedRow = row; // no matter if a pomodoro is currently running
     }
 }

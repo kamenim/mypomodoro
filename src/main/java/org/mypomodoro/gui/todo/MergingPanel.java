@@ -17,9 +17,11 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
+import static java.lang.Thread.sleep;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -28,6 +30,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel that allows the merging of ToDos
@@ -95,13 +98,12 @@ public class MergingPanel extends CreatePanel {
     @Override
     protected void validActivityAction(Activity newActivity) {
         newActivity.setIsUnplanned(true);
-        String title = Labels.getString("ToDoListPanel.Merge ToDos");
-        String message;
         StringBuilder comments = new StringBuilder();
         int estimatedPoms = 0;
         int overestimatedPoms = 0;
         int actualPoms = 0;
-        if (panel.getTable().getSelectedRowCount() > 0) {
+        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        if (selectedRowCount > 0) {
             int[] rows = panel.getTable().getSelectedRows();
             int increment = 0;
             for (int row : rows) {
@@ -136,21 +138,109 @@ public class MergingPanel extends CreatePanel {
                 }
                 newActivity.setActualPoms(actualPoms);
             }
-            if (mergingInputFormPanel.isDateToday()) {
-                message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+            final String title = Labels.getString("ToDoListPanel.Merge ToDos");            
+            if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
                 panel.addActivity(newActivity);
-                panel.reorderByPriority();
-                // refresh the whole table (dont bother to insert a new row)
-                panel.refresh();
-                panel.refreshRemaining();
-                clearForm();
+                new Thread() { // This new thread is necessary for updating the progress bar
+                    @Override
+                    public void run() {
+                        if (!WaitCursor.isStarted()) {
+                            // Start wait cursor
+                            WaitCursor.startWaitCursor();
+                            // Set progress bar
+                            Main.gui.getProgressBar().setVisible(true);
+                            Main.gui.getProgressBar().getBar().setValue(0);
+                            Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                            // Indicate reordoring by priority in progress bar
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+
+                                }
+                            });
+                            // TODO new activity doen't have the lowest priority (bottom of table)
+                            panel.reorderByPriority();
+                            // Close progress bar
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                sleep(1000); // wait one second before hiding the progress bar
+                                            } catch (InterruptedException ignored) {
+                                            }
+                                            // hide progress bar
+                                            Main.gui.getProgressBar().getBar().setString(null);
+                                            Main.gui.getProgressBar().setVisible(false);
+                                        }
+                                    }.start();
+                                }
+                            });
+                            // Select new created unplanned task at the bottom of the list before refresh
+                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
+                            // refresh the whole table
+                            panel.refresh();
+                            clearForm();
+                            String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
+                            // Stop wait cursor
+                            WaitCursor.stopWaitCursor();
+                            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                }.start();
             } else {
-                message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
                 validation.setVisible(false);
                 super.validActivityAction(newActivity); // validation and clear form
+                // Indicate reordoring by priority in progress bar
+                new Thread() { // This new thread is necessary for updating the progress bar
+                    @Override
+                    public void run() {
+                        if (!WaitCursor.isStarted()) {
+                            // Start wait cursor
+                            WaitCursor.startWaitCursor();
+                            // Set progress bar
+                            Main.gui.getProgressBar().setVisible(true);
+                            Main.gui.getProgressBar().getBar().setValue(0);
+                            Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                            panel.reorderByPriority();
+                            // Close progress bar
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                sleep(1000); // wait one second before hiding the progress bar
+                                            } catch (InterruptedException ignored) {
+                                            }
+                                            // hide progress bar
+                                            Main.gui.getProgressBar().getBar().setString(null);
+                                            Main.gui.getProgressBar().setVisible(false);
+                                        }
+                                    }.start();
+                                }
+                            });
+                            // refresh the whole table
+                            panel.refresh();
+                            String message = Labels.getString("ToDoListPanel.Unplanned task added to Activity List");
+                            // Stop wait cursor
+                            WaitCursor.stopWaitCursor();
+                            // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh
+                            Main.gui.getActivityListPanel().refresh();
+                            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                }.start();
             }
-            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

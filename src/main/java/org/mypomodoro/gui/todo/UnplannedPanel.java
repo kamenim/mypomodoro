@@ -135,22 +135,20 @@ public class UnplannedPanel extends CreatePanel {
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned activity");
         String message;
-        if (unplannedInputFormPanel.isDateToday()) {
-            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-            newActivity.setPriority(ToDoList.getListSize() + 1);
+        if (unplannedInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
             panel.addActivity(newActivity);
-            // get current selected row
-            int row = panel.getTable().convertRowIndexToModel(panel.getTable().getSelectedRow());
-            // refresh the whole table (dont bother to insert a new row)
+            // Select new created unplanned task at the bottom of the list before refresh
+            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
+            // refresh the whole table
             panel.refresh();
-            // reselect previously selected row
-            panel.getTable().setRowSelectionInterval(row, row);
-            panel.refreshRemaining();
             clearForm();
+            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");            
         } else {
-            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to Activity List");
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
+            // refresh the whole table
+            panel.refresh();
+            message = Labels.getString("ToDoListPanel.Unplanned task added to Activity List");
         }
         JOptionPane.showConfirmDialog(Main.gui, message, title,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);

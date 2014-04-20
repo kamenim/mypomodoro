@@ -104,7 +104,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
-        panel.refreshIconLabels();
+        panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers      
     }
 
@@ -122,7 +122,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
-        panel.refreshIconLabels();
+        panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers
     }
 
@@ -185,8 +185,8 @@ public class Pomodoro {
                     // update details panel
                     detailsPanel.selectInfo(getCurrentToDo());
                     detailsPanel.showInfo();
-                    panel.refreshIconLabels();
-                    panel.refreshRemaining();
+                    panel.setIconLabels();
+                    panel.setPanelRemaining();
                     panel.getTable().repaint(); // trigger row renderers
                 } else {
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
@@ -223,7 +223,7 @@ public class Pomodoro {
                                 MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                             }
                             goInPomodoro();
-                            panel.refreshIconLabels();
+                            panel.setIconLabels();
                             panel.getTable().repaint(); // trigger row renderers
                         }
                     }
