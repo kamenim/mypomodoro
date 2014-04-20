@@ -114,8 +114,8 @@ public class OverestimationPanel extends JPanel {
         // update details panel
         detailsPanel.selectInfo(selectedToDo);
         detailsPanel.showInfo();
-        panel.refreshRemaining();
-        panel.refreshIconLabels();
+        panel.setPanelRemaining();
+        panel.setIconLabels();
         overestimationInputFormPanel.reset();
         String title = Labels.getString("ToDoListPanel.Overestimate ToDo");
         String message = Labels.getString(
