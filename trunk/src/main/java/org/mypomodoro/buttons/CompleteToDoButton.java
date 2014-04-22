@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -93,8 +93,8 @@ public class CompleteToDoButton extends AbstractButton {
                                     SwingUtilities.invokeLater(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
                                             Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-
                                         }
                                     });
                                     // reorder                            

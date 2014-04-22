@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
@@ -100,7 +100,7 @@ public class MoveButton extends AbstractButton {
                                     String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                     String message = Labels.getString(
                                             "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                            org.mypomodoro.gui.PreferencesPanel.preferences.getMaxNbPomPerDay());
+                                            org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getMaxNbPomPerDay());
                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                             title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                                     if (reply == JOptionPane.YES_OPTION) {

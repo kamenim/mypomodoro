@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.util;
 
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 /**
  * Time converter utility class

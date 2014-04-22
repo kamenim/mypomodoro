@@ -27,7 +27,7 @@ import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ProgressBar;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
@@ -106,10 +106,10 @@ public class Main {
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)
-                UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); //colour of the background
-                UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); //colour of progress bar
-                UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); //colour of percentage counter on background
-                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); //colour of precentage counter on progress bar
+                UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); // colour of the background // this does not work
+                UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); // colour of progress bar
+                UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); // colour of percentage counter on background
+                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); // colour of precentage counter on progress bar
                 // init the gui AFTER setting the UIManager and font
                 preferencesPanel = new PreferencesPanel();
                 createPanel = new CreatePanel();
@@ -133,7 +133,7 @@ public class Main {
                 gui.pack();
                 gui.setLocationRelativeTo(null); // center the component onscreen
                 gui.setVisible(true);
-                if (org.mypomodoro.gui.PreferencesPanel.preferences.getAlwaysOnTop()) {
+                if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
                 gui.addComponentListener(new java.awt.event.ComponentAdapter() {

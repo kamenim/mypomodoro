@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 public class PreferencesDAO {
 

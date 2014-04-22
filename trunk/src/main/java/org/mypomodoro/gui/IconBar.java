@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;

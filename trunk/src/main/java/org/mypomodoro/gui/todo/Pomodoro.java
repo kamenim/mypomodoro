@@ -41,7 +41,7 @@ import javax.swing.Timer;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;

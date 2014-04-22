@@ -63,7 +63,7 @@ import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -727,8 +727,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
-                renderer.setIcon(unplannedIcon);
-                renderer.setText("");
+                //renderer.setIcon(unplannedIcon);
+                renderer.setText("U");
             } else {
                 renderer.setText("");
             }

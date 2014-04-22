@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;

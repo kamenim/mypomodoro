@@ -34,7 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
