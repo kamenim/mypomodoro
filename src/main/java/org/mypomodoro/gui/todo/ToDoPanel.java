@@ -64,7 +64,7 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.AbstractActivitiesPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -84,6 +84,7 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     // TODO panel border : display estimated done
+    // TODO problem drag and drop : row not selected
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
@@ -728,6 +729,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             activitiesTableModel.setValueAt(activity.getPriority(), table.convertRowIndexToModel(row), 0); // priority column index = 0            
         }
     }
+    
+    public boolean reorderByPriorityTest() {
+        ToDoList.getList().reorderByPriority();
+        for (int row = 0; row < table.getRowCount(); row++) {
+            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = getActivityById(id);
+            activitiesTableModel.setValueAt(activity.getPriority(), table.convertRowIndexToModel(row), 0); // priority column index = 0            
+        }
+        return true;
+    }
 
     private void showSelectedItemDetails(DetailsPanel detailsPanel) {
         table.getSelectionModel().addListSelectionListener(
@@ -800,8 +811,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
-                renderer.setIcon(unplannedIcon);
-                renderer.setText("");
+                //renderer.setIcon(unplannedIcon);
+                renderer.setText("U");
             } else {
                 renderer.setText("");
             }
@@ -1008,7 +1019,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     }
 
     public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row; // no matter if a pomodoro is currently running
+        currentSelectedRow = row;
     }
 
     // TODO use this method as much as possible

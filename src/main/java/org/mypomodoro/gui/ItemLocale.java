@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;

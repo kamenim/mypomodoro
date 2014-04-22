@@ -30,7 +30,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;

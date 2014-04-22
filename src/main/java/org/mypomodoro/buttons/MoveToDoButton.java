@@ -98,8 +98,8 @@ public class MoveToDoButton extends AbstractButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
                                 Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-
                             }
                         });
                         // reorder                            

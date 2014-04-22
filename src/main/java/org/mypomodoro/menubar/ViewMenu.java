@@ -26,7 +26,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MainPanel;

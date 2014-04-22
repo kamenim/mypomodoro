@@ -26,7 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;

@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import org.mypomodoro.gui.ActivityInformation;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;

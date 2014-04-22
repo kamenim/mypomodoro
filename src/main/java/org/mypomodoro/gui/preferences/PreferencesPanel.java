@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui;
+package org.mypomodoro.gui.preferences;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -35,6 +35,7 @@ import javax.swing.KeyStroke;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.RestartButton;
+import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.model.Preferences;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;

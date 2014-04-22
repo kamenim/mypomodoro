@@ -36,7 +36,7 @@ import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.SaveButton;
-import org.mypomodoro.gui.PreferencesPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
