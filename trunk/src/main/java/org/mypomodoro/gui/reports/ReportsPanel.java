@@ -423,7 +423,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {            
+        } else {
             // select first activity
             int currentRow = table.convertRowIndexToView(currentSelectedRow);
             table.setRowSelectionInterval(currentRow, currentRow);
@@ -616,7 +616,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getRowCount() > 0) {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));           
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
     }
 
@@ -816,7 +816,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
     }
-    
+
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }

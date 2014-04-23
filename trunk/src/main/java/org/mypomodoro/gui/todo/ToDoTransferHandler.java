@@ -69,6 +69,7 @@ public class ToDoTransferHandler extends TransferHandler {
                          sorter.setSortKeys(list);
                          sorter.sort(); // sort the view
                          */
+                        panel.setCurrentSelectedRow(0);
                         panel.refresh();
                     }
                 } else if (isContinuousSelection()) {

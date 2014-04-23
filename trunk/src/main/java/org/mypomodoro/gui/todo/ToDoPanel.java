@@ -83,7 +83,6 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
-    // TODO problem drag and drop : row not selected
 
     private static final long serialVersionUID = 20110814L;
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
@@ -289,8 +288,10 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                     // diactivate/gray out unused tabs
                                     controlPane.setEnabledAt(1, false); // comment
                                     controlPane.setEnabledAt(2, false); // overestimation
-                                    controlPane.setEnabledAt(3, false); // unplanned                            
-                                    controlPane.setEnabledAt(4, true); // merging
+                                    controlPane.setEnabledAt(3, false); // unplanned
+                                    if ((pomodoro.inPomodoro() && table.getSelectedRowCount() > 2) || !pomodoro.inPomodoro()) {
+                                        controlPane.setEnabledAt(4, true); // merging
+                                    }
                                     if (controlPane.getSelectedIndex() == 1
                                     || controlPane.getSelectedIndex() == 2
                                     || controlPane.getSelectedIndex() == 3) {
@@ -424,15 +425,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 controlPane.setEnabledAt(index, false);
             }
         } else {
-            //if (pomodoro.inPomodoro()) {
             int currentRow = table.convertRowIndexToView(currentSelectedRow);
             table.setRowSelectionInterval(currentRow, currentRow);
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-            /*} else {
-             // select first activity
-             table.setRowSelectionInterval(0, 0);
-             table.scrollRectToVisible(table.getCellRect(0, 0, true));
-             }*/
         }
 
         // Refresh panel border

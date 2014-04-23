@@ -791,7 +791,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             }
         }
     }
-    
+
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
