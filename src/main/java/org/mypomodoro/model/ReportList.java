@@ -53,10 +53,15 @@ public final class ReportList extends AbstractActivities {
         add(act, new Date());
     }
 
-    public void add(Activity act, Date date) {
+    public void add(Activity act, Date dateCompleted) {
+        add(act, act.getDate(), dateCompleted);
+    }
+    
+    public void add(Activity act, Date date, Date dateCompleted) {
         act.setPriority(-1);
         act.setIsCompleted(true);
-        act.setDateCompleted(date);
+        act.setDate(date);
+        act.setDateCompleted(dateCompleted);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {

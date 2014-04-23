@@ -611,6 +611,11 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
     public void addActivity(Activity activity) {
         // no use
     }
+    
+    @Override
+    public void addActivity(Activity activity, Date date, Date dateCompleted) {
+        // no use
+    }
 
     private void showSelectedItemDetails(DetailsPanel informationPanel) {
         table.getSelectionModel().addListSelectionListener(

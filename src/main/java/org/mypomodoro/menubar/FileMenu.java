@@ -30,7 +30,6 @@ import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.CreatePanel;

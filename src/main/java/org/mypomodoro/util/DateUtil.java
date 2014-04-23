@@ -49,11 +49,8 @@ public class DateUtil {
         return getFormatedDate(date, pattern);
     }
 
-    // TODO check time zone issue with export dates
     public static String getFormatedDate(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
-        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }
 
@@ -63,9 +60,7 @@ public class DateUtil {
     }
 
     public static String getFormatedTime(Date date, String pattern) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
-        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);        
         return sdf.format(date);
     }
 
@@ -76,15 +71,12 @@ public class DateUtil {
     /*
      * Converts a string into a date
      * 
-     * @param formatedDateTime string with date and time (eg "13/05/2000 12:46")
-     * @param datePattern pattern of the date (eg dd/MM/yyy)
+     * @param formatedDate string with date and time (eg "13/05/2000")
+     * @param pattern pattern of the date (eg dd/MM/yyy)
      */
-    public static Date getDate(String formatedDateTime, String datePattern) throws ParseException {
-        String timePattern = locale.getLanguage().equals("en") ? EN_timePattern : "HH:mm";
-        SimpleDateFormat sdf = new SimpleDateFormat(datePattern + " " + timePattern);
-        //sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        //sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return sdf.parse(formatedDateTime);
+    public static Date getDate(String formatedDate, String pattern) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        return sdf.parse(formatedDate);
     }
 
     /*

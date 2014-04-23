@@ -49,13 +49,18 @@ public final class ActivityList extends AbstractActivities {
 
     @Override
     public void add(Activity act) {
-        add(act, act.getDate()); // date cretion / schedule
+        add(act, act.getDate()); // date creation/schedule
     }
 
     public void add(Activity act, Date date) {
+        add(act, date, act.getDateCompleted()); // date creation/schedule, date reopen
+    }
+    
+    public void add(Activity act, Date date, Date dateReopen) {
         act.setPriority(-1);
         act.setIsCompleted(false);
         act.setDate(date);
+        act.setDateCompleted(dateReopen);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {

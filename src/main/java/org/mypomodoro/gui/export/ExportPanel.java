@@ -76,10 +76,8 @@ public class ExportPanel extends JPanel {
     private final AbstractActivitiesPanel panel;
     private JButton cancelButton;
     private final String[] headerEntries = new String[]{"U",
-        Labels.getString("Common.Date"),
-        Labels.getString("ReportListPanel.Time"),
+        Labels.getString(PreferencesPanel.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
         Labels.getString("Common.Date completed"),
-        Labels.getString("ReportListPanel.Time"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Estimated"),
         Labels.getString("Common.Overestimated"),

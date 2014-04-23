@@ -652,9 +652,7 @@ public class ExportInputForm extends JPanel {
 
         private final String[] headerEntries = new String[]{"U",
             Labels.getString("Common.Date"),
-            Labels.getString("ReportListPanel.Time"),
             Labels.getString("Common.Date completed"),
-            Labels.getString("ReportListPanel.Time"),
             Labels.getString("Common.Title"),
             Labels.getString("Common.Estimated"),
             Labels.getString("Common.Overestimated"),
@@ -700,54 +698,50 @@ public class ExportInputForm extends JPanel {
         }
 
         public static String[] toArray(Activity activity, String datePattern) {
-            String[] attributes = new String[21];
+            String[] attributes = new String[19];
             attributes[0] = activity.isUnplanned() ? "1" : "0";
             attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
-            attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
-            attributes[3] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
-            attributes[4] = DateUtil.getFormatedTime(activity.getDateCompleted()); // time
-            attributes[5] = activity.getName();
-            attributes[6] = activity.getEstimatedPoms() + "";
-            attributes[7] = activity.getOverestimatedPoms() + "";
-            attributes[8] = activity.getActualPoms() + "";
-            attributes[9] = (activity.getActualPoms() - activity.getEstimatedPoms()) + "";
-            attributes[10] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : "";
-            attributes[11] = activity.getNumInternalInterruptions() + "";
-            attributes[12] = activity.getNumInterruptions() + "";
-            attributes[13] = activity.getType();
-            attributes[14] = activity.getAuthor();
-            attributes[15] = activity.getPlace();
-            attributes[16] = activity.getDescription();
-            attributes[17] = activity.getNotes();
-            attributes[18] = activity.getStoryPoints() + "";
-            attributes[19] = activity.getIteration() + "";
-            attributes[20] = activity.getPriority() + "";
+            attributes[2] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
+            attributes[3] = activity.getName();
+            attributes[4] = activity.getEstimatedPoms() + "";
+            attributes[5] = activity.getOverestimatedPoms() + "";
+            attributes[6] = activity.getActualPoms() + "";
+            attributes[7] = (activity.getActualPoms() - activity.getEstimatedPoms()) + "";
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : "";
+            attributes[9] = activity.getNumInternalInterruptions() + "";
+            attributes[10] = activity.getNumInterruptions() + "";
+            attributes[11] = activity.getType();
+            attributes[12] = activity.getAuthor();
+            attributes[13] = activity.getPlace();
+            attributes[14] = activity.getDescription();
+            attributes[15] = activity.getNotes();
+            attributes[16] = activity.getStoryPoints() + "";
+            attributes[17] = activity.getIteration() + "";
+            attributes[18] = activity.getPriority() + "";
             return attributes;
         }
 
         public static Object[] toRowArray(Activity activity) {
-            Object[] attributes = new Object[21];
+            Object[] attributes = new Object[19];
             attributes[0] = activity.isUnplanned();
             attributes[1] = activity.getDate();
-            attributes[2] = DateUtil.getFormatedTime(activity.getDate()); // time
-            attributes[3] = activity.getDateCompleted();
-            attributes[4] = DateUtil.getFormatedTime(activity.getDateCompleted()); // time
-            attributes[5] = activity.getName();
-            attributes[6] = activity.getEstimatedPoms();
-            attributes[7] = activity.getOverestimatedPoms();
-            attributes[8] = activity.getActualPoms();
-            attributes[9] = activity.getActualPoms() - activity.getEstimatedPoms();
-            attributes[10] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) : "";
-            attributes[11] = activity.getNumInternalInterruptions();
-            attributes[12] = activity.getNumInterruptions();
-            attributes[13] = activity.getType();
-            attributes[14] = activity.getAuthor();
-            attributes[15] = activity.getPlace();
-            attributes[16] = activity.getDescription();
-            attributes[17] = activity.getNotes();
-            attributes[18] = activity.getStoryPoints();
-            attributes[19] = activity.getIteration();
-            attributes[20] = activity.getPriority();
+            attributes[2] = activity.getDateCompleted();
+            attributes[3] = activity.getName();
+            attributes[4] = activity.getEstimatedPoms();
+            attributes[5] = activity.getOverestimatedPoms();
+            attributes[6] = activity.getActualPoms();
+            attributes[7] = activity.getActualPoms() - activity.getEstimatedPoms();
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) : "";
+            attributes[9] = activity.getNumInternalInterruptions();
+            attributes[10] = activity.getNumInterruptions();
+            attributes[11] = activity.getType();
+            attributes[12] = activity.getAuthor();
+            attributes[13] = activity.getPlace();
+            attributes[14] = activity.getDescription();
+            attributes[15] = activity.getNotes();
+            attributes[16] = activity.getStoryPoints();
+            attributes[17] = activity.getIteration();
+            attributes[18] = activity.getPriority();
             return attributes;
         }
     }

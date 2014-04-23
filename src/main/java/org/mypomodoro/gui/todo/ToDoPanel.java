@@ -29,6 +29,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -713,6 +714,11 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public void addActivity(Activity activity) {
         ToDoList.getList().add(activity);
     }
+    
+    @Override
+    public void addActivity(Activity activity, Date date, Date dateCompleted) {
+        ToDoList.getList().add(activity, date, dateCompleted);
+    }
 
     public void reorderByPriority() {
         ToDoList.getList().reorderByPriority();
@@ -886,7 +892,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);
         pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // tooltip doesn't work here
-        pomodoroButton.setIcon(pomodoroIcon);
+        pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
         pomodoroButton.setContentAreaFilled(false);
         pomodoroButton.setOpaque(false);

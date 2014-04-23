@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.util.Date;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 
@@ -46,4 +47,6 @@ public interface AbstractActivitiesPanel {
     void completeAll();
 
     void addActivity(Activity activity);
+    
+    void addActivity(Activity activity, Date date, Date dateCompleted);
 }
