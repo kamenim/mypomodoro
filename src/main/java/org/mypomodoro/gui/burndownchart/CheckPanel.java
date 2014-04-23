@@ -568,7 +568,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
         if (table.getRowCount() > 0) {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));           
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
     }
 
@@ -739,7 +739,7 @@ public class CheckPanel extends JPanel implements AbstractActivitiesPanel {
             return renderer;
         }
     }
-    
+
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }

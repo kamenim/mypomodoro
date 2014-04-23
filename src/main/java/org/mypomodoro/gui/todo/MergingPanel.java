@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import static java.lang.Thread.sleep;
 import java.util.Date;
@@ -116,10 +115,13 @@ public class MergingPanel extends CreatePanel {
                     continue;
                 }
                 // aggregate comments
+                comments.append(selectedToDo.getName());
                 if (selectedToDo.getNotes() != null && selectedToDo.getNotes().length() > 0) {
-                    comments.append(selectedToDo.getName());
                     comments.append(":\n");
                     comments.append(selectedToDo.getNotes());
+                    comments.append("\n\n");
+                } else {
+                    comments.append(": -");
                     comments.append("\n\n");
                 }
                 estimatedPoms += selectedToDo.getEstimatedPoms();
@@ -157,7 +159,7 @@ public class MergingPanel extends CreatePanel {
                                 @Override
                                 public void run() {
                                     Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));                                                                        
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                 }
                             });
                             // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
@@ -165,7 +167,7 @@ public class MergingPanel extends CreatePanel {
                             // Close progress bar
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
-                                public void run() {                                    
+                                public void run() {
                                     Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
                                     new Thread() {
                                         @Override
@@ -180,10 +182,10 @@ public class MergingPanel extends CreatePanel {
                                         }
                                     }.start();
                                 }
-                            });                            
+                            });
                             panel.addActivity(newActivity);
                             // Select new created unplanned task at the bottom of the list before refresh
-                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());                            
+                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
                             // After cursor stops, refresh ToDo List and clear the form
@@ -192,7 +194,7 @@ public class MergingPanel extends CreatePanel {
                             String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                        }                        
+                        }
                     }
                 }.start();
             } else {
@@ -213,7 +215,7 @@ public class MergingPanel extends CreatePanel {
                                 @Override
                                 public void run() {
                                     Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));                                                                        
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                 }
                             });
                             panel.reorderByPriority();
