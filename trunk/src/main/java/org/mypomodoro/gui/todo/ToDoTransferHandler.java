@@ -17,22 +17,20 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.datatransfer.Transferable;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
-import javax.swing.DefaultRowSorter;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.RowSorter.SortKey;
-import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
-import static org.mypomodoro.gui.todo.ToDoPanel.ID_KEY;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Transfer Handler
@@ -53,7 +51,7 @@ public class ToDoTransferHandler extends TransferHandler {
 
     @Override
     public boolean importData(TransferHandler.TransferSupport info) {
-        JTable.DropLocation dropLocation = (JTable.DropLocation) info.getDropLocation();
+        final JTable.DropLocation dropLocation = (JTable.DropLocation) info.getDropLocation();
         if (dropLocation.isInsertRow()) {
             if (info.getTransferable().isDataFlavorSupported(ToDoRowTransferable.DATA_ROW)) {
                 if (!isPriorityColumnSorted()) {
@@ -62,36 +60,80 @@ public class ToDoTransferHandler extends TransferHandler {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                     if (reply == JOptionPane.OK_OPTION) {
-                        // sort programatically the priority column
-                        panel.getTable().setAutoCreateRowSorter(true);
-                        DefaultRowSorter sorter = ((DefaultRowSorter) panel.getTable().getRowSorter());
-                        ArrayList<SortKey> list = new ArrayList<SortKey>();
-                        list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
-                        sorter.setSortKeys(list);
-                        sorter.sort(); // sort the view
+                        /*
+                         // sort programatically the priority column
+                         panel.getTable().setAutoCreateRowSorter(true);
+                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getTable().getRowSorter());
+                         ArrayList<SortKey> list = new ArrayList<SortKey>();
+                         list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
+                         sorter.setSortKeys(list);
+                         sorter.sort(); // sort the view
+                         */
+                        panel.refresh();
                     }
                 } else if (isContinuousSelection()) {
-                    try {
-                        int[] fromRows = panel.getTable().getSelectedRows();
-                        int toRow = dropLocation.getRow();
-                        toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
-                        ((DefaultTableModel) panel.getTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event
-                        // TODO selection interval wrong after manual sorting
-                        panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
-                        for (int row = 0; row < panel.getTable().getModel().getRowCount(); row++) {
-                            Integer id = (Integer) panel.getTable().getModel().getValueAt(row, panel.getIdKey());
-                            Activity activity = panel.getActivityById(id);
-                            panel.getTable().getModel().setValueAt(row + 1, row, 0); // set the value in the model
-                            if (activity.getPriority() != row + 1) { // optimization
-                                activity.setPriority(row + 1);
-                                activity.databaseUpdate();
-                                ToDoList.getList().update(activity);
+                    final int selectedRowCount = panel.getTable().getSelectedRowCount();
+                    new Thread() { // This new thread is necessary for updating the progress bar
+                        @Override
+                        public void run() {
+                            if (!WaitCursor.isStarted()) {
+                                // Start wait cursor
+                                WaitCursor.startWaitCursor();
+                                // Set progress bar
+                                Main.gui.getProgressBar().setVisible(true);
+                                Main.gui.getProgressBar().getBar().setValue(0);
+                                Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                                int[] fromRows = panel.getTable().getSelectedRows();
+                                int toRow = dropLocation.getRow();
+                                toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
+                                ((DefaultTableModel) panel.getTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
+                                for (int row = 0; row < panel.getTable().getRowCount(); row++) {
+                                    // Using convertRowIndexToModel is not important here as we force the user to sort the list by priority (view = model)
+                                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                    Activity activity = panel.getActivityById(id);
+                                    int priority = row + 1;
+                                    if (activity.getPriority() != priority) {
+                                        activity.setPriority(priority);
+                                        activity.databaseUpdate();
+                                        ToDoList.getList().update(activity);
+                                    }
+                                }
+                                // Indicate reordoring by priority in progress bar
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
+                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                    }
+                                });
+                                panel.reorderByPriority();
+                                // Close progress bar
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    sleep(1000); // wait one second before hiding the progress bar
+                                                } catch (InterruptedException ignored) {
+                                                }
+                                                // hide progress bar
+                                                Main.gui.getProgressBar().getBar().setString(null);
+                                                Main.gui.getProgressBar().setVisible(false);
+                                            }
+                                        }.start();
+                                    }
+                                });
+                                // Stop wait cursor
+                                WaitCursor.stopWaitCursor();
+                                // After cursor stops, reset interval of selected row(s)                                
+                                panel.getTable().getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
                             }
                         }
-                        return true;
-                    } catch (ArrayIndexOutOfBoundsException ignored) {
-                        // This should never happen as the TableChanged method in ToDoPanel already handles the problem of column been equals to -1 while moving
-                    }
+                    }.start();
+                    return true;
                 }
             }
         }
@@ -126,6 +168,11 @@ public class ToDoTransferHandler extends TransferHandler {
         return sorted;
     }
 
+    /**
+     * Checks gaps in the selection
+     *
+     * @return true if selection is continuous
+     */
     private boolean isContinuousSelection() {
         boolean continuous = true;
         int[] rows = panel.getTable().getSelectedRows();

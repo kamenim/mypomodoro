@@ -297,7 +297,7 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                     currentSelectedRow = table.getSelectedRow();
-                                    table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true)); // when sorting columns, focus on selected row
+                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row
                                 }
                                 setPanelBorder();
                             }
@@ -440,7 +440,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             int currentRow = table.convertRowIndexToView(currentSelectedRow);
             table.setRowSelectionInterval(currentRow, currentRow);
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-            //table.setRowSelectionInterval(0, 0);
         }
 
         // Refresh panel border
@@ -641,9 +640,6 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-            /*rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-             table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
-             table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row*/
         }
     }
 
@@ -794,5 +790,9 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    }
+    
+    public void showCurrentSelectedRow() {
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 }

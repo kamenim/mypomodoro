@@ -83,7 +83,6 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
-    // TODO panel border : display estimated done
     // TODO problem drag and drop : row not selected
 
     private static final long serialVersionUID = 20110814L;
@@ -321,7 +320,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                                         pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
                                     }
                                     currentSelectedRow = table.getSelectedRow();
-                                    table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true)); // when sorting columns, focus on selected row 
+                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row 
                                 }
                                 setIconLabels();
                                 setPanelRemaining();
@@ -451,16 +450,18 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 int[] rows = table.getSelectedRows();
                 int estimated = 0;
                 int overestimated = 0;
+                int real = 0;
                 float storypoints = 0;
                 for (int row : rows) {
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
                     Activity selectedActivity = getActivityById(id);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
+                    real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
                 titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + estimated;
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
@@ -470,7 +471,9 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 }
             } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + ToDoList.getList().getNbEstimatedPom();
+                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
+                titleActivitiesList += ToDoList.getList().getNbRealPom();
+                titleActivitiesList += " / " + ToDoList.getList().getNbEstimatedPom();
                 if (ToDoList.getList().getNbOverestimatedPom() > 0) {
                     titleActivitiesList += " + " + ToDoList.getList().getNbOverestimatedPom();
                 }
@@ -653,11 +656,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-            /*} else {
-             rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-             table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
-             table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row
-             }*/
         }
     }
 
@@ -728,16 +726,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
             Activity activity = getActivityById(id);
             activitiesTableModel.setValueAt(activity.getPriority(), table.convertRowIndexToModel(row), 0); // priority column index = 0            
         }
-    }
-    
-    public boolean reorderByPriorityTest() {
-        ToDoList.getList().reorderByPriority();
-        for (int row = 0; row < table.getRowCount(); row++) {
-            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = getActivityById(id);
-            activitiesTableModel.setValueAt(activity.getPriority(), table.convertRowIndexToModel(row), 0); // priority column index = 0            
-        }
-        return true;
     }
 
     private void showSelectedItemDetails(DetailsPanel detailsPanel) {
@@ -912,8 +900,16 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+                if (pomodoro.inPomodoro()) {
+                    for (int row = 0; row < table.getRowCount(); row++) {
+                        Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                        if (pomodoro.getCurrentToDo().getId() == id) {
+                            currentSelectedRow = row;
+                        }
+                    }
+                    table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
+                }
+                showCurrentSelectedRow();
             }
         });
 
@@ -1022,7 +1018,6 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
         currentSelectedRow = row;
     }
 
-    // TODO use this method as much as possible
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }

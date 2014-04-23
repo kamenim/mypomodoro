@@ -24,6 +24,11 @@ import java.util.Iterator;
 public abstract class AbstractActivities implements Iterable<Activity> {
 
     protected ArrayList<Activity> activities = new ArrayList<Activity>();
+    
+    /*@Override
+    public ArrayList<Activity> clone() {
+        return new ArrayList<Activity>(activities); 
+    }*/
 
     public void add(Activity activity) {
         activities.add(activity);

@@ -514,7 +514,6 @@ public class Activity {
     }
 
     public boolean equals(Activity a) {
-        System.err.println("test");
         return a.getName().equalsIgnoreCase(getName())
                 && a.getType().equalsIgnoreCase(getType())
                 && a.getDescription().equalsIgnoreCase(getDescription())

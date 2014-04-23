@@ -26,9 +26,19 @@ public class TimeConverter {
 
     // Convertion minutes to duration
     public static String convertToTime(int min) {
+        String time;
+        int days = min / (60 * 24);
+        if (days >= 1) {
+            min = min - days * 60 * 24;
+        }
         int hours = min / 60;
         int minutes = min % 60;
-        return String.format("%02d:%02d", hours, minutes);
+        if (days >= 1) {
+            time = String.format("%d " + Labels.getString("Common.Days"), days);
+        } else {
+            time = String.format("%02d:%02d", hours, minutes);
+        }
+        return time;
     }
 
     // only pomodoros length
@@ -46,7 +56,7 @@ public class TimeConverter {
     }
 
     public static String getLength(int pomodoros) {
-        String length = "";
+        String length;
         if (PreferencesPanel.preferences.getPlainHours()) {
             length = convertToTime(calculatePlainHours(pomodoros));
         } else {

@@ -102,7 +102,7 @@ public class MoveToDoButton extends AbstractButton {
                                 Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
-                        // reorder                            
+                        // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
                         panel.reorderByPriority();
                         // Close progress bar
                         final int progressCount = increment;

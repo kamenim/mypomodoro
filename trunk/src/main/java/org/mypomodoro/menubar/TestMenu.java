@@ -158,7 +158,6 @@ public class TestMenu extends JMenu {
                                 public void run() {
                                     Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
                                     Main.progressBar.getBar().setString(progressText.toString()); // task
-                                    //Main.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + nbTask); // task
                                 }
                             });
                         }
