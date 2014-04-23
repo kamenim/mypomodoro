@@ -682,7 +682,12 @@ public class ActivitiesPanel extends JPanel implements AbstractActivitiesPanel {
     public void addActivity(Activity activity) {
         ActivityList.getList().add(activity);
     }
-
+    
+    @Override
+    public void addActivity(Activity activity, Date date, Date dateCompleted) {
+        ActivityList.getList().add(activity, date, dateCompleted);
+    }
+    
     private void showSelectedItemDetails(DetailsPanel detailsPane) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ActivityList.getList(),

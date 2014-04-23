@@ -21,7 +21,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.mypomodoro.Main;
 import org.mypomodoro.util.ColorUtil;
 
 public class SplashScreen extends JPanel {

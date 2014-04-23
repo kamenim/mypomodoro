@@ -113,6 +113,7 @@ public class ImportPanel extends JPanel {
                     if (!WaitCursor.isStarted()) {
                         // Start wait cursor
                         WaitCursor.startWaitCursor();
+                        boolean error = false;
                         try {
                             if (importInputForm.isFileCSVFormat()) {
                                 importCSV(fileName);
@@ -121,7 +122,6 @@ public class ImportPanel extends JPanel {
                             } else if (importInputForm.isFileExcelOpenXMLFormat()) {
                                 importExcelx(fileName);
                             }
-                            panel.refresh();
                             /*String title = Labels.getString("ReportListPanel.Import");
                              String message = Labels.getString(
                              "ReportListPanel.Data imported",
@@ -129,6 +129,7 @@ public class ImportPanel extends JPanel {
                              JOptionPane.showConfirmDialog(Main.gui, message, title,
                              JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
                         } catch (Exception ex) {
+                            error = true;
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Import failed. See error log.");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -137,6 +138,10 @@ public class ImportPanel extends JPanel {
                         } finally {
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
+                            // refresh panel
+                            if (!error) {
+                                panel.refresh();
+                            }
                         }
                     }
                 }
@@ -345,15 +350,14 @@ public class ImportPanel extends JPanel {
     }
 
     private void insertData(String[] line) throws Exception {
-        Activity newActivity = new Activity(line[15], line[14], line[5], line[16], line[13], Integer.parseInt(line[6]),
-                org.mypomodoro.util.DateUtil.getDate(line[1] + " " + line[2], importInputForm.getDatePattern()), Integer.parseInt(line[7]), Integer.parseInt(line[8]),
-                Integer.parseInt(line[11]), Integer.parseInt(line[12]), line[17],
-                !line[0].equals("0"), panel instanceof ReportsPanel);
-        newActivity.setDateCompleted(org.mypomodoro.util.DateUtil.getDate(line[3] + " " + line[4], importInputForm.getDatePattern()));
+        Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
+                org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
+                Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
+                !line[0].equals("0"), panel instanceof ReportsPanel);        
         try {
-            newActivity.setStoryPoints(Float.parseFloat(line[18]));
-            newActivity.setIteration(Integer.parseInt(line[19]));
-            newActivity.setPriority(Integer.parseInt(line[20]));
+            newActivity.setStoryPoints(Float.parseFloat(line[16]));
+            newActivity.setIteration(Integer.parseInt(line[17]));
+            newActivity.setPriority(Integer.parseInt(line[18]));
         } catch (NumberFormatException e) {
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
@@ -363,6 +367,7 @@ public class ImportPanel extends JPanel {
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
         }
-        panel.addActivity(newActivity);
+        // the dates must be preserved
+        panel.addActivity(newActivity, org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
     }
 }

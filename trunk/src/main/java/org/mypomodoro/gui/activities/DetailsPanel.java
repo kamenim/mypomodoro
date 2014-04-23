@@ -23,7 +23,6 @@ import java.util.Date;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * Template list combo box

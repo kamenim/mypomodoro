@@ -46,12 +46,21 @@ public final class ToDoList extends AbstractActivities {
     public static int getListSize() {
         return getList().size();
     }
-
+    
     @Override
     public void add(Activity act) {
+        add(act, act.getDate());
+    }
+
+    public void add(Activity act, Date date) {
+        add(act, date, new Date(0)); // reset date reopen to avoid any confusion with date completed
+    }
+        
+    public void add(Activity act, Date date, Date dateCompleted) {
         act.setPriority(size() + 1);
         act.setIsCompleted(false);
-        act.setDateCompleted(new Date(0)); // erase the reopened date (if any)
+        act.setDate(date);
+        act.setDateCompleted(dateCompleted);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
         } else {
