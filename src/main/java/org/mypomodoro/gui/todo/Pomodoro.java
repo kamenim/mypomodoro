@@ -187,6 +187,7 @@ public class Pomodoro {
                     detailsPanel.showInfo();
                     panel.setIconLabels();
                     panel.setPanelRemaining();
+                    panel.setPanelBorder();
                     panel.getTable().repaint(); // trigger row renderers
                 } else {
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task

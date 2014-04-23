@@ -93,7 +93,9 @@ public final class ToDoList extends AbstractActivities {
 
     // set new priorities
     public void reorderByPriority() {
-        sortByPriority(); // sort what is left of the ToDos (after delete, complete...)
+        sortByPriority(); // sort what is left of the ToDos (after delete, complete...)        
+        // Very slow because of the per-row database update
+        // Very QUICK with drag and drop
         int increment = 1;
         for (Activity activity : activities) {
             if (activity.getPriority() != increment) { // optimization
@@ -103,5 +105,15 @@ public final class ToDoList extends AbstractActivities {
             }
             increment++;
         }
+        /*
+         // As slow as previous
+         // Very slow with drag and drop
+         ArrayList<Activity> alist;
+         alist = clone();        
+         removeAll();
+         for (Activity activity : alist) {            
+         add(activity);
+         System.err.println(activity.getPriority());
+         }*/
     }
 }

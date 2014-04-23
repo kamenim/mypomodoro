@@ -141,7 +141,7 @@ public class MergingPanel extends CreatePanel {
             }
             final String title = Labels.getString("ToDoListPanel.Merge ToDos");
             if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
-                // we must reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to prior deletion of tasks
+                // we must reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                 new Thread() { // This new thread is necessary for updating the progress bar
                     @Override
                     public void run() {
@@ -160,6 +160,7 @@ public class MergingPanel extends CreatePanel {
                                     Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));                                                                        
                                 }
                             });
+                            // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                             panel.reorderByPriority();
                             // Close progress bar
                             SwingUtilities.invokeLater(new Runnable() {

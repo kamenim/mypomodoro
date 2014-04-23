@@ -111,6 +111,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     // Unplanned
     private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    // Selected row
+    private int currentSelectedRow = 0;
 
     public ReportsPanel() {
         setLayout(new GridBagLayout());
@@ -279,6 +281,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -287,6 +290,8 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
+                                    currentSelectedRow = table.getSelectedRow();
+                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row
                                 }
                                 setPanelBorder();
                             }
@@ -418,9 +423,11 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {
+        } else {            
             // select first activity
-            table.setRowSelectionInterval(0, 0);
+            int currentRow = table.convertRowIndexToView(currentSelectedRow);
+            table.setRowSelectionInterval(currentRow, currentRow);
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
 
         // Refresh panel border
@@ -607,9 +614,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection which is time consuming)
         activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (table.getRowCount() > 0) {
-            rowIndex = rowIndex == activitiesTableModel.getRowCount() ? rowIndex - 1 : rowIndex;
-            table.setRowSelectionInterval(rowIndex, rowIndex); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(rowIndex, 0, true)); // auto scroll to the selected row           
+            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
+            table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));           
         }
     }
 
@@ -808,5 +815,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    }
+    
+    public void showCurrentSelectedRow() {
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 }
