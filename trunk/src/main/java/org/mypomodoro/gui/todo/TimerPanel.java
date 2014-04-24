@@ -46,6 +46,8 @@ import org.mypomodoro.util.Labels;
 public class TimerPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
@@ -59,10 +61,10 @@ public class TimerPanel extends JPanel {
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
-        } catch (FontFormatException e) {
-            System.err.println("TrueType not supported " + e);
-        } catch (IOException e) {
-            System.err.println("TTF file not found " + e);
+        } catch (FontFormatException ex) {
+            logger.error("TrueType not supported " + ex.toString());
+        } catch (IOException ex) {
+            logger.error("TTF file not found " + ex.toString());
         }
         pomodoroTime.setForeground(Color.DARK_GRAY);
         setPreferredSize(PREFERED_SIZE);

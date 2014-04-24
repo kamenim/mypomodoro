@@ -57,6 +57,8 @@ import org.mypomodoro.util.Labels;
  */
 public class Pomodoro {
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private final int SECOND = 1000;
     private final int MINUTE = 60 * SECOND;
     private final long POMODORO_LENGTH = PreferencesPanel.preferences.getPomodoroLength() * MINUTE;
@@ -318,12 +320,15 @@ public class Pomodoro {
             } finally {
                 ain.close();
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
             // no sound
-        } catch (UnsupportedAudioFileException e) {
+            logger.error(ex.toString());
+        } catch (UnsupportedAudioFileException ex) {
             // no sound
-        } catch (LineUnavailableException e) {
+            logger.error(ex.toString());
+        } catch (LineUnavailableException ex) {
             // no sound
+            logger.error(ex.toString());
         }
     }
 
@@ -371,12 +376,14 @@ public class Pomodoro {
         } finally {
             try {
                 stream.close();
-            } catch (IOException ignored) {
+            } catch (IOException ex) {
+                logger.error(ex.toString());
             }
             if (output != null) {
                 try {
                     output.close();
-                } catch (IOException ignored) {
+                } catch (IOException ex) {
+                    logger.error(ex.toString());
                 }
             }
         }

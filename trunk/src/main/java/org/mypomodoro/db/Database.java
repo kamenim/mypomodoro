@@ -31,6 +31,8 @@ import org.mypomodoro.db.mysql.MySQLConfigLoader;
  */
 public class Database {
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private final ReentrantLock lock = new ReentrantLock();
     private Connection connection = null;
     private Statement statement = null;
@@ -67,10 +69,10 @@ public class Database {
             Class.forName(driverClassName);
             connection = DriverManager.getConnection(connectionStatement);
             statement = connection.createStatement();
-        } catch (ClassNotFoundException e) {
-            System.err.println(e);
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            logger.error(ex.toString());
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         }
     }
 
@@ -85,16 +87,16 @@ public class Database {
             if (!connection.isClosed()) {
                 connection.close();
             }
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         }
     }
 
     public void update(String sql) {
         try {
             statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         }
     }
 
@@ -102,8 +104,8 @@ public class Database {
         ResultSet rs = null;
         try {
             rs = statement.executeQuery(sql);
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         }
         return rs;
     }
@@ -169,13 +171,13 @@ public class Database {
                         + "25,5,20,20,10,4,1,1,'en_US',1,1,0,1,1);";
                 update(insertPreferencesSQL);
             }
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         } finally {
             try {
                 rs.close();
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             }
         }
     }

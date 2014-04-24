@@ -27,6 +27,8 @@ import java.util.ResourceBundle;
  */
 public class Labels {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Labels.class);
+
     private static String BUNDLE_NAME = "org.mypomodoro.labels.mypomodoro";
     private static ResourceBundle resource_bundle;
 
@@ -37,7 +39,8 @@ public class Labels {
     public static String getString(String key) {
         try {
             return resource_bundle.getString(key);
-        } catch (MissingResourceException e) {
+        } catch (MissingResourceException ex) {
+            logger.error(ex.toString());
             return '!' + key + '!';
         }
     }
@@ -45,7 +48,8 @@ public class Labels {
     public static String getString(String key, Object... params) {
         try {
             return MessageFormat.format(resource_bundle.getString(key), params);
-        } catch (MissingResourceException e) {
+        } catch (MissingResourceException ex) {
+            logger.error(ex.toString());
             return '!' + key + '!';
         }
     }

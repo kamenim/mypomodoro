@@ -41,6 +41,8 @@ import org.mypomodoro.Main;
  */
 public class Restart {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Restart.class);
+
     /**
      * Sun property pointing the main class and its arguments. Might not be
      * defined on non Hotspot VM implementations.
@@ -51,9 +53,8 @@ public class Restart {
      * Restart the current Java application
      *
      * @param runBeforeRestart some custom code to be run before restarting
-     * @throws IOException
      */
-    public static void restartApplication(Runnable runBeforeRestart) throws IOException {
+    public static void restartApplication(Runnable runBeforeRestart) {
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
             new RestartMac(0);
         } else {
@@ -105,7 +106,8 @@ public class Restart {
                     public void run() {
                         try {
                             Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
-                        } catch (IOException e) {
+                        } catch (IOException ex) {
+                            logger.error(ex.toString());
                         }
                     }
                 });
@@ -115,9 +117,8 @@ public class Restart {
                 }
                 // exit
                 System.exit(0);
-            } catch (UnsupportedEncodingException e) {
-                // something went wrong
-                throw new IOException("Error while trying to restart the application", e);
+            } catch (UnsupportedEncodingException ex) {
+                logger.error("Error while trying to restart the application " + ex.toString());
             }
         }
     }

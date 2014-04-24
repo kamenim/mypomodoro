@@ -47,6 +47,6 @@ public interface AbstractActivitiesPanel {
     void completeAll();
 
     void addActivity(Activity activity);
-    
+
     void addActivity(Activity activity, Date date, Date dateCompleted);
 }

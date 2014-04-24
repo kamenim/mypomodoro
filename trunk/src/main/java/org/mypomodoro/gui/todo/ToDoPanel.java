@@ -86,6 +86,8 @@ import org.mypomodoro.util.WaitCursor;
 public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 25);
     private AbstractActivitiesTableModel activitiesTableModel;
@@ -246,10 +248,12 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                         }
                         mouseHoverRow = rowIndex;
                     }
-                } catch (ArrayIndexOutOfBoundsException ignored) {
+                } catch (ArrayIndexOutOfBoundsException ex) {
                     // This may happen when removing rows and yet using the mouse outside the table
-                } catch (IndexOutOfBoundsException ignored) {
+                    logger.error(ex.toString());
+                } catch (IndexOutOfBoundsException ex) {
                     // This may happen when removing rows and yet using the mouse outside the table
+                    logger.error(ex.toString());
                 }
             }
         }
@@ -714,7 +718,7 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
     public void addActivity(Activity activity) {
         ToDoList.getList().add(activity);
     }
-    
+
     @Override
     public void addActivity(Activity activity, Date date, Date dateCompleted) {
         ToDoList.getList().add(activity, date, dateCompleted);
@@ -757,7 +761,8 @@ public class ToDoPanel extends JPanel implements AbstractActivitiesPanel {
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
                 initTable();
-            } catch (Exception ignored) {
+            } catch (Exception ex) {
+                logger.error(ex.toString());
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

@@ -55,7 +55,7 @@ public final class ActivityList extends AbstractActivities {
     public void add(Activity act, Date date) {
         add(act, date, act.getDateCompleted()); // date creation/schedule, date reopen
     }
-    
+
     public void add(Activity act, Date date, Date dateReopen) {
         act.setPriority(-1);
         act.setIsCompleted(false);

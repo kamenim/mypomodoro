@@ -28,12 +28,15 @@ import java.util.Properties;
  */
 public class MySQLConfigLoader {
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private static final Properties properties = new Properties();
 
     public MySQLConfigLoader() {
         try {
             loadProperties();
         } catch (IOException ignored) {
+            // no logger here, the properties file may not be there on purpose.
         }
     }
 

@@ -50,6 +50,8 @@ import org.mypomodoro.util.RestartMac;
  */
 public class Main {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
+
     // Database
     public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
     public static final Database database = new Database(); // create database if necessary
@@ -64,10 +66,8 @@ public class Main {
     public static TabbedPanel chartTabbedPanel;
     public static ProgressBar progressBar;
     public static MainPanel gui;
-
     // Default font for the application
     public static Font font = new Font("Ebrima", Font.PLAIN, 13);
-    //public static Font font = new Font("Gigi", Font.PLAIN, 13); // for testing
 
     /**
      * @param args the command line arguments
@@ -89,17 +89,21 @@ public class Main {
                  JFrame.setDefaultLookAndFeelDecorated(true);
                  UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel());
                  updateComponentTreeUI(gui);
-                 } catch (UnsupportedLookAndFeelException e) {*/
+                 } catch (UnsupportedLookAndFeelException ex) {*/
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException ex) {
                     // cross platform look and feel is used by default by the JVM
+                    logger.error(ex.toString());
                 } catch (InstantiationException ex) {
                     // cross platform look and feel is used by default by the JVM
+                    logger.error(ex.toString());
                 } catch (IllegalAccessException ex) {
                     // cross platform look and feel is used by default by the JVM
+                    logger.error(ex.toString());
                 } catch (UnsupportedLookAndFeelException ex) {
                     // cross platform look and feel is used by default by the JVM
+                    logger.error(ex.toString());
                 }
                 //}
                 // Set global font (before intanstiating the components and the gui)
@@ -119,9 +123,8 @@ public class Main {
                 chartTabbedPanel = new TabbedPanel();
                 progressBar = new ProgressBar();
                 gui = new MainPanel();
-                updateComboBoxLists();
                 // Load combo boxes data (type, author...)
-                //updateComboBoxLists();
+                updateComboBoxLists();
                 /*
                  * Old fashion way to center the component onscreen
                  * Dimension screenSize
@@ -176,35 +179,6 @@ public class Main {
         });
     }
 
-    /*public static void updateActivityListView() {
-     SwingUtilities.invokeLater(new Runnable() {
-
-     @Override
-     public void run() {
-     activitiesPanel.refresh();
-     }
-     });
-     }
-    
-     public static void updateToDoListView() {
-     SwingUtilities.invokeLater(new Runnable() {
-
-     @Override
-     public void run() {
-     toDoPanel.refresh();
-     }
-     });
-     }
-    
-     public static void updateReportListView() {
-     SwingUtilities.invokeLater(new Runnable() {
-
-     @Override
-     public void run() {
-     reportListPanel.refresh();
-     }
-     });
-     }*/
     public static void updateLists() {
         SwingUtilities.invokeLater(new Runnable() {
 

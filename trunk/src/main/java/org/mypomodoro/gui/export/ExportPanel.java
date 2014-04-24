@@ -71,6 +71,8 @@ import org.mypomodoro.util.Labels;
 public class ExportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final AbstractActivitiesPanel panel;
@@ -195,22 +197,12 @@ public class ExportPanel extends JPanel {
                             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (IOException ex) {
+                logger.error(ex.toString());
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Export failed");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-                writeErrorFile(ex.toString());
             }
-        }
-    }
-
-    private void writeErrorFile(String error) {
-        try {
-            FileWriter fstream = new FileWriter("errorExport.txt");
-            BufferedWriter out = new BufferedWriter(fstream);
-            out.write(error);
-            out.close();
-        } catch (IOException ignored) {
         }
     }
 

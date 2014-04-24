@@ -42,6 +42,7 @@ import org.mypomodoro.util.WaitCursor;
 public class TestMenu extends JMenu {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private final int nbTask = 300;
 
@@ -53,7 +54,7 @@ public class TestMenu extends JMenu {
         addFocusListener(new FocusListener() {
 
             @Override
-            public void focusGained(FocusEvent ignored) {
+            public void focusGained(FocusEvent ex) {
             }
 
             @Override
@@ -171,7 +172,8 @@ public class TestMenu extends JMenu {
                                     public void run() {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
-                                        } catch (InterruptedException ignored) {
+                                        } catch (InterruptedException ex) {
+                                            logger.error(ex.toString());
                                         }
                                         // hide progress bar
                                         Main.progressBar.getBar().setString(null);

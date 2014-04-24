@@ -59,6 +59,8 @@ import org.mypomodoro.util.WaitCursor;
 public class ImportPanel extends JPanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     protected final ImportInputForm importInputForm = new ImportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final AbstractActivitiesPanel panel;
@@ -129,12 +131,12 @@ public class ImportPanel extends JPanel {
                              JOptionPane.showConfirmDialog(Main.gui, message, title,
                              JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
                         } catch (Exception ex) {
+                            logger.error(ex.toString());
                             error = true;
                             String title = Labels.getString("Common.Error");
-                            String message = Labels.getString("ReportListPanel.Import failed. See error log.");
+                            String message = Labels.getString("ReportListPanel.Import failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-                            writeErrorFile(ex.toString());
                         } finally {
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
@@ -146,16 +148,6 @@ public class ImportPanel extends JPanel {
                     }
                 }
             }.start();
-        }
-    }
-
-    private void writeErrorFile(String error) {
-        try {
-            FileWriter fstream = new FileWriter("errorImport.txt");
-            BufferedWriter out = new BufferedWriter(fstream);
-            out.write(error);
-            out.close();
-        } catch (IOException ignored) {
         }
     }
 
@@ -193,7 +185,8 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ignored) {
+                            } catch (InterruptedException ex) {
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -249,7 +242,8 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ignored) {
+                            } catch (InterruptedException ex) {
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -304,7 +298,8 @@ public class ImportPanel extends JPanel {
                         public void run() {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
-                            } catch (InterruptedException ignored) {
+                            } catch (InterruptedException ex) {
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -353,16 +348,18 @@ public class ImportPanel extends JPanel {
         Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
-                !line[0].equals("0"), panel instanceof ReportsPanel);        
+                !line[0].equals("0"), panel instanceof ReportsPanel);
         try {
             newActivity.setStoryPoints(Float.parseFloat(line[16]));
             newActivity.setIteration(Integer.parseInt(line[17]));
             newActivity.setPriority(Integer.parseInt(line[18]));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ex) {
+            logger.error(ex.toString());
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            logger.error(ex.toString());
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);

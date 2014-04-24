@@ -60,7 +60,7 @@ public class DateUtil {
     }
 
     public static String getFormatedTime(Date date, String pattern) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);        
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
         return sdf.format(date);
     }
 
