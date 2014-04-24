@@ -36,6 +36,7 @@ import org.mypomodoro.util.WaitCursor;
 public class DeleteButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public DeleteButton(final String title, final String message, final AbstractActivitiesPanel panel) {
         super(Labels.getString("Common.Delete"));
@@ -91,7 +92,8 @@ public class DeleteButton extends AbstractButton {
                                             public void run() {
                                                 try {
                                                     sleep(1000); // wait one second before hiding the progress bar
-                                                } catch (InterruptedException ignored) {
+                                                } catch (InterruptedException ex) {
+                                                    logger.error(ex.toString());
                                                 }
                                                 // hide progress bar
                                                 Main.gui.getProgressBar().getBar().setString(null);

@@ -39,6 +39,8 @@ import org.mypomodoro.gui.todo.ToDoPanel;
 public final class MainPanel extends JFrame {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     public static final int FRAME_WIDTH = 780;
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
@@ -101,7 +103,8 @@ public final class MainPanel extends JFrame {
             });
             try {
                 sysTray.add(trayIcon);
-            } catch (AWTException ignored) {
+            } catch (AWTException ex) {
+                logger.error(ex.toString());
             }
         }
     }

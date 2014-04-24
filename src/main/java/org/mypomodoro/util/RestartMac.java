@@ -20,8 +20,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class Restarts Java Bundled Native Mac Applications with the .app
@@ -36,6 +34,8 @@ import java.util.logging.Logger;
  *
  */
 public class RestartMac {
+
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     /* AppleScript */
     private final String restartScript = "tell application \"myPomodoro\" to quit\n"
@@ -97,8 +97,8 @@ public class RestartMac {
             BufferedWriter restartWriter = new BufferedWriter(new FileWriter(restartFile));
             restartWriter.write(restartScript);
             restartWriter.close();
-        } catch (IOException ioe) {
-            System.err.format("IOException: %s%n", ioe);
+        } catch (IOException ex) {
+            logger.error(ex.toString());
         }
     }
 
@@ -111,9 +111,9 @@ public class RestartMac {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
         } catch (InterruptedException ex) {
-            Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.toString());
         } catch (IOException ex) {
-            Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.toString());
         }
     }
 
@@ -124,7 +124,7 @@ public class RestartMac {
         try {
             open = Runtime.getRuntime().exec(openString);
         } catch (IOException ex) {
-            Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.toString());
         }
     }
 
@@ -144,7 +144,7 @@ public class RestartMac {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
         } catch (IOException ex) {
-            Logger.getLogger(RestartMac.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.toString());
         }
     }
 }

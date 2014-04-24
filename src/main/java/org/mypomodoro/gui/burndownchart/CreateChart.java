@@ -59,7 +59,7 @@ public class CreateChart extends JPanel {
 // TODO legend on charts?
 // TODO Scope line should not join burnup unless same value
 // TODO Axis X should be empty when no data submitted
-// Iterations
+// TODO iterations    
 
     private static final long serialVersionUID = 1L;
 
@@ -419,6 +419,7 @@ public class CreateChart extends JPanel {
      try {
      ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
      } catch (IOException ex) {
+     logger.error(ex.toString());
      String title = Labels.getString("Common.Error");
      String message = Labels.getString("BurndownChartPanel.Image creation failed");
      JOptionPane.showConfirmDialog(Main.gui, message, title,

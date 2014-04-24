@@ -27,6 +27,8 @@ import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 public class PreferencesDAO {
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private final Database database = Main.database;
     private static final PreferencesDAO instance = new PreferencesDAO();
 
@@ -72,13 +74,13 @@ public class PreferencesDAO {
                     PreferencesPanel.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
                     PreferencesPanel.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {

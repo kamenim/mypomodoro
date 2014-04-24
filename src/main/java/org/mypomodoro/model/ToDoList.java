@@ -46,7 +46,7 @@ public final class ToDoList extends AbstractActivities {
     public static int getListSize() {
         return getList().size();
     }
-    
+
     @Override
     public void add(Activity act) {
         add(act, act.getDate());
@@ -55,7 +55,7 @@ public final class ToDoList extends AbstractActivities {
     public void add(Activity act, Date date) {
         add(act, date, new Date(0)); // reset date reopen to avoid any confusion with date completed
     }
-        
+
     public void add(Activity act, Date date, Date dateCompleted) {
         act.setPriority(size() + 1);
         act.setIsCompleted(false);

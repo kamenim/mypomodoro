@@ -28,6 +28,8 @@ import org.mypomodoro.util.DateUtil;
 
 public class ActivitiesDAO {
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private final Database database = Main.database;
     private static final ActivitiesDAO instance = new ActivitiesDAO();
 
@@ -72,13 +74,13 @@ public class ActivitiesDAO {
                 if (rs.next()) {
                     id = rs.getInt(database.sequenceIdName);
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -139,13 +141,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -163,13 +165,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -188,13 +190,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -214,13 +216,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activity = new Activity(rs);
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -259,13 +261,13 @@ public class ActivitiesDAO {
                     while (rs.next()) {
                         activities.add(new Activity(rs));
                     }
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 } finally {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.err.println(e);
+                    } catch (SQLException ex) {
+                        logger.error(ex.toString());
                     }
                 }
             } finally {
@@ -287,13 +289,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -316,13 +318,13 @@ public class ActivitiesDAO {
                         while (rs.next()) {
                             storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
                         }
-                    } catch (SQLException e) {
-                        System.err.println(e);
+                    } catch (SQLException ex) {
+                        logger.error(ex.toString());
                     } finally {
                         try {
                             rs.close();
-                        } catch (SQLException e) {
-                            System.err.println(e);
+                        } catch (SQLException ex) {
+                            logger.error(ex.toString());
                         }
                     }
                 }
@@ -377,13 +379,13 @@ public class ActivitiesDAO {
                 while (rs.next()) {
                     activity = new Activity(rs);
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -452,13 +454,13 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -479,13 +481,13 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -506,13 +508,13 @@ public class ActivitiesDAO {
                         types.add(type);
                     }
                 }
-            } catch (SQLException e) {
-                System.err.println(e);
+            } catch (SQLException ex) {
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.err.println(e);
+                } catch (SQLException ex) {
+                    logger.error(ex.toString());
                 }
             }
         } finally {

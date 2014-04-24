@@ -50,7 +50,7 @@ public class ViewMenu extends JMenu {
         addFocusListener(new FocusListener() {
 
             @Override
-            public void focusGained(FocusEvent ignored) {
+            public void focusGained(FocusEvent ex) {
             }
 
             @Override

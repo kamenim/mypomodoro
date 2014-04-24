@@ -39,6 +39,8 @@ import org.mypomodoro.util.WaitCursor;
 public class MergingPanel extends CreatePanel {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private ActivityInputForm mergingInputFormPanel;
     private final ToDoPanel panel;
 
@@ -174,7 +176,8 @@ public class MergingPanel extends CreatePanel {
                                         public void run() {
                                             try {
                                                 sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ignored) {
+                                            } catch (InterruptedException ex) {
+                                                logger.error(ex.toString());
                                             }
                                             // hide progress bar
                                             Main.gui.getProgressBar().getBar().setString(null);
@@ -229,7 +232,8 @@ public class MergingPanel extends CreatePanel {
                                         public void run() {
                                             try {
                                                 sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ignored) {
+                                            } catch (InterruptedException ex) {
+                                                logger.error(ex.toString());
                                             }
                                             // hide progress bar
                                             Main.gui.getProgressBar().getBar().setString(null);

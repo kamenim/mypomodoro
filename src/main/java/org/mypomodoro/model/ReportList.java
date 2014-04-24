@@ -56,7 +56,7 @@ public final class ReportList extends AbstractActivities {
     public void add(Activity act, Date dateCompleted) {
         add(act, act.getDate(), dateCompleted);
     }
-    
+
     public void add(Activity act, Date date, Date dateCompleted) {
         act.setPriority(-1);
         act.setIsCompleted(true);

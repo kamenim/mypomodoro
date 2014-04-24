@@ -14,10 +14,11 @@
  */
 package org.mypomodoro.util;
 
-import javax.swing.JOptionPane;
 import java.util.Arrays;
 
 public class BareBonesBrowserLaunch {
+
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BareBonesBrowserLaunch.class);
 
     static final String[] browsers = {"google-chrome", "firefox", "opera",
         "epiphany", "konqueror", "conkeror", "midori", "kazehakase", "mozilla"};
@@ -36,7 +37,8 @@ public class BareBonesBrowserLaunch {
                     d.getDeclaredMethod("getDesktop").invoke(null),
                     new Object[]{java.net.URI.create(url)});
             //above code mimicks:  java.awt.Desktop.getDesktop().browse()
-        } catch (Exception ignore) {  //library not available or failed
+        } catch (Exception ex) {  //library not available or failed
+            logger.error(ex.toString());
             String osName = System.getProperty("os.name");
             try {
                 if (osName.startsWith("Mac OS")) {
@@ -58,7 +60,8 @@ public class BareBonesBrowserLaunch {
                     }
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, errMsg + "\n" + e.toString());
+                logger.error(e.toString());
+                //JOptionPane.showMessageDialog(null, errMsg + "\n" + e.toString());
             }
         }
     }

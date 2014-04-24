@@ -33,8 +33,10 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 public class Activity {
-    // ATTRIBUTES
 
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
+    // ATTRIBUTES
     /**
      * unique id number for the Activity (to be assigned by database) default is
      * flagged (unset)
@@ -270,8 +272,8 @@ public class Activity {
             this.storyPoints = rs.getFloat("story_points");
             this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
-        } catch (SQLException e) {
-            System.err.println(e);
+        } catch (SQLException ex) {
+            logger.error(ex.toString());
         }
     }
 

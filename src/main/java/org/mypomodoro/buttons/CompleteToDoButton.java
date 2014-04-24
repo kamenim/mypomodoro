@@ -34,6 +34,7 @@ import org.mypomodoro.util.WaitCursor;
 public class CompleteToDoButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
         super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
@@ -110,7 +111,8 @@ public class CompleteToDoButton extends AbstractButton {
                                                 public void run() {
                                                     try {
                                                         sleep(1000); // wait one second before hiding the progress bar
-                                                    } catch (InterruptedException ignored) {
+                                                    } catch (InterruptedException ex) {
+                                                        logger.error(ex.toString());
                                                     }
                                                     // hide progress bar
                                                     Main.gui.getProgressBar().getBar().setString(null);

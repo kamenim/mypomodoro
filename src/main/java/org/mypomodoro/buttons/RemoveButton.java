@@ -34,6 +34,8 @@ import org.mypomodoro.util.WaitCursor;
 public class RemoveButton extends AbstractButton {
 
     private static final long serialVersionUID = 20110814L;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
     public RemoveButton(String label, final CheckPanel panel) {
@@ -94,7 +96,8 @@ public class RemoveButton extends AbstractButton {
                                     public void run() {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
-                                        } catch (InterruptedException ignored) {
+                                        } catch (InterruptedException ex) {
+                                            logger.error(ex.toString());
                                         }
                                         // hide progress bar
                                         Main.gui.getProgressBar().getBar().setString(null);

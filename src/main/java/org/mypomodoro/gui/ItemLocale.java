@@ -32,7 +32,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.mypomodoro.Main;
 
 /**
@@ -40,6 +39,8 @@ import org.mypomodoro.Main;
  *
  */
 public class ItemLocale {
+
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ItemLocale.class);
 
     private final Locale locale;
     private final String localeText;
@@ -102,8 +103,10 @@ public class ItemLocale {
                     }
                 }
             }
-        } catch (IOException ignored) {
-        } catch (URISyntaxException ignored) {
+        } catch (IOException ex) {
+            logger.error(ex.toString());
+        } catch (URISyntaxException ex) {
+            logger.error(ex.toString());
         } finally {
             if (vLocales.isEmpty()) {
                 vLocales.add(new ItemLocale(PreferencesPanel.preferences.getLocale(), PreferencesPanel.preferences.getLocale().getDisplayLanguage()
