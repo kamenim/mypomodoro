@@ -62,9 +62,9 @@ public class TimerPanel extends JPanel {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
         } catch (FontFormatException ex) {
-            logger.error("TrueType not supported " + ex.toString());
+            logger.error("TrueType not supported", ex);
         } catch (IOException ex) {
-            logger.error("TTF file not found " + ex.toString());
+            logger.error("TTF file not found", ex);
         }
         pomodoroTime.setForeground(Color.DARK_GRAY);
         setPreferredSize(PREFERED_SIZE);

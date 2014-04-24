@@ -21,11 +21,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Thread.sleep;
 import javax.swing.JButton;
@@ -131,7 +128,7 @@ public class ImportPanel extends JPanel {
                              JOptionPane.showConfirmDialog(Main.gui, message, title,
                              JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
                         } catch (Exception ex) {
-                            logger.error(ex.toString());
+                            logger.error("Import failed", ex);
                             error = true;
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Import failed");
@@ -186,7 +183,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error(ex.toString());
+                                logger.error("", ex);
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -243,7 +240,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error(ex.toString());
+                                logger.error("", ex);
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -299,7 +296,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error(ex.toString());
+                                logger.error("", ex);
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -354,12 +351,12 @@ public class ImportPanel extends JPanel {
             newActivity.setIteration(Integer.parseInt(line[17]));
             newActivity.setPriority(Integer.parseInt(line[18]));
         } catch (NumberFormatException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
