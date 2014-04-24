@@ -209,9 +209,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
-                try {
-                    int rowIndex = table.rowAtPoint(p);
-                    int columnIndex = table.columnAtPoint(p);
+                int rowIndex = table.rowAtPoint(p);
+                int columnIndex = table.columnAtPoint(p);
+                if (rowIndex != -1) {
                     if (columnIndex == ID_KEY - 7 || columnIndex == ID_KEY - 6) {
                         String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
                         value = value.length() > 0 ? value : null;
@@ -224,24 +224,22 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     } else {
                         table.setToolTipText(null); // this way tooltip won't stick
                     }
-                    // Change of row
-                    if (mouseHoverRow != rowIndex) {
-                        if (table.getSelectedRowCount() == 1) {
-                            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
-                            Activity activity = ReportList.getList().getById(id);
-                            detailsPanel.selectInfo(activity);
-                            detailsPanel.showInfo();
-                            commentPanel.selectInfo(activity);
-                            commentPanel.showInfo();
+                }
+                // Change of row
+                if (mouseHoverRow != rowIndex) {
+                    if (table.getSelectedRowCount() == 1) {
+                        if (rowIndex == -1) {
+                            rowIndex = table.getSelectedRow();
+                            table.setToolTipText(null); // this way tooltip won't stick
                         }
-                        mouseHoverRow = rowIndex;
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
+                        Activity activity = ReportList.getList().getById(id);
+                        detailsPanel.selectInfo(activity);
+                        detailsPanel.showInfo();
+                        commentPanel.selectInfo(activity);
+                        commentPanel.showInfo();
                     }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    // This may happen when removing rows and yet using the mouse
-                    logger.error("", ex);
-                } catch (IndexOutOfBoundsException ex) {
-                    // This may happen when removing rows and yet using the mouse
-                    logger.error("", ex);
+                    mouseHoverRow = rowIndex;
                 }
             }
         });
