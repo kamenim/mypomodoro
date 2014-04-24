@@ -38,7 +38,7 @@ public class BareBonesBrowserLaunch {
                     new Object[]{java.net.URI.create(url)});
             //above code mimicks:  java.awt.Desktop.getDesktop().browse()
         } catch (Exception ex) {  //library not available or failed
-            logger.error(ex.toString());
+            logger.error("", ex);
             String osName = System.getProperty("os.name");
             try {
                 if (osName.startsWith("Mac OS")) {

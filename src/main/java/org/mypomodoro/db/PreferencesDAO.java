@@ -75,12 +75,12 @@ public class PreferencesDAO {
                     PreferencesPanel.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
                 }
             } catch (SQLException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error(ex.toString());
+                    logger.error("", ex);
                 }
             }
         } finally {

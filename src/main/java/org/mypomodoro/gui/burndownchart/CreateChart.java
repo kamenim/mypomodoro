@@ -129,7 +129,7 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupTargetDataset() {
         String label = chooseInputForm.getBurnupTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        float storyPoints = totalStoryPoints;
+        float storyPoints = maxSumStoryPointsForScopeLine > totalStoryPoints && chooseInputForm.getScopeCheckBox().isSelected() ? maxSumStoryPointsForScopeLine : totalStoryPoints;
         dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
         for (int i = 1; i < XAxisValues.size() - 1; i++) {
             dataset.addValue((Number) (Math.round(i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
@@ -419,7 +419,7 @@ public class CreateChart extends JPanel {
      try {
      ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
      } catch (IOException ex) {
-     logger.error(ex.toString());
+     logger.error("", ex);
      String title = Labels.getString("Common.Error");
      String message = Labels.getString("BurndownChartPanel.Image creation failed");
      JOptionPane.showConfirmDialog(Main.gui, message, title,

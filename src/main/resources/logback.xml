@@ -19,7 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <!-- console appender -->
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d [%thread] %-5level [%file:%line] %msg%n</pattern>
+      <!-- documentation : http://logback.qos.ch/manual/layouts.html -->
+      <!-- highlight level (color) for console output -->
+      <pattern>==================================================================================================================%n%d [%thread] %highlight(%-5level) [%file:%line] %msg%n</pattern>
     </encoder>
   </appender>
   <!-- file appender -->
@@ -27,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <file>myAgilePomodoro.log</file>
     <append>false</append>
     <encoder>
-      <pattern>%d [%thread] %-5level [%file:%line] %msg%n</pattern>
+      <pattern>==================================================================================================================%n%d [%thread] %-5level [%file:%line] - %msg%n</pattern>
     </encoder>
   </appender>
   <root level="ERROR">

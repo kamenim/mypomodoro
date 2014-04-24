@@ -104,7 +104,7 @@ public final class MainPanel extends JFrame {
             try {
                 sysTray.add(trayIcon);
             } catch (AWTException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             }
         }
     }

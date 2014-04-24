@@ -238,10 +238,10 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // This may happen when removing rows and yet using the mouse
-                    logger.error(ex.toString());
+                    logger.error("", ex);
                 } catch (IndexOutOfBoundsException ex) {
                     // This may happen when removing rows and yet using the mouse
-                    logger.error(ex.toString());
+                    logger.error("", ex);
                 }
             }
         });
@@ -704,7 +704,7 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
                 table.setModel(activitiesTableModel);
                 initTable();
             } catch (Exception ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

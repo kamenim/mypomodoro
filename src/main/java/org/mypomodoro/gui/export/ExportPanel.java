@@ -30,7 +30,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -197,7 +196,7 @@ public class ExportPanel extends JPanel {
                             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (IOException ex) {
-                logger.error(ex.toString());
+                logger.error("Export failed", ex);
                 String title = Labels.getString("Common.Error");
                 String message = Labels.getString("ReportListPanel.Export failed");
                 JOptionPane.showConfirmDialog(Main.gui, message, title,

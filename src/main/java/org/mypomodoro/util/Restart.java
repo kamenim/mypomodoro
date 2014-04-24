@@ -107,7 +107,7 @@ public class Restart {
                         try {
                             Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
                         } catch (IOException ex) {
-                            logger.error(ex.toString());
+                            logger.error("", ex);
                         }
                     }
                 });
@@ -118,7 +118,7 @@ public class Restart {
                 // exit
                 System.exit(0);
             } catch (UnsupportedEncodingException ex) {
-                logger.error("Error while trying to restart the application " + ex.toString());
+                logger.error("Error while trying to restart the application", ex);
             }
         }
     }

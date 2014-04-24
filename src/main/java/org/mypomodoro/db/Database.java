@@ -70,9 +70,9 @@ public class Database {
             connection = DriverManager.getConnection(connectionStatement);
             statement = connection.createStatement();
         } catch (ClassNotFoundException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -88,7 +88,7 @@ public class Database {
                 connection.close();
             }
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class Database {
         try {
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -105,7 +105,7 @@ public class Database {
         try {
             rs = statement.executeQuery(sql);
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
         return rs;
     }
@@ -172,12 +172,12 @@ public class Database {
                 update(insertPreferencesSQL);
             }
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         } finally {
             try {
                 rs.close();
             } catch (SQLException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             }
         }
     }
