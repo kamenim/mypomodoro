@@ -25,8 +25,6 @@ import org.mypomodoro.util.Labels;
 
 public class SaveButton extends AbstractButton {
 
-    private static final long serialVersionUID = 20110814L;
-
     public SaveButton(CreatePanel panel) {
         super(Labels.getString("Common.Save"));
         // Save action

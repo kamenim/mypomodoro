@@ -30,7 +30,7 @@ import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -41,14 +41,13 @@ import org.mypomodoro.util.Labels;
  */
 public class OverestimationPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     protected final OverestimationInputForm overestimationInputFormPanel = new OverestimationInputForm();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final ToDoPanel panel;
-    private final ActivityInformation detailsPanel;
+    private final IActivityInformation detailsPanel;
 
-    public OverestimationPanel(ToDoPanel panel, ActivityInformation detailsPanel) {
+    public OverestimationPanel(ToDoPanel panel, IActivityInformation detailsPanel) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
 

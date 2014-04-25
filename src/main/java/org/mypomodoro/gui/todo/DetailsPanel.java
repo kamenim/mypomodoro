@@ -28,7 +28,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -39,9 +39,8 @@ import org.mypomodoro.util.Labels;
  * Panel that displays information on the selected Pomodoro
  *
  */
-public class DetailsPanel extends ActivityInformationPanel implements ActivityInformation {
+public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
-    private static final long serialVersionUID = 20110814L;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private MoveToDoButton moveButton;

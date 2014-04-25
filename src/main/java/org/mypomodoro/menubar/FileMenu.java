@@ -37,7 +37,6 @@ import org.mypomodoro.util.Labels;
 
 public class FileMenu extends JMenu {
 
-    private static final long serialVersionUID = 20110814L;
     private final MainPanel view;
 
     public FileMenu(final MainPanel view) {
@@ -62,8 +61,6 @@ public class FileMenu extends JMenu {
 
     class ControlPanelItem extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public ControlPanelItem() {
             super(Labels.getString("FileMenu.Preferences"));
             // Adds Keyboard Shortcut Alt-P
@@ -84,8 +81,6 @@ public class FileMenu extends JMenu {
     }
 
     public class CreateActivityItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public CreateActivityItem() {
             super(Labels.getString("FileMenu.New Activity"));
@@ -109,8 +104,6 @@ public class FileMenu extends JMenu {
     }
 
     public class ExitItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));

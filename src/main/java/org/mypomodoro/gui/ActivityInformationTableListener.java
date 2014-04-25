@@ -26,12 +26,12 @@ import org.mypomodoro.model.Activity;
 public class ActivityInformationTableListener implements ListSelectionListener {
 
     private final JTable table;
-    private final ActivityInformation information;
+    private final IActivityInformation information;
     private final int idKey;
     private final AbstractActivities activities;
 
     public ActivityInformationTableListener(AbstractActivities activities,
-            JTable table, ActivityInformation information, int idKey) {
+            JTable table, IActivityInformation information, int idKey) {
         this.activities = activities;
         this.table = table;
         this.information = information;

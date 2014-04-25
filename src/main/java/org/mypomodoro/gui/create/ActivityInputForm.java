@@ -48,7 +48,6 @@ import static org.mypomodoro.util.TimeConverter.convertToTime;
 
 public class ActivityInputForm extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     protected static final Dimension TEXT_AREA_DIMENSION = new Dimension(300, 50);
     protected static final Dimension TEXT_FIELD_DIMENSION = new Dimension(300, 25);
     protected static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);

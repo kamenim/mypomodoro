@@ -37,8 +37,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
  *
  */
 public final class MainPanel extends JFrame {
-
-    private static final long serialVersionUID = 20110814L;
+    
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public static final int FRAME_WIDTH = 780;
@@ -118,8 +117,8 @@ public final class MainPanel extends JFrame {
     }
 
     public final void setWindow(JPanel e) {
-        if (e instanceof AbstractActivitiesPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
-            ((AbstractActivitiesPanel) e).refresh();
+        if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
+            ((IListPanel) e).refresh();
         }
         windowPanel.showPanel(e.getClass().getName());
     }

@@ -39,7 +39,6 @@ import org.mypomodoro.util.Labels;
  */
 public class PreferencesInputForm extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
     protected final TimerValueSlider pomodoroSlider;
     protected final TimerValueSlider shortBreakSlider;

@@ -34,8 +34,7 @@ import org.mypomodoro.util.Labels;
 
 //View Menu
 public class ViewMenu extends JMenu {
-
-    private static final long serialVersionUID = 20110814L;
+    
     private final MainPanel view;
 
     public ViewMenu(final MainPanel view) {
@@ -62,8 +61,6 @@ public class ViewMenu extends JMenu {
 
     class ActivityListItem extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public ActivityListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
@@ -85,8 +82,6 @@ public class ViewMenu extends JMenu {
     }
 
     class ToDoListItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public ToDoListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
@@ -110,8 +105,6 @@ public class ViewMenu extends JMenu {
 
     class ReportListItem extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public ReportListItem() {
             super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
             // Adds Keyboard Shortcut Alt-R
@@ -133,8 +126,6 @@ public class ViewMenu extends JMenu {
     }
 
     class BurndownChartItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public BurndownChartItem() {
             super(Labels.getString("ViewMenu.Burndown Chart"));

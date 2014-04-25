@@ -23,8 +23,6 @@ import javax.swing.JPanel;
 
 public class WindowPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
-
     CardLayout cardLayout = new CardLayout();
     final JPanel mainPanel = new JPanel(cardLayout);
 

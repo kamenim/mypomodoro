@@ -35,7 +35,7 @@ class ComboBoxCellRenderer extends ActivitiesComboBoxPanel implements TableCellR
         super(data, editable);
 
         // Custom display hovered item value
-        comboBox.setRenderer(new DefaultListCellRenderer());
+        comboBox.setRenderer(new AbstractComboBoxRenderer());
     }
 
     @Override

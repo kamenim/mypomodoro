@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
@@ -76,7 +76,7 @@ public class Pomodoro {
     private long longBreakLength = POMODORO_LONG_LENGTH;
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
-    private final ActivityInformation detailsPanel;
+    private final IActivityInformation detailsPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
     private long time = pomodoroLength;
@@ -85,7 +85,7 @@ public class Pomodoro {
     private boolean isMute = false;
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
-    public Pomodoro(ToDoPanel panel, ActivityInformation detailsPanel) {
+    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
 

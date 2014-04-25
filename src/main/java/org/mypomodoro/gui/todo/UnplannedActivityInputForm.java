@@ -25,7 +25,6 @@ import org.mypomodoro.util.Labels;
 
 public class UnplannedActivityInputForm extends ActivityInputForm {
 
-    private static final long serialVersionUID = 20110814L;
     protected JComboBox interruptions = new JComboBox();
     protected final String internal = Labels.getString("ToDoListPanel.Internal");
     protected final String external = Labels.getString("ToDoListPanel.External");

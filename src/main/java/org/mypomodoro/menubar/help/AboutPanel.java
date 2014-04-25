@@ -45,7 +45,6 @@ import org.mypomodoro.util.Labels;
  */
 public class AboutPanel extends JDialog {
 
-    private static final long serialVersionUID = 20110814L;
     public static final int FRAME_WIDTH = 630;
     public static final int FRAME_HEIGHT = 360;
     private final GridBagConstraints gbc = new GridBagConstraints();

@@ -30,9 +30,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class TabbedPanel extends JPanel {
-
-    private static final long serialVersionUID = 20110814L;
-
+    
     private final ChooseInputForm chooseInputForm = new ChooseInputForm();
     private final ConfigureInputForm configureInputForm = new ConfigureInputForm();
     private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);

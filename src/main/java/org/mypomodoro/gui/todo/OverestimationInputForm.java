@@ -44,7 +44,6 @@ import static org.mypomodoro.util.TimeConverter.convertToTime;
  */
 public class OverestimationInputForm extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
     private static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(50, 25);

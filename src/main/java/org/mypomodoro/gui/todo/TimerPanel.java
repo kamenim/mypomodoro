@@ -45,7 +45,6 @@ import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);

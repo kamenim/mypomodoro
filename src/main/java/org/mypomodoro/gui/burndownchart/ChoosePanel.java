@@ -36,8 +36,6 @@ import javax.swing.border.EtchedBorder;
  */
 public class ChoosePanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
-
     private final JTabbedPane tabbedPane;
     private final ChooseInputForm chooseInputForm;
     private final GridBagConstraints gbc = new GridBagConstraints();

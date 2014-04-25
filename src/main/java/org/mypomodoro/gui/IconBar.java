@@ -33,8 +33,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class IconBar extends JPanel {
-
-    private static final long serialVersionUID = 20110814L;
+    
     private final ArrayList<MyIcon> myIcons = new ArrayList<MyIcon>();
     private MyIcon highlightedIcon;
 

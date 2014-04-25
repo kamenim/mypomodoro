@@ -28,7 +28,6 @@ import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
  */
 public class AbstractComboBox extends JComboBox {
 
-    private static final long serialVersionUID = 20110814L;
     final ComboBoxToolTipRenderer tooltipRenderer = new ComboBoxToolTipRenderer();
 
     public AbstractComboBox() {

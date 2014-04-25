@@ -50,7 +50,6 @@ import org.mypomodoro.util.Labels;
  */
 public class ExportInputForm extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private JCheckBox headerCheckBox = new JCheckBox();

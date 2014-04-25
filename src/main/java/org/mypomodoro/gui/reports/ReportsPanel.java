@@ -59,7 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
-import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -80,9 +80,8 @@ import org.mypomodoro.util.WaitCursor;
  * GUI for viewing the Report List.
  *
  */
-public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
+public class ReportsPanel extends JPanel implements IListPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
@@ -122,8 +121,6 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         activitiesTableModel = getTableModel();
 
         table = new JXTable(activitiesTableModel) {
-
-            private static final long serialVersionUID = 1L;
 
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -312,9 +309,9 @@ public class ReportsPanel extends JPanel implements AbstractActivitiesPanel {
         ActionMap am = table.getActionMap();
         class deleteAction extends AbstractAction {
 
-            final AbstractActivitiesPanel panel;
+            final IListPanel panel;
 
-            public deleteAction(AbstractActivitiesPanel panel) {
+            public deleteAction(IListPanel panel) {
                 this.panel = panel;
             }
 

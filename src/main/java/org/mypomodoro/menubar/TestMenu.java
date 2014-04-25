@@ -41,8 +41,7 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 public class TestMenu extends JMenu {
-
-    private static final long serialVersionUID = 20110814L;
+    
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private final int nbTask = 300;
@@ -67,8 +66,6 @@ public class TestMenu extends JMenu {
 
     // create test data
     class TestDataItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         private void createTestData() {
             new Thread() { // This new thread is necessary for updating the progress bar
@@ -209,8 +206,6 @@ public class TestMenu extends JMenu {
 
     // delete all data
     class ResetDataItem extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public ResetDataItem(final MainPanel view) {
             super(Labels.getString("DataMenu.Clear All Data"));

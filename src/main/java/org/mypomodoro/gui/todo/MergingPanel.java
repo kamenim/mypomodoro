@@ -38,7 +38,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class MergingPanel extends CreatePanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private ActivityInputForm mergingInputFormPanel;

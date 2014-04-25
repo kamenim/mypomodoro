@@ -27,7 +27,6 @@ import javax.swing.border.EtchedBorder;
  */
 public class CreateChartPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public CreateChartPanel(CreateChart chart) {

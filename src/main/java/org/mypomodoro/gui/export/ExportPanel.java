@@ -56,7 +56,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
@@ -69,12 +69,11 @@ import org.mypomodoro.util.Labels;
  */
 public class ExportPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final AbstractActivitiesPanel panel;
+    private final IListPanel panel;
     private JButton cancelButton;
     private final String[] headerEntries = new String[]{"U",
         Labels.getString(PreferencesPanel.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
@@ -96,7 +95,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};
 
-    public ExportPanel(AbstractActivitiesPanel panel) {
+    public ExportPanel(IListPanel panel) {
         this.panel = panel;
 
         setLayout(new GridBagLayout());

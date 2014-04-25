@@ -23,7 +23,7 @@ import org.mypomodoro.model.Activity;
  * An interface to represent an object that can describe an activity.
  *
  */
-public interface ActivityInformation {
+public interface IActivityInformation {
 
     void selectInfo(Activity activity);
 

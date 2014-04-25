@@ -32,7 +32,6 @@ import org.mypomodoro.util.ColorUtil;
  */
 public class CommentPanel extends ActivityInformationPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public CommentPanel(CheckPanel checkPanel) {

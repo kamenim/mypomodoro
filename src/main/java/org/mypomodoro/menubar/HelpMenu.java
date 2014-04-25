@@ -36,8 +36,6 @@ import org.mypomodoro.util.Labels;
 
 public class HelpMenu extends JMenu {
 
-    private static final long serialVersionUID = 20110814L;
-
     public HelpMenu() {
         super(Labels.getString("MenuBar.Help"));
         add(new HelpUserGuide());
@@ -62,8 +60,6 @@ public class HelpMenu extends JMenu {
 
     class HelpUserGuide extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public HelpUserGuide() {
             super(Labels.getString("HelpMenu.Download User Guide"));
             addActionListener(new MenuItemListener());
@@ -82,8 +78,6 @@ public class HelpMenu extends JMenu {
 
     class HelpPomodoroMenu extends JMenu {
 
-        private static final long serialVersionUID = 20110814L;
-
         public HelpPomodoroMenu() {
             super(Labels.getString("HelpMenu.Pomodoro Technique"));
             add(new HelpPomodoroTechnique());
@@ -92,8 +86,6 @@ public class HelpMenu extends JMenu {
     }
 
     class HelpPomodoroTechnique extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public HelpPomodoroTechnique() {
             super(Labels.getString("HelpMenu.Pomodoro Technique Official Website"));
@@ -113,8 +105,6 @@ public class HelpMenu extends JMenu {
 
     class HelpPomodoroBook extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public HelpPomodoroBook() {
             super(Labels.getString("HelpMenu.Pomodoro Technique Official Book"));
             addActionListener(new MenuItemListener());
@@ -132,8 +122,6 @@ public class HelpMenu extends JMenu {
 
     class ReportIssues extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public ReportIssues() {
             super(Labels.getString("HelpMenu.Report Issues"));
             addActionListener(new MenuItemListener());
@@ -150,8 +138,6 @@ public class HelpMenu extends JMenu {
 
     class CheckUpdates extends JMenuItem {
 
-        private static final long serialVersionUID = 20110814L;
-
         public CheckUpdates() {
             super(Labels.getString("AboutPanel.Check for Updates"));
             addActionListener(new MenuItemListener());
@@ -167,8 +153,6 @@ public class HelpMenu extends JMenu {
     }
 
     class HelpAbout extends JMenuItem {
-
-        private static final long serialVersionUID = 20110814L;
 
         public HelpAbout() {
             super(Labels.getString("HelpMenu.About"));

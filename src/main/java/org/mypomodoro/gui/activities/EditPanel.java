@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -36,12 +36,11 @@ import org.mypomodoro.util.Labels;
  */
 public class EditPanel extends CreatePanel {
 
-    private static final long serialVersionUID = 20110814L;
     private EditInputForm editInputForm;
     private final ActivitiesPanel activitiesPanel;
-    private final ActivityInformation information;
+    private final IActivityInformation information;
 
-    public EditPanel(ActivitiesPanel activitiesPanel, ActivityInformation information) {
+    public EditPanel(ActivitiesPanel activitiesPanel, IActivityInformation information) {
         this.activitiesPanel = activitiesPanel;
         this.information = information;
 
