@@ -31,7 +31,6 @@ import org.mypomodoro.gui.todo.Pomodoro;
  */
 public class TimePlusButton extends JButton {
 
-    private static final long serialVersionUID = 20110814L;
     private final ImageIcon timePlusIcon = new ImageIcon(Main.class.getResource("/images/timeplus.png"));
 
     public TimePlusButton(final Pomodoro pomodoro) {

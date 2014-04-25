@@ -24,8 +24,6 @@ import javax.swing.JButton;
  */
 public class AbstractButton extends JButton {
 
-    private static final long serialVersionUID = 20110814L;
-
     public AbstractButton(String label) {
         super(label);
         setFocusPainted(false); // removes borders around text

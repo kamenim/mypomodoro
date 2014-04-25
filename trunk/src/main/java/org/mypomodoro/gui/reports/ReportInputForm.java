@@ -21,8 +21,6 @@ import org.mypomodoro.model.Activity;
 
 public class ReportInputForm extends ActivityInputForm {
 
-    private static final long serialVersionUID = 20110814L;
-
     public ReportInputForm() {
         setBorder(null); // reset border set in ActivityInputForm
     }

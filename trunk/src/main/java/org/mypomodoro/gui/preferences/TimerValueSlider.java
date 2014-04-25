@@ -29,7 +29,6 @@ import org.mypomodoro.util.Labels;
 
 public final class TimerValueSlider extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final JSlider slider;
     private final JLabel label = new JLabel();
     private String text = "";

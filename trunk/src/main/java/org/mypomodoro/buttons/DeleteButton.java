@@ -23,7 +23,7 @@ import static java.lang.Thread.sleep;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.IListPanel;
 
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -34,11 +34,10 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class DeleteButton extends AbstractButton {
-
-    private static final long serialVersionUID = 20110814L;
+    
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public DeleteButton(final String title, final String message, final AbstractActivitiesPanel panel) {
+    public DeleteButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
         addActionListener(new ActionListener() {
 

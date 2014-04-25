@@ -43,7 +43,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -55,14 +55,13 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ImportPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     protected final ImportInputForm importInputForm = new ImportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final AbstractActivitiesPanel panel;
+    private final IListPanel panel;
 
-    public ImportPanel(AbstractActivitiesPanel panel) {
+    public ImportPanel(IListPanel panel) {
         this.panel = panel;
 
         setLayout(new GridBagLayout());

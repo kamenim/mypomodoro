@@ -29,8 +29,6 @@ import org.mypomodoro.Main;
 
 public class MyIcon extends JLabel {
 
-    private static final long serialVersionUID = 20110814L;
-
     private static ImageIcon getIcon(String path) {
         return new ImageIcon(Main.class.getResource(path));
     }

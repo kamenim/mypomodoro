@@ -20,7 +20,7 @@ import java.util.Date;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 
-public interface AbstractActivitiesPanel {
+public interface IListPanel {
 
     void refresh();
 

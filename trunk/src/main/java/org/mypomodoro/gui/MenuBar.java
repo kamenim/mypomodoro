@@ -28,8 +28,6 @@ import org.mypomodoro.menubar.ViewMenu;
  */
 public class MenuBar extends JMenuBar {
 
-    private static final long serialVersionUID = 20110814L;
-
     public MenuBar(MainPanel view) {
         add(new FileMenu(view));
         add(new ViewMenu(view));

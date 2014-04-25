@@ -25,8 +25,6 @@ import org.mypomodoro.util.ColorUtil;
 
 public class SplashScreen extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
-
     public SplashScreen() {
         setBackground(ColorUtil.WHITE);
         setLayout(new GridBagLayout());

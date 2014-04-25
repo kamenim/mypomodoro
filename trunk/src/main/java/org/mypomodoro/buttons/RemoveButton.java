@@ -33,7 +33,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class RemoveButton extends AbstractButton {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);

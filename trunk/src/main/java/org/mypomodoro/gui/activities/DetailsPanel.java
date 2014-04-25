@@ -26,7 +26,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
@@ -37,9 +37,8 @@ import org.mypomodoro.util.Labels;
  * Panel that displays information on the current Pomodoro
  *
  */
-public class DetailsPanel extends ActivityInformationPanel implements ActivityInformation {
+public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
-    private static final long serialVersionUID = 20110814L;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
     public DetailsPanel(ActivitiesPanel activitiesPanel) {

@@ -28,8 +28,6 @@ import org.mypomodoro.util.Restart;
  */
 public class RestartButton extends AbstractButton {
 
-    private static final long serialVersionUID = 20110814L;
-
     public RestartButton() {
         super(Labels.getString("Common.Restart"));
         addActionListener(new ActionListener() {

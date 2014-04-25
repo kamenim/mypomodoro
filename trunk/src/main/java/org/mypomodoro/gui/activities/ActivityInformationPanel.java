@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import org.mypomodoro.gui.ActivityInformation;
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
@@ -33,7 +33,7 @@ import org.mypomodoro.util.TimeConverter;
  * Activity information panel
  *
  */
-public class ActivityInformationPanel extends JPanel implements ActivityInformation {
+public class ActivityInformationPanel extends JPanel implements IActivityInformation {
 
     protected final JTextArea informationArea = new JTextArea();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();

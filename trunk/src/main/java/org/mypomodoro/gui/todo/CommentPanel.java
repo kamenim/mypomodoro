@@ -39,7 +39,6 @@ import org.mypomodoro.util.Labels;
  */
 public class CommentPanel extends ActivityInformationPanel {
 
-    private static final long serialVersionUID = 20110814L;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final GridBagConstraints gbc = new GridBagConstraints();
 

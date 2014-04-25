@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.AbstractActivitiesPanel;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
@@ -38,12 +38,11 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class MoveButton extends AbstractButton {
 
-    private static final long serialVersionUID = 20110814L;
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
-    public MoveButton(String label, final AbstractActivitiesPanel panel) {
+    public MoveButton(String label, final IListPanel panel) {
         super(label);
         setMinimumSize(BUTTON_SIZE);
         setPreferredSize(BUTTON_SIZE);
@@ -56,7 +55,7 @@ public class MoveButton extends AbstractButton {
         });
     }
 
-    public void move(final AbstractActivitiesPanel panel) {
+    public void move(final IListPanel panel) {
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             new Thread() { // This new thread is necessary for updating the progress bar

@@ -40,7 +40,6 @@ import org.mypomodoro.util.Labels;
  */
 public class UnplannedPanel extends CreatePanel {
 
-    private static final long serialVersionUID = 20110814L;
     private UnplannedActivityInputForm unplannedInputFormPanel;
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final ToDoPanel panel;

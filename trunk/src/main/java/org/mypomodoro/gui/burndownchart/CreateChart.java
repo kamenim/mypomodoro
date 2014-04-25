@@ -59,9 +59,7 @@ public class CreateChart extends JPanel {
 // TODO legend on charts?
 // TODO Scope line should not join burnup unless same value
 // TODO Axis X should be empty when no data submitted
-// TODO iterations    
-
-    private static final long serialVersionUID = 1L;
+// TODO iterations
 
     private JFreeChart charts;
     private ArrayList<Date> XAxisValues = new ArrayList<Date>();

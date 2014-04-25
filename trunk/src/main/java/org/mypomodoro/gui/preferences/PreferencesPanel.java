@@ -43,7 +43,6 @@ import org.mypomodoro.util.Labels;
 
 public class PreferencesPanel extends JPanel {
 
-    private static final long serialVersionUID = 20110814L;
     public static Preferences preferences = new Preferences();
     public static Labels labels;
     public static DateUtil dateUtil;

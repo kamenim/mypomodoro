@@ -41,7 +41,7 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
     public <E> ComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
 
-        comboBox.setRenderer(new DefaultListCellRenderer());
+        comboBox.setRenderer(new AbstractComboBoxRenderer());
 
         comboBox.addActionListener(new ActionListener() {
             @Override
