@@ -41,14 +41,14 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 public class TestMenu extends JMenu {
-    
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private final int nbTask = 300;
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public TestMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.Data"));
-        add(new TestDataItem(view));
+        add(new TestDataItem(view, 300));
+        add(new TestDataItem(view, 500));
+        add(new TestDataItem(view, 1000));
         add(new JSeparator());
         add(new ResetDataItem(view));
         addFocusListener(new FocusListener() {
@@ -67,7 +67,7 @@ public class TestMenu extends JMenu {
     // create test data
     class TestDataItem extends JMenuItem {
 
-        private void createTestData() {
+        private void createTestData(final int nbTask) {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
@@ -82,24 +82,27 @@ public class TestMenu extends JMenu {
                         Main.progressBar.getBar().setMaximum(nbTask);
 
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
-                        Integer[] iteration = new Integer[]{-1, 0, 1, 2, 3, 4};
+                        Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
                         Random rand = new Random();
                         int activityListValue = 0;
                         int todoListValue = 0;
                         int reportListValue = 0;
                         final StringBuilder progressText = new StringBuilder();
                         for (int i = 0; i < nbTask; i++) {
-                            int minusDay = rand.nextInt(20);
+                            int iteration = PreferencesPanel.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
+                            if (iteration == -1 && PreferencesPanel.preferences.getAgileMode()) {
+                                iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1
+                            }
                             final Activity a = new Activity(
                                     "Place" + " " + (rand.nextInt(10) + 1),
                                     "Author" + " " + (rand.nextInt(10) + 1),
                                     "Task" + " " + (i + 1),
                                     "",
-                                    (PreferencesPanel.preferences.getAgileMode() ? TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size())) : "Type" + " " + (rand.nextInt(10) + 1)),
+                                    (PreferencesPanel.preferences.getAgileMode() ? (iteration == -1 ? "Other" :TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
                                     rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
-                                    storypoint[rand.nextInt(storypoint.length)],
-                                    iteration[rand.nextInt(iteration.length)],
-                                    (!PreferencesPanel.preferences.getAgileMode() ? new Date() : (new DateTime(new Date()).minusDays(minusDay == 0 ? 1 : minusDay)).toDate()));  // any date in the past 20 days
+                                    PreferencesPanel.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
+                                    iteration,
+                                    (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
                             a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
                             a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
                             int actual = rand.nextInt(a.getEstimatedPoms());
@@ -112,29 +115,38 @@ public class TestMenu extends JMenu {
                             if (a.getIteration() == -1) {
                                 a.setStoryPoints(0);
                             }
-                            if (a.isCompleted()) { // Tasks for the Report list                             
+                            if (a.isCompleted()) { // Tasks for the Report list                           
                                 actual = actual == 0 ? 1 : actual;
                                 if (rand.nextBoolean()) { // once in a while set finished
                                     actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
                                 }
                                 a.setActualPoms(actual);
-                                Date dateCompleted = (new DateTime(a.getDate()).plusDays(minusDay == 0 ? 0 : rand.nextInt(minusDay))).toDate(); // any date between the date of creation / schedule and today (could be the same day) 
-                                ReportList.getList().add(a, dateCompleted);
+                                // Dates
+                                // Date Added must be older than Date Completed
+                                // Date Completed of iteration N must be older than Date completed of iteration N+1
+                                Date dateCompleted;
+                                if (iteration == -1) {
+                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate();
+                                } else {
+                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> minus 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
+                                }
+                                Date dateAdded = (new DateTime(new Date()).minusDays(iterations.length * 5)).toDate(); // simply withdraw enough days so no date completed is older than date added
+                                ReportList.getList().add(a, dateAdded, dateCompleted);
                                 reportListValue++;
-                            } else { // Task for the Activity and ToDo list
+                            } else { // Tasks for the Activity and ToDo list
                                 if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while set finished
                                         actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
                                         a.setActualPoms(actual);
                                     }
                                     if (a.getIteration() >= 0) {
-                                        a.setIteration(iteration[iteration.length - 1]); // use highest iteration number for tasks in the Iteration backlog
+                                        a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                     }
                                     ToDoList.getList().add(a);
                                     todoListValue++;
                                 } else { // Tasks for the Activity list 
                                     if (a.getIteration() >= 0) {
-                                        a.setIteration(iteration[iteration.length - 1] + 1); // use unstarted iteration number
+                                        a.setIteration(iterations[iterations.length - 1] + 1); // use unstarted iteration number
                                     }
                                     a.setOverestimatedPoms(0);
                                     a.setActualPoms(0);
@@ -192,13 +204,13 @@ public class TestMenu extends JMenu {
             }.start();
         }
 
-        public TestDataItem(final MainPanel view) {
+        public TestDataItem(final MainPanel view, final int nbTask) {
             super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    createTestData();
+                    createTestData(nbTask);
                 }
             });
         }
@@ -216,6 +228,7 @@ public class TestMenu extends JMenu {
                     ActivitiesDAO.getInstance().deleteAll();
                     Main.updateLists();
                     Main.updateViews();
+                    Main.updateComboBoxLists();
                 }
             });
         }

@@ -57,7 +57,6 @@ import org.mypomodoro.util.DateUtil;
  */
 public class CreateChart extends JPanel {
 // TODO legend on charts?
-// TODO Scope line should not join burnup unless same value
 // TODO Axis X should be empty when no data submitted
 // TODO iterations
 
@@ -81,7 +80,9 @@ public class CreateChart extends JPanel {
     public void create() {
         removeAll();
         totalStoryPoints = 0;
-        XAxisValues = getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            XAxisValues = getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
+        }
         for (Activity activity : ChartList.getList()) {
             totalStoryPoints += activity.getStoryPoints();
         }
@@ -91,7 +92,7 @@ public class CreateChart extends JPanel {
     }
 
     /**
-     * Retrieves list of dates minus exclusions
+     * Retrieves list of X-Axis date values
      *
      * @return list of dates
      */
@@ -111,11 +112,20 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
-        dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
-        for (int i = 1; i < XAxisValues.size() - 1; i++) {
-            dataset.addValue((Number) (Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
+            for (int i = 1; i < XAxisValues.size() - 1; i++) {
+                dataset.addValue((Number) (Math.round(storyPoints - i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+            }
+            dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            dataset.addValue((Number) storyPoints, label, configureInputForm.getStartIteration());
+            for (int i = 1; i < rangeSize - 1; i++) {
+                dataset.addValue((Number) (Math.round(storyPoints - i * (storyPoints / (rangeSize - 1)))), label, i + configureInputForm.getStartIteration());
+            }
+            dataset.addValue((Number) 0, label, configureInputForm.getEndIteration());
         }
-        dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
         return dataset;
     }
 
@@ -128,11 +138,20 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getBurnupTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = maxSumStoryPointsForScopeLine > totalStoryPoints && chooseInputForm.getScopeCheckBox().isSelected() ? maxSumStoryPointsForScopeLine : totalStoryPoints;
-        dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
-        for (int i = 1; i < XAxisValues.size() - 1; i++) {
-            dataset.addValue((Number) (Math.round(i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            dataset.addValue((Number) 0, label, new DateTime(XAxisValues.get(0)).getDayOfMonth());
+            for (int i = 1; i < XAxisValues.size() - 1; i++) {
+                dataset.addValue((Number) (Math.round(i * (storyPoints / (XAxisValues.size() - 1)))), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+            }
+            dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            dataset.addValue((Number) 0, label, configureInputForm.getStartIteration());
+            for (int i = 1; i < rangeSize - 1; i++) {
+                dataset.addValue((Number) (Math.round(i * (storyPoints / (rangeSize - 1)))), label, i + configureInputForm.getStartIteration());
+            }
+            dataset.addValue((Number) storyPoints, label, configureInputForm.getEndIteration());
         }
-        dataset.addValue((Number) storyPoints, label, new DateTime(XAxisValues.get(XAxisValues.size() - 1)).getDayOfMonth());
         return dataset;
     }
 
@@ -144,11 +163,22 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupScopeDataset() {
         String label = chooseInputForm.getScopeLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), getXAxisValues(configureInputForm.getStartDate(), configureInputForm.getEndDate()));
-        for (int i = 0; i < XAxisValues.size(); i++) {
-            dataset.addValue((Number) sumOfStoryPoints.get(i), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
-            if (maxSumStoryPointsForScopeLine < (Float) sumOfStoryPoints.get(i)) {
-                maxSumStoryPointsForScopeLine = (Float) sumOfStoryPoints.get(i);
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(XAxisValues);
+            for (int i = 0; i < XAxisValues.size(); i++) {
+                dataset.addValue((Number) sumOfStoryPoints.get(i), label, new DateTime(XAxisValues.get(i)).getDayOfMonth());
+                if (maxSumStoryPointsForScopeLine < (Float) sumOfStoryPoints.get(i)) {
+                    maxSumStoryPointsForScopeLine = (Float) sumOfStoryPoints.get(i);
+                }
+            }
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+            for (int i = 0; i < rangeSize; i++) {
+                dataset.addValue((Number) sumOfStoryPoints.get(i), label, i + configureInputForm.getStartIteration());
+                if (maxSumStoryPointsForScopeLine < (Float) sumOfStoryPoints.get(i)) {
+                    maxSumStoryPointsForScopeLine = (Float) sumOfStoryPoints.get(i);
+                }
             }
         }
         return dataset;
@@ -163,17 +193,28 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getPrimaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = totalStoryPoints;
-        for (Date date : XAxisValues) {
-            int day = new DateTime(date).dayOfMonth().get();
-            if (DateUtil.inFuture(date)) {
-                dataset.addValue((Number) 0, label, day);
-            } else {
-                dataset.addValue((Number) storyPoints, label, day);
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            for (Date date : XAxisValues) {
+                int day = new DateTime(date).dayOfMonth().get();
+                if (DateUtil.inFuture(date)) {
+                    dataset.addValue((Number) 0, label, day);
+                } else {
+                    dataset.addValue((Number) storyPoints, label, day);
+                }
+                for (Activity activity : ChartList.getList()) {
+                    if (activity.isCompleted()
+                            && DateUtil.isEquals(activity.getDateCompleted(), date)) {
+                        storyPoints -= activity.getStoryPoints();
+                    }
+                }
             }
-            for (Activity activity : ChartList.getList()) {
-                if (activity.isCompleted()
-                        && DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                    storyPoints -= activity.getStoryPoints();
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {            
+            for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+                dataset.addValue((Number) storyPoints, label, i);
+                for (Activity activity : ChartList.getList()) {
+                    if (activity.getIteration() == i) {
+                        storyPoints -= activity.getStoryPoints();
+                    }
                 }
             }
         }
@@ -189,17 +230,28 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getSecondaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float storyPoints = 0;
-        for (Date date : XAxisValues) {
-            int day = new DateTime(date).dayOfMonth().get();
-            if (DateUtil.inFuture(date)) {
-                dataset.addValue((Number) 0, label, day);
-            } else {
-                dataset.addValue((Number) storyPoints, label, day);
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            for (Date date : XAxisValues) {
+                int day = new DateTime(date).dayOfMonth().get();
+                if (DateUtil.inFuture(date)) {
+                    dataset.addValue((Number) 0, label, day);
+                } else {
+                    dataset.addValue((Number) storyPoints, label, day);
+                }
+                for (Activity activity : ChartList.getList()) {
+                    if (activity.isCompleted()
+                            && DateUtil.isEquals(activity.getDateCompleted(), date)) {
+                        storyPoints += activity.getStoryPoints();
+                    }
+                }
             }
-            for (Activity activity : ChartList.getList()) {
-                if (activity.isCompleted()
-                        && DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                    storyPoints += activity.getStoryPoints();
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            for (int i = configureInputForm.getStartIteration(); i <=configureInputForm.getEndIteration(); i++) {
+                dataset.addValue((Number) storyPoints, label, i);
+                for (Activity activity : ChartList.getList()) {
+                    if (activity.getIteration() == i) {
+                        storyPoints += activity.getStoryPoints();
+                    }
                 }
             }
         }

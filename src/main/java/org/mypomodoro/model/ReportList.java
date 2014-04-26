@@ -82,7 +82,8 @@ public final class ReportList extends AbstractActivities {
 
     // move from Report list to Activity list
     public void reopen(Activity activity) {
-        activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)  
+        activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)
+        activity.setIteration(-1); // reset iteration
         ActivityList.getList().add(activity);
         remove(activity);
     }
