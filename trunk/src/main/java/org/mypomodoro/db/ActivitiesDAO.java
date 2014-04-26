@@ -304,7 +304,7 @@ public class ActivitiesDAO {
         return activities;
     }
 
-    public ArrayList<Float> getSumOfStoryPointsOfActivitiesDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded) {
+    public ArrayList<Float> getSumOfStoryPointsOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
         ArrayList<Float> storyPoints = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
             try {
@@ -331,6 +331,34 @@ public class ActivitiesDAO {
             } finally {
                 database.unlock();
             }
+        }
+        return storyPoints;
+    }
+
+    public ArrayList<Float> getSumOfStoryPointsOfActivitiesIterationRange(int startIteration, int endIteration) {
+        ArrayList<Float> storyPoints = new ArrayList<Float>();
+        try {
+            // TODO problem with dates of iteration for scope. date_added < first date_completed of iteration?
+            database.lock();
+            for (int i = startIteration; i <= endIteration; i++) {
+                ResultSet rs = database.query("SELECT SUM(a.story_points) as sumOfStoryPoints FROM activities a "
+                        + "WHERE a.date_added < (SELECT MIN(b.date_completed) FROM activities b WHERE b.iteration =" + i + ")");
+                try {
+                    while (rs.next()) {
+                        storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
+                    }
+                } catch (SQLException ex) {
+                    logger.error("", ex);
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (SQLException ex) {
+                        logger.error("", ex);
+                    }
+                }
+            }
+        } finally {
+            database.unlock();
         }
         return storyPoints;
     }

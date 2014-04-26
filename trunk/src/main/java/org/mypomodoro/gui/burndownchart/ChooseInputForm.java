@@ -71,6 +71,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField secondaryYAxisColor = new JTextField();
     private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
     final JCheckBox burnupChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burn-up Chart"), true);
+    private final ComponentTitledBorder borderBurndupChart = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     // Burn-up Target Line form
     private final JPanel burnupTargetInputFormPanel = new JPanel();
     private JTextField burnupTargetLegend = new JTextField();
@@ -138,16 +139,15 @@ public class ChooseInputForm extends JPanel {
         c.weighty = 0.5;
         // Burnup        
         burnupChartCheckBox.setFocusPainted(false);
-        burnupChartCheckBox.setSelected(false);
-        ComponentTitledBorder border = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-        burnupChartInputFormPanel.setBorder(border);
+        burnupChartCheckBox.setSelected(false);        
+        burnupChartInputFormPanel.setBorder(borderBurndupChart);
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
         addBurndupChartFields(cChart);
         // Target
         burnupTargetCheckBox.setFocusPainted(false);
         burnupTargetCheckBox.setSelected(true);
-        border = new ComponentTitledBorder(burnupTargetCheckBox, burnupTargetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+        ComponentTitledBorder border = new ComponentTitledBorder(burnupTargetCheckBox, burnupTargetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
         burnupTargetInputFormPanel.setBorder(border);
         burnupTargetInputFormPanel.setLayout(new GridBagLayout());
         addBurnupTargetFields();
@@ -163,7 +163,9 @@ public class ChooseInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 burndownChartCheckBox.setSelected(burndownChartCheckBox.isSelected() && !scopeCheckBox.isSelected());
+                burnupChartCheckBox.setSelected(true);
                 borderBurndownChart.repaint();
+                borderBurndupChart.repaint();
             }
         });
         scopeInputFormPanel.setBorder(borderScope);
