@@ -516,12 +516,12 @@ public class Activity {
     }
 
     public boolean equals(Activity a) {
-        return a.getName().equalsIgnoreCase(getName())
-                && a.getType().equalsIgnoreCase(getType())
-                && a.getDescription().equalsIgnoreCase(getDescription())
-                && a.getNotes().equalsIgnoreCase(getNotes())
-                && a.getAuthor().equalsIgnoreCase(getAuthor())
-                && a.getPlace().equalsIgnoreCase(getPlace())
+        return a.getName().equals(getName())
+                && a.getType().equals(getType())
+                && a.getDescription().equals(getDescription())
+                && a.getNotes().equals(getNotes())
+                && a.getAuthor().equals(getAuthor())
+                && a.getPlace().equals(getPlace())
                 && a.getDate().getTime() == getDate().getTime()
                 && a.getDateCompleted().getTime() == getDateCompleted().getTime()
                 && a.getEstimatedPoms() == getEstimatedPoms()

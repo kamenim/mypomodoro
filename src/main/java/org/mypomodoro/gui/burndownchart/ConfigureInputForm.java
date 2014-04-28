@@ -22,6 +22,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
@@ -29,7 +31,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
@@ -67,6 +77,10 @@ public class ConfigureInputForm extends JPanel {
     private final JComboBox endIteration = new JComboBox();
     final JCheckBox iterationsCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Iterations"), true);
     private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    // Dimension
+    private final JPanel dimensionInputFormPanel = new JPanel();
+    private final JTextField chartWidth = new JTextField("680");
+    private final JTextField chartHeight = new JTextField("420");
     // Image form
     /*private final JPanel imageInputFormPanel = new JPanel();
      private final JPanel imageSizePanel = new JPanel();
@@ -91,6 +105,7 @@ public class ConfigureInputForm extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         addDatesInputFormPanel();
         addIterationsInputFormPanel();
+        addDimensionInputFormPanel();
     }
 
     private void addDatesInputFormPanel() {
@@ -139,20 +154,21 @@ public class ConfigureInputForm extends JPanel {
         add(iterationsInputFormPanel, c);
     }
 
-    /*private void addImageInputFormPanel() {
-     c.gridx = 0;
-     c.gridy = 5;
-     c.weightx = 1.0;
-     c.weighty = 0.5;
-     //c.gridwidth = 2;
-     imageCheckBox.setFocusPainted(false);
-     ComponentTitledBorder border = new ComponentTitledBorder(imageCheckBox, imageInputFormPanel, BorderFactory.createEtchedBorder());
-     imageInputFormPanel.setBorder(border);
-     imageInputFormPanel.setLayout(new GridBagLayout());
-     GridBagConstraints cImage = new GridBagConstraints();
-     addImageFields(cImage);
-     add(imageInputFormPanel, c);
-     }*/
+    private void addDimensionInputFormPanel() {
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        //c.gridwidth = 2;
+        TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
+        borderDimension.setTitleFont(getFont().deriveFont(Font.BOLD));
+        borderDimension.setTitle(Labels.getString("BurndownChartPanel.Dimension"));
+        dimensionInputFormPanel.setBorder(borderDimension);
+        dimensionInputFormPanel.setLayout(new GridBagLayout());
+        addDimensionFields();
+        add(dimensionInputFormPanel, c);
+    }
+    
     private void addDatesFields() {
         GridBagConstraints cChart = new GridBagConstraints();
         cChart.gridx = 0;
@@ -280,6 +296,36 @@ public class ConfigureInputForm extends JPanel {
             }
         });
         exclusion.add(reset, exclusiongbc);
+        datesInputFormPanel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                datesCheckBox.setSelected(true);
+                iterationsCheckBox.setSelected(false);
+                borderDates.repaint();
+                borderIterations.repaint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // no use
+            }
+        });
         datesInputFormPanel.add(exclusion, cChart);
     }
 
@@ -339,7 +385,81 @@ public class ConfigureInputForm extends JPanel {
         });
         endIteration.setRenderer(new AbstractComboBoxRenderer());
         iterations.add(endIteration, iterationsgbc);
+        iterationsInputFormPanel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                datesCheckBox.setSelected(false);
+                iterationsCheckBox.setSelected(true);
+                borderDates.repaint();
+                borderIterations.repaint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // no use
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // no use
+            }
+        });
         iterationsInputFormPanel.add(iterations, cChart);
+    }
+
+    private void addDimensionFields() {
+        GridBagConstraints cChart = new GridBagConstraints();
+        cChart.gridx = 0;
+        cChart.gridy = 0;
+        cChart.weightx = 1.0;
+        cChart.weighty = 0.5;
+        // Iterations
+        JPanel dimension = new JPanel();
+        dimension.setLayout(new GridBagLayout());
+        GridBagConstraints dimensionsgbc = new GridBagConstraints();
+        FormLabel dimensionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Dimension") + "*: ");
+        dimensionlabel.setMinimumSize(LABEL_DIMENSION);
+        dimensionlabel.setPreferredSize(LABEL_DIMENSION);
+        dimensionsgbc.gridx = 0;
+        dimensionsgbc.gridy = 0;
+        dimensionsgbc.weightx = 1.0;
+        dimensionsgbc.weighty = 0.5;
+        dimension.add(dimensionlabel, dimensionsgbc);
+        dimensionsgbc.gridx = 1;
+        dimensionsgbc.gridy = 0;
+        dimensionsgbc.weightx = 1.0;
+        dimensionsgbc.weighty = 0.5;
+        chartWidth.setBackground(ColorUtil.WHITE);
+        chartWidth.setPreferredSize(new Dimension(40, 25));
+        chartWidth.setHorizontalAlignment(SwingConstants.RIGHT);
+        ((AbstractDocument) chartWidth.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
+        dimension.add(chartWidth, dimensionsgbc);
+        dimensionsgbc.gridx = 2;
+        dimensionsgbc.gridy = 0;
+        dimensionsgbc.weightx = 1.0;
+        dimensionsgbc.weighty = 0.5;
+        dimension.add(new JLabel(" X "), dimensionsgbc);
+        dimensionsgbc.gridx = 3; 
+        dimensionsgbc.gridy = 0;
+        dimensionsgbc.weightx = 1.0;
+        dimensionsgbc.weighty = 0.5;
+        chartHeight.setBackground(ColorUtil.WHITE);
+        chartHeight.setPreferredSize(new Dimension(40, 25));
+        chartHeight.setHorizontalAlignment(SwingConstants.RIGHT);
+        ((AbstractDocument) chartHeight.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
+        dimension.add(chartHeight, dimensionsgbc);
+        dimensionInputFormPanel.add(dimension, cChart);
     }
 
     // Getters
@@ -382,131 +502,33 @@ public class ConfigureInputForm extends JPanel {
     public int getEndIteration() {
         return (Integer) endIteration.getSelectedItem();
     }
-
-    /*private void addImageFields(GridBagConstraints cImage) {
-     // Image name
-     cImage.gridx = 0;
-     cImage.gridy = 0;
-     //cImage.weighty = 0.5;
-     FormLabel imageNamelabel = new FormLabel(
-     Labels.getString("BurndownChartPanel.Name") + ": ");
-     imageNamelabel.setMinimumSize(LABEL_DIMENSION);
-     imageNamelabel.setPreferredSize(LABEL_DIMENSION);
-     imageInputFormPanel.add(imageNamelabel, cImage);
-     cImage.gridx = 1;
-     cImage.gridy = 0;
-     //cImage.weighty = 0.5;
-     imageName = new JTextField();
-     imageName.setText(defaultImageName);
-     imageName.setMinimumSize(COMBO_BOX_DIMENSION);
-     imageName.setPreferredSize(COMBO_BOX_DIMENSION);
-     imageInputFormPanel.add(imageName, cImage);
-     // Image formats
-     cImage.gridx = 0;
-     cImage.gridy = 1;
-     //cImage.weighty = 0.5;
-     FormLabel imageFormatLabel = new FormLabel(
-     Labels.getString("BurndownChartPanel.Format") + ": ");
-     imageFormatLabel.setMinimumSize(LABEL_DIMENSION);
-     imageFormatLabel.setPreferredSize(LABEL_DIMENSION);
-     imageInputFormPanel.add(imageFormatLabel, cImage);
-     cImage.gridx = 1;
-     cImage.gridy = 1;
-     //cImage.weighty = 0.5;
-     Object imageFormats[] = new Object[]{PNGFormat, JPGFormat};
-     imageFormatComboBox = new JComboBox(imageFormats);
-     imageFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
-     imageFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
-     imageFormatComboBox.setBackground(ColorUtil.WHITE);
-     imageInputFormPanel.add(imageFormatComboBox, cImage);
-     // Image size
-     cImage.gridx = 0;
-     cImage.gridy = 2;
-     //cImage.weighty = 0.5;
-     FormLabel imageSizelabel = new FormLabel(
-     Labels.getString("BurndownChartPanel.Size") + ": ");
-     imageSizelabel.setMinimumSize(LABEL_DIMENSION);
-     imageSizelabel.setPreferredSize(LABEL_DIMENSION);
-     imageInputFormPanel.add(imageSizelabel, cImage);
-     cImage.gridx = 1;
-     cImage.gridy = 2;
-     //cImage.weighty = 0.5;
-     cImage.anchor = GridBagConstraints.WEST;
-     imageSizePanel.setLayout(new GridBagLayout());
-     GridBagConstraints cImageSize = new GridBagConstraints();
-     cImageSize.gridx = 0;
-     cImageSize.gridy = 0;
-     imageWidth.setText("" + defaultImageWidth);
-     imageWidth.setFont(new Font(getFont().getName(), Font.BOLD,
-     getFont().getSize()));
-     imageWidth.setMinimumSize(IMAGE_SIZE_DIMENSION);
-     imageWidth.setPreferredSize(IMAGE_SIZE_DIMENSION);
-     imageSizePanel.add(imageWidth, cImageSize);
-     cImageSize.gridx = 1;
-     cImageSize.gridy = 0;
-     imageSizePanel.add(new JLabel(" X "), cImageSize);
-     cImageSize.gridx = 2;
-     cImageSize.gridy = 0;
-     imageHeight.setText("" + defaultImageHeight);
-     imageHeight.setFont(new Font(getFont().getName(), Font.BOLD,
-     getFont().getSize()));
-     imageHeight.setMinimumSize(IMAGE_SIZE_DIMENSION);
-     imageHeight.setPreferredSize(IMAGE_SIZE_DIMENSION);
-     imageSizePanel.add(imageHeight, cImageSize);
-     imageInputFormPanel.add(imageSizePanel, cImage);
-     }
     
-     private class ImageFormat {
+    public int getChartWidth() {
+       return chartWidth.getText().isEmpty() ? 0 : Integer.parseInt(chartWidth.getText());
+    }
+    
+    public int getChartHeight() {
+       return chartHeight.getText().isEmpty() ? 0 : Integer.parseInt(chartHeight.getText());
+    }
+}
 
-     public static final String PNGExtention = "png";
-     public static final String JPGExtention = "jpg";
-     private final String formatName;
-     private final String extention;
+/**
+ * Filter that makes JtextField fields allow integers only
+ *
+ */
+class IntegerDocumentFilter extends DocumentFilter {
 
-     public ImageFormat(String formatName, String extention) {
-     this.formatName = formatName;
-     this.extention = extention;
-     }
+    @Override
+    public void insertString(FilterBypass fb, int off, String str, AttributeSet attr)
+            throws BadLocationException {
+        // remove non-digits
+        fb.insertString(off, str.replaceAll("\\D++", ""), attr);
+    }
 
-     public String getExtention() {
-     return extention;
-     }
-
-     public boolean isPNGFormat() {
-     return extention.equals(PNGExtention);
-     }
-
-     public boolean isJPGFormat() {
-     return extention.equals(JPGExtention);
-     }
-
-     @Override
-     public String toString() {
-     return formatName;
-     }
-     }
-
-     public String getImageExtention() {
-     return ((ImageFormat) imageFormatComboBox.getSelectedItem()).getExtention();
-     }
-
-     public boolean isFilePNGFormat() {
-     return ((ImageFormat) imageFormatComboBox.getSelectedItem()).isPNGFormat();
-     }
-
-     public boolean isFileJPGFormat() {
-     return ((ImageFormat) imageFormatComboBox.getSelectedItem()).isJPGFormat();
-     }
-
-     public String getImageName() {
-     return imageName.getText().trim();
-     }
-
-     public void initImageName() {
-     imageName.setText(defaultImageName);
-     }
-
-     public JCheckBox getImageCheckBox() {
-     return imageCheckBox;
-     }*/
+    @Override
+    public void replace(FilterBypass fb, int off, int len, String str, AttributeSet attr)
+            throws BadLocationException {
+        // remove non-digits
+        fb.replace(off, len, str.replaceAll("\\D++", ""), attr);
+    }
 }

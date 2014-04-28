@@ -312,8 +312,7 @@ public class ActivitiesDAO {
                 for (Date date : datesToBeIncluded) {
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
-                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis() + " "
-                            + "ORDER BY date_added ASC"); // from oldest to newest
+                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
                             storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
@@ -338,14 +337,18 @@ public class ActivitiesDAO {
     public ArrayList<Float> getSumOfStoryPointsOfActivitiesIterationRange(int startIteration, int endIteration) {
         ArrayList<Float> storyPoints = new ArrayList<Float>();
         try {
-            // TODO problem with dates of iteration for scope. date_added < first date_completed of iteration?
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
-                ResultSet rs = database.query("SELECT SUM(a.story_points) as sumOfStoryPoints FROM activities a "
-                        + "WHERE a.date_added < (SELECT MIN(b.date_completed) FROM activities b WHERE b.iteration =" + i + ")");
+                /*ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
+                        + "WHERE date_added < (SELECT MIN(date_completed) FROM activities WHERE is_complete = 'true' AND iteration = " + i + ")");*/
+                ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
+                        + "INNER JOIN "
+                        + "(SELECT MIN(date_completed) as minDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "ON activities.date_added < SubQuery.minDateCompleted");
                 try {
-                    while (rs.next()) {
+                    while (rs.next()) {                        
                         storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
+                        System.err.println("storyPoints = " + storyPoints);
                     }
                 } catch (SQLException ex) {
                     logger.error("", ex);
