@@ -46,7 +46,7 @@ public class TestMenu extends JMenu {
 
     public TestMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.Data"));
-        add(new TestDataItem(view, 300));
+        add(new TestDataItem(view, 100));
         add(new TestDataItem(view, 500));
         add(new TestDataItem(view, 1000));
         add(new JSeparator());
@@ -98,7 +98,7 @@ public class TestMenu extends JMenu {
                                     "Author" + " " + (rand.nextInt(10) + 1),
                                     "Task" + " " + (i + 1),
                                     "",
-                                    (PreferencesPanel.preferences.getAgileMode() ? (iteration == -1 ? "Other" :TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
+                                    (PreferencesPanel.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
                                     rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
                                     PreferencesPanel.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                     iteration,
