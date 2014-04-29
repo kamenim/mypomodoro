@@ -32,7 +32,7 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class CompleteToDoButton extends AbstractButton {
-    
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {

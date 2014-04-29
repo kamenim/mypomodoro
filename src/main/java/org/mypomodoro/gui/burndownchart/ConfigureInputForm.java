@@ -168,7 +168,7 @@ public class ConfigureInputForm extends JPanel {
         addDimensionFields();
         add(dimensionInputFormPanel, c);
     }
-    
+
     private void addDatesFields() {
         GridBagConstraints cChart = new GridBagConstraints();
         cChart.gridx = 0;
@@ -450,7 +450,7 @@ public class ConfigureInputForm extends JPanel {
         dimensionsgbc.weightx = 1.0;
         dimensionsgbc.weighty = 0.5;
         dimension.add(new JLabel(" X "), dimensionsgbc);
-        dimensionsgbc.gridx = 3; 
+        dimensionsgbc.gridx = 3;
         dimensionsgbc.gridy = 0;
         dimensionsgbc.weightx = 1.0;
         dimensionsgbc.weighty = 0.5;
@@ -502,13 +502,13 @@ public class ConfigureInputForm extends JPanel {
     public int getEndIteration() {
         return (Integer) endIteration.getSelectedItem();
     }
-    
+
     public int getChartWidth() {
-       return chartWidth.getText().isEmpty() ? 0 : Integer.parseInt(chartWidth.getText());
+        return chartWidth.getText().isEmpty() ? 0 : Integer.parseInt(chartWidth.getText());
     }
-    
+
     public int getChartHeight() {
-       return chartHeight.getText().isEmpty() ? 0 : Integer.parseInt(chartHeight.getText());
+        return chartHeight.getText().isEmpty() ? 0 : Integer.parseInt(chartHeight.getText());
     }
 }
 

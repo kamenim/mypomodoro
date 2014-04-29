@@ -37,7 +37,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
  *
  */
 public final class MainPanel extends JFrame {
-    
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public static final int FRAME_WIDTH = 780;

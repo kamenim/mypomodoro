@@ -85,7 +85,7 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ActivitiesPanel extends JPanel implements IListPanel {
-    
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);

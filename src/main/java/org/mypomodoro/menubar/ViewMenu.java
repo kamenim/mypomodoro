@@ -34,7 +34,7 @@ import org.mypomodoro.util.Labels;
 
 //View Menu
 public class ViewMenu extends JMenu {
-    
+
     private final MainPanel view;
 
     public ViewMenu(final MainPanel view) {
