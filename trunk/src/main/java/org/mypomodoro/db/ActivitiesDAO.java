@@ -284,6 +284,7 @@ public class ActivitiesDAO {
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE iteration >= " + startIteration + " "
                     + "AND iteration <= " + endIteration + " "
+                    + "AND (priority > -1 OR is_complete = 'true') "
                     + "ORDER BY iteration ASC"); // from lowest to highest
             try {
                 while (rs.next()) {
@@ -340,15 +341,16 @@ public class ActivitiesDAO {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
                 /*ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
-                        + "WHERE date_added < (SELECT MIN(date_completed) FROM activities WHERE is_complete = 'true' AND iteration = " + i + ")");*/
+                 + "WHERE date_added < (SELECT MIN(date_completed) FROM activities WHERE is_complete = 'true' AND iteration = " + i + ")");*/
                 ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
                         + "INNER JOIN "
-                        + "(SELECT MIN(date_completed) as minDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "(SELECT MIN(date_completed) as minDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + " GROUP BY iteration) SubQuery "
                         + "ON activities.date_added < SubQuery.minDateCompleted");
                 try {
-                    while (rs.next()) {                        
-                        storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
-                        System.err.println("storyPoints = " + storyPoints);
+                    while (rs.next()) {
+                        Float sumOfStoryPoints = (Float) rs.getFloat("sumOfStoryPoints");
+                        sumOfStoryPoints = sumOfStoryPoints == 0 && i > startIteration ? storyPoints.get(storyPoints.size() - 1) : sumOfStoryPoints; // iteration no yet started
+                        storyPoints.add(sumOfStoryPoints);
                     }
                 } catch (SQLException ex) {
                     logger.error("", ex);

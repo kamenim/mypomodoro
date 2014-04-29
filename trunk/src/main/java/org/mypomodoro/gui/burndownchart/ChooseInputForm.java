@@ -140,7 +140,7 @@ public class ChooseInputForm extends JPanel {
         c.weighty = 0.5;
         // Burnup        
         burnupChartCheckBox.setFocusPainted(false);
-        burnupChartCheckBox.setSelected(false);        
+        burnupChartCheckBox.setSelected(false);
         burnupChartInputFormPanel.setBorder(borderBurnupChart);
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();

@@ -28,6 +28,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
@@ -50,10 +51,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 
 /**
- * Burndown, burnup, target and scope line charts
- *
- * Code examples (JFreeChart) :
- * http://www.java2s.com/Code/Java/Chart/CatalogChart.htm
+ * Creates Burndown, burnup, target and scope line charts
  *
  */
 public class CreateChart extends JPanel {
@@ -81,6 +79,7 @@ public class CreateChart extends JPanel {
     public void create() {
         removeAll();
         totalStoryPoints = 0;
+        maxSumStoryPointsForScopeLine = 0;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             XAxisDateValues = getXAxisDateValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
         }
@@ -101,18 +100,29 @@ public class CreateChart extends JPanel {
      * @return list of dates
      */
     private ArrayList<Date> getXAxisDateValues(Date dateStart, Date dateEnd) {
-        return DateUtil.getDatesWithExclusions(dateStart, dateEnd,
+        ArrayList<Date> dates = DateUtil.getDatesWithExclusions(dateStart, dateEnd,
                 configureInputForm.getExcludeSaturdays().isSelected(),
                 configureInputForm.getExcludeSundays().isSelected(),
                 configureInputForm.getExcludedDates());
+        if (dates.size() > 30) { // more than 30 days
+            int modulo = 5;
+            while (dates.size() > modulo * 30) {
+                modulo = modulo + 5;
+            }
+            ArrayList<Date> datesToDisplay = new ArrayList<Date>();
+            for (int i = 0; i < dates.size(); i++) {
+                int day = new DateTime(dates.get(i)).getDayOfMonth();
+                if (i == 0 || i == dates.size() - 1 || day == 1 || day % modulo == 0) { // keeps first day of selection and month, last day of selection and 5th of the month, 10th of the month, 15th, 20th, 25th, 30th...
+                    datesToDisplay.add(dates.get(i));
+                }
+            }
+            dates = datesToDisplay;
+        }
+        return dates;
     }
 
-    private int getXAxisDateValue(int XAxisIndex) {
-    //private Date getXAxisDateValue(int XAxisIndex) {
-        //private ComparableCustomDateForXAxis getXAxisDateValue(int XAxisIndex) {
-        return new DateTime(XAxisDateValues.get(XAxisIndex)).getDayOfMonth();
-        //return XAxisDateValues.get(XAxisIndex);
-        //return new ComparableCustomDateForXAxis(XAxisDateValues.get(XAxisIndex));
+    private Comparable getXAxisDateValue(int XAxisIndex) {
+        return new ComparableCustomDateForXAxis(XAxisDateValues.get(XAxisIndex));
     }
 
     /**
@@ -149,7 +159,7 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupTargetDataset() {
         String label = chooseInputForm.getBurnupTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        float storyPoints = maxSumStoryPointsForScopeLine > totalStoryPoints && chooseInputForm.getScopeCheckBox().isSelected() ? maxSumStoryPointsForScopeLine : totalStoryPoints;
+        float storyPoints = chooseInputForm.getScopeCheckBox().isSelected() ? maxSumStoryPointsForScopeLine : totalStoryPoints;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             dataset.addValue((Number) 0, label, getXAxisDateValue(0));
             for (int i = 1; i < XAxisDateValues.size() - 1; i++) {
@@ -184,12 +194,13 @@ public class CreateChart extends JPanel {
                 }
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            //int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
             ArrayList<Float> sumOfStoryPoints = ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
-            for (int i = 0; i < rangeSize; i++) {
+            for (int i = 0; i < sumOfStoryPoints.size(); i++) {
                 dataset.addValue((Number) sumOfStoryPoints.get(i), label, i + configureInputForm.getStartIteration());
                 if (maxSumStoryPointsForScopeLine < (Float) sumOfStoryPoints.get(i)) {
                     maxSumStoryPointsForScopeLine = (Float) sumOfStoryPoints.get(i);
+                    System.err.println(maxSumStoryPointsForScopeLine);
                 }
             }
         }
@@ -305,13 +316,16 @@ public class CreateChart extends JPanel {
         }
 
         // Customise the plot
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        CategoryPlot plot = (CategoryPlot) chart.getCategoryPlot();
         plot.setBackgroundPaint(ColorUtil.WHITE);
 
         // Customise the X/Category axis
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
         categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD));
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45); // display diagonally
+        }
 
         //////////////////// X-AXIS //////////////////////////
         // Burndown chart
@@ -472,18 +486,4 @@ public class CreateChart extends JPanel {
         }
         return chart;
     }
-
-    /*public void saveImageChart(String fileName) {
-     int imageWidth = 800;
-     int imageHeight = 600;
-     try {
-     ChartUtilities.saveChartAsPNG(new File(fileName), charts, imageWidth, imageHeight);
-     } catch (IOException ex) {
-     logger.error("", ex);
-     String title = Labels.getString("Common.Error");
-     String message = Labels.getString("BurndownChartPanel.Image creation failed");
-     JOptionPane.showConfirmDialog(Main.gui, message, title,
-     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-     }
-     }*/
 }

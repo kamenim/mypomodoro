@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Dimension;
@@ -23,23 +22,21 @@ import org.jfree.chart.JFreeChart;
 
 /**
  *
- * 
+ *
  */
 public class CustomChartPanel extends ChartPanel {
-    
-    //private Dimension dimension = new Dimension(super.getPreferredSize().getWidth(), super.getPreferredSize().getHeight());
 
+    //private Dimension dimension = new Dimension(super.getPreferredSize().getWidth(), super.getPreferredSize().getHeight());
     public CustomChartPanel(JFreeChart chart) {
         super(chart);
     }
-    
+
     /*@Override
-    public void setPreferredSize(Dimension dimension) {
-        this.dimension = dimension;
-    }*/
-    
+     public void setPreferredSize(Dimension dimension) {
+     this.dimension = dimension;
+     }*/
     /*@Override
-    public Dimension getPreferredSize() {
-        return dimension;
-    }*/
+     public Dimension getPreferredSize() {
+     return dimension;
+     }*/
 }

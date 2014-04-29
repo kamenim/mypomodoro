@@ -180,7 +180,7 @@ public class CompoundIcon implements Icon {
     public Icon getIcon(int index) {
         return icons[ index];
     }
-    
+
     /**
      * Gets the width of this icon.
      *
