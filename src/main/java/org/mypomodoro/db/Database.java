@@ -40,13 +40,13 @@ public class Database {
     private String connectionStatement = "jdbc:sqlite:pomodoro.db";
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
-    // Database specific
+    // SQLLite database specific
     private String autoIncrementKeyword = "AUTOINCREMENT";
     private String longInteger = "INTEGER";
     public String selectStatementSeqId = "SELECT seq FROM sqlite_sequence WHERE name = 'activities'";
     public String sequenceIdName = "seq";
     /*
-     Postgresql
+     // Postgresql database specific
      autoIncrementKeyword = "???";
      longInteger = "???";
      selectStatementSeqId = "SELECT CURRVAL(pg_get_serial_sequence('activities','id'))";
@@ -58,7 +58,7 @@ public class Database {
             driverClassName = "com.mysql.jdbc.Driver";
             connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
                     + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();
-            // Database specific
+            // MySQL database specific
             autoIncrementKeyword = "AUTO_INCREMENT";
             longInteger = "BIGINT";
             selectStatementSeqId = "SELECT LAST_INSERT_ID()";

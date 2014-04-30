@@ -634,6 +634,9 @@ public class CheckPanel extends JPanel implements IListPanel {
             // Start wait cursor
             WaitCursor.startWaitCursor();
             try {
+                if (table.getRowCount() == 0) {
+                    currentSelectedRow = 0;
+                }
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
                 initTable();

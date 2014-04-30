@@ -362,6 +362,11 @@ public class ConfigureInputForm extends JPanel {
                 if ((Integer) startIteration.getSelectedItem() > (Integer) endIteration.getSelectedItem()) {
                     endIteration.setSelectedItem(startIteration.getSelectedItem());
                 }
+                // select iterations check box whenever the combo box is used
+                datesCheckBox.setSelected(false);
+                iterationsCheckBox.setSelected(true);
+                borderDates.repaint();
+                borderIterations.repaint();
             }
         });
         startIteration.setRenderer(new AbstractComboBoxRenderer());
@@ -381,10 +386,16 @@ public class ConfigureInputForm extends JPanel {
                 if ((Integer) endIteration.getSelectedItem() < (Integer) startIteration.getSelectedItem()) {
                     startIteration.setSelectedItem(endIteration.getSelectedItem());
                 }
+                // select iterations check box whenever the combo box is used
+                datesCheckBox.setSelected(false);
+                iterationsCheckBox.setSelected(true);
+                borderDates.repaint();
+                borderIterations.repaint();
             }
         });
         endIteration.setRenderer(new AbstractComboBoxRenderer());
         iterations.add(endIteration, iterationsgbc);
+        // select iterations check box whenever the panel is selected
         iterationsInputFormPanel.addMouseListener(new MouseListener() {
 
             @Override
