@@ -423,7 +423,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 controlPane.setEnabledAt(index, false);
             }
         } else {
-            // select first activity
             int currentRow = table.convertRowIndexToView(currentSelectedRow);
             table.setRowSelectionInterval(currentRow, currentRow);
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
@@ -692,6 +691,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
             // Start wait cursor
             WaitCursor.startWaitCursor();
             try {
+                if (table.getRowCount() == 0) {
+                    currentSelectedRow = 0;
+                }
                 if (fromDatabase) {
                     ReportList.getList().refresh();
                 }

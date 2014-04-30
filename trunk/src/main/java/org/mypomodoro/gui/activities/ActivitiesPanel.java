@@ -715,6 +715,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             // Start wait cursor
             WaitCursor.startWaitCursor();
             try {
+                if (table.getRowCount() == 0) {
+                    currentSelectedRow = 0;
+                }
                 if (fromDatabase) {
                     ActivityList.getList().refresh();
                 }

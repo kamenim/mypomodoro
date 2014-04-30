@@ -83,6 +83,7 @@ public class TestMenu extends JMenu {
 
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
                         Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
+                        Integer[] iterationsForActivities = new Integer[]{-1, -1, -1, iterations.length - 1, iterations.length};
                         Random rand = new Random();
                         int activityListValue = 0;
                         int todoListValue = 0;
@@ -91,7 +92,7 @@ public class TestMenu extends JMenu {
                         for (int i = 0; i < nbTask; i++) {
                             int iteration = PreferencesPanel.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
                             if (iteration == -1 && PreferencesPanel.preferences.getAgileMode()) {
-                                iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1
+                                iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1                               
                             }
                             final Activity a = new Activity(
                                     "Place" + " " + (rand.nextInt(10) + 1),
@@ -126,11 +127,11 @@ public class TestMenu extends JMenu {
                                 // Date Completed of iteration N must be older than Date completed of iteration N+1
                                 Date dateCompleted;
                                 if (iteration == -1) {
-                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate();
+                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate(); // up to 35 days older than today
                                 } else {
-                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> minus 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
+                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
                                 }
-                                Date dateAdded = (new DateTime(new Date()).minusDays(iterations.length * 5)).toDate(); // simply withdraw enough days so no date completed is older than date added
+                                Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
                                 ReportList.getList().add(a, dateAdded, dateCompleted);
                                 reportListValue++;
                             } else { // Tasks for the Activity and ToDo list
@@ -144,10 +145,9 @@ public class TestMenu extends JMenu {
                                     }
                                     ToDoList.getList().add(a);
                                     todoListValue++;
-                                } else { // Tasks for the Activity list 
-                                    if (a.getIteration() >= 0) {
-                                        a.setIteration(iterations[iterations.length - 1] + 1); // use unstarted iteration number
-                                    }
+                                } else { // Tasks for the Activity list
+                                    iteration = PreferencesPanel.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
+                                    a.setIteration(iteration);
                                     a.setOverestimatedPoms(0);
                                     a.setActualPoms(0);
                                     ActivityList.getList().add(a, a.getDate());
