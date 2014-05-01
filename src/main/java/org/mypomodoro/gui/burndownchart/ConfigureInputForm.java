@@ -50,7 +50,7 @@ import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- * Export form
+ * Configure chart form
  *
  */
 public class ConfigureInputForm extends JPanel {
@@ -90,7 +90,10 @@ public class ConfigureInputForm extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         addDatesInputFormPanel();
         addIterationsInputFormPanel();
-        addDimensionInputFormPanel();
+        if (!PreferencesPanel.preferences.getAgileMode()) {
+            iterationsInputFormPanel.setVisible(false);
+        }
+        addImageInputFormPanel();
     }
 
     private void addDatesInputFormPanel() {
@@ -139,7 +142,7 @@ public class ConfigureInputForm extends JPanel {
         add(iterationsInputFormPanel, c);
     }
 
-    private void addDimensionInputFormPanel() {
+    private void addImageInputFormPanel() {
         c.gridx = 0;
         c.gridy = 2;
         c.weightx = 1.0;
@@ -147,7 +150,7 @@ public class ConfigureInputForm extends JPanel {
         //c.gridwidth = 2;
         TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
         borderDimension.setTitleFont(getFont().deriveFont(Font.BOLD));
-        borderDimension.setTitle(Labels.getString("BurndownChartPanel.Dimension"));
+        borderDimension.setTitle(Labels.getString("BurndownChartPanel.Image"));
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());
         addDimensionFields();

@@ -43,9 +43,9 @@ public class ViewMenu extends JMenu {
         add(new ActivityListItem());
         add(new ToDoListItem());
         add(new ReportListItem());
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        //if (PreferencesPanel.preferences.getAgileMode()) {
             add(new BurndownChartItem());
-        }
+        //}
         addFocusListener(new FocusListener() {
 
             @Override

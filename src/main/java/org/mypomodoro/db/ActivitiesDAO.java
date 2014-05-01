@@ -311,11 +311,11 @@ public class ActivitiesDAO {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
-                    ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
+                    ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
                             + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
-                            storyPoints.add((Float) rs.getFloat("sumOfStoryPoints"));
+                            storyPoints.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
                         logger.error("", ex);
@@ -339,14 +339,14 @@ public class ActivitiesDAO {
         try {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
-                ResultSet rs = database.query("SELECT SUM(story_points) as sumOfStoryPoints FROM activities "
+                ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
                         + "INNER JOIN "
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                 try {
                     while (rs.next()) {
-                        Float sumOfStoryPoints = (Float) rs.getFloat("sumOfStoryPoints");
-                        sumOfStoryPoints = i > startIteration && sumOfStoryPoints == 0 ? storyPoints.get(storyPoints.size() - 1) : sumOfStoryPoints; // iteration no yet started : using points of the previous iteration
+                        Float sumOfStoryPoints = (Float) rs.getFloat("sum");
+                        sumOfStoryPoints = i > startIteration && sumOfStoryPoints == 0 ? storyPoints.get(storyPoints.size() - 1) : sumOfStoryPoints; // iteration no yet started : using sum of the previous iteration
                         storyPoints.add(sumOfStoryPoints);
                     }
                 } catch (SQLException ex) {
@@ -363,6 +363,67 @@ public class ActivitiesDAO {
             database.unlock();
         }
         return storyPoints;
+    }
+    
+    public ArrayList<Float> getSumOfPomodorosOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
+        ArrayList<Float> storyPoints = new ArrayList<Float>();
+        if (datesToBeIncluded.size() > 0) {
+            try {
+                database.lock();
+                for (Date date : datesToBeIncluded) {
+                    // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
+                    ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
+                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                    try {
+                        while (rs.next()) {
+                            storyPoints.add((Float) rs.getFloat("sum"));
+                        }
+                    } catch (SQLException ex) {
+                        logger.error("", ex);
+                    } finally {
+                        try {
+                            rs.close();
+                        } catch (SQLException ex) {
+                            logger.error("", ex);
+                        }
+                    }
+                }
+            } finally {
+                database.unlock();
+            }
+        }
+        return storyPoints;
+    }
+    
+    public ArrayList<Float> getSumOfPomodorosOfActivitiesIterationRange(int startIteration, int endIteration) {
+        ArrayList<Float> pomodoros = new ArrayList<Float>();
+        try {
+            database.lock();
+            for (int i = startIteration; i <= endIteration; i++) {
+                ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
+                        + "INNER JOIN "
+                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                try {
+                    while (rs.next()) {
+                        Float sumOfPomodoros = (Float) rs.getFloat("sum");
+                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? pomodoros.get(pomodoros.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
+                        pomodoros.add(sumOfPomodoros);
+                    }
+                } catch (SQLException ex) {
+                    logger.error("", ex);
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (SQLException ex) {
+                        logger.error("", ex);
+                    }
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return pomodoros;
     }
 
     public void deleteAllReports() {
