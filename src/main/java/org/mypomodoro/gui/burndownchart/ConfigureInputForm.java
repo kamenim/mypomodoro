@@ -66,7 +66,7 @@ public class ConfigureInputForm extends JPanel {
     protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);
-    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), true);
+    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), false);
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     final JCheckBox datesCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Dates"), true);
@@ -81,21 +81,6 @@ public class ConfigureInputForm extends JPanel {
     private final JPanel dimensionInputFormPanel = new JPanel();
     private final JTextField chartWidth = new JTextField("680");
     private final JTextField chartHeight = new JTextField("420");
-    // Image form
-    /*private final JPanel imageInputFormPanel = new JPanel();
-     private final JPanel imageSizePanel = new JPanel();
-     private JTextField imageName = new JTextField();
-     private final String defaultImageName = "myAgilePomodoro";
-     private JComboBox imageFormatComboBox = new JComboBox();
-     private final ImageFormat PNGFormat = new ImageFormat("PNG",
-     ImageFormat.PNGExtention);
-     private final ImageFormat JPGFormat = new ImageFormat("JPG",
-     ImageFormat.JPGExtention);
-     private final JTextField imageWidth = new JTextField();
-     private final JTextField imageHeight = new JTextField();
-     private final int defaultImageWidth = 800;
-     private final int defaultImageHeight = 600;
-     private final JCheckBox imageCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Image"), true);*/
 
     public ConfigureInputForm() {
         setLayout(new GridBagLayout());

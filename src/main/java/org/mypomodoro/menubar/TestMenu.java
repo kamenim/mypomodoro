@@ -81,7 +81,7 @@ public class TestMenu extends JMenu {
                         Main.progressBar.getBar().setValue(0);
                         Main.progressBar.getBar().setMaximum(nbTask);
 
-                        Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f, 8f, 13f, 20f};
+                        Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f};
                         Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
                         Integer[] iterationsForActivities = new Integer[]{-1, -1, -1, iterations.length - 1, iterations.length};
                         Random rand = new Random();

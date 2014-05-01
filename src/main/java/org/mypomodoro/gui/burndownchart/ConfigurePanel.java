@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel to generate burndown charts
@@ -78,31 +79,33 @@ public class ConfigurePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabbedPane.setEnabledAt(2, true);
-                tabbedPane.setSelectedIndex(2);
-                SwingUtilities.invokeLater(new Runnable() {
+                if (!WaitCursor.isStarted()) {
+                    tabbedPane.setEnabledAt(2, true);
+                    tabbedPane.setSelectedIndex(2);
+                    SwingUtilities.invokeLater(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        if (configureInputForm.getDatesCheckBox().isSelected()) {
-                            ArrayList<Date> datesToBeIncluded = DateUtil.getDatesWithExclusions(configureInputForm.getStartDate(),
-                                    configureInputForm.getEndDate(),
-                                    configureInputForm.getExcludeSaturdays().isSelected(),
-                                    configureInputForm.getExcludeSundays().isSelected(),
-                                    configureInputForm.getExcludedDates());
-                            ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getExcludeToDos().isSelected());
-                        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-                            ChartList.getList().refreshIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+                        @Override
+                        public void run() {
+                            if (configureInputForm.getDatesCheckBox().isSelected()) {
+                                ArrayList<Date> datesToBeIncluded = DateUtil.getDatesWithExclusions(configureInputForm.getStartDate(),
+                                        configureInputForm.getEndDate(),
+                                        configureInputForm.getExcludeSaturdays().isSelected(),
+                                        configureInputForm.getExcludeSundays().isSelected(),
+                                        configureInputForm.getExcludedDates());
+                                ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getExcludeToDos().isSelected());
+                            } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+                                ChartList.getList().refreshIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+                            }
                         }
-                    }
-                });
-                SwingUtilities.invokeLater(new Runnable() {
+                    });
+                    SwingUtilities.invokeLater(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        checkPanel.refresh();
-                    }
-                });
+                        @Override
+                        public void run() {
+                            checkPanel.refresh();
+                        }
+                    });
+                }
             }
         });
         add(createButton, gbc);

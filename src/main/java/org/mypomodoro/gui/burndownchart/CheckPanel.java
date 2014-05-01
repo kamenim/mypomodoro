@@ -460,12 +460,13 @@ public class CheckPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                chart.create();
-                /*if (createInputForm.getImageCheckBox().isSelected()) {
-                 chart.saveImageChart((createInputForm.getImageName().length() != 0 ? createInputForm.getImageName() : "myAgilePomodoro") + ".png");
-                 }*/
-                tabbedPane.setEnabledAt(3, true);
-                tabbedPane.setSelectedIndex(3);
+                if (!WaitCursor.isStarted()) {
+                    if (ChartList.getList().size() > 0) {
+                        chart.create();
+                        tabbedPane.setEnabledAt(3, true);
+                        tabbedPane.setSelectedIndex(3);
+                    }
+                }
             }
         });
         scrollPane.add(checkButton, gbc);
@@ -474,8 +475,6 @@ public class CheckPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        /*ImportPanel importPanel = new ImportPanel(this);
-         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);*/
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         showSelectedItemDetails(detailsPanel);
