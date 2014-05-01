@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
+import org.mypomodoro.gui.burndownchart.types.StoryPointChart;
+import org.mypomodoro.gui.burndownchart.types.IChartType;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -27,19 +29,25 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import org.mypomodoro.gui.burndownchart.types.PomodoroChart;
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.Labels;
 
 /**
- * Export form
+ * Choose Chart type form
  *
  */
 public class ChooseInputForm extends JPanel {
+    // TODO fix layout
+    // TODO fix pomdoro chart type
 
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 20);
@@ -48,13 +56,14 @@ public class ChooseInputForm extends JPanel {
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private JTextField primaryYAxisName = new JTextField();
-    private final String defaultPrimaryYAxisName = Labels.getString("BurndownChartPanel.Story Points");
+    private String defaultPrimaryYAxisName = "";
     private JTextField primaryYAxisLegend = new JTextField();
-    private final String defaultPrimaryYAxisLegend = Labels.getString("BurndownChartPanel.Story Points");
+    private String defaultPrimaryYAxisLegend = "";
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     final JCheckBox burndownChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burndown Chart"), true);
     private final ComponentTitledBorder borderBurndownChart = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final JComboBox chartTypesBurndownComboBox = new JComboBox();
     // Burndown Target Line form
     private final JPanel targetInputFormPanel = new JPanel();
     private JTextField targetLegend = new JTextField();
@@ -127,7 +136,7 @@ public class ChooseInputForm extends JPanel {
         addTargetFields();
         cChart.gridx = 0;
         cChart.gridy = 3; // see addBurndownChartFields
-        cChart.gridwidth = 2; // see addBurndownChartFields
+        cChart.gridwidth = 3; // see addBurndownChartFields
         burndownChartInputFormPanel.add(targetInputFormPanel, cChart);
         add(burndownChartInputFormPanel, c);
     }
@@ -178,18 +187,41 @@ public class ChooseInputForm extends JPanel {
         add(burnupChartInputFormPanel, c);
     }
 
-    private void addBurndownChartFields(final GridBagConstraints cChart) {
-        // Primary Y axis
-        // Name
+    private void addBurndownChartFields(final GridBagConstraints cChart) {        
+        // Types
+        chartTypesBurndownComboBox.setRenderer(new AbstractComboBoxRenderer());
+        if (PreferencesPanel.preferences.getAgileMode()) {
+            chartTypesBurndownComboBox.addItem(new StoryPointChart());
+            defaultPrimaryYAxisName = new StoryPointChart().getYLegend();        
+            defaultPrimaryYAxisLegend = new StoryPointChart().getXLegend();
+        } else {            
+            defaultPrimaryYAxisName = new PomodoroChart().getYLegend();        
+            defaultPrimaryYAxisLegend = new PomodoroChart().getXLegend();
+        }
+        chartTypesBurndownComboBox.addItem(new PomodoroChart());
+        chartTypesBurndownComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                primaryYAxisName.setText(((IChartType)chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
+                primaryYAxisLegend.setText(((IChartType)chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
+            }
+        });
         cChart.gridx = 0;
         cChart.gridy = 0;
+        cChart.gridheight = 3;
+        burndownChartInputFormPanel.add(chartTypesBurndownComboBox, cChart);        
+        // Primary Y axis
+        // Name
+        cChart.gridx = 1;
+        cChart.gridy = 0;        
+        cChart.gridheight = 1;
         //cChart.weighty = 0.5;
         FormLabel primaryYAxisLabel = new FormLabel(
-                "Y1-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
+                "Y-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
         primaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         primaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartInputFormPanel.add(primaryYAxisLabel, cChart);
-        cChart.gridx = 1;
+        cChart.gridx = 2;
         cChart.gridy = 0;
         //cChart.weighty = 0.5;
         primaryYAxisName = new JTextField();
@@ -198,15 +230,16 @@ public class ChooseInputForm extends JPanel {
         primaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
         burndownChartInputFormPanel.add(primaryYAxisName, cChart);
         // Legend
-        cChart.gridx = 0;
-        cChart.gridy = 1;
+        cChart.gridx = 1;
+        cChart.gridy = 1;        
+        cChart.gridheight = 1;
         //cChart.weighty = 0.5;
         FormLabel legendLabel = new FormLabel(
                 "X-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
         legendLabel.setMinimumSize(LABEL_DIMENSION);
         legendLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartInputFormPanel.add(legendLabel, cChart);
-        cChart.gridx = 1;
+        cChart.gridx = 2;
         cChart.gridy = 1;
         //cChart.weighty = 0.5;
         primaryYAxisLegend = new JTextField();
@@ -215,15 +248,16 @@ public class ChooseInputForm extends JPanel {
         primaryYAxisLegend.setPreferredSize(COMBO_BOX_DIMENSION);
         burndownChartInputFormPanel.add(primaryYAxisLegend, cChart);
         // Color
-        cChart.gridx = 0;
-        cChart.gridy = 2;
+        cChart.gridx = 1;
+        cChart.gridy = 2;        
+        cChart.gridheight = 1;
         //cChart.weighty = 0.5;
         FormLabel colorLabel = new FormLabel(
                 Labels.getString("BurndownChartPanel.Color") + ": ");
         colorLabel.setMinimumSize(LABEL_DIMENSION);
         colorLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartInputFormPanel.add(colorLabel, cChart);
-        cChart.gridx = 1;
+        cChart.gridx = 2;
         cChart.gridy = 2;
         //cChart.weighty = 0.5;
         cChart.anchor = GridBagConstraints.WEST;
@@ -255,7 +289,7 @@ public class ChooseInputForm extends JPanel {
         cChart.gridy = 0;
         //cChart.weighty = 0.5;
         FormLabel secondaryYAxisLabel = new FormLabel(
-                "Y2-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
+                "Y-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
         secondaryYAxisLabel.setMinimumSize(LABEL_DIMENSION);
         secondaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
         burnupChartInputFormPanel.add(secondaryYAxisLabel, cChart);
@@ -545,6 +579,10 @@ public class ChooseInputForm extends JPanel {
 
     public String getSecondaryYAxisLegend() {
         return secondaryYAxisLegend.getText();
+    }
+    
+    public IChartType getChartType() {
+        return (IChartType)chartTypesBurndownComboBox.getSelectedItem();
     }
 
 }
