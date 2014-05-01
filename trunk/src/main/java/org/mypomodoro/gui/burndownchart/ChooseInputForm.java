@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
@@ -73,13 +72,13 @@ public class ChooseInputForm extends JPanel {
     private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
     final JCheckBox burnupChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burn-up Chart"), true);
     private final ComponentTitledBorder borderBurnupChart = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-    // Burn-up Target Line form
-    private final JPanel burnupTargetInputFormPanel = new JPanel();
-    private JTextField burnupTargetLegend = new JTextField();
-    private final String defaultBurnupTargetLegend = Labels.getString("BurndownChartPanel.Target");
-    private JTextField burnupTargetColor = new JTextField();
-    private final Color defaultBurnupTargetColor = ColorUtil.BLACK;
-    private final JCheckBox burnupTargetCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
+    // Burn-up Guide Line form
+    private final JPanel burnupGuideInputFormPanel = new JPanel();
+    private JTextField burnupGuideLegend = new JTextField();
+    private final String defaultBurnupGuideLegend = Labels.getString("BurndownChartPanel.Guide");
+    private JTextField burnupGuideColor = new JTextField();
+    private final Color defaultBurnupGuideColor = ColorUtil.BLACK;
+    private final JCheckBox burnupGuideCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Guide"), true);
     // Burn-up Scope Line form
     private final JPanel scopeInputFormPanel = new JPanel();
     private JTextField scopeLegend = new JTextField();
@@ -145,17 +144,17 @@ public class ChooseInputForm extends JPanel {
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
         addBurnupChartFields(cChart);
-        // Target
-        burnupTargetCheckBox.setFocusPainted(false);
-        burnupTargetCheckBox.setSelected(true);
-        ComponentTitledBorder border = new ComponentTitledBorder(burnupTargetCheckBox, burnupTargetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-        burnupTargetInputFormPanel.setBorder(border);
-        burnupTargetInputFormPanel.setLayout(new GridBagLayout());
-        addBurnupTargetFields();
+        // Guide
+        burnupGuideCheckBox.setFocusPainted(false);
+        burnupGuideCheckBox.setSelected(true);
+        ComponentTitledBorder border = new ComponentTitledBorder(burnupGuideCheckBox, burnupGuideInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+        burnupGuideInputFormPanel.setBorder(border);
+        burnupGuideInputFormPanel.setLayout(new GridBagLayout());
+        addBurnupGuideFields();
         cChart.gridx = 0;
         cChart.gridy = 3; // see addBurnupChartFields
         cChart.gridwidth = 2; // see addBurnupChartFields
-        burnupChartInputFormPanel.add(burnupTargetInputFormPanel, cChart);
+        burnupChartInputFormPanel.add(burnupGuideInputFormPanel, cChart);
         // Scope
         scopeCheckBox.setFocusPainted(false);
         scopeCheckBox.setSelected(false);
@@ -373,7 +372,7 @@ public class ChooseInputForm extends JPanel {
         targetInputFormPanel.add(targetColor, cChart);
     }
 
-    private void addBurnupTargetFields() {
+    private void addBurnupGuideFields() {
         GridBagConstraints cChart = new GridBagConstraints();
         // Target
         // Legend
@@ -384,15 +383,15 @@ public class ChooseInputForm extends JPanel {
                 "X-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
         legendLabel.setMinimumSize(LABEL_DIMENSION);
         legendLabel.setPreferredSize(LABEL_DIMENSION);
-        burnupTargetInputFormPanel.add(legendLabel, cChart);
+        burnupGuideInputFormPanel.add(legendLabel, cChart);
         cChart.gridx = 1;
         cChart.gridy = 0;
         //cChart.weighty = 0.5;
-        burnupTargetLegend = new JTextField();
-        burnupTargetLegend.setText(defaultBurnupTargetLegend);
-        burnupTargetLegend.setMinimumSize(COMBO_BOX_DIMENSION);
-        burnupTargetLegend.setPreferredSize(COMBO_BOX_DIMENSION);
-        burnupTargetInputFormPanel.add(burnupTargetLegend, cChart);
+        burnupGuideLegend = new JTextField();
+        burnupGuideLegend.setText(defaultBurnupGuideLegend);
+        burnupGuideLegend.setMinimumSize(COMBO_BOX_DIMENSION);
+        burnupGuideLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        burnupGuideInputFormPanel.add(burnupGuideLegend, cChart);
         // Color
         cChart.gridx = 0;
         cChart.gridy = 1;
@@ -401,30 +400,30 @@ public class ChooseInputForm extends JPanel {
                 Labels.getString("BurndownChartPanel.Color") + ": ");
         colorLabel.setMinimumSize(LABEL_DIMENSION);
         colorLabel.setPreferredSize(LABEL_DIMENSION);
-        burnupTargetInputFormPanel.add(colorLabel, cChart);
+        burnupGuideInputFormPanel.add(colorLabel, cChart);
         cChart.gridx = 1;
         cChart.gridy = 1;
         //cChart.weighty = 0.5;
         cChart.anchor = GridBagConstraints.WEST;
-        burnupTargetColor = new JTextField();
-        burnupTargetColor.setEditable(false);
-        burnupTargetColor.setBackground(defaultBurnupTargetColor);
-        burnupTargetColor.setMinimumSize(COLOR_SIZE_DIMENSION);
-        burnupTargetColor.setPreferredSize(COLOR_SIZE_DIMENSION);
-        burnupTargetColor.addMouseListener(new MouseAdapter() {
+        burnupGuideColor = new JTextField();
+        burnupGuideColor.setEditable(false);
+        burnupGuideColor.setBackground(defaultBurnupGuideColor);
+        burnupGuideColor.setMinimumSize(COLOR_SIZE_DIMENSION);
+        burnupGuideColor.setPreferredSize(COLOR_SIZE_DIMENSION);
+        burnupGuideColor.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 Color newColor = JColorChooser.showDialog(
-                        burnupTargetColor,
+                        burnupGuideColor,
                         Labels.getString("BurndownChartPanel.Choose a color"),
-                        burnupTargetColor.getBackground());
+                        burnupGuideColor.getBackground());
                 if (newColor != null) {
-                    burnupTargetColor.setBackground(newColor);
+                    burnupGuideColor.setBackground(newColor);
                 }
             }
         });
-        burnupTargetInputFormPanel.add(burnupTargetColor, cChart);
+        burnupGuideInputFormPanel.add(burnupGuideColor, cChart);
     }
 
     private void addScopeFields() {
@@ -492,8 +491,8 @@ public class ChooseInputForm extends JPanel {
         return targetCheckBox;
     }
 
-    public JCheckBox getBurnupTargetCheckBox() {
-        return burnupTargetCheckBox;
+    public JCheckBox getBurnupGuideCheckBox() {
+        return burnupGuideCheckBox;
     }
 
     public JCheckBox getScopeCheckBox() {
@@ -516,8 +515,8 @@ public class ChooseInputForm extends JPanel {
         return scopeColor.getBackground();
     }
 
-    public Color getBurnupTargetColor() {
-        return burnupTargetColor.getBackground();
+    public Color getBurnupGuideColor() {
+        return burnupGuideColor.getBackground();
     }
 
     public String getPrimaryYAxisName() {
@@ -532,8 +531,8 @@ public class ChooseInputForm extends JPanel {
         return targetLegend.getText();
     }
 
-    public String getBurnupTargetLegend() {
-        return burnupTargetLegend.getText();
+    public String getBurnupGuideLegend() {
+        return burnupGuideLegend.getText();
     }
 
     public String getScopeLegend() {

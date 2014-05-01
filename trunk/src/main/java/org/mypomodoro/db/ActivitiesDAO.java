@@ -284,7 +284,6 @@ public class ActivitiesDAO {
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE iteration >= " + startIteration + " "
                     + "AND iteration <= " + endIteration + " "
-                    + "AND is_complete = 'true' "
                     + "ORDER BY iteration ASC"); // from lowest to highest
             try {
                 while (rs.next()) {
