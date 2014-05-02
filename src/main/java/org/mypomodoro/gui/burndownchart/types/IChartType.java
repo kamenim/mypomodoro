@@ -18,25 +18,28 @@ package org.mypomodoro.gui.burndownchart.types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import org.mypomodoro.model.Activity;
 
 /**
  * Interface for types of Chart data
- * 
+ *
  */
 public interface IChartType {
-    
-    String getYLegend();    
-    
+
+    String getYLegend();
+
     String getXLegend();
-    
+
+    float getValue(Activity activity);
+
     float getTotalForBurndown();
-    
+
     float getTotalForBurnup();
-    
-    ArrayList<Float> getSumDateRange(ArrayList<Date> dates);
-    
-    ArrayList<Float> getSumIterationRange(int startIteraation, int endIteration);
-    
+
+    ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates);
+
+    ArrayList<Float> getSumIterationRangeForScope(int startIteraation, int endIteration);
+
     @Override
     String toString();
 }

@@ -19,17 +19,19 @@ package org.mypomodoro.gui.burndownchart.types;
 import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 
 /**
- * Story points chart type
+ * Effective Hours chart type
  *
  */
-public class StoryPointChart implements IChartType {
+public class PlainHourChart implements IChartType {
 
-    private final String label = Labels.getString("BurndownChartPanel.Story Points");
+    private final String label = Labels.getString("BurndownChartPanel.Plain Hours");
 
     @Override
     public String getYLegend() {
@@ -43,14 +45,14 @@ public class StoryPointChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return activity.getStoryPoints();
+        return TimeConverter.calculatePlainMinutes(activity.getActualPoms() * PreferencesPanel.preferences.getPomodoroLength()) / 60;
     }
 
     @Override
     public float getTotalForBurndown() {
         float total = 0;
         for (Activity activity : ChartList.getList()) {
-            total += activity.getStoryPoints();
+            total += TimeConverter.calculatePlainMinutes((activity.getEstimatedPoms() + activity.getOverestimatedPoms()) * PreferencesPanel.preferences.getPomodoroLength()) / 60;
         }
         return total;
     }
@@ -60,7 +62,7 @@ public class StoryPointChart implements IChartType {
         float total = 0;
         for (Activity activity : ChartList.getList()) {
             if (activity.isCompleted()) {
-                total += activity.getStoryPoints();
+                total += TimeConverter.calculatePlainMinutes(activity.getActualPoms() * PreferencesPanel.preferences.getPomodoroLength()) / 60;
             }
         }
         return total;
@@ -68,12 +70,21 @@ public class StoryPointChart implements IChartType {
 
     @Override
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
-        return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(dates);
+        ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
+        for (int i = 0; i < sum.size(); i++) {
+            int y = sum.get(i).intValue();
+            sum.set(i, new Float(TimeConverter.calculatePlainMinutes(sum.get(i).intValue() * PreferencesPanel.preferences.getPomodoroLength()) / 60));
+        }
+        return sum;
     }
 
     @Override
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
-        return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesIterationRange(startIteration, endIteration);
+        ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesIterationRange(startIteration, endIteration);
+        for (int i = 0; i < sum.size(); i++) {
+            sum.set(i, new Float(TimeConverter.calculatePlainMinutes(sum.get(i).intValue() * PreferencesPanel.preferences.getPomodoroLength()) / 60));
+        }
+        return sum;
     }
 
     @Override

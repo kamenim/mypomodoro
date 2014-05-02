@@ -24,12 +24,12 @@ import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
 
 /**
- * Story points chart type
+ * Tasks chart type
  *
  */
-public class StoryPointChart implements IChartType {
+public class TaskChart implements IChartType {
 
-    private final String label = Labels.getString("BurndownChartPanel.Story Points");
+    private final String label = Labels.getString("BurndownChartPanel.Tasks");
 
     @Override
     public String getYLegend() {
@@ -43,37 +43,33 @@ public class StoryPointChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return activity.getStoryPoints();
+        return activity.isCompleted() ? 1 : 0;
     }
 
     @Override
     public float getTotalForBurndown() {
-        float total = 0;
-        for (Activity activity : ChartList.getList()) {
-            total += activity.getStoryPoints();
-        }
-        return total;
+        return ChartList.getList().size();
     }
 
     @Override
     public float getTotalForBurnup() {
-        float total = 0;
+        int total = 0;
         for (Activity activity : ChartList.getList()) {
             if (activity.isCompleted()) {
-                total += activity.getStoryPoints();
+                total++;
             }
         }
-        return total;
+        return new Float(total);
     }
 
     @Override
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
-        return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(dates);
+        return ActivitiesDAO.getInstance().getSumOfTasksOfActivitiesDateRange(dates);
     }
 
     @Override
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
-        return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesIterationRange(startIteration, endIteration);
+        return ActivitiesDAO.getInstance().getSumOfTasksOfActivitiesIterationRange(startIteration, endIteration);
     }
 
     @Override
