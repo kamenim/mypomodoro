@@ -54,7 +54,7 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 public class CreateChart extends JPanel {
-// TODO fix problem with guide when iteration doesn't start at 0
+// TODO fix problem with burnup : values on Bar change when changing the dates/iterations
 
     private JFreeChart charts;
     private ArrayList<Date> XAxisDateValues = new ArrayList<Date>();
@@ -138,6 +138,36 @@ public class CreateChart extends JPanel {
         return dataset;
     }
 
+    private CategoryDataset createBurnupGuideDataset() {
+        String label = chooseInputForm.getBurnupGuideLegend();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            int size = XAxisDateValues.size() - 1;
+            for (int i = 0; i < XAxisDateValues.size(); i++) {
+                Date date = XAxisDateValues.get(i);
+                if (DateUtil.inFuture(date)) {
+                    break;
+                }
+                size = i + 1;
+            }
+            if (size > 1) {
+                for (int i = 0; i < XAxisDateValues.size(); i++) {
+                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
+                }
+            }
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            int size = configureInputForm.getEndIteration() + 1;
+            if (size > 1) {
+                for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
+                }
+            }
+        }
+        return dataset;
+    }
+
     /**
      * Creates burn-up Scope line chart
      *
@@ -199,39 +229,6 @@ public class CreateChart extends JPanel {
                     }
                 }
                 dataset.addValue((Number) total, label, i);
-            }
-        }
-        return dataset;
-    }
-
-    private CategoryDataset createBurnupGuideDataset() {
-        String label = chooseInputForm.getBurnupGuideLegend();
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
-            int size = XAxisDateValues.size() - 1;
-            for (int i = 0; i < XAxisDateValues.size(); i++) {
-                Date date = XAxisDateValues.get(i);
-                if (DateUtil.inFuture(date)) {
-                    break;
-                }
-                size = i + 1;
-            }
-            System.err.println("totalForBurnup = " + totalForBurnup);
-            if (size > 1) {
-                for (int i = 0; i < XAxisDateValues.size(); i++) {
-                    // use double to make the values more accurate (tooltip disable - see renderer)
-                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
-                    System.err.println("i = " + i);
-                    System.err.println("new Double((i + 1) * (totalForBurnup / size)) = " + new Double((i + 1) * (totalForBurnup / size)));
-                }
-            }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
-            if (size > 1) {
-                for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
-                    // use double to make the values more accurate (tooltip disable - see renderer)
-                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
-                }
             }
         }
         return dataset;
