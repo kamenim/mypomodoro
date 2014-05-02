@@ -51,9 +51,9 @@ public class IconBar extends JPanel {
                 Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Report"), "reportButton",
                 view.getReportListPanel()));
         //if (PreferencesPanel.preferences.getAgileMode()) {
-            myIcons.add(MyIcon.getInstance(view,
-                    Labels.getString("IconBar.Burndown Chart"), "burndownButton",
-                    view.getChartTabbedPanel()));
+        myIcons.add(MyIcon.getInstance(view,
+                Labels.getString("IconBar.Burndown Chart"), "burndownButton",
+                view.getChartTabbedPanel()));
         //}
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(getWidth(), 80));

@@ -34,8 +34,8 @@ import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.calculateEffectiveHours;
-import static org.mypomodoro.util.TimeConverter.calculatePlainHours;
+import static org.mypomodoro.util.TimeConverter.calculateEffectiveMinutes;
+import static org.mypomodoro.util.TimeConverter.calculatePlainMinutes;
 import static org.mypomodoro.util.TimeConverter.convertToTime;
 
 /**
@@ -122,8 +122,8 @@ public class OverestimationInputForm extends JPanel {
     }
 
     private void displayLength(int overestimatedPomodoros) {
-        String effectiveHours = convertToTime(calculateEffectiveHours(overestimatedPomodoros));
-        String plainHours = convertToTime(calculatePlainHours(overestimatedPomodoros));
+        String effectiveHours = convertToTime(calculateEffectiveMinutes(overestimatedPomodoros));
+        String plainHours = convertToTime(calculatePlainMinutes(overestimatedPomodoros));
         if (PreferencesPanel.preferences.getPlainHours()) {
             overestimatedLengthLabel.setText(plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {

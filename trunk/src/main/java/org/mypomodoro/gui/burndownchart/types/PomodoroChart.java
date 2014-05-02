@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.gui.burndownchart.types;
 
 import java.util.ArrayList;
@@ -26,22 +25,27 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Pomodoro / Estimate chart type
- * 
+ *
  */
 public class PomodoroChart implements IChartType {
-    
+
     private final String label = Labels.getString("BurndownChartPanel.Pomodoros");
-    
+
     @Override
     public String getYLegend() {
         return label;
     }
-    
+
     @Override
     public String getXLegend() {
         return label;
     }
-    
+
+    @Override
+    public float getValue(Activity activity) {
+        return activity.getActualPoms();
+    }
+
     @Override
     public float getTotalForBurndown() {
         int total = 0;
@@ -50,30 +54,30 @@ public class PomodoroChart implements IChartType {
         }
         return new Float(total);
     }
-    
+
     @Override
     public float getTotalForBurnup() {
         int total = 0;
         for (Activity activity : ChartList.getList()) {
-            //if (activity.isFinished()) {
+            if (activity.isCompleted()) {
                 total += activity.getActualPoms();
-            //}
+            }
         }
         return new Float(total);
     }
-    
+
     @Override
-    public ArrayList<Float> getSumDateRange(ArrayList<Date> dates) {
+    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
         return ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
     }
-    
+
     @Override
-    public ArrayList<Float> getSumIterationRange(int startIteration, int endIteration) {
-        return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesIterationRange(startIteration, endIteration);
+    public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
+        return ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesIterationRange(startIteration, endIteration);
     }
-    
+
     @Override
-    public  String toString() {
+    public String toString() {
         return label;
     }
 }

@@ -25,6 +25,7 @@ import org.mypomodoro.gui.preferences.PreferencesPanel;
 public class TimeConverter {
 
     // Convertion minutes to duration
+    // @return time in format mm:hh; or d days if time > 1 day
     public static String convertToTime(int min) {
         String time;
         int days = min / (60 * 24);
@@ -42,15 +43,17 @@ public class TimeConverter {
     }
 
     // only pomodoros length
-    public static int calculateEffectiveHours(int estimate) {
-        return estimate * PreferencesPanel.preferences.getPomodoroLength();
+    // @return minutes
+    public static int calculateEffectiveMinutes(int pomodoros) {
+        return pomodoros * PreferencesPanel.preferences.getPomodoroLength();
     }
 
     // pomodoros length + breaks
-    public static int calculatePlainHours(int estimate) {
-        int nbLongBreaks = estimate / PreferencesPanel.preferences.getNbPomPerSet(); // one long break per set
-        int nbShortbreaks = estimate - nbLongBreaks; // on short break per pomodoro minus the long breaks
-        return calculateEffectiveHours(estimate)
+    // @return minutes
+    public static int calculatePlainMinutes(int pomodoros) {
+        int nbLongBreaks = pomodoros / PreferencesPanel.preferences.getNbPomPerSet(); // one long break per set
+        int nbShortbreaks = pomodoros - nbLongBreaks; // on short break per pomodoro minus the long breaks
+        return calculateEffectiveMinutes(pomodoros)
                 + nbShortbreaks * PreferencesPanel.preferences.getShortBreakLength()
                 + nbLongBreaks * PreferencesPanel.preferences.getLongBreakLength();
     }
@@ -58,9 +61,9 @@ public class TimeConverter {
     public static String getLength(int pomodoros) {
         String length;
         if (PreferencesPanel.preferences.getPlainHours()) {
-            length = convertToTime(calculatePlainHours(pomodoros));
+            length = convertToTime(calculatePlainMinutes(pomodoros));
         } else {
-            length = convertToTime(calculateEffectiveHours(pomodoros));
+            length = convertToTime(calculateEffectiveMinutes(pomodoros));
         }
         return length;
     }

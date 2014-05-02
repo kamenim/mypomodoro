@@ -44,7 +44,6 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
@@ -54,17 +53,19 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
-public class CreateChart extends JPanel { 
+public class CreateChart extends JPanel {
+// TODO fix problem with guide when iteration doesn't start at 0
 
     private JFreeChart charts;
     private ArrayList<Date> XAxisDateValues = new ArrayList<Date>();
-    private float totalForBurndown = 0; // this may include story points of ToDo tasks (providing ToDos are included - see configureInputForm)
+    private float totalForBurndown = 0; // this may include ToDo tasks (providing ToDos are included - see configureInputForm)
     private float totalForBurnup = 0;
     private ChartPanel chartPanel;
     private final ChooseInputForm chooseInputForm;
     private final ConfigureInputForm configureInputForm;
     private float maxSumForScopeLine = 0;
-    private IChartType chartType;
+    private IChartType burndownchartType;
+    private IChartType burnupchartType;
 
     public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
         this.chooseInputForm = chooseInputForm;
@@ -82,9 +83,10 @@ public class CreateChart extends JPanel {
             XAxisDateValues = getXAxisDateValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
         }
         // Get type
-        chartType = chooseInputForm.getChartType();
-        totalForBurndown = chartType.getTotalForBurndown();
-        totalForBurnup = chartType.getTotalForBurnup();
+        burndownchartType = chooseInputForm.getBurndownChartType();
+        burnupchartType = chooseInputForm.getBurnupChartType();
+        totalForBurndown = burndownchartType.getTotalForBurndown();
+        totalForBurnup = burnupchartType.getTotalForBurnup();
         maxSumForScopeLine = 0;
         charts = createChart();
         chartPanel = new ChartPanel(charts);
@@ -126,40 +128,12 @@ public class CreateChart extends JPanel {
             }
             dataset.addValue((Number) 0, label, getXAxisDateValue(XAxisDateValues.size() - 1));
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
-            for (int i = 0; i < rangeSize - 1; i++) {
+            int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            for (int i = 0; i < size - 1; i++) {
                 // use double to make the values more accurate (tooltip disable - see renderer)
-                dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (rangeSize - 1))), label, i + configureInputForm.getStartIteration());
+                dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (size - 1))), label, i + configureInputForm.getStartIteration());
             }
             dataset.addValue((Number) 0, label, configureInputForm.getEndIteration());
-        }
-        return dataset;
-    }
-    
-    private CategoryDataset createBurnupGuideDataset() {
-        String label = chooseInputForm.getBurnupGuideLegend();
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
-            int size = XAxisDateValues.size() - 1;
-            for (int i = 0; i < XAxisDateValues.size(); i++) {
-                Date date = XAxisDateValues.get(i);
-                if (DateUtil.inFuture(date)) {
-                    break;
-                }
-                size = i + 1;
-            }
-            if (size > 1) {
-                for (int i = 0; i < XAxisDateValues.size(); i++) {
-                    // use double to make the values more accurate (tooltip disable - see renderer)
-                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
-                }
-            }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int rangeSize = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
-            for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
-                // use double to make the values more accurate (tooltip disable - see renderer)
-                dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / rangeSize)), label, i);
-            }
         }
         return dataset;
     }
@@ -173,7 +147,7 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getScopeLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         if (configureInputForm.getDatesCheckBox().isSelected()) {
-            ArrayList<Float> sum = chartType.getSumDateRange(XAxisDateValues);
+            ArrayList<Float> sum = burnupchartType.getSumDateRangeForScope(XAxisDateValues);
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 dataset.addValue((Number) sum.get(i), label, getXAxisDateValue(i));
                 if (maxSumForScopeLine < (Float) sum.get(i)) {
@@ -181,7 +155,7 @@ public class CreateChart extends JPanel {
                 }
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            ArrayList<Float> sum = chartType.getSumIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+            ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
             for (int i = 0; i < sum.size(); i++) {
                 dataset.addValue((Number) sum.get(i), label, i + configureInputForm.getStartIteration());
                 if (maxSumForScopeLine < (Float) sum.get(i)) {
@@ -200,31 +174,64 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurndownChartDataset() {
         String label = chooseInputForm.getPrimaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        float storyPoints = totalForBurndown;
+        float total = totalForBurndown;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        if (activity.isCompleted() && 
-                                DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            storyPoints -= activity.getStoryPoints();
+                        if (activity.isCompleted()
+                                && DateUtil.isEquals(activity.getDateCompleted(), date)) {
+                            total -= burndownchartType.getValue(activity);
                         }
                     }
+                    dataset.addValue((Number) total, label, getXAxisDateValue(i));
                 } else {
-                    storyPoints = 0;
+                    dataset.addValue((Number) 0, label, getXAxisDateValue(i));
                 }
-                dataset.addValue((Number) storyPoints, label, getXAxisDateValue(i));
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.isCompleted() &&
-                            activity.getIteration() == i) {
-                        storyPoints -= activity.getStoryPoints();
+                    if (activity.isCompleted()
+                            && activity.getIteration() == i) {
+                        total -= burndownchartType.getValue(activity);
                     }
                 }
-                dataset.addValue((Number) storyPoints, label, i);
+                dataset.addValue((Number) total, label, i);
+            }
+        }
+        return dataset;
+    }
+
+    private CategoryDataset createBurnupGuideDataset() {
+        String label = chooseInputForm.getBurnupGuideLegend();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
+            int size = XAxisDateValues.size() - 1;
+            for (int i = 0; i < XAxisDateValues.size(); i++) {
+                Date date = XAxisDateValues.get(i);
+                if (DateUtil.inFuture(date)) {
+                    break;
+                }
+                size = i + 1;
+            }
+            System.err.println("totalForBurnup = " + totalForBurnup);
+            if (size > 1) {
+                for (int i = 0; i < XAxisDateValues.size(); i++) {
+                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
+                    System.err.println("i = " + i);
+                    System.err.println("new Double((i + 1) * (totalForBurnup / size)) = " + new Double((i + 1) * (totalForBurnup / size)));
+                }
+            }
+        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+            int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            if (size > 1) {
+                for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
+                }
             }
         }
         return dataset;
@@ -238,31 +245,33 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupChartDataset() {
         String label = chooseInputForm.getSecondaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        float storyPoints = 0;
+        float total = 0;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        if (activity.isCompleted() &&
-                                DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            storyPoints += activity.getStoryPoints();
+                        if (activity.isCompleted()
+                                && DateUtil.isEquals(activity.getDateCompleted(), date)) {
+                            total += burnupchartType.getValue(activity);
                         }
                     }
+                    dataset.addValue((Number) total, label, getXAxisDateValue(i));
+                    System.err.println("date = " + date);
+                    System.err.println("total = " + total);
                 } else {
-                    storyPoints = 0;
+                    dataset.addValue((Number) 0, label, getXAxisDateValue(i));
                 }
-                dataset.addValue((Number) storyPoints, label, getXAxisDateValue(i));
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.isCompleted() && 
-                            activity.getIteration() == i) {
-                        storyPoints += activity.getStoryPoints();
+                    if (activity.isCompleted()
+                            && activity.getIteration() == i) {
+                        total += burnupchartType.getValue(activity);
                     }
                 }
-                dataset.addValue((Number) storyPoints, label, i);
+                dataset.addValue((Number) total, label, i);
             }
         }
         return dataset;
@@ -336,7 +345,7 @@ public class CreateChart extends JPanel {
             burndownRangeAxis.setAutoRangeIncludesZero(true);
             burndownRangeAxis.setAxisLineVisible(false);
             // Margin for target not total points
-            float burndownRange = totalForBurndown;            
+            float burndownRange = totalForBurndown;
             burndownRangeAxis.setRange(0, burndownRange + burndownRange / 100); // add 1% margin on top
             TickUnits burndownCustomUnits = new TickUnits();
             // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
