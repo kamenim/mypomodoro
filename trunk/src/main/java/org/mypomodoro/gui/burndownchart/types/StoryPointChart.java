@@ -43,7 +43,7 @@ public class StoryPointChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return activity.getStoryPoints();
+        return activity.isCompleted() ? activity.getStoryPoints() : 0;
     }
 
     @Override
