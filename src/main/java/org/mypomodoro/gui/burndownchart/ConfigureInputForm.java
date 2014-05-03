@@ -188,6 +188,11 @@ public class ConfigureInputForm extends JPanel {
                     endDatePicker.setDate(startDatePicker.getDate());
                 }
                 endDatePicker.setDateWithLowerBounds(startDatePicker.getDate());
+                // select iterations check box whenever the combo box is used
+                datesCheckBox.setSelected(true);
+                iterationsCheckBox.setSelected(false);
+                borderDates.repaint();
+                borderIterations.repaint();
             }
         });
         dates.add(startDatePicker, datesgbc);
@@ -204,6 +209,11 @@ public class ConfigureInputForm extends JPanel {
                     startDatePicker.setDate(endDatePicker.getDate());
                 }
                 startDatePicker.setDateWithUpperBounds(endDatePicker.getDate());
+                // select iterations check box whenever the combo box is used
+                datesCheckBox.setSelected(true);
+                iterationsCheckBox.setSelected(false);
+                borderDates.repaint();
+                borderIterations.repaint();
             }
         });
         dates.add(endDatePicker, datesgbc);
