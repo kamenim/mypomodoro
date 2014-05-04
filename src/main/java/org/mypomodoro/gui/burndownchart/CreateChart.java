@@ -54,17 +54,22 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 public class CreateChart extends JPanel {
-
+// TODO problem scope and percentage : sum must be converted to percentage
     private JFreeChart charts;
     private ArrayList<Date> XAxisDateValues = new ArrayList<Date>();
     private float totalForBurndown = 0; // this may include ToDo tasks (providing ToDos are included - see configureInputForm)
+    private float totalForBurndownInPercentage = 0;
     private float totalForBurnup = 0;
+    private float initialTotalForBurnup = 0;
+    private float totalForBurnupInPercentage = 0;
     private ChartPanel chartPanel;
     private final ChooseInputForm chooseInputForm;
     private final ConfigureInputForm configureInputForm;
     private float maxSumForScopeLine = 0;
     private IChartType burndownchartType;
     private IChartType burnupchartType;
+    private boolean burndownChartPercentage = false;
+    private boolean burnupChartPercentage = false;
 
     public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
         this.chooseInputForm = chooseInputForm;
@@ -86,6 +91,25 @@ public class CreateChart extends JPanel {
         burnupchartType = chooseInputForm.getBurnupChartType();
         totalForBurndown = burndownchartType.getTotalForBurndown();
         totalForBurnup = burnupchartType.getTotalForBurnup();
+        burndownChartPercentage = chooseInputForm.getBurndownChartCheckBox().isSelected() && chooseInputForm.getBurndownChartPercentageCheckBox().isSelected();
+        if (burndownChartPercentage) {
+            totalForBurndownInPercentage = totalForBurndown;
+            totalForBurndown = 100;
+        }
+        burnupChartPercentage = chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getBurnupChartPercentageCheckBox().isSelected();
+        if (burnupChartPercentage) {
+            if (configureInputForm.getDatesCheckBox().isSelected()) {
+                ArrayList<Date> lastDateXAxisDateValues = new ArrayList<Date>();
+                lastDateXAxisDateValues.add(XAxisDateValues.get(XAxisDateValues.size() - 1));
+                ArrayList<Float> sum = burnupchartType.getSumDateRangeForScope(lastDateXAxisDateValues);
+                totalForBurnupInPercentage = sum.get(0);
+            } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+                ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(configureInputForm.getEndIteration(), configureInputForm.getEndIteration());
+                totalForBurnupInPercentage = sum.get(0);
+            }
+            initialTotalForBurnup = totalForBurnup;
+            totalForBurnup = 100;
+        }
         maxSumForScopeLine = 0;
         charts = createChart();
         chartPanel = new ChartPanel(charts);
@@ -150,7 +174,11 @@ public class CreateChart extends JPanel {
             if (size > 0) {
                 for (int i = 0; i < XAxisDateValues.size(); i++) {
                     // use double to make the values more accurate (tooltip disable - see renderer)
-                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
+                    if (burnupChartPercentage) {
+                        dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, getXAxisDateValue(i));
+                    } else {
+                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
+                    }
                 }
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
@@ -158,7 +186,11 @@ public class CreateChart extends JPanel {
             if (size > 0) {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                     // use double to make the values more accurate (tooltip disable - see renderer)
-                    dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
+                    if (burnupChartPercentage) {
+                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnupInPercentage / size)), label, i);
+                    } else {
+                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
+                    }
                 }
             }
         }
@@ -208,9 +240,10 @@ public class CreateChart extends JPanel {
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
                         if (DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            total -= burndownchartType.getValue(activity);
+                            total -= getBurndownValue(activity);
                         }
                     }
+                    total = burndownChartPercentage ? Math.round(total) : total;
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
                 } else {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
@@ -220,9 +253,10 @@ public class CreateChart extends JPanel {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
                     if (activity.getIteration() == i) {
-                        total -= burndownchartType.getValue(activity);
+                        total -= getBurndownValue(activity);
                     }
                 }
+                total = burndownChartPercentage ? Math.round(total) : total;
                 dataset.addValue((Number) total, label, i);
             }
         }
@@ -244,10 +278,11 @@ public class CreateChart extends JPanel {
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
                         if (DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            total += burnupchartType.getValue(activity);
+                            total += getBurnupValue(activity);
                         }
                     }
-                    dataset.addValue((Number) total, label, getXAxisDateValue(i));                    
+                    total = burnupChartPercentage ? Math.round(total) : total;
+                    dataset.addValue((Number) total, label, getXAxisDateValue(i));
                 } else {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
                 }
@@ -256,9 +291,10 @@ public class CreateChart extends JPanel {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
                     if (activity.getIteration() == i) {
-                        total += burnupchartType.getValue(activity);
+                        total += getBurnupValue(activity);
                     }
                 }
+                total = burnupChartPercentage ? Math.round(total) : total;
                 dataset.addValue((Number) total, label, i);
             }
         }
@@ -359,7 +395,7 @@ public class CreateChart extends JPanel {
             burndownRenderer.setSeriesBarWidth(0, 1.0);
             plot.setRenderer(4, burndownRenderer);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-            burndownRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+            burndownRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burndownChartPercentage ? "%" : ""), NumberFormat.getInstance()));
             // Target
             if (chooseInputForm.getTargetCheckBox().isSelected()) {
                 LineAndShapeRenderer burndownTargetrenderer = (LineAndShapeRenderer) plot.getRenderer();
@@ -393,8 +429,6 @@ public class CreateChart extends JPanel {
                 burnupRange = chooseInputForm.getScopeCheckBox().isSelected() && maxSumForScopeLine > totalForBurnup ? maxSumForScopeLine : totalForBurnup;
                 if (chooseInputForm.getScopeCheckBox().isSelected()) {
                     burnupRange += burnupRange / 10; // add 10% to see the values on the scope line
-                } else if (chooseInputForm.getBurnupGuideCheckBox().isSelected()) {
-                    burnupRange += burnupRange / 2; // add 50% to see where the guide line goes
                 }
                 scopeRange = burnupRange;
             } else {
@@ -437,8 +471,8 @@ public class CreateChart extends JPanel {
             burnupRenderer.setSeriesBarWidth(0, 0.7);
             plot.setRenderer(3, burnupRenderer);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-            burnupRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
-            // TARGET
+            burnupRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burnupChartPercentage ? "%" : ""), NumberFormat.getInstance()));
+            // GUIDE
             if (chooseInputForm.getBurnupGuideCheckBox().isSelected()) {
                 CategoryDataset burnupGuideDataset = createBurnupGuideDataset();
                 plot.setDataset(2, burnupGuideDataset);
@@ -485,5 +519,21 @@ public class CreateChart extends JPanel {
             }
         }
         return chart;
+    }
+
+    private float getBurndownValue(Activity activity) {
+        float value = burndownchartType.getValue(activity);
+        if (burndownChartPercentage) {
+            value = (value / totalForBurndownInPercentage) * 100;
+        }
+        return value;
+    }
+
+    private float getBurnupValue(Activity activity) {
+        float value = burnupchartType.getValue(activity);
+        if (burnupChartPercentage) {
+            value = (value / totalForBurnupInPercentage) * 100;
+        }
+        return value;
     }
 }

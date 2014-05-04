@@ -28,7 +28,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     private final Border border;
     private boolean mouseEntered = false;
 
-    public ComponentTitledBorder(Component comp, JComponent container, Border border) {        
+    public ComponentTitledBorder(Component comp, JComponent container, Border border) {
         this(comp, container, border, container.getFont());
     }
 
@@ -140,7 +140,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     public void setTitleFont(Font f) {
         comp.setFont(f);
     }
-    
+
     public void setBackground(Color color) {
         comp.setBackground(color);
         container.setBackground(color);
