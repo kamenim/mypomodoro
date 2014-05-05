@@ -38,7 +38,7 @@ public interface IChartType {
 
     ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates);
 
-    ArrayList<Float> getSumIterationRangeForScope(int startIteraation, int endIteration);
+    ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration);
 
     @Override
     String toString();
