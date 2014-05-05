@@ -54,7 +54,8 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 public class CreateChart extends JPanel {
-// TODO problem scope and percentage : sum must be converted to percentage
+// TODO simplify/optimize this panel : add comments
+
     private JFreeChart charts;
     private ArrayList<Date> XAxisDateValues = new ArrayList<Date>();
     private float totalForBurndown = 0; // this may include ToDo tasks (providing ToDos are included - see configureInputForm)
@@ -104,11 +105,15 @@ public class CreateChart extends JPanel {
                 ArrayList<Float> sum = burnupchartType.getSumDateRangeForScope(lastDateXAxisDateValues);
                 totalForBurnupInPercentage = sum.get(0);
             } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-                ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(configureInputForm.getEndIteration(), configureInputForm.getEndIteration());
-                totalForBurnupInPercentage = sum.get(0);
+                ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+                totalForBurnupInPercentage = sum.get(sum.size() - 1);
             }
-            initialTotalForBurnup = totalForBurnup;
-            totalForBurnup = 100;
+            if (totalForBurnupInPercentage > 0) {
+                initialTotalForBurnup = totalForBurnup;
+                totalForBurnup = 100;
+            } else {
+                burnupChartPercentage = false; // we can't show the chart in percentage (division by 0)
+            }
         }
         maxSumForScopeLine = 0;
         charts = createChart();
@@ -187,7 +192,7 @@ public class CreateChart extends JPanel {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                     // use double to make the values more accurate (tooltip disable - see renderer)
                     if (burnupChartPercentage) {
-                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnupInPercentage / size)), label, i);
+                        dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, i);
                     } else {
                         dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
                     }
@@ -206,7 +211,7 @@ public class CreateChart extends JPanel {
         String label = chooseInputForm.getScopeLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         if (configureInputForm.getDatesCheckBox().isSelected()) {
-            ArrayList<Float> sum = burnupchartType.getSumDateRangeForScope(XAxisDateValues);
+            ArrayList<Float> sum = getSumDateRangeForScope(XAxisDateValues);
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 dataset.addValue((Number) sum.get(i), label, getXAxisDateValue(i));
                 if (maxSumForScopeLine < (Float) sum.get(i)) {
@@ -214,7 +219,7 @@ public class CreateChart extends JPanel {
                 }
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+            ArrayList<Float> sum = getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
             for (int i = 0; i < sum.size(); i++) {
                 dataset.addValue((Number) sum.get(i), label, i + configureInputForm.getStartIteration());
                 if (maxSumForScopeLine < (Float) sum.get(i)) {
@@ -515,7 +520,9 @@ public class CreateChart extends JPanel {
                 scopeRenderer.setBaseItemLabelsVisible(true);
                 scopeRenderer.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
                 plot.setRenderer(1, scopeRenderer);
-                scopeRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}", NumberFormat.getInstance()));
+                // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
+                scopeRenderer.setToolTipGenerator(null);
+                //scopeRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burnupChartPercentage ? "%" : ""), NumberFormat.getInstance()));
             }
         }
         return chart;
@@ -535,5 +542,25 @@ public class CreateChart extends JPanel {
             value = (value / totalForBurnupInPercentage) * 100;
         }
         return value;
+    }
+
+    private ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
+        ArrayList<Float> sum = burnupchartType.getSumDateRangeForScope(dates);
+        if (burnupChartPercentage) {
+            for (int i = 0; i < sum.size(); i++) {
+                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100)));
+            }
+        }
+        return sum;
+    }
+
+    private ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
+        ArrayList<Float> sum = burnupchartType.getSumIterationRangeForScope(startIteration, endIteration);
+        if (burnupChartPercentage) {
+            for (int i = 0; i < sum.size(); i++) {
+                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100)));
+            }
+        }
+        return sum;
     }
 }
