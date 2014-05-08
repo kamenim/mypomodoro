@@ -92,11 +92,13 @@ public class CreateChart extends JPanel {
         burnupchartType = chooseInputForm.getBurnupChartType();
         totalForBurndown = burndownchartType.getTotalForBurndown();
         totalForBurnup = burnupchartType.getTotalForBurnup();
+        // Burndown chart in percentage
         burndownChartPercentage = chooseInputForm.getBurndownChartCheckBox().isSelected() && chooseInputForm.getBurndownChartPercentageCheckBox().isSelected();
         if (burndownChartPercentage) {
             totalForBurndownInPercentage = totalForBurndown;
             totalForBurndown = 100;
         }
+        // Burn-up chart in percentage
         burnupChartPercentage = chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getBurnupChartPercentageCheckBox().isSelected();
         if (burnupChartPercentage) {
             if (configureInputForm.getDatesCheckBox().isSelected()) {
@@ -112,7 +114,7 @@ public class CreateChart extends JPanel {
                 initialTotalForBurnup = totalForBurnup;
                 totalForBurnup = 100;
             } else {
-                burnupChartPercentage = false; // we can't show the chart in percentage (division by 0)
+                burnupChartPercentage = false; // we can't show the chart in percentage
             }
         }
         maxSumForScopeLine = 0;
