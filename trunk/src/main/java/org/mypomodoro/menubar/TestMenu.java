@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Random;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
@@ -225,10 +226,15 @@ public class TestMenu extends JMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ActivitiesDAO.getInstance().deleteAll();
-                    Main.updateLists();
-                    Main.updateViews();
-                    Main.updateComboBoxLists();
+                    String title = Labels.getString("DataMenu.Clear All Data");
+                    String message = Labels.getString("DataMenu.Are you sure to delete all data?");
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        ActivitiesDAO.getInstance().deleteAll();
+                        Main.updateLists();
+                        Main.updateViews();
+                        Main.updateComboBoxLists();
+                    }
                 }
             });
         }

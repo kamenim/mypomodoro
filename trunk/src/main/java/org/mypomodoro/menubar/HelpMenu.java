@@ -70,7 +70,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://sourceforge.net/projects/mypomodoro/files/myPomodoro%20" + MainPanel.MYPOMODORO_VERSION);
+                        "http://sourceforge.net/projects/mypomodoro/files/myAgilePomodoro%20" + MainPanel.MYPOMODORO_VERSION);
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }

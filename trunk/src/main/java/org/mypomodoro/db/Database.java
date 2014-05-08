@@ -37,7 +37,7 @@ public class Database {
     private Connection connection = null;
     private Statement statement = null;
     private String driverClassName = "org.sqlite.JDBC";
-    private String connectionStatement = "jdbc:sqlite:pomodoro.db";
+    private String connectionStatement = "jdbc:sqlite:myagilepomodoro.db";
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
     // SQLLite database specific

@@ -54,6 +54,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ConfigureInputForm extends JPanel {
+    // TODO fix layout
 
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 20);
@@ -88,6 +89,7 @@ public class ConfigureInputForm extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
+        
         addDatesInputFormPanel();
         addIterationsInputFormPanel();
         if (!PreferencesPanel.preferences.getAgileMode()) {
@@ -98,10 +100,7 @@ public class ConfigureInputForm extends JPanel {
 
     private void addDatesInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        //c.gridwidth = 2;        
+        c.gridy = 0;        
         datesCheckBox.setFocusPainted(false);
         datesCheckBox.setSelected(true);
         datesCheckBox.addActionListener(new ActionListener() {
@@ -121,10 +120,7 @@ public class ConfigureInputForm extends JPanel {
 
     private void addIterationsInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        //c.gridwidth = 2;        
+        c.gridy = 1;       
         iterationsCheckBox.setFocusPainted(false);
         iterationsCheckBox.setSelected(false);
         iterationsCheckBox.addActionListener(new ActionListener() {
@@ -145,9 +141,6 @@ public class ConfigureInputForm extends JPanel {
     private void addImageInputFormPanel() {
         c.gridx = 0;
         c.gridy = 2;
-        c.weightx = 1.0;
-        c.weighty = 0.5;
-        //c.gridwidth = 2;
         TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
         borderDimension.setTitleFont(getFont().deriveFont(Font.BOLD));
         borderDimension.setTitle(Labels.getString("BurndownChartPanel.Image"));
@@ -161,8 +154,6 @@ public class ConfigureInputForm extends JPanel {
         GridBagConstraints cChart = new GridBagConstraints();
         cChart.gridx = 0;
         cChart.gridy = 0;
-        cChart.weightx = 1.0;
-        cChart.weighty = 0.5;
         // Dates
         JPanel dates = new JPanel();
         dates.setLayout(new GridBagLayout());
@@ -221,8 +212,6 @@ public class ConfigureInputForm extends JPanel {
         // Exclusion
         cChart.gridx = 0;
         cChart.gridy = 1;
-        cChart.weightx = 1.0;
-        cChart.weighty = 0.5;
         // first line
         JPanel exclusion = new JPanel();
         exclusion.setLayout(new GridBagLayout());
@@ -232,29 +221,19 @@ public class ConfigureInputForm extends JPanel {
         exclusionlabel.setPreferredSize(LABEL_DIMENSION);
         exclusiongbc.gridx = 0;
         exclusiongbc.gridy = 0;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         exclusion.add(exclusionlabel, exclusiongbc);
         exclusiongbc.gridx = 1;
         exclusiongbc.gridy = 0;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         exclusion.add(excludeSaturdays, exclusiongbc);
         exclusiongbc.gridx = 2;
         exclusiongbc.gridy = 0;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         exclusion.add(excludeSundays, exclusiongbc);
         exclusiongbc.gridx = 3;
         exclusiongbc.gridy = 0;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         exclusion.add(excludeToDos, exclusiongbc); // excludes ToDos Tasks/Iteration Backlog
         // second line
         exclusiongbc.gridx = 0;
         exclusiongbc.gridy = 1;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         final JLabel excludedDatesLabel = new JLabel();
         excludeDatePicker.addActionListener(new ActionListener() {
 
@@ -276,14 +255,6 @@ public class ConfigureInputForm extends JPanel {
         exclusion.add(excludeDatePicker, exclusiongbc);
         exclusiongbc.gridx = 1;
         exclusiongbc.gridy = 1;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
-        exclusiongbc.gridwidth = 2;
-        exclusion.add(excludedDatesLabel, exclusiongbc);
-        exclusiongbc.gridx = 2;
-        exclusiongbc.gridy = 1;
-        exclusiongbc.weightx = 1.0;
-        exclusiongbc.weighty = 0.5;
         JButton reset = new JButton(Labels.getString("Common.Reset"));
         reset.addActionListener(new ActionListener() {
 
@@ -294,6 +265,10 @@ public class ConfigureInputForm extends JPanel {
             }
         });
         exclusion.add(reset, exclusiongbc);
+        exclusiongbc.gridx = 2;
+        exclusiongbc.gridy = 1;
+        exclusiongbc.gridwidth = 2;
+        exclusion.add(excludedDatesLabel, exclusiongbc);
         datesInputFormPanel.addMouseListener(new MouseListener() {
 
             @Override
