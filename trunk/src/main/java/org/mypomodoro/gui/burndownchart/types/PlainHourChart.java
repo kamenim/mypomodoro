@@ -71,8 +71,7 @@ public class PlainHourChart implements IChartType {
     @Override
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
-        for (int i = 0; i < sum.size(); i++) {
-            int y = sum.get(i).intValue();
+        for (int i = 0; i < sum.size(); i++) {            
             sum.set(i, new Float(TimeConverter.calculatePlainMinutes(sum.get(i).intValue() * PreferencesPanel.preferences.getPomodoroLength()) / 60));
         }
         return sum;

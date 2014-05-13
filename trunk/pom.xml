@@ -135,7 +135,8 @@
           <target>${compileSource}</target>
           <showWarnings>true</showWarnings>
           <encoding>${project.build.sourceEncoding}</encoding>
-          <compilerArgument>-Xlint:unchecked</compilerArgument>        
+          <compilerArgument>-Xlint:unchecked</compilerArgument>
+          <!--compilerArgument>-Xlint:deprecation</compilerArgument-->           
         </configuration>
       </plugin>      
       <plugin>

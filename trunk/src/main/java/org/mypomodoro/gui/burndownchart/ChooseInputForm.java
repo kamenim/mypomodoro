@@ -111,7 +111,7 @@ public class ChooseInputForm extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        
+
         addBurndownChartInputFormPanel();
         addBurnupChartInputFormPanel();
     }
@@ -137,7 +137,7 @@ public class ChooseInputForm extends JPanel {
         cChart.weighty = 1;
         cChart.fill = GridBagConstraints.CENTER;
         // Type and legends
-        burndownChartTypeLegendInputFormPanel.setLayout(new GridBagLayout());        
+        burndownChartTypeLegendInputFormPanel.setLayout(new GridBagLayout());
         addBurndownChartFields(cChart);
         // Target
         targetCheckBox.setFocusPainted(false);
@@ -247,7 +247,7 @@ public class ChooseInputForm extends JPanel {
         // Name
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.gridheight = 1;        
+        gbc.gridheight = 1;
         //gbc.weighty = 0.5;
         //gbc.anchor = GridBagConstraints.WEST;
         //cChart.weighty = 0.5;
@@ -257,7 +257,7 @@ public class ChooseInputForm extends JPanel {
         primaryYAxisLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartTypeLegendInputFormPanel.add(primaryYAxisLabel, gbc);
         gbc.gridx = 3;
-        gbc.gridy = 0;        
+        gbc.gridy = 0;
         //gbc.weighty = 0.5;
         //gbc.anchor = GridBagConstraints.EAST;
         primaryYAxisName = new JTextField();
@@ -268,7 +268,7 @@ public class ChooseInputForm extends JPanel {
         // Legend
         gbc.gridx = 2;
         gbc.gridy = 1;
-        gbc.gridheight = 1;        
+        gbc.gridheight = 1;
         //gbc.weighty = 0.5;
         FormLabel legendLabel = new FormLabel(
                 "X-" + Labels.getString("BurndownChartPanel.Legend") + ": ");
@@ -276,7 +276,7 @@ public class ChooseInputForm extends JPanel {
         legendLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartTypeLegendInputFormPanel.add(legendLabel, gbc);
         gbc.gridx = 3;
-        gbc.gridy = 1;        
+        gbc.gridy = 1;
         //gbc.weighty = 0.5;
         primaryYAxisLegend = new JTextField();
         primaryYAxisLegend.setText(defaultPrimaryYAxisLegend);
@@ -286,7 +286,7 @@ public class ChooseInputForm extends JPanel {
         // Color
         gbc.gridx = 2;
         gbc.gridy = 2;
-        gbc.gridheight = 1;        
+        gbc.gridheight = 1;
         //gbc.weighty = 0.5;
         FormLabel colorLabel = new FormLabel(
                 Labels.getString("BurndownChartPanel.Color") + ": ");
@@ -294,7 +294,7 @@ public class ChooseInputForm extends JPanel {
         colorLabel.setPreferredSize(LABEL_DIMENSION);
         burndownChartTypeLegendInputFormPanel.add(colorLabel, gbc);
         gbc.gridx = 3;
-        gbc.gridy = 2;        
+        gbc.gridy = 2;
         //gbc.weighty = 0.5;
         //gbc.anchor = GridBagConstraints.WEST;
         primaryYAxisColor = new JTextField();

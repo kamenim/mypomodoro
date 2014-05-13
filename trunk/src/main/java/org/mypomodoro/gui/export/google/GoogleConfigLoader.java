@@ -27,9 +27,7 @@ import java.util.Properties;
  *
  */
 public class GoogleConfigLoader {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
+    
     private static final Properties properties = new Properties();
 
     public GoogleConfigLoader() {

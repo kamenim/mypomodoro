@@ -31,7 +31,6 @@ import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
@@ -45,13 +44,13 @@ public class TestMenu extends JMenu {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public TestMenu(final MainPanel view) {
+    public TestMenu() {
         super(Labels.getString("MenuBar.Data"));
-        add(new TestDataItem(view, 100));
-        add(new TestDataItem(view, 500));
-        add(new TestDataItem(view, 1000));
+        add(new TestDataItem(100));
+        add(new TestDataItem(500));
+        add(new TestDataItem(1000));
         add(new JSeparator());
-        add(new ResetDataItem(view));
+        add(new ResetDataItem());
         addFocusListener(new FocusListener() {
 
             @Override
@@ -205,7 +204,7 @@ public class TestMenu extends JMenu {
             }.start();
         }
 
-        public TestDataItem(final MainPanel view, final int nbTask) {
+        public TestDataItem(final int nbTask) {
             super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
             addActionListener(new ActionListener() {
 
@@ -220,7 +219,7 @@ public class TestMenu extends JMenu {
     // delete all data
     class ResetDataItem extends JMenuItem {
 
-        public ResetDataItem(final MainPanel view) {
+        public ResetDataItem() {
             super(Labels.getString("DataMenu.Clear All Data"));
             addActionListener(new ActionListener() {
 

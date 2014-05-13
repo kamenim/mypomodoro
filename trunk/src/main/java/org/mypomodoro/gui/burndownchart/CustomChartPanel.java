@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
-import java.awt.Dimension;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 

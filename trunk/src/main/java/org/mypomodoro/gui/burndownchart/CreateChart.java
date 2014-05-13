@@ -102,7 +102,7 @@ public class CreateChart extends JPanel {
         // Burn-up chart in percentage
         burnupChartPercentage = chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getBurnupChartPercentageCheckBox().isSelected();
         // Sum for percentages and scope
-        if ((chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getScopeCheckBox().isSelected()) 
+        if ((chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getScopeCheckBox().isSelected())
                 || burnupChartPercentage) {
             if (configureInputForm.getDatesCheckBox().isSelected()) {
                 sumForScope = burnupchartType.getSumDateRangeForScope(XAxisDateValues);
@@ -228,7 +228,7 @@ public class CreateChart extends JPanel {
                 dataset.addValue((Number) sum.get(i), label, i + configureInputForm.getStartIteration());
             }
             if (sum.size() > 0) {
-            maxSumForScopeLine = sum.get(sum.size() - 1);
+                maxSumForScopeLine = sum.get(sum.size() - 1);
             }
         }
         return dataset;
