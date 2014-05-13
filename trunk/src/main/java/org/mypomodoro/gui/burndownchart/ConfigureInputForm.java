@@ -54,7 +54,6 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ConfigureInputForm extends JPanel {
-    // TODO fix layout
 
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 20);
