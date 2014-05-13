@@ -324,7 +324,8 @@ public class CreateChart extends JPanel {
     private JFreeChart createChart() {
         CategoryDataset burndownTargetDataset = null;
         if (chooseInputForm.getBurndownChartCheckBox().isSelected()
-                && chooseInputForm.getTargetCheckBox().isSelected()) {
+                && chooseInputForm.getTargetCheckBox().isSelected()
+                && totalForBurndown > 0) {
             burndownTargetDataset = createBurndownTargetDataset();
         }
 
@@ -361,7 +362,7 @@ public class CreateChart extends JPanel {
         //////////////////// Y-AXIS //////////////////////////
         // BURNDOWN
         NumberAxis burndownRangeAxis = (NumberAxis) plot.getRangeAxis();
-        if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // BURNDOWN            
+        if (chooseInputForm.getBurndownChartCheckBox().isSelected() && totalForBurndown > 0) { // BURNDOWN            
             // Horizontal/Grid lines for burndown
             plot.setRangeGridlinesVisible(true);
             plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
@@ -419,7 +420,7 @@ public class CreateChart extends JPanel {
         }
 
         // BURN-UP
-        if (chooseInputForm.getBurnupChartCheckBox().isSelected()) {
+        if (chooseInputForm.getBurnupChartCheckBox().isSelected() && totalForBurnup > 0) {
             NumberAxis burnupRangeAxis = new NumberAxis();
             burnupRangeAxis.setLabel(chooseInputForm.getSecondaryYAxisName());
             burnupRangeAxis.setLabelFont(getFont().deriveFont(Font.BOLD));
@@ -439,7 +440,7 @@ public class CreateChart extends JPanel {
             } else {
                 burnupRange += burnupRange / 100; // add 1% margin on top
             }
-            burnupRangeAxis.setRange(0, burnupRange);
+            burnupRangeAxis.setRange(0, burnupRange);            
             TickUnits burnupCustomUnits = new TickUnits();
             // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
             int tick = 10;
