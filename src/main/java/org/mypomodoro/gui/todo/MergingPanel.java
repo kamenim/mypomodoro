@@ -105,11 +105,8 @@ public class MergingPanel extends CreatePanel {
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
-            int[] rows = panel.getTable().getSelectedRows();
-            int increment = 0;
+            int[] rows = panel.getTable().getSelectedRows();            
             for (int row : rows) {
-                // removing a row requires decreasing the row index number
-                row = row - increment;
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedToDo = panel.getActivityById(id);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
@@ -127,10 +124,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 estimatedPoms += selectedToDo.getEstimatedPoms();
                 overestimatedPoms += selectedToDo.getOverestimatedPoms();
-                actualPoms += selectedToDo.getActualPoms();
-                panel.delete(selectedToDo);
-                panel.removeRow(row);
-                increment++;
+                actualPoms += selectedToDo.getActualPoms();                
             }
             // set comment
             newActivity.setNotes(comments.toString());
@@ -163,6 +157,21 @@ public class MergingPanel extends CreatePanel {
                                     Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                 }
                             });
+                            // only now we can remove the merged tasks
+                            int[] rows = panel.getTable().getSelectedRows();
+                            int increment = 0;
+                            for (int row : rows) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedToDo = panel.getActivityById(id);
+                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                    continue;
+                                }
+                                panel.delete(selectedToDo);
+                                panel.removeRow(row);
+                                increment++;
+                            }
                             // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                             panel.reorderByPriority();
                             // Close progress bar
@@ -220,6 +229,21 @@ public class MergingPanel extends CreatePanel {
                                     Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                 }
                             });
+                            // only now we may remove the merged tasks
+                            int[] rows = panel.getTable().getSelectedRows();
+                            int increment = 0;
+                            for (int row : rows) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedToDo = panel.getActivityById(id);
+                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                    continue;
+                                }
+                                panel.delete(selectedToDo);
+                                panel.removeRow(row);
+                                increment++;
+                            }
                             panel.reorderByPriority();
                             // Close progress bar
                             SwingUtilities.invokeLater(new Runnable() {
