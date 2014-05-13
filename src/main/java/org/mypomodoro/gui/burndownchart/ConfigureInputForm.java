@@ -56,9 +56,6 @@ import org.mypomodoro.util.Labels;
 public class ConfigureInputForm extends JPanel {
 
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
-    private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 20);
-    private static final Dimension IMAGE_SIZE_DIMENSION = new Dimension(30, 20);
-    private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
     private final GridBagConstraints c = new GridBagConstraints();
     // Dates form
     private final JPanel datesInputFormPanel = new JPanel();
@@ -88,7 +85,7 @@ public class ConfigureInputForm extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        
+
         addDatesInputFormPanel();
         addIterationsInputFormPanel();
         if (!PreferencesPanel.preferences.getAgileMode()) {
@@ -99,7 +96,7 @@ public class ConfigureInputForm extends JPanel {
 
     private void addDatesInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 0;        
+        c.gridy = 0;
         datesCheckBox.setFocusPainted(false);
         datesCheckBox.setSelected(true);
         datesCheckBox.addActionListener(new ActionListener() {
@@ -119,7 +116,7 @@ public class ConfigureInputForm extends JPanel {
 
     private void addIterationsInputFormPanel() {
         c.gridx = 0;
-        c.gridy = 1;       
+        c.gridy = 1;
         iterationsCheckBox.setFocusPainted(false);
         iterationsCheckBox.setSelected(false);
         iterationsCheckBox.addActionListener(new ActionListener() {

@@ -18,7 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import org.mypomodoro.model.Activity;

@@ -357,11 +357,11 @@ public class ExportPanel extends JPanel {
             googleFile.setMimeType("text/csv");
             // Send file
             exportCSV(fileName, act); // first, export the data to a csv file
-            String path = "./" + fileName;
+            //String path = "./" + fileName;
             java.io.File csvFile = new java.io.File(fileName);
             FileContent mediaContent = new FileContent("text/csv", csvFile);
             // convert and send the file to Google Drive
-            com.google.api.services.drive.model.File csvConvertedFile = service.files().insert(googleFile, mediaContent).setConvert(true).execute();
+            service.files().insert(googleFile, mediaContent).setConvert(true).execute();
             // reset the form
             exportInputForm.showExportForm();
             cancelButton.setVisible(false);

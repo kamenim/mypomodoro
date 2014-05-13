@@ -34,7 +34,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public CommentPanel(CheckPanel checkPanel) {
+    public CommentPanel() {
         setLayout(new GridBagLayout());
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 

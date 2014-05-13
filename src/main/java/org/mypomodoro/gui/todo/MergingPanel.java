@@ -105,7 +105,7 @@ public class MergingPanel extends CreatePanel {
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
-            int[] rows = panel.getTable().getSelectedRows();            
+            int[] rows = panel.getTable().getSelectedRows();
             for (int row : rows) {
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedToDo = panel.getActivityById(id);
@@ -124,7 +124,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 estimatedPoms += selectedToDo.getEstimatedPoms();
                 overestimatedPoms += selectedToDo.getOverestimatedPoms();
-                actualPoms += selectedToDo.getActualPoms();                
+                actualPoms += selectedToDo.getActualPoms();
             }
             // set comment
             newActivity.setNotes(comments.toString());

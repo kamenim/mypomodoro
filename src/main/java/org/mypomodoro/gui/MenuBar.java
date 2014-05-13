@@ -31,7 +31,7 @@ public class MenuBar extends JMenuBar {
     public MenuBar(MainPanel view) {
         add(new FileMenu(view));
         add(new ViewMenu(view));
-        add(new TestMenu(view));
+        add(new TestMenu());
         add(new HelpMenu());
         setBorder(null);
     }
