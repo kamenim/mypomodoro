@@ -70,7 +70,6 @@ public class CreateChart extends JPanel {
     private IChartType burnupchartType;
     private boolean burndownChartPercentage = false;
     private boolean burnupChartPercentage = false;
-
     private ArrayList<Float> sumForScope;
 
     public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
@@ -95,7 +94,7 @@ public class CreateChart extends JPanel {
         totalForBurnup = burnupchartType.getTotalForBurnup();
         // Burndown chart in percentage
         burndownChartPercentage = chooseInputForm.getBurndownChartCheckBox().isSelected() && chooseInputForm.getBurndownChartPercentageCheckBox().isSelected();
-        if (burndownChartPercentage) {
+        if (burndownChartPercentage && totalForBurndown > 0) {
             totalForBurndownInPercentage = totalForBurndown;
             totalForBurndown = 100;
         }
@@ -110,7 +109,7 @@ public class CreateChart extends JPanel {
                 sumForScope = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
             }
         }
-        if (burnupChartPercentage) {
+        if (burnupChartPercentage && totalForBurnup > 0) {
             totalForBurnupInPercentage = sumForScope.get(sumForScope.size() - 1);
             if (totalForBurnupInPercentage > 0) {
                 initialTotalForBurnup = totalForBurnup;
