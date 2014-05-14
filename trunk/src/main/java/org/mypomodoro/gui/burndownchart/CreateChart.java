@@ -260,7 +260,7 @@ public class CreateChart extends JPanel {
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.getIteration() == i) {
+                    if (activity.getIteration() == i && activity.isCompleted()) {
                         total -= getBurndownValue(activity);
                     }
                 }
@@ -298,7 +298,7 @@ public class CreateChart extends JPanel {
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.getIteration() == i) {
+                    if (activity.getIteration() == i && activity.isCompleted()) {
                         total += getBurnupValue(activity);
                     }
                 }
@@ -429,7 +429,7 @@ public class CreateChart extends JPanel {
             // If scope is displayed the highest range between burnup and scope wins
             CategoryDataset scopeDataset = null;
             float scopeRange = 0;
-            if (chooseInputForm.getScopeCheckBox().isSelected() || chooseInputForm.getBurnupGuideCheckBox().isSelected()) {
+            if (chooseInputForm.getScopeCheckBox().isSelected()) {
                 scopeDataset = createBurnupScopeDataset();
                 burnupRange = chooseInputForm.getScopeCheckBox().isSelected() && maxSumForScopeLine > totalForBurnup ? maxSumForScopeLine : totalForBurnup;
                 if (chooseInputForm.getScopeCheckBox().isSelected()) {
