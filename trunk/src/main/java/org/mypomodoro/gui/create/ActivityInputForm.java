@@ -361,6 +361,10 @@ public class ActivityInputForm extends JPanel {
     public JTextField getNameField() {
         return nameField;
     }
+    
+    public JTextArea getDescriptionField() {
+        return descriptionField;
+    }
 
     /*
      * Setters

@@ -47,6 +47,10 @@ public final class MainPanel extends JFrame {
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
+    
+    public SplashScreen getSplashScreen() {
+        return Main.splashScreen;
+    }
 
     public PreferencesPanel getPreferencesPanel() {
         return Main.preferencesPanel;

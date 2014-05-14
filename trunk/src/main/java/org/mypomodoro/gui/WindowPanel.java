@@ -24,25 +24,24 @@ import javax.swing.JPanel;
 public class WindowPanel extends JPanel {
 
     CardLayout cardLayout = new CardLayout();
-    final JPanel mainPanel = new JPanel(cardLayout);
+    final JPanel windowPanel = new JPanel(cardLayout);
 
     public WindowPanel(JPanel iconBar, MainPanel view) {
         setLayout(new BorderLayout());
         setOpaque(true);
-        add(iconBar, BorderLayout.NORTH);
-        SplashScreen splashScreen = new SplashScreen();
-        mainPanel.add(splashScreen, splashScreen.getClass().getName());
-        mainPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
-        mainPanel.add(view.getCreatePanel(), view.getCreatePanel().getClass().getName());
-        mainPanel.add(view.getActivityListPanel(), view.getActivityListPanel().getClass().getName());
-        mainPanel.add(view.getToDoPanel(), view.getToDoPanel().getClass().getName());
-        mainPanel.add(view.getReportListPanel(), view.getReportListPanel().getClass().getName());
-        mainPanel.add(view.getChartTabbedPanel(), view.getChartTabbedPanel().getClass().getName());
-        add(mainPanel, BorderLayout.CENTER);
+        add(iconBar, BorderLayout.NORTH);        
+        windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
+        windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
+        windowPanel.add(view.getCreatePanel(), view.getCreatePanel().getClass().getName());
+        windowPanel.add(view.getActivityListPanel(), view.getActivityListPanel().getClass().getName());
+        windowPanel.add(view.getToDoPanel(), view.getToDoPanel().getClass().getName());
+        windowPanel.add(view.getReportListPanel(), view.getReportListPanel().getClass().getName());
+        windowPanel.add(view.getChartTabbedPanel(), view.getChartTabbedPanel().getClass().getName());
+        add(windowPanel, BorderLayout.CENTER);
         add(view.getProgressBar(), BorderLayout.SOUTH);
     }
 
     public void showPanel(String name) {
-        cardLayout.show(mainPanel, name);
+        cardLayout.show(windowPanel, name);
     }
 }

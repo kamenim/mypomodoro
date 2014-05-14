@@ -42,8 +42,9 @@ public class FileMenu extends JMenu {
     public FileMenu(final MainPanel view) {
         super(Labels.getString("MenuBar.File"));
         this.view = view;
-        add(new ControlPanelItem());
-        add(new CreateActivityItem());
+        add(new CreateItem());
+        add(new SplashItem());
+        add(new PreferencesItem());
         add(new JSeparator());
         add(new ExitItem());
         addFocusListener(new FocusListener() {
@@ -59,30 +60,9 @@ public class FileMenu extends JMenu {
         });
     }
 
-    class ControlPanelItem extends JMenuItem {
+    public class CreateItem extends JMenuItem {
 
-        public ControlPanelItem() {
-            super(Labels.getString("FileMenu.Preferences"));
-            // Adds Keyboard Shortcut Alt-P
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                    ActionEvent.ALT_MASK));
-            addActionListener(new MenuItemListener());
-        }
-
-        class MenuItemListener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Preferences : unhighlight the current hightlighted icon                
-                view.getIconBar().unHighlightIcon();
-                view.setWindow(view.getPreferencesPanel());
-            }
-        }
-    }
-
-    public class CreateActivityItem extends JMenuItem {
-
-        public CreateActivityItem() {
+        public CreateItem() {
             super(Labels.getString("FileMenu.New Activity"));
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
                     ActionEvent.ALT_MASK));
@@ -99,6 +79,48 @@ public class FileMenu extends JMenu {
                 CreatePanel createPanel = view.getCreatePanel();
                 createPanel.clearForm();
                 view.setWindow(createPanel);
+            }
+        }
+    }
+    
+    class SplashItem extends JMenuItem {
+
+        public SplashItem() {
+            super(Labels.getString("FileMenu.Splash screen"));
+            // Adds Keyboard Shortcut Alt-S
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                    ActionEvent.ALT_MASK));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // unhighlight the current hightlighted icon
+                view.getIconBar().unHighlightIcon();
+                view.setWindow(view.getSplashScreen());
+            }
+        }
+    }
+
+    class PreferencesItem extends JMenuItem {
+
+        public PreferencesItem() {
+            super(Labels.getString("FileMenu.Preferences"));
+            // Adds Keyboard Shortcut Alt-P
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+                    ActionEvent.ALT_MASK));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // unhighlight the current hightlighted icon                
+                view.getIconBar().unHighlightIcon();
+                view.setWindow(view.getPreferencesPanel());
             }
         }
     }
