@@ -18,6 +18,7 @@ package org.mypomodoro.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -30,11 +31,20 @@ public class SaveListener implements ActionListener {
         this.panel = panel;
     }
 
+    /**
+     * Action performer that reacts on button click or on Enter keystroke (see SaveButton)
+     * Condition added to prevent the action to be performed when the Enter key is used while editing in a text area (here description field of the activity input form)
+     *
+     * @param event
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
-        Activity newActivity = panel.getFormPanel().getActivityFromFields();
-        if (newActivity != null) {
-            panel.saveActivity(newActivity);
+        if (event.getActionCommand() != null
+                || (event.getActionCommand() == null && !((ActivityInputForm) panel.getFormPanel()).getDescriptionField().hasFocus())) {
+            Activity newActivity = panel.getFormPanel().getActivityFromFields();
+            if (newActivity != null) {
+                panel.saveActivity(newActivity);
+            }
         }
     }
 }

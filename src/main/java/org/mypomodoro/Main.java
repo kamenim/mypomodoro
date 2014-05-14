@@ -27,6 +27,7 @@ import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.gui.SplashScreen;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ProgressBar;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
@@ -58,6 +59,7 @@ public class Main {
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // GUI
+    public static SplashScreen splashScreen = new SplashScreen();
     public static PreferencesPanel preferencesPanel;
     public static CreatePanel createPanel;
     public static ActivitiesPanel activitiesPanel;
