@@ -25,10 +25,8 @@ public abstract class AbstractActivities implements Iterable<Activity> {
 
     protected ArrayList<Activity> activities = new ArrayList<Activity>();
 
-    /*@Override
-     public ArrayList<Activity> clone() {
-     return new ArrayList<Activity>(activities); 
-     }*/
+    public abstract void refresh();
+
     public void add(Activity activity) {
         activities.add(activity);
     }
@@ -36,19 +34,35 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public boolean isEmpty() {
         return activities.isEmpty();
     }
-
-    public abstract void refresh();
+    
+    // Update activity from database
+    public void refreshById(int id) {
+        for (int index = 0; index < size(); index++) {
+            Activity act = get(index);
+            if (act.getId() == id) {
+                update(index, Activity.getActivity(id));
+            }
+        }        
+    }
 
     public void remove(Activity activity) {
         activities.remove(activity);
     }
 
     public void update(Activity activity) {
-        activities.set(getIndex(activity), activity);
+        update(getIndex(activity), activity);
+    }
+    
+    public void update(int index, Activity activity) {
+        activities.set(index, activity);
     }
 
     public int size() {
         return activities.size();
+    }
+    
+    public Activity get(int index) {
+        return activities.get(index);
     }
 
     public Object[] toArray() {

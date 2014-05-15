@@ -497,7 +497,7 @@ public class Activity {
         return getPriority() == -1 && !isCompleted();
     }
 
-    public static Activity getActivity(int Id) { // ???
+    public static Activity getActivity(int Id) {
         return ActivitiesDAO.getInstance().getActivity(Id);
     }
 
@@ -511,7 +511,7 @@ public class Activity {
     }
 
     public boolean hasChanged() {
-        Activity act = ActivitiesDAO.getInstance().getActivity(getId());
+        Activity act = getActivity(getId());        
         return act == null || !equals(act);
     }
 

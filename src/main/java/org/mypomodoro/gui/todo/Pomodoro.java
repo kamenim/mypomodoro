@@ -158,9 +158,15 @@ public class Pomodoro {
                 if (PreferencesPanel.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
-                if (inPomodoro()) {
-                    // increment real poms
-                    getCurrentToDo().incrementPoms();
+                if (inPomodoro()) { // break time
+                    // update the current ToDo from the database (in case someone's changed it)
+                    ToDoList.getList().refreshById(currentToDoId);
+                    // updated version of the task is already finished (by someone else)
+                    // increase the overestimation of the task by 1 to record the pomodoro
+                    if (getCurrentToDo().isFinished()) {
+                        getCurrentToDo().setOverestimatedPoms(getCurrentToDo().getOverestimatedPoms() + 1);
+                    }
+                    getCurrentToDo().incrementPoms();                    
                     getCurrentToDo().databaseUpdate();
                     pomSetNumber++;
                     // break time
@@ -184,53 +190,44 @@ public class Pomodoro {
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
                     inpomodoro = false;
-                    // update details panel
-                    detailsPanel.selectInfo(getCurrentToDo());
-                    detailsPanel.showInfo();
-                    panel.setIconLabels();
-                    panel.setPanelRemaining();
-                    panel.setPanelBorder();
-                    panel.getTable().repaint(); // trigger row renderers
-                } else {
+                } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
                         currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     }
-                    // Retrieve activity from the database in case it's changed (concurrent work : another use may have worked on it)                                       
-                    if (getCurrentToDo().hasChanged()) {
+                    // update the current ToDo from the database (in case someone's changed it)
+                    ToDoList.getList().refreshById(currentToDoId);
+                    if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
                         stop();
                         timerPanel.setStart();
-                        String title = Labels.getString("ToDoListPanel.ToDo changed");
-                        String message = Labels.getString("ToDoListPanel.The ToDo has changed");
-                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, refreshIcon);
-                    } else {
-                        if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
-                            stop();
-                            timerPanel.setStart();
-                            if (isSystemTray()) {
-                                if (isSystemTrayMessage()) {
-                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
-                                }
-                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
+                        if (isSystemTray()) {
+                            if (isSystemTrayMessage()) {
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
                             }
-                        } else {
-                            if (PreferencesPanel.preferences.getTicking() && !isMute) {
-                                tick();
-                            }
-                            timerPanel.setStartColor(ColorUtil.RED);
-                            inpomodoro = true;
-                            if (isSystemTray()) {
-                                if (isSystemTrayMessage()) {
-                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
-                                }
-                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
-                            }
-                            goInPomodoro();
-                            panel.setIconLabels();
-                            panel.getTable().repaint(); // trigger row renderers
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
                         }
+                    } else {
+                        if (PreferencesPanel.preferences.getTicking() && !isMute) {
+                            tick();
+                        }
+                        timerPanel.setStartColor(ColorUtil.RED);
+                        inpomodoro = true;
+                        if (isSystemTray()) {
+                            if (isSystemTrayMessage()) {
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                            }
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                        }
+                        goInPomodoro();
                     }
                 }
+                // update details panel
+                detailsPanel.selectInfo(getCurrentToDo());
+                detailsPanel.showInfo();
+                panel.setIconLabels();
+                panel.setPanelRemaining();
+                panel.setPanelBorder();
+                panel.getTable().repaint(); // trigger row renderers
             }
         }
 
