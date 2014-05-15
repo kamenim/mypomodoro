@@ -115,7 +115,7 @@ public final class ToDoList extends AbstractActivities {
             increment++;
         }
         /*
-         // As slow as previous
+         // As slow as previous algo
          // Very slow with drag and drop
          ArrayList<Activity> alist;
          alist = clone();        
