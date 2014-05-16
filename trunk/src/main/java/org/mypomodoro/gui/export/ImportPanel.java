@@ -120,12 +120,6 @@ public class ImportPanel extends JPanel {
                             } else if (importInputForm.isFileExcelOpenXMLFormat()) {
                                 importExcelx(fileName);
                             }
-                            /*String title = Labels.getString("ReportListPanel.Import");
-                             String message = Labels.getString(
-                             "ReportListPanel.Data imported",
-                             fileName);
-                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                             JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);*/
                         } catch (Exception ex) {
                             logger.error("Import failed", ex);
                             error = true;
@@ -134,6 +128,19 @@ public class ImportPanel extends JPanel {
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
                         } finally {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            // hide progress bar
+                                            Main.gui.getProgressBar().getBar().setString(null);
+                                            Main.gui.getProgressBar().setVisible(false);
+                                        }
+                                    }.start();
+                                }
+                            });
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
                             // refresh panel
