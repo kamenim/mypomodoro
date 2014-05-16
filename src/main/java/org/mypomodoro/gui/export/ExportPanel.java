@@ -41,6 +41,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -62,6 +63,7 @@ import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel to export reports
@@ -161,46 +163,58 @@ public class ExportPanel extends JPanel {
 
     private void export() {
         if (panel.getTable().getSelectedRowCount() > 0) {
-            ArrayList<Activity> activities = new ArrayList<Activity>();
+            final ArrayList<Activity> activities = new ArrayList<Activity>();
             int[] rows = panel.getTable().getSelectedRows();
             for (int row : rows) {
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedActivity = panel.getActivityById(id);
                 activities.add(selectedActivity);
             }
-            try {
-                String fileName = exportInputForm.getFileName() + "."
-                        + exportInputForm.getFileExtention();
-                Iterator<Activity> act = activities.iterator();
-                boolean exportOK = false;
-                if (exportInputForm.isFileCSVFormat()) {
-                    exportOK = exportCSV(fileName, act);
-                } else if (exportInputForm.isFileExcelFormat()) {
-                    exportOK = exportExcel(fileName, act);
-                } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
-                    exportOK = exportExcelx(fileName, act);
-                } else if (exportInputForm.isFileGoogleDriveFormat()) {
-                    exportOK = exportToGoogleDrive(fileName, act);
-                }
-                if (exportOK) {
-                    String title = Labels.getString("ReportListPanel.Export");
-                    String message = Labels.getString(
-                            "ReportListPanel.Data exported to file {0}",
-                            fileName);
-                    if (exportInputForm.isFileGoogleDriveFormat()) {
-                        message = Labels.getString(
-                                "ReportListPanel.Data exported to Google Drive");
+            new Thread() { // This new thread is necessary for updating the progress bar
+                @Override
+                public void run() {
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        String fileName = exportInputForm.getFileName() + "."
+                                + exportInputForm.getFileExtention();
+                        Iterator<Activity> act = activities.iterator();
+                        boolean exportOK = false;
+                        try {
+                            if (exportInputForm.isFileCSVFormat()) {
+                                exportOK = exportCSV(fileName, act);
+                            } else if (exportInputForm.isFileExcelFormat()) {
+                                exportOK = exportExcel(fileName, act);
+                            } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
+                                exportOK = exportExcelx(fileName, act);
+                            } else if (exportInputForm.isFileGoogleDriveFormat()) {
+                                exportOK = exportToGoogleDrive(fileName, act);
+                            }
+                            if (exportOK) {
+                                String title = Labels.getString("ReportListPanel.Export");
+                                String message = Labels.getString(
+                                        "ReportListPanel.Data exported to file {0}",
+                                        fileName);
+                                if (exportInputForm.isFileGoogleDriveFormat()) {
+                                    message = Labels.getString(
+                                            "ReportListPanel.Data exported to Google Drive");
+                                }
+                                JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        } catch (IOException ex) {
+                            logger.error("Export failed", ex);
+                            String title = Labels.getString("Common.Error");
+                            String message = Labels.getString("ReportListPanel.Export failed");
+                            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                        } finally {
+                            // Stop wait cursor
+                            WaitCursor.stopWaitCursor();
+                        }
                     }
-                    JOptionPane.showConfirmDialog(Main.gui, message, title,
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (IOException ex) {
-                logger.error("Export failed", ex);
-                String title = Labels.getString("Common.Error");
-                String message = Labels.getString("ReportListPanel.Export failed");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-            }
+            }.start();
         }
     }
 
