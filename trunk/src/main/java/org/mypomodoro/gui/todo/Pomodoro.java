@@ -22,9 +22,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -282,11 +287,25 @@ public class Pomodoro {
     }
 
     public void tick() {
-        playSound(Main.class.getResourceAsStream("/sounds/ticking.wav"), true);
+        InputStream is;
+        try {
+            is = new FileInputStream("./ticking.wav");
+            playSound(is, true);
+        } catch (FileNotFoundException ex) {
+            is = Main.class.getResourceAsStream("/sounds/ticking.wav");
+            playSound(is, true);
+        }
     }
 
     public void ring() {
-        playSound(Main.class.getResourceAsStream("/sounds/ringing.wav"));
+        InputStream is;
+        try {
+            is = new FileInputStream("./ringing.wav");
+            playSound(is, true);
+        } catch (FileNotFoundException ex) {
+            is = Main.class.getResourceAsStream("/sounds/ringing.wav");
+            playSound(is, true);
+        }
     }
 
     public void playSound(InputStream is) {
