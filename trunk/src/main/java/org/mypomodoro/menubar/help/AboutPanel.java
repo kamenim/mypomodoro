@@ -139,7 +139,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 3;
         gbcpanel.fill = GridBagConstraints.BOTH;
-        String credits = Labels.getString("AboutPanel.Credits");
+        String credits = Labels.getString("AboutPanel.Consider donating if you can");
         JTextArea creditsTextArea = new JTextArea();
         creditsTextArea.setEditable(false);
         creditsTextArea.setLineWrap(true);
@@ -161,8 +161,6 @@ public class AboutPanel extends JDialog {
         String license = Labels.getString("AboutPanel.myPomodoro is open-source software");
         license += "<br>"
                 + Labels.getString("AboutPanel.All documentation and images are licensed");
-        license += "<br>"
-                + Labels.getString("AboutPanel.Permissions beyond the scope of this license");
         JEditorPane editorPane = new JEditorPane("text/html", license);
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
                 Boolean.TRUE);
