@@ -44,6 +44,8 @@ public class HelpMenu extends JMenu {
         add(new ReportIssues());
         add(new CheckUpdates());
         add(new JSeparator());
+        add(new Donate());
+        add(new JSeparator());
         add(new HelpAbout());
         addFocusListener(new FocusListener() {
 
@@ -148,6 +150,22 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BareBonesBrowserLaunch.openURL("http://sourceforge.net/projects/mypomodoro/files");
+            }
+        }
+    }
+
+    class Donate extends JMenuItem {
+
+        public Donate() {
+            super(Labels.getString("AboutPanel.Donate"));
+            addActionListener(new MenuItemListener());
+        }
+
+        class MenuItemListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BareBonesBrowserLaunch.openURL("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DK5Y33SP5FU26");
             }
         }
     }

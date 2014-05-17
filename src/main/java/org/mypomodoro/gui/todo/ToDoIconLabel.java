@@ -54,7 +54,7 @@ public class ToDoIconLabel {
 
         // Trim (add three points at the end of the row) when too many pomodoros
         boolean trimIconLabel = false;
-        int nbMaxPoms = 10; // max number of pomodoro icon to display 
+        int nbMaxPoms = 13; // max number of pomodoro icon to display 
         if (estimatedPoms + overestimatedPoms > nbMaxPoms) {
             if (estimatedPoms > nbMaxPoms) {
                 estimatedPoms = nbMaxPoms;
