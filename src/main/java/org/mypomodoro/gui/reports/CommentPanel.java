@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
@@ -41,7 +40,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
     public CommentPanel(ReportsPanel panel) {
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addCommentArea();
         addSaveButton(panel);

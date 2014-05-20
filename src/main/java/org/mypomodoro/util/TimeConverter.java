@@ -26,33 +26,37 @@ public class TimeConverter {
 
     // Convertion minutes to duration
     // @return time in format mm:hh; or d days if time > 1 day
-    public static String convertToTime(int min) {
+    public static String convertMinutesToString(float min) {
         String time;
-        int days = min / (60 * 24);
+        long days = Math.round(Math.floor(min / (60 * 24))); // round is only used to convert to long        
         if (days >= 1) {
-            min = min - days * 60 * 24;
+            min = min - days * 60 * 24; // minutes left
         }
-        int hours = min / 60;
-        int minutes = min % 60;
+        float hours = min / 60;
+        float minutes = min % 60;
         if (days >= 1) {
-            time = String.format("%d " + Labels.getString("Common.Days"), days);
+            time = String.format("%d " + (days == 1 ? Labels.getString("Common.Day"):Labels.getString("Common.Days")) + " %02d:%02d", days, Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
         } else {
-            time = String.format("%02d:%02d", hours, minutes);
+            time = String.format("%02d:%02d", Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
         }
         return time;
     }
 
+    public static float roundToHours(float min) {       
+        return new Float(Math.round(Math.floor(min / 60)));
+    }
+
     // only pomodoros length
     // @return minutes
-    public static int calculateEffectiveMinutes(int pomodoros) {
+    public static float calculateEffectiveMinutes(float pomodoros) {
         return pomodoros * PreferencesPanel.preferences.getPomodoroLength();
     }
 
     // pomodoros length + breaks
     // @return minutes
-    public static int calculatePlainMinutes(int pomodoros) {
-        int nbLongBreaks = pomodoros / PreferencesPanel.preferences.getNbPomPerSet(); // one long break per set
-        int nbShortbreaks = pomodoros - nbLongBreaks; // on short break per pomodoro minus the long breaks
+    public static float calculatePlainMinutes(float pomodoros) {
+        long nbLongBreaks = Math.round(Math.floor(pomodoros / PreferencesPanel.preferences.getNbPomPerSet())); // one long break per set
+        long nbShortbreaks = Math.round(pomodoros - nbLongBreaks); // on short break per pomodoro minus the long breaks
         return calculateEffectiveMinutes(pomodoros)
                 + nbShortbreaks * PreferencesPanel.preferences.getShortBreakLength()
                 + nbLongBreaks * PreferencesPanel.preferences.getLongBreakLength();
@@ -61,9 +65,9 @@ public class TimeConverter {
     public static String getLength(int pomodoros) {
         String length;
         if (PreferencesPanel.preferences.getPlainHours()) {
-            length = convertToTime(calculatePlainMinutes(pomodoros));
+            length = convertMinutesToString(calculatePlainMinutes(pomodoros));
         } else {
-            length = convertToTime(calculateEffectiveMinutes(pomodoros));
+            length = convertMinutesToString(calculateEffectiveMinutes(pomodoros));
         }
         return length;
     }

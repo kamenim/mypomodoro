@@ -22,7 +22,6 @@ import java.awt.GridBagLayout;
 import java.util.Date;
 
 import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
@@ -43,7 +42,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
 
     public DetailsPanel(ActivitiesPanel activitiesPanel) {
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addDeleteButton(activitiesPanel);
         addInformationArea();

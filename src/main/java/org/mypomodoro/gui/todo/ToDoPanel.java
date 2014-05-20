@@ -88,6 +88,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
+    private static final Dimension ICONLABEL_DIMENSION = new Dimension(100, 20);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 25);
     private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
@@ -499,7 +500,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
         scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
@@ -524,6 +525,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
+        iconLabel.setMinimumSize(ICONLABEL_DIMENSION);
+        iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
         scrollPane.add(iconLabel, gbc);
     }
 
