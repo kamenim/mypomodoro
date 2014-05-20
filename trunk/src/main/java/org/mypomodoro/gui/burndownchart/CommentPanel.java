@@ -19,7 +19,6 @@ package org.mypomodoro.gui.burndownchart;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
@@ -36,7 +35,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
     public CommentPanel() {
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addCommentArea();
     }

@@ -65,7 +65,7 @@ public class ImportPanel extends JPanel {
         this.panel = panel;
 
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addImportInputForm();
         addImportButton();

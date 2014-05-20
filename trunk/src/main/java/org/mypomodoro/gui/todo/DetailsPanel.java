@@ -48,7 +48,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
 
     public DetailsPanel(ToDoPanel todoPanel) {
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addMoveButton(todoPanel);
         addInformationPanel();

@@ -42,9 +42,9 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 import static org.mypomodoro.util.TimeConverter.calculateEffectiveMinutes;
 import static org.mypomodoro.util.TimeConverter.calculatePlainMinutes;
-import static org.mypomodoro.util.TimeConverter.convertToTime;
 
 public class ActivityInputForm extends JPanel {
 
@@ -429,8 +429,8 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected void displayLength(int estimatedPomodoros) {
-        String effectiveHours = convertToTime(calculateEffectiveMinutes(estimatedPomodoros));
-        String plainHours = convertToTime(calculatePlainMinutes(estimatedPomodoros));
+        String effectiveHours = TimeConverter.convertMinutesToString(calculateEffectiveMinutes(estimatedPomodoros));
+        String plainHours = TimeConverter.convertMinutesToString(calculatePlainMinutes(estimatedPomodoros));
         if (PreferencesPanel.preferences.getPlainHours()) {
             estimatedLengthLabel.setText(" " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {

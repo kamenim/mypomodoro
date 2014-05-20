@@ -117,7 +117,6 @@ public class ExportInputForm extends JPanel {
         c.anchor = GridBagConstraints.WEST;
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
-        headerCheckBox.setBackground(ColorUtil.WHITE);
         exportFormPanel.add(headerCheckBox, c);
         // File name
         addFileField(c);

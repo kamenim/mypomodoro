@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
-import static org.mypomodoro.util.TimeConverter.getLength;
+import org.mypomodoro.util.TimeConverter;
 
 /**
  * Remaining label
@@ -36,7 +36,7 @@ public class PomodorosRemainingLabel {
                 remainingPomodoros += toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             }
             label += Labels.getString("ToDoListPanel.{0} pomodoros remaining ({1})",
-                    remainingPomodoros, getLength(remainingPomodoros));
+                    remainingPomodoros, TimeConverter.getLength(remainingPomodoros));
         }
         remainPomodorosLabel.setText(label);
     }

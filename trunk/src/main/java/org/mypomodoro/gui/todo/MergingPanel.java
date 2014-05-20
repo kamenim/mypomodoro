@@ -46,6 +46,7 @@ public class MergingPanel extends CreatePanel {
     public MergingPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
         mergingInputFormPanel.setEstimatedPomodoro(1);
+        setBorder(null); // remove create panel border
     }
 
     @Override

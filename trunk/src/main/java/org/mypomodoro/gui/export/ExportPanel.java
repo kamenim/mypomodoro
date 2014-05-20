@@ -41,7 +41,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -101,7 +100,7 @@ public class ExportPanel extends JPanel {
         this.panel = panel;
 
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(null);
 
         addCancelButton();
         addExportInputForm();
