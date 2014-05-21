@@ -18,6 +18,8 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import javax.swing.JTable;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 
 /**
@@ -38,8 +40,22 @@ class EstimatedComboBoxCellEditor extends ComboBoxCellEditor {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
         // overestimated
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
-        int overestimatedpoms = ActivityList.getList().getById(id).getOverestimatedPoms();
-        label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+        Activity activity = ActivityList.getList().getById(id);
+        if (activity != null) {
+            comboBox.removeAllItems();
+            if (activity.getActualPoms() > 0) {
+                for (int i = activity.getActualPoms() - activity.getOverestimatedPoms(); i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
+                    comboBox.addItem(i);
+                }
+            } else {
+                for (int i = 0; i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
+                    comboBox.addItem(i);
+                }
+            }
+            comboBox.setSelectedItem(activity.getEstimatedPoms());
+            int overestimatedpoms = activity.getOverestimatedPoms();
+            label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+        }
         return this;
     }
 }
