@@ -76,7 +76,6 @@ public class MoveButton extends AbstractButton {
                          panel.moveAll();
                          panel.refresh();
                          } else {*/
-                        boolean agreedToMorePomodoros = false;
                         int increment = 0;
                         int[] rows = panel.getTable().getSelectedRows();
                         for (int row : rows) {
@@ -97,16 +96,14 @@ public class MoveButton extends AbstractButton {
                                         break;
                                     }
                                 }
-                                if (isMaxNbTotalEstimatedPomReached(selectedActivity) && !agreedToMorePomodoros) {
+                                if (isMaxNbTotalEstimatedPomReached(selectedActivity)) {
                                     String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                     String message = Labels.getString(
                                             "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                                             org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getMaxNbPomPerDay());
                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                             title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                    if (reply == JOptionPane.YES_OPTION) {
-                                        agreedToMorePomodoros = true;
-                                    } else {
+                                    if (reply != JOptionPane.YES_OPTION) {
                                         break; // get out of the loop
                                     }
                                 }
@@ -162,7 +159,8 @@ public class MoveButton extends AbstractButton {
     }
 
     private boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
-        int nbTotalEstimatedPom = ToDoList.getList().getNbTotalEstimatedPom() + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
-        return nbTotalEstimatedPom > PreferencesPanel.preferences.getMaxNbPomPerDay();
+        int nbTotalEstimatedPom = ToDoList.getList().getNbTotalEstimatedPom();
+        int nbTotalEstimatedPomWithActivity = nbTotalEstimatedPom + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
+        return nbTotalEstimatedPom <= PreferencesPanel.preferences.getMaxNbPomPerDay() && nbTotalEstimatedPomWithActivity > PreferencesPanel.preferences.getMaxNbPomPerDay();
     }
 }

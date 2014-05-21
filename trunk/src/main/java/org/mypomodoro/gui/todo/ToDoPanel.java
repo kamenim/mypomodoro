@@ -853,8 +853,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);
             if (toDo != null) {
-                String text = toDo.getActualPoms() + " / ";
-                text += value.toString();
+                String text = toDo.getActualPoms() + " / " + toDo.getEstimatedPoms();                
                 Integer overestimatedpoms = toDo.getOverestimatedPoms();
                 text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
                 renderer.setText(text);
