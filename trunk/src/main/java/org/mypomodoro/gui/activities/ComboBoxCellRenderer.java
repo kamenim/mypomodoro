@@ -42,17 +42,15 @@ class ComboBoxCellRenderer extends ActivitiesComboBoxPanel implements TableCellR
         setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
         setForeground(ColorUtil.BLACK);
         comboBox.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont().deriveFont(Font.PLAIN));
+        comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.BLACK); // editable combo box
         comboBox.setForeground(ColorUtil.BLACK);
         label.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont().deriveFont(Font.PLAIN));
         label.setForeground(ColorUtil.BLACK);
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
-            /*if (comboBox.isEditable()) { // this won't work to get the editable combo box (types) painted in green when activity is finished
-             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN);                
-             } else {*/
+            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
             comboBox.setForeground(ColorUtil.GREEN);
-            //}
             label.setForeground(ColorUtil.GREEN);
         }
         if (value != null) {
