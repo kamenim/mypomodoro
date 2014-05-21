@@ -150,7 +150,7 @@ public class TimerPanel extends JPanel {
                                 String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
                                 message += "\n(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                                 JOptionPane.showMessageDialog(Main.gui, message);
-                            } else if (currentToDo.getEstimatedPoms() + currentToDo.getOverestimatedPoms() != 0) {
+                            } else {
                                 pomodoro.start();
                                 startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                                 startButton.setForeground(ColorUtil.RED);

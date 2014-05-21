@@ -167,6 +167,8 @@ public class Pomodoro {
                     // increase the overestimation of the task by 1 to record the pomodoro
                     if (getCurrentToDo().isFinished()) {
                         getCurrentToDo().setOverestimatedPoms(getCurrentToDo().getOverestimatedPoms() + 1);
+                    } else if (getCurrentToDo().getEstimatedPoms() + getCurrentToDo().getOverestimatedPoms() == 0) { // task with no estimation
+                        getCurrentToDo().setEstimatedPoms(1);
                     }
                     getCurrentToDo().incrementPoms();                    
                     getCurrentToDo().databaseUpdate();
