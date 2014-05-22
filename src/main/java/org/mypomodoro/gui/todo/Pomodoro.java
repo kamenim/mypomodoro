@@ -108,6 +108,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
+        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);        
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers      
     }
@@ -126,6 +127,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
+        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers
     }
@@ -193,6 +195,7 @@ public class Pomodoro {
                         }
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
+                    Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     inpomodoro = false;
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
@@ -215,6 +218,7 @@ public class Pomodoro {
                             tick();
                         }
                         timerPanel.setStartColor(ColorUtil.RED);
+                        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
                         inpomodoro = true;
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
