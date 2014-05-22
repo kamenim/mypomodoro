@@ -22,8 +22,6 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -51,7 +49,7 @@ public class UnplannedPanel extends CreatePanel {
         //addToDoIconPanel();
     }
 
-    private void addToDoIconPanel() {
+    /*private void addToDoIconPanel() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -61,7 +59,7 @@ public class UnplannedPanel extends CreatePanel {
         gbc.insets = new Insets(0, 3, 0, 0); // margin left
         add(iconLabel, gbc);
         gbc.insets = new Insets(0, 0, 0, 0);
-    }
+    }*/
 
     @Override
     protected void addInputFormPanel() {

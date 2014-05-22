@@ -85,7 +85,6 @@ public class Pomodoro {
     private boolean inpomodoro = false;
     private Clip clip;
     private boolean isMute = false;
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel) {
         this.panel = panel;
