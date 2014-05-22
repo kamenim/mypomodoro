@@ -18,7 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import javax.swing.JTable;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 
