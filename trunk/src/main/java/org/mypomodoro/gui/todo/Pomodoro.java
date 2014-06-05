@@ -287,6 +287,7 @@ public class Pomodoro {
         return inpomodoro;
     }
 
+    // Looping ticking sound
     public void tick() {
         InputStream is;
         try {
@@ -298,17 +299,19 @@ public class Pomodoro {
         }
     }
 
+    // One time ringing sound
     public void ring() {
         InputStream is;
         try {
             is = new FileInputStream("./ringing.wav");
-            playSound(is, true);
+            playSound(is);
         } catch (FileNotFoundException ex) {
             is = Main.class.getResourceAsStream("/sounds/ringing.wav");
-            playSound(is, true);
+            playSound(is);
         }
     }
 
+    // One time playing sound
     public void playSound(InputStream is) {
         playSound(is, false);
     }
@@ -351,7 +354,7 @@ public class Pomodoro {
 
     public void stopSound() {
         if (clip != null) {
-            clip.stop();
+            clip.stop();            
             // allow clip to be GCed
             clip = null;
         }
@@ -414,13 +417,13 @@ public class Pomodoro {
         return SystemTray.isSupported() && PreferencesPanel.preferences.getSystemTrayMessage();
     }
 
+    // mute ticking and ringing
     public void mute() {
-        if (inpomodoro) { // mute ticking
-            stopSound();
-        }
+        stopSound();        
         isMute = true;
     }
 
+    // Un-mute andplay ticking if necessary
     public void unmute() {
         if (inpomodoro) { // un-mute ticking
             tick();
