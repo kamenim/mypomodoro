@@ -43,7 +43,7 @@ public final class MainPanel extends JFrame {
     public static final int FRAME_WIDTH = 780;
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
-    public static final String MYPOMODORO_VERSION = "3.0";
+    public static final String MYPOMODORO_VERSION = "3.0.1";
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
