@@ -29,9 +29,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
@@ -293,7 +296,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                         controlPane.setEnabledAt(index, true);
                                     }
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                        controlPane.setSelectedIndex(0); // switch to details panel
+                                        controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
@@ -339,6 +342,42 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control A", new selectAllAction());
+
+        // Keystroke for tab
+        class tabAction extends AbstractAction {
+
+            final int index;
+
+            public tabAction(int index) {
+                this.index = index;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (controlPane.isEnabledAt(index)) {
+                    controlPane.setSelectedIndex(index);
+                }
+            }
+        }
+        for (int i = 1; i <= 5; i++) {
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
+            am.put("Tab" + i, new tabAction(i - 1));
+        }
+    }
+
+    // Retrieve key event with name
+    public int getKeyEvent(int index) {
+        int key = 0;
+        try {
+            Field f = KeyEvent.class.getField("VK_" + index);
+            f.setAccessible(true);
+            key = (Integer) f.get(null);
+        } catch (IllegalAccessException ignored) {
+        } catch (IllegalArgumentException ignored) {
+        } catch (NoSuchFieldException ignored) {
+        } catch (SecurityException ignored) {
+        }
+        return key;
     }
 
     private void initTable() {
