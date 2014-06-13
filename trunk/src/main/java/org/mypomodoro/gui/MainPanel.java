@@ -19,18 +19,33 @@ package org.mypomodoro.gui;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ProgressBar;
 import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import org.mypomodoro.Main;
+import static org.mypomodoro.Main.gui;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
+import org.mypomodoro.util.Labels;
 
 /**
  * Application GUI for myPomodoro.
@@ -46,8 +61,10 @@ public final class MainPanel extends JFrame {
     public static final String MYPOMODORO_VERSION = "3.1.0";
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
-    private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
-    
+    private final WindowPanel windowPanel = new WindowPanel(iconBar, this);    
+    private static Dimension guiRecordedSize;
+    private static Point guiRecordedLocation;
+
     public SplashScreen getSplashScreen() {
         return Main.splashScreen;
     }
@@ -109,7 +126,44 @@ public final class MainPanel extends JFrame {
             } catch (AWTException ex) {
                 logger.error("", ex);
             }
+        } else {
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            WindowListener exitListener = new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    String title = Labels.getString("FileMenu.Exit myPomodoro");
+                    String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                }
+            };
+            addWindowListener(exitListener);
         }
+
+        // Maximize keystoke
+        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK);
+        Action maximizeAction = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (gui.getExtendedState() != (gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
+                    guiRecordedSize = gui.getSize();
+                    guiRecordedLocation = gui.getLocation();
+                    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    gui.setMaximizedBounds(env.getMaximumWindowBounds());
+                    gui.setExtendedState(gui.getExtendedState() | JFrame.MAXIMIZED_BOTH);                    
+                } else { // back to the original size
+                    gui.setSize(guiRecordedSize);
+                    gui.setLocation(guiRecordedLocation);                            
+                }
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "Maximize");
+        getRootPane().getActionMap().put("Maximize", maximizeAction);
     }
 
     public void updateLists() {
