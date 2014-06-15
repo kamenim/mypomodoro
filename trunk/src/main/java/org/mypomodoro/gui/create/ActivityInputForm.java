@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
@@ -137,6 +138,8 @@ public class ActivityInputForm extends JPanel {
         types.setPreferredSize(COMBO_BOX_DIMENSION);
         types.setEditable(true);
         types.setFont(getFont().deriveFont(Font.PLAIN));
+        // Autocompletion
+        AutoCompleteDecorator.decorate(types);
         add(types, c);
     }
 
@@ -280,6 +283,8 @@ public class ActivityInputForm extends JPanel {
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
         authors.setEditable(true);
         authors.setFont(getFont().deriveFont(Font.PLAIN));
+        // Autocompletion
+        AutoCompleteDecorator.decorate(authors);
         add(authors, c);
     }
 
@@ -299,6 +304,8 @@ public class ActivityInputForm extends JPanel {
         places.setPreferredSize(COMBO_BOX_DIMENSION);
         places.setEditable(true);
         places.setFont(getFont().deriveFont(Font.PLAIN));
+        // Autocompletion
+        AutoCompleteDecorator.decorate(places);
         add(places, c);
     }
 
