@@ -65,8 +65,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         informationArea.setEditable(false);
-        informationArea.setLineWrap(true);
-        informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
     }
 

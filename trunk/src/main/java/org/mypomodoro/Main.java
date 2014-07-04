@@ -18,8 +18,11 @@ package org.mypomodoro;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.Enumeration;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -58,7 +61,7 @@ public class Main {
     public static final Database database = new Database(); // create database if necessary
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
-    // GUI
+    // GUI    
     public static SplashScreen splashScreen = new SplashScreen();
     public static PreferencesPanel preferencesPanel;
     public static CreatePanel createPanel;
@@ -69,12 +72,23 @@ public class Main {
     public static ProgressBar progressBar;
     public static MainPanel gui;
     // Default font for the application
-    public static Font font = new Font("Ebrima", Font.PLAIN, 13);
+    public static Font font;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Set font from font file
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT,
+                    Main.class.getResourceAsStream("/fonts/ebrima.ttf")).deriveFont(Font.PLAIN, 13f);
+        } catch (FontFormatException ex) {
+            font = new JLabel().getFont().deriveFont(Font.PLAIN, 13f);
+            logger.error("TrueType not supported for font Ebrima. Replaced with default System font.", ex);
+        } catch (IOException ex) {
+            font = new JLabel().getFont().deriveFont(Font.PLAIN, 13f);;
+            logger.error("Ebrima TTF file not found. Replaced with default System font.", ex);
+        }
         // Does this work?
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
             // deletes files created with RestartMac()

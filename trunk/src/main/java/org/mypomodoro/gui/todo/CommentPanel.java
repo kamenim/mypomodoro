@@ -89,16 +89,13 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(true);
-        informationArea.setLineWrap(true);
-        informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
     }
 
     @Override
     public void selectInfo(Activity activity) {
-        // template for user stories and epics
-        if (PreferencesPanel.preferences.getAgileMode()
-                && activity.getNotes().trim().length() == 0
+        // template for user stories
+        if (activity.getNotes().trim().length() == 0
                 && activity.isStory()) {
             StringBuilder text = new StringBuilder();
             text.append("Story line" + "\n");

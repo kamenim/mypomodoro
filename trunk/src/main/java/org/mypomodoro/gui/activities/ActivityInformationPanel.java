@@ -21,11 +21,11 @@ import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
+import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -34,12 +34,12 @@ import org.mypomodoro.util.TimeConverter;
  *
  */
 public class ActivityInformationPanel extends JPanel implements IActivityInformation {
-
-    protected final JTextArea informationArea = new JTextArea();
+    
+    protected final HtmlEditor informationArea = new HtmlEditor();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
 
     public ActivityInformationPanel() {
-        informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin
+        informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin        
     }
 
     @Override
@@ -78,10 +78,12 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     public void showInfo() {
         clearInfo();
         Iterator<String> keySetIterator = textMap.keySet().iterator();
-        while (keySetIterator.hasNext()) {
-            String key = keySetIterator.next();
-            informationArea.append(textMap.get(key) + "\n");
+        String text = "";
+        while (keySetIterator.hasNext()) { 
+            String key = keySetIterator.next();            
+            text += textMap.get(key) + "<br />";            
         }
+        informationArea.setText(text);
         // disable auto scrolling
         informationArea.setCaretPosition(0);
     }

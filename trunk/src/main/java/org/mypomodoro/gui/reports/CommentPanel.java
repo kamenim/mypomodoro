@@ -72,8 +72,6 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(true);
-        informationArea.setLineWrap(true);
-        informationArea.setWrapStyleWord(true);
         add(new JScrollPane(informationArea), gbc);
     }
 
