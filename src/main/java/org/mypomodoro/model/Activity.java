@@ -506,8 +506,7 @@ public class Activity {
     }
 
     public boolean isStory() {
-        return PreferencesPanel.preferences.getAgileMode()
-                && (getType().equalsIgnoreCase("User story") || getType().equalsIgnoreCase("Epic"));
+        return getType().equalsIgnoreCase("User story");
     }
 
     public boolean hasChanged() {

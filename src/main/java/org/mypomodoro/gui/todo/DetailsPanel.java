@@ -102,8 +102,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.weighty = 1.0;
         igbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
-        informationArea.setLineWrap(true);
-        informationArea.setWrapStyleWord(true);
         infoPanel.add(new JScrollPane(informationArea), igbc);
     }
 
