@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Color;
-import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
@@ -39,39 +38,39 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
 
     public ActivityInformationPanel() {
-        informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin        
+        //informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin        
     }
 
     @Override
     public void selectInfo(Activity activity) {
         textMap = new LinkedHashMap<String, String>();
-        textMap.put("date", (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ": "
+        textMap.put("date", "<b>" + (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy")
-                + (activity.isUnplanned() ? "]" : ""));
-        textMap.put("date_completed", Labels.getString("Common.Date completed") + ": "
+                + (activity.isUnplanned() ? "]" : "") + "<br />");
+        textMap.put("date_completed", "<b>" + Labels.getString("Common.Date completed") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : ""));
+                + (activity.isUnplanned() ? "]" : "") + "<br />");
         // Date reopened
-        textMap.put("date_reopened", Labels.getString("Common.Date reopened") + ": "
+        textMap.put("date_reopened", "<b>" + Labels.getString("Common.Date reopened") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : ""));
-        textMap.put("title", Labels.getString("Common.Title") + ": " + activity.getName());
-        textMap.put("type", Labels.getString("Common.Type") + ": " + (activity.getType().isEmpty() ? "-" : activity.getType()));
-        textMap.put("estimated", Labels.getString("Common.Estimated pomodoros") + ": "
+                + (activity.isUnplanned() ? "]" : "") + "<br />");
+        textMap.put("title", "<b>" + Labels.getString("Common.Title") + ":</b> " + activity.getName() + "<br />");
+        textMap.put("type", "<b>" + Labels.getString("Common.Type") + ":</b> " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "<br />");
+        textMap.put("estimated", "<b>" + Labels.getString("Common.Estimated pomodoros") + ":</b> "
                 + activity.getActualPoms() + " / "
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
-                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")");
+                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br />");
         if (PreferencesPanel.preferences.getAgileMode()) {
-            textMap.put("storypoints", Labels.getString("Agile.Common.Story Points") + ": " + displayStoryPoint(activity.getStoryPoints()));
-            textMap.put("iteration", Labels.getString("Agile.Common.Iteration") + ": " + (activity.getIteration() == -1 ? "-" : activity.getIteration()));
+            textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br />");
+            textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br />");
         }
-        textMap.put("author", Labels.getString("Common.Author") + ": " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()));
-        textMap.put("place", Labels.getString("Common.Place") + ": " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()));
-        textMap.put("description", Labels.getString("Common.Description") + ": " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()));
+        textMap.put("author", "<b>" + Labels.getString("Common.Author") + ":</b> " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "<br />");
+        textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br />");
+        textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br />");
     }
 
     @Override
@@ -81,7 +80,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         String text = "";
         while (keySetIterator.hasNext()) { 
             String key = keySetIterator.next();            
-            text += textMap.get(key) + "<br />";            
+            text += textMap.get(key);            
         }
         informationArea.setText(text);
         // disable auto scrolling

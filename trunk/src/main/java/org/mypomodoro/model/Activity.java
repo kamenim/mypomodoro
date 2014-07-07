@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
