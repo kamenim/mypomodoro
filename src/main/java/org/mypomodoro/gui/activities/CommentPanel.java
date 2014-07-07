@@ -20,11 +20,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -32,6 +31,8 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
@@ -40,120 +41,168 @@ import javax.swing.text.StyledEditorKit;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO edit mode: does not save foreground/background (only preview mode works)
-// TODO make exit on Jtable only rows not the entire table
-// TODO size of the buttons
+// TODO make exit on Jtable only rows not the entire table !!!
+// TODO do not set foreground of informationArea to red when in pomodoro
+// TODO use this CommentPanel everywhere
+// TODO do not update comment when passing on selected task
+// TODO problem with backward compatibility 3.0.x
+// TODO Add cancel button
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
     final ActivitiesPanel panel;
     protected String informationTmp = new String();
+    private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
+    
 
     public CommentPanel(ActivitiesPanel activitiesPanel) {
+        this.panel = activitiesPanel;
+
         setLayout(new GridBagLayout());
         setBorder(null);
 
+        informationArea.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                //saveButton.setText(saveButton.getText() + " *");
+            }
+        });
+
         addEditButton();
         addCommentArea();
-        this.panel = activitiesPanel;
         addSaveButton();
+        addCancelButton();
     }
 
     private void addEditButton() {
         final JButton editButton = new AbstractButton(
-                Labels.getString("Edit"));
+                Labels.getString("Common.Edit"));
+        final JButton previewButton = new AbstractButton(
+                Labels.getString("Common.Preview"));
         final JButton htmlButton = new AbstractButton(
                 "HTML");
         final JButton boldButton = new AbstractButton(
                 "B");
         boldButton.setFont(getFont().deriveFont(Font.BOLD));
+        boldButton.setMargin(new Insets(0, 0, 0, 0));
         final JButton italicButton = new AbstractButton(
                 "I");
         italicButton.setFont(getFont().deriveFont(Font.ITALIC));
+        italicButton.setMargin(new Insets(0, 0, 0, 0));
         final JButton underlineButton = new AbstractButton(
                 "U");
         Map attributes = getFont().getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         underlineButton.setFont(getFont().deriveFont(attributes));
+        underlineButton.setMargin(new Insets(0, 0, 0, 0));
         final JButton backgroundColorButton = new AbstractButton(
                 "ab");
         backgroundColorButton.setForeground(Color.BLUE);
         backgroundColorButton.setFont(getFont().deriveFont(attributes).deriveFont(Font.BOLD));
+        backgroundColorButton.setMargin(new Insets(0, 0, 0, 0));
         final JButton foregroundColorButton = new AbstractButton(
                 "A");
         foregroundColorButton.setForeground(Color.BLUE);
         foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
+        foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
         final JTextField linkTextField = new JTextField();
         final JButton linkButton = new AbstractButton(
-                "Add");
-        // Edit/Preview button
+                ">>");
+        linkButton.setMargin(new Insets(0, 0, 0, 0));
+        // Edit button
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.1; // 10 %
         gbc.weighty = 0.5;
         gbc.gridwidth = 5;
+        gbc.gridheight = 4;
         gbc.fill = GridBagConstraints.BOTH;
         editButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!informationArea.isEditable()) {
-                    informationArea.setEditable(true);
-                    editButton.setText(Labels.getString("Preview"));
-                    htmlButton.setVisible(true);
-                    boldButton.setVisible(true);
-                    italicButton.setVisible(true);
-                    underlineButton.setVisible(true);
-                    backgroundColorButton.setVisible(true);
-                    foregroundColorButton.setVisible(true);
-                    linkTextField.setVisible(true);
-                    linkButton.setVisible(true);
-                } else {
-                    // init html button in case it was left in HTML mode
-                    if (htmlButton.getText().equals("Plain")) {
-                        String text = informationArea.getText();
-                        informationArea.setContentType("text/html");
-                        informationArea.setText(text);
-                        htmlButton.setText("HTML");
-                        informationArea.setCaretPosition(0);
-                    }
-                    informationArea.setEditable(false);
-                    editButton.setText(Labels.getString("Edit"));
-                    htmlButton.setVisible(false);
-                    boldButton.setVisible(false);
-                    italicButton.setVisible(false);
-                    underlineButton.setVisible(false);
-                    backgroundColorButton.setVisible(false);
-                    foregroundColorButton.setVisible(false);
-                    linkTextField.setVisible(false);
-                    linkButton.setVisible(false);
-                }
+                informationArea.setEditable(true);
+                editButton.setVisible(false);
+                previewButton.setVisible(true);
+                htmlButton.setVisible(true);
+                boldButton.setVisible(true);
+                italicButton.setVisible(true);
+                underlineButton.setVisible(true);
+                backgroundColorButton.setVisible(true);
+                foregroundColorButton.setVisible(true);
+                linkTextField.setVisible(true);
+                linkButton.setVisible(true);
             }
         });
         add(editButton, gbc);
+        // Preview button
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.1; // 10 %
+        gbc.weighty = 0.5;
+        gbc.gridwidth = 5;
+        gbc.gridheight = 1; // this is the only setting different with the edit button
+        gbc.fill = GridBagConstraints.BOTH;
+        previewButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // init html button in case it was left in HTML mode
+                if (informationArea.getContentType().equals("text/plain")) {
+                    String text = informationArea.getText();
+                    informationArea.setContentType("text/html");
+                    informationArea.setText(text);
+                    htmlButton.setText("HTML");
+                    informationArea.setCaretPosition(0);
+                }
+                informationArea.setEditable(false);
+                editButton.setVisible(true);
+                previewButton.setVisible(false);
+                htmlButton.setVisible(false);
+                boldButton.setVisible(false);
+                italicButton.setVisible(false);
+                underlineButton.setVisible(false);
+                backgroundColorButton.setVisible(false);
+                foregroundColorButton.setVisible(false);
+                linkTextField.setVisible(false);
+                linkButton.setVisible(false);
+            }
+        });
+        previewButton.setVisible(false);
+        add(previewButton, gbc);
         // html/plain button
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.1;
-        gbc.weighty = 0.4;
+        gbc.weighty = 0.3;
         gbc.gridwidth = 5;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 1;
         htmlButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (htmlButton.getText().equals("HTML")) {
+                if (informationArea.getContentType().equals("text/html")) {
                     String text = informationArea.getText();
                     informationArea.setContentType("text/plain");
                     informationArea.setText(text);
-                    htmlButton.setText("Plain");
+                    htmlButton.setText(Labels.getString("Common.Text Plain"));
                     boldButton.setVisible(false);
                     italicButton.setVisible(false);
                     underlineButton.setVisible(false);
@@ -182,40 +231,36 @@ public class CommentPanel extends ActivityInformationPanel {
         // bold button
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         boldButton.addActionListener(new StyledEditorKit.BoldAction());
         boldButton.setVisible(false);
         add(boldButton, gbc);
         // italic button
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         italicButton.addActionListener(new StyledEditorKit.ItalicAction());
         italicButton.setVisible(false);
         add(italicButton, gbc);
         // underline button
         gbc.gridx = 2;
         gbc.gridy = 2;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
         underlineButton.setVisible(false);
         add(underlineButton, gbc);
         // background color button
         gbc.gridx = 3;
         gbc.gridy = 2;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         backgroundColorButton.addActionListener(new ActionListener() {
 
             @Override
@@ -244,10 +289,9 @@ public class CommentPanel extends ActivityInformationPanel {
         // foreground color button
         gbc.gridx = 4;
         gbc.gridy = 2;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         foregroundColorButton.addActionListener(new ActionListener() {
 
             @Override
@@ -276,19 +320,17 @@ public class CommentPanel extends ActivityInformationPanel {
         // add link field
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.08;
         gbc.weighty = 0.1;
         gbc.gridwidth = 4;
-        gbc.fill = GridBagConstraints.BOTH;
         linkTextField.setVisible(false);
         add(linkTextField, gbc);
         // add link button
         gbc.gridx = 4;
         gbc.gridy = 3;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         linkButton.addActionListener(new ActionListener() {
 
             @Override
@@ -299,14 +341,16 @@ public class CommentPanel extends ActivityInformationPanel {
                     if (start > end) { // Backwards selection
                         start = end;
                     }
-                    informationArea.insertText(start, "<a href=\"" + linkTextField.getText() + "\">" + linkTextField.getText() + "</a>");
-                    linkTextField.setText(null);
-                } catch (BadLocationException ex) {
-                    //
-                } catch (IOException ex) {
-                    //
+                    if (!linkTextField.getText().isEmpty()) {
+                        String link = "<a href=\"" + linkTextField.getText() + "\">" + linkTextField.getText() + "</a>";
+                        informationArea.insertText(start, link);
+                        linkTextField.setText(null);
+                        // Set caret position right after the link                        
+                        informationArea.setCaretPosition(start + linkTextField.getText().length());
+                    }
+                } catch (BadLocationException ignored) {
+                } catch (IOException ignored) {
                 }
-
             }
         });
         linkButton.setVisible(false);
@@ -317,13 +361,10 @@ public class CommentPanel extends ActivityInformationPanel {
         // add the comment area
         gbc.gridx = 5;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
+        gbc.weightx = 0.8;
         gbc.weighty = 1.0;
         gbc.gridheight = 4;
-        gbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
-
         add(new JScrollPane(informationArea), gbc);
     }
 
@@ -331,17 +372,34 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.gridx = 6;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        // gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new AbstractButton(
-                Labels.getString("Common.Save"));
-        changeButton.addActionListener(new ActionListener() {
+        gbc.weighty = 0.8;
+        gbc.gridheight = 3;
+        saveButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.saveComment(informationArea.getText());
             }
         });
-        add(changeButton, gbc);
+        add(saveButton, gbc);
+    }
+
+    private void addCancelButton() {
+        gbc.gridx = 6;
+        gbc.gridy = 3;
+        gbc.weightx = 0.1;
+        gbc.weighty = 0.2;
+        gbc.gridheight = 1;
+        JButton cancelButton = new AbstractButton(
+                Labels.getString("Common.Cancel"));
+        cancelButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showInfo(); // ???
+            }
+        });
+        add(cancelButton, gbc);
     }
 
     @Override
@@ -386,70 +444,68 @@ public class CommentPanel extends ActivityInformationPanel {
 
          });*/
 
-        // template for user stories
-        if (activity.getNotes().trim().length() == 0
-                && activity.isStory()) {
-
+        // Templates
+        /*String path = "./" + (activity.getType().isEmpty() ? "" : (activity.getType() + ".")) + "template.html";
+         System.err.println("path=" + path);
+         // Check only ones for templates (optimization)
+         FileInputStream file;
+         try {
+         file = new FileInputStream(path);
+         int content;
+         while ((content = file.read()) != -1) {
+         text += (char) content;
+         }
+         file.close();
+         } catch (IOException ex) {
+         path = "./template.html";
+         try {
+         file = new FileInputStream(path);
+         int content;
+         while ((content = file.read()) != -1) {
+         text += (char) content;
+         }
+         file.close();
+         } catch (IOException ignored) {
+         }
+         }*/
+        if (activity.getNotes().trim().length() == 0) {
             String text = "";
-            String path = "./User Story.template.html";
-            FileInputStream file;
-            try {
-                file = new FileInputStream(path);
-                int content;
-                while ((content = file.read()) != -1) {
-                    text += (char) content;
-                }
-                file.close();
-            } catch (FileNotFoundException ex) {
-                //
-            } catch (IOException ex) {
-                //
+            if (activity.isStory()) {
+                // default template for User Story type
+                text += "<div><b><u>Story line</u></b></div><br />";
+                text += "<p>As a {user role}, I want to {action} in order to {goal}.</p>";
+                text += "<br />";
+                text += "<div><b><u>User acceptance criteria</u></b></div>";
+                text += "<ul>";
+                text += "<li>...</li>";
+                text += "<li>...</li>";
+                text += "</ul>";
+                text += "<br />";
+                text += "<div><b><u>Test cases</u></b></div>";
+                text += "<ul>";
+                text += "<li>...</li>";
+                text += "<li>...</li>";
+                text += "</ul>";
+            } else {
+                text += "<p></p>";
             }
-
-            /*StringBuilder text = new StringBuilder();
-             text.append("Story line" + "\n");
-             text.append("-------------" + "\n");
-             text.append("As a <user role>, I want to <action> in order to <purpose>" + "\n\n");
-             text.append("User acceptance criteria" + "\n");
-             text.append("----------------------------------" + "\n");
-             text.append("* " + "\n");
-             text.append("* " + "\n\n");
-             text.append("Test cases" + "\n");
-             text.append("----------------" + "\n");
-             text.append("* " + "\n");
-             text.append("* ");
-             textMap.put("comment", text.toString());*/
             textMap.put("comment", text);
         } else {
-            String text = "";
-            String path = "./template.html";
-            FileInputStream file;
-            try {
-                file = new FileInputStream(path);
-                int content;
-                while ((content = file.read()) != -1) {
-                    text += (char) content;
-                }
-                file.close();
-            } catch (FileNotFoundException ex) {
-                //
-            } catch (IOException ex) {
-                //
-            }
+            // Backward compatility 3.0.X
+            String comment = activity.getNotes();//.replaceAll("\n", "<br />");
             /*if (selectedActivity) {
              System.err.println("test");
              System.err.println(informationTmp);
              textMap.put("comment", informationTmp);
              } else {*/
-            //textMap.put("comment", activity.getNotes());
-            textMap.put("comment", activity.getNotes());
-            //}
+            textMap.put("comment", comment);
         }
-        if (activity.isFinished()) {
-            informationArea.setForeground(ColorUtil.GREEN);
-        } else {
-            informationArea.setForeground(ColorUtil.BLACK);
-        }
+
+        /*if (activity.isFinished()) {
+         informationArea.setForeground(ColorUtil.GREEN);
+         } else {
+         informationArea.setForeground(ColorUtil.BLACK);
+         }*/
     }
 
     @Override
