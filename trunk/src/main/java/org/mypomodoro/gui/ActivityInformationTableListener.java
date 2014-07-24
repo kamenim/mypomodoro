@@ -48,7 +48,7 @@ public class ActivityInformationTableListener implements ListSelectionListener {
                     for (int row : rows) {
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
                         Activity selectedActivity = activities.getById(id);
-                        info += selectedActivity.getName() + "\n";
+                        info += selectedActivity.getName() + "<br>";
                     }
                     information.showInfo(info);
                 } else if (table.getSelectedRowCount() == 1) {

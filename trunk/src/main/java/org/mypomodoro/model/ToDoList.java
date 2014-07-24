@@ -63,10 +63,11 @@ public final class ToDoList extends AbstractActivities {
         act.setDateCompleted(dateCompleted);
         if (act.getId() == -1) {
             act.setId(act.databaseInsert());
+            super.add(act);
         } else {
             act.databaseUpdate();
+            super.update(act);
         }
-        super.add(act);
     }
 
     public void delete(Activity activity) {

@@ -55,7 +55,7 @@ public class ToDoInformationTableListener implements ListSelectionListener {
                         if (pomodoro.inPomodoro() && selectedToDo.getId() == pomodoro.getCurrentToDo().getId()) {
                             continue;
                         }
-                        info += selectedToDo.getName() + "\n";
+                        info += selectedToDo.getName() + "<br>";
                     }
                     information.showInfo(info);
                 } else if (table.getSelectedRowCount() == 1) {
