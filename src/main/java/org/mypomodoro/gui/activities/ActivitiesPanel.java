@@ -116,6 +116,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
     private int currentSelectedRow = 0;
+    // Copied activity id
+    private int copiedActivityId = -1;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
@@ -287,7 +289,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -361,6 +363,44 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
+
+        // Activate Control C (copy selected task) and Control V (past - duplicate copied task)        
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK), "Control C");
+        class copy extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (table.getSelectedRowCount() == 1) {
+                    int row = table.getSelectedRow();
+                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+                    copiedActivityId = id;
+                }
+            }
+        }
+        am.put("Control C", new copy());
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK), "Control V");
+        class paste extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (copiedActivityId > -1) {
+                    Activity originalCopiedActivity = getActivityById(copiedActivityId);
+                    if (originalCopiedActivity != null) { // may have since been deleted
+                        try {
+                            Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                            copiedActivity.setId(-1); // new activity
+                            copiedActivity.setName("(Copy) " + copiedActivity.getName());
+                            addActivity(copiedActivity);
+                            // Select new created task at the bottom of the list before refresh
+                            setCurrentSelectedRow(table.getRowCount());
+                            refresh();
+                        } catch (CloneNotSupportedException ignored) {
+                        }
+                    }
+                }
+            }
+        }
+        am.put("Control V", new paste());
     }
 
     // Retrieve key event with name
@@ -832,6 +872,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    }
+
+    public void setCurrentSelectedRow(int row) {
+        currentSelectedRow = row;
     }
 
     public void showCurrentSelectedRow() {

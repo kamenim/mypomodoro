@@ -101,8 +101,8 @@ public class MergingPanel extends CreatePanel {
     protected void validActivityAction(final Activity newActivity) {
         newActivity.setIsUnplanned(true);
         StringBuilder comments = new StringBuilder();
-        int estimatedPoms = 0;
-        int overestimatedPoms = 0;
+        //int estimatedPoms = 0;
+        //int overestimatedPoms = 0;
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
@@ -114,17 +114,20 @@ public class MergingPanel extends CreatePanel {
                     continue;
                 }
                 // aggregate comments
+                comments.append("<p style=\"margin-top: 0\">");
                 comments.append(selectedToDo.getName());
                 if (selectedToDo.getNotes() != null && selectedToDo.getNotes().length() > 0) {
-                    comments.append(":\n");
+                    comments.append(":");
+                    comments.append("</p>");
+                    comments.append("<p style=\"margin-top: 0\">");
                     comments.append(selectedToDo.getNotes());
-                    comments.append("\n\n");
+                    comments.append("</p><br>");
                 } else {
                     comments.append(": -");
-                    comments.append("\n\n");
+                    comments.append("</p><br>");
                 }
-                estimatedPoms += selectedToDo.getEstimatedPoms();
-                overestimatedPoms += selectedToDo.getOverestimatedPoms();
+                //estimatedPoms += selectedToDo.getEstimatedPoms();
+                //overestimatedPoms += selectedToDo.getOverestimatedPoms();
                 actualPoms += selectedToDo.getActualPoms();
             }
             // set comment
