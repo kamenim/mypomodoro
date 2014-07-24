@@ -78,10 +78,10 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         super.selectInfo(activity);
         textMap.remove("date_reopened");
         // add additional info
-        textMap.put("diffi", "<b>" + Labels.getString("ReportListPanel.Diff I") + ":</b> " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "<br />");
+        textMap.put("diffi", "<b>" + Labels.getString("ReportListPanel.Diff I") + ":</b> " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "<br>");
         textMap.put("diffii", "<b>" + Labels.getString("ReportListPanel.Diff II") + ":</b> " + (activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "") + "<br />");
-        textMap.put("internal", "<b>" + Labels.getString("ReportListPanel.Internal Interruptions") + ":</b> " + activity.getNumInternalInterruptions() + "<br />");
-        textMap.put("external", "<b>" + Labels.getString("ReportListPanel.External Interruptions") + ":</b> " + activity.getNumInterruptions() + "<br />");
+        textMap.put("internal", "<b>" + Labels.getString("ReportListPanel.Internal Interruptions") + ":</b> " + activity.getNumInternalInterruptions() + "<br>");
+        textMap.put("external", "<b>" + Labels.getString("ReportListPanel.External Interruptions") + ":</b> " + activity.getNumInterruptions() + "<br>");
         if (activity.isFinished()) {
             informationArea.setForeground(ColorUtil.GREEN);
         } else {
