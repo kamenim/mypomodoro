@@ -37,8 +37,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     protected final HtmlEditor informationArea = new HtmlEditor();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
 
-    public ActivityInformationPanel() {
-        //informationArea.setMargin(new Insets(3, 3, 3, 3)); // margin        
+    public ActivityInformationPanel() {       
     }
 
     @Override
@@ -47,30 +46,30 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         textMap.put("date", "<b>" + (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy")
-                + (activity.isUnplanned() ? "]" : "") + "<br />");
+                + (activity.isUnplanned() ? "]" : "") + "<br>");
         textMap.put("date_completed", "<b>" + Labels.getString("Common.Date completed") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "<br />");
+                + (activity.isUnplanned() ? "]" : "") + "<br>");
         // Date reopened
         textMap.put("date_reopened", "<b>" + Labels.getString("Common.Date reopened") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "<br />");
-        textMap.put("title", "<b>" + Labels.getString("Common.Title") + ":</b> " + activity.getName() + "<br />");
-        textMap.put("type", "<b>" + Labels.getString("Common.Type") + ":</b> " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "<br />");
+                + (activity.isUnplanned() ? "]" : "") + "<br>");
+        textMap.put("title", "<b>" + Labels.getString("Common.Title") + ":</b> " + activity.getName() + "<br>");
+        textMap.put("type", "<b>" + Labels.getString("Common.Type") + ":</b> " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "<br>");
         textMap.put("estimated", "<b>" + Labels.getString("Common.Estimated pomodoros") + ":</b> "
                 + activity.getActualPoms() + " / "
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
-                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br />");
+                + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br>");
         if (PreferencesPanel.preferences.getAgileMode()) {
-            textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br />");
-            textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br />");
+            textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br>");
+            textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br>");
         }
-        textMap.put("author", "<b>" + Labels.getString("Common.Author") + ":</b> " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "<br />");
-        textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br />");
-        textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br />");
+        textMap.put("author", "<b>" + Labels.getString("Common.Author") + ":</b> " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "<br>");
+        textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br>");
+        textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br>");
     }
 
     @Override

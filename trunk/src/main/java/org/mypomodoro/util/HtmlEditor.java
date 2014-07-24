@@ -16,12 +16,10 @@
  */
 package org.mypomodoro.util;
 
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -33,6 +31,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -47,22 +46,25 @@ public class HtmlEditor extends JTextPane {
         getDocument().putProperty("i18n", Boolean.TRUE);
         // set default HTML body settings        
         String bodyRule = "body {"
-         + "color: #000;" 
-         + "font-family: " + getFont().getFamily() + ";" 
-         + "font-size: " + getFont().getSize() + "pt;"
-         + "margin: 1px;"
-         + "}";
-         ((HTMLDocument)getDocument()).getStyleSheet().addRule(bodyRule);
-         // set default p tag behaviour
-         String pRule = "p {"
-         + "display: inline;" 
+                + "color: #000;"
+                + "font-family: " + getFont().getFamily() + ";"
+                + "font-size: " + getFont().getSize() + "pt;"
+                + "margin: 1px;"
+                + "}";
+        ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);
+        // set default p tag behaviour
+        /*String pRule = "p {"
+         + "display: inline;"
          + "margin-top: 0px;"
          + "}";
-         ((HTMLDocument)getDocument()).getStyleSheet().addRule(pRule);
-        // Remove all formatting when typing after a formatted text (except for URLs so the text of the URLS may be changed)
-         
-         
-         addCaretListener(new CaretListener() {
+         ((HTMLDocument) getDocument()).getStyleSheet().addRule(pRule);*/
+
+        // Remove some formatting when typing before or after a formatted text
+        // we do it the same way MICROSOFT Word Office does:
+        // - Formatting is preserved after: bold, italic, underline, foreground style --> nothing to do here
+        // - Formatting is removed after: background style
+        // - Formating is removed before and after: links
+        addCaretListener(new CaretListener() {
 
             @Override
             public void caretUpdate(CaretEvent event) {
@@ -70,42 +72,41 @@ public class HtmlEditor extends JTextPane {
 
                     @Override
                     public void run() {
-                        /*AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes();
-                        Enumeration names = selectionAttributes.getAttributeNames();
-                        while (names.hasMoreElements()) {
-                            System.err.println("name=" + names.nextElement());
-                        }*/
-                        
+                        int start = HtmlEditor.this.getSelectionStart();
+                        int end = HtmlEditor.this.getSelectionEnd();
+                        if (start > end) { // backward selection
+                            start = end;
+                        }
+                        AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(start).getAttributes();
                         MutableAttributeSet inputAttr = HtmlEditor.this.getInputAttributes();
-                        MutableAttributeSet BOLD = new SimpleAttributeSet();
-                        StyleConstants.setBold(BOLD, true);
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(BOLD)) {
-                            inputAttr.removeAttribute(StyleConstants.Bold);
-                        }
-                        MutableAttributeSet ITALIC = new SimpleAttributeSet();
-                        StyleConstants.setItalic(ITALIC, true);
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(ITALIC)) {
-                            inputAttr.removeAttribute(StyleConstants.Italic);                            
-                        }
-                        MutableAttributeSet UNDERLINE = new SimpleAttributeSet();
-                        StyleConstants.setUnderline(UNDERLINE, true);
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(UNDERLINE)) {                            
-                            inputAttr.removeAttribute(StyleConstants.Underline);
-                        }
+                        /*MutableAttributeSet BOLD = new SimpleAttributeSet();
+                         StyleConstants.setBold(BOLD, true);
+                         if (!selectionAttributes.containsAttributes(BOLD)) {
+                         inputAttr.removeAttribute(StyleConstants.Bold);
+                         }
+                         MutableAttributeSet ITALIC = new SimpleAttributeSet();
+                         StyleConstants.setItalic(ITALIC, true);
+                         if (!selectionAttributes.containsAttributes(ITALIC)) {
+                         inputAttr.removeAttribute(StyleConstants.Italic);
+                         }
+                         MutableAttributeSet UNDERLINE = new SimpleAttributeSet();
+                         StyleConstants.setUnderline(UNDERLINE, true);
+                         if (!selectionAttributes.containsAttributes(UNDERLINE)) {
+                         inputAttr.removeAttribute(StyleConstants.Underline);
+                         }*/
                         MutableAttributeSet BACKGROUND = new SimpleAttributeSet();
-                        StyleConstants.setBackground(BACKGROUND, Color.BLACK);
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(BACKGROUND)) {
+                        StyleConstants.setBackground(BACKGROUND, StyleConstants.getBackground(selectionAttributes));
+                        if (!selectionAttributes.containsAttributes(BACKGROUND)) {
                             inputAttr.removeAttribute(StyleConstants.Background);
                         }
-                        MutableAttributeSet FOREGROUND = new SimpleAttributeSet();
-                        StyleConstants.setBackground(FOREGROUND, Color.BLACK);
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(FOREGROUND)) {
-                            inputAttr.removeAttribute(StyleConstants.Foreground);
-                        }
-                        MutableAttributeSet HTMLATAG = new SimpleAttributeSet();
-                        //StyleConstants.setComponent(HTMLATAG, );
-                        if (!HtmlEditor.this.getStyledDocument().getCharacterElement(HtmlEditor.this.getSelectionStart()).getAttributes().containsAttributes(HTMLATAG)) {
-                            inputAttr.removeAttribute(HTML.Tag.A);                            
+                        /*MutableAttributeSet FOREGROUND = new SimpleAttributeSet();
+                         StyleConstants.setBackground(FOREGROUND, StyleConstants.getForeground(selectionAttributes));
+                         if (!selectionAttributes.containsAttributes(FOREGROUND)) {
+                         inputAttr.removeAttribute(StyleConstants.Foreground);
+                         }*/
+                        Object tag = selectionAttributes.getAttribute(HTML.Tag.A);
+                        if (tag == null) {
+                            inputAttr.removeAttribute(HTML.Tag.A);
                         }
                     }
                 });
@@ -113,6 +114,26 @@ public class HtmlEditor extends JTextPane {
         });
 
         addHyperlinkListener(new MyHyperlinkListener());
+
+        //getDocument().putProperty(DefaultEditorKit.EndOfLineStringProperty, "<br/>\n");
+
+        /*InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+         ActionMap am = getActionMap();
+         // Replace carriage return with BR tag (rather than p tag)
+         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+         class enterAction extends AbstractAction {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         try {
+         System.err.println("test");
+         insertText(getCaretPosition(), "<br>");
+         } catch (BadLocationException ignored) {
+         } catch (IOException ignored) {
+         }
+         }
+         }        
+         am.put("Enter", new enterAction());*/
     }
 
     // Make URLs clickable in (Pre)View mode
@@ -132,7 +153,7 @@ public class HtmlEditor extends JTextPane {
     }
 
     // Insert text at the cursor position
-    public void insertText(int start, String text) throws BadLocationException, IOException {
-        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, null);
+    public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
+        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);        
     }
 }

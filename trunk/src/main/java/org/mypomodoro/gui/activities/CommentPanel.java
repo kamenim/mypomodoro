@@ -23,21 +23,23 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.KeyStroke;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
+import javax.swing.text.html.HTML;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.model.Activity;
@@ -52,38 +54,23 @@ import org.mypomodoro.util.Labels;
 // TODO use this CommentPanel everywhere
 // TODO do not update comment when passing on selected task
 // TODO problem with backward compatibility 3.0.x
-// TODO Add cancel button
+// TODO new line button
+// TODO html mode problem: when hovering on task, text turns back to plain view and style is lost
+// TODO hovering on the link setCursor(new Cursor(Cursor.HAND_CURSOR))
+// TODO replace carriage return with br
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
     final ActivitiesPanel panel;
+    protected String informationInit = new String();
     protected String informationTmp = new String();
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
-    
 
     public CommentPanel(ActivitiesPanel activitiesPanel) {
         this.panel = activitiesPanel;
 
         setLayout(new GridBagLayout());
         setBorder(null);
-
-        informationArea.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent de) {
-                
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent de) {
-                
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent de) {
-                //saveButton.setText(saveButton.getText() + " *");
-            }
-        });
 
         addEditButton();
         addCommentArea();
@@ -123,6 +110,7 @@ public class CommentPanel extends ActivityInformationPanel {
         foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
         foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
         final JTextField linkTextField = new JTextField();
+        linkTextField.setText("http://");
         final JButton linkButton = new AbstractButton(
                 ">>");
         linkButton.setMargin(new Insets(0, 0, 0, 0));
@@ -235,6 +223,10 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         boldButton.addActionListener(new StyledEditorKit.BoldAction());
+        // set the keystroke on the button  (won't work on the text pane)
+        boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
+        boldButton.getActionMap().put("Bold", new StyledEditorKit.BoldAction());
+        boldButton.setToolTipText("CTRL + B");
         boldButton.setVisible(false);
         add(boldButton, gbc);
         // italic button
@@ -244,6 +236,10 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         italicButton.addActionListener(new StyledEditorKit.ItalicAction());
+        // set the keystroke on the button  (won't work on the text pane)
+        italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
+        italicButton.getActionMap().put("Italic", new StyledEditorKit.ItalicAction());
+        italicButton.setToolTipText("CTRL + I");
         italicButton.setVisible(false);
         add(italicButton, gbc);
         // underline button
@@ -253,6 +249,10 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
+        // set the keystroke on the button not (won't work on the text pane)
+        underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
+        underlineButton.getActionMap().put("Underline", new StyledEditorKit.UnderlineAction());
+        underlineButton.setToolTipText("CTRL + U");
         underlineButton.setVisible(false);
         add(underlineButton, gbc);
         // background color button
@@ -342,11 +342,12 @@ public class CommentPanel extends ActivityInformationPanel {
                         start = end;
                     }
                     if (!linkTextField.getText().isEmpty()) {
-                        String link = "<a href=\"" + linkTextField.getText() + "\">" + linkTextField.getText() + "</a>";
-                        informationArea.insertText(start, link);
-                        linkTextField.setText(null);
+                        String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
+                        informationArea.insertText(start, link, HTML.Tag.A);
                         // Set caret position right after the link                        
-                        informationArea.setCaretPosition(start + linkTextField.getText().length());
+                        //informationArea.setCaretPosition(start + link.length());
+                        //informationArea.setCaretPosition(informationArea.getCaretPosition());                        
+                        linkTextField.setText("http://"); // reset field                        
                     }
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
@@ -396,7 +397,7 @@ public class CommentPanel extends ActivityInformationPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                showInfo(); // ???
+                showInfo();
             }
         });
         add(cancelButton, gbc);
@@ -443,6 +444,15 @@ public class CommentPanel extends ActivityInformationPanel {
          }
 
          });*/
+        /*
+         informationArea.addCaretListener(new CaretListener() {
+
+         @Override
+         public void caretUpdate(CaretEvent event) {
+         saveButton.setText(saveButton.getText() + " *");
+         }
+         });
+         */
 
         // Templates
         /*String path = "./" + (activity.getType().isEmpty() ? "" : (activity.getType() + ".")) + "template.html";
@@ -472,27 +482,38 @@ public class CommentPanel extends ActivityInformationPanel {
             String text = "";
             if (activity.isStory()) {
                 // default template for User Story type
-                text += "<div><b><u>Story line</u></b></div><br />";
-                text += "<p>As a {user role}, I want to {action} in order to {goal}.</p>";
-                text += "<br />";
+                // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
+                text += "<div><b><u>Story line</u></b></div><br>";
+                text += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
+                text += "<br>";
                 text += "<div><b><u>User acceptance criteria</u></b></div>";
-                text += "<ul>";
-                text += "<li>...</li>";
-                text += "<li>...</li>";
-                text += "</ul>";
-                text += "<br />";
+                text += "<br>";
+                text += "<p style=\"margin-top: 0\">";                
+                text += "+ ...";
+                text += "</p>";
+                text += "<p style=\"margin-top: 0\">";
+                text += "+ ...";
+                text += "</p>";
+                text += "<br>";
                 text += "<div><b><u>Test cases</u></b></div>";
-                text += "<ul>";
-                text += "<li>...</li>";
-                text += "<li>...</li>";
-                text += "</ul>";
-            } else {
-                text += "<p></p>";
+                text += "<br>";
+                text += "<p style=\"margin-top: 0\">";                
+                text += "+ ...";
+                text += "</p>";
+                text += "<p style=\"margin-top: 0\">";
+                text += "+ ...";
+                text += "</p>";
             }
             textMap.put("comment", text);
         } else {
+            String comment = activity.getNotes();
             // Backward compatility 3.0.X
-            String comment = activity.getNotes();//.replaceAll("\n", "<br />");
+            // Check if there is a body tag; if not replace trailing return carriage with P tag
+            if (!comment.contains("</body>")) {
+                comment = "<p style=\"margin-top: 0\">" + comment;
+                comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
+                comment = comment + "</p>";
+            }
             /*if (selectedActivity) {
              System.err.println("test");
              System.err.println(informationTmp);
