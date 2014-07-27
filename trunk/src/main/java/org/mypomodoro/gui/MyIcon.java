@@ -49,7 +49,7 @@ public class MyIcon extends JLabel {
     public void highlight() {
         setIcon(on);
     }
-    
+
     public void unhighlight() {
         setIcon(off);
     }

@@ -35,14 +35,14 @@ public class TimeConverter {
         float hours = min / 60;
         float minutes = min % 60;
         if (days >= 1) {
-            time = String.format("%d " + (days == 1 ? Labels.getString("Common.Day"):Labels.getString("Common.Days")) + " %02d:%02d", days, Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
+            time = String.format("%d " + (days == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")) + " %02d:%02d", days, Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
         } else {
             time = String.format("%02d:%02d", Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
         }
         return time;
     }
 
-    public static float roundToHours(float min) {       
+    public static float roundToHours(float min) {
         return new Float(Math.round(Math.floor(min / 60)));
     }
 

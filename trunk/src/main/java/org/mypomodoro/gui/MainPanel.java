@@ -61,7 +61,7 @@ public final class MainPanel extends JFrame {
     public static final String MYPOMODORO_VERSION = "3.1.0";
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
-    private final WindowPanel windowPanel = new WindowPanel(iconBar, this);    
+    private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
     private static Dimension guiRecordedSize;
     private static Point guiRecordedLocation;
 
@@ -155,10 +155,10 @@ public final class MainPanel extends JFrame {
                     guiRecordedLocation = gui.getLocation();
                     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
                     gui.setMaximizedBounds(env.getMaximumWindowBounds());
-                    gui.setExtendedState(gui.getExtendedState() | JFrame.MAXIMIZED_BOTH);                    
+                    gui.setExtendedState(gui.getExtendedState() | JFrame.MAXIMIZED_BOTH);
                 } else { // back to the original size
                     gui.setSize(guiRecordedSize);
-                    gui.setLocation(guiRecordedLocation);                            
+                    gui.setLocation(guiRecordedLocation);
                 }
             }
         };

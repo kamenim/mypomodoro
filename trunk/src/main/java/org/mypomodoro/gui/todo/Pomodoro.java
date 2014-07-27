@@ -106,7 +106,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
-        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);        
+        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers      
     }
@@ -170,7 +170,7 @@ public class Pomodoro {
                     } else if (getCurrentToDo().getEstimatedPoms() + getCurrentToDo().getOverestimatedPoms() == 0) { // task with no estimation
                         getCurrentToDo().setEstimatedPoms(1);
                     }
-                    getCurrentToDo().incrementPoms();                    
+                    getCurrentToDo().incrementPoms();
                     getCurrentToDo().databaseUpdate();
                     pomSetNumber++;
                     // break time
@@ -354,7 +354,7 @@ public class Pomodoro {
 
     public void stopSound() {
         if (clip != null) {
-            clip.stop();            
+            clip.stop();
             // allow clip to be GCed
             clip = null;
         }
@@ -419,7 +419,7 @@ public class Pomodoro {
 
     // mute ticking and ringing
     public void mute() {
-        stopSound();        
+        stopSound();
         isMute = true;
     }
 

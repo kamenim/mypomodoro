@@ -24,6 +24,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -42,6 +44,7 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
 
 import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
@@ -49,25 +52,20 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO make exit on Jtable only rows not the entire table !!!
-// TODO do not set foreground of informationArea to red when in pomodoro
-// TODO use this CommentPanel everywhere
-// TODO do not update comment when passing on selected task
-// TODO problem with backward compatibility 3.0.x
-// TODO new line button
-// TODO html mode problem: when hovering on task, text turns back to plain view and style is lost
-// TODO hovering on the link setCursor(new Cursor(Cursor.HAND_CURSOR))
-// TODO replace carriage return with br
+// TODO re-activate addToDoIconPanel() for ToDoPanel only
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
-    final ActivitiesPanel panel;
-    protected String informationInit = new String();
-    protected String informationTmp = new String();
+    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    private final IListPanel panel;
+    private String informationTmp = new String();
+    private int activityIdTmp = -1;
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
+    private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
+    private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
 
-    public CommentPanel(ActivitiesPanel activitiesPanel) {
-        this.panel = activitiesPanel;
+    public CommentPanel(IListPanel iListPanel) {
+        this.panel = iListPanel;
 
         setLayout(new GridBagLayout());
         setBorder(null);
@@ -76,13 +74,48 @@ public class CommentPanel extends ActivityInformationPanel {
         addCommentArea();
         addSaveButton();
         addCancelButton();
+
+        // Display the save and cancel buttons when typing
+        informationArea.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // nothing to do here
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // nothing to do here
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (informationArea.isEditable()) {
+                    saveButton.setVisible(true);
+                    cancelButton.setVisible(true);
+                    informationTmp = informationArea.getText(); // record temp text
+                    int row = panel.getTable().getSelectedRow(); // record activity Id
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                }
+            }
+        });
+    }
+
+    private void addToDoIconPanel() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 3, 0, 0); // margin left
+        add(iconLabel, gbc);
+        gbc.insets = new Insets(0, 0, 0, 0);
     }
 
     private void addEditButton() {
         final JButton editButton = new AbstractButton(
                 Labels.getString("Common.Edit"));
-        final JButton previewButton = new AbstractButton(
-                Labels.getString("Common.Preview"));
         final JButton htmlButton = new AbstractButton(
                 "HTML");
         final JButton boldButton = new AbstractButton(
@@ -375,11 +408,16 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 0.1;
         gbc.weighty = 0.8;
         gbc.gridheight = 3;
+        saveButton.setVisible(false);
         saveButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.saveComment(informationArea.getText());
+                saveButton.setVisible(false);
+                cancelButton.setVisible(false);
+                informationTmp = new String();
+                activityIdTmp = -1;
             }
         });
         add(saveButton, gbc);
@@ -391,12 +429,19 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 0.1;
         gbc.weighty = 0.2;
         gbc.gridheight = 1;
-        JButton cancelButton = new AbstractButton(
-                Labels.getString("Common.Cancel"));
+        cancelButton.setVisible(false);
         cancelButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                previewButton.getActionListeners()[0].actionPerformed(e);
+                saveButton.setVisible(false);
+                cancelButton.setVisible(false);
+                informationTmp = new String();
+                activityIdTmp = -1;
+                int row = panel.getTable().getSelectedRow();
+                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                selectInfo(panel.getActivityById(id));
                 showInfo();
             }
         });
@@ -405,99 +450,31 @@ public class CommentPanel extends ActivityInformationPanel {
 
     @Override
     public void selectInfo(final Activity activity) {
-        // (editable) comment area
-        // record temp comment in memory
-        /*informationArea.getDocument().addDocumentListener(new DocumentListener() {
-
-         @Override
-         public void insertUpdate(DocumentEvent de) {
-         int row = panel.getTable().getSelectedRow();
-         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-         final boolean selectedActivity = activity.getId() == id;
-         System.err.println("selectedActivity = " + selectedActivity);
-         if (selectedActivity) {
-         informationTmp = informationArea.getText().trim();
-         System.err.println("informationTmp=" + informationTmp);
-         }
-         }
-
-         @Override
-         public void removeUpdate(DocumentEvent de) {
-         int row = panel.getTable().getSelectedRow();
-         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-         final boolean selectedActivity = activity.getId() == id;
-         System.err.println("selectedActivity = " + selectedActivity);
-         if (selectedActivity) {
-         informationTmp = informationArea.getText().trim();
-         }
-         }
-
-         @Override
-         public void changedUpdate(DocumentEvent de) {
-         int row = panel.getTable().getSelectedRow();
-         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-         final boolean selectedActivity = activity.getId() == id;
-         System.err.println("selectedActivity = " + selectedActivity);
-         if (selectedActivity) {
-         informationTmp = informationArea.getText().trim();
-         }
-         }
-
-         });*/
-        /*
-         informationArea.addCaretListener(new CaretListener() {
-
-         @Override
-         public void caretUpdate(CaretEvent event) {
-         saveButton.setText(saveButton.getText() + " *");
-         }
-         });
-         */
-
-        // Templates
-        /*String path = "./" + (activity.getType().isEmpty() ? "" : (activity.getType() + ".")) + "template.html";
-         System.err.println("path=" + path);
-         // Check only ones for templates (optimization)
-         FileInputStream file;
-         try {
-         file = new FileInputStream(path);
-         int content;
-         while ((content = file.read()) != -1) {
-         text += (char) content;
-         }
-         file.close();
-         } catch (IOException ex) {
-         path = "./template.html";
-         try {
-         file = new FileInputStream(path);
-         int content;
-         while ((content = file.read()) != -1) {
-         text += (char) content;
-         }
-         file.close();
-         } catch (IOException ignored) {
-         }
-         }*/
-        if (activity.getNotes().trim().length() == 0) {
+        String comment = activity.getNotes().trim();
+        if (activityIdTmp == activity.getId() && !informationTmp.isEmpty()) {
+            comment = informationTmp;
+            saveButton.setVisible(true);
+            cancelButton.setVisible(true);
+        } else {
+            saveButton.setVisible(false);
+            cancelButton.setVisible(false);
+        }
+        if (comment.isEmpty()) { // no comment yet
             String text = "";
             if (activity.isStory()) {
                 // default template for User Story type
                 // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
-                text += "<div><b><u>Story line</u></b></div><br>";
+                text += "<p style=\"margin-top: 0\"><b><u>Story line</u></b></p>";
                 text += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
-                text += "<br>";
-                text += "<div><b><u>User acceptance criteria</u></b></div>";
-                text += "<br>";
-                text += "<p style=\"margin-top: 0\">";                
+                text += "<p><b><u>User acceptance criteria</u></b></p>";
+                text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
                 text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
-                text += "<br>";
-                text += "<div><b><u>Test cases</u></b></div>";
-                text += "<br>";
-                text += "<p style=\"margin-top: 0\">";                
+                text += "<p><b><u>Test cases</u></b></p>";
+                text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
                 text += "<p style=\"margin-top: 0\">";
@@ -506,7 +483,6 @@ public class CommentPanel extends ActivityInformationPanel {
             }
             textMap.put("comment", text);
         } else {
-            String comment = activity.getNotes();
             // Backward compatility 3.0.X
             // Check if there is a body tag; if not replace trailing return carriage with P tag
             if (!comment.contains("</body>")) {
@@ -514,23 +490,16 @@ public class CommentPanel extends ActivityInformationPanel {
                 comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
                 comment = comment + "</p>";
             }
-            /*if (selectedActivity) {
-             System.err.println("test");
-             System.err.println(informationTmp);
-             textMap.put("comment", informationTmp);
-             } else {*/
             textMap.put("comment", comment);
         }
-
-        /*if (activity.isFinished()) {
-         informationArea.setForeground(ColorUtil.GREEN);
-         } else {
-         informationArea.setForeground(ColorUtil.BLACK);
-         }*/
     }
 
     @Override
     public boolean isMultipleSelectionAllowed() {
         return false;
+    }
+
+    public JLabel getIconLabel() {
+        return iconLabel;
     }
 }

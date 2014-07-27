@@ -25,7 +25,6 @@ import org.mypomodoro.buttons.RemoveButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -39,7 +38,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public DetailsPanel(CheckPanel checkPanel) {
         setLayout(new GridBagLayout());
         setBorder(null);
-        
+
         addRemoveButton(checkPanel);
         addInformationArea();
     }
@@ -69,11 +68,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         textMap.remove("date_reopened");
         if (!activity.isCompleted()) {
             textMap.remove("date_completed");
-        }
-        if (activity.isFinished()) {
-            informationArea.setForeground(ColorUtil.GREEN);
-        } else {
-            informationArea.setForeground(ColorUtil.BLACK);
         }
     }
 }

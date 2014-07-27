@@ -27,7 +27,7 @@ import java.util.Properties;
  *
  */
 public class GoogleConfigLoader {
-    
+
     private static final Properties properties = new Properties();
 
     public GoogleConfigLoader() {

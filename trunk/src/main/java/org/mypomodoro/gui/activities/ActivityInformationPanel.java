@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.Color;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
@@ -33,11 +32,11 @@ import org.mypomodoro.util.TimeConverter;
  *
  */
 public class ActivityInformationPanel extends JPanel implements IActivityInformation {
-    
+
     protected final HtmlEditor informationArea = new HtmlEditor();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
 
-    public ActivityInformationPanel() {       
+    public ActivityInformationPanel() {
     }
 
     @Override
@@ -77,9 +76,9 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         clearInfo();
         Iterator<String> keySetIterator = textMap.keySet().iterator();
         String text = "";
-        while (keySetIterator.hasNext()) { 
-            String key = keySetIterator.next();            
-            text += textMap.get(key);            
+        while (keySetIterator.hasNext()) {
+            String key = keySetIterator.next();
+            text += textMap.get(key);
         }
         informationArea.setText(text);
         // disable auto scrolling
@@ -111,10 +110,5 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     @Override
     public boolean isMultipleSelectionAllowed() {
         return true;
-    }
-
-    @Override
-    public void setForegroundColor(Color color) {
-        informationArea.setForeground(color);
     }
 }

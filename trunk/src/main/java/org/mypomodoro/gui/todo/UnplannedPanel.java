@@ -50,17 +50,16 @@ public class UnplannedPanel extends CreatePanel {
     }
 
     /*private void addToDoIconPanel() {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 3, 0, 0); // margin left
-        add(iconLabel, gbc);
-        gbc.insets = new Insets(0, 0, 0, 0);
-    }*/
-
+     gbc.gridx = 0;
+     gbc.gridy = 0;
+     gbc.fill = GridBagConstraints.BOTH;
+     gbc.weightx = 1.0;
+     gbc.weighty = 0.1;
+     gbc.gridheight = 1;
+     gbc.insets = new Insets(0, 3, 0, 0); // margin left
+     add(iconLabel, gbc);
+     gbc.insets = new Insets(0, 0, 0, 0);
+     }*/
     @Override
     protected void addInputFormPanel() {
         gbc.gridx = 0;

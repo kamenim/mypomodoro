@@ -32,8 +32,10 @@ public class SaveListener implements ActionListener {
     }
 
     /**
-     * Action performer that reacts on button click or on Enter keystroke (see SaveButton)
-     * Condition added to prevent the action to be performed when the Enter key is used while editing in a text area (here description field of the activity input form)
+     * Action performer that reacts on button click or on Enter keystroke (see
+     * SaveButton) Condition added to prevent the action to be performed when
+     * the Enter key is used while editing in a text area (here description
+     * field of the activity input form)
      *
      * @param event
      */

@@ -61,6 +61,7 @@ import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.model.Activity;
@@ -95,7 +96,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         "ID"};
     public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
-    private final CommentPanel commentPanel = new CommentPanel();
+    private final CommentPanel commentPanel = new CommentPanel(this);
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
@@ -300,7 +301,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control A", new selectAllAction());
-    
+
         // Keystroke for tab
         class tabAction extends AbstractAction {
 
@@ -784,5 +785,17 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+    }
+
+    @Override
+    public void saveComment(String comment) {
+        if (table.getSelectedRowCount() == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
+            Activity selectedActivity = ChartList.getList().getById(id);
+            if (selectedActivity != null) {
+                selectedActivity.setNotes(comment);
+                selectedActivity.databaseUpdate();
+            }
+        }
     }
 }

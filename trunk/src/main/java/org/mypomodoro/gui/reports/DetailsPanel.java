@@ -26,7 +26,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -82,10 +81,5 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         textMap.put("diffii", "<b>" + Labels.getString("ReportListPanel.Diff II") + ":</b> " + (activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "") + "<br />");
         textMap.put("internal", "<b>" + Labels.getString("ReportListPanel.Internal Interruptions") + ":</b> " + activity.getNumInternalInterruptions() + "<br>");
         textMap.put("external", "<b>" + Labels.getString("ReportListPanel.External Interruptions") + ":</b> " + activity.getNumInterruptions() + "<br>");
-        if (activity.isFinished()) {
-            informationArea.setForeground(ColorUtil.GREEN);
-        } else {
-            informationArea.setForeground(ColorUtil.BLACK);
-        }
     }
 }

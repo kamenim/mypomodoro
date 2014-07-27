@@ -34,7 +34,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public boolean isEmpty() {
         return activities.isEmpty();
     }
-    
+
     // Update activity from database
     public void refreshById(int id) {
         for (int index = 0; index < size(); index++) {
@@ -42,7 +42,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             if (act.getId() == id) {
                 update(index, Activity.getActivity(id));
             }
-        }        
+        }
     }
 
     public void remove(Activity activity) {
@@ -52,7 +52,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public void update(Activity activity) {
         update(getIndex(activity), activity);
     }
-    
+
     public void update(int index, Activity activity) {
         activities.set(index, activity);
     }
@@ -60,7 +60,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public int size() {
         return activities.size();
     }
-    
+
     public Activity get(int index) {
         return activities.get(index);
     }

@@ -439,7 +439,7 @@ public class CreateChart extends JPanel {
             } else {
                 burnupRange += burnupRange / 100; // add 1% margin on top
             }
-            burnupRangeAxis.setRange(0, burnupRange);            
+            burnupRangeAxis.setRange(0, burnupRange);
             TickUnits burnupCustomUnits = new TickUnits();
             // Tick units : from 1 to 10 = 1; from 10 to 50 --> 5; from 50 to 100 --> 10; from 100 to 500 --> 50; from 500 to 1000 --> 100 
             int tick = 10;
