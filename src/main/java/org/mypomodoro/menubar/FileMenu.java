@@ -82,7 +82,7 @@ public class FileMenu extends JMenu {
             }
         }
     }
-    
+
     class SplashItem extends JMenuItem {
 
         public SplashItem() {

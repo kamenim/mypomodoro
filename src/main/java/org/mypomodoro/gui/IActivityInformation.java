@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.Color;
 import org.mypomodoro.model.Activity;
 
 /**
@@ -34,6 +33,4 @@ public interface IActivityInformation {
     void clearInfo();
 
     boolean isMultipleSelectionAllowed();
-
-    void setForegroundColor(Color color);
 }

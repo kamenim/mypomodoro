@@ -29,7 +29,7 @@ public class WindowPanel extends JPanel {
     public WindowPanel(JPanel iconBar, MainPanel view) {
         setLayout(new BorderLayout());
         setOpaque(true);
-        add(iconBar, BorderLayout.NORTH);        
+        add(iconBar, BorderLayout.NORTH);
         windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
         windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
         windowPanel.add(view.getCreatePanel(), view.getCreatePanel().getClass().getName());

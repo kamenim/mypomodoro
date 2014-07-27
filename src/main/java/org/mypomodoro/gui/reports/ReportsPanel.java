@@ -40,7 +40,6 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -64,6 +63,7 @@ import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -845,18 +845,14 @@ public class ReportsPanel extends JPanel implements IListPanel {
         }
     }
 
+    @Override
     public void saveComment(String comment) {
-        int row = table.getSelectedRow();
-        if (row > -1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+        if (table.getSelectedRowCount() == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
             Activity selectedReport = ReportList.getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
                 selectedReport.databaseUpdate();
-                String title = Labels.getString("Common.Add comment");
-                String message = Labels.getString("Common.Comment saved");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

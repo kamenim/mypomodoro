@@ -54,15 +54,14 @@ public class ToDoIconLabel {
 
         // Trailing (three) points (at the end of the row) when too many pomodoros
         /*boolean trimIconLabel = false;        
-        int nbMaxPoms = 10; 
-        if (estimatedPoms + overestimatedPoms > nbMaxPoms) {
-            if (estimatedPoms > nbMaxPoms) {
-                estimatedPoms = nbMaxPoms;
-            }
-            overestimatedPoms = (overestimatedPoms > nbMaxPoms - estimatedPoms) ? nbMaxPoms - estimatedPoms : overestimatedPoms;
-            trimIconLabel = true;            
-        }*/
-
+         int nbMaxPoms = 10; 
+         if (estimatedPoms + overestimatedPoms > nbMaxPoms) {
+         if (estimatedPoms > nbMaxPoms) {
+         estimatedPoms = nbMaxPoms;
+         }
+         overestimatedPoms = (overestimatedPoms > nbMaxPoms - estimatedPoms) ? nbMaxPoms - estimatedPoms : overestimatedPoms;
+         trimIconLabel = true;            
+         }*/
         int arraySize = estimatedPoms;
         if (overestimatedPoms > 0) {
             arraySize += overestimatedPoms + plusSign;
@@ -75,8 +74,8 @@ public class ToDoIconLabel {
         }
         // Trailing (three) points
         /*if (trimIconLabel) {
-            arraySize += 3; // 3 trailing points
-        }*/
+         arraySize += 3; // 3 trailing points
+         }*/
         Icon[] icons = new Icon[arraySize];
 
         // Estimated pomodoros
@@ -104,11 +103,10 @@ public class ToDoIconLabel {
 
         // Trailing (three) points
         /*if (trimIconLabel) {
-            for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0); i < arraySize; i++) {
-                icons[i] = new ImageIcon(Main.class.getResource("/images/point.png"));
-            }
-        }*/
-
+         for (int i = estimatedPoms + (overestimatedPoms > 0 ? overestimatedPoms + plusSign : 0); i < arraySize; i++) {
+         icons[i] = new ImageIcon(Main.class.getResource("/images/point.png"));
+         }
+         }*/
         // Internal interruption
         if (numInternalInterruptions > 0) {
             // Trailing (three) points

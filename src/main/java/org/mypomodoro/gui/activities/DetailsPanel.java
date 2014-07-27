@@ -28,7 +28,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -89,10 +88,5 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
             textMap.remove("iteration");
         }
         textMap.remove("date_completed");
-        if (activity.isFinished()) {
-            informationArea.setForeground(ColorUtil.GREEN);
-        } else {
-            informationArea.setForeground(ColorUtil.BLACK);
-        }
     }
 }

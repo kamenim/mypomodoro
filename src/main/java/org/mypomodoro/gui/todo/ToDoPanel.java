@@ -41,7 +41,6 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -66,6 +65,7 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -349,7 +349,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control A", new selectAllAction());
-        
+
         // Keystroke for tab
         class tabAction extends AbstractAction {
 
@@ -537,7 +537,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
@@ -890,7 +890,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity toDo = ToDoList.getList().getById(id);
             if (toDo != null) {
-                String text = toDo.getActualPoms() + " / " + toDo.getEstimatedPoms();                
+                String text = toDo.getActualPoms() + " / " + toDo.getEstimatedPoms();
                 Integer overestimatedpoms = toDo.getOverestimatedPoms();
                 text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
                 renderer.setText(text);
@@ -969,6 +969,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return backgroundPanel;
     }
 
+    @Override
     public void saveComment(String comment) {
         if (table.getSelectedRowCount() == 1) {
             Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
@@ -976,10 +977,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
                 selectedActivity.databaseUpdate();
-                String title = Labels.getString("Common.Add comment");
-                String message = Labels.getString("Common.Comment saved");
-                JOptionPane.showConfirmDialog(Main.gui, message, title,
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -1005,8 +1002,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
-                detailsPanel.setForegroundColor(ColorUtil.RED);
-                commentPanel.setForegroundColor(ColorUtil.RED);
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
@@ -1016,8 +1011,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    detailsPanel.setForegroundColor(selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    commentPanel.setForegroundColor(selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
                     ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK, false);
@@ -1025,8 +1018,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    detailsPanel.setForegroundColor(selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    commentPanel.setForegroundColor(selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     detailsPanel.enableButtons();
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection
@@ -1037,8 +1028,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
                 ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
                 ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
-                detailsPanel.setForegroundColor(ColorUtil.BLACK);
-                commentPanel.setForegroundColor(ColorUtil.BLACK);
                 detailsPanel.enableButtons();
             }
         } else { // empty list
@@ -1047,8 +1036,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
             ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
             ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
             ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
-            detailsPanel.setForegroundColor(ColorUtil.BLACK);
-            commentPanel.setForegroundColor(ColorUtil.BLACK);
             detailsPanel.enableButtons();
         }
     }

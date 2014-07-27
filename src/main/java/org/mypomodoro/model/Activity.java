@@ -34,10 +34,10 @@ import org.mypomodoro.util.DateUtil;
 public class Activity implements Cloneable {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-    
+
     @Override
     public Activity clone() throws CloneNotSupportedException {
-        return (Activity)super.clone();
+        return (Activity) super.clone();
     }
 
     // ATTRIBUTES
@@ -514,7 +514,7 @@ public class Activity implements Cloneable {
     }
 
     public boolean hasChanged() {
-        Activity act = getActivity(getId());        
+        Activity act = getActivity(getId());
         return act == null || !equals(act);
     }
 

@@ -49,4 +49,6 @@ public interface IListPanel {
     void addActivity(Activity activity);
 
     void addActivity(Activity activity, Date date, Date dateCompleted);
+
+    void saveComment(String comment);
 }

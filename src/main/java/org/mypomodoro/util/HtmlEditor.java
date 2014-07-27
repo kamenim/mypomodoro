@@ -154,6 +154,6 @@ public class HtmlEditor extends JTextPane {
 
     // Insert text at the cursor position
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
-        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);        
+        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);
     }
 }
