@@ -25,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
@@ -52,7 +54,7 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO re-activate addToDoIconPanel() for ToDoPanel only
+// TODO re-activate addToDoIconPanel() for ToDoPanel only + make only one jpanel for textarea and icon pnel
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -63,104 +65,44 @@ public class CommentPanel extends ActivityInformationPanel {
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-
+    private final JButton editButton = new AbstractButton(Labels.getString("Common.Edit"));
+    private final JButton htmlButton = new AbstractButton("HTML");
+    private final JButton boldButton = new AbstractButton("B");
+    private final JButton italicButton = new AbstractButton("I");
+    private final JButton underlineButton = new AbstractButton("U");
+    private final JButton backgroundColorButton = new AbstractButton("ab");
+    private final JButton foregroundColorButton = new AbstractButton("A");
+    private final JTextField linkTextField = new JTextField();
+    private final JButton linkButton = new AbstractButton(">>");
+    
+    private boolean showIconLabel = false;
+    
     public CommentPanel(IListPanel iListPanel) {
+        this(iListPanel, false);
+    }
+
+    public CommentPanel(IListPanel iListPanel, boolean showIconLabel) {
         this.panel = iListPanel;
+        this.showIconLabel = showIconLabel;
 
         setLayout(new GridBagLayout());
         setBorder(null);
 
         addEditButton();
+        if (showIconLabel) {
+            addToDoIconPanel();
+        }    
         addCommentArea();
         addSaveButton();
         addCancelButton();
-
-        // Display the save and cancel buttons when typing
-        informationArea.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                // nothing to do here
-            }
+        
+        // Display the edit buttons when clicking with the mouse
+        informationArea.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void keyPressed(KeyEvent e) {
-                // nothing to do here
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (informationArea.isEditable()) {
-                    saveButton.setVisible(true);
-                    cancelButton.setVisible(true);
-                    informationTmp = informationArea.getText(); // record temp text
-                    int row = panel.getTable().getSelectedRow(); // record activity Id
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                }
-            }
-        });
-    }
-
-    private void addToDoIconPanel() {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 3, 0, 0); // margin left
-        add(iconLabel, gbc);
-        gbc.insets = new Insets(0, 0, 0, 0);
-    }
-
-    private void addEditButton() {
-        final JButton editButton = new AbstractButton(
-                Labels.getString("Common.Edit"));
-        final JButton htmlButton = new AbstractButton(
-                "HTML");
-        final JButton boldButton = new AbstractButton(
-                "B");
-        boldButton.setFont(getFont().deriveFont(Font.BOLD));
-        boldButton.setMargin(new Insets(0, 0, 0, 0));
-        final JButton italicButton = new AbstractButton(
-                "I");
-        italicButton.setFont(getFont().deriveFont(Font.ITALIC));
-        italicButton.setMargin(new Insets(0, 0, 0, 0));
-        final JButton underlineButton = new AbstractButton(
-                "U");
-        Map attributes = getFont().getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        underlineButton.setFont(getFont().deriveFont(attributes));
-        underlineButton.setMargin(new Insets(0, 0, 0, 0));
-        final JButton backgroundColorButton = new AbstractButton(
-                "ab");
-        backgroundColorButton.setForeground(Color.BLUE);
-        backgroundColorButton.setFont(getFont().deriveFont(attributes).deriveFont(Font.BOLD));
-        backgroundColorButton.setMargin(new Insets(0, 0, 0, 0));
-        final JButton foregroundColorButton = new AbstractButton(
-                "A");
-        foregroundColorButton.setForeground(Color.BLUE);
-        foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
-        foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
-        final JTextField linkTextField = new JTextField();
-        linkTextField.setText("http://");
-        final JButton linkButton = new AbstractButton(
-                ">>");
-        linkButton.setMargin(new Insets(0, 0, 0, 0));
-        // Edit button
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.1; // 10 %
-        gbc.weighty = 0.5;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 4;
-        gbc.fill = GridBagConstraints.BOTH;
-        editButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 informationArea.setEditable(true);
-                editButton.setVisible(false);
+                informationArea.getCaret().setVisible(true); // show cursor
                 previewButton.setVisible(true);
                 htmlButton.setVisible(true);
                 boldButton.setVisible(true);
@@ -172,7 +114,81 @@ public class CommentPanel extends ActivityInformationPanel {
                 linkButton.setVisible(true);
             }
         });
-        add(editButton, gbc);
+
+        // Display the save and cancel buttons when typing
+        informationArea.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // nothing to do here
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // nothing to do here                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (informationArea.isEditable()) {                    
+                    saveButton.setVisible(true);
+                    cancelButton.setVisible(true);
+                    informationTmp = informationArea.getText(); // record temp text
+                    int row = panel.getTable().getSelectedRow(); // record activity Id
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                }
+            }
+        });
+    }
+
+    private void addEditButton() {
+        
+        boldButton.setFont(getFont().deriveFont(Font.BOLD));
+        boldButton.setMargin(new Insets(0, 0, 0, 0));
+        
+        italicButton.setFont(getFont().deriveFont(Font.ITALIC));
+        italicButton.setMargin(new Insets(0, 0, 0, 0));
+        
+        Map attributes = getFont().getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        underlineButton.setFont(getFont().deriveFont(attributes));
+        underlineButton.setMargin(new Insets(0, 0, 0, 0));
+        
+        backgroundColorButton.setForeground(Color.BLUE);
+        backgroundColorButton.setFont(getFont().deriveFont(attributes).deriveFont(Font.BOLD));
+        backgroundColorButton.setMargin(new Insets(0, 0, 0, 0));
+        
+        foregroundColorButton.setForeground(Color.BLUE);
+        foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
+        foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
+        linkTextField.setText("http://");        
+        linkButton.setMargin(new Insets(0, 0, 0, 0));
+        // Edit button
+        /*gbc.gridx = 0;
+         gbc.gridy = 0;
+         gbc.weightx = 0.1; // 10 %
+         gbc.weighty = 0.5;
+         gbc.gridwidth = 5;
+         gbc.gridheight = 4;
+         gbc.fill = GridBagConstraints.BOTH;
+         editButton.addActionListener(new ActionListener() {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         informationArea.setEditable(true);
+         editButton.setVisible(false);
+         previewButton.setVisible(true);
+         htmlButton.setVisible(true);
+         boldButton.setVisible(true);
+         italicButton.setVisible(true);
+         underlineButton.setVisible(true);
+         backgroundColorButton.setVisible(true);
+         foregroundColorButton.setVisible(true);
+         linkTextField.setVisible(true);
+         linkButton.setVisible(true);
+         }
+         });
+         add(editButton, gbc);*/
         // Preview button
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -390,14 +406,25 @@ public class CommentPanel extends ActivityInformationPanel {
         linkButton.setVisible(false);
         add(linkButton, gbc);
     }
-
-    private void addCommentArea() {
-        // add the comment area
+    
+    private void addToDoIconPanel() {
         gbc.gridx = 5;
         gbc.gridy = 0;
         gbc.weightx = 0.8;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;        
+        gbc.insets = new Insets(0, 3, 0, 0); // margin left
+        add(iconLabel, gbc);
+        gbc.insets = new Insets(0, 0, 0, 0); // reset insets
+    }
+
+    private void addCommentArea() {
+        // add the comment area
+        gbc.gridx = 5;        
+        gbc.gridy = showIconLabel ? 1 : 0;
+        gbc.weightx = 0.8;
         gbc.weighty = 1.0;
-        gbc.gridheight = 4;
+        gbc.gridheight = showIconLabel ? 3 : 4;
         informationArea.setEditable(false);
         add(new JScrollPane(informationArea), gbc);
     }

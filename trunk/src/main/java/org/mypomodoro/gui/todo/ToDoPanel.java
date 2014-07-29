@@ -104,7 +104,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public static int ID_KEY = 6;
     private final JLabel pomodoroTime = new JLabel();
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
-    private final CommentPanel commentPanel = new CommentPanel(this);
+    private final CommentPanel commentPanel = new CommentPanel(this, true);
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
@@ -205,6 +205,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
+        splitPane.setDividerSize(10);
         add(splitPane, gbc);
     }
 

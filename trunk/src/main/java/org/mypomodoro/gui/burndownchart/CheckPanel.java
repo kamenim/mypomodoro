@@ -171,6 +171,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
+        splitPane.setDividerSize(10);
         add(splitPane, gbc);
     }
 
