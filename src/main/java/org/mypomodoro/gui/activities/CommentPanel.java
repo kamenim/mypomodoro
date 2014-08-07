@@ -30,6 +30,8 @@ import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -120,23 +122,26 @@ public class CommentPanel extends ActivityInformationPanel {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                // nothing to do here
+                // Do nothing here
             }
 
-            @Override
+            // Key pressed method is the only suitable method to test CTRL mask key event
+            @Override            
             public void keyPressed(KeyEvent e) {
-                // nothing to do here                
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (informationArea.isEditable()) {                    
+                // The area must be already editable and the typing must not be a key mask
+                if (informationArea.isEditable() 
+                        && e.getID() != KeyEvent.CTRL_MASK) {                    
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);
                     informationTmp = informationArea.getText(); // record temp text
                     int row = panel.getTable().getSelectedRow(); // record activity Id
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                }
+                }                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // Do nothing here
             }
         });
     }
@@ -272,7 +277,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         boldButton.addActionListener(new StyledEditorKit.BoldAction());
-        // set the keystroke on the button  (won't work on the text pane)
+        // set the keystroke on the button (won't work on the text pane)
         boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
         boldButton.getActionMap().put("Bold", new StyledEditorKit.BoldAction());
         boldButton.setToolTipText("CTRL + B");
@@ -285,7 +290,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         italicButton.addActionListener(new StyledEditorKit.ItalicAction());
-        // set the keystroke on the button  (won't work on the text pane)
+        // set the keystroke on the button (won't work on the text pane)
         italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
         italicButton.getActionMap().put("Italic", new StyledEditorKit.ItalicAction());
         italicButton.setToolTipText("CTRL + I");
@@ -298,7 +303,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
-        // set the keystroke on the button not (won't work on the text pane)
+        // set the keystroke on the button (won't work on the text pane)
         underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
         underlineButton.getActionMap().put("Underline", new StyledEditorKit.UnderlineAction());
         underlineButton.setToolTipText("CTRL + U");
@@ -435,8 +440,8 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 0.1;
         gbc.weighty = 0.8;
         gbc.gridheight = 3;
-        saveButton.setVisible(false);
-        saveButton.addActionListener(new ActionListener() {
+        // set the keystroke on the area
+        Action saveAction = new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -446,7 +451,12 @@ public class CommentPanel extends ActivityInformationPanel {
                 informationTmp = new String();
                 activityIdTmp = -1;
             }
-        });
+        };
+        saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK), "Save");
+        saveButton.getActionMap().put("Save", saveAction);
+        saveButton.setToolTipText("CTRL + S");
+        saveButton.setVisible(false);
+        saveButton.addActionListener(saveAction);
         add(saveButton, gbc);
     }
 
