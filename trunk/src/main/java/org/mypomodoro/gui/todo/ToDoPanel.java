@@ -88,9 +88,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension PANE_DIMENSION = new Dimension(400, 225);
-    private static final Dimension ICONLABEL_DIMENSION = new Dimension(100, 20);
-    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 25);
+    private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
+    //private static final Dimension ICONLABEL_DIMENSION = new Dimension(100, 20);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
     private final JPanel scrollPane = new JPanel();
@@ -191,8 +191,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         c.fill = GridBagConstraints.BOTH;
         addToDoTable(c);
         addTimerPanel(c);
-        addRemainingPomodoroPanel(c);
-        addToDoIconPanel(c);
+        //addRemainingPomodoroPanel(c);
+        //addToDoIconPanel(c);
 
         // Bottom pane                
         controlPane.setMinimumSize(TABPANE_DIMENSION);
@@ -206,6 +206,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(10);
+        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        //divider.setBackground(ColorUtil.YELLOW_ROW);
+        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
         add(splitPane, gbc);
     }
 
@@ -547,7 +550,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoro.setTimerPanel(timerPanel);
     }
 
-    private void addRemainingPomodoroPanel(GridBagConstraints gbc) {
+    /*private void addRemainingPomodoroPanel(GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.7;
@@ -566,7 +569,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         iconLabel.setMinimumSize(ICONLABEL_DIMENSION);
         iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
         scrollPane.add(iconLabel, gbc);
-    }
+    }*/
 
     private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);

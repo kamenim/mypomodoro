@@ -54,6 +54,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
@@ -189,6 +190,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(10);
+        BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        divider.setBackground(ColorUtil.YELLOW_ROW);
+        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
         add(splitPane, gbc);
     }
 
@@ -276,8 +280,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
                                 if (table.getSelectedRowCount() > 1) { // multiple selection
                                     // diactivate/gray out unused tabs
-                                    controlPane.setEnabledAt(1, false); // edit
-                                    controlPane.setEnabledAt(2, false); // comment 
+                                    controlPane.setEnabledAt(1, false); // comment
+                                    controlPane.setEnabledAt(2, false); // edit 
                                     if (controlPane.getSelectedIndex() == 1
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
@@ -524,16 +528,16 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         EditPanel editPanel = new EditPanel(detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         showSelectedItemDetails(detailsPanel);
-        showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
+        showSelectedItemEdit(editPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
