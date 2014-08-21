@@ -115,6 +115,7 @@ public class HtmlEditor extends JTextPane {
 
         addHyperlinkListener(new MyHyperlinkListener());
 
+        
         //getDocument().putProperty(DefaultEditorKit.EndOfLineStringProperty, "<br/>\n");
 
         /*InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
