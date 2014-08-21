@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -76,6 +77,8 @@ public class CommentPanel extends ActivityInformationPanel {
     private final JButton foregroundColorButton = new AbstractButton("A");
     private final JTextField linkTextField = new JTextField();
     private final JButton linkButton = new AbstractButton(">>");
+    private final ArrayList<String> versions = new ArrayList<String>();
+    private final JScrollPane scrollPaneInformationArea = new JScrollPane(informationArea);
     
     private boolean showIconLabel = false;
     
@@ -121,19 +124,23 @@ public class CommentPanel extends ActivityInformationPanel {
         informationArea.addKeyListener(new KeyListener() {
 
             @Override
-            public void keyTyped(KeyEvent e) {
-                // Do nothing here
+            public void keyTyped(KeyEvent e) {                
+                // The area must be editable and the typing must not be a key Control mask
+                if (informationArea.isEditable() 
+                        && e.getModifiers() != KeyEvent.CTRL_MASK) {                    
+                    informationTmp = informationArea.getText(); // record temp text
+                    versions.add(informationArea.getText()); // record version                    
+                }
             }
 
             // Key pressed method is the only suitable method to test CTRL mask key event
             @Override            
             public void keyPressed(KeyEvent e) {
-                // The area must be already editable and the typing must not be a key mask
+                // The area must be editable and the typing must not be a key Control mask
                 if (informationArea.isEditable() 
-                        && e.getID() != KeyEvent.CTRL_MASK) {                    
+                        && e.getModifiers() != KeyEvent.CTRL_MASK) {
                     saveButton.setVisible(true);
-                    cancelButton.setVisible(true);
-                    informationTmp = informationArea.getText(); // record temp text
+                    cancelButton.setVisible(true);                    
                     int row = panel.getTable().getSelectedRow(); // record activity Id
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 }                
@@ -144,6 +151,27 @@ public class CommentPanel extends ActivityInformationPanel {
                 // Do nothing here
             }
         });
+        
+        // set the keystroke
+        // CTRL Z: Undo
+        Action undoAction = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (versions.size() > 0) {
+                    String versionText = versions.get(versions.size() - 1);
+                    informationArea.setText(versionText);
+                    informationTmp = versionText;
+                    versions.remove(versions.size() - 1);
+                    if (versions.isEmpty()) {
+                        saveButton.setVisible(false);
+                        cancelButton.setVisible(false);
+                    }
+                }                
+            }
+        };
+        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
+        informationArea.getActionMap().put("Undo", undoAction);        
     }
 
     private void addEditButton() {
@@ -212,7 +240,7 @@ public class CommentPanel extends ActivityInformationPanel {
                     informationArea.setContentType("text/html");
                     informationArea.setText(text);
                     htmlButton.setText("HTML");
-                    informationArea.setCaretPosition(0);
+                    //informationArea.setCaretPosition(0); // only for textArea
                 }
                 informationArea.setEditable(false);
                 editButton.setVisible(true);
@@ -278,6 +306,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.gridwidth = 1;
         boldButton.addActionListener(new StyledEditorKit.BoldAction());
         // set the keystroke on the button (won't work on the text pane)
+        // CTRL B: Bold
         boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
         boldButton.getActionMap().put("Bold", new StyledEditorKit.BoldAction());
         boldButton.setToolTipText("CTRL + B");
@@ -291,6 +320,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.gridwidth = 1;
         italicButton.addActionListener(new StyledEditorKit.ItalicAction());
         // set the keystroke on the button (won't work on the text pane)
+        // CTRL I: Italic
         italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
         italicButton.getActionMap().put("Italic", new StyledEditorKit.ItalicAction());
         italicButton.setToolTipText("CTRL + I");
@@ -304,6 +334,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.gridwidth = 1;
         underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
         // set the keystroke on the button (won't work on the text pane)
+        // CTRL U: Underline
         underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
         underlineButton.getActionMap().put("Underline", new StyledEditorKit.UnderlineAction());
         underlineButton.setToolTipText("CTRL + U");
@@ -431,7 +462,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 1.0;
         gbc.gridheight = showIconLabel ? 3 : 4;
         informationArea.setEditable(false);
-        add(new JScrollPane(informationArea), gbc);
+        add(scrollPaneInformationArea, gbc);
     }
 
     private void addSaveButton() {
@@ -440,7 +471,8 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weightx = 0.1;
         gbc.weighty = 0.8;
         gbc.gridheight = 3;
-        // set the keystroke on the area
+        // set the keystrokes on the button (won't work on the text pane)
+        // CTRL S: Save
         Action saveAction = new AbstractAction() {
 
             @Override
@@ -450,11 +482,12 @@ public class CommentPanel extends ActivityInformationPanel {
                 cancelButton.setVisible(false);
                 informationTmp = new String();
                 activityIdTmp = -1;
+                versions.clear();
             }
         };
         saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK), "Save");
         saveButton.getActionMap().put("Save", saveAction);
-        saveButton.setToolTipText("CTRL + S");
+        saveButton.setToolTipText("CTRL + S");         
         saveButton.setVisible(false);
         saveButton.addActionListener(saveAction);
         add(saveButton, gbc);
@@ -476,6 +509,7 @@ public class CommentPanel extends ActivityInformationPanel {
                 cancelButton.setVisible(false);
                 informationTmp = new String();
                 activityIdTmp = -1;
+                versions.clear();
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 selectInfo(panel.getActivityById(id));
@@ -489,12 +523,18 @@ public class CommentPanel extends ActivityInformationPanel {
     public void selectInfo(final Activity activity) {
         String comment = activity.getNotes().trim();
         if (activityIdTmp == activity.getId() && !informationTmp.isEmpty()) {
-            comment = informationTmp;
+            comment = informationTmp;            
             saveButton.setVisible(true);
             cancelButton.setVisible(true);
         } else {
             saveButton.setVisible(false);
             cancelButton.setVisible(false);
+            // make sure CTRL + z of previous selected activity doesn't work on new selected activity
+            int row = panel.getTable().getSelectedRow();
+            int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+            if (selectedActivityId != activityIdTmp) {
+                versions.clear();
+            }
         }
         if (comment.isEmpty()) { // no comment yet
             String text = "";
@@ -525,7 +565,7 @@ public class CommentPanel extends ActivityInformationPanel {
             if (!comment.contains("</body>")) {
                 comment = "<p style=\"margin-top: 0\">" + comment;
                 comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
-                comment = comment + "</p>";
+                comment = comment + "</p>";                
             }
             textMap.put("comment", comment);
         }
