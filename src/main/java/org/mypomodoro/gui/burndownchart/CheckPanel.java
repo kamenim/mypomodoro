@@ -49,12 +49,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
@@ -69,9 +67,11 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
+import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -101,6 +101,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
+    // Border
+    private final JButton titledButton = new JButton();
+    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final JTabbedPane tabbedPane;
     private final CreateChart chart;
     // Unplanned
@@ -140,6 +143,13 @@ public class CheckPanel extends JPanel implements IListPanel {
 
         // Init table (data model and rendering)
         initTable();
+        
+        // Set border
+        titledButton.setBorder(null);
+        titledButton.setContentAreaFilled(false);
+        titledButton.setOpaque(true);
+        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon                
+        setBorder(titledborder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -173,8 +183,8 @@ public class CheckPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(10);
-        BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        divider.setBackground(ColorUtil.YELLOW_ROW);
+        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
         add(splitPane, gbc);
     }
@@ -459,6 +469,14 @@ public class CheckPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(estimated + overestimated);
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ChartList.getListSize() + ")";
                 titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
@@ -471,12 +489,19 @@ public class CheckPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(ChartList.getList().getNbEstimatedPom() + ChartList.getList().getNbOverestimatedPom());
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             }
         }
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder());
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        titledborder.setTitle(titleActivitiesList);
-        setBorder(titledborder);
+        // Update titled border          
+        titledButton.setText(titleActivitiesList);
+        titledborder.repaint();
     }
 
     private void addChartTable(GridBagConstraints gbc) {

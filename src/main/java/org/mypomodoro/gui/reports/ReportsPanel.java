@@ -76,6 +76,7 @@ import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -148,7 +149,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
         initTable();
 
         // Set border
-        //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
         titledButton.setIcon(refreshIcon);
         titledButton.setBorder(null);
         titledButton.setContentAreaFilled(false);
@@ -190,8 +190,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(10);
-        BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        divider.setBackground(ColorUtil.YELLOW_ROW);
+        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
         add(splitPane, gbc);
     }
@@ -506,6 +506,14 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(estimated + overestimated);
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
@@ -519,6 +527,14 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(ReportList.getList().getNbEstimatedPom() + ReportList.getList().getNbOverestimatedPom());
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             }
         }
         // Update titled border          

@@ -95,7 +95,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     @Override
     public void showInfo(String newInfo) {
         informationArea.setText(newInfo);
-        //scrollToBottom();
+        scrollToBottom();
         // disable auto scrolling
         //informationArea.setCaretPosition(0); // only for textArea        
     }
@@ -121,19 +121,20 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     }
 
     public void scrollToBottom() {
-        /*javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
             
          @Override
-         public void run() {*/
+         public void run() {
         try {
             int endPosition = informationArea.getDocument().getLength();
             Rectangle bottom = informationArea.modelToView(endPosition);
             informationArea.scrollRectToVisible(bottom);
+            System.err.println("endPosition = " + endPosition);
         } catch (BadLocationException e) {
             System.err.println("Could not scroll to " + e);
         }
-        /*}
-         });*/
+        }
+         });
     }
 
     public static void centerLineInScrollPane(JTextComponent component) {

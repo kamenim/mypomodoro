@@ -18,7 +18,6 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -51,8 +50,8 @@ public class OverestimationPanel extends JPanel {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
 
-        setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setLayout(new GridBagLayout());        
+        setBorder(null);
 
         addToDoIconPanel();
         addOverestimationInputFormPanel();
@@ -84,9 +83,8 @@ public class OverestimationPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 3, 0, 0); // margin left
+        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         add(iconLabel, gbc);
-        gbc.insets = new Insets(0, 0, 0, 0);
     }
 
     private void addOverestimationInputFormPanel() {
