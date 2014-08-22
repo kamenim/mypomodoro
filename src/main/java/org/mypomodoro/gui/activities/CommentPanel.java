@@ -123,15 +123,9 @@ public class CommentPanel extends ActivityInformationPanel {
 
             @Override
             public void keyTyped(KeyEvent e) {                
-                // The area must be editable and the typing must not be a key Control mask
-                if (informationArea.isEditable() 
-                        && e.getModifiers() != KeyEvent.CTRL_MASK) {                    
-                    informationTmp = informationArea.getText(); // record temp text
-                    versions.add(informationArea.getText()); // record version                    
-                }
+                // Nothing to do here
             }
-
-            // Key pressed method is the only suitable method to test CTRL mask key event
+                        
             @Override            
             public void keyPressed(KeyEvent e) {
                 // The area must be editable and the typing must not be a key Control mask
@@ -140,13 +134,21 @@ public class CommentPanel extends ActivityInformationPanel {
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);                    
                     int row = panel.getTable().getSelectedRow(); // record activity Id
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                    
+                    // typing recording is done by keyReleased method
+                    versions.add(informationArea.getText()); // record version                    
                 }                
             }
 
+            // key released is the only suitable method to record all the typing 
             @Override
             public void keyReleased(KeyEvent e) {
-                // Do nothing here
+                // The area must be editable and the typing must not be a key Control mask
+                if (informationArea.isEditable() 
+                        && e.getModifiers() != KeyEvent.CTRL_MASK) {                    
+                    informationTmp = informationArea.getText(); // record temp text
+                    // versionning is done by keyPressed method
+                }
             }
         });
         
