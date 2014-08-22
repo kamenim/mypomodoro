@@ -62,14 +62,12 @@ public final class ReportList extends AbstractActivities {
         act.setIsCompleted(true);
         act.setDate(date);
         act.setDateCompleted(dateCompleted);
-        if (act.getId() == -1) {
-            act.setId(act.databaseInsert());
-            super.add(act);
-        } else {
-            act.databaseUpdate();
-            super.update(act);
+        if (act.getId() == -1) { // add to the database (new report)
+            act.setId(act.databaseInsert());            
+        } else { // update in database (modified report or moved from todo list)
+            act.databaseUpdate();            
         }
-        super.add(act);
+        super.add(act); // add to the list
     }
 
     public void delete(Activity activity) {

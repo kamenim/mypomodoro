@@ -60,14 +60,13 @@ public final class ActivityList extends AbstractActivities {
         act.setPriority(-1);
         act.setIsCompleted(false);
         act.setDate(date);
-        act.setDateCompleted(dateReopen);
-        if (act.getId() == -1) {
-            act.setId(act.databaseInsert());
-            super.add(act);
-        } else {
-            act.databaseUpdate();
-            super.update(act);
+        act.setDateCompleted(dateReopen);        
+        if (act.getId() == -1) { // add to the database (new activity)
+            act.setId(act.databaseInsert());            
+        } else { // update in database (modified activity or moved from todo list / reopened from report list)
+            act.databaseUpdate();            
         }
+        super.add(act); // add to the list
     }
 
     public void delete(Activity activity) {

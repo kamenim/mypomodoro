@@ -60,6 +60,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO improve handling of caret especially after CTRL + Z
+// TODO Export: remove HTML formatting
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -521,16 +522,16 @@ public class CommentPanel extends ActivityInformationPanel {
             if (activity.isStory()) {
                 // default template for User Story type
                 // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
-                text += "<p style=\"margin-top: 0\"><b><u>Story line</u></b></p>";
+                text += "<p style=\"margin-top: 0\"><b>Story line</b></p>";
                 text += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
-                text += "<p><b><u>User acceptance criteria</u></b></p>";
+                text += "<p><b>User acceptance criteria</b></p>";
                 text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
                 text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
-                text += "<p><b><u>Test cases</u></b></p>";
+                text += "<p><b>Test cases</b></p>";
                 text += "<p style=\"margin-top: 0\">";
                 text += "+ ...";
                 text += "</p>";
@@ -540,10 +541,11 @@ public class CommentPanel extends ActivityInformationPanel {
             }
             textMap.put("comment", text);
         } else {
-            // Backward compatility 3.0.X
+            // Backward compatility 3.0.X and imports
             // Check if there is a body tag; if not replace trailing return carriage with P tag
             if (!comment.contains("</body>")) {
                 comment = "<p style=\"margin-top: 0\">" + comment;
+                comment = comment.replaceAll("\r\n", "</p><p style=\"margin-top: 0\">"); // \r\n also replaced in caseit appears in the import file
                 comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
                 comment = comment + "</p>";                
             }

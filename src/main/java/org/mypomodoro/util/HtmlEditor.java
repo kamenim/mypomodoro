@@ -157,4 +157,16 @@ public class HtmlEditor extends JTextPane {
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
         ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);
     }
+    
+    // Get raw text out of html string
+    public String getRawText() {
+        String text = new String();
+        try {
+            // 'Replace' breaks            
+            text = getDocument().getText(0, getDocument().getLength());
+        } catch (BadLocationException ex) {
+            //Logger.getLogger(HtmlEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return text;
+    }
 }
