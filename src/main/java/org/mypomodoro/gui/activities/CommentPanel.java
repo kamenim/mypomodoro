@@ -61,6 +61,7 @@ import org.mypomodoro.util.Labels;
  */
 // TODO improve handling of caret especially after CTRL + Z
 // TODO Export: remove HTML formatting
+// TODO html to plain: font lost ???
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -129,26 +130,52 @@ public class CommentPanel extends ActivityInformationPanel {
                         
             @Override            
             public void keyPressed(KeyEvent e) {
-                // The area must be editable and the typing must not be a key Control mask
+                // The area must be editable 
+                // Excluding: key Control mask + arrows + home/end + page up/down
                 if (informationArea.isEditable() 
-                        && e.getModifiers() != KeyEvent.CTRL_MASK) {
+                        && e.getModifiers() != KeyEvent.CTRL_MASK
+                        && e.getKeyCode() != KeyEvent.VK_UP
+                        && e.getKeyCode() != KeyEvent.VK_KP_UP
+                        && e.getKeyCode() != KeyEvent.VK_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_KP_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_KP_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_KP_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_HOME
+                        && e.getKeyCode() != KeyEvent.VK_END
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_UP
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);                    
                     int row = panel.getTable().getSelectedRow(); // record activity Id
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                    
-                    // typing recording is done by keyReleased method
+                    // typing recording is done in keyReleased method
                     versions.add(informationArea.getText()); // record version                    
                 }                
             }
 
-            // key released is the only suitable method to record all the typing 
+            // key released is the only suitable method to record all the typing             
             @Override
             public void keyReleased(KeyEvent e) {
-                // The area must be editable and the typing must not be a key Control mask
+                // The area must be editable
+                // Excluding: key Control mask + arrows + home/end + page up/down
                 if (informationArea.isEditable() 
-                        && e.getModifiers() != KeyEvent.CTRL_MASK) {                    
+                        && e.getModifiers() != KeyEvent.CTRL_MASK
+                        && e.getKeyCode() != KeyEvent.VK_UP
+                        && e.getKeyCode() != KeyEvent.VK_KP_UP
+                        && e.getKeyCode() != KeyEvent.VK_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_KP_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_KP_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_KP_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_HOME
+                        && e.getKeyCode() != KeyEvent.VK_END
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_UP
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {                    
                     informationTmp = informationArea.getText(); // record temp text
-                    // versionning is done by keyPressed method
+                    // versionning is done in keyPressed method
                 }
             }
         });
