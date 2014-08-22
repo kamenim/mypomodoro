@@ -38,9 +38,11 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
@@ -57,7 +59,7 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO re-activate addToDoIconPanel() for ToDoPanel only + make only one jpanel for textarea and icon pnel
+// TODO improve handling of caret especially after CTRL + Z
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -68,7 +70,6 @@ public class CommentPanel extends ActivityInformationPanel {
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-    private final JButton editButton = new AbstractButton(Labels.getString("Common.Edit"));
     private final JButton htmlButton = new AbstractButton("HTML");
     private final JButton boldButton = new AbstractButton("B");
     private final JButton italicButton = new AbstractButton("I");
@@ -93,10 +94,7 @@ public class CommentPanel extends ActivityInformationPanel {
         setLayout(new GridBagLayout());
         setBorder(null);
 
-        addEditButton();
-        if (showIconLabel) {
-            addToDoIconPanel();
-        }    
+        addEditorButtons();          
         addCommentArea();
         addSaveButton();
         addCancelButton();
@@ -108,8 +106,8 @@ public class CommentPanel extends ActivityInformationPanel {
             public void mouseClicked(MouseEvent e) {
                 informationArea.setEditable(true);
                 informationArea.getCaret().setVisible(true); // show cursor
-                previewButton.setVisible(true);
                 htmlButton.setVisible(true);
+                previewButton.setVisible(true);
                 boldButton.setVisible(true);
                 italicButton.setVisible(true);
                 underlineButton.setVisible(true);
@@ -174,7 +172,7 @@ public class CommentPanel extends ActivityInformationPanel {
         informationArea.getActionMap().put("Undo", undoAction);        
     }
 
-    private void addEditButton() {
+    private void addEditorButtons() {
         
         boldButton.setFont(getFont().deriveFont(Font.BOLD));
         boldButton.setMargin(new Insets(0, 0, 0, 0));
@@ -195,33 +193,7 @@ public class CommentPanel extends ActivityInformationPanel {
         foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
         foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
         linkTextField.setText("http://");        
-        linkButton.setMargin(new Insets(0, 0, 0, 0));
-        // Edit button
-        /*gbc.gridx = 0;
-         gbc.gridy = 0;
-         gbc.weightx = 0.1; // 10 %
-         gbc.weighty = 0.5;
-         gbc.gridwidth = 5;
-         gbc.gridheight = 4;
-         gbc.fill = GridBagConstraints.BOTH;
-         editButton.addActionListener(new ActionListener() {
-
-         @Override
-         public void actionPerformed(ActionEvent e) {
-         informationArea.setEditable(true);
-         editButton.setVisible(false);
-         previewButton.setVisible(true);
-         htmlButton.setVisible(true);
-         boldButton.setVisible(true);
-         italicButton.setVisible(true);
-         underlineButton.setVisible(true);
-         backgroundColorButton.setVisible(true);
-         foregroundColorButton.setVisible(true);
-         linkTextField.setVisible(true);
-         linkButton.setVisible(true);
-         }
-         });
-         add(editButton, gbc);*/
+        linkButton.setMargin(new Insets(0, 0, 0, 0));        
         // Preview button
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -243,7 +215,6 @@ public class CommentPanel extends ActivityInformationPanel {
                     //informationArea.setCaretPosition(0); // only for textArea
                 }
                 informationArea.setEditable(false);
-                editButton.setVisible(true);
                 previewButton.setVisible(false);
                 htmlButton.setVisible(false);
                 boldButton.setVisible(false);
@@ -443,26 +414,33 @@ public class CommentPanel extends ActivityInformationPanel {
         add(linkButton, gbc);
     }
     
-    private void addToDoIconPanel() {
+    private void addCommentArea() {
+        JPanel commentArea = new JPanel();
+        commentArea.setLayout(new GridBagLayout());
+        GridBagConstraints commentgbc = new GridBagConstraints();        
+        if (showIconLabel) { // icon label panel (ToDo list / Iteration panel)
+            commentgbc.gridx = 0;
+            commentgbc.gridy = 0;
+            commentgbc.fill = GridBagConstraints.BOTH;
+            commentgbc.weightx = 1.0;
+            commentgbc.weighty = 0.1;
+            iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+            commentArea.add(iconLabel, commentgbc);
+        }
+        // add the comment area
+        commentgbc.gridx = 0;        
+        commentgbc.gridy = showIconLabel ? 1 : 0;
+        commentgbc.fill = GridBagConstraints.BOTH;
+        commentgbc.weightx = 1.0;
+        commentgbc.weighty = 1.0;
+        informationArea.setEditable(false);
+        commentArea.add(scrollPaneInformationArea, commentgbc);
         gbc.gridx = 5;
         gbc.gridy = 0;
         gbc.weightx = 0.8;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;        
-        gbc.insets = new Insets(0, 3, 0, 0); // margin left
-        add(iconLabel, gbc);
-        gbc.insets = new Insets(0, 0, 0, 0); // reset insets
-    }
-
-    private void addCommentArea() {
-        // add the comment area
-        gbc.gridx = 5;        
-        gbc.gridy = showIconLabel ? 1 : 0;
-        gbc.weightx = 0.8;
         gbc.weighty = 1.0;
-        gbc.gridheight = showIconLabel ? 3 : 4;
-        informationArea.setEditable(false);
-        add(scrollPaneInformationArea, gbc);
+        gbc.gridheight = 4;
+        add(commentArea, gbc);
     }
 
     private void addSaveButton() {

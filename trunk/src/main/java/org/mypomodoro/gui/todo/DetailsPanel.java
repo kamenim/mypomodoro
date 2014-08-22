@@ -20,10 +20,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.MoveToDoButton;
@@ -88,9 +88,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.weightx = 1.0;
         igbc.weighty = 0.1;
         igbc.gridheight = 1;
-        igbc.insets = new Insets(0, 3, 0, 0); // margin left
-        infoPanel.add(iconLabel, igbc);
-        igbc.insets = new Insets(0, 0, 0, 0); // no margin anymore        
+        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        infoPanel.add(iconLabel, igbc);       
     }
 
     private void addInformationArea(JPanel infoPanel, GridBagConstraints igbc) {

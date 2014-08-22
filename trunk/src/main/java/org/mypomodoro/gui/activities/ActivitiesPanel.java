@@ -76,6 +76,7 @@ import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -149,8 +150,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init table (data model and rendering)
         initTable();
 
-        // Set border
-        //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
+        // Set border        
         titledButton.setIcon(refreshIcon);
         titledButton.setBorder(null);
         titledButton.setContentAreaFilled(false);
@@ -192,8 +192,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(10);
-        BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        divider.setBackground(ColorUtil.YELLOW_ROW);
+        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
         add(splitPane, gbc);
     }
@@ -552,6 +552,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(estimated + overestimated);
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ActivityList.getListSize() + ")";
                 titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + ActivityList.getList().getNbEstimatedPom();
@@ -562,6 +570,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(ActivityList.getList().getNbEstimatedPom() + ActivityList.getList().getNbOverestimatedPom());
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);                
             }
         }
         // Update titled border          

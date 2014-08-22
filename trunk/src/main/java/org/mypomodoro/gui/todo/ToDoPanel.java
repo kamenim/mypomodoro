@@ -75,6 +75,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -154,7 +155,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         initTable();
 
         // Set border
-        //titledButton.setToolTipText("Refresh from database"); // tooltip doesn't work here
         titledButton.setIcon(refreshIcon);
         titledButton.setBorder(null);
         titledButton.setContentAreaFilled(false);
@@ -506,6 +506,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(estimated + overestimated);
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
                 titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
@@ -518,6 +526,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
                 }
+                // Tool tip
+                String toolTipText = TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
+                if (PreferencesPanel.preferences.getPlainHours()) {
+                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
+                } else {
+                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
+                }
+                titledborder.setToolTipText(toolTipText);
             }
         }
         // Update titled border          
