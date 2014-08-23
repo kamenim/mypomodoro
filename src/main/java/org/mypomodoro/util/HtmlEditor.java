@@ -40,6 +40,8 @@ import javax.swing.text.html.HTMLEditorKit;
  *
  */
 public class HtmlEditor extends JTextPane {
+    
+    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public HtmlEditor() {
         setEditorKit(new HTMLEditorKit()); // content type = text/html       
@@ -158,14 +160,13 @@ public class HtmlEditor extends JTextPane {
         ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);
     }
     
-    // Get raw text out of html string
+    // Get raw text out of html content
     public String getRawText() {
         String text = new String();
         try {
-            // 'Replace' breaks            
             text = getDocument().getText(0, getDocument().getLength());
         } catch (BadLocationException ex) {
-            //Logger.getLogger(HtmlEditor.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Problem extracting raw content out of html content", ex);
         }
         return text;
     }
