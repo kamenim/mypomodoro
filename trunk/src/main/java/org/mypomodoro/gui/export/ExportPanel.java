@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,6 +62,7 @@ import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -166,7 +169,22 @@ public class ExportPanel extends JPanel {
             for (int row : rows) {
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedActivity = panel.getActivityById(id);
-                activities.add(selectedActivity);
+                // Extract raw content from HTML comment/story
+                HtmlEditor commentEditor = new HtmlEditor();
+                String comment = selectedActivity.getNotes();
+                // add breaks
+                comment = comment.replaceAll("</p>", "</p>\n");
+                comment = comment.replaceAll("<br>", "\n");
+                commentEditor.setText(comment);
+                // get raw text
+                comment = commentEditor.getRawText();
+                try {
+                    Activity copiedSelectedActivity = selectedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                    copiedSelectedActivity.setNotes(comment);
+                    System.err.println("comment = " + comment);
+                    activities.add(copiedSelectedActivity);
+                } catch (CloneNotSupportedException ignored) {
+                }
             }
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
@@ -273,7 +291,10 @@ public class ExportPanel extends JPanel {
                     cell.setCellStyle(cellStyle);
                     cell.setCellValue((Date) entries[i]);
                 } else { // text
+                    HSSFCellStyle cellStyle = workbook.createCellStyle();
+                    cellStyle.setWrapText(true); // for excel to understand line breaks (\n)                    
                     cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyle);
                     cell.setCellValue((String) entries[i]);
                 }
             }
@@ -326,7 +347,10 @@ public class ExportPanel extends JPanel {
                     cell.setCellStyle(cellStyle);
                     cell.setCellValue((Date) entries[i]);
                 } else { // text
+                    XSSFCellStyle cellStyle = workbook.createCellStyle();
+                    cellStyle.setWrapText(true); // for excel to understand line breaks (\n)                    
                     cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyle);
                     cell.setCellValue((String) entries[i]);
                 }
             }
