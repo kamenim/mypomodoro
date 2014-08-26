@@ -54,7 +54,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
@@ -367,6 +366,23 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
+        
+        // Activate Control T (create new task)        
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), "Control T");
+        class create extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Activity newActivity = new Activity();
+                newActivity.setEstimatedPoms(0);
+                newActivity.setName(Labels.getString("Common.Task"));
+                addActivity(newActivity);
+                // Select new created task at the bottom of the list before refresh
+                setCurrentSelectedRow(table.getRowCount());
+                refresh();
+            }
+        }
+        am.put("Control T", new create());
 
         // Activate Control C (copy selected task) and Control V (past - duplicate copied task)        
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK), "Control C");

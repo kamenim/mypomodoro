@@ -384,7 +384,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 Activity unplanned = new Activity();
                 unplanned.setEstimatedPoms(0);
                 unplanned.setIsUnplanned(true);
-                unplanned.setName("Unplanned");
+                unplanned.setName(Labels.getString("Common.Unplanned"));
                 addActivity(unplanned);
                 // Select new created task at the bottom of the list before refresh
                 setCurrentSelectedRow(table.getRowCount());
@@ -407,7 +407,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     Activity interruption = new Activity();
                     interruption.setEstimatedPoms(0);
                     interruption.setIsUnplanned(true);
-                    interruption.setName("Internal");
+                    interruption.setName(Labels.getString("ToDoListPanel.Internal"));
                     addActivity(interruption);
                     // Select new created task at the bottom of the list before refresh
                     setCurrentSelectedRow(table.getRowCount());
@@ -431,7 +431,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     Activity interruption = new Activity();
                     interruption.setEstimatedPoms(0);
                     interruption.setIsUnplanned(true);
-                    interruption.setName("External");
+                    interruption.setName(Labels.getString("ToDoListPanel.External"));
                     addActivity(interruption);
                     // Select new created task at the bottom of the list before refresh
                     setCurrentSelectedRow(table.getRowCount());
