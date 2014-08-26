@@ -374,6 +374,92 @@ public class ToDoPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
+
+        // Activate Control U (quick unplanned task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK), "Control U");
+        class createUnplanned extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Activity unplanned = new Activity();
+                unplanned.setEstimatedPoms(0);
+                unplanned.setIsUnplanned(true);
+                unplanned.setName("Unplanned");
+                addActivity(unplanned);
+                // Select new created task at the bottom of the list before refresh
+                setCurrentSelectedRow(table.getRowCount());
+                refresh();
+            }
+        }
+        am.put("Control U", new createUnplanned());
+
+        // Activate Control I (quick internal interruption)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), "Control I");
+        class createInternal extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Interruptions : update current/running pomodoro
+                Activity currentToDo = getPomodoro().getCurrentToDo();
+                if (currentToDo != null && getPomodoro().inPomodoro()) {
+                    currentToDo.incrementInternalInter();
+                    currentToDo.databaseUpdate();
+                    Activity interruption = new Activity();
+                    interruption.setEstimatedPoms(0);
+                    interruption.setIsUnplanned(true);
+                    interruption.setName("Internal");
+                    addActivity(interruption);
+                    // Select new created task at the bottom of the list before refresh
+                    setCurrentSelectedRow(table.getRowCount());
+                    refresh();
+                }
+            }
+        }
+        am.put("Control I", new createInternal());
+
+        // Activate Control E (quick internal interruption)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), "Control E");
+        class createExternal extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Interruptions : update current/running pomodoro
+                Activity currentToDo = getPomodoro().getCurrentToDo();
+                if (currentToDo != null && getPomodoro().inPomodoro()) {
+                    currentToDo.incrementInter();
+                    currentToDo.databaseUpdate();
+                    Activity interruption = new Activity();
+                    interruption.setEstimatedPoms(0);
+                    interruption.setIsUnplanned(true);
+                    interruption.setName("External");
+                    addActivity(interruption);
+                    // Select new created task at the bottom of the list before refresh
+                    setCurrentSelectedRow(table.getRowCount());
+                    refresh();
+                }
+            }
+        }
+        am.put("Control E", new createExternal());
+        
+        // Activate Control R (scroll back to the current task running or not; same as pressing the timer tomato-like image: see pomodoroButton below)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
+        class scrollBackToTask extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {                
+                if (pomodoro.inPomodoro()) {
+                    for (int row = 0; row < table.getRowCount(); row++) {
+                        Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                        if (pomodoro.getCurrentToDo().getId() == id) {
+                            currentSelectedRow = row;
+                        }
+                    }
+                    table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
+                }
+                showCurrentSelectedRow();
+            }
+        }
+        am.put("Control R", new scrollBackToTask());
     }
 
     // Retrieve key event with name
@@ -567,31 +653,30 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     /*private void addRemainingPomodoroPanel(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.7;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        scrollPane.add(pomodorosRemainingLabel, gbc);
-        PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
-    }
+     gbc.gridx = 0;
+     gbc.gridy = 1;
+     gbc.weightx = 0.7;
+     gbc.weighty = 0.1;
+     gbc.gridheight = 1;
+     scrollPane.add(pomodorosRemainingLabel, gbc);
+     PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
+     }
 
-    private void addToDoIconPanel(GridBagConstraints gbc) {
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 0.3;
-        gbc.weighty = 0.1;
-        gbc.gridheight = 1;
-        iconLabel.setMinimumSize(ICONLABEL_DIMENSION);
-        iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
-        scrollPane.add(iconLabel, gbc);
-    }*/
-
+     private void addToDoIconPanel(GridBagConstraints gbc) {
+     gbc.gridx = 1;
+     gbc.gridy = 1;
+     gbc.weightx = 0.3;
+     gbc.weighty = 0.1;
+     gbc.gridheight = 1;
+     iconLabel.setMinimumSize(ICONLABEL_DIMENSION);
+     iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
+     scrollPane.add(iconLabel, gbc);
+     }*/
     private void addTabPane() {
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
-        controlPane.add(Labels.getString("Common.Unplanned"), unplannedPanel);
+        controlPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merging"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -950,7 +1035,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             backgroundPanel.add(timerPanel, gbc);
         }
 
-        // Set background image in a button to be able to add a action to it
+        // Set background image in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);
         pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // tooltip doesn't work here

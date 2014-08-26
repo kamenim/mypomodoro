@@ -60,14 +60,12 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO improve handling of caret especially after CTRL + Z
-// TODO Export: remove HTML formatting
-// TODO html to plain: font lost ???
+// TODO unplannedActivityInputFormPanel : remove interruptions for list when no task running
 public class CommentPanel extends ActivityInformationPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
-    private final IListPanel panel;
-    private String informationTmp = new String();
+    private final IListPanel panel;    
     private int activityIdTmp = -1;
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
@@ -175,6 +173,7 @@ public class CommentPanel extends ActivityInformationPanel {
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
                         && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {                    
                     informationTmp = informationArea.getText(); // record temp text
+                    caretPositionTmp = informationArea.getCaretPosition();
                     // versionning is done in keyPressed method
                 }
             }
@@ -242,7 +241,7 @@ public class CommentPanel extends ActivityInformationPanel {
                     informationArea.setContentType("text/html");
                     informationArea.setText(text);
                     htmlButton.setText("HTML");
-                    //informationArea.setCaretPosition(0); // only for textArea
+                    informationArea.setCaretPosition(0); // When switching between html and preview views, the editor 'looses' the caret position
                 }
                 informationArea.setEditable(false);
                 previewButton.setVisible(false);
@@ -294,7 +293,7 @@ public class CommentPanel extends ActivityInformationPanel {
                     linkTextField.setVisible(true);
                     linkButton.setVisible(true);
                 }
-                informationArea.setCaretPosition(0);
+                informationArea.setCaretPosition(0); // When switching between plain and html views, the editor 'looses' the caret position
             }
         });
         htmlButton.setVisible(false);
@@ -306,7 +305,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         boldButton.addActionListener(new StyledEditorKit.BoldAction());
-        // set the keystroke on the button (won't work on the text pane)
+        // set the keystroke on the button (so won't work in preview mode)
         // CTRL B: Bold
         boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
         boldButton.getActionMap().put("Bold", new StyledEditorKit.BoldAction());
@@ -320,7 +319,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         italicButton.addActionListener(new StyledEditorKit.ItalicAction());
-        // set the keystroke on the button (won't work on the text pane)
+        // set the keystroke on the button (so won't work in preview mode although this will conflict with CTRL+I keystroke in ToDoPanel)
         // CTRL I: Italic
         italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
         italicButton.getActionMap().put("Italic", new StyledEditorKit.ItalicAction());
@@ -334,7 +333,7 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
-        // set the keystroke on the button (won't work on the text pane)
+        // set the keystroke on the button (so won't work in preview mode)
         // CTRL U: Underline
         underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
         underlineButton.getActionMap().put("Underline", new StyledEditorKit.UnderlineAction());
@@ -489,6 +488,7 @@ public class CommentPanel extends ActivityInformationPanel {
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
                 informationTmp = new String();
+                caretPositionTmp = 0;
                 activityIdTmp = -1;
                 versions.clear();
             }
@@ -516,6 +516,7 @@ public class CommentPanel extends ActivityInformationPanel {
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
                 informationTmp = new String();
+                caretPositionTmp = 0;
                 activityIdTmp = -1;
                 versions.clear();
                 int row = panel.getTable().getSelectedRow();
@@ -526,12 +527,13 @@ public class CommentPanel extends ActivityInformationPanel {
         });
         add(cancelButton, gbc);
     }
-
+    
     @Override
     public void selectInfo(final Activity activity) {
         String comment = activity.getNotes().trim();
         if (activityIdTmp == activity.getId() && !informationTmp.isEmpty()) {
-            comment = informationTmp;            
+            comment = informationTmp;
+            //informationArea.setCaretPosition(caretPositionTmp);
             saveButton.setVisible(true);
             cancelButton.setVisible(true);
         } else {

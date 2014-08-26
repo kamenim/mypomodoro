@@ -43,6 +43,9 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     protected final HtmlEditor informationArea = new HtmlEditor();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
 
+    protected String informationTmp = new String();
+    protected int caretPositionTmp = 0;
+
     public ActivityInformationPanel() {
     }
 
@@ -89,15 +92,18 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         }
         informationArea.setText(text);
         // disable auto scrolling
-        informationArea.setCaretPosition(0);
+        /*if (caretPositionTmp > 0) {
+            informationArea.setCaretPosition(caretPositionTmp);
+        } else {*/
+            informationArea.setCaretPosition(0);
+        //}
     }
 
     @Override
     public void showInfo(String newInfo) {
         informationArea.setText(newInfo);
-        scrollToBottom();
         // disable auto scrolling
-        //informationArea.setCaretPosition(0); // only for textArea        
+        informationArea.setCaretPosition(0);
     }
 
     @Override
@@ -122,19 +128,19 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
 
     public void scrollToBottom() {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            
-         @Override
-         public void run() {
-        try {
-            int endPosition = informationArea.getDocument().getLength();
-            Rectangle bottom = informationArea.modelToView(endPosition);
-            informationArea.scrollRectToVisible(bottom);
-            System.err.println("endPosition = " + endPosition);
-        } catch (BadLocationException e) {
-            System.err.println("Could not scroll to " + e);
-        }
-        }
-         });
+
+            @Override
+            public void run() {
+                try {
+                    int endPosition = informationArea.getDocument().getLength();
+                    Rectangle bottom = informationArea.modelToView(endPosition);
+                    informationArea.scrollRectToVisible(bottom);
+                    System.err.println("endPosition = " + endPosition);
+                } catch (BadLocationException e) {
+                    System.err.println("Could not scroll to " + e);
+                }
+            }
+        });
     }
 
     public static void centerLineInScrollPane(JTextComponent component) {

@@ -26,8 +26,9 @@ import org.mypomodoro.util.Labels;
 public class UnplannedActivityInputForm extends ActivityInputForm {
 
     protected JComboBox interruptions = new JComboBox();
-    protected final String internal = Labels.getString("ToDoListPanel.Internal");
-    protected final String external = Labels.getString("ToDoListPanel.External");
+    protected final String unplanned = Labels.getString("ToDoListPanel.Unplanned task");
+    protected final String internal = Labels.getString("ToDoListPanel.Internal interruption");
+    protected final String external = Labels.getString("ToDoListPanel.External interruption");
 
     public UnplannedActivityInputForm() {
         super(1);
@@ -39,12 +40,12 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("ToDoListPanel.Interruption") + ": "), c);
+        add(new FormLabel(""), c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
         String items[] = new String[3];
-        items[0] = " ";
+        items[0] = unplanned;
         items[1] = internal;
         items[2] = external;
         interruptions = new JComboBox(items);
