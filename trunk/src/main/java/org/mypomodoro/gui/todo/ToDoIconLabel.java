@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -45,6 +46,7 @@ public class ToDoIconLabel {
             iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
         }
         iconLabel.setForeground(color);
+        iconLabel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
         int estimatedPoms = activity.getEstimatedPoms();
         int realPoms = activity.getActualPoms();
         int overestimatedPoms = activity.getOverestimatedPoms();

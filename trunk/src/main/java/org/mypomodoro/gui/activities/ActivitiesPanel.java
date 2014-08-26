@@ -405,6 +405,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control V", new paste());
+        
+        // Activate Control R (scroll back to the selected task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
+        class scrollBackToTask extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        }
+        am.put("Control R", new scrollBackToTask());
     }
 
     // Retrieve key event with name

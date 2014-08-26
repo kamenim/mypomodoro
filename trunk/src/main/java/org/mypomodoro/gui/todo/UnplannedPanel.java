@@ -44,12 +44,12 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        unplannedInputFormPanel.setEstimatedPomodoro(1);
+        unplannedInputFormPanel.setEstimatedPomodoro(0);
         setBorder(null); // remove create panel border
-        //addToDoIconPanel();
+        addToDoIconPanel();
     }
 
-    /*private void addToDoIconPanel() {
+    private void addToDoIconPanel() {
      gbc.gridx = 0;
      gbc.gridy = 0;
      gbc.fill = GridBagConstraints.BOTH;
@@ -59,7 +59,8 @@ public class UnplannedPanel extends CreatePanel {
      gbc.insets = new Insets(0, 3, 0, 0); // margin left
      add(iconLabel, gbc);
      gbc.insets = new Insets(0, 0, 0, 0);
-     }*/
+     }
+    
     @Override
     protected void addInputFormPanel() {
         gbc.gridx = 0;
@@ -114,17 +115,13 @@ public class UnplannedPanel extends CreatePanel {
     protected void validActivityAction(Activity newActivity) {
         // Interruptions : update current/running pomodoro
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        if (currentToDo != null) {
+        if (currentToDo != null && panel.getPomodoro().inPomodoro()) {
             if (unplannedInputFormPanel.isSelectedInternalInterruption()) {
                 currentToDo.incrementInternalInter();
                 currentToDo.databaseUpdate();
-                // set parent id
-                newActivity.setParentId(currentToDo.getId());
             } else if (unplannedInputFormPanel.isSelectedExternalInterruption()) {
                 currentToDo.incrementInter();
                 currentToDo.databaseUpdate();
-                // set parent id
-                newActivity.setParentId(currentToDo.getId());
             }
         }
         newActivity.setIsUnplanned(true);
@@ -169,7 +166,7 @@ public class UnplannedPanel extends CreatePanel {
     public void clearForm() {
         unplannedInputFormPanel.setInterruption(0);
         unplannedInputFormPanel.setNameField("");
-        unplannedInputFormPanel.setEstimatedPomodoro(1);
+        unplannedInputFormPanel.setEstimatedPomodoro(0);
         if (PreferencesPanel.preferences.getAgileMode()) {
             unplannedInputFormPanel.setStoryPoints(0);
             unplannedInputFormPanel.setIterations(0);

@@ -50,12 +50,12 @@ public class Activity implements Cloneable {
     /**
      * place where the activity is taking occurring set by the constructor
      */
-    private String place;
+    private String place = new String();
     /**
      * date the activity is entered into database set by Java in constructor
      *
      */
-    private Date date;
+    private Date date = new Date();
     /**
      * date the activity is completed
      *
@@ -65,21 +65,21 @@ public class Activity implements Cloneable {
      * name of the author who entered the activity into the database set by the
      * constructor
      */
-    private String author;
+    private String author = new String();
     /**
      * name of the activity. set by constructor
      *
      */
-    private String name;
+    private String name = new String();
     /**
      * description of the activity set by constructor
      */
-    private String description;
+    private String description = new String();
     /**
      * type of activity / set by constructor
      *
      */
-    private String type;
+    private String type = new String();
     /**
      * ToDo priority for this activity default = flag (no priority)
      *
@@ -109,7 +109,7 @@ public class Activity implements Cloneable {
     /**
      * notes on the current activity. default is none
      */
-    private String notes = "";
+    private String notes = new String();
     /**
      * External interruptions
      */
@@ -399,10 +399,12 @@ public class Activity implements Cloneable {
         actualPoms++;
     }
 
+    // external interruption
     public void incrementInter() {
         numInterruptions++;
     }
 
+    // internal interruption
     public void incrementInternalInter() {
         numInternalInterruptions++;
     }
