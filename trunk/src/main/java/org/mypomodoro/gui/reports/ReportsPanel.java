@@ -54,7 +54,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
@@ -62,6 +61,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.activities.CommentPanel;
@@ -239,8 +239,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         Activity activity = ReportList.getList().getById(id);
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -258,8 +257,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     if (activity != null) {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                 }
                 mouseHoverRow = -1;
@@ -746,7 +744,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ReportList.getList(),
+                new ActivityCommentTableListener(ReportList.getList(),
                         table, commentPanel, ID_KEY));
     }
 

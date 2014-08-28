@@ -64,7 +64,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
-import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -250,8 +250,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         Activity activity = ToDoList.getList().getById(id);
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                         setIconLabels(table.convertRowIndexToModel(rowIndex));
                     }
                     mouseHoverRow = rowIndex;
@@ -271,8 +270,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     if (activity != null) {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                     setIconLabels();
                 }
@@ -881,7 +879,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ToDoList.getList(),
+                new ActivityCommentTableListener(ToDoList.getList(),
                         table, commentPanel, ID_KEY));
     }
 

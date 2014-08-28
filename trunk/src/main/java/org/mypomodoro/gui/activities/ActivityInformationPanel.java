@@ -16,16 +16,9 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.Container;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
@@ -42,9 +35,6 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
 
     protected final HtmlEditor informationArea = new HtmlEditor();
     protected LinkedHashMap<String, String> textMap = new LinkedHashMap<String, String>();
-
-    protected String informationTmp = new String();
-    protected int caretPositionTmp = 0;
 
     public ActivityInformationPanel() {
     }
@@ -92,11 +82,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         }
         informationArea.setText(text);
         // disable auto scrolling
-        /*if (caretPositionTmp > 0) {
-            informationArea.setCaretPosition(caretPositionTmp);
-        } else {*/
-            informationArea.setCaretPosition(0);
-        //}
+        informationArea.setCaretPosition(0);        
     }
 
     @Override
@@ -119,55 +105,5 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
             text = Math.round(points) + "";
         }
         return text;
-    }
-
-    @Override
-    public boolean isMultipleSelectionAllowed() {
-        return true;
-    }
-
-    public void scrollToBottom() {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    int endPosition = informationArea.getDocument().getLength();
-                    Rectangle bottom = informationArea.modelToView(endPosition);
-                    informationArea.scrollRectToVisible(bottom);
-                    System.err.println("endPosition = " + endPosition);
-                } catch (BadLocationException e) {
-                    System.err.println("Could not scroll to " + e);
-                }
-            }
-        });
-    }
-
-    public static void centerLineInScrollPane(JTextComponent component) {
-        Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
-
-        if (container == null) {
-            return;
-        }
-
-        try {
-            Rectangle r = component.modelToView(component.getCaretPosition());
-            JViewport viewport = (JViewport) container;
-
-            int extentWidth = viewport.getExtentSize().width;
-            int viewWidth = viewport.getViewSize().width;
-
-            int x = Math.max(0, r.x - (extentWidth / 2));
-            x = Math.min(x, viewWidth - extentWidth);
-
-            int extentHeight = viewport.getExtentSize().height;
-            int viewHeight = viewport.getViewSize().height;
-
-            int y = Math.max(0, r.y - (extentHeight / 2));
-            y = Math.min(y, viewHeight - extentHeight);
-
-            viewport.setViewPosition(new Point(x, y));
-        } catch (BadLocationException ignored) {
-        }
     }
 }
