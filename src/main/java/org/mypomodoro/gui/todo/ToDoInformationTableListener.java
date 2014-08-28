@@ -45,7 +45,7 @@ public class ToDoInformationTableListener implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent e) {
         if (table.getSelectedRowCount() > 0) {
             if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                if (table.getSelectedRowCount() > 1 && information.isMultipleSelectionAllowed()) { // multiple selection
+                if (table.getSelectedRowCount() > 1) { // multiple selection
                     String info = "";
                     int[] rows = table.getSelectedRows();
                     for (int row : rows) {

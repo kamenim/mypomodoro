@@ -59,6 +59,7 @@ import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
@@ -236,8 +237,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                         Activity activity = ChartList.getList().getById(id);
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -255,8 +255,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                     if (activity != null) {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                 }
                 mouseHoverRow = -1;
@@ -700,7 +699,7 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ChartList.getList(),
+                new ActivityCommentTableListener(ChartList.getList(),
                         table, commentPanel, ID_KEY));
     }
 

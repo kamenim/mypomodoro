@@ -61,6 +61,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
+import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
@@ -244,9 +245,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
                         Activity activity = ActivityList.getList().getById(id);
                         detailsPanel.selectInfo(activity);
-                        detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        detailsPanel.showInfo();                        
+                        commentPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -264,8 +264,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     if (activity != null) {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
-                        commentPanel.selectInfo(activity);
-                        commentPanel.showInfo();
+                        commentPanel.showInfo(activity);
                     }
                 }
                 mouseHoverRow = -1;
@@ -701,8 +700,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         act.databaseUpdate();
                         // load template for user stories
                         if (PreferencesPanel.preferences.getAgileMode()) {
-                            commentPanel.selectInfo(act);
-                            commentPanel.showInfo();
+                            commentPanel.showInfo(act);
                         }
                         // refresh the combo boxes of all rows to display the new type (if any)
                         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
@@ -822,7 +820,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ActivityList.getList(),
+                new ActivityCommentTableListener(ActivityList.getList(),
                         table, commentPanel, ID_KEY));
     }
 

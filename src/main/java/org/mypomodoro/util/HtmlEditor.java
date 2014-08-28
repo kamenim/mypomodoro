@@ -129,7 +129,6 @@ public class HtmlEditor extends JTextPane {
          @Override
          public void actionPerformed(ActionEvent e) {
          try {
-         System.err.println("test");
          insertText(getCaretPosition(), "<br>");
          } catch (BadLocationException ignored) {
          } catch (IOException ignored) {

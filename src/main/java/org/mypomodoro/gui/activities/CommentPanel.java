@@ -53,19 +53,20 @@ import javax.swing.text.html.HTML;
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO improve handling of caret especially after CTRL + Z
+// TODO improve handling of caret especially after CTRL + Z and addition of content link urls
 // TODO unplannedActivityInputFormPanel : remove interruptions for list when no task running
-public class CommentPanel extends ActivityInformationPanel {
+public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
-    private final IListPanel panel;    
+    private final IListPanel panel;
     private int activityIdTmp = -1;
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
@@ -79,10 +80,13 @@ public class CommentPanel extends ActivityInformationPanel {
     private final JTextField linkTextField = new JTextField();
     private final JButton linkButton = new AbstractButton(">>");
     private final ArrayList<String> versions = new ArrayList<String>();
+    protected final HtmlEditor informationArea = new HtmlEditor();
     private final JScrollPane scrollPaneInformationArea = new JScrollPane(informationArea);
-    
+    protected String informationTmp = new String();
+    protected int caretPositionTmp = 0;
+
     private boolean showIconLabel = false;
-    
+
     public CommentPanel(IListPanel iListPanel) {
         this(iListPanel, false);
     }
@@ -94,11 +98,11 @@ public class CommentPanel extends ActivityInformationPanel {
         setLayout(new GridBagLayout());
         setBorder(null);
 
-        addEditorButtons();          
+        addEditorButtons();
         addCommentArea();
         addSaveButton();
         addCancelButton();
-        
+
         // Display the edit buttons when clicking with the mouse
         informationArea.addMouseListener(new MouseAdapter() {
 
@@ -122,15 +126,15 @@ public class CommentPanel extends ActivityInformationPanel {
         informationArea.addKeyListener(new KeyListener() {
 
             @Override
-            public void keyTyped(KeyEvent e) {                
+            public void keyTyped(KeyEvent e) {
                 // Nothing to do here
             }
-                        
-            @Override            
+
+            @Override
             public void keyPressed(KeyEvent e) {
                 // The area must be editable 
                 // Excluding: key Control mask + arrows + home/end + page up/down
-                if (informationArea.isEditable() 
+                if (informationArea.isEditable()
                         && e.getModifiers() != KeyEvent.CTRL_MASK
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
@@ -145,12 +149,12 @@ public class CommentPanel extends ActivityInformationPanel {
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
                         && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
                     saveButton.setVisible(true);
-                    cancelButton.setVisible(true);                    
+                    cancelButton.setVisible(true);
                     int row = panel.getTable().getSelectedRow(); // record activity Id
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                    
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     // typing recording is done in keyReleased method
                     versions.add(informationArea.getText()); // record version                    
-                }                
+                }
             }
 
             // key released is the only suitable method to record all the typing             
@@ -158,7 +162,7 @@ public class CommentPanel extends ActivityInformationPanel {
             public void keyReleased(KeyEvent e) {
                 // The area must be editable
                 // Excluding: key Control mask + arrows + home/end + page up/down
-                if (informationArea.isEditable() 
+                if (informationArea.isEditable()
                         && e.getModifiers() != KeyEvent.CTRL_MASK
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
@@ -171,16 +175,17 @@ public class CommentPanel extends ActivityInformationPanel {
                         && e.getKeyCode() != KeyEvent.VK_HOME
                         && e.getKeyCode() != KeyEvent.VK_END
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {                    
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
                     informationTmp = informationArea.getText(); // record temp text
                     caretPositionTmp = informationArea.getCaretPosition();
                     // versionning is done in keyPressed method
                 }
             }
         });
-        
+
         // set the keystroke
         // CTRL Z: Undo
+        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
         Action undoAction = new AbstractAction() {
 
             @Override
@@ -194,35 +199,34 @@ public class CommentPanel extends ActivityInformationPanel {
                         saveButton.setVisible(false);
                         cancelButton.setVisible(false);
                     }
-                }                
+                }
             }
-        };
-        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
-        informationArea.getActionMap().put("Undo", undoAction);        
+        };        
+        informationArea.getActionMap().put("Undo", undoAction);
     }
 
     private void addEditorButtons() {
-        
+
         boldButton.setFont(getFont().deriveFont(Font.BOLD));
         boldButton.setMargin(new Insets(0, 0, 0, 0));
-        
+
         italicButton.setFont(getFont().deriveFont(Font.ITALIC));
         italicButton.setMargin(new Insets(0, 0, 0, 0));
-        
+
         Map attributes = getFont().getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         underlineButton.setFont(getFont().deriveFont(attributes));
         underlineButton.setMargin(new Insets(0, 0, 0, 0));
-        
+
         backgroundColorButton.setForeground(Color.BLUE);
         backgroundColorButton.setFont(getFont().deriveFont(attributes).deriveFont(Font.BOLD));
         backgroundColorButton.setMargin(new Insets(0, 0, 0, 0));
-        
+
         foregroundColorButton.setForeground(Color.BLUE);
         foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
         foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
-        linkTextField.setText("http://");        
-        linkButton.setMargin(new Insets(0, 0, 0, 0));        
+        linkTextField.setText("http://");
+        linkButton.setMargin(new Insets(0, 0, 0, 0));
         // Preview button
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -415,8 +419,10 @@ public class CommentPanel extends ActivityInformationPanel {
         gbc.gridy = 3;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
-        gbc.gridwidth = 1;
-        linkButton.addActionListener(new ActionListener() {
+        gbc.gridwidth = 1;       
+        // ENTER: insert link (requires focus on the link text field)
+        linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enterlink");        
+        class linkEnterAction extends AbstractAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -428,25 +434,33 @@ public class CommentPanel extends ActivityInformationPanel {
                     }
                     if (!linkTextField.getText().isEmpty()) {
                         String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
+                        //int caretPosition = informationArea.getCaretPosition();
                         informationArea.insertText(start, link, HTML.Tag.A);
+                        informationTmp = informationArea.getText(); // record temp text
+                        //caretPositionTmp = informationArea.getCaretPosition();
                         // Set caret position right after the link                        
-                        //informationArea.setCaretPosition(start + link.length());
-                        //informationArea.setCaretPosition(informationArea.getCaretPosition());                        
+                        //informationArea.setCaretPosition(caretPosition + linkTextField.getText().length());
+                        //informationArea.setCaretPosition(informationArea.getCaretPosition());                       
+                        saveButton.setVisible(true);
+                        cancelButton.setVisible(true);
                         linkTextField.setText("http://"); // reset field                        
                     }
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
             }
-        });
+        }
+        linkButton.getActionMap().put("Enterlink", new linkEnterAction());
+        linkButton.setToolTipText("ENTER");
+        linkButton.addActionListener(new linkEnterAction());
         linkButton.setVisible(false);
         add(linkButton, gbc);
     }
-    
+
     private void addCommentArea() {
         JPanel commentArea = new JPanel();
         commentArea.setLayout(new GridBagLayout());
-        GridBagConstraints commentgbc = new GridBagConstraints();        
+        GridBagConstraints commentgbc = new GridBagConstraints();
         if (showIconLabel) { // icon label panel (ToDo list / Iteration panel)
             commentgbc.gridx = 0;
             commentgbc.gridy = 0;
@@ -457,7 +471,7 @@ public class CommentPanel extends ActivityInformationPanel {
             commentArea.add(iconLabel, commentgbc);
         }
         // add the comment area
-        commentgbc.gridx = 0;        
+        commentgbc.gridx = 0;
         commentgbc.gridy = showIconLabel ? 1 : 0;
         commentgbc.fill = GridBagConstraints.BOTH;
         commentgbc.weightx = 1.0;
@@ -495,7 +509,7 @@ public class CommentPanel extends ActivityInformationPanel {
         };
         saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK), "Save");
         saveButton.getActionMap().put("Save", saveAction);
-        saveButton.setToolTipText("CTRL + S");         
+        saveButton.setToolTipText("CTRL + S");
         saveButton.setVisible(false);
         saveButton.addActionListener(saveAction);
         add(saveButton, gbc);
@@ -521,19 +535,17 @@ public class CommentPanel extends ActivityInformationPanel {
                 versions.clear();
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                selectInfo(panel.getActivityById(id));
-                showInfo();
+                showInfo(panel.getActivityById(id));
             }
         });
         add(cancelButton, gbc);
     }
-    
-    @Override
-    public void selectInfo(final Activity activity) {
+
+    public void showInfo(final Activity activity) {
+        clearInfo();
         String comment = activity.getNotes().trim();
         if (activityIdTmp == activity.getId() && !informationTmp.isEmpty()) {
             comment = informationTmp;
-            //informationArea.setCaretPosition(caretPositionTmp);
             saveButton.setVisible(true);
             cancelButton.setVisible(true);
         } else {
@@ -547,28 +559,26 @@ public class CommentPanel extends ActivityInformationPanel {
             }
         }
         if (comment.isEmpty()) { // no comment yet
-            String text = "";
             if (activity.isStory()) {
                 // default template for User Story type
                 // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
-                text += "<p style=\"margin-top: 0\"><b>Story line</b></p>";
-                text += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
-                text += "<p><b>User acceptance criteria</b></p>";
-                text += "<p style=\"margin-top: 0\">";
-                text += "+ ...";
-                text += "</p>";
-                text += "<p style=\"margin-top: 0\">";
-                text += "+ ...";
-                text += "</p>";
-                text += "<p><b>Test cases</b></p>";
-                text += "<p style=\"margin-top: 0\">";
-                text += "+ ...";
-                text += "</p>";
-                text += "<p style=\"margin-top: 0\">";
-                text += "+ ...";
-                text += "</p>";
+                comment += "<p style=\"margin-top: 0\"><b>Story line</b></p>";
+                comment += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
+                comment += "<p><b>User acceptance criteria</b></p>";
+                comment += "<p style=\"margin-top: 0\">";
+                comment += "+ ...";
+                comment += "</p>";
+                comment += "<p style=\"margin-top: 0\">";
+                comment += "+ ...";
+                comment += "</p>";
+                comment += "<p><b>Test cases</b></p>";
+                comment += "<p style=\"margin-top: 0\">";
+                comment += "+ ...";
+                comment += "</p>";
+                comment += "<p style=\"margin-top: 0\">";
+                comment += "+ ...";
+                comment += "</p>";
             }
-            textMap.put("comment", text);
         } else {
             // Backward compatility 3.0.X and imports
             // Check if there is a body tag; if not replace trailing return carriage with P tag
@@ -576,18 +586,68 @@ public class CommentPanel extends ActivityInformationPanel {
                 comment = "<p style=\"margin-top: 0\">" + comment;
                 comment = comment.replaceAll("\r\n", "</p><p style=\"margin-top: 0\">"); // \r\n also replaced in caseit appears in the import file
                 comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
-                comment = comment + "</p>";                
+                comment = comment + "</p>";
             }
-            textMap.put("comment", comment);
+        }
+        informationArea.setText(comment);
+        if (activityIdTmp == activity.getId() && !informationTmp.isEmpty() && caretPositionTmp > 0) {
+            informationArea.setCaretPosition(caretPositionTmp);
+        } else {
+            // disable auto scrolling
+            informationArea.setCaretPosition(0);
         }
     }
 
-    @Override
-    public boolean isMultipleSelectionAllowed() {
-        return false;
+    public void clearInfo() {
+        informationArea.setText("");
     }
 
     public JLabel getIconLabel() {
         return iconLabel;
     }
+
+    /*public void scrollToBottom() {
+     javax.swing.SwingUtilities.invokeLater(new Runnable() {
+
+     @Override
+     public void run() {
+     try {
+     int endPosition = informationArea.getDocument().getLength();
+     Rectangle bottom = informationArea.modelToView(endPosition);
+     informationArea.scrollRectToVisible(bottom);
+     System.err.println("endPosition = " + endPosition);
+     } catch (BadLocationException e) {
+     System.err.println("Could not scroll to " + e);
+     }
+     }
+     });
+     }
+
+     public static void centerLineInScrollPane(JTextComponent component) {
+     Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
+
+     if (container == null) {
+     return;
+     }
+
+     try {
+     Rectangle r = component.modelToView(component.getCaretPosition());
+     JViewport viewport = (JViewport) container;
+
+     int extentWidth = viewport.getExtentSize().width;
+     int viewWidth = viewport.getViewSize().width;
+
+     int x = Math.max(0, r.x - (extentWidth / 2));
+     x = Math.min(x, viewWidth - extentWidth);
+
+     int extentHeight = viewport.getExtentSize().height;
+     int viewHeight = viewport.getViewSize().height;
+
+     int y = Math.max(0, r.y - (extentHeight / 2));
+     y = Math.min(y, viewHeight - extentHeight);
+
+     viewport.setViewPosition(new Point(x, y));
+     } catch (BadLocationException ignored) {
+     }
+     }*/
 }

@@ -31,6 +31,4 @@ public interface IActivityInformation {
     void showInfo(String info);
 
     void clearInfo();
-
-    boolean isMultipleSelectionAllowed();
 }
