@@ -32,8 +32,8 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 /**
- * Move button for activities and reports panels For ToDo panel see
- * MoveToDoButton
+ * Move button for activities and reports panels.
+ * For ToDo panel, see MoveToDoButton.
  *
  */
 public class MoveButton extends AbstractButton {
@@ -115,7 +115,7 @@ public class MoveButton extends AbstractButton {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
+                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress                                    
                                     Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                 }
                             });

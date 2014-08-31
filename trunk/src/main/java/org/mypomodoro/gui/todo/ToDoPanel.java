@@ -61,6 +61,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
@@ -339,9 +341,43 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     }
                 });
 
-        // Activate Control A
+        // Activate Shift + '>'
         InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");
+        class completeAction extends AbstractAction {
+
+            final ToDoPanel panel;
+
+            public completeAction(ToDoPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), panel);
+                completeToDoButton.doClick();
+            }
+        }
+        am.put("Complete", new completeAction(this));
+        // Activate Shift + '<'
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "Move Back To Activity List");
+        class moveBackAction extends AbstractAction {
+
+            final ToDoPanel panel;
+
+            public moveBackAction(ToDoPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MoveToDoButton moveToDoButton = new MoveToDoButton("<<<", panel);
+                moveToDoButton.doClick();
+            }
+        }
+        am.put("Move Back To Activity List", new moveBackAction(this));
+        // Activate Control A        
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 

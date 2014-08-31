@@ -59,6 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
@@ -68,6 +69,7 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
@@ -325,9 +327,29 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 b.doClick();
             }
         }
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        } else {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        }
         am.put("Delete", new deleteAction(this));
+        // Activate Shift + '<'
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "Reopen");
+        class reopenAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public reopenAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MoveButton moveButton = new MoveButton("<<<", panel);
+                moveButton.doClick();
+            }
+        }
+        am.put("Reopen", new reopenAction(this));
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {

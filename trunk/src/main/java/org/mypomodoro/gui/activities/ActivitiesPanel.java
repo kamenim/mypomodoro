@@ -59,6 +59,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
@@ -316,7 +317,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = table.getActionMap();
+        ActionMap am = table.getActionMap();                
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        } else {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        }
         class deleteAction extends AbstractAction {
 
             final IListPanel panel;
@@ -331,9 +337,24 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 b.doClick();
             }
         }
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
         am.put("Delete", new deleteAction(this));
+        // Activate Shift + '>'                
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Add To ToDo List");
+        class moveAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public moveAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MoveButton moveButton = new MoveButton(">>>", panel);
+                moveButton.doClick();
+            }
+        }
+        am.put("Add To ToDo List", new moveAction(this));        
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
