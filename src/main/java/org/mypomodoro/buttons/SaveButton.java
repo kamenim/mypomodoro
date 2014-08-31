@@ -39,5 +39,6 @@ public class SaveButton extends AbstractButton {
         registerKeyboardAction(save,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
+        setToolTipText("ENTER");
     }
 }

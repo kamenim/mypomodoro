@@ -28,7 +28,7 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 /**
- * Move button
+ * Move button to move tasks back to Activity list
  *
  */
 public class MoveToDoButton extends AbstractButton {
