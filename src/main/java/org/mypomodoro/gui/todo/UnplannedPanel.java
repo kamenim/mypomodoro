@@ -17,11 +17,11 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
@@ -44,23 +44,21 @@ public class UnplannedPanel extends CreatePanel {
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        unplannedInputFormPanel.setEstimatedPomodoro(0);
         setBorder(null); // remove create panel border
-        addToDoIconPanel();
+        addToDoIconPanel();        
     }
 
     private void addToDoIconPanel() {
-     gbc.gridx = 0;
-     gbc.gridy = 0;
-     gbc.fill = GridBagConstraints.BOTH;
-     gbc.weightx = 1.0;
-     gbc.weighty = 0.1;
-     gbc.gridheight = 1;
-     gbc.insets = new Insets(0, 3, 0, 0); // margin left
-     add(iconLabel, gbc);
-     gbc.insets = new Insets(0, 0, 0, 0);
-     }
-    
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;
+        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        add(iconLabel, gbc);
+    }
+
     @Override
     protected void addInputFormPanel() {
         gbc.gridx = 0;
@@ -70,6 +68,7 @@ public class UnplannedPanel extends CreatePanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         unplannedInputFormPanel = new UnplannedActivityInputForm();
+        unplannedInputFormPanel.setEstimatedPomodoro(0);
         unplannedInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

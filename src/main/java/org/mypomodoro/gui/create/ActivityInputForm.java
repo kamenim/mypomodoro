@@ -58,9 +58,9 @@ public class ActivityInputForm extends JPanel {
     protected JComboBox estimatedPomodoros = new JComboBox();
     protected JComboBox storyPoints = new JComboBox();
     protected JComboBox iterations = new JComboBox();
-    protected JComboBox types = new JComboBox();
-    protected JComboBox authors = new JComboBox();
-    protected JComboBox places = new JComboBox();
+    protected JComboBox types = new TypeComboBox();
+    protected JComboBox authors = new AuthorComboBox();
+    protected JComboBox places = new PlaceComboBox();
     protected final DatePicker datePicker = new DatePicker(Labels.getLocale());
     protected int activityId = -1;
     protected final JLabel estimatedLengthLabel = new JLabel("", JLabel.LEFT);
@@ -123,7 +123,6 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected void addType(int gridy) {
-        types = new TypeComboBox();
         // Type Label and Combo box        
         ++gridy;
         c.gridx = 0;
@@ -267,8 +266,7 @@ public class ActivityInputForm extends JPanel {
         }
     }
 
-    protected void addAuthor(int gridy) {
-        authors = new AuthorComboBox();
+    protected void addAuthor(int gridy) {        
         // Author Label and Combo box
         ++gridy;
         c.gridx = 0;
@@ -288,8 +286,7 @@ public class ActivityInputForm extends JPanel {
         add(authors, c);
     }
 
-    protected void addPlace(int gridy) {
-        places = new PlaceComboBox();
+    protected void addPlace(int gridy) {        
         // Place label and Combo box
         ++gridy;
         c.gridx = 0;
