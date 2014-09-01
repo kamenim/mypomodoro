@@ -32,7 +32,7 @@ public class TypeComboBox extends AbstractComboBox {
 
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                Object selectedItem = getEditor().getItem(); // the combo bow is editable
+                Object selectedItem = getEditor().getItem(); // the combo box is editable
                 removeAllItems();
                 for (String type : TypeList.getTypes()) {
                     addItem(type);

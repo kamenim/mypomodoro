@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import javax.swing.JComboBox;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 
 import org.mypomodoro.gui.create.ActivityInputForm;
@@ -25,7 +26,7 @@ import org.mypomodoro.util.Labels;
 
 public class UnplannedActivityInputForm extends ActivityInputForm {
 
-    protected JComboBox interruptions = new JComboBox();
+    protected JComboBox interruptions;
     protected final String unplanned = Labels.getString("ToDoListPanel.Unplanned task");
     protected final String internal = Labels.getString("ToDoListPanel.Internal interruption");
     protected final String external = Labels.getString("ToDoListPanel.External interruption");
@@ -44,11 +45,8 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
-        String items[] = new String[3];
-        items[0] = unplanned;
-        items[1] = internal;
-        items[2] = external;
-        interruptions = new JComboBox(items);
+        interruptions = new JComboBox();
+        interruptions.addItem(unplanned);
         interruptions.setRenderer(new AbstractComboBoxRenderer());
         add(interruptions, c);
     }
@@ -63,5 +61,18 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
 
     public void setInterruption(int index) {
         interruptions.setSelectedIndex(index);
+    }
+
+    public void refreshInterruptionComboBox(boolean inPomodoro) {
+        interruptions.removeAllItems();
+        if (Main.toDoPanel.getPomodoro().inPomodoro()) {
+            interruptions.addItem(unplanned);
+            interruptions.addItem(internal);
+            interruptions.addItem(external);
+            interruptions.setSelectedItem(internal);
+        } else {
+            interruptions.addItem(unplanned);
+        }
+        interruptions.repaint();
     }
 }

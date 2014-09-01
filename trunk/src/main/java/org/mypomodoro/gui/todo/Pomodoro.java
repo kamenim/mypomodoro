@@ -78,6 +78,7 @@ public class Pomodoro {
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
     private final IActivityInformation detailsPanel;
+    private final UnplannedPanel unplannedPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
     private long time = pomodoroLength;
@@ -85,9 +86,10 @@ public class Pomodoro {
     private Clip clip;
     private boolean isMute = false;
 
-    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel) {
+    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
+        this.unplannedPanel = unplannedPanel;
 
         pomodoroTime = panel.getPomodoroTime();
         pomodoroTime.setText(sdf.format(pomodoroLength));
@@ -107,6 +109,7 @@ public class Pomodoro {
         }
         inpomodoro = true;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
+        ((UnplannedActivityInputForm)unplannedPanel.getFormPanel()).refreshInterruptionComboBox(true);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers      
     }
@@ -126,6 +129,7 @@ public class Pomodoro {
         }
         inpomodoro = false;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
+        ((UnplannedActivityInputForm)unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers
     }
@@ -194,6 +198,7 @@ public class Pomodoro {
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
+                    ((UnplannedActivityInputForm)unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
                     inpomodoro = false;
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
@@ -230,6 +235,7 @@ public class Pomodoro {
                 // update details panel
                 detailsPanel.selectInfo(getCurrentToDo());
                 detailsPanel.showInfo();
+                ((UnplannedActivityInputForm)unplannedPanel.getFormPanel()).refreshInterruptionComboBox(true);
                 panel.setIconLabels();
                 panel.setPanelRemaining();
                 panel.setPanelBorder();

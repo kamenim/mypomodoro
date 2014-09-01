@@ -112,7 +112,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
-    private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel);
+    private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JTabbedPane controlPane = new JTabbedPane();
     private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
