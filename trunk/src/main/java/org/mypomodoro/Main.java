@@ -79,15 +79,17 @@ public class Main {
      */
     public static void main(String[] args) {
         // Set font from font file
+        // Free unicode font Ubuntu to support utf-8 characters (russian, chinese...)
+        // http://www.fontspace.com/dalton-maag-ltd/ubuntu
         try {
             font = Font.createFont(Font.TRUETYPE_FONT,
-                    Main.class.getResourceAsStream("/fonts/ebrima.ttf")).deriveFont(Font.PLAIN, 13f);
+                    Main.class.getResourceAsStream("/fonts/Ubuntu-R.ttf")).deriveFont(Font.PLAIN, 14f);
         } catch (FontFormatException ex) {
-            font = new JLabel().getFont().deriveFont(Font.PLAIN, 13f);
-            logger.error("TrueType not supported for font Ebrima. Replaced with default System font.", ex);
+            font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
+            logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);
         } catch (IOException ex) {
-            font = new JLabel().getFont().deriveFont(Font.PLAIN, 13f);;
-            logger.error("Ebrima TTF file not found. Replaced with default System font.", ex);
+            font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
+            logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);
         }
         // Does this work?
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
