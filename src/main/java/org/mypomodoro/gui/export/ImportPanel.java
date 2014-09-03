@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import static java.lang.Thread.sleep;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -153,13 +154,15 @@ public class ImportPanel extends JPanel {
         }
     }
 
-    private void importCSV(String fileName) throws Exception {
+    private void importCSV(String fileName) throws Exception {        
         CSVReader readerCount = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
         final int rowCount = readerCount.readAll().size();
         // Close stream
         readerCount.close();
         if (rowCount > 0) {
-            CSVReader reader = new CSVReader(new FileReader(fileName), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
+            // utf-8 encoding
+            FileInputStream fileIn = new FileInputStream(fileName);        
+            CSVReader reader = new CSVReader(new InputStreamReader(fileIn, "UTF-8"), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
             // Set progress bar
             Main.gui.getProgressBar().setVisible(true);
             Main.gui.getProgressBar().getBar().setValue(0);
