@@ -31,14 +31,12 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -181,7 +179,6 @@ public class ExportPanel extends JPanel {
                 try {
                     Activity copiedSelectedActivity = selectedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                     copiedSelectedActivity.setNotes(comment);
-                    System.err.println("comment = " + comment);
                     activities.add(copiedSelectedActivity);
                 } catch (CloneNotSupportedException ignored) {
                 }
@@ -236,7 +233,9 @@ public class ExportPanel extends JPanel {
 
     private boolean exportCSV(String fileName, Iterator<Activity> act)
             throws IOException {
-        CSVWriter writer = new CSVWriter(new FileWriter(fileName),
+        // utf-8 encoding
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        CSVWriter writer = new CSVWriter(new OutputStreamWriter(fileOut, "UTF-8"),
                 exportInputForm.getSeparator());
         // Header
         if (exportInputForm.isHeaderSelected()) {
@@ -254,9 +253,9 @@ public class ExportPanel extends JPanel {
 
     private boolean exportExcel(String fileName, Iterator<Activity> act)
             throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(fileName);
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet worksheet = workbook.createSheet();
+        FileOutputStream fileOut = new FileOutputStream(fileName);        
+        HSSFWorkbook workbook = new HSSFWorkbook();        
+        HSSFSheet worksheet = workbook.createSheet();        
 
         int rowNb = 0;
         // Header

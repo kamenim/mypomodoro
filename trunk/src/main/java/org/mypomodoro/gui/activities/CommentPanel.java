@@ -49,6 +49,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
@@ -61,7 +62,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO improve handling of caret especially after CTRL + Z and addition of content link urls
-// TODO unplannedActivityInputFormPanel : remove interruptions for list when no task running
+// TODO shift + > or < works in the text pane ! which move the selected task rather than writing '> 'or '<'
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -497,8 +498,8 @@ public class CommentPanel extends JPanel {
         Action saveAction = new AbstractAction() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                panel.saveComment(informationArea.getText());
+            public void actionPerformed(ActionEvent e) {                
+                panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
                 informationTmp = new String();

@@ -44,7 +44,6 @@ public class HtmlEditor extends JTextPane {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public HtmlEditor() {
-        //setEditorKit(new HTMLEditorKit()); // content type = text/html
         setEditorKit(new HTMLEditorKit()); // content type = text/html        
         setContentType("text/html;charset=UTF-8");
         getDocument().putProperty("i18n", Boolean.TRUE);
