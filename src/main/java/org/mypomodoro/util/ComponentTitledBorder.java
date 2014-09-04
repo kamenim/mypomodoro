@@ -156,7 +156,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         comp.setBackground(color);
         container.setBackground(color);
     }
-    
+
     public void setToolTipText(String text) {
         container.setToolTipText(text);
     }

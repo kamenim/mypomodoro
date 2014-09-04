@@ -62,9 +62,9 @@ public final class ToDoList extends AbstractActivities {
         act.setDate(date);
         act.setDateCompleted(dateCompleted);
         if (act.getId() == -1) { // add to the database (new todo)
-            act.setId(act.databaseInsert());            
+            act.setId(act.databaseInsert());
         } else { // update in database (modified todo or moved from activity list)
-            act.databaseUpdate();            
+            act.databaseUpdate();
         }
         super.add(act); // add to the list
     }

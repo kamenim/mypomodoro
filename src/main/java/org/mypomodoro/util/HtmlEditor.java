@@ -40,7 +40,7 @@ import javax.swing.text.html.HTMLEditorKit;
  *
  */
 public class HtmlEditor extends JTextPane {
-    
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public HtmlEditor() {
@@ -118,7 +118,6 @@ public class HtmlEditor extends JTextPane {
 
         addHyperlinkListener(new MyHyperlinkListener());
 
-        
         //getDocument().putProperty(DefaultEditorKit.EndOfLineStringProperty, "<br/>\n");
 
         /*InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -159,7 +158,7 @@ public class HtmlEditor extends JTextPane {
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
         ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);
     }
-    
+
     // Get raw text out of html content
     public String getRawText() {
         String text = new String();

@@ -253,9 +253,9 @@ public class ExportPanel extends JPanel {
 
     private boolean exportExcel(String fileName, Iterator<Activity> act)
             throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(fileName);        
-        HSSFWorkbook workbook = new HSSFWorkbook();        
-        HSSFSheet worksheet = workbook.createSheet();        
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet worksheet = workbook.createSheet();
 
         int rowNb = 0;
         // Header

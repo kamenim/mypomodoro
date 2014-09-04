@@ -39,16 +39,16 @@ import org.mypomodoro.util.Labels;
 public class UnplannedPanel extends CreatePanel {
 
     private UnplannedActivityInputForm unplannedInputFormPanel;
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final ToDoPanel panel;
 
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
         setBorder(null); // remove create panel border
-        addToDoIconPanel();        
+        addToDoIconPanel();
     }
 
-    private void addToDoIconPanel() {
+    @Override
+    protected void addToDoIconPanel() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;

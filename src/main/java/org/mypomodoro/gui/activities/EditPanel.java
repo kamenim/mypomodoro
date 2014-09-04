@@ -112,17 +112,11 @@ public class EditPanel extends CreatePanel {
     @Override
     public void saveActivity(Activity activity) {
         if (ActivityList.getList().size() > 0) {
-            // no check for existing activities with same name and date
-            if (!activity.isValid()) {
-                invalidActivityAction();
-            } else {
+            // no check for existing reports with same name and date
+            if (activity.isValid()) {
                 validActivityAction(activity);
             }
         }
-    }
-
-    @Override
-    protected void invalidActivityAction() {
     }
 
     @Override

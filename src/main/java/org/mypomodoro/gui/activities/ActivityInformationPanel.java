@@ -82,7 +82,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         }
         informationArea.setText(text);
         // disable auto scrolling
-        informationArea.setCaretPosition(0);        
+        informationArea.setCaretPosition(0);
     }
 
     @Override

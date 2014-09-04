@@ -266,7 +266,7 @@ public class ActivityInputForm extends JPanel {
         }
     }
 
-    protected void addAuthor(int gridy) {        
+    protected void addAuthor(int gridy) {
         // Author Label and Combo box
         ++gridy;
         c.gridx = 0;
@@ -286,7 +286,7 @@ public class ActivityInputForm extends JPanel {
         add(authors, c);
     }
 
-    protected void addPlace(int gridy) {        
+    protected void addPlace(int gridy) {
         // Place label and Combo box
         ++gridy;
         c.gridx = 0;

@@ -14,30 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.reports;
+package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
-
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
+
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 
 /**
- * GUI for editing an existing report and store to data layer.
+ * GUI for editing an existing activity and store to data layer.
  *
  */
 public class EditPanel extends CreatePanel {
 
-    private ReportInputForm reportInputForm;
+    private EditInputForm editInputForm;
     private final IActivityInformation information;
 
     public EditPanel(IActivityInformation information) {
@@ -45,17 +46,29 @@ public class EditPanel extends CreatePanel {
 
         setBorder(null);
     }
+    
+    @Override
+    protected void addToDoIconPanel() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.1;
+        gbc.gridheight = 1;
+        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        add(iconLabel, gbc);
+    }
 
     @Override
     protected void addInputFormPanel() {
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        reportInputForm = new ReportInputForm();
-        reportInputForm.getNameField().getDocument().addDocumentListener(new DocumentListener() {
+        editInputForm = new EditInputForm();
+        editInputForm.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -64,7 +77,7 @@ public class EditPanel extends CreatePanel {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                if (reportInputForm.getNameField().getText().length() == 0) {
+                if (editInputForm.getNameField().getText().length() == 0) {
                     disableSaveButton();
                 }
             }
@@ -74,16 +87,15 @@ public class EditPanel extends CreatePanel {
                 enableSaveButton();
             }
         });
-        add(new JScrollPane(reportInputForm), gbc);
+        add(new JScrollPane(editInputForm), gbc);
     }
 
     @Override
     protected void addSaveButton() {
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 0.1;
-        gbc.gridheight = 2;
-        // gbc.fill = GridBagConstraints.NONE;
+        //gbc.fill = GridBagConstraints.NONE;
         add(saveButton, gbc);
     }
 
@@ -97,37 +109,41 @@ public class EditPanel extends CreatePanel {
 
     @Override
     protected void validActivityAction(Activity activity) {
-        ReportList.getList().update(activity);
+        ToDoList.getList().update(activity);
         activity.databaseUpdate();
         // update details panel
         information.selectInfo(activity);
         information.showInfo();
-        String title = Labels.getString("ReportListPanel.Edit report");
-        String message = Labels.getString("ReportListPanel.Report updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        String title = Labels.getString("ToDoListPanel.Edit ToDo");
+        String message = Labels.getString("ToDoListPanel.ToDo updated");
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
-    public void saveActivity(Activity report) {
-        if (ReportList.getList().size() > 0) {
+    public void saveActivity(Activity activity) {
+        if (ToDoList.getList().size() > 0) {
             // no check for existing reports with same name and date
-            if (report.isValid()) {
-                validActivityAction(report);
+            if (activity.isValid()) {
+                validActivityAction(activity);
             }
         }
     }
 
     @Override
     public ActivityInputForm getFormPanel() {
-        return reportInputForm;
+        return editInputForm;
     }
 
     @Override
-    public void fillOutInputForm(Activity report) {
-        reportInputForm.setAuthorField(report.getAuthor());
-        reportInputForm.setPlaceField(report.getPlace());
-        reportInputForm.setDescriptionField(report.getDescription());
-        reportInputForm.setActivityId(report.getId());
+    public void fillOutInputForm(Activity activity) {
+        editInputForm.setTypeField(activity.getType());
+        editInputForm.setAuthorField(activity.getAuthor());
+        editInputForm.setPlaceField(activity.getPlace());
+        editInputForm.setDescriptionField(activity.getDescription());
+        editInputForm.setActivityId(activity.getId());
+    }
+
+    public JLabel getIconLabel() {
+        return iconLabel;
     }
 }

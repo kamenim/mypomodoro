@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -86,9 +87,9 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHEAST;
         TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
-        timeMinus.setBackground(ColorUtil.WHITE);
-        timeMinus.setOpaque(true);
-        timeMinus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        timeMinus.setOpaque(false);
+        timeMinus.setMargin(new Insets(1, 1, 1, 1));
+        timeMinus.setFocusPainted(false); // removes borders around text
         add(timeMinus, gbc);
     }
 
@@ -110,9 +111,9 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         TimePlusButton timePlus = new TimePlusButton(pomodoro);
-        timePlus.setBackground(ColorUtil.WHITE);
-        timePlus.setOpaque(true);
-        timePlus.setBorder(new LineBorder(ColorUtil.BLACK, 1));
+        timePlus.setOpaque(false);
+        timePlus.setMargin(new Insets(1, 1, 1, 1));
+        timePlus.setFocusPainted(false); // removes borders around text
         add(timePlus, gbc);
     }
 
@@ -123,12 +124,9 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.165;
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.SOUTH;
-        startButton.setBackground(ColorUtil.WHITE);
+        startButton.setOpaque(false);
         startButton.setForeground(ColorUtil.BLACK);
-        Border line = new LineBorder(ColorUtil.BLACK, 2);
-        Border margin = new EmptyBorder(5, 15, 5, 15);
-        Border compound = new CompoundBorder(line, margin);
-        startButton.setBorder(compound);
+        startButton.setMargin(new Insets(5, 15, 5, 15));        
         startButton.setFocusPainted(false); // removes borders around text        
         startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {
@@ -157,10 +155,6 @@ public class TimerPanel extends JPanel {
                                 pomodoro.start();
                                 startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                                 startButton.setForeground(ColorUtil.RED);
-                                Border line = new LineBorder(ColorUtil.RED, 2);
-                                Border margin = new EmptyBorder(5, 15, 5, 15);
-                                Border compound = new CompoundBorder(line, margin);
-                                startButton.setBorder(compound);
                                 pomodoroTime.setForeground(ColorUtil.RED);
                             }
                         }
@@ -168,10 +162,6 @@ public class TimerPanel extends JPanel {
                         panel.showCurrentSelectedRow(); // in any case
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         startButton.setForeground(ColorUtil.BLACK);
-                        Border line = new LineBorder(ColorUtil.BLACK, 2);
-                        Border margin = new EmptyBorder(5, 15, 5, 15);
-                        Border compound = new CompoundBorder(line, margin);
-                        startButton.setBorder(compound);
                         pomodoroTime.setForeground(ColorUtil.BLACK);
                     }
                 }
