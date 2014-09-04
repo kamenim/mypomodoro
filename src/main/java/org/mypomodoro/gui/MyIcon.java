@@ -26,8 +26,20 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.todo.ToDoPanel;
 
+/**
+ * MyIcon singleton for icon bar
+ * 
+ */
 public class MyIcon extends JLabel {
+
+    private final Dimension d = new Dimension(1000, 80);
+    private final JPanel panel;
+    private final ImageIcon on;
+    private final ImageIcon off;
+    private final ImageIcon onBusy;
+    private final ImageIcon offBusy; 
 
     private static ImageIcon getIcon(String path) {
         return new ImageIcon(Main.class.getResource(path));
@@ -37,28 +49,42 @@ public class MyIcon extends JLabel {
             String fileName, JPanel p) {
         String onPath = "/images/" + fileName + "2.png";
         String offPath = "/images/" + fileName + ".png";
+        String onBusyPath = onPath;
+        String offBusyPath = offPath;
+        if (p instanceof ToDoPanel) {                
+                onBusyPath = "/images/" + fileName + "red2.png";
+                offBusyPath = "/images/" + fileName + "red.png";            
+        }
         ImageIcon onIcon = getIcon(onPath);
         ImageIcon offIcon = getIcon(offPath);
-        return new MyIcon(view, text, onIcon, offIcon, p);
+        ImageIcon onBusyIcon = getIcon(onBusyPath);
+        ImageIcon offBusyIcon = getIcon(offBusyPath);
+        return new MyIcon(view, text, onIcon, onBusyIcon,  offIcon, offBusyIcon, p);
     }
-    private final Dimension d = new Dimension(1000, 80);
-    private final JPanel panel;
-    private final ImageIcon on;
-    private final ImageIcon off;
-
+    
     public void highlight() {
-        setIcon(on);
+        if (panel instanceof ToDoPanel && ((ToDoPanel)panel).getPomodoro().inPomodoro()) {
+            setIcon(onBusy);            
+        } else {
+            setIcon(on);
+        }
     }
 
     public void unhighlight() {
-        setIcon(off);
+        if (panel instanceof ToDoPanel && ((ToDoPanel)panel).getPomodoro().inPomodoro()) {
+            setIcon(offBusy);
+        } else {
+            setIcon(off);
+        }
     }
 
-    public MyIcon(final MainPanel view, String Text, ImageIcon on,
-            ImageIcon off, JPanel p) {
+    public MyIcon(final MainPanel view, String Text, ImageIcon on, ImageIcon onBusy,
+            ImageIcon off, ImageIcon offBusy, JPanel p) {
         super(Text, off, CENTER);
         this.off = off;
         this.on = on;
+        this.offBusy = offBusy;
+        this.onBusy = onBusy;
         panel = p;
 
         setPreferredSize(d);

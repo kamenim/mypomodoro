@@ -109,6 +109,7 @@ public class Pomodoro {
         }
         inpomodoro = true;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
+        Main.gui.getIconBar().getIcon(2).highlight();
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(true);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers      
@@ -129,6 +130,7 @@ public class Pomodoro {
         }
         inpomodoro = false;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
+        Main.gui.getIconBar().getIcon(2).highlight();
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers
@@ -197,9 +199,10 @@ public class Pomodoro {
                         }
                     }
                     timerPanel.setStartColor(ColorUtil.BLACK);
-                    Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
                     inpomodoro = false;
+                    Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
+                    Main.gui.getIconBar().getIcon(2).highlight();
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
@@ -221,8 +224,9 @@ public class Pomodoro {
                             tick();
                         }
                         timerPanel.setStartColor(ColorUtil.RED);
-                        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
                         inpomodoro = true;
+                        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
+                        Main.gui.getIconBar().getIcon(2).highlight();
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
