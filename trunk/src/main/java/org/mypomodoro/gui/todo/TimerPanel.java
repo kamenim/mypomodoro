@@ -64,7 +64,7 @@ public class TimerPanel extends JPanel {
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
         } catch (FontFormatException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
-            logger.error("TrueType not supported for font Timer. Replaced with default System font.", ex);
+            logger.error("TrueType not supported for font Timer. Replacoed with default System font.", ex);
         } catch (IOException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
@@ -177,10 +177,6 @@ public class TimerPanel extends JPanel {
 
     public void setStartColor(Color color) {
         startButton.setForeground(color);
-        Border line = new LineBorder(color, 2);
-        Border margin = new EmptyBorder(5, 15, 5, 15);
-        Border compound = new CompoundBorder(line, margin);
-        startButton.setBorder(compound);
         pomodoroTime.setForeground(color);
     }
 }
