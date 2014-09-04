@@ -32,8 +32,8 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 /**
- * Move button for activities and reports panels.
- * For ToDo panel, see MoveToDoButton.
+ * Move button for activities and reports panels. For ToDo panel, see
+ * MoveToDoButton.
  *
  */
 public class MoveButton extends AbstractButton {

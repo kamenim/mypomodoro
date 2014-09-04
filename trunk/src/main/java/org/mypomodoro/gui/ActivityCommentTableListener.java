@@ -45,7 +45,7 @@ public class ActivityCommentTableListener implements ListSelectionListener {
             if (!e.getValueIsAdjusting()) { // ignoring the deselection event                
                 int row = table.getSelectedRow();
                 Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
-                Activity activity = activities.getById(id);                
+                Activity activity = activities.getById(id);
                 comment.showInfo(activity);
             }
         } else {

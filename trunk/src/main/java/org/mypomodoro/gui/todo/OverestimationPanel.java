@@ -50,7 +50,7 @@ public class OverestimationPanel extends JPanel {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
 
-        setLayout(new GridBagLayout());        
+        setLayout(new GridBagLayout());
         setBorder(null);
 
         addToDoIconPanel();
@@ -111,7 +111,7 @@ public class OverestimationPanel extends JPanel {
         // update details panel
         detailsPanel.selectInfo(selectedToDo);
         detailsPanel.showInfo();
-        panel.setPanelRemaining();
+        //panel.setPanelRemaining();
         panel.setIconLabels();
         overestimationInputFormPanel.reset();
         String title = Labels.getString("ToDoListPanel.Overestimate ToDo");

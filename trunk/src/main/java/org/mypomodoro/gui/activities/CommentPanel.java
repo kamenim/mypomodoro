@@ -63,6 +63,10 @@ import org.mypomodoro.util.Labels;
  */
 // TODO improve handling of caret especially after CTRL + Z and addition of content link urls
 // TODO shift + > or < works in the text pane ! which move the selected task rather than writing '> 'or '<'
+// TODO export: no date if 1/1/1970
+// TODO replace 'those' with 'this'
+// TODO when copying and pasting from and in the comment area, remove carriage return
+// TODO when copying display save and cancel button
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -202,7 +206,7 @@ public class CommentPanel extends JPanel {
                     }
                 }
             }
-        };        
+        };
         informationArea.getActionMap().put("Undo", undoAction);
     }
 
@@ -420,9 +424,9 @@ public class CommentPanel extends JPanel {
         gbc.gridy = 3;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
-        gbc.gridwidth = 1;       
+        gbc.gridwidth = 1;
         // ENTER: insert link (requires focus on the link text field)
-        linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enterlink");        
+        linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enterlink");
         class linkEnterAction extends AbstractAction {
 
             @Override
@@ -498,7 +502,7 @@ public class CommentPanel extends JPanel {
         Action saveAction = new AbstractAction() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {                
+            public void actionPerformed(ActionEvent e) {
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);

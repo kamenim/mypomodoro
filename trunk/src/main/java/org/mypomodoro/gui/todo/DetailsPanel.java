@@ -73,7 +73,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.gridheight = 2;
-
         GridBagConstraints igbc = new GridBagConstraints();
         infoPanel.setLayout(new GridBagLayout());
         addToDoIconPanel(infoPanel, igbc);
@@ -89,7 +88,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.weighty = 0.1;
         igbc.gridheight = 1;
         iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        infoPanel.add(iconLabel, igbc);       
+        infoPanel.add(iconLabel, igbc);
     }
 
     private void addInformationArea(JPanel infoPanel, GridBagConstraints igbc) {

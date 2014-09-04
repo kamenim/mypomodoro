@@ -49,6 +49,7 @@ import org.mypomodoro.util.Labels;
 public class CreatePanel extends JPanel {
 
     protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
+    protected final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     protected final JLabel validation = new JLabel("");
     protected final SaveButton saveButton = new SaveButton(this);
     protected GridBagConstraints gbc = new GridBagConstraints();
@@ -60,15 +61,19 @@ public class CreatePanel extends JPanel {
         titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
         setBorder(titledborder);
 
+        addToDoIconPanel();
         addInputFormPanel();
         addSaveButton();
         addClearButton();
         addValidation();
     }
+        
+    protected void addToDoIconPanel() {        
+    }
 
     protected void addInputFormPanel() {
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 0.80;
         gbc.gridwidth = 2;
@@ -99,7 +104,7 @@ public class CreatePanel extends JPanel {
 
     protected void addSaveButton() {
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weightx = 0.5;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -119,7 +124,7 @@ public class CreatePanel extends JPanel {
             }
         });
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weightx = 0.5;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -129,7 +134,7 @@ public class CreatePanel extends JPanel {
 
     protected void addValidation() {
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;

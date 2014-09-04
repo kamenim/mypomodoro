@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,7 +51,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -67,6 +67,7 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
+import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -92,7 +93,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
-    //private static final Dimension ICONLABEL_DIMENSION = new Dimension(100, 20);
+    private static final Dimension LISTPANE_DIMENSION = new Dimension(300, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
@@ -109,12 +110,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this, true);
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
+    private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JTabbedPane controlPane = new JTabbedPane();
-    private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
+    //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
     // Border
@@ -293,14 +295,16 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                 if (table.getSelectedRowCount() > 1) { // multiple selection
                                     // diactivate/gray out unused tabs
                                     controlPane.setEnabledAt(1, false); // comment
-                                    controlPane.setEnabledAt(2, false); // overestimation
-                                    controlPane.setEnabledAt(3, false); // unplanned
+                                    controlPane.setEnabledAt(2, false); // edit
+                                    controlPane.setEnabledAt(3, false); // overestimation
+                                    controlPane.setEnabledAt(4, false); // unplanned
                                     if ((pomodoro.inPomodoro() && table.getSelectedRowCount() > 2) || !pomodoro.inPomodoro()) {
-                                        controlPane.setEnabledAt(4, true); // merging
+                                        controlPane.setEnabledAt(5, true); // merging
                                     }
                                     if (controlPane.getSelectedIndex() == 1
                                     || controlPane.getSelectedIndex() == 2
-                                    || controlPane.getSelectedIndex() == 3) {
+                                    || controlPane.getSelectedIndex() == 3
+                                    || controlPane.getSelectedIndex() == 4) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
                                     if (!pomodoro.getTimer().isRunning()) {
@@ -310,9 +314,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
-                                        if (index == 4) {
-                                            controlPane.setEnabledAt(4, false); // merging
-                                            if (controlPane.getSelectedIndex() == 4) {
+                                        if (index == 5) {
+                                            controlPane.setEnabledAt(5, false); // merging
+                                            if (controlPane.getSelectedIndex() == 5) {
                                                 controlPane.setSelectedIndex(0); // switch to details panel
                                             }
                                         } else {
@@ -330,12 +334,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row 
                                 }
                                 setIconLabels();
-                                setPanelRemaining();
+                                //setPanelRemaining();
                                 setPanelBorder();
                             }
                         } else {
                             setIconLabels();
-                            setPanelRemaining();
+                            //setPanelRemaining();
                             setPanelBorder();
                         }
                     }
@@ -404,7 +408,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 }
             }
         }
-        for (int i = 1; i <= 7; i++) {
+        for (int i = 1; i <= 8; i++) {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
@@ -474,13 +478,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control E", new createExternal());
-        
+
         // Activate Control R (scroll back to the current task running or not; same as pressing the timer tomato-like image: see pomodoroButton below)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
         class scrollBackToTask extends AbstractAction {
 
             @Override
-            public void actionPerformed(ActionEvent e) {                
+            public void actionPerformed(ActionEvent e) {
                 if (pomodoro.inPomodoro()) {
                     for (int row = 0; row < table.getRowCount(); row++) {
                         Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
@@ -580,7 +584,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // diactivate/gray out all tabs (except import)
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 5) { // import tab
+                if (index == 6) { // import tab
                     controlPane.setSelectedIndex(index);
                     continue;
                 }
@@ -596,7 +600,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         setPanelBorder();
 
         // Refresh remaining panel
-        setPanelRemaining();
+        //setPanelRemaining();
     }
 
     @Override
@@ -668,7 +672,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weighty = 0.7;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        scrollPane.add(new JScrollPane(table), gbc);
+        JScrollPane todoScrollPane= new JScrollPane(table);
+        todoScrollPane.setMinimumSize(LISTPANE_DIMENSION);
+        todoScrollPane.setPreferredSize(LISTPANE_DIMENSION);
+        scrollPane.add(todoScrollPane, gbc);
     }
 
     private void addTimerPanel(GridBagConstraints gbc) {
@@ -677,7 +684,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
         scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
@@ -706,18 +713,22 @@ public class ToDoPanel extends JPanel implements IListPanel {
      iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
      scrollPane.add(iconLabel, gbc);
      }*/
+    
     private void addTabPane() {
+        controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Overestimation"), overestimationPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
+        controlPane.add(Labels.getString("Common.Edit"), editPanel);
+        controlPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
         controlPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Merging"), mergingPanel);
+        controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
+        showSelectedItemEdit(editPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
@@ -769,45 +780,45 @@ public class ToDoPanel extends JPanel implements IListPanel {
         };
 
         // listener on editable cells
-        tableModel.addTableModelListener(
-                new TableModelListener() {
+        tableModel.addTableModelListener(new TableModelListener() {
 
-                    @Override
-                    public void tableChanged(TableModelEvent e) {
-                        if (e.getType() == TableModelEvent.UPDATE) {
-                            int row = e.getFirstRow();
-                            int column = e.getColumn();
-                            if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
-                                AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                                Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
-                                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                                Activity act = Activity.getActivity(ID.intValue());
-                                if (column == ID_KEY - 4) { // Title (can't be empty)
-                                    if (data.toString().trim().length() == 0) {
-                                        // reset the original value. Title can't be empty.
-                                        model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
-                                    } else {
-                                        act.setName(data.toString());
-                                        act.databaseUpdate();
-                                        ToDoList.getList().update(act);
-                                        setIconLabels();
-                                        detailsPanel.selectInfo(act);
-                                        detailsPanel.showInfo();
-                                    }
-                                }
-                            }
-                        }
-                        // diactivate/gray out all tabs (except import)
-                        if (table.getRowCount() == 0) {
-                            for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                if (index == 3) { // import panel
-                                    continue;
-                                }
-                                controlPane.setEnabledAt(index, false);
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
+                        AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
+                        Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
+                        Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                        Activity act = Activity.getActivity(ID.intValue());
+                        if (column == ID_KEY - 4) { // Title (can't be empty)
+                            if (data.toString().trim().length() == 0) {
+                                // reset the original value. Title can't be empty.
+                                model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
+                            } else {
+                                act.setName(data.toString());
+                                act.databaseUpdate();
+                                ToDoList.getList().update(act);
+                                setIconLabels();
+                                detailsPanel.selectInfo(act);
+                                detailsPanel.showInfo();
                             }
                         }
                     }
                 }
+                // diactivate/gray out all tabs (except import)
+                if (table.getRowCount() == 0) {
+                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                        if (index == 6) { // import panel
+                            controlPane.setSelectedIndex(index);
+                            continue;
+                        }
+                        controlPane.setEnabledAt(index, false);
+                    }
+                }
+            }
+        }
         );
         return tableModel;
     }
@@ -911,6 +922,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.getSelectionModel().addListSelectionListener(
                 new ToDoInformationTableListener(ToDoList.getList(),
                         table, detailsPanel, ID_KEY, pomodoro));
+    }
+
+    private void showSelectedItemEdit(EditPanel editPane) {
+        table.getSelectionModel().addListSelectionListener(
+                new ActivityEditTableListener(ToDoList.getList(), table,
+                        editPane, ID_KEY));
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
@@ -1054,10 +1071,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.anchor = GridBagConstraints.EAST;
-            muteButton.setOpaque(true);
-            muteButton.setBorder(new LineBorder(ColorUtil.BLACK, 2));
+            muteButton.setOpaque(false);
+            muteButton.setMargin(new Insets(1, 1, 1, 1));
+            muteButton.setFocusPainted(false); // removes borders around text
             backgroundPanel.add(muteButton, gbc);
-
             gbc.gridx = 0;
             gbc.gridy = 1;
             backgroundPanel.add(timerPanel, gbc);
@@ -1141,6 +1158,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
+                ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), currentToDo, ColorUtil.RED);
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
@@ -1150,6 +1168,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
                     ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK, false);
@@ -1157,6 +1176,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
                     detailsPanel.enableButtons();
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection
@@ -1167,6 +1187,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
                 ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
                 ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
+                ToDoIconLabel.clearIconLabel(editPanel.getIconLabel());
                 detailsPanel.enableButtons();
             }
         } else { // empty list
@@ -1175,14 +1196,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
             ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
             ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
             ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
+            ToDoIconLabel.clearIconLabel(editPanel.getIconLabel());
             detailsPanel.enableButtons();
         }
     }
 
-    public void setPanelRemaining() {
-        PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
-    }
-
+    /*public void setPanelRemaining() {
+     PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
+     }*/
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row;
     }

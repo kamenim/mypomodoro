@@ -246,7 +246,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
                         Activity activity = ActivityList.getList().getById(id);
                         detailsPanel.selectInfo(activity);
-                        detailsPanel.showInfo();                        
+                        detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
@@ -317,7 +317,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = table.getActionMap();                
+        ActionMap am = table.getActionMap();
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
         } else {
@@ -354,7 +354,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 moveButton.doClick();
             }
         }
-        am.put("Add To ToDo List", new moveAction(this));        
+        am.put("Add To ToDo List", new moveAction(this));
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
         class selectAllAction extends AbstractAction {
@@ -386,7 +386,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-        
+
         // Activate Control T (create new task)        
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), "Control T");
         class create extends AbstractAction {
@@ -441,7 +441,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control V", new paste());
-        
+
         // Activate Control R (scroll back to the selected task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
         class scrollBackToTask extends AbstractAction {
@@ -624,7 +624,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);                
+                titledborder.setToolTipText(toolTipText);
             }
         }
         // Update titled border          
@@ -633,6 +633,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     private void addTabPane() {
+        controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         EditPanel editPanel = new EditPanel(this, detailsPanel);
@@ -751,6 +752,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 if (table.getRowCount() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
                         if (index == 3) { // import panel
+                            controlPane.setSelectedIndex(index);
                             continue;
                         }
                         controlPane.setEnabledAt(index, false);

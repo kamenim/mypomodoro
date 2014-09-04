@@ -144,7 +144,7 @@ public class CheckPanel extends JPanel implements IListPanel {
 
         // Init table (data model and rendering)
         initTable();
-        
+
         // Set border
         titledButton.setBorder(null);
         titledButton.setContentAreaFilled(false);
@@ -336,7 +336,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-        
+
         // Activate Control R (scroll back to the selected task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
         class scrollBackToTask extends AbstractAction {
@@ -549,6 +549,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     private void addTabPane() {
+        controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ExportPanel exportPanel = new ExportPanel(this);
