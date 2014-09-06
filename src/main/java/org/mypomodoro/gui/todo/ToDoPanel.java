@@ -672,7 +672,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weighty = 0.7;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane todoScrollPane= new JScrollPane(table);
+        JScrollPane todoScrollPane = new JScrollPane(table);
         todoScrollPane.setMinimumSize(LISTPANE_DIMENSION);
         todoScrollPane.setPreferredSize(LISTPANE_DIMENSION);
         scrollPane.add(todoScrollPane, gbc);
@@ -684,7 +684,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.weightx = 0.3;
         gbc.weighty = 0.6;
         gbc.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         scrollPane.add(wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
@@ -713,11 +713,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
      iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
      scrollPane.add(iconLabel, gbc);
      }*/
-    
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
         controlPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);

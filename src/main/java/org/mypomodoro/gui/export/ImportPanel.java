@@ -370,6 +370,11 @@ public class ImportPanel extends JPanel {
             newActivity.setPriority(-1);
         }
         // the dates must be preserved
-        panel.addActivity(newActivity, org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
+        if (!line[2].isEmpty()) { // date complete field not empty
+            panel.addActivity(newActivity, org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
+        } else {
+            panel.addActivity(newActivity);
+            System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
+        }
     }
 }

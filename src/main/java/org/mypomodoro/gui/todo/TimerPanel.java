@@ -126,7 +126,7 @@ public class TimerPanel extends JPanel {
         gbc.anchor = GridBagConstraints.SOUTH;
         startButton.setOpaque(false);
         startButton.setForeground(ColorUtil.BLACK);
-        startButton.setMargin(new Insets(5, 15, 5, 15));        
+        startButton.setMargin(new Insets(5, 15, 5, 15));
         startButton.setFocusPainted(false); // removes borders around text        
         startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {

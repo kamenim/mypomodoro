@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JCheckBox;
@@ -699,7 +700,11 @@ public class ExportInputForm extends JPanel {
             String[] attributes = new String[19];
             attributes[0] = activity.isUnplanned() ? "1" : "0";
             attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
-            attributes[2] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
+            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+                attributes[2] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
+            } else {
+                attributes[2] = "";
+            }
             attributes[3] = activity.getName();
             attributes[4] = activity.getEstimatedPoms() + "";
             attributes[5] = activity.getOverestimatedPoms() + "";
@@ -723,7 +728,11 @@ public class ExportInputForm extends JPanel {
             Object[] attributes = new Object[19];
             attributes[0] = activity.isUnplanned();
             attributes[1] = activity.getDate();
-            attributes[2] = activity.getDateCompleted();
+            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+                attributes[2] = activity.getDateCompleted();
+            } else {
+                attributes[2] = "";
+            }
             attributes[3] = activity.getName();
             attributes[4] = activity.getEstimatedPoms();
             attributes[5] = activity.getOverestimatedPoms();
