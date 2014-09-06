@@ -46,7 +46,7 @@ public class EditPanel extends CreatePanel {
 
         setBorder(null);
     }
-    
+
     @Override
     protected void addToDoIconPanel() {
         gbc.gridx = 0;

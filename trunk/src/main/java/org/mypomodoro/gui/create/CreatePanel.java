@@ -67,8 +67,8 @@ public class CreatePanel extends JPanel {
         addClearButton();
         addValidation();
     }
-        
-    protected void addToDoIconPanel() {        
+
+    protected void addToDoIconPanel() {
     }
 
     protected void addInputFormPanel() {

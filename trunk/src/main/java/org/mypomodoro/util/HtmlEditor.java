@@ -18,9 +18,21 @@ package org.mypomodoro.util;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
@@ -55,12 +67,6 @@ public class HtmlEditor extends JTextPane {
                 + "margin: 1px;"
                 + "}";
         ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);
-        // set default p tag behaviour
-        /*String pRule = "p {"
-         + "display: inline;"
-         + "margin-top: 0px;"
-         + "}";
-         ((HTMLDocument) getDocument()).getStyleSheet().addRule(pRule);*/
 
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:
@@ -117,8 +123,6 @@ public class HtmlEditor extends JTextPane {
         });
 
         addHyperlinkListener(new MyHyperlinkListener());
-
-        //getDocument().putProperty(DefaultEditorKit.EndOfLineStringProperty, "<br/>\n");
 
         /*InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
          ActionMap am = getActionMap();

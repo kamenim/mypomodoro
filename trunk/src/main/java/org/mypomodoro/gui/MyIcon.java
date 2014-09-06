@@ -30,7 +30,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
 
 /**
  * MyIcon singleton for icon bar
- * 
+ *
  */
 public class MyIcon extends JLabel {
 
@@ -39,7 +39,7 @@ public class MyIcon extends JLabel {
     private final ImageIcon on;
     private final ImageIcon off;
     private final ImageIcon onBusy;
-    private final ImageIcon offBusy; 
+    private final ImageIcon offBusy;
 
     private static ImageIcon getIcon(String path) {
         return new ImageIcon(Main.class.getResource(path));
@@ -51,27 +51,27 @@ public class MyIcon extends JLabel {
         String offPath = "/images/" + fileName + ".png";
         String onBusyPath = onPath;
         String offBusyPath = offPath;
-        if (p instanceof ToDoPanel) {                
-                onBusyPath = "/images/" + fileName + "red2.png";
-                offBusyPath = "/images/" + fileName + "red.png";            
+        if (p instanceof ToDoPanel) {
+            onBusyPath = "/images/" + fileName + "red2.png";
+            offBusyPath = "/images/" + fileName + "red.png";
         }
         ImageIcon onIcon = getIcon(onPath);
         ImageIcon offIcon = getIcon(offPath);
         ImageIcon onBusyIcon = getIcon(onBusyPath);
         ImageIcon offBusyIcon = getIcon(offBusyPath);
-        return new MyIcon(view, text, onIcon, onBusyIcon,  offIcon, offBusyIcon, p);
+        return new MyIcon(view, text, onIcon, onBusyIcon, offIcon, offBusyIcon, p);
     }
-    
+
     public void highlight() {
-        if (panel instanceof ToDoPanel && ((ToDoPanel)panel).getPomodoro().inPomodoro()) {
-            setIcon(onBusy);            
+        if (panel instanceof ToDoPanel && ((ToDoPanel) panel).getPomodoro().inPomodoro()) {
+            setIcon(onBusy);
         } else {
             setIcon(on);
         }
     }
 
     public void unhighlight() {
-        if (panel instanceof ToDoPanel && ((ToDoPanel)panel).getPomodoro().inPomodoro()) {
+        if (panel instanceof ToDoPanel && ((ToDoPanel) panel).getPomodoro().inPomodoro()) {
             setIcon(offBusy);
         } else {
             setIcon(off);

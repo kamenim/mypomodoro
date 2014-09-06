@@ -23,6 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -62,11 +63,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO improve handling of caret especially after CTRL + Z and addition of content link urls
-// TODO shift + > or < works in the text pane ! which move the selected task rather than writing '> 'or '<'
-// TODO export: no date if 1/1/1970
-// TODO replace 'those' with 'this'
-// TODO when copying and pasting from and in the comment area, remove carriage return
-// TODO when copying display save and cancel button
+// TODO export: problem import xls and xlsx --> date wrong (+4 years)
+// TODO problem with version and save button
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -138,9 +136,11 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 // The area must be editable 
-                // Excluding: key Control mask + arrows + home/end + page up/down
+                // Excluding: key Control mask, arrows, home/end and page up/down
+                // Not excluding: key Control mask + V (paste)
                 if (informationArea.isEditable()
-                        && e.getModifiers() != KeyEvent.CTRL_MASK
+                        && (e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_V)
+                        || (e.getModifiers() != KeyEvent.CTRL_MASK
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
                         && e.getKeyCode() != KeyEvent.VK_DOWN
@@ -152,7 +152,7 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_HOME
                         && e.getKeyCode() != KeyEvent.VK_END
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN)) {
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);
                     int row = panel.getTable().getSelectedRow(); // record activity Id
@@ -166,9 +166,11 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 // The area must be editable
-                // Excluding: key Control mask + arrows + home/end + page up/down
+                // Excluding: key Control mask, arrows, home/end and page up/down
+                // Not excluding: key Control mask + V (paste)
                 if (informationArea.isEditable()
-                        && e.getModifiers() != KeyEvent.CTRL_MASK
+                        && (e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_V)
+                        || (e.getModifiers() != KeyEvent.CTRL_MASK
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
                         && e.getKeyCode() != KeyEvent.VK_DOWN
@@ -180,7 +182,7 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_HOME
                         && e.getKeyCode() != KeyEvent.VK_END
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN)) {
                     informationTmp = informationArea.getText(); // record temp text
                     caretPositionTmp = informationArea.getCaretPosition();
                     // versionning is done in keyPressed method
@@ -208,6 +210,18 @@ public class CommentPanel extends JPanel {
             }
         };
         informationArea.getActionMap().put("Undo", undoAction);
+
+        // Override SHIFT + '>' and SHIFT + '<' to prevent conflicts with list shortcuts  
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "donothing");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "donothing");
+        class doNothing extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Do nothing
+            }
+        }
+        informationArea.getActionMap().put("donothing", new doNothing());
     }
 
     private void addEditorButtons() {
@@ -556,7 +570,7 @@ public class CommentPanel extends JPanel {
         } else {
             saveButton.setVisible(false);
             cancelButton.setVisible(false);
-            // make sure CTRL + z of previous selected activity doesn't work on new selected activity
+            // make sure CTRL + Z of previous selected activity doesn't work on new selected activity
             int row = panel.getTable().getSelectedRow();
             int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
             if (selectedActivityId != activityIdTmp) {
