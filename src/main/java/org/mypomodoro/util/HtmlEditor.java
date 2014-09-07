@@ -18,21 +18,9 @@ package org.mypomodoro.util;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
@@ -58,6 +46,7 @@ public class HtmlEditor extends JTextPane {
     public HtmlEditor() {
         setEditorKit(new HTMLEditorKit()); // content type = text/html        
         setContentType("text/html;charset=UTF-8");
+        // Turn on bi-directional text
         getDocument().putProperty("i18n", Boolean.TRUE);
         // set default HTML body settings        
         String bodyRule = "body {"
