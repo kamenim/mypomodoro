@@ -479,7 +479,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
         am.put("Control E", new createExternal());
 
-        // Activate Control R (scroll back to the current task running or not; same as pressing the timer tomato-like image: see pomodoroButton below)
+        // Activate Control R (scroll back to the current running/selected task
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
         class scrollBackToTask extends AbstractAction {
 
@@ -1088,12 +1088,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Set background image in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);
-        pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // tooltip doesn't work here
+        //pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task"));
         pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
         pomodoroButton.setContentAreaFilled(false);
         pomodoroButton.setOpaque(false);
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
+        /*
+        // Scroll back to current running/selected task
+        // Equivalent to CTR + R shortcut
         pomodoroButton.addActionListener(new ActionListener() {
 
             @Override
@@ -1109,7 +1112,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 }
                 showCurrentSelectedRow();
             }
-        });
+        });*/
 
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size

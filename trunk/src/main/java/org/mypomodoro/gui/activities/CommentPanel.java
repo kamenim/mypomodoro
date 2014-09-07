@@ -62,9 +62,9 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO improve handling of caret especially after CTRL + Z and addition of content link urls
 // TODO export: problem import xls and xlsx --> date wrong (+4 years)
-// TODO problem with version and save button
+// TODO improve caret position between plain and html view; same caret cannot be use between the two view
+// TODO move html/plain button to bottom (put the save and cancel button in a jpanel?)
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -74,7 +74,7 @@ public class CommentPanel extends JPanel {
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-    private final JButton htmlButton = new AbstractButton("HTML");
+    private final JButton htmlButton = new AbstractButton("HTML 3.2");
     private final JButton boldButton = new AbstractButton("B");
     private final JButton italicButton = new AbstractButton("I");
     private final JButton underlineButton = new AbstractButton("U");
@@ -82,11 +82,12 @@ public class CommentPanel extends JPanel {
     private final JButton foregroundColorButton = new AbstractButton("A");
     private final JTextField linkTextField = new JTextField();
     private final JButton linkButton = new AbstractButton(">>");
-    private final ArrayList<String> versions = new ArrayList<String>();
+    private final ArrayList<Version> versions = new ArrayList<Version>();
     protected final HtmlEditor informationArea = new HtmlEditor();
+    protected String currentInformation = new String();
+    protected int currentCaretPosition = 0;
+    protected int currentHTMLCaretPosition = 0;
     private final JScrollPane scrollPaneInformationArea = new JScrollPane(informationArea);
-    protected String informationTmp = new String();
-    protected int caretPositionTmp = 0;
 
     private boolean showIconLabel = false;
 
@@ -111,21 +112,25 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                informationArea.setEditable(true);
-                informationArea.getCaret().setVisible(true); // show cursor
-                htmlButton.setVisible(true);
-                previewButton.setVisible(true);
-                boldButton.setVisible(true);
-                italicButton.setVisible(true);
-                underlineButton.setVisible(true);
-                backgroundColorButton.setVisible(true);
-                foregroundColorButton.setVisible(true);
-                linkTextField.setVisible(true);
-                linkButton.setVisible(true);
+                if (!informationArea.isEditable()) {
+                    informationArea.setEditable(true);
+                    informationArea.getCaret().setVisible(true); // show cursor
+                    htmlButton.setVisible(true);
+                    previewButton.setVisible(true);
+                    boldButton.setVisible(true);
+                    italicButton.setVisible(true);
+                    underlineButton.setVisible(true);
+                    backgroundColorButton.setVisible(true);
+                    foregroundColorButton.setVisible(true);
+                    linkTextField.setVisible(true);
+                    linkButton.setVisible(true);
+                }
             }
         });
 
-        // Display the save and cancel buttons when typing
+        /**
+         * Displays the save and cancel buttons Records the versions
+         */
         informationArea.addKeyListener(new KeyListener() {
 
             @Override
@@ -133,14 +138,19 @@ public class CommentPanel extends JPanel {
                 // Nothing to do here
             }
 
+            /**
+             * KeyPressed makes the necessary checks and record the text BEFORE
+             * modification
+             *
+             */
             @Override
             public void keyPressed(KeyEvent e) {
                 // The area must be editable 
                 // Excluding: key Control mask, arrows, home/end and page up/down
-                // Not excluding: key Control mask + V (paste)
+                // Including: key Control mask + V (paste)
                 if (informationArea.isEditable()
-                        && (e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_V)
-                        || (e.getModifiers() != KeyEvent.CTRL_MASK
+                        && ((e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_V)
+                        || e.getModifiers() != KeyEvent.CTRL_MASK)
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
                         && e.getKeyCode() != KeyEvent.VK_DOWN
@@ -152,41 +162,24 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_HOME
                         && e.getKeyCode() != KeyEvent.VK_END
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN)) {
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
+                    int row = panel.getTable().getSelectedRow();
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);
-                    int row = panel.getTable().getSelectedRow(); // record activity Id
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                    // typing recording is done in keyReleased method
-                    versions.add(informationArea.getText()); // record version                    
+                    versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
                 }
             }
 
-            // key released is the only suitable method to record all the typing             
+            /**
+             * KeyReleased is only used to record the current text (text AFTER
+             * modification)
+             *
+             */
             @Override
             public void keyReleased(KeyEvent e) {
-                // The area must be editable
-                // Excluding: key Control mask, arrows, home/end and page up/down
-                // Not excluding: key Control mask + V (paste)
-                if (informationArea.isEditable()
-                        && (e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_V)
-                        || (e.getModifiers() != KeyEvent.CTRL_MASK
-                        && e.getKeyCode() != KeyEvent.VK_UP
-                        && e.getKeyCode() != KeyEvent.VK_KP_UP
-                        && e.getKeyCode() != KeyEvent.VK_DOWN
-                        && e.getKeyCode() != KeyEvent.VK_KP_DOWN
-                        && e.getKeyCode() != KeyEvent.VK_LEFT
-                        && e.getKeyCode() != KeyEvent.VK_KP_LEFT
-                        && e.getKeyCode() != KeyEvent.VK_RIGHT
-                        && e.getKeyCode() != KeyEvent.VK_KP_RIGHT
-                        && e.getKeyCode() != KeyEvent.VK_HOME
-                        && e.getKeyCode() != KeyEvent.VK_END
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN)) {
-                    informationTmp = informationArea.getText(); // record temp text
-                    caretPositionTmp = informationArea.getCaretPosition();
-                    // versionning is done in keyPressed method
-                }
+                currentInformation = informationArea.getText();
+                currentCaretPosition = informationArea.getCaretPosition();
             }
         });
 
@@ -197,15 +190,14 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (versions.size() > 0) {
-                    String versionText = versions.get(versions.size() - 1);
-                    informationArea.setText(versionText);
-                    informationTmp = versionText;
+                if (!versions.isEmpty()) {
+                    informationArea.setText(versions.get(versions.size() - 1).getText());
+                    informationArea.setCaretPosition(versions.get(versions.size() - 1).getCaretPosition());
                     versions.remove(versions.size() - 1);
-                    if (versions.isEmpty()) {
-                        saveButton.setVisible(false);
-                        cancelButton.setVisible(false);
-                    }
+                }
+                if (versions.isEmpty()) {
+                    saveButton.setVisible(false);
+                    cancelButton.setVisible(false);
                 }
             }
         };
@@ -257,15 +249,9 @@ public class CommentPanel extends JPanel {
         previewButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // init html button in case it was left in HTML mode
-                if (informationArea.getContentType().equals("text/plain")) {
-                    String text = informationArea.getText();
-                    informationArea.setContentType("text/html");
-                    informationArea.setText(text);
-                    htmlButton.setText("HTML");
-                    informationArea.setCaretPosition(0); // When switching between html and preview views, the editor 'looses' the caret position
-                }
+            public void actionPerformed(ActionEvent e) {                
+                informationArea.setContentType("text/html");
+                htmlButton.setText("HTML 3.2"); // make sure the plain/html button read "HTML..."
                 informationArea.setEditable(false);
                 previewButton.setVisible(false);
                 htmlButton.setVisible(false);
@@ -285,16 +271,16 @@ public class CommentPanel extends JPanel {
         gbc.gridy = 1;
         gbc.weightx = 0.1;
         gbc.weighty = 0.3;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 5;       
         gbc.gridheight = 1;
         htmlButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (informationArea.getContentType().equals("text/html")) {
+                if (informationArea.getContentType().equals("text/html")) { // plain mode
                     String text = informationArea.getText();
                     informationArea.setContentType("text/plain");
-                    informationArea.setText(text);
+                    informationArea.setText(text);               
                     htmlButton.setText(Labels.getString("Common.Text Plain"));
                     boldButton.setVisible(false);
                     italicButton.setVisible(false);
@@ -303,11 +289,11 @@ public class CommentPanel extends JPanel {
                     foregroundColorButton.setVisible(false);
                     linkTextField.setVisible(false);
                     linkButton.setVisible(false);
-                } else {
+                } else { // html mode
                     String text = informationArea.getText();
                     informationArea.setContentType("text/html");
                     informationArea.setText(text);
-                    htmlButton.setText("HTML");
+                    htmlButton.setText("HTML 3.2");
                     boldButton.setVisible(true);
                     italicButton.setVisible(true);
                     underlineButton.setVisible(true);
@@ -316,7 +302,8 @@ public class CommentPanel extends JPanel {
                     linkTextField.setVisible(true);
                     linkButton.setVisible(true);
                 }
-                informationArea.setCaretPosition(0); // When switching between plain and html views, the editor 'looses' the caret position
+                informationArea.requestFocusInWindow();
+                informationArea.setCaretPosition(0);
             }
         });
         htmlButton.setVisible(false);
@@ -452,16 +439,18 @@ public class CommentPanel extends JPanel {
                         start = end;
                     }
                     if (!linkTextField.getText().isEmpty()) {
-                        String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
-                        //int caretPosition = informationArea.getCaretPosition();
-                        informationArea.insertText(start, link, HTML.Tag.A);
-                        informationTmp = informationArea.getText(); // record temp text
-                        //caretPositionTmp = informationArea.getCaretPosition();
-                        // Set caret position right after the link                        
-                        //informationArea.setCaretPosition(caretPosition + linkTextField.getText().length());
-                        //informationArea.setCaretPosition(informationArea.getCaretPosition());                       
+                        int row = panel.getTable().getSelectedRow();
+                        activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                        versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
                         saveButton.setVisible(true);
                         cancelButton.setVisible(true);
+                        String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";                        
+                        informationArea.insertText(start, link, HTML.Tag.A);
+                        // Set caret position right after the link
+                        informationArea.requestFocusInWindow();
+                        informationArea.setCaretPosition(start + linkTextField.getText().length());
+                        currentInformation = informationArea.getText();                        
+                        currentCaretPosition = informationArea.getCaretPosition();
                         linkTextField.setText("http://"); // reset field                        
                     }
                 } catch (BadLocationException ignored) {
@@ -520,8 +509,6 @@ public class CommentPanel extends JPanel {
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
-                informationTmp = new String();
-                caretPositionTmp = 0;
                 activityIdTmp = -1;
                 versions.clear();
             }
@@ -548,8 +535,6 @@ public class CommentPanel extends JPanel {
                 previewButton.getActionListeners()[0].actionPerformed(e);
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
-                informationTmp = new String();
-                caretPositionTmp = 0;
                 activityIdTmp = -1;
                 versions.clear();
                 int row = panel.getTable().getSelectedRow();
@@ -563,8 +548,8 @@ public class CommentPanel extends JPanel {
     public void showInfo(final Activity activity) {
         clearInfo();
         String comment = activity.getNotes().trim();
-        if (activityIdTmp == activity.getId() && !informationTmp.isEmpty()) {
-            comment = informationTmp;
+        if (activityIdTmp == activity.getId() && !versions.isEmpty()) {
+            comment = currentInformation;
             saveButton.setVisible(true);
             cancelButton.setVisible(true);
         } else {
@@ -609,8 +594,8 @@ public class CommentPanel extends JPanel {
             }
         }
         informationArea.setText(comment);
-        if (activityIdTmp == activity.getId() && !informationTmp.isEmpty() && caretPositionTmp > 0) {
-            informationArea.setCaretPosition(caretPositionTmp);
+        if (activityIdTmp == activity.getId() && !versions.isEmpty()) {
+            informationArea.setCaretPosition(currentCaretPosition);
         } else {
             // disable auto scrolling
             informationArea.setCaretPosition(0);
@@ -625,48 +610,27 @@ public class CommentPanel extends JPanel {
         return iconLabel;
     }
 
-    /*public void scrollToBottom() {
-     javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    /**
+     * Version
+     */
+    class Version {
 
-     @Override
-     public void run() {
-     try {
-     int endPosition = informationArea.getDocument().getLength();
-     Rectangle bottom = informationArea.modelToView(endPosition);
-     informationArea.scrollRectToVisible(bottom);
-     System.err.println("endPosition = " + endPosition);
-     } catch (BadLocationException e) {
-     System.err.println("Could not scroll to " + e);
-     }
-     }
-     });
-     }
+        String text = new String();
+        int caretPosition = 0;
+        String contentType = "text/plain";
 
-     public static void centerLineInScrollPane(JTextComponent component) {
-     Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
+        public Version(String text, int caretPosition, String contentType) {
+            this.text = text;
+            this.caretPosition = caretPosition;
+            this.contentType = contentType;
+        }
 
-     if (container == null) {
-     return;
-     }
+        public String getText() {
+            return text;
+        }
 
-     try {
-     Rectangle r = component.modelToView(component.getCaretPosition());
-     JViewport viewport = (JViewport) container;
-
-     int extentWidth = viewport.getExtentSize().width;
-     int viewWidth = viewport.getViewSize().width;
-
-     int x = Math.max(0, r.x - (extentWidth / 2));
-     x = Math.min(x, viewWidth - extentWidth);
-
-     int extentHeight = viewport.getExtentSize().height;
-     int viewHeight = viewport.getViewSize().height;
-
-     int y = Math.max(0, r.y - (extentHeight / 2));
-     y = Math.min(y, viewHeight - extentHeight);
-
-     viewport.setViewPosition(new Point(x, y));
-     } catch (BadLocationException ignored) {
-     }
-     }*/
+        public int getCaretPosition() {
+            return caretPosition;
+        }
+    }
 }
