@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.buttons;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
@@ -31,16 +30,12 @@ import org.mypomodoro.util.WaitCursor;
  * Move button to move tasks back to Activity list
  *
  */
-public class MoveToDoButton extends AbstractButton {
+public class MoveToDoButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
-
     public MoveToDoButton(String label, final ToDoPanel panel) {
         super(label);
-        setMinimumSize(BUTTON_SIZE);
-        setPreferredSize(BUTTON_SIZE);
         addActionListener(new ActionListener() {
 
             @Override

@@ -63,7 +63,6 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO export: problem import xls and xlsx --> date wrong (+4 years)
-// TODO move html/plain button to bottom (put the save and cancel button in a jpanel?)
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -114,6 +113,8 @@ public class CommentPanel extends JPanel {
                 if (!informationArea.isEditable()) {
                     informationArea.setEditable(true);
                     informationArea.getCaret().setVisible(true); // show cursor
+                    informationArea.requestFocusInWindow();
+                    informationArea.setCaretPosition(currentPlainCaretPosition);
                     htmlButton.setVisible(true);
                     previewButton.setVisible(true);
                     boldButton.setVisible(true);
@@ -255,7 +256,6 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.1; // 10 %
         gbc.weighty = 0.5;
         gbc.gridwidth = 5;
-        gbc.gridheight = 1; // this is the only setting different with the edit button
         gbc.fill = GridBagConstraints.BOTH;
         previewButton.addActionListener(new ActionListener() {
 
@@ -270,11 +270,10 @@ public class CommentPanel extends JPanel {
         add(previewButton, gbc);
         // html/plain button
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;
         gbc.weightx = 0.1;
         gbc.weighty = 0.3;
         gbc.gridwidth = 5;
-        gbc.gridheight = 1;
         htmlButton.addActionListener(new ActionListener() {
 
             @Override
@@ -293,10 +292,10 @@ public class CommentPanel extends JPanel {
             }
         });
         htmlButton.setVisible(false);
-        add(htmlButton, gbc);
+        add(htmlButton, gbc);                   
         // bold button
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -310,7 +309,7 @@ public class CommentPanel extends JPanel {
         add(boldButton, gbc);
         // italic button
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -324,7 +323,7 @@ public class CommentPanel extends JPanel {
         add(italicButton, gbc);
         // underline button
         gbc.gridx = 2;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -338,7 +337,7 @@ public class CommentPanel extends JPanel {
         add(underlineButton, gbc);
         // background color button
         gbc.gridx = 3;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -369,7 +368,7 @@ public class CommentPanel extends JPanel {
         add(backgroundColorButton, gbc);
         // foreground color button
         gbc.gridx = 4;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
@@ -400,7 +399,7 @@ public class CommentPanel extends JPanel {
         add(foregroundColorButton, gbc);
         // add link field
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.weightx = 0.08;
         gbc.weighty = 0.1;
         gbc.gridwidth = 4;
@@ -408,7 +407,7 @@ public class CommentPanel extends JPanel {
         add(linkTextField, gbc);
         // add link button
         gbc.gridx = 4;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;

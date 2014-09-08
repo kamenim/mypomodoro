@@ -42,7 +42,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
@@ -77,7 +77,7 @@ public class ImportPanel extends JPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         // gbc.fill = GridBagConstraints.NONE;
-        JButton importButton = new AbstractButton(
+        JButton importButton = new TabPanelButton(
                 Labels.getString("ReportListPanel.Import"));
         importButton.addActionListener(new ActionListener() {
 

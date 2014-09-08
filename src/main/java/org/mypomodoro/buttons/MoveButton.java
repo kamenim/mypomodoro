@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.buttons;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -36,16 +35,12 @@ import org.mypomodoro.util.WaitCursor;
  * MoveToDoButton.
  *
  */
-public class MoveButton extends AbstractButton {
+public class MoveButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
-
     public MoveButton(String label, final IListPanel panel) {
         super(label);
-        setMinimumSize(BUTTON_SIZE);
-        setPreferredSize(BUTTON_SIZE);
         addActionListener(new ActionListener() {
 
             @Override

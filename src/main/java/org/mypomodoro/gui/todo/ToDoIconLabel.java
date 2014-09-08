@@ -43,7 +43,7 @@ public class ToDoIconLabel {
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color, boolean showName) {
         iconLabel.setToolTipText(activity.getName());
         if (showName) {
-            iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
+            iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());            
         }
         iconLabel.setForeground(color);
         iconLabel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
