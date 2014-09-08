@@ -73,7 +73,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         MoveButton moveButton = new MoveButton(">>>", activitiesPanel);
-        moveButton.setFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 4));
+        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 6));
         add(moveButton, gbc);
     }
 

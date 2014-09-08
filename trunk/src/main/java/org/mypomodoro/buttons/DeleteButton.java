@@ -33,7 +33,7 @@ import org.mypomodoro.util.WaitCursor;
  * Delete button
  *
  */
-public class DeleteButton extends AbstractButton {
+public class DeleteButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 

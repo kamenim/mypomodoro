@@ -23,7 +23,7 @@ import org.mypomodoro.gui.SaveListener;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
 
-public class SaveButton extends AbstractButton {
+public class SaveButton extends TabPanelButton {
 
     public SaveButton(CreatePanel panel) {
         super(Labels.getString("Common.Save"));

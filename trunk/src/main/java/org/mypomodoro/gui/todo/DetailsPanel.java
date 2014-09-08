@@ -61,7 +61,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         moveButton = new MoveToDoButton("<<<", todoPanel);
-        moveButton.setFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 4));
+        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 6));
         add(moveButton, gbc);
     }
 

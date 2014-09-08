@@ -16,18 +16,26 @@
  */
 package org.mypomodoro.buttons;
 
-import javax.swing.JButton;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 
 /**
- * Template button
+ * Tab panel button On for tab panels such as Details, Edit....
  *
  */
-public class AbstractButton extends JButton {
+public class TabPanelButton extends AbstractButton {
 
-    public AbstractButton(String label) {
-        super(label);        
-        setFocusPainted(false); // removes borders around text
-        setRolloverEnabled(true);
-        setToolTipText(label);
+    public TabPanelButton(String label) {
+        super(label);
+        // Trying to get rid of ellipses (truncated label with trailing ...)
+        FontMetrics fm = getFontMetrics(getFont());
+        int labelLength = fm.stringWidth(label);
+        setMinimumSize(new Dimension(labelLength > 50 ? labelLength : 50, 50));
+        setPreferredSize(new Dimension(labelLength > 50 ? labelLength : 50, 50));
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+        return new Dimension(Short.MAX_VALUE, getPreferredSize().height);
     }
 }

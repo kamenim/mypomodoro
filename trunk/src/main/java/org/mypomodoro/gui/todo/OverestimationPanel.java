@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -64,7 +64,7 @@ public class OverestimationPanel extends JPanel {
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
         // gbc.fill = GridBagConstraints.NONE;
-        JButton changeButton = new AbstractButton(
+        JButton changeButton = new TabPanelButton(
                 Labels.getString("Common.Save"));
         changeButton.addActionListener(new ActionListener() {
 

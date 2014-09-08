@@ -376,7 +376,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MoveToDoButton moveToDoButton = new MoveToDoButton("<<<", panel);
+                MoveToDoButton moveToDoButton = new MoveToDoButton("", panel);
                 moveToDoButton.doClick();
             }
         }

@@ -345,7 +345,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MoveButton moveButton = new MoveButton("<<<", panel);
+                MoveButton moveButton = new MoveButton("", panel);
                 moveButton.doClick();
             }
         }

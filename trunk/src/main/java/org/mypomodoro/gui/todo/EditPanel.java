@@ -93,9 +93,10 @@ public class EditPanel extends CreatePanel {
     @Override
     protected void addSaveButton() {
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        //gbc.fill = GridBagConstraints.NONE;
+        gbc.gridheight = 2;
         add(saveButton, gbc);
     }
 
