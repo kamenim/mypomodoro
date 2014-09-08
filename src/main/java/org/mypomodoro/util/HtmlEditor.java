@@ -112,23 +112,6 @@ public class HtmlEditor extends JTextPane {
         });
 
         addHyperlinkListener(new MyHyperlinkListener());
-
-        /*InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-         ActionMap am = getActionMap();
-         // Replace carriage return with BR tag (rather than p tag)
-         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
-         class enterAction extends AbstractAction {
-
-         @Override
-         public void actionPerformed(ActionEvent e) {
-         try {
-         insertText(getCaretPosition(), "<br>");
-         } catch (BadLocationException ignored) {
-         } catch (IOException ignored) {
-         }
-         }
-         }        
-         am.put("Enter", new enterAction());*/
     }
 
     // Make URLs clickable in (Pre)View mode

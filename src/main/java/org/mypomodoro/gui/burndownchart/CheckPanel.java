@@ -410,9 +410,9 @@ public class CheckPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
         // Set width of estimated
         table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);
@@ -771,7 +771,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getFormatedDate((Date) value));
+            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
             return renderer;
         }
     }
