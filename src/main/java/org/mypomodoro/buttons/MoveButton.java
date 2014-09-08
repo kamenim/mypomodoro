@@ -80,7 +80,7 @@ public class MoveButton extends TabPanelButton {
                             Activity selectedActivity = panel.getActivityById(id);
                             if (panel instanceof ActivitiesPanel && !PreferencesPanel.preferences.getAgileMode()) {
                                 String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                                if (!selectedActivity.isDateToday()) {
+                                if (selectedActivity.isDateInFuture()) {
                                     String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                     String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message,

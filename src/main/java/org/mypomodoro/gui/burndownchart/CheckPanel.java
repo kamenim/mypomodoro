@@ -428,13 +428,9 @@ public class CheckPanel extends JPanel implements IListPanel {
             table.setAutoCreateRowSorter(true);
         }
 
-        // diactivate/gray out all tabs (except export)
+        // diactivate/gray out all tabs
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 2) { // export tab
-                    controlPane.setSelectedIndex(index);
-                    continue;
-                }
                 controlPane.setEnabledAt(index, false);
             }
         } else {
@@ -611,12 +607,9 @@ public class CheckPanel extends JPanel implements IListPanel {
                     @Override
                     public void tableChanged(TableModelEvent e
                     ) {
-                        // diactivate/gray out all tabs (except import)
+                        // diactivate/gray out all tabs
                         if (table.getRowCount() == 0) {
                             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                                if (index == 2) { // export panel
-                                    continue;
-                                }
                                 controlPane.setEnabledAt(index, false);
                             }
                         }

@@ -198,6 +198,7 @@ public class TestMenu extends JMenu {
                         // Stop wait cursor
                         WaitCursor.stopWaitCursor();
                         // Updating views at once (updating individual view in the loop is likely to create ConcurrentModificationException exceptions)
+                        // we could also refresh() the lists ActivityList, ToDoList and ReportList to get the tasks sorted in order of dates
                         Main.updateViews(); // this has to be done inside the current thread
                     }
                 }
