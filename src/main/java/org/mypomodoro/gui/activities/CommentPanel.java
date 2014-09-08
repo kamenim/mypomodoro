@@ -63,7 +63,6 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO export: problem import xls and xlsx --> date wrong (+4 years)
-// TODO improve caret position between plain and html view; same caret cannot be use between the two view
 // TODO move html/plain button to bottom (put the save and cancel button in a jpanel?)
 public class CommentPanel extends JPanel {
 
@@ -85,7 +84,7 @@ public class CommentPanel extends JPanel {
     private final ArrayList<Version> versions = new ArrayList<Version>();
     protected final HtmlEditor informationArea = new HtmlEditor();
     protected String currentInformation = new String();
-    protected int currentCaretPosition = 0;
+    protected int currentPlainCaretPosition = 0;
     protected int currentHTMLCaretPosition = 0;
     private final JScrollPane scrollPaneInformationArea = new JScrollPane(informationArea);
 
@@ -179,7 +178,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 currentInformation = informationArea.getText();
-                currentCaretPosition = informationArea.getCaretPosition();
+                if (informationArea.getContentType().equals("text/html")) {
+                    currentPlainCaretPosition = informationArea.getCaretPosition();
+                    currentHTMLCaretPosition = 0;
+                } else {
+                    currentPlainCaretPosition = 0;
+                    currentHTMLCaretPosition = informationArea.getCaretPosition();
+                }
             }
         });
 
@@ -191,6 +196,12 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!versions.isEmpty()) {
+                    if (versions.get(versions.size() - 1).getContentType().equals("text/html")) {
+                        displayButtonsForPlainMode();
+                    } else {
+                        displayButtonsForHTMLMode();
+                    }
+                    informationArea.requestFocusInWindow();
                     informationArea.setText(versions.get(versions.size() - 1).getText());
                     informationArea.setCaretPosition(versions.get(versions.size() - 1).getCaretPosition());
                     versions.remove(versions.size() - 1);
@@ -249,19 +260,10 @@ public class CommentPanel extends JPanel {
         previewButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {                
-                informationArea.setContentType("text/html");
-                htmlButton.setText("HTML 3.2"); // make sure the plain/html button read "HTML..."
-                informationArea.setEditable(false);
-                previewButton.setVisible(false);
-                htmlButton.setVisible(false);
-                boldButton.setVisible(false);
-                italicButton.setVisible(false);
-                underlineButton.setVisible(false);
-                backgroundColorButton.setVisible(false);
-                foregroundColorButton.setVisible(false);
-                linkTextField.setVisible(false);
-                linkButton.setVisible(false);
+            public void actionPerformed(ActionEvent e) {
+                displayButtonsForPreviewMode();
+                informationArea.requestFocusInWindow();
+                informationArea.setCaretPosition(0);
             }
         });
         previewButton.setVisible(false);
@@ -271,39 +273,23 @@ public class CommentPanel extends JPanel {
         gbc.gridy = 1;
         gbc.weightx = 0.1;
         gbc.weighty = 0.3;
-        gbc.gridwidth = 5;       
+        gbc.gridwidth = 5;
         gbc.gridheight = 1;
         htmlButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (informationArea.getContentType().equals("text/html")) { // plain mode
-                    String text = informationArea.getText();
-                    informationArea.setContentType("text/plain");
-                    informationArea.setText(text);               
-                    htmlButton.setText(Labels.getString("Common.Text Plain"));
-                    boldButton.setVisible(false);
-                    italicButton.setVisible(false);
-                    underlineButton.setVisible(false);
-                    backgroundColorButton.setVisible(false);
-                    foregroundColorButton.setVisible(false);
-                    linkTextField.setVisible(false);
-                    linkButton.setVisible(false);
-                } else { // html mode
-                    String text = informationArea.getText();
-                    informationArea.setContentType("text/html");
-                    informationArea.setText(text);
-                    htmlButton.setText("HTML 3.2");
-                    boldButton.setVisible(true);
-                    italicButton.setVisible(true);
-                    underlineButton.setVisible(true);
-                    backgroundColorButton.setVisible(true);
-                    foregroundColorButton.setVisible(true);
-                    linkTextField.setVisible(true);
-                    linkButton.setVisible(true);
+                if (informationArea.getContentType().equals("text/html")) {
+                    displayButtonsForHTMLMode();
+                } else {
+                    displayButtonsForPlainMode();
                 }
                 informationArea.requestFocusInWindow();
-                informationArea.setCaretPosition(0);
+                if (informationArea.getContentType().equals("text/html")) {
+                    informationArea.setCaretPosition(currentPlainCaretPosition);
+                } else {
+                    informationArea.setCaretPosition(currentHTMLCaretPosition);
+                }
             }
         });
         htmlButton.setVisible(false);
@@ -370,7 +356,7 @@ public class CommentPanel extends JPanel {
                     int start = informationArea.getSelectionStart();
                     int end = informationArea.getSelectionEnd();
                     if (start != end) {
-                        if (start > end) { // Backwards selection
+                        if (start > end) { // Backwards selection (left to right writting)
                             start = end;
                         }
                         int length = informationArea.getSelectedText().length();
@@ -401,7 +387,7 @@ public class CommentPanel extends JPanel {
                     int start = informationArea.getSelectionStart();
                     int end = informationArea.getSelectionEnd();
                     if (start != end) {
-                        if (start > end) { // Backwards selection
+                        if (start > end) { // Backwards selection (left to right writting)
                             start = end;
                         }
                         int length = informationArea.getSelectedText().length();
@@ -435,7 +421,7 @@ public class CommentPanel extends JPanel {
                 try {
                     int start = informationArea.getSelectionStart();
                     int end = informationArea.getSelectionEnd();
-                    if (start > end) { // Backwards selection
+                    if (start > end) { // Backwards selection (left to right writting)
                         start = end;
                     }
                     if (!linkTextField.getText().isEmpty()) {
@@ -444,13 +430,14 @@ public class CommentPanel extends JPanel {
                         versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
                         saveButton.setVisible(true);
                         cancelButton.setVisible(true);
-                        String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";                        
+                        String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
                         // Set caret position right after the link
                         informationArea.requestFocusInWindow();
                         informationArea.setCaretPosition(start + linkTextField.getText().length());
-                        currentInformation = informationArea.getText();                        
-                        currentCaretPosition = informationArea.getCaretPosition();
+                        currentInformation = informationArea.getText();
+                        currentPlainCaretPosition = informationArea.getCaretPosition();
+                        currentHTMLCaretPosition = 0;
                         linkTextField.setText("http://"); // reset field                        
                     }
                 } catch (BadLocationException ignored) {
@@ -594,8 +581,12 @@ public class CommentPanel extends JPanel {
             }
         }
         informationArea.setText(comment);
-        if (activityIdTmp == activity.getId() && !versions.isEmpty()) {
-            informationArea.setCaretPosition(currentCaretPosition);
+        if (activityIdTmp == activity.getId()) {
+            if (informationArea.getContentType().equals("text/html")) {
+                informationArea.setCaretPosition(currentPlainCaretPosition);
+            } else {
+                informationArea.setCaretPosition(currentHTMLCaretPosition);
+            }
         } else {
             // disable auto scrolling
             informationArea.setCaretPosition(0);
@@ -608,6 +599,51 @@ public class CommentPanel extends JPanel {
 
     public JLabel getIconLabel() {
         return iconLabel;
+    }
+
+    private void displayButtonsForHTMLMode() {
+        String text = informationArea.getText();
+        informationArea.setContentType("text/plain");
+        informationArea.setText(text);
+        htmlButton.setText(Labels.getString("Common.Text Plain"));
+        boldButton.setVisible(false);
+        italicButton.setVisible(false);
+        underlineButton.setVisible(false);
+        backgroundColorButton.setVisible(false);
+        foregroundColorButton.setVisible(false);
+        linkTextField.setVisible(false);
+        linkButton.setVisible(false);
+    }
+
+    private void displayButtonsForPlainMode() {
+        String text = informationArea.getText();
+        informationArea.setContentType("text/html");
+        informationArea.setText(text);
+        htmlButton.setText("HTML 3.2");
+        boldButton.setVisible(true);
+        italicButton.setVisible(true);
+        underlineButton.setVisible(true);
+        backgroundColorButton.setVisible(true);
+        foregroundColorButton.setVisible(true);
+        linkTextField.setVisible(true);
+        linkButton.setVisible(true);
+    }
+
+    private void displayButtonsForPreviewMode() {
+        String text = informationArea.getText();
+        informationArea.setContentType("text/html");
+        informationArea.setText(text);
+        htmlButton.setText("HTML 3.2"); // make sure the plain/html button read "HTML..."
+        informationArea.setEditable(false);
+        previewButton.setVisible(false);
+        htmlButton.setVisible(false);
+        boldButton.setVisible(false);
+        italicButton.setVisible(false);
+        underlineButton.setVisible(false);
+        backgroundColorButton.setVisible(false);
+        foregroundColorButton.setVisible(false);
+        linkTextField.setVisible(false);
+        linkButton.setVisible(false);
     }
 
     /**
@@ -631,6 +667,10 @@ public class CommentPanel extends JPanel {
 
         public int getCaretPosition() {
             return caretPosition;
+        }
+
+        public String getContentType() {
+            return contentType;
         }
     }
 }
