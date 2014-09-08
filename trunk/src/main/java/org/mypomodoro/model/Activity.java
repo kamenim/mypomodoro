@@ -497,6 +497,10 @@ public class Activity implements Cloneable {
     public boolean isDateToday() {
         return DateUtil.isDateToday(getDate());
     }
+    
+    public boolean isDateInFuture() {
+        return DateUtil.inFuture(getDate());
+    }
 
     // Activity (not a ToDo nor a Report)
     public boolean isActivity() {

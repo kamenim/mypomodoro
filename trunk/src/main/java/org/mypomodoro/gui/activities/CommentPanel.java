@@ -113,7 +113,9 @@ public class CommentPanel extends JPanel {
                     informationArea.setEditable(true);
                     informationArea.getCaret().setVisible(true); // show cursor
                     informationArea.requestFocusInWindow();
-                    informationArea.setCaretPosition(currentPlainCaretPosition);
+                    if (currentPlainCaretPosition != 0) {
+                        informationArea.setCaretPosition(currentPlainCaretPosition);
+                    }
                     htmlButton.setVisible(true);
                     previewButton.setVisible(true);
                     boldButton.setVisible(true);
