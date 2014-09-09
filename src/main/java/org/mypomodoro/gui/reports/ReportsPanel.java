@@ -458,9 +458,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 8).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 8).setPreferredWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 8).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 8).setPreferredWidth(90);
         // Set width of estimated, diff I/II
         table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(80);
