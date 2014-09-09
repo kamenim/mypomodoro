@@ -1088,13 +1088,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Set background image in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);
-        //pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task"));
         pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
         pomodoroButton.setContentAreaFilled(false);
         pomodoroButton.setOpaque(false);
-        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
-        /*
+        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)        
         // Scroll back to current running/selected task
         // Equivalent to CTR + R shortcut
         pomodoroButton.addActionListener(new ActionListener() {
@@ -1112,7 +1110,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 }
                 showCurrentSelectedRow();
             }
-        });*/
+        });
+        //pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // we don't want to display a tooltip over the image (confusing information)
 
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size

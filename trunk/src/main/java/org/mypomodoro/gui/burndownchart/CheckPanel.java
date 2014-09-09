@@ -410,9 +410,9 @@ public class CheckPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
+        table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
         // Set width of estimated
         table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
         table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(80);

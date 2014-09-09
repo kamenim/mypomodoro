@@ -71,19 +71,24 @@ public class Main {
     public static TabbedPanel chartTabbedPanel;
     public static ProgressBar progressBar;
     public static MainPanel gui;
-    // Default font for the application
     public static Font font;
 
     /**
+     * Main
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // Set font from font file
-        // Free unicode font Ubuntu to support utf-8 characters (russian, chinese...)
-        // http://www.fontspace.com/dalton-maag-ltd/ubuntu
+        // DroidSansMonoSlashed font (Apache licence) to support unicode characters
+        // Supported character sets: Western European, Eastern/Central European, Baltic, Cyrillic, Greek and Turkish
+        // Supported languages: Simplified and Traditional Chinese, Japanese, Korean, Arabic, Armenian, Ethiopic, Georgian, Hebrew and Thai
+        // Tested: chinese (政府派高层), japanese (施する外), arabic (راديو مباشر), hebrew(מוטיבציה לר), hindi (भूत-प्रेत की कहानियाँ)
+        // Also tested: russian (Поездка), greek (δημοφιλέστερα), thai (ทำเนียบรัฐบาล), viet (yêu thích nhấ), korean (한국관광공사;)
+        // Tested but not working: Tamil
+        // http://www.cosmix.org/software/
         try {
             font = Font.createFont(Font.TRUETYPE_FONT,
-                    Main.class.getResourceAsStream("/fonts/Ubuntu-R.ttf")).deriveFont(Font.PLAIN, 14f);
+                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);         
         } catch (FontFormatException ex) {
             font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
             logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);

@@ -529,9 +529,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(0).setMaxWidth(30);
             table.getColumnModel().getColumn(0).setMinWidth(30);
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(80);
-            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(80);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMaxWidth(90);
+            table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(90);
+            table.getColumnModel().getColumn(ID_KEY - 6).setPreferredWidth(90);
         }
         // Set width of column estimated
         table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(80);
