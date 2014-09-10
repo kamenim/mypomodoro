@@ -66,6 +66,10 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
+// TODO change wording of preview and plain buttons in french and italian
+// TODO text control + V on activity list
+// TODO problem with setting the caret posisition after pasting some text from clipboard
+// TODO in preview mode when clicking on the text, set the caret position at the right location
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -191,8 +195,7 @@ public class CommentPanel extends JPanel {
                 }
             }
         });
-
-        // set the keystroke
+       
         // CTRL Z: Undo
         informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
         Action undoAction = new AbstractAction() {
@@ -229,6 +232,35 @@ public class CommentPanel extends JPanel {
             }
         }
         informationArea.getActionMap().put("donothing", new doNothing());
+
+        // CTRL + N: insert line break (plain mode only)
+        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK), "Break");
+        class breakAction extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (informationArea.getContentType().equals("text/html")) { // plain mode
+                    try {
+                        int start = informationArea.getSelectionStart();
+                        int end = informationArea.getSelectionEnd();
+                        if (start > end) { // Backwards selection (left to right writting)
+                            start = end;
+                        }
+                        versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
+                        saveButton.setVisible(true);
+                        cancelButton.setVisible(true);
+                        informationArea.insertText(start, "<br>", HTML.Tag.BR);
+                        informationArea.requestFocusInWindow();
+                        currentInformation = informationArea.getText();
+                        currentPlainCaretPosition = informationArea.getCaretPosition();
+                        currentHTMLCaretPosition = 0;
+                    } catch (BadLocationException ignored) {
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        }
+        informationArea.getActionMap().put("Break", new breakAction());
     }
 
     private void addEditorButtons() {
@@ -438,9 +470,8 @@ public class CommentPanel extends JPanel {
                         cancelButton.setVisible(true);
                         String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
-                        // Set caret position right after the link
+                        // This will set caret position right after the link
                         informationArea.requestFocusInWindow();
-                        informationArea.setCaretPosition(start + linkTextField.getText().length());
                         currentInformation = informationArea.getText();
                         currentPlainCaretPosition = informationArea.getCaretPosition();
                         currentHTMLCaretPosition = 0;
@@ -581,7 +612,7 @@ public class CommentPanel extends JPanel {
             // Check if there is a body tag; if not replace trailing return carriage with P tag
             if (!comment.contains("</body>")) {
                 comment = "<p style=\"margin-top: 0\">" + comment;
-                comment = comment.replaceAll("\r\n", "</p><p style=\"margin-top: 0\">"); // \r\n also replaced in caseit appears in the import file
+                comment = comment.replaceAll("\r\n", "</p><p style=\"margin-top: 0\">"); // \r\n also replaced in case it appears in the import file
                 comment = comment.replaceAll("\n", "</p><p style=\"margin-top: 0\">");
                 comment = comment + "</p>";
             }
@@ -718,10 +749,9 @@ public class CommentPanel extends JPanel {
                         versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
                         saveButton.setVisible(true);
                         cancelButton.setVisible(true);
-                        informationArea.insertText(start, rawText, null);
-                        // Set caret position right after the link
+                        informationArea.insertText(start, "<span>" + rawText + "</span>", HTML.Tag.SPAN); // inserting as span tag prevent the editor to insert a line break (although there is no real line break)
+                        // This will set caret position right after the text
                         informationArea.requestFocusInWindow();
-                        //informationArea.setCaretPosition(start + formattedText.length());
                         currentInformation = informationArea.getText();
                         currentPlainCaretPosition = informationArea.getCaretPosition();
                         currentHTMLCaretPosition = 0;
