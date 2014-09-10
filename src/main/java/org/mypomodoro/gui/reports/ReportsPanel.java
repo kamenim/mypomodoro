@@ -69,7 +69,6 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;

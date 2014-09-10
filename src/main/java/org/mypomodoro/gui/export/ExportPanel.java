@@ -54,7 +54,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
