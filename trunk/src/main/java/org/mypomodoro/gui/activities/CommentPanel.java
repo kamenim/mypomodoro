@@ -21,6 +21,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -81,7 +85,7 @@ public class CommentPanel extends JPanel {
     private final JButton linkButton = new AbstractButton(">>");
     private final ArrayList<Version> versions = new ArrayList<Version>();
     protected final HtmlEditor informationArea = new HtmlEditor();
-    protected String currentInformation = new String();
+    protected String currentInformation = "";
     protected int currentPlainCaretPosition = 0;
     protected int currentHTMLCaretPosition = 0;
     private final JScrollPane scrollPaneInformationArea = new JScrollPane(informationArea);
@@ -104,7 +108,7 @@ public class CommentPanel extends JPanel {
         addSaveButton();
         addCancelButton();
 
-        // Display the edit buttons when clicking with the mouse
+        // Display the buttons in plain mode when clicking with the mouse
         informationArea.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -113,9 +117,6 @@ public class CommentPanel extends JPanel {
                     informationArea.setEditable(true);
                     informationArea.getCaret().setVisible(true); // show cursor
                     informationArea.requestFocusInWindow();
-                    if (currentPlainCaretPosition != 0) {
-                        informationArea.setCaretPosition(currentPlainCaretPosition);
-                    }
                     htmlButton.setVisible(true);
                     previewButton.setVisible(true);
                     boldButton.setVisible(true);
@@ -125,6 +126,7 @@ public class CommentPanel extends JPanel {
                     foregroundColorButton.setVisible(true);
                     linkTextField.setVisible(true);
                     linkButton.setVisible(true);
+                    activatePasteShortcut();
                 }
             }
         });
@@ -279,10 +281,14 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (informationArea.getContentType().equals("text/html")) {
+                if (informationArea.getContentType().equals("text/html")) { // html mode
                     displayButtonsForHTMLMode();
-                } else {
+                    // Remove previously Control V shortcut
+                    removePasteShortcut();
+                } else { // plain mode
                     displayButtonsForPlainMode();
+                    // Override Control V default editor's shortcut only in Plain mode
+                    activatePasteShortcut();
                 }
                 informationArea.requestFocusInWindow();
                 if (informationArea.getContentType().equals("text/html")) {
@@ -293,7 +299,7 @@ public class CommentPanel extends JPanel {
             }
         });
         htmlButton.setVisible(false);
-        add(htmlButton, gbc);                   
+        add(htmlButton, gbc);
         // bold button
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -651,7 +657,7 @@ public class CommentPanel extends JPanel {
      */
     class Version {
 
-        String text = new String();
+        String text = "";
         int caretPosition = 0;
         String contentType = "text/plain";
 
@@ -672,5 +678,64 @@ public class CommentPanel extends JPanel {
         public String getContentType() {
             return contentType;
         }
+    }
+
+    private String getClipboard() {
+        String clipboardText = "";
+        Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        try {
+            clipboardText = (String) systemClipboard.getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException ignored) {
+        } catch (IOException ignored) {
+        }
+        return clipboardText;
+    }
+
+    /**
+     * Override Control V default editor's shortcut to get rid of formatting
+     * (especially html comments / fragments and P tag line breaks)
+     *
+     */
+    private void activatePasteShortcut() {
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK), "Control V");
+        class paste extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String clipboardText = getClipboard();
+                if (!clipboardText.isEmpty()) {
+                    HtmlEditor commentEditor = new HtmlEditor();
+                    commentEditor.setText(clipboardText);
+                    // get raw text
+                    //String formattedText = commentEditor.getText();
+                    String rawText = commentEditor.getRawText();
+                    try {
+                        int start = informationArea.getSelectionStart();
+                        int end = informationArea.getSelectionEnd();
+                        if (start > end) { // Backwards selection (left to right writting)
+                            start = end;
+                        }
+                        versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
+                        saveButton.setVisible(true);
+                        cancelButton.setVisible(true);
+                        informationArea.insertText(start, rawText, null);
+                        // Set caret position right after the link
+                        informationArea.requestFocusInWindow();
+                        //informationArea.setCaretPosition(start + formattedText.length());
+                        currentInformation = informationArea.getText();
+                        currentPlainCaretPosition = informationArea.getCaretPosition();
+                        currentHTMLCaretPosition = 0;
+                    } catch (BadLocationException ignored) {
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        }
+        informationArea.getActionMap().put("Control V", new paste());
+    }
+
+    private void removePasteShortcut() {
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
+        informationArea.getActionMap().remove("Control V");
     }
 }

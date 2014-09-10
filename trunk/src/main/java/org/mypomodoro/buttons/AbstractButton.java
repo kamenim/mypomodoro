@@ -25,7 +25,7 @@ import javax.swing.JButton;
 public class AbstractButton extends JButton {
 
     public AbstractButton(String label) {
-        super(label);        
+        super(label);
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
         setToolTipText(label);

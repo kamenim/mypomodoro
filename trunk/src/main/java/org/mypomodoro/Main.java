@@ -75,6 +75,7 @@ public class Main {
 
     /**
      * Main
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -88,7 +89,7 @@ public class Main {
         // http://www.cosmix.org/software/
         try {
             font = Font.createFont(Font.TRUETYPE_FONT,
-                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);         
+                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);
         } catch (FontFormatException ex) {
             font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
             logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);

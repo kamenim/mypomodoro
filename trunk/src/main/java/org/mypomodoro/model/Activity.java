@@ -50,7 +50,7 @@ public class Activity implements Cloneable {
     /**
      * place where the activity is taking occurring set by the constructor
      */
-    private String place = new String();
+    private String place = "";
     /**
      * date the activity is entered into database set by Java in constructor
      *
@@ -65,21 +65,21 @@ public class Activity implements Cloneable {
      * name of the author who entered the activity into the database set by the
      * constructor
      */
-    private String author = new String();
+    private String author = "";
     /**
      * name of the activity. set by constructor
      *
      */
-    private String name = new String();
+    private String name = "";
     /**
      * description of the activity set by constructor
      */
-    private String description = new String();
+    private String description = "";
     /**
      * type of activity / set by constructor
      *
      */
-    private String type = new String();
+    private String type = "";
     /**
      * ToDo priority for this activity default = flag (no priority)
      *
@@ -109,7 +109,7 @@ public class Activity implements Cloneable {
     /**
      * notes on the current activity. default is none
      */
-    private String notes = new String();
+    private String notes = "";
     /**
      * External interruptions
      */
@@ -497,7 +497,7 @@ public class Activity implements Cloneable {
     public boolean isDateToday() {
         return DateUtil.isDateToday(getDate());
     }
-    
+
     public boolean isDateInFuture() {
         return DateUtil.inFuture(getDate());
     }

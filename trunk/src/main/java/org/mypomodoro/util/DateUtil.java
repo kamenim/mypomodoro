@@ -49,7 +49,7 @@ public class DateUtil {
         String pattern = locale.equals(US_LOCALE) ? US_datePattern : "dd MMM yyyy";
         return getFormatedDate(date, pattern);
     }
-    
+
     public static String getShortFormatedDate(Date date) {
         String pattern = locale.equals(US_LOCALE) ? US_shortDatePattern : "dd/MM/yyyy";
         return getFormatedDate(date, pattern);

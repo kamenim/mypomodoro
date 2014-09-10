@@ -137,7 +137,7 @@ public class HtmlEditor extends JTextPane {
 
     // Get raw text out of html content
     public String getRawText() {
-        String text = new String();
+        String text = "";
         try {
             text = getDocument().getText(0, getDocument().getLength());
         } catch (BadLocationException ex) {
