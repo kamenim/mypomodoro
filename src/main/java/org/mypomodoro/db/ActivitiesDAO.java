@@ -75,12 +75,12 @@ public class ActivitiesDAO {
                     id = rs.getInt(database.sequenceIdName);
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -142,12 +142,12 @@ public class ActivitiesDAO {
                     activities.add(new Activity(rs));
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -166,12 +166,12 @@ public class ActivitiesDAO {
                     activities.add(new Activity(rs));
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -191,12 +191,12 @@ public class ActivitiesDAO {
                     activities.add(new Activity(rs));
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -217,12 +217,12 @@ public class ActivitiesDAO {
                     activity = new Activity(rs);
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -262,12 +262,12 @@ public class ActivitiesDAO {
                         activities.add(new Activity(rs));
                     }
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } finally {
                     try {
                         rs.close();
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     }
                 }
             } finally {
@@ -291,12 +291,12 @@ public class ActivitiesDAO {
                     activities.add(new Activity(rs));
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -319,12 +319,12 @@ public class ActivitiesDAO {
                             storyPoints.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     } finally {
                         try {
                             rs.close();
                         } catch (SQLException ex) {
-                            logger.error("", ex);
+                            logger.error(ex.toString());
                         }
                     }
                 }
@@ -351,12 +351,12 @@ public class ActivitiesDAO {
                         storyPoints.add(sumOfStoryPoints);
                     }
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } finally {
                     try {
                         rs.close();
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     }
                 }
             }
@@ -380,12 +380,12 @@ public class ActivitiesDAO {
                             storyPoints.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     } finally {
                         try {
                             rs.close();
                         } catch (SQLException ex) {
-                            logger.error("", ex);
+                            logger.error(ex.toString());
                         }
                     }
                 }
@@ -412,12 +412,12 @@ public class ActivitiesDAO {
                         pomodoros.add(sumOfPomodoros);
                     }
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } finally {
                     try {
                         rs.close();
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     }
                 }
             }
@@ -441,12 +441,12 @@ public class ActivitiesDAO {
                             storyPoints.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     } finally {
                         try {
                             rs.close();
                         } catch (SQLException ex) {
-                            logger.error("", ex);
+                            logger.error(ex.toString());
                         }
                     }
                 }
@@ -473,12 +473,12 @@ public class ActivitiesDAO {
                         pomodoros.add(sumOfPomodoros);
                     }
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } finally {
                     try {
                         rs.close();
                     } catch (SQLException ex) {
-                        logger.error("", ex);
+                        logger.error(ex.toString());
                     }
                 }
             }
@@ -533,12 +533,12 @@ public class ActivitiesDAO {
                     activity = new Activity(rs);
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -608,12 +608,12 @@ public class ActivitiesDAO {
                     }
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -635,12 +635,12 @@ public class ActivitiesDAO {
                     }
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {
@@ -662,12 +662,12 @@ public class ActivitiesDAO {
                     }
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
             }
         } finally {

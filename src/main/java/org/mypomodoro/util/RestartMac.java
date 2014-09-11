@@ -38,12 +38,12 @@ public class RestartMac {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     /* AppleScript */
-    private final String restartScript = "tell application \"myPomodoro\" to quit\n"
-            + "tell application \"System Events\"\n"
-            + "repeat until not (exists process \"myPomodoro\")\n"
-            + "delay 0.2\n"
-            + "end repeat\n"
-            + "end tell\n"
+    private final String restartScript = "tell application \"myPomodoro\" to quit" + System.getProperty("line.separator")
+            + "tell application \"System Events\"" + System.getProperty("line.separator")
+            + "repeat until not (exists process \"myPomodoro\")" + System.getProperty("line.separator")
+            + "delay 0.2" + System.getProperty("line.separator")
+            + "end repeat" + System.getProperty("line.separator")
+            + "end tell" + System.getProperty("line.separator")
             + "tell application \"myPomodoro\" to activate";
     /* AppleScript FileName */
     private final File restartFile = new File("myPomodoroRestart.scpt");
@@ -92,13 +92,14 @@ public class RestartMac {
      * Write AppleScript to a File
      */
     private void scriptToFile() {
-        restartScript.replaceAll("\n", System.getProperty("line.separator"));
+        restartScript.replaceAll("\r", System.getProperty("line.separator")); // Macs OS 9 and earlier
+        restartScript.replaceAll("\n", System.getProperty("line.separator")); // Unix and Mac OSX        
         try {
             BufferedWriter restartWriter = new BufferedWriter(new FileWriter(restartFile));
             restartWriter.write(restartScript);
             restartWriter.close();
         } catch (IOException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
         }
     }
 
@@ -111,9 +112,9 @@ public class RestartMac {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
         } catch (InterruptedException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
         } catch (IOException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
         }
     }
 
@@ -124,7 +125,7 @@ public class RestartMac {
         try {
             open = Runtime.getRuntime().exec(openString);
         } catch (IOException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
         }
     }
 
@@ -144,7 +145,7 @@ public class RestartMac {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
         } catch (IOException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
         }
     }
 }

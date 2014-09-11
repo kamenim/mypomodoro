@@ -92,7 +92,7 @@ public class DeleteButton extends TabPanelButton {
                                                 try {
                                                     sleep(1000); // wait one second before hiding the progress bar
                                                 } catch (InterruptedException ex) {
-                                                    logger.error("", ex);
+                                                    logger.error(ex.toString());
                                                 }
                                                 // hide progress bar
                                                 Main.gui.getProgressBar().getBar().setString(null);

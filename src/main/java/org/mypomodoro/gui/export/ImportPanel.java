@@ -191,7 +191,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -248,7 +248,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -304,7 +304,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                logger.error(ex.toString());
                             }
                             // hide progress bar
                             Main.gui.getProgressBar().getBar().setString(null);
@@ -359,12 +359,12 @@ public class ImportPanel extends JPanel {
             newActivity.setIteration(Integer.parseInt(line[17]));
             newActivity.setPriority(Integer.parseInt(line[18]));
         } catch (NumberFormatException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            logger.error("", ex);
+            logger.error(ex.toString());
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);

@@ -38,7 +38,7 @@ public class BareBonesBrowserLaunch {
                     new Object[]{java.net.URI.create(url)});
             //above code mimicks:  java.awt.Desktop.getDesktop().browse()
         } catch (Exception ex) {  //library not available or failed
-            logger.error("", ex);
+            logger.error(ex.toString());
             String osName = System.getProperty("os.name");
             try {
                 if (osName.startsWith("Mac OS")) {
@@ -60,8 +60,8 @@ public class BareBonesBrowserLaunch {
                     }
                 }
             } catch (Exception e) {
-                logger.error(e.toString());
-                //JOptionPane.showMessageDialog(null, errMsg + "\n" + e.toString());
+                logger.error(ex.toString());
+                //JOptionPane.showMessageDialog(null, errMsg + System.getProperty("line.separator") + e.toString());
             }
         }
     }

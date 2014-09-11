@@ -791,7 +791,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 table.setModel(activitiesTableModel);
                 initTable();
             } catch (Exception ex) {
-                logger.error("", ex);
+                logger.error(ex.toString());
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

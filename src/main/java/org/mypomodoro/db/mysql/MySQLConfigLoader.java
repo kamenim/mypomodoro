@@ -34,7 +34,7 @@ public class MySQLConfigLoader {
         try {
             loadProperties();
         } catch (IOException ignored) {
-            // no logger here, the properties file may not be there on purpose.
+            // no logger here, there is no properties file to be found if MySQL isn't used.
         }
     }
 
