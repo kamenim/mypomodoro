@@ -18,9 +18,19 @@ package org.mypomodoro.util;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
@@ -112,6 +122,33 @@ public class HtmlEditor extends JTextPane {
         });
 
         addHyperlinkListener(new MyHyperlinkListener());
+
+        // Override SHIFT + INSERT shortcut to get rid of the formatting NOT
+        // overriding Control + V (default behaviour preserved)         
+        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
+        class paste extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String clipboardText = getClipboard();
+                if (!clipboardText.isEmpty()) {
+                    int start = getSelectionStart();
+                    int end = getSelectionEnd();
+                    try {
+                        if (start != end) {
+                            getDocument().remove(start, end - start);
+                            getDocument().insertString(start, clipboardText, null);
+                        } else {
+                            getDocument().insertString(start, clipboardText, null);
+                        }
+
+                    } catch (BadLocationException ignored) {
+                    }
+                }
+            }
+        }
+        getActionMap().put("Shift Insert", new paste());
+
     }
 
     // Make URLs clickable in (Pre)View mode
@@ -144,5 +181,20 @@ public class HtmlEditor extends JTextPane {
             logger.error("Problem extracting raw content out of html content", ex);
         }
         return text;
+    }
+
+    public boolean isPlainMode() {
+        return getContentType().equals("text/html");
+    }
+
+    private String getClipboard() {
+        String clipboardText = "";
+        Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        try {
+            clipboardText = (String) systemClipboard.getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException ignored) {
+        } catch (IOException ignored) {
+        }
+        return clipboardText;
     }
 }

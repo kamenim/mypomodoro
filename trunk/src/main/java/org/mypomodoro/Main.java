@@ -118,16 +118,16 @@ public class Main {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException ex) {
                     // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } catch (InstantiationException ex) {
                     // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } catch (IllegalAccessException ex) {
                     // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 } catch (UnsupportedLookAndFeelException ex) {
                     // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
+                    logger.error(ex.toString());
                 }
                 //}
                 // Set global font (before intanstiating the components and the gui)

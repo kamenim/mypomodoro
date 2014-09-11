@@ -171,8 +171,8 @@ public class ExportPanel extends JPanel {
                 HtmlEditor commentEditor = new HtmlEditor();
                 String comment = selectedActivity.getNotes();
                 // add breaks
-                comment = comment.replaceAll("</p>", "</p>\n");
-                comment = comment.replaceAll("<br>", "\n");
+                comment = comment.replaceAll("</p>", "</p>" + System.getProperty("line.separator"));
+                comment = comment.replaceAll("<br>", System.getProperty("line.separator"));
                 commentEditor.setText(comment);
                 // get raw text
                 comment = commentEditor.getRawText();
@@ -291,7 +291,7 @@ public class ExportPanel extends JPanel {
                     cell.setCellValue((Date) entries[i]);
                 } else { // text
                     HSSFCellStyle cellStyle = workbook.createCellStyle();
-                    cellStyle.setWrapText(true); // for excel to understand line breaks (\n)                    
+                    cellStyle.setWrapText(true); // for excel to understand line break separators
                     cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                     cell.setCellStyle(cellStyle);
                     cell.setCellValue((String) entries[i]);
@@ -347,7 +347,7 @@ public class ExportPanel extends JPanel {
                     cell.setCellValue((Date) entries[i]);
                 } else { // text
                     XSSFCellStyle cellStyle = workbook.createCellStyle();
-                    cellStyle.setWrapText(true); // for excel to understand line breaks (\n)                    
+                    cellStyle.setWrapText(true); // for excel to understand line break separators                   
                     cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                     cell.setCellStyle(cellStyle);
                     cell.setCellValue((String) entries[i]);
