@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -64,9 +65,9 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO problem with removing the whole html. P tags disappear.
+// TODO problem formatting with shift insert (attribute set)
 // TODO 64 bits compatibility
-// TODO add CTR + F to search
-// TODO add paragraphe shortcut
+// TODO reduce size of buttons
 public class CommentPanel extends JPanel {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
@@ -105,7 +106,7 @@ public class CommentPanel extends JPanel {
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(informationArea);
         scrollPaneInformationArea = new JScrollPane(noWrapPanel);
-
+        
         setLayout(new GridBagLayout());
         setBorder(null);
 
@@ -114,14 +115,25 @@ public class CommentPanel extends JPanel {
         addSaveButton();
         addCancelButton();
 
-        // Display the buttons in plain mode when clicking with the mouse
+        // Display the buttons in plain mode when clicking or selecting with the mouse
         informationArea.addMouseListener(new MouseAdapter() {
 
+            // click
             @Override
             public void mouseClicked(MouseEvent e) {
+                activatePlainMode();
+            }
+
+            // select and release
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                activatePlainMode();
+            }
+
+            private void activatePlainMode() {
                 if (!informationArea.isEditable()) {
                     informationArea.setEditable(true);
-                    informationArea.getCaret().setVisible(true); // show cursor
+                    informationArea.getCaret().setVisible(true); // show carriet
                     informationArea.requestFocusInWindow();
                     htmlButton.setVisible(true);
                     previewButton.setVisible(true);
@@ -134,6 +146,7 @@ public class CommentPanel extends JPanel {
                     linkButton.setVisible(true);
                 }
             }
+
         });
 
         /**
@@ -248,13 +261,15 @@ public class CommentPanel extends JPanel {
                     cancelButton.setVisible(true);
                     if (informationArea.isPlainMode()) {
                         informationArea.insertText(start, "<br>", HTML.Tag.BR);
+                        currentPlainCaretPosition = informationArea.getCaretPosition();
+                        currentHTMLCaretPosition = 0;
                     } else {
-                        informationArea.getDocument().insertString(start, "<br>", null);
+                        informationArea.getDocument().insertString(start, "<br>", null);                        
+                        currentPlainCaretPosition = 0;
+                        currentHTMLCaretPosition = informationArea.getCaretPosition();
                     }
                     informationArea.requestFocusInWindow();
                     currentInformation = informationArea.getText();
-                    currentPlainCaretPosition = informationArea.getCaretPosition();
-                    currentHTMLCaretPosition = 0;
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
@@ -328,17 +343,57 @@ public class CommentPanel extends JPanel {
         });
         htmlButton.setVisible(false);
         add(htmlButton, gbc);
+        // Formatting actions
+        class boldAction extends StyledEditorKit.BoldAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    setPlainEnvForActionButton();                 
+                }
+                // show caret (no selection) or selection
+                informationArea.requestFocusInWindow();
+            }
+        }
+        class italicAction extends StyledEditorKit.ItalicAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    setPlainEnvForActionButton();
+                }
+                // show caret (no selection) or selection
+                informationArea.requestFocusInWindow();
+            }
+        }
+        class underlineAction extends StyledEditorKit.UnderlineAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    setPlainEnvForActionButton();
+                }
+                // show caret (no selection) or selection
+                informationArea.requestFocusInWindow();
+            }
+        }
         // bold button
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        boldButton.addActionListener(new StyledEditorKit.BoldAction());
+        boldButton.addActionListener(new boldAction());
         // set the keystroke on the button (so won't work in preview mode)
         // CTRL B: Bold
         boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
-        boldButton.getActionMap().put("Bold", new StyledEditorKit.BoldAction());
+        boldButton.getActionMap().put("Bold", new boldAction());
         boldButton.setToolTipText("CTRL + B");
         boldButton.setVisible(false);
         add(boldButton, gbc);
@@ -348,11 +403,11 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        italicButton.addActionListener(new StyledEditorKit.ItalicAction());
-        // set the keystroke on the button (so won't work in preview mode although this will conflict with CTRL+I keystroke in ToDoPanel)
+        italicButton.addActionListener(new italicAction());
+        // set the keystroke on the button (so won't work in preview mode; however this will conflict with CTRL+I keystroke in ToDoPanel)
         // CTRL I: Italic
         italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
-        italicButton.getActionMap().put("Italic", new StyledEditorKit.ItalicAction());
+        italicButton.getActionMap().put("Italic", new italicAction());
         italicButton.setToolTipText("CTRL + I");
         italicButton.setVisible(false);
         add(italicButton, gbc);
@@ -362,11 +417,11 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        underlineButton.addActionListener(new StyledEditorKit.UnderlineAction());
+        underlineButton.addActionListener(new underlineAction());
         // set the keystroke on the button (so won't work in preview mode)
         // CTRL U: Underline
         underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
-        underlineButton.getActionMap().put("Underline", new StyledEditorKit.UnderlineAction());
+        underlineButton.getActionMap().put("Underline", new underlineAction());
         underlineButton.setToolTipText("CTRL + U");
         underlineButton.setVisible(false);
         add(underlineButton, gbc);
@@ -387,12 +442,14 @@ public class CommentPanel extends JPanel {
                 if (newColor != null) {
                     MutableAttributeSet COLOR = new SimpleAttributeSet();
                     StyleConstants.setBackground(COLOR, newColor);
-                    int start = informationArea.getSelectionStart();
-                    int end = informationArea.getSelectionEnd();
-                    if (start != end) {
-                        int length = informationArea.getSelectedText().length();
-                        informationArea.getStyledDocument().setCharacterAttributes(start, length, COLOR, false);
+                    String selectedText = informationArea.getSelectedText();
+                    if (selectedText != null && selectedText.length() > 0) {
+                        int start = informationArea.getSelectionStart();
+                        informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        setPlainEnvForActionButton();
                     }
+                    // show caret (no selection) or selection
+                    informationArea.requestFocusInWindow();
                 }
             }
         });
@@ -415,12 +472,14 @@ public class CommentPanel extends JPanel {
                 if (newColor != null) {
                     MutableAttributeSet COLOR = new SimpleAttributeSet();
                     StyleConstants.setForeground(COLOR, newColor);
-                    int start = informationArea.getSelectionStart();
-                    int end = informationArea.getSelectionEnd();
-                    if (start != end) {
-                        int length = informationArea.getSelectedText().length();
-                        informationArea.getStyledDocument().setCharacterAttributes(start, length, COLOR, false);
+                    String selectedText = informationArea.getSelectedText();
+                    if (selectedText != null && selectedText.length() > 0) {
+                        int start = informationArea.getSelectionStart();
+                        informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        setPlainEnvForActionButton();
                     }
+                    // show caret (no selection) or selection
+                    informationArea.requestFocusInWindow();
                 }
             }
         });
@@ -456,7 +515,7 @@ public class CommentPanel extends JPanel {
                         cancelButton.setVisible(true);
                         String link = "<a href=\"" + (linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText()) + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
-                        // This will set caret position right after the link
+                        // Show caret
                         informationArea.requestFocusInWindow();
                         currentInformation = informationArea.getText();
                         currentPlainCaretPosition = informationArea.getCaretPosition();
@@ -528,6 +587,11 @@ public class CommentPanel extends JPanel {
         saveButton.setToolTipText("CTRL + S");
         saveButton.setVisible(false);
         saveButton.addActionListener(saveAction);
+        // Set the width of the button to make it shorter
+        Dimension dimension = saveButton.getSize();
+        dimension.width = 50;
+        saveButton.setMinimumSize(dimension);
+        saveButton.setPreferredSize(dimension);
         add(saveButton, gbc);
     }
 
@@ -670,7 +734,7 @@ public class CommentPanel extends JPanel {
 
     /**
      * Version
-     * 
+     *
      */
     class Version {
 
@@ -695,5 +759,14 @@ public class CommentPanel extends JPanel {
         public String getContentType() {
             return contentType;
         }
+    }
+
+    private void setPlainEnvForActionButton() {
+        int row = panel.getTable().getSelectedRow();
+        activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+        versions.add(new Version(informationArea.getText(), informationArea.getCaretPosition(), informationArea.getContentType()));
+        saveButton.setVisible(true);
+        cancelButton.setVisible(true);
+        currentInformation = informationArea.getText();
     }
 }
