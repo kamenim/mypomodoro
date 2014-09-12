@@ -134,9 +134,11 @@ public class HtmlEditor extends JTextPane {
                 if (!clipboardText.isEmpty()) {
                     int start = getSelectionStart();
                     int end = getSelectionEnd();
+                    // ctrl + c: save attributes to be reused here !
+                    //AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(start).getAttributes();
                     try {
                         if (start != end) {
-                            getDocument().remove(start, end - start);
+                            getDocument().remove(start,  end - start);
                             getDocument().insertString(start, clipboardText, null);
                         } else {
                             getDocument().insertString(start, clipboardText, null);
@@ -148,10 +150,9 @@ public class HtmlEditor extends JTextPane {
             }
         }
         getActionMap().put("Shift Insert", new paste());
-
     }
 
-    // Make URLs clickable in (Pre)View mode
+    // Make URLs clickable in preview mode
     class MyHyperlinkListener implements HyperlinkListener {
 
         @Override
