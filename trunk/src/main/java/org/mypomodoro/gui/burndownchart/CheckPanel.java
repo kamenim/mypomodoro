@@ -140,7 +140,12 @@ public class CheckPanel extends JPanel implements IListPanel {
         };
 
         // Set up table listeners once anf for all
-        setUpTable();
+        setUpTable();        
+        
+        // Init control pane before the table so we can set the default tab at start up time
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
+        addTabPane();
 
         // Init table (data model and rendering)
         initTable();
@@ -171,11 +176,6 @@ public class CheckPanel extends JPanel implements IListPanel {
         c.fill = GridBagConstraints.BOTH;
         addChartTable(c);
         addCreateButton(c);
-
-        // Bottom pane
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
-        addTabPane();
 
         // Split pane
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
@@ -438,6 +438,8 @@ public class CheckPanel extends JPanel implements IListPanel {
             int currentRow = table.convertRowIndexToView(currentSelectedRow);
             table.setRowSelectionInterval(currentRow, currentRow);
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+            // detail tab
+            controlPane.setSelectedIndex(0);
         }
 
         // Refresh panel border
