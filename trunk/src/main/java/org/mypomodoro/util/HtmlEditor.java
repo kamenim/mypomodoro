@@ -35,8 +35,11 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -66,7 +69,8 @@ public class HtmlEditor extends JTextPane {
                 + "margin: 1px;"
                 + "}";
         ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);
-
+        // limit the number of characters to 1000 to avoid java head size issue
+        ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000));
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:
         // - Formatting is preserved after: bold, italic, underline, foreground style --> nothing to do here
@@ -123,22 +127,22 @@ public class HtmlEditor extends JTextPane {
 
         addHyperlinkListener(new MyHyperlinkListener());
 
-        // Override SHIFT + INSERT shortcut to get rid of the formatting NOT
-        // overriding Control + V (default behaviour preserved)         
+        // Override Control + V and SHIFT + INSERT shortcut to get rid of the formatting NOT       
         getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
+        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), "Control V");
         class paste extends AbstractAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 String clipboardText = getClipboard();
-                if (!clipboardText.isEmpty()) {
+                if (!clipboardText.isEmpty()
+                        && !clipboardText.equals("Shift Insert")
+                        && !clipboardText.equals("Control V")) {
                     int start = getSelectionStart();
                     int end = getSelectionEnd();
-                    // ctrl + c: save attributes to be reused here !
-                    //AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(start).getAttributes();
                     try {
                         if (start != end) {
-                            getDocument().remove(start,  end - start);
+                            getDocument().remove(start, end - start);
                             getDocument().insertString(start, clipboardText, null);
                         } else {
                             getDocument().insertString(start, clipboardText, null);
@@ -150,6 +154,34 @@ public class HtmlEditor extends JTextPane {
             }
         }
         getActionMap().put("Shift Insert", new paste());
+        getActionMap().put("Control V", new paste());
+
+        // Replace carriage return with br tag
+        // This a very special HACK:
+        // Normally, you would insert tag BR and everything would be fine except... for the very first line
+        // (note: we have to set the caret position before and after the insertion !)
+        // In this case the insertion throws an exception and must be replaced by direct html code insertion
+        // Yet this is not perfect but this is the best we come up with so far
+        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+        class enterAction extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try {
+                        setCaretPosition(getCaretPosition());
+                        insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
+                        setCaretPosition(getCaretPosition());
+                    } catch (IndexOutOfBoundsException ignored) {
+                        insertText(getCaretPosition(), "<br>", null);
+                        setCaretPosition(0);
+                    }                   
+                } catch (BadLocationException ignored) {
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        getActionMap().put("Enter", new enterAction());
     }
 
     // Make URLs clickable in preview mode
@@ -197,5 +229,34 @@ public class HtmlEditor extends JTextPane {
         } catch (IOException ignored) {
         }
         return clipboardText;
+    }
+
+    class SizeFilter extends DocumentFilter {
+
+        private final int maxCharacters;
+
+        public SizeFilter(int maxChars) {
+            maxCharacters = maxChars;
+        }
+
+        @Override
+        public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
+                throws BadLocationException {
+            if ((fb.getDocument().getLength() + str.length()) <= maxCharacters) {
+                super.insertString(fb, offs, str, a);
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offs, int length, String str, AttributeSet a)
+                throws BadLocationException {
+            if ((fb.getDocument().getLength() + str.length() - length) <= maxCharacters) {
+                super.replace(fb, offs, length, str, a);
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
     }
 }

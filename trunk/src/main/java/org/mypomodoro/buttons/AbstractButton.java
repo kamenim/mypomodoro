@@ -28,6 +28,5 @@ public class AbstractButton extends JButton {
         super(label);
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
-        setToolTipText(label);
     }
 }
