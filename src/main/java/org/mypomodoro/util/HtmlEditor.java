@@ -31,6 +31,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
@@ -155,13 +156,19 @@ public class HtmlEditor extends JTextPane {
         }
         getActionMap().put("Shift Insert", new paste());
         getActionMap().put("Control V", new paste());
+    }
 
-        // Replace carriage return with br tag
-        // This a very special HACK:
-        // Normally, you would insert tag BR and everything would be fine except... for the very first line
-        // (note: we have to set the caret position before and after the insertion !)
-        // In this case the insertion throws an exception and must be replaced by direct html code insertion
-        // Yet this is not perfect but this is the best we come up with so far
+    /**
+     * Override Enter default behavior Replace carriage return with br tag
+     *
+     * This is a very special HACK: Normally, you would insert tag BR and
+     * everything would be fine except... for the very first line (note: we have
+     * to set the caret position before and after the insertion !) In this case
+     * the insertion throws an exception and must be replaced by direct html
+     * code insertion Yet this is not perfect but this is the best we come up
+     * with so far
+     */
+    public void enterKeyBindingForPlainMode() {
         getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
         class enterAction extends AbstractAction {
 
@@ -169,19 +176,36 @@ public class HtmlEditor extends JTextPane {
             public void actionPerformed(ActionEvent e) {
                 try {
                     try {
-                        setCaretPosition(getCaretPosition());
+                        setCaretPosition(getCaretPosition()); // this one is necessary 
                         insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
-                        setCaretPosition(getCaretPosition());
+                        setCaretPosition(getCaretPosition()); // this one is necessary
                     } catch (IndexOutOfBoundsException ignored) {
                         insertText(getCaretPosition(), "<br>", null);
-                        setCaretPosition(0);
-                    }                   
+                        setCaretPosition(getCaretPosition()); // this one is necessary
+                    }
+                    final int caretPosition = getCaretPosition();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            String text = getText();
+                            setContentType("text/html");
+                            setText(text);
+                            setCaretPosition(caretPosition);
+                        }
+                    });
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
             }
         }
         getActionMap().put("Enter", new enterAction());
+    }
+
+    /**
+     * Set Enter key back to default behavior
+     */
+    public void revokeEnterKeyBindingForPlainMode() {
+        getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
     }
 
     // Make URLs clickable in preview mode
