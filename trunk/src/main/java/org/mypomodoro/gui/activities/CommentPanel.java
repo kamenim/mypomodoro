@@ -70,8 +70,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO fix size of button and tab panels
-// TODO when nothing in memory, CTRL + V shortcut insert "Control V" in the text area
-// TODO after control + z, error when getting forth and back to the editor
+// TODO refactor activityIDtmp + current caret positions
 public class CommentPanel extends JPanel {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -99,11 +98,10 @@ public class CommentPanel extends JPanel {
     private boolean showIconLabel = false;
 
     // Undo / Redo (plain mode only)
-    private final UndoHandler undoHandler = new UndoHandler();
+    private final UndoHandlerListener undoHandlerListener = new UndoHandlerListener();
     private final UndoManager undoManager = new UndoManager();
     private final UndoAction undoAction = new UndoAction();
     private final RedoAction redoAction = new RedoAction();
-    private int versionCounter = 0;
 
     public CommentPanel(IListPanel iListPanel) {
         this(iListPanel, false);
@@ -119,8 +117,9 @@ public class CommentPanel extends JPanel {
         noWrapPanel.add(informationArea);
         scrollPaneInformationArea = new JScrollPane(noWrapPanel);
 
-        // Add undo / redo handler
-        informationArea.getDocument().addUndoableEditListener(undoHandler);
+        // Add undo / redo handler        
+        informationArea.getDocument().addUndoableEditListener(undoHandlerListener);
+        undoManager.setLimit(100); // 100 edits = default value
 
         setLayout(new GridBagLayout());
         setBorder(null);
@@ -136,32 +135,8 @@ public class CommentPanel extends JPanel {
             // click
             @Override
             public void mouseClicked(MouseEvent e) {
-                activatePlainMode();
-            }
-
-            // selection and release
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                activatePlainMode();
-            }
-
-            private void activatePlainMode() {
                 if (!informationArea.isEditable()) {
-                    informationArea.enterKeyBindingForPlainMode();
-                    informationArea.setEditable(true);
-                    informationArea.getCaret().setVisible(true); // show carriet
-                    informationArea.requestFocusInWindow();
-                    htmlButton.setVisible(true);
-                    previewButton.setVisible(true);
-                    boldButton.setVisible(true);
-                    italicButton.setVisible(true);
-                    underlineButton.setVisible(true);
-                    backgroundColorButton.setVisible(true);
-                    foregroundColorButton.setVisible(true);
-                    linkTextField.setVisible(true);
-                    linkButton.setVisible(true);
-                    int row = panel.getTable().getSelectedRow();
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());                                        
+                    activatePlainMode();
                 } else {
                     if (informationArea.isPlainMode()) {
                         currentPlainCaretPosition = informationArea.getCaretPosition();
@@ -173,6 +148,27 @@ public class CommentPanel extends JPanel {
                 }
             }
 
+            // selection and release
+            /*@Override
+             public void mouseReleased(MouseEvent e) {
+             //activatePlainMode();
+             }*/
+            private void activatePlainMode() {
+                //informationArea.enterKeyBindingForPlainMode();
+                informationArea.setEditable(true);
+                informationArea.getCaret().setVisible(true);
+                // show caret
+                informationArea.requestFocusInWindow();
+                htmlButton.setVisible(true);
+                previewButton.setVisible(true);
+                boldButton.setVisible(true);
+                italicButton.setVisible(true);
+                underlineButton.setVisible(true);
+                backgroundColorButton.setVisible(true);
+                foregroundColorButton.setVisible(true);
+                linkTextField.setVisible(true);
+                linkButton.setVisible(true);
+            }
         });
 
         /**
@@ -211,12 +207,11 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_HOME
                         && e.getKeyCode() != KeyEvent.VK_END
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
-                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {  
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
                     int row = panel.getTable().getSelectedRow();
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     saveButton.setVisible(true);
                     cancelButton.setVisible(true);
-                    versionCounter++;
                 }
             }
 
@@ -226,7 +221,7 @@ public class CommentPanel extends JPanel {
              *
              */
             @Override
-            public void keyReleased(KeyEvent e) {                                
+            public void keyReleased(KeyEvent e) {
                 currentInformation = informationArea.getText();
                 if (informationArea.isPlainMode()) {
                     currentPlainCaretPosition = informationArea.getCaretPosition();
@@ -241,7 +236,7 @@ public class CommentPanel extends JPanel {
         // CTRL Z: Undo
         informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
         informationArea.getActionMap().put("Undo", undoAction);
-        
+
         // CTRL Y: Redo
         informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK), "Redo");
         informationArea.getActionMap().put("Redo", redoAction);
@@ -258,34 +253,63 @@ public class CommentPanel extends JPanel {
         }
         informationArea.getActionMap().put("donothing", new doNothing());
 
-        // CTRL + N: insert line break
-        /*informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK), "Break");
-        class breakAction extends AbstractAction {
+        // Override Control + V and SHIFT + INSERT shortcut to get rid of all formatting       
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), "Control V");
+        class paste extends AbstractAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+                String clipboardText = informationArea.getClipboard();
+                if (!clipboardText.isEmpty()) {
                     int start = informationArea.getSelectionStart();
-                    saveButton.setVisible(true);
-                    cancelButton.setVisible(true);
-                    if (informationArea.isPlainMode()) {
-                        informationArea.insertText(start, "<br>", HTML.Tag.BR);
+                    int end = informationArea.getSelectionEnd();
+                    try {
+                        if (start != end) {
+                            informationArea.getDocument().remove(start, end - start);
+                        }
+                        informationArea.getDocument().insertString(start, clipboardText, null);
+                        // Show caret
+                        informationArea.requestFocusInWindow();
+                        currentInformation = informationArea.getText();
                         currentPlainCaretPosition = informationArea.getCaretPosition();
-                        informationArea.setCaretPosition(currentPlainCaretPosition); // show caret at the beginning of the new line
                         currentHTMLCaretPosition = 0;
-                    } else {
-                        informationArea.getDocument().insertString(start, "<br>", null);
-                        currentPlainCaretPosition = 0;
-                        currentHTMLCaretPosition = informationArea.getCaretPosition();
+                    } catch (BadLocationException ignored) {
                     }
-                    informationArea.requestFocusInWindow();
-                    currentInformation = informationArea.getText();
-                } catch (BadLocationException ignored) {
-                } catch (IOException ignored) {
                 }
             }
         }
-        informationArea.getActionMap().put("Break", new breakAction());*/
+        informationArea.getActionMap().put("Shift Insert", new paste());
+        informationArea.getActionMap().put("Control V", new paste());
+
+        // CTRL + N: insert line break
+        /*informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK), "Break");
+         class breakAction extends AbstractAction {
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         try {
+         int start = informationArea.getSelectionStart();
+         saveButton.setVisible(true);
+         cancelButton.setVisible(true);
+         if (informationArea.isPlainMode()) {
+         informationArea.insertText(start, "<br>", HTML.Tag.BR);
+         currentPlainCaretPosition = informationArea.getCaretPosition();
+         informationArea.setCaretPosition(currentPlainCaretPosition); // show caret at the beginning of the new line
+         currentHTMLCaretPosition = 0;
+         } else {
+         informationArea.getDocument().insertString(start, "<br>", null);
+         currentPlainCaretPosition = 0;
+         currentHTMLCaretPosition = informationArea.getCaretPosition();
+         }
+         informationArea.requestFocusInWindow();
+         currentInformation = informationArea.getText();
+         } catch (BadLocationException ignored) {
+         } catch (IOException ignored) {
+         }
+         }
+         }
+         informationArea.getActionMap().put("Break", new breakAction());*/
     }
 
     private void addEditorButtons() {
@@ -308,7 +332,7 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setForeground(Color.BLUE);
         foregroundColorButton.setFont(getFont().deriveFont(Font.BOLD));
         foregroundColorButton.setMargin(new Insets(0, 0, 0, 0));
-        
+
         linkButton.setMargin(new Insets(0, 0, 0, 0));
         // Preview button
         gbc.gridx = 0;
@@ -321,8 +345,8 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayButtonsForPreviewMode();
-                informationArea.requestFocusInWindow();
+                displayPreviewMode();
+                // disable auto scrolling
                 informationArea.setCaretPosition(0);
             }
         });
@@ -339,12 +363,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (informationArea.isPlainMode()) { // plain mode --> html mode;                    
-                    informationArea.revokeEnterKeyBindingForPlainMode();
+                    //informationArea.revokeEnterKeyBindingForPlainMode();
                     displayButtonsForHTMLMode();
                 } else { // html mode --> plain mode
-                    informationArea.enterKeyBindingForPlainMode();
+                    //informationArea.enterKeyBindingForPlainMode();
                     displayButtonsForPlainMode();
                 }
+                // Show caret
                 informationArea.requestFocusInWindow();
                 if (informationArea.isPlainMode()) {
                     informationArea.setCaretPosition(currentPlainCaretPosition);
@@ -523,21 +548,32 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        // ENTER: insert link (requires focus on the link text field)
+        // ENTER: insert link (requires focus on the link text field)        
         linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
         class linkEnterAction extends AbstractAction {
 
+            /**
+             * Insert HTML link Problem unsolved: after carriage return, the
+             * link is inserted at the end of the previous line not the
+             * beginning of the new line
+             *
+             * @param e
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     int start = informationArea.getSelectionStart();
+                    int end = informationArea.getSelectionEnd();
                     if (!linkTextField.getText().isEmpty()) {
                         int row = panel.getTable().getSelectedRow();
                         activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                         saveButton.setVisible(true);
                         cancelButton.setVisible(true);
                         String href = linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText();
-                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";                        
+                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
+                        if (start != end) { // selection
+                            informationArea.getDocument().remove(start, end - start);
+                        }
                         informationArea.insertText(start, link, HTML.Tag.A);
                         // Show caret
                         informationArea.requestFocusInWindow();
@@ -599,7 +635,9 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));                
+                panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
+                // Discard all previous edit
+                undoManager.discardAllEdits();
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
                 activityIdTmp = -1;
@@ -632,6 +670,8 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 previewButton.getActionListeners()[0].actionPerformed(e);
+                // Discard all previous edit
+                undoManager.discardAllEdits();
                 saveButton.setVisible(false);
                 cancelButton.setVisible(false);
                 activityIdTmp = -1;
@@ -644,28 +684,13 @@ public class CommentPanel extends JPanel {
     }
 
     public void showInfo(final Activity activity) {
-        clearInfo();
+        //clearInfo();                
         String comment = activity.getNotes().trim();
-        //if (activityIdTmp == activity.getId() && versionCounter > 0) {
-        if (activityIdTmp == activity.getId()) {
-            comment = currentInformation;
-            //saveButton.setVisible(true);
-            //cancelButton.setVisible(true);
-        } else {
-            saveButton.setVisible(false);
-            cancelButton.setVisible(false);
-            // make sure CTRL + Z of previous selected activity doesn't work on new selected activity
-            int row = panel.getTable().getSelectedRow();
-            int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-            /*if (selectedActivityId != activityIdTmp) {
-                versionCounter = 0;
-            }*/
-        }
-        if (comment.isEmpty()) { // no comment yet            
+        if (comment.isEmpty()) { // no comment            
             if (activity.isStory()) {
                 // default template for User Story type
                 // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
-                comment += "<p style=\"margin-top: 0\"><b>Story line</b></p>";
+                comment = "<p style=\"margin-top: 0\"><b>Story line</b></p>";
                 comment += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
                 comment += "<p><b>User acceptance criteria</b></p>";
                 comment += "<p style=\"margin-top: 0\">";
@@ -682,30 +707,49 @@ public class CommentPanel extends JPanel {
                 comment += "+ ...";
                 comment += "</p>";
             }
-        } else {
+        } else if (!comment.contains("</body>")) {
             // Backward compatility 3.0.X and imports
             // Check if there is a body tag; if not replace trailing return carriage with P tag
-            if (!comment.contains("</body>")) {
-                comment = "<p style=\"margin-top: 0\">" + comment;
-                comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
-                comment = comment + "</p>";
-            }
+            comment = "<p style=\"margin-top: 0\">" + comment;
+            comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
+            comment = comment + "</p>";
         }
-        informationArea.setText(comment);
-        if (activityIdTmp == activity.getId()) {
-            if (informationArea.isPlainMode()) {
-                informationArea.setCaretPosition(currentPlainCaretPosition);
+        int row = panel.getTable().getSelectedRow();
+        int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+        if (selectedActivityId == activity.getId()) {
+            if (selectedActivityId != activityIdTmp) {
+                // New activity selected
+                informationArea.setText(comment);
+                // Discard all previous edit
+                undoManager.discardAllEdits();
+                saveButton.setVisible(false);
+                cancelButton.setVisible(false);
             } else {
-                informationArea.setCaretPosition(currentHTMLCaretPosition);
+                // Currently selected activity
+                // The comment might have been modified previously
+                comment = currentInformation;
+                // Check undo state before the setText method
+                if (undoManager.canUndo()) {
+                    saveButton.setVisible(true);
+                    cancelButton.setVisible(true);
+                }
+                informationArea.setText(comment);
+                if (informationArea.isPlainMode()) {
+                    informationArea.setCaretPosition(currentPlainCaretPosition);
+                } else {
+                    informationArea.setCaretPosition(currentHTMLCaretPosition);
+                }
+                // Show caret
+                informationArea.requestFocusInWindow();
             }
         } else {
+            // any non-selected activity                           
+            informationArea.setText(comment);
             // disable auto scrolling
             informationArea.setCaretPosition(0);
+            saveButton.setVisible(false);
+            cancelButton.setVisible(false);
         }
-    }
-
-    public void clearInfo() {
-        informationArea.setText("");
     }
 
     public JLabel getIconLabel() {
@@ -740,9 +784,9 @@ public class CommentPanel extends JPanel {
         linkButton.setVisible(true);
     }
 
-    private void displayButtonsForPreviewMode() {
+    private void displayPreviewMode() {
         String text = informationArea.getText();
-        informationArea.setContentType("text/html");        
+        informationArea.setContentType("text/html");
         informationArea.setText(text);
         htmlButton.setText("HTML 3.2"); // make sure the plain/html button read "HTML..."
         informationArea.setEditable(false);
@@ -757,35 +801,6 @@ public class CommentPanel extends JPanel {
         linkButton.setVisible(false);
     }
 
-    /**
-     * Version
-     *
-     */
-    class Version {
-
-        String text = "";
-        int caretPosition = 0;
-        String contentType = "text/plain";
-
-        public Version(String text, int caretPosition, String contentType) {
-            this.text = text;
-            this.caretPosition = caretPosition;
-            this.contentType = contentType;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public int getCaretPosition() {
-            return caretPosition;
-        }
-
-        public String getContentType() {
-            return contentType;
-        }
-    }
-
     private void setPlainEnvForActionButton() {
         int row = panel.getTable().getSelectedRow();
         activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
@@ -794,14 +809,8 @@ public class CommentPanel extends JPanel {
         currentInformation = informationArea.getText();
     }
 
-    class UndoHandler implements UndoableEditListener {
+    class UndoHandlerListener implements UndoableEditListener {
 
-        /**
-         * Messaged when the Document has created an edit, the edit is added to
-         * <code>undoManager</code>, an instance of UndoManager.
-         *
-         * @param e
-         */
         @Override
         public void undoableEditHappened(UndoableEditEvent e) {
             undoManager.addEdit(e.getEdit());
@@ -821,8 +830,15 @@ public class CommentPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             try {
                 undoManager.undo();
-            } catch (CannotUndoException ex) {
-                logger.error(ex.toString());
+                currentInformation = informationArea.getText();
+                currentPlainCaretPosition = informationArea.getCaretPosition();
+                currentHTMLCaretPosition = 0;
+            } catch (CannotUndoException ignored) {
+                // we do not want log this
+            }
+            if (!undoManager.canUndo()) {
+                saveButton.setVisible(false);
+                cancelButton.setVisible(false);
             }
             update();
             redoAction.update();
@@ -830,16 +846,13 @@ public class CommentPanel extends JPanel {
 
         protected void update() {
             if (undoManager.canUndo()) {
+                System.err.println("canundo");
                 setEnabled(true);
                 putValue(Action.NAME, undoManager.getUndoPresentationName());
-                currentInformation = informationArea.getText();
-                currentPlainCaretPosition = informationArea.getCaretPosition();
-                currentHTMLCaretPosition = 0;
             } else {
+                System.err.println("cannotundo");
                 setEnabled(false);
                 putValue(Action.NAME, "Undo");
-                saveButton.setVisible(false);
-                cancelButton.setVisible(false);
             }
         }
     }
@@ -854,9 +867,16 @@ public class CommentPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                undoManager.redo();                
-            } catch (CannotRedoException ex) {
-                logger.error(ex.toString());
+                undoManager.redo();
+                currentInformation = informationArea.getText();
+                currentPlainCaretPosition = informationArea.getCaretPosition();
+                currentHTMLCaretPosition = 0;
+            } catch (CannotRedoException ignored) {
+                // we do not want log this
+            }
+            if (undoManager.canRedo()) {
+                saveButton.setVisible(true);
+                cancelButton.setVisible(true);
             }
             update();
             undoAction.update();
@@ -866,11 +886,6 @@ public class CommentPanel extends JPanel {
             if (undoManager.canRedo()) {
                 setEnabled(true);
                 putValue(Action.NAME, undoManager.getRedoPresentationName());
-                saveButton.setVisible(true);
-                cancelButton.setVisible(true);
-                currentInformation = informationArea.getText();
-                currentPlainCaretPosition = informationArea.getCaretPosition();
-                currentHTMLCaretPosition = 0;
             } else {
                 setEnabled(false);
                 putValue(Action.NAME, "Redo");

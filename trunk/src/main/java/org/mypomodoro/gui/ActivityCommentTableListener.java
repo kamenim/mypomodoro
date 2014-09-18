@@ -48,8 +48,6 @@ public class ActivityCommentTableListener implements ListSelectionListener {
                 Activity activity = activities.getById(id);
                 comment.showInfo(activity);
             }
-        } else {
-            comment.clearInfo();
         }
     }
 }
