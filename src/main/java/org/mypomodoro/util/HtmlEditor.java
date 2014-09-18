@@ -31,14 +31,15 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.MutableAttributeSet;
@@ -87,9 +88,6 @@ public class HtmlEditor extends JTextPane {
                     public void run() {
                         int start = HtmlEditor.this.getSelectionStart();
                         int end = HtmlEditor.this.getSelectionEnd();
-                        if (start > end) { // backward selection
-                            start = end;
-                        }
                         AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(start).getAttributes();
                         MutableAttributeSet inputAttr = HtmlEditor.this.getInputAttributes();
                         /*MutableAttributeSet BOLD = new SimpleAttributeSet();
@@ -127,35 +125,6 @@ public class HtmlEditor extends JTextPane {
         });
 
         addHyperlinkListener(new MyHyperlinkListener());
-
-        // Override Control + V and SHIFT + INSERT shortcut to get rid of the formatting NOT       
-        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
-        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), "Control V");
-        class paste extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String clipboardText = getClipboard();
-                if (!clipboardText.isEmpty()
-                        && !clipboardText.equals("Shift Insert")
-                        && !clipboardText.equals("Control V")) {
-                    int start = getSelectionStart();
-                    int end = getSelectionEnd();
-                    try {
-                        if (start != end) {
-                            getDocument().remove(start, end - start);
-                            getDocument().insertString(start, clipboardText, null);
-                        } else {
-                            getDocument().insertString(start, clipboardText, null);
-                        }
-
-                    } catch (BadLocationException ignored) {
-                    }
-                }
-            }
-        }
-        getActionMap().put("Shift Insert", new paste());
-        getActionMap().put("Control V", new paste());
     }
 
     /**
@@ -168,13 +137,17 @@ public class HtmlEditor extends JTextPane {
      * code insertion Yet this is not perfect but this is the best we come up
      * with so far
      */
-    public void enterKeyBindingForPlainMode() {
+    // This hack makes the management of undo edits too complex and buggy
+    /*public void enterKeyBindingForPlainMode() {
         getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
         class enterAction extends AbstractAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // remove listener
+                    UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
+                    getDocument().removeUndoableEditListener(undoHandlerListener);
                     try {
                         setCaretPosition(getCaretPosition()); // this one is necessary 
                         insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
@@ -183,6 +156,7 @@ public class HtmlEditor extends JTextPane {
                         insertText(getCaretPosition(), "<br>", null);
                         setCaretPosition(getCaretPosition()); // this one is necessary
                     }
+                    getDocument().addUndoableEditListener(undoHandlerListener);
                     final int caretPosition = getCaretPosition();
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
@@ -196,17 +170,18 @@ public class HtmlEditor extends JTextPane {
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
+                requestFocusInWindow();
             }
         }
         getActionMap().put("Enter", new enterAction());
-    }
+    }*/
 
     /**
      * Set Enter key back to default behavior
      */
-    public void revokeEnterKeyBindingForPlainMode() {
+    /*public void revokeEnterKeyBindingForPlainMode() {
         getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-    }
+    }*/
 
     // Make URLs clickable in preview mode
     class MyHyperlinkListener implements HyperlinkListener {
@@ -244,7 +219,7 @@ public class HtmlEditor extends JTextPane {
         return getContentType().equals("text/html");
     }
 
-    private String getClipboard() {
+    public String getClipboard() {
         String clipboardText = "";
         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         try {
@@ -281,6 +256,23 @@ public class HtmlEditor extends JTextPane {
             } else {
                 Toolkit.getDefaultToolkit().beep();
             }
+        }
+    }
+
+    /**
+     * No undo edit when using setText method
+     *
+     * @param t
+     */
+    @Override
+    public void setText(String t) {
+        if (((DefaultStyledDocument) getDocument()).getUndoableEditListeners().length > 0) {
+            UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
+            getDocument().removeUndoableEditListener(undoHandlerListener);
+            super.setText(t);
+            getDocument().addUndoableEditListener(undoHandlerListener);
+        } else {
+            super.setText(t);
         }
     }
 }
