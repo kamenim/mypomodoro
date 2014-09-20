@@ -260,7 +260,9 @@ public class HtmlEditor extends JTextPane {
     }
 
     /**
-     * No undo edit when using setText method
+     * SetText
+     * 
+     * Temporary remove the undo listener so no undo edit is triggered
      *
      * @param t
      */
