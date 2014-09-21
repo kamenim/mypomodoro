@@ -40,7 +40,7 @@ public class Labels {
         try {
             return resource_bundle.getString(key);
         } catch (MissingResourceException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
             return '!' + key + '!';
         }
     }
@@ -49,7 +49,7 @@ public class Labels {
         try {
             return MessageFormat.format(resource_bundle.getString(key), params);
         } catch (MissingResourceException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
             return '!' + key + '!';
         }
     }

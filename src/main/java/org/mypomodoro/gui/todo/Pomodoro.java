@@ -352,13 +352,13 @@ public class Pomodoro {
             }
         } catch (IOException ex) {
             // no sound
-            logger.error(ex.toString());
+            logger.error("", ex);
         } catch (UnsupportedAudioFileException ex) {
             // no sound
-            logger.error(ex.toString());
+            logger.error("", ex);
         } catch (LineUnavailableException ex) {
             // no sound
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -407,13 +407,13 @@ public class Pomodoro {
             try {
                 stream.close();
             } catch (IOException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             }
             if (output != null) {
                 try {
                     output.close();
                 } catch (IOException ex) {
-                    logger.error(ex.toString());
+                    logger.error("", ex);
                 }
             }
         }

@@ -614,36 +614,41 @@ public class CommentPanel extends JPanel {
         int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         if (selectedActivityId == activity.getId()) {
             if (selectedActivityId != activityIdTmp) {
-                // New activity selected
-                informationArea.setText(comment);
+                hideSaveCancelButton();
                 // Discard all previous edit
                 undoManager.discardAllEdits();
-                hideSaveCancelButton();
+                // New activity selected
+                informationArea.setText(comment);
                 // record temp info : only whe selecting an activity and recording edits    
                 activityIdTmp = selectedActivityId;
                 currentInformation = comment;
                 currentPlainCaretPosition = 0;
             } else {
-                // Currently selected activity
-                // The comment might have been modified previously
-                comment = currentInformation;
-                // Check undo state before the setText method
-                if (undoManager.canUndo()) {
+                // Currently selected activity                
+                // Check undo state
+                if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                    // The comment might have been modified previously
+                    comment = currentInformation;
                     displaySaveCancelButton();
                 }
                 informationArea.setText(comment);
-                if (informationArea.isPlainMode()) {
-                    informationArea.setCaretPosition(currentPlainCaretPosition);
-                }
                 // Show caret
                 informationArea.requestFocusInWindow();
+                if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                    informationArea.setCaretPosition(currentPlainCaretPosition);
+                } else {
+                    // disable auto scrolling
+                    informationArea.setCaretPosition(0);
+                }
             }
         } else {
+            hideSaveCancelButton();
             // any non-selected activity                           
             informationArea.setText(comment);
+            // Show caret
+            informationArea.requestFocusInWindow();
             // disable auto scrolling
             informationArea.setCaretPosition(0);
-            hideSaveCancelButton();
         }
     }
 
@@ -729,7 +734,7 @@ public class CommentPanel extends JPanel {
             } catch (CannotUndoException ignored) {
                 // we do not want log this
             } catch (ArrayIndexOutOfBoundsException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             }
             update();
             redoAction.update();

@@ -22,15 +22,9 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
@@ -139,50 +133,48 @@ public class HtmlEditor extends JTextPane {
      */
     // This hack makes the management of undo edits too complex and buggy
     /*public void enterKeyBindingForPlainMode() {
-        getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
-        class enterAction extends AbstractAction {
+     getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+     class enterAction extends AbstractAction {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // remove listener
-                    UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
-                    getDocument().removeUndoableEditListener(undoHandlerListener);
-                    try {
-                        setCaretPosition(getCaretPosition()); // this one is necessary 
-                        insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
-                        setCaretPosition(getCaretPosition()); // this one is necessary
-                    } catch (IndexOutOfBoundsException ignored) {
-                        insertText(getCaretPosition(), "<br>", null);
-                        setCaretPosition(getCaretPosition()); // this one is necessary
-                    }
-                    getDocument().addUndoableEditListener(undoHandlerListener);
-                    final int caretPosition = getCaretPosition();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = getText();
-                            setContentType("text/html");
-                            setText(text);
-                            setCaretPosition(caretPosition);
-                        }
-                    });
-                } catch (BadLocationException ignored) {
-                } catch (IOException ignored) {
-                }
-                requestFocusInWindow();
-            }
-        }
-        getActionMap().put("Enter", new enterAction());
-    }*/
-
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     try {
+     // remove listener
+     UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
+     getDocument().removeUndoableEditListener(undoHandlerListener);
+     try {
+     setCaretPosition(getCaretPosition()); // this one is necessary 
+     insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
+     setCaretPosition(getCaretPosition()); // this one is necessary
+     } catch (IndexOutOfBoundsException ignored) {
+     insertText(getCaretPosition(), "<br>", null);
+     setCaretPosition(getCaretPosition()); // this one is necessary
+     }
+     getDocument().addUndoableEditListener(undoHandlerListener);
+     final int caretPosition = getCaretPosition();
+     SwingUtilities.invokeLater(new Runnable() {
+     @Override
+     public void run() {
+     String text = getText();
+     setContentType("text/html");
+     setText(text);
+     setCaretPosition(caretPosition);
+     }
+     });
+     } catch (BadLocationException ignored) {
+     } catch (IOException ignored) {
+     }
+     requestFocusInWindow();
+     }
+     }
+     getActionMap().put("Enter", new enterAction());
+     }*/
     /**
      * Set Enter key back to default behavior
      */
     /*public void revokeEnterKeyBindingForPlainMode() {
-        getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-    }*/
-
+     getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+     }*/
     // Make URLs clickable in preview mode
     class MyHyperlinkListener implements HyperlinkListener {
 
@@ -261,7 +253,7 @@ public class HtmlEditor extends JTextPane {
 
     /**
      * SetText
-     * 
+     *
      * Temporary remove the undo listener so no undo edit is triggered
      *
      * @param t

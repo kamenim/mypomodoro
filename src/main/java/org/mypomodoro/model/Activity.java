@@ -277,7 +277,7 @@ public class Activity implements Cloneable {
             this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
         } catch (SQLException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 

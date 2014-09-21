@@ -124,7 +124,7 @@ public final class MainPanel extends JFrame {
             try {
                 sysTray.add(trayIcon);
             } catch (AWTException ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             }
         } else {
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
