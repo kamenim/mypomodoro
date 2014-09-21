@@ -20,8 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <!-- documentation : http://logback.qos.ch/manual/layouts.html -->
-      <!-- highlight level (color) for console output -->
-      <pattern>==================================================================================================================%n%d [%thread] %highlight(%-5level) [%file:%line] %msg%n</pattern>
+      <!-- %ex at the end of the pattern: display log in netbeans with coloring and links -->
+      <pattern>==================================================================================================================%n%d [%thread] %highlight(%-5level) [%file:%line] %msg%n%ex</pattern>
     </encoder>
   </appender>
   <!-- file appender -->

@@ -107,7 +107,7 @@ public class Restart {
                         try {
                             Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
                         } catch (IOException ex) {
-                            logger.error(ex.toString());
+                            logger.error("", ex);
                         }
                     }
                 });

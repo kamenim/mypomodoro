@@ -144,8 +144,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         };
 
         // Set up table listeners once anf for all
-        setUpTable();        
-        
+        setUpTable();
+
         // Init control pane before the table so we can set the default tab at start up time
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
@@ -793,7 +793,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 table.setModel(activitiesTableModel);
                 initTable();
             } catch (Exception ex) {
-                logger.error(ex.toString());
+                logger.error("", ex);
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

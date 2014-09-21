@@ -99,7 +99,7 @@ public class RestartMac {
             restartWriter.write(restartScript);
             restartWriter.close();
         } catch (IOException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -112,9 +112,9 @@ public class RestartMac {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
         } catch (InterruptedException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         } catch (IOException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -125,7 +125,7 @@ public class RestartMac {
         try {
             open = Runtime.getRuntime().exec(openString);
         } catch (IOException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 
@@ -145,7 +145,7 @@ public class RestartMac {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
         } catch (IOException ex) {
-            logger.error(ex.toString());
+            logger.error("", ex);
         }
     }
 }
