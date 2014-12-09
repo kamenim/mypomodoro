@@ -18,6 +18,9 @@ package org.mypomodoro.util;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -29,11 +32,9 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.MutableAttributeSet;
@@ -51,6 +52,19 @@ import javax.swing.text.html.HTMLEditorKit;
 public class HtmlEditor extends JTextPane {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
+    /**
+     * Override paint method to turn on the anti-aliasing property
+     * http://stackoverflow.com/questions/15868894/unordered-list-bullets-look-pixelated-in-jeditorpane
+     * @param g 
+     */
+    @Override
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        super.paint(g2d);
+        g2d.dispose();
+    }
 
     public HtmlEditor() {
         setEditorKit(new HTMLEditorKit()); // content type = text/html        
@@ -193,7 +207,12 @@ public class HtmlEditor extends JTextPane {
 
     // Insert text at the cursor position
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
-        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, 0, 0, insertTag);
+        insertText(start, text, 0, insertTag);
+    }
+    
+    // Insert text at the cursor position
+    public void insertText(int start, String text, int popDepth, Tag insertTag) throws BadLocationException, IOException {
+        ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, popDepth, 0, insertTag);
     }
 
     // Get raw text out of html content
@@ -258,15 +277,16 @@ public class HtmlEditor extends JTextPane {
      *
      * @param t
      */
-    @Override
-    public void setText(String t) {
-        if (((DefaultStyledDocument) getDocument()).getUndoableEditListeners().length > 0) {
-            UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
-            getDocument().removeUndoableEditListener(undoHandlerListener);
-            super.setText(t);
-            getDocument().addUndoableEditListener(undoHandlerListener);
-        } else {
-            super.setText(t);
-        }
-    }
+    /*@Override
+     public void setText(String t) {
+     if (((DefaultStyledDocument) getDocument()).getUndoableEditListeners().length > 0) {
+     UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
+     getDocument().removeUndoableEditListener(undoHandlerListener);
+     undoHandlerListener.undoableEditHappened(null);
+     super.setText(t);
+     getDocument().addUndoableEditListener(undoHandlerListener);            
+     } else {
+     super.setText(t);
+     }
+     }*/
 }
