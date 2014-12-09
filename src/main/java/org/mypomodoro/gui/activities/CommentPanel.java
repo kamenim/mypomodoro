@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
@@ -44,19 +45,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
+import javax.swing.text.html.HTMLDocument;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.mypomodoro.Main;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
@@ -69,12 +66,11 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO fix size of button and tab panels
-// TODO undo/redo does not keep formatting/ ArrayIndexOutOfBoundsException exception after resetting the text
 // TODO fix exception Exception in thread "AWT-EventQueue-0" java.lang.IllegalArgumentException: offsetLimit must be after current position
+// add shortcut for ordened and unordened lists CTRL + O CTRL + L
 public class CommentPanel extends JPanel {
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
-
+    //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final IListPanel panel;
@@ -92,16 +88,12 @@ public class CommentPanel extends JPanel {
     private final JTextField linkTextField = new JTextField();
     private final JButton linkButton = new AbstractButton(">>");
     protected final HtmlEditor informationArea = new HtmlEditor();
-    protected String currentInformation = "";
-    protected int currentPlainCaretPosition = 0;
     private final JScrollPane scrollPaneInformationArea;
     private boolean showIconLabel = false;
 
-    // Undo / Redo (plain mode only)
-    private final UndoHandlerListener undoHandlerListener = new UndoHandlerListener();
-    private final UndoManager undoManager = new UndoManager();
-    private final UndoAction undoAction = new UndoAction();
-    private final RedoAction redoAction = new RedoAction();
+    // Record
+    protected String currentPlainInformation = "";
+    protected int currentPlainCaretPosition = 0;
 
     public CommentPanel(IListPanel iListPanel) {
         this(iListPanel, false);
@@ -116,10 +108,6 @@ public class CommentPanel extends JPanel {
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(informationArea);
         scrollPaneInformationArea = new JScrollPane(noWrapPanel);
-
-        // Add undo / redo handler        
-        informationArea.getDocument().addUndoableEditListener(undoHandlerListener);
-        undoManager.setLimit(100); // 100 edits = default value
 
         setLayout(new GridBagLayout());
         setBorder(null);
@@ -157,13 +145,88 @@ public class CommentPanel extends JPanel {
             }
         });
 
-        // CTRL Z: Undo
-        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), "Undo");
-        informationArea.getActionMap().put("Undo", undoAction);
+        /**
+         * Displays the save and cancel buttons Records the versions
+         */
+        informationArea.addKeyListener(new KeyListener() {
 
-        // CTRL Y: Redo
-        informationArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK), "Redo");
-        informationArea.getActionMap().put("Redo", redoAction);
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // Nothing to do here
+            }
+
+            /**
+             * KeyPressed makes the necessary checks and record the text BEFORE
+             * modification
+             *
+             */
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // The area must be editable 
+                // Excluding: key Control mask, arrows, home/end and page up/down
+                // Including: key Control mask + V and Shift mask + Insert (paste)
+                if (informationArea.isEditable()
+                        && ((e.getModifiers() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_V)
+                        || (e.getModifiers() == KeyEvent.SHIFT_MASK && e.getKeyCode() == KeyEvent.VK_INSERT)
+                        || e.getModifiers() != KeyEvent.CTRL_DOWN_MASK
+                        || e.getKeyCode() == KeyEvent.VK_ENTER)
+                        && e.getKeyCode() != KeyEvent.VK_UP
+                        && e.getKeyCode() != KeyEvent.VK_KP_UP
+                        && e.getKeyCode() != KeyEvent.VK_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_KP_DOWN
+                        && e.getKeyCode() != KeyEvent.VK_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_KP_LEFT
+                        && e.getKeyCode() != KeyEvent.VK_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_KP_RIGHT
+                        && e.getKeyCode() != KeyEvent.VK_HOME
+                        && e.getKeyCode() != KeyEvent.VK_END
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_UP
+                        && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
+
+                    // Add item to list
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER
+                            && isInParentElement(HTML.Tag.LI)) {
+                        Element element = ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
+                        try {
+                            e.consume(); // the event must be 'consumed' before inserting!
+                            String item = "<li></li>";                            
+                            ((HTMLDocument) informationArea.getDocument()).insertAfterEnd(element, item);
+                            informationArea.setCaretPosition(element.getEndOffset());
+                        } catch (BadLocationException ignored) {
+                        } catch (IOException eignored) {
+                        }
+                    }
+                    int row = panel.getTable().getSelectedRow();
+                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    saveButton.setVisible(true);
+                    cancelButton.setVisible(true);
+                }
+            }
+
+            public boolean isInParentElement(HTML.Tag tag) {
+                boolean isInParentElement = false;
+                Element e = ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition());
+                if (e.getParentElement().getName().equalsIgnoreCase(tag.toString())) {
+                    isInParentElement = true;
+                }
+                return isInParentElement;
+            }
+
+            /**
+             * KeyReleased is only used to record the current plain text and
+             * position (text AFTER modification)
+             *
+             */
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (informationArea.isPlainMode()) {
+                    currentPlainInformation = informationArea.getText();
+                    currentPlainCaretPosition = informationArea.getCaretPosition();
+                } else {
+                    currentPlainCaretPosition = 0;
+                }
+            }
+        });
 
         // Override SHIFT + '>' and SHIFT + '<' to prevent conflicts with list SHIFT + '>' and SHIFT + '<' shortcuts  
         informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "donothing");
@@ -179,7 +242,7 @@ public class CommentPanel extends JPanel {
 
         // Override Control + V and SHIFT + INSERT shortcut to get rid of all formatting       
         informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), "Control V");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK), "Control V");
         class paste extends AbstractAction {
 
             @Override
@@ -202,6 +265,45 @@ public class CommentPanel extends JPanel {
         }
         informationArea.getActionMap().put("Shift Insert", new paste());
         informationArea.getActionMap().put("Control V", new paste());
+
+        // Ordered and unordered lists
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK), "Create List");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK), "Create Ordered List");
+        class createList extends AbstractAction {
+
+            private String type = HTML.Tag.UL.toString(); // unordered
+            private HTML.Tag tag = HTML.Tag.UL; // unordered
+
+            public createList() {
+            }
+
+            public createList(HTML.Tag tag) {
+                this.type = tag.toString();
+                this.tag = tag;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int start = informationArea.getSelectionStart();
+                    int end = informationArea.getSelectionEnd();
+                    
+                    
+                    
+                    String list = "<" + type + "><li>....</li></" + type + ">";
+                    if (start != end) { // selection
+                        informationArea.getDocument().remove(start, end - start);
+                    }
+                    informationArea.insertText(start, list, 1, tag);
+                } catch (BadLocationException ignored) {
+                } catch (IOException ignored) {
+                }
+                // Show caret
+                informationArea.requestFocusInWindow();
+            }
+        }
+        informationArea.getActionMap().put("Create List", new createList());
+        informationArea.getActionMap().put("Create Ordered List", new createList(HTML.Tag.OL));
     }
 
     private void addEditorButtons() {
@@ -240,7 +342,7 @@ public class CommentPanel extends JPanel {
                 displayPreviewMode();
                 informationArea.setEditable(false);
                 // disable auto scrolling
-                informationArea.setCaretPosition(0);
+                //informationArea.setCaretPosition(0);
             }
         });
         previewButton.setVisible(false);
@@ -309,7 +411,7 @@ public class CommentPanel extends JPanel {
         boldButton.addActionListener(new boldAction());
         // set the keystroke on the button (so won't work in preview mode)
         // CTRL B: Bold
-        boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK), "Bold");
+        boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "Bold");
         boldButton.getActionMap().put("Bold", new boldAction());
         boldButton.setToolTipText("CTRL + B");
         boldButton.setVisible(false);
@@ -323,7 +425,7 @@ public class CommentPanel extends JPanel {
         italicButton.addActionListener(new italicAction());
         // set the keystroke on the button (so won't work in preview mode; however this will conflict with CTRL+I keystroke in ToDoPanel)
         // CTRL I: Italic
-        italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK), "Italic");
+        italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Italic");
         italicButton.getActionMap().put("Italic", new italicAction());
         italicButton.setToolTipText("CTRL + I");
         italicButton.setVisible(false);
@@ -337,7 +439,7 @@ public class CommentPanel extends JPanel {
         underlineButton.addActionListener(new underlineAction());
         // set the keystroke on the button (so won't work in preview mode)
         // CTRL U: Underline
-        underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_MASK), "Underline");
+        underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Underline");
         underlineButton.getActionMap().put("Underline", new underlineAction());
         underlineButton.setToolTipText("CTRL + U");
         underlineButton.setVisible(false);
@@ -534,13 +636,13 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 // Discard all previous edit
-                undoManager.discardAllEdits();
+                //undoManager.discardAllEdits();
                 hideSaveCancelButton();
                 // show caret
                 informationArea.requestFocusInWindow();
             }
         };
-        saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK), "Save");
+        saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
         saveButton.getActionMap().put("Save", saveAction);
         saveButton.setToolTipText("CTRL + S");
         saveButton.setVisible(false);
@@ -566,13 +668,13 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 previewButton.getActionListeners()[0].actionPerformed(e);
                 // Discard all previous edit
-                undoManager.discardAllEdits();
+                //undoManager.discardAllEdits();
                 hideSaveCancelButton();
                 informationArea.setEditable(false);
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity activity = panel.getActivityById(id);
-                currentInformation = activity.getNotes().trim();
+                currentPlainInformation = activity.getNotes().trim();
                 currentPlainCaretPosition = 0;
                 showInfo(activity);
             }
@@ -585,22 +687,23 @@ public class CommentPanel extends JPanel {
         if (comment.isEmpty()) { // no comment            
             if (activity.isStory()) {
                 // default template for User Story type
-                // use of <ul><li>...</li></ul> is not an option : ugly, hard to use and somehow appear on others tasks' empty comment
-                comment = "<p style=\"margin-top: 0\"><b>Story line</b></p>";
-                comment += "<p style=\"margin-top: 0\">As a {user role}, I want to {action} in order to {goal}.</p>";
-                comment += "<p><b>User acceptance criteria</b></p>";
-                comment += "<p style=\"margin-top: 0\">";
-                comment += "+ ...";
-                comment += "</p>";
-                comment += "<p style=\"margin-top: 0\">";
-                comment += "+ ...";
-                comment += "</p>";
-                comment += "<p><b>Test cases</b></p>";
-                comment += "<p style=\"margin-top: 0\">";
-                comment += "+ ...";
-                comment += "</p>";
-                comment += "<p style=\"margin-top: 0\">";
-                comment += "+ ...";
+                comment = "<p style=\"margin-top: 0\">";
+                comment += "<b>Story line</b>";
+                comment += "<ul>";
+                comment += "<li>As a {user role}, I want to {action} in order to {goal}.</li>";
+                comment += "</ul>";                
+                comment += "<b>User acceptance criteria</b>";
+                comment += "<ol>";                
+                comment += "<li>...</li>";
+                comment += "<li>...</li>";
+                comment += "<li>...</li>";
+                comment += "</ol>";
+                comment += "<b>Test cases</b>";
+                comment += "<ol>";
+                comment += "<li>...</li>";
+                comment += "<li>...</li>";
+                comment += "<li>...</li>";
+                comment += "</ol>";
                 comment += "</p>";
             }
         } else if (!comment.contains("</body>")) {
@@ -614,27 +717,29 @@ public class CommentPanel extends JPanel {
         int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         if (selectedActivityId == activity.getId()) {
             if (selectedActivityId != activityIdTmp) {
+                // New activity selected
                 hideSaveCancelButton();
                 // Discard all previous edit
-                undoManager.discardAllEdits();
-                // New activity selected
+                //undoManager.discardAllEdits();                
                 informationArea.setText(comment);
                 // record temp info : only whe selecting an activity and recording edits    
                 activityIdTmp = selectedActivityId;
-                currentInformation = comment;
+                currentPlainInformation = comment;
                 currentPlainCaretPosition = 0;
             } else {
                 // Currently selected activity                
                 // Check undo state
-                if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                //if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                if (informationArea.isPlainMode()) {
                     // The comment might have been modified previously
-                    comment = currentInformation;
+                    comment = currentPlainInformation;
                     displaySaveCancelButton();
                 }
                 informationArea.setText(comment);
                 // Show caret
                 informationArea.requestFocusInWindow();
-                if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                //if (informationArea.isPlainMode() && undoManager.canUndo()) {
+                if (informationArea.isPlainMode()) {
                     informationArea.setCaretPosition(currentPlainCaretPosition);
                 } else {
                     // disable auto scrolling
@@ -710,79 +815,79 @@ public class CommentPanel extends JPanel {
         cancelButton.setVisible(false);
     }
 
-    class UndoHandlerListener implements UndoableEditListener {
+    /*class UndoHandlerListener implements UndoableEditListener {
 
-        @Override
-        public void undoableEditHappened(UndoableEditEvent e) {
-            undoManager.addEdit(e.getEdit());
-            undoAction.update();
-            redoAction.update();
-        }
-    }
+     @Override
+     public void undoableEditHappened(UndoableEditEvent e) {
+     undoManager.addEdit(e.getEdit());
+     undoAction.update();
+     redoAction.update();
+     }
+     }
 
-    class UndoAction extends AbstractAction {
+     class UndoAction extends AbstractAction {
 
-        public UndoAction() {
-            super("Undo");
-            setEnabled(false);
-        }
+     public UndoAction() {
+     super("Undo");
+     setEnabled(false);
+     }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                undoManager.undo();
-            } catch (CannotUndoException ignored) {
-                // we do not want log this
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                logger.error("", ex);
-            }
-            update();
-            redoAction.update();
-        }
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     try {
+     undoManager.undo();
+     } catch (CannotUndoException ignored) {
+     // we do not want log this
+     } catch (ArrayIndexOutOfBoundsException ex) {
+     logger.error("", ex);
+     }
+     update();
+     redoAction.update();
+     }
 
-        // Only here we record the comment and caret and show/hive the buttons
-        // because this is called whenever an edit is added, a undo or a redo action  is performed
-        protected void update() {
-            currentInformation = informationArea.getText();
-            currentPlainCaretPosition = informationArea.getCaretPosition();
-            if (undoManager.canUndo()) {
-                displaySaveCancelButton();
-                setEnabled(true);
-                putValue(Action.NAME, undoManager.getUndoPresentationName());
-            } else {
-                hideSaveCancelButton();
-                setEnabled(false);
-                putValue(Action.NAME, "Undo");
-            }
-        }
-    }
+     // Only here we record the comment and caret and show/hive the buttons
+     // because this is called whenever an edit is added, a undo or a redo action  is performed
+     protected void update() {
+     currentInformation = informationArea.getText();
+     currentPlainCaretPosition = informationArea.getCaretPosition();
+     if (undoManager.canUndo()) {
+     displaySaveCancelButton();
+     setEnabled(true);
+     putValue(Action.NAME, undoManager.getUndoPresentationName());
+     } else {
+     hideSaveCancelButton();
+     setEnabled(false);
+     putValue(Action.NAME, "Undo");
+     }
+     }
+     }
 
-    class RedoAction extends AbstractAction {
+     class RedoAction extends AbstractAction {
 
-        public RedoAction() {
-            super("Redo");
-            setEnabled(false);
-        }
+     public RedoAction() {
+     super("Redo");
+     setEnabled(false);
+     }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                undoManager.redo();
-            } catch (CannotRedoException ignored) {
-                // we do not want log this
-            }
-            update();
-            undoAction.update();
-        }
+     @Override
+     public void actionPerformed(ActionEvent e) {
+     try {
+     undoManager.redo();
+     } catch (CannotRedoException ignored) {
+     // we do not want log this
+     }
+     update();
+     undoAction.update();
+     }
 
-        protected void update() {
-            if (undoManager.canRedo()) {
-                setEnabled(true);
-                putValue(Action.NAME, undoManager.getRedoPresentationName());
-            } else {
-                setEnabled(false);
-                putValue(Action.NAME, "Redo");
-            }
-        }
-    }
+     protected void update() {
+     if (undoManager.canRedo()) {
+     setEnabled(true);
+     putValue(Action.NAME, undoManager.getRedoPresentationName());
+     } else {
+     setEnabled(false);
+     putValue(Action.NAME, "Redo");
+     }
+     }
+     }*/
 }
