@@ -420,8 +420,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         copiedActivity.setName("(+) " + copiedActivity.getName());
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setEstimatedPoms(0);
-                        copiedActivity.setOverestimatedPoms(0);
-                        addActivity(copiedActivity);
+                        copiedActivity.setOverestimatedPoms(0);            
+                        addActivity(copiedActivity, new Date(), new Date(0));
                         // Select new created task at the bottom of the list before refresh
                         setCurrentSelectedRow(table.getRowCount());
                         refresh();
