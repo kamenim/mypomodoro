@@ -135,60 +135,6 @@ public class HtmlEditor extends JTextPane {
         addHyperlinkListener(new MyHyperlinkListener());
     }
 
-    /**
-     * Override Enter default behavior Replace carriage return with br tag
-     *
-     * This is a very special HACK: Normally, you would insert tag BR and
-     * everything would be fine except... for the very first line (note: we have
-     * to set the caret position before and after the insertion !) In this case
-     * the insertion throws an exception and must be replaced by direct html
-     * code insertion Yet this is not perfect but this is the best we come up
-     * with so far
-     */
-    // This hack makes the management of undo edits too complex and buggy
-    /*public void enterKeyBindingForPlainMode() {
-     getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
-     class enterAction extends AbstractAction {
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     try {
-     // remove listener
-     UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
-     getDocument().removeUndoableEditListener(undoHandlerListener);
-     try {
-     setCaretPosition(getCaretPosition()); // this one is necessary 
-     insertText(getCaretPosition(), "<br>", HTML.Tag.BR);
-     setCaretPosition(getCaretPosition()); // this one is necessary
-     } catch (IndexOutOfBoundsException ignored) {
-     insertText(getCaretPosition(), "<br>", null);
-     setCaretPosition(getCaretPosition()); // this one is necessary
-     }
-     getDocument().addUndoableEditListener(undoHandlerListener);
-     final int caretPosition = getCaretPosition();
-     SwingUtilities.invokeLater(new Runnable() {
-     @Override
-     public void run() {
-     String text = getText();
-     setContentType("text/html");
-     setText(text);
-     setCaretPosition(caretPosition);
-     }
-     });
-     } catch (BadLocationException ignored) {
-     } catch (IOException ignored) {
-     }
-     requestFocusInWindow();
-     }
-     }
-     getActionMap().put("Enter", new enterAction());
-     }*/
-    /**
-     * Set Enter key back to default behavior
-     */
-    /*public void revokeEnterKeyBindingForPlainMode() {
-     getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-     }*/
     // Make URLs clickable in preview mode
     class MyHyperlinkListener implements HyperlinkListener {
 
@@ -269,24 +215,4 @@ public class HtmlEditor extends JTextPane {
             }
         }
     }
-
-    /**
-     * SetText
-     *
-     * Temporary remove the undo listener so no undo edit is triggered
-     *
-     * @param t
-     */
-    /*@Override
-     public void setText(String t) {
-     if (((DefaultStyledDocument) getDocument()).getUndoableEditListeners().length > 0) {
-     UndoableEditListener undoHandlerListener = ((DefaultStyledDocument) getDocument()).getUndoableEditListeners()[0];
-     getDocument().removeUndoableEditListener(undoHandlerListener);
-     undoHandlerListener.undoableEditHappened(null);
-     super.setText(t);
-     getDocument().addUndoableEditListener(undoHandlerListener);            
-     } else {
-     super.setText(t);
-     }
-     }*/
 }

@@ -37,7 +37,7 @@ public class CustomTableHeader extends JTableHeader {
         this.customTable = table; // setTable(table) / getTable() won't do any good
         this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
-        setBackground(ColorUtil.BLACK);
+        //setBackground(ColorUtil.BLACK);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);

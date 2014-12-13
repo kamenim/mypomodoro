@@ -36,7 +36,7 @@ public class Activity implements Cloneable {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public Activity clone() throws CloneNotSupportedException {
+    public Activity clone() throws CloneNotSupportedException {        
         return (Activity) super.clone();
     }
 

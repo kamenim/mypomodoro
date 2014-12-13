@@ -404,43 +404,33 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         }
         am.put("Control T", new create());
 
-        // Activate Control C (copy selected task) and Control V (past - duplicate copied task)        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK), "Control C");
-        class copy extends AbstractAction {
+        // Activate Control D (duplicate task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Control D");
+        class duplicate extends AbstractAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (table.getSelectedRowCount() == 1) {
                     int row = table.getSelectedRow();
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    copiedActivityId = id;
+                    Activity originalCopiedActivity = getActivityById(id);                    
+                    try {
+                        Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                        copiedActivity.setId(-1); // new activity
+                        copiedActivity.setName("(+) " + copiedActivity.getName());
+                        copiedActivity.setActualPoms(0);
+                        copiedActivity.setEstimatedPoms(0);
+                        copiedActivity.setOverestimatedPoms(0);
+                        addActivity(copiedActivity);
+                        // Select new created task at the bottom of the list before refresh
+                        setCurrentSelectedRow(table.getRowCount());
+                        refresh();
+                    } catch (CloneNotSupportedException ignored) {
+                    }                    
                 }
             }
         }
-        am.put("Control C", new copy());
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK), "Control V");
-        class paste extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (copiedActivityId > -1) {
-                    Activity originalCopiedActivity = getActivityById(copiedActivityId);
-                    if (originalCopiedActivity != null) { // may have since been deleted
-                        try {
-                            Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
-                            copiedActivity.setId(-1); // new activity
-                            copiedActivity.setName("(Copy) " + copiedActivity.getName());
-                            addActivity(copiedActivity);
-                            // Select new created task at the bottom of the list before refresh
-                            setCurrentSelectedRow(table.getRowCount());
-                            refresh();
-                        } catch (CloneNotSupportedException ignored) {
-                        }
-                    }
-                }
-            }
-        }
-        am.put("Control V", new paste());
+        am.put("Control D", new duplicate());
 
         // Activate Control R (scroll back to the selected task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");

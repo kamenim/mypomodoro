@@ -67,7 +67,6 @@ import org.mypomodoro.util.Labels;
  */
 // TODO fix size of button and tab panels
 // TODO fix exception Exception in thread "AWT-EventQueue-0" java.lang.IllegalArgumentException: offsetLimit must be after current position
-// add shortcut for ordened and unordened lists CTRL + O CTRL + L
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -163,13 +162,10 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 // The area must be editable 
-                // Excluding: key Control mask, arrows, home/end and page up/down
-                // Including: key Control mask + V and Shift mask + Insert (paste)
+                // Excluding: key Control and shift, arrows, home/end and page up/down 
                 if (informationArea.isEditable()
-                        && ((e.getModifiers() == KeyEvent.CTRL_DOWN_MASK && e.getKeyCode() == KeyEvent.VK_V)
-                        || (e.getModifiers() == KeyEvent.SHIFT_MASK && e.getKeyCode() == KeyEvent.VK_INSERT)
-                        || e.getModifiers() != KeyEvent.CTRL_DOWN_MASK
-                        || e.getKeyCode() == KeyEvent.VK_ENTER)
+                        && e.getKeyCode() != KeyEvent.VK_CONTROL
+                        && e.getKeyCode() != KeyEvent.VK_SHIFT
                         && e.getKeyCode() != KeyEvent.VK_UP
                         && e.getKeyCode() != KeyEvent.VK_KP_UP
                         && e.getKeyCode() != KeyEvent.VK_DOWN
@@ -183,10 +179,10 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
                         && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
 
-                    // Add item to list
+                    // Add item to list when pressing ENTER within a list
                     if (e.getKeyCode() == KeyEvent.VK_ENTER
-                            && isInParentElement(HTML.Tag.LI)) {
-                        Element element = ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
+                            && isParentElement(HTML.Tag.LI)) {
+                        Element element = getCurrentParentElement();
                         try {
                             e.consume(); // the event must be 'consumed' before inserting!
                             String item = "<li></li>";                            
@@ -195,21 +191,23 @@ public class CommentPanel extends JPanel {
                         } catch (BadLocationException ignored) {
                         } catch (IOException eignored) {
                         }
-                    }
+                    }                    
+                    
+                    /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+                            && isParentElement(HTML.Tag.LI)) {
+                        try {
+                            if (getCurrentParentElement().getParentElement().getElementCount() == 1) {                                
+                                getCurrentParentElement().getDocument().remove(getElement().getStartOffset(), getElement().getEndOffset());
+                                System.err.println("ok");
+                            }
+                        } catch (BadLocationException ex) {                            
+                        }                                               
+                    }*/ 
+                    
                     int row = panel.getTable().getSelectedRow();
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                    saveButton.setVisible(true);
-                    cancelButton.setVisible(true);
+                    displaySaveCancelButton();
                 }
-            }
-
-            public boolean isInParentElement(HTML.Tag tag) {
-                boolean isInParentElement = false;
-                Element e = ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition());
-                if (e.getParentElement().getName().equalsIgnoreCase(tag.toString())) {
-                    isInParentElement = true;
-                }
-                return isInParentElement;
             }
 
             /**
@@ -225,6 +223,23 @@ public class CommentPanel extends JPanel {
                 } else {
                     currentPlainCaretPosition = 0;
                 }
+            }
+            
+            private boolean isParentElement(HTML.Tag tag) {
+                boolean isParentElement = false;
+                Element e = getCurrentParentElement();
+                if (e.getName().equalsIgnoreCase(tag.toString())) {
+                    isParentElement = true;
+                }
+                return isParentElement;
+            }
+            
+            private Element getElement() {
+                return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition());
+            }
+            
+            private Element getCurrentParentElement() {
+                return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
             }
         });
 
@@ -286,15 +301,9 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int start = informationArea.getSelectionStart();
-                    int end = informationArea.getSelectionEnd();
-                    
-                    
-                    
-                    String list = "<" + type + "><li>....</li></" + type + ">";
-                    if (start != end) { // selection
-                        informationArea.getDocument().remove(start, end - start);
-                    }
+                    String list = "<" + type + "><li></li></" + type + ">";                    
                     informationArea.insertText(start, list, 1, tag);
+                    informationArea.setCaretPosition(start + 1);
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
@@ -380,6 +389,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    if (isInPreviewMode()) {
+                        displayButtonsForPlainMode();
+                    }
+                    displaySaveCancelButton();
+                }
                 // show caret
                 informationArea.requestFocusInWindow();
             }
@@ -389,6 +405,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    if (isInPreviewMode()) {
+                        displayButtonsForPlainMode();
+                    }
+                    displaySaveCancelButton();
+                }
                 // show caret
                 informationArea.requestFocusInWindow();
             }
@@ -398,6 +421,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 super.actionPerformed(e);
+                String selectedText = informationArea.getSelectedText();
+                if (selectedText != null && selectedText.length() > 0) {
+                    if (isInPreviewMode()) {
+                        displayButtonsForPlainMode();
+                    }
+                    displaySaveCancelButton();
+                }
                 // show caret
                 informationArea.requestFocusInWindow();
             }
@@ -408,42 +438,42 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        boldButton.addActionListener(new boldAction());
-        // set the keystroke on the button (so won't work in preview mode)
-        // CTRL B: Bold
-        boldButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "Bold");
-        boldButton.getActionMap().put("Bold", new boldAction());
+        boldButton.addActionListener(new boldAction());        
         boldButton.setToolTipText("CTRL + B");
         boldButton.setVisible(false);
         add(boldButton, gbc);
+        // set the keystroke on the area (to work in preview mode as well)
+        // CTRL B: Bold
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "Bold");
+        informationArea.getActionMap().put("Bold", new boldAction());
         // italic button
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        italicButton.addActionListener(new italicAction());
-        // set the keystroke on the button (so won't work in preview mode; however this will conflict with CTRL+I keystroke in ToDoPanel)
-        // CTRL I: Italic
-        italicButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Italic");
-        italicButton.getActionMap().put("Italic", new italicAction());
+        italicButton.addActionListener(new italicAction());        
         italicButton.setToolTipText("CTRL + I");
         italicButton.setVisible(false);
         add(italicButton, gbc);
+        // set the keystroke on the area (to work in preview mode as well)
+        // CTRL I: Italic
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Italic");
+        informationArea.getActionMap().put("Italic", new italicAction());
         // underline button
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        underlineButton.addActionListener(new underlineAction());
-        // set the keystroke on the button (so won't work in preview mode)
-        // CTRL U: Underline
-        underlineButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Underline");
-        underlineButton.getActionMap().put("Underline", new underlineAction());
+        underlineButton.addActionListener(new underlineAction());        
         underlineButton.setToolTipText("CTRL + U");
         underlineButton.setVisible(false);
         add(underlineButton, gbc);
+        // set the keystroke on the area (to work in preview mode as well)
+        // CTRL U: Underline
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Underline");
+        informationArea.getActionMap().put("Underline", new underlineAction());
         // background color button
         gbc.gridx = 3;
         gbc.gridy = 1;
@@ -477,6 +507,7 @@ public class CommentPanel extends JPanel {
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        displaySaveCancelButton();
                     }
                 }
                 // show caret
@@ -519,6 +550,7 @@ public class CommentPanel extends JPanel {
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        displaySaveCancelButton();
                     }
                 }
                 // show caret
@@ -554,7 +586,7 @@ public class CommentPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
         // ENTER: insert link (requires focus on the link text field)        
-        linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
+        linkButton.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
         class linkEnterAction extends AbstractAction {
 
             /**
@@ -568,16 +600,14 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int start = informationArea.getSelectionStart();
-                    int end = informationArea.getSelectionEnd();
+                    int start = informationArea.getSelectionStart();                    
                     if (!linkTextField.getText().isEmpty()) {
                         String href = linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText();
-                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
-                        if (start != end) { // selection
-                            informationArea.getDocument().remove(start, end - start);
-                        }
+                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";                        
                         informationArea.insertText(start, link, HTML.Tag.A);
-                        linkTextField.setText("http://"); // reset field                        
+                        informationArea.setCaretPosition(start + linkTextField.getText().length());
+                        linkTextField.setText("http://"); // reset field
+                        displaySaveCancelButton();
                     }
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
@@ -642,6 +672,7 @@ public class CommentPanel extends JPanel {
                 informationArea.requestFocusInWindow();
             }
         };
+        // WHEN_IN_FOCUSED_WINDOW makes Save shortcut work (WHEN_FOCUSED doesn't)
         saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
         saveButton.getActionMap().put("Save", saveAction);
         saveButton.setToolTipText("CTRL + S");
@@ -719,8 +750,6 @@ public class CommentPanel extends JPanel {
             if (selectedActivityId != activityIdTmp) {
                 // New activity selected
                 hideSaveCancelButton();
-                // Discard all previous edit
-                //undoManager.discardAllEdits();                
                 informationArea.setText(comment);
                 // record temp info : only whe selecting an activity and recording edits    
                 activityIdTmp = selectedActivityId;
@@ -728,17 +757,14 @@ public class CommentPanel extends JPanel {
                 currentPlainCaretPosition = 0;
             } else {
                 // Currently selected activity                
-                // Check undo state
-                //if (informationArea.isPlainMode() && undoManager.canUndo()) {
                 if (informationArea.isPlainMode()) {
                     // The comment might have been modified previously
                     comment = currentPlainInformation;
-                    displaySaveCancelButton();
+                    //displaySaveCancelButton();
                 }
                 informationArea.setText(comment);
                 // Show caret
                 informationArea.requestFocusInWindow();
-                //if (informationArea.isPlainMode() && undoManager.canUndo()) {
                 if (informationArea.isPlainMode()) {
                     informationArea.setCaretPosition(currentPlainCaretPosition);
                 } else {
@@ -759,6 +785,10 @@ public class CommentPanel extends JPanel {
 
     public JLabel getIconLabel() {
         return iconLabel;
+    }
+    
+    private boolean isInPreviewMode() {
+        return previewButton.isVisible();
     }
 
     private void displayButtonsForHTMLMode() {
@@ -814,80 +844,4 @@ public class CommentPanel extends JPanel {
         saveButton.setVisible(false);
         cancelButton.setVisible(false);
     }
-
-    /*class UndoHandlerListener implements UndoableEditListener {
-
-     @Override
-     public void undoableEditHappened(UndoableEditEvent e) {
-     undoManager.addEdit(e.getEdit());
-     undoAction.update();
-     redoAction.update();
-     }
-     }
-
-     class UndoAction extends AbstractAction {
-
-     public UndoAction() {
-     super("Undo");
-     setEnabled(false);
-     }
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     try {
-     undoManager.undo();
-     } catch (CannotUndoException ignored) {
-     // we do not want log this
-     } catch (ArrayIndexOutOfBoundsException ex) {
-     logger.error("", ex);
-     }
-     update();
-     redoAction.update();
-     }
-
-     // Only here we record the comment and caret and show/hive the buttons
-     // because this is called whenever an edit is added, a undo or a redo action  is performed
-     protected void update() {
-     currentInformation = informationArea.getText();
-     currentPlainCaretPosition = informationArea.getCaretPosition();
-     if (undoManager.canUndo()) {
-     displaySaveCancelButton();
-     setEnabled(true);
-     putValue(Action.NAME, undoManager.getUndoPresentationName());
-     } else {
-     hideSaveCancelButton();
-     setEnabled(false);
-     putValue(Action.NAME, "Undo");
-     }
-     }
-     }
-
-     class RedoAction extends AbstractAction {
-
-     public RedoAction() {
-     super("Redo");
-     setEnabled(false);
-     }
-
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     try {
-     undoManager.redo();
-     } catch (CannotRedoException ignored) {
-     // we do not want log this
-     }
-     update();
-     undoAction.update();
-     }
-
-     protected void update() {
-     if (undoManager.canRedo()) {
-     setEnabled(true);
-     putValue(Action.NAME, undoManager.getRedoPresentationName());
-     } else {
-     setEnabled(false);
-     putValue(Action.NAME, "Redo");
-     }
-     }
-     }*/
 }
