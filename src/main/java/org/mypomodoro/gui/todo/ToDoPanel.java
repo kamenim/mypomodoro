@@ -73,6 +73,7 @@ import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
@@ -478,6 +479,32 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control E", new createExternal());
+        
+        // Activate Control D (duplicate task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Control D");
+        class duplicate extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (table.getSelectedRowCount() == 1) {
+                    int row = table.getSelectedRow();
+                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+                    Activity originalCopiedActivity = getActivityById(id);                    
+                    try {
+                        Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                        copiedActivity.setId(-1); // new activity
+                        copiedActivity.setName("(+) " + copiedActivity.getName());
+                        copiedActivity.setActualPoms(0);
+                        copiedActivity.setEstimatedPoms(0);
+                        copiedActivity.setOverestimatedPoms(0);
+                        // Insert the duplicate into the activity list
+                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));                        
+                    } catch (CloneNotSupportedException ignored) {
+                    }                    
+                }
+            }
+        }
+        am.put("Control D", new duplicate());
 
         // Activate Control R (scroll back to the current running/selected task
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
