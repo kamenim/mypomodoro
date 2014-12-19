@@ -27,6 +27,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -72,15 +73,19 @@ public class HtmlEditor extends JTextPane {
         // Turn on bi-directional text
         getDocument().putProperty("i18n", Boolean.TRUE);
         // set default HTML body settings        
-        String bodyRule = "body {"
+        /*String bodyRule = "body {"
                 + "color: #000;"
                 + "font-family: " + getFont().getFamily() + ";"
                 + "font-size: " + getFont().getSize() + "pt;"
                 + "margin: 1px;"
                 + "}";
-        ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);
+        ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);*/
+        // This line replaces the previous rule by instructing the editor to use the font of the UIManager        
+        putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        
         // limit the number of characters to 1000 to avoid java head size issue
         ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000));
+        
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:
         // - Formatting is preserved after: bold, italic, underline, foreground style --> nothing to do here
