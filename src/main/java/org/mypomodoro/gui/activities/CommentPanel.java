@@ -65,8 +65,6 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO fix size of button and tab panels
-// TODO fix exception Exception in thread "AWT-EventQueue-0" java.lang.IllegalArgumentException: offsetLimit must be after current position
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -179,31 +177,20 @@ public class CommentPanel extends JPanel {
                         && e.getKeyCode() != KeyEvent.VK_PAGE_UP
                         && e.getKeyCode() != KeyEvent.VK_PAGE_DOWN) {
 
-                    // Add item to list when pressing ENTER within a list
+                    // Add item to list when pressing ENTER within a list (overriding default behaviour)
                     if (e.getKeyCode() == KeyEvent.VK_ENTER
                             && isParentElement(HTML.Tag.LI)) {
                         Element element = getCurrentParentElement();
                         try {
                             e.consume(); // the event must be 'consumed' before inserting!
-                            String item = "<li></li>";                            
+                            String item = "<li></li>";
                             ((HTMLDocument) informationArea.getDocument()).insertAfterEnd(element, item);
                             informationArea.setCaretPosition(element.getEndOffset());
                         } catch (BadLocationException ignored) {
-                        } catch (IOException eignored) {
+                        } catch (IOException ignored) {
                         }
-                    }                    
-                    
-                    /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE
-                            && isParentElement(HTML.Tag.LI)) {
-                        try {
-                            if (getCurrentParentElement().getParentElement().getElementCount() == 1) {                                
-                                getCurrentParentElement().getDocument().remove(getElement().getStartOffset(), getElement().getEndOffset());
-                                System.err.println("ok");
-                            }
-                        } catch (BadLocationException ex) {                            
-                        }                                               
-                    }*/ 
-                    
+                    }
+
                     int row = panel.getTable().getSelectedRow();
                     activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     displaySaveCancelButton();
@@ -218,13 +205,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (informationArea.isPlainMode()) {
-                    currentPlainInformation = informationArea.getText();
                     currentPlainCaretPosition = informationArea.getCaretPosition();
+                    currentPlainInformation = informationArea.getText();
                 } else {
                     currentPlainCaretPosition = 0;
                 }
             }
-            
+
             private boolean isParentElement(HTML.Tag tag) {
                 boolean isParentElement = false;
                 Element e = getCurrentParentElement();
@@ -233,11 +220,7 @@ public class CommentPanel extends JPanel {
                 }
                 return isParentElement;
             }
-            
-            private Element getElement() {
-                return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition());
-            }
-            
+
             private Element getCurrentParentElement() {
                 return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
             }
@@ -271,6 +254,7 @@ public class CommentPanel extends JPanel {
                             informationArea.getDocument().remove(start, end - start);
                         }
                         informationArea.getDocument().insertString(start, clipboardText, null);
+                        displaySaveCancelButton();
                         // Show caret
                         informationArea.requestFocusInWindow();
                     } catch (BadLocationException ignored) {
@@ -301,9 +285,10 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int start = informationArea.getSelectionStart();
-                    String list = "<" + type + "><li></li></" + type + ">";                    
+                    String list = "<" + type + "><li></li></" + type + ">";
                     informationArea.insertText(start, list, 1, tag);
                     informationArea.setCaretPosition(start + 1);
+                    displaySaveCancelButton();
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
@@ -391,9 +376,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    if (isInPreviewMode()) {
-                        displayButtonsForPlainMode();
-                    }
+                    informationArea.setCaretPosition(informationArea.getSelectionEnd());                    
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -407,9 +390,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    if (isInPreviewMode()) {
-                        displayButtonsForPlainMode();
-                    }
+                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -423,9 +404,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    if (isInPreviewMode()) {
-                        displayButtonsForPlainMode();
-                    }
+                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -438,7 +417,7 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        boldButton.addActionListener(new boldAction());        
+        boldButton.addActionListener(new boldAction());
         boldButton.setToolTipText("CTRL + B");
         boldButton.setVisible(false);
         add(boldButton, gbc);
@@ -452,7 +431,7 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        italicButton.addActionListener(new italicAction());        
+        italicButton.addActionListener(new italicAction());
         italicButton.setToolTipText("CTRL + I");
         italicButton.setVisible(false);
         add(italicButton, gbc);
@@ -466,7 +445,7 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
-        underlineButton.addActionListener(new underlineAction());        
+        underlineButton.addActionListener(new underlineAction());
         underlineButton.setToolTipText("CTRL + U");
         underlineButton.setVisible(false);
         add(underlineButton, gbc);
@@ -491,6 +470,7 @@ public class CommentPanel extends JPanel {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
+                informationArea.requestFocus(); // display selection
                 Color newColor = JColorChooser.showDialog(
                         null,
                         Labels.getString("BurndownChartPanel.Choose a color"),
@@ -507,6 +487,7 @@ public class CommentPanel extends JPanel {
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
                 }
@@ -539,6 +520,7 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                informationArea.requestFocus(); // display selection
                 Color newColor = JColorChooser.showDialog(
                         null,
                         Labels.getString("BurndownChartPanel.Choose a color"),
@@ -550,6 +532,7 @@ public class CommentPanel extends JPanel {
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
                 }
@@ -600,10 +583,10 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int start = informationArea.getSelectionStart();                    
+                    int start = informationArea.getSelectionStart();
                     if (!linkTextField.getText().isEmpty()) {
                         String href = linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText();
-                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";                        
+                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
                         informationArea.setCaretPosition(start + linkTextField.getText().length());
                         linkTextField.setText("http://"); // reset field
@@ -665,8 +648,6 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
-                // Discard all previous edit
-                //undoManager.discardAllEdits();
                 hideSaveCancelButton();
                 // show caret
                 informationArea.requestFocusInWindow();
@@ -698,8 +679,6 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 previewButton.getActionListeners()[0].actionPerformed(e);
-                // Discard all previous edit
-                //undoManager.discardAllEdits();
                 hideSaveCancelButton();
                 informationArea.setEditable(false);
                 int row = panel.getTable().getSelectedRow();
@@ -722,9 +701,9 @@ public class CommentPanel extends JPanel {
                 comment += "<b>Story line</b>";
                 comment += "<ul>";
                 comment += "<li>As a {user role}, I want to {action} in order to {goal}.</li>";
-                comment += "</ul>";                
+                comment += "</ul>";
                 comment += "<b>User acceptance criteria</b>";
-                comment += "<ol>";                
+                comment += "<ol>";
                 comment += "<li>...</li>";
                 comment += "<li>...</li>";
                 comment += "<li>...</li>";
@@ -737,8 +716,9 @@ public class CommentPanel extends JPanel {
                 comment += "</ol>";
                 comment += "</p>";
             }
-        } else if (!comment.contains("</body>")) {
-            // Backward compatility 3.0.X and imports
+        }
+        if (!comment.contains("</body>")) {
+            // Backward compatility 3.0.X, imports and test data
             // Check if there is a body tag; if not replace trailing return carriage with P tag
             comment = "<p style=\"margin-top: 0\">" + comment;
             comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
@@ -766,7 +746,7 @@ public class CommentPanel extends JPanel {
                 // Show caret
                 informationArea.requestFocusInWindow();
                 if (informationArea.isPlainMode()) {
-                    informationArea.setCaretPosition(currentPlainCaretPosition);
+                    informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentPlainCaretPosition ? currentPlainCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
                 } else {
                     // disable auto scrolling
                     informationArea.setCaretPosition(0);
@@ -785,10 +765,6 @@ public class CommentPanel extends JPanel {
 
     public JLabel getIconLabel() {
         return iconLabel;
-    }
-    
-    private boolean isInPreviewMode() {
-        return previewButton.isVisible();
     }
 
     private void displayButtonsForHTMLMode() {

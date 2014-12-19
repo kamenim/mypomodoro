@@ -195,23 +195,25 @@ public class HtmlEditor extends JTextPane {
             maxCharacters = maxChars;
         }
 
+        // Paste
         @Override
         public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
                 throws BadLocationException {
             if ((fb.getDocument().getLength() + str.length()) <= maxCharacters) {
-                super.insertString(fb, offs, str, a);
+                super.insertString(fb, offs, str, a);                
             } else {
-                Toolkit.getDefaultToolkit().beep();
+                Toolkit.getDefaultToolkit().beep();                
             }
         }
 
+        // Write
         @Override
         public void replace(FilterBypass fb, int offs, int length, String str, AttributeSet a)
                 throws BadLocationException {
             if ((fb.getDocument().getLength() + str.length() - length) <= maxCharacters) {
                 super.replace(fb, offs, length, str, a);
             } else {
-                Toolkit.getDefaultToolkit().beep();
+                Toolkit.getDefaultToolkit().beep();                
             }
         }
     }
