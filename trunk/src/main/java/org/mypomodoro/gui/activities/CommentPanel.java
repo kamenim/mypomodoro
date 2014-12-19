@@ -65,6 +65,8 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
+// TODO remove style when foreground set to black and background set to white
+// TODO find a way to backspace LI without removing the line before
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -376,7 +378,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    informationArea.setCaretPosition(informationArea.getSelectionEnd());                    
+                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -474,7 +476,7 @@ public class CommentPanel extends JPanel {
                 Color newColor = JColorChooser.showDialog(
                         null,
                         Labels.getString("BurndownChartPanel.Choose a color"),
-                        Color.BLACK);
+                        Color.YELLOW);
                 if (newColor != null) {
                     //Add span Tag
                     String htmlStyle = "background-color:" + getHTMLColor(newColor);
@@ -486,7 +488,11 @@ public class CommentPanel extends JPanel {
                     String selectedText = informationArea.getSelectedText();
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
-                        informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        if (getHTMLColor(newColor).equalsIgnoreCase("#FFFFFF")) {
+                            informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), new SimpleAttributeSet(), true);
+                        } else {
+                            informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        }
                         informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
@@ -697,8 +703,7 @@ public class CommentPanel extends JPanel {
         if (comment.isEmpty()) { // no comment            
             if (activity.isStory()) {
                 // default template for User Story type
-                comment = "<p style=\"margin-top: 0\">";
-                comment += "<b>Story line</b>";
+                comment = "<b>Story line</b>";
                 comment += "<ul>";
                 comment += "<li>As a {user role}, I want to {action} in order to {goal}.</li>";
                 comment += "</ul>";
@@ -714,6 +719,7 @@ public class CommentPanel extends JPanel {
                 comment += "<li>...</li>";
                 comment += "<li>...</li>";
                 comment += "</ol>";
+                comment += "<p style=\"margin-top: 0\">"; // allow some space at the end of the text
                 comment += "</p>";
             }
         }
