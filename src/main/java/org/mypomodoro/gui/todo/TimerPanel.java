@@ -107,7 +107,7 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         TimePlusButton timePlus = new TimePlusButton(pomodoro);
-        timePlus.setOpaque(true);
+        timePlus.setOpaque(true); // must be set to 'true' otherwise the current UI of the system (eg Windows XP) could make it completely transparent
         timePlus.setMargin(new Insets(1, 1, 1, 1));
         timePlus.setFocusPainted(false); // removes borders around text
         add(timePlus, gbc);
