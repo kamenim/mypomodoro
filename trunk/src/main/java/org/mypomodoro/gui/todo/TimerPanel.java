@@ -83,7 +83,7 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHEAST;
         TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
-        timeMinus.setOpaque(false);
+        timeMinus.setOpaque(true);
         timeMinus.setMargin(new Insets(1, 1, 1, 1));
         timeMinus.setFocusPainted(false); // removes borders around text
         add(timeMinus, gbc);
@@ -107,7 +107,7 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         TimePlusButton timePlus = new TimePlusButton(pomodoro);
-        timePlus.setOpaque(false);
+        timePlus.setOpaque(true);
         timePlus.setMargin(new Insets(1, 1, 1, 1));
         timePlus.setFocusPainted(false); // removes borders around text
         add(timePlus, gbc);
@@ -120,7 +120,7 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.165;
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.SOUTH;
-        startButton.setOpaque(false);
+        startButton.setOpaque(true);
         startButton.setForeground(ColorUtil.BLACK);
         startButton.setMargin(new Insets(5, 15, 5, 15));
         startButton.setFocusPainted(false); // removes borders around text        

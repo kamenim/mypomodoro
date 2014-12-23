@@ -16,17 +16,21 @@
  */
 package org.mypomodoro.util;
 
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Enumeration;
 import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
@@ -38,6 +42,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
+import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -57,7 +62,8 @@ public class HtmlEditor extends JTextPane {
     /**
      * Override paint method to turn on the anti-aliasing property
      * http://stackoverflow.com/questions/15868894/unordered-list-bullets-look-pixelated-in-jeditorpane
-     * @param g 
+     *
+     * @param g
      */
     @Override
     public void paint(Graphics g) {
@@ -71,21 +77,21 @@ public class HtmlEditor extends JTextPane {
         setEditorKit(new HTMLEditorKit()); // content type = text/html        
         setContentType("text/html;charset=UTF-8");
         // Turn on bi-directional text
-        getDocument().putProperty("i18n", Boolean.TRUE);
+        getDocument().putProperty("i18n", Boolean.TRUE);        
         // set default HTML body settings        
         /*String bodyRule = "body {"
-                + "color: #000;"
-                + "font-family: " + getFont().getFamily() + ";"
-                + "font-size: " + getFont().getSize() + "pt;"
-                + "margin: 1px;"
-                + "}";
-        ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);*/
+         + "color: #000;"
+         + "font-family: " + getFont().getFamily() + ";"
+         + "font-size: " + getFont().getSize() + "pt;"
+         + "margin: 1px;"
+         + "}";
+         ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);*/
         // This line replaces the previous rule by instructing the editor to use the font of the UIManager        
         putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-        
+
         // limit the number of characters to 1000 to avoid java head size issue
         ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000));
-        
+
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:
         // - Formatting is preserved after: bold, italic, underline, foreground style --> nothing to do here
@@ -100,7 +106,7 @@ public class HtmlEditor extends JTextPane {
                     @Override
                     public void run() {
                         int start = HtmlEditor.this.getSelectionStart();
-                        int end = HtmlEditor.this.getSelectionEnd();
+                        //int end = HtmlEditor.this.getSelectionEnd();
                         AttributeSet selectionAttributes = HtmlEditor.this.getStyledDocument().getCharacterElement(start).getAttributes();
                         MutableAttributeSet inputAttr = HtmlEditor.this.getInputAttributes();
                         /*MutableAttributeSet BOLD = new SimpleAttributeSet();
@@ -140,7 +146,7 @@ public class HtmlEditor extends JTextPane {
         addHyperlinkListener(new MyHyperlinkListener());
     }
 
-    // Make URLs clickable in preview mode
+    // Make hyperlinks clickable in preview mode
     class MyHyperlinkListener implements HyperlinkListener {
 
         @Override
@@ -156,11 +162,34 @@ public class HtmlEditor extends JTextPane {
         }
     }
 
+    // Set tool tip on hyperlinks in preview mode
+    @Override
+    public String getToolTipText(MouseEvent event) {
+        String toolTip = null;
+        JTextPane editor = (JTextPane) event.getSource();
+        if (!editor.isEditable()
+                && editor.getCursor().getType() == Cursor.HAND_CURSOR) {            
+            Point pt = new Point(event.getX(), event.getY());
+            int pos = editor.viewToModel(pt);
+            if (pos >= 0) {
+                Element e = ((HTMLDocument)editor.getDocument()).getCharacterElement(pos);                              
+                SimpleAttributeSet attribute = (SimpleAttributeSet) e.getAttributes().getAttribute(HTML.Tag.A);
+                if (attribute != null) {
+                    String href = (String) attribute.getAttribute(HTML.Attribute.HREF);
+                    toolTip = href;
+                }
+            } else {
+                toolTip = null;
+            }
+        }
+        return toolTip;
+    }
+    
     // Insert text at the cursor position
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
         insertText(start, text, 0, insertTag);
     }
-    
+
     // Insert text at the cursor position
     public void insertText(int start, String text, int popDepth, Tag insertTag) throws BadLocationException, IOException {
         ((HTMLEditorKit) getEditorKit()).insertHTML((HTMLDocument) getDocument(), start, text, popDepth, 0, insertTag);
@@ -205,9 +234,9 @@ public class HtmlEditor extends JTextPane {
         public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
                 throws BadLocationException {
             if ((fb.getDocument().getLength() + str.length()) <= maxCharacters) {
-                super.insertString(fb, offs, str, a);                
+                super.insertString(fb, offs, str, a);
             } else {
-                Toolkit.getDefaultToolkit().beep();                
+                Toolkit.getDefaultToolkit().beep();
             }
         }
 
@@ -218,7 +247,7 @@ public class HtmlEditor extends JTextPane {
             if ((fb.getDocument().getLength() + str.length() - length) <= maxCharacters) {
                 super.replace(fb, offs, length, str, a);
             } else {
-                Toolkit.getDefaultToolkit().beep();                
+                Toolkit.getDefaultToolkit().beep();
             }
         }
     }
