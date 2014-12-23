@@ -19,8 +19,10 @@ package org.mypomodoro.util;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
@@ -37,10 +39,27 @@ public class CustomTableHeader extends JTableHeader {
         this.customTable = table; // setTable(table) / getTable() won't do any good
         this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
-        //setBackground(ColorUtil.BLACK);
+        Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
+        setBorder(border);       
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+        
+        /* This code sets a black border around each cell of the header but the rendering is not that nice
+        final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
+        setDefaultRenderer(new TableCellRenderer() {
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = (JLabel) render.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);                
+                Border border = BorderFactory.createLineBorder(ColorUtil.BLACK, 1);                
+                label.setBorder(border);                
+                label.setHorizontalAlignment(SwingConstants.CENTER);                
+                return label;
+            }
+        });
+        */
+        
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
-        renderer.setHorizontalAlignment(JLabel.CENTER);
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
         setDefaultRenderer(renderer);
     }
 
