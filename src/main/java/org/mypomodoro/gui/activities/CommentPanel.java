@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ToolTipManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -67,6 +68,7 @@ import org.mypomodoro.util.Labels;
  */
 // TODO remove style when foreground set to black and background set to white
 // TODO find a way to backspace LI without removing the line before
+// TODO set caret position in preview mode
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -101,6 +103,9 @@ public class CommentPanel extends JPanel {
     public CommentPanel(IListPanel iListPanel, boolean showIconLabel) {
         this.panel = iListPanel;
         this.showIconLabel = showIconLabel;
+
+        // Register the pane with ToolTipManager for tool tip to show
+        ToolTipManager.sharedInstance().registerComponent(informationArea);
 
         // This will disable the wrapping of JTextPane
         // http://stackoverflow.com/questions/4702891/toggling-text-wrap-in-a-jtextpane/4705323#4705323        
@@ -145,7 +150,8 @@ public class CommentPanel extends JPanel {
         });
 
         /**
-         * Displays the save and cancel buttons Records the versions
+         * Displays the save and cancel buttons. Records the current version and
+         * caret position.
          */
         informationArea.addKeyListener(new KeyListener() {
 
@@ -206,25 +212,12 @@ public class CommentPanel extends JPanel {
              */
             @Override
             public void keyReleased(KeyEvent e) {
-                if (informationArea.isPlainMode()) {
-                    currentPlainCaretPosition = informationArea.getCaretPosition();
-                    currentPlainInformation = informationArea.getText();
-                } else {
-                    currentPlainCaretPosition = 0;
-                }
-            }
-
-            private boolean isParentElement(HTML.Tag tag) {
-                boolean isParentElement = false;
-                Element e = getCurrentParentElement();
-                if (e.getName().equalsIgnoreCase(tag.toString())) {
-                    isParentElement = true;
-                }
-                return isParentElement;
-            }
-
-            private Element getCurrentParentElement() {
-                return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
+                //if (informationArea.isPlainMode()) {
+                currentPlainCaretPosition = informationArea.getCaretPosition();
+                currentPlainInformation = informationArea.getText();
+                /*} else {
+                 currentPlainCaretPosition = 0;
+                 }*/
             }
         });
 
@@ -337,8 +330,7 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 displayPreviewMode();
                 informationArea.setEditable(false);
-                // disable auto scrolling
-                //informationArea.setCaretPosition(0);
+                informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentPlainCaretPosition ? currentPlainCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
             }
         });
         previewButton.setVisible(false);
@@ -360,12 +352,13 @@ public class CommentPanel extends JPanel {
                 }
                 // Show caret
                 informationArea.requestFocusInWindow();
-                if (informationArea.isPlainMode()) {
-                    informationArea.setCaretPosition(currentPlainCaretPosition);
-                } else {
-                    // disable auto scrolling
-                    informationArea.setCaretPosition(0);
-                }
+                //if (informationArea.isPlainMode()) {
+                //informationArea.setCaretPosition(currentPlainCaretPosition);
+                /*} else {
+                 // disable auto scrolling
+                 informationArea.setCaretPosition(0);
+                 }*/
+                informationArea.setCaretPosition(0);
             }
         });
         htmlButton.setVisible(false);
@@ -488,11 +481,12 @@ public class CommentPanel extends JPanel {
                     String selectedText = informationArea.getSelectedText();
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
-                        if (getHTMLColor(newColor).equalsIgnoreCase("#FFFFFF")) {
-                            informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), new SimpleAttributeSet(), true);
-                        } else {
-                            informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
-                        }
+                        /* There seems to be no easy way to completely remove a style (not replace). Using an EMPTY set of attributes on setCharacterAttributes is completely buggy.
+                         if (getHTMLColor(newColor).equalsIgnoreCase("#FFFFFF")) {
+                         informationArea.getStyledDocument().setCharacterAttributes(start, informationArea.getSelectionEnd() - start, SimpleAttributeSet.EMPTY, true);                            
+                         } else {*/
+                        informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
+                        //}
                         informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
@@ -589,10 +583,10 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int start = informationArea.getSelectionStart();
+                    int start = informationArea.getCaretPosition();
                     if (!linkTextField.getText().isEmpty()) {
                         String href = linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText();
-                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
+                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";           
                         informationArea.insertText(start, link, HTML.Tag.A);
                         informationArea.setCaretPosition(start + linkTextField.getText().length());
                         linkTextField.setText("http://"); // reset field
@@ -743,11 +737,11 @@ public class CommentPanel extends JPanel {
                 currentPlainCaretPosition = 0;
             } else {
                 // Currently selected activity                
-                if (informationArea.isPlainMode()) {
-                    // The comment might have been modified previously
-                    comment = currentPlainInformation;
-                    //displaySaveCancelButton();
-                }
+                //if (informationArea.isPlainMode()) {
+                // The comment might have been modified previously
+                comment = currentPlainInformation;
+                //displaySaveCancelButton();
+                //}
                 informationArea.setText(comment);
                 // Show caret
                 informationArea.requestFocusInWindow();
@@ -825,5 +819,18 @@ public class CommentPanel extends JPanel {
     private void hideSaveCancelButton() {
         saveButton.setVisible(false);
         cancelButton.setVisible(false);
+    }
+
+    private boolean isParentElement(HTML.Tag tag) {
+        boolean isParentElement = false;
+        Element e = getCurrentParentElement();
+        if (e.getName().equalsIgnoreCase(tag.toString())) {
+            isParentElement = true;
+        }
+        return isParentElement;
+    }
+
+    private Element getCurrentParentElement() {
+        return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
     }
 }
