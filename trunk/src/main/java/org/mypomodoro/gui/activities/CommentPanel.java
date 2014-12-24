@@ -66,16 +66,14 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO remove style when foreground set to black and background set to white
 // TODO find a way to backspace LI without removing the line before
-// TODO set caret position in preview mode
+// TODO bug plain to preview: contan disappear sometimes
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
     private final IListPanel panel;
-    private int activityIdTmp = -1;
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
@@ -93,8 +91,9 @@ public class CommentPanel extends JPanel {
     private boolean showIconLabel = false;
 
     // Record
-    protected String currentPlainInformation = "";
-    protected int currentPlainCaretPosition = 0;
+    private int currentlySelectedActivityId = -1;
+    protected String currentlySelectedActivityText = "";
+    protected int currentlySelectedActivityCaretPosition = 0;
 
     public CommentPanel(IListPanel iListPanel) {
         this(iListPanel, false);
@@ -199,8 +198,8 @@ public class CommentPanel extends JPanel {
                         }
                     }
 
-                    int row = panel.getTable().getSelectedRow();
-                    activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    //int row = panel.getTable().getSelectedRow();
+                    //activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     displaySaveCancelButton();
                 }
             }
@@ -212,12 +211,8 @@ public class CommentPanel extends JPanel {
              */
             @Override
             public void keyReleased(KeyEvent e) {
-                //if (informationArea.isPlainMode()) {
-                currentPlainCaretPosition = informationArea.getCaretPosition();
-                currentPlainInformation = informationArea.getText();
-                /*} else {
-                 currentPlainCaretPosition = 0;
-                 }*/
+                currentlySelectedActivityCaretPosition = informationArea.getCaretPosition();
+                currentlySelectedActivityText = informationArea.getText();                
             }
         });
 
@@ -328,9 +323,15 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean htmlMode = informationArea.isHTMLMode();
                 displayPreviewMode();
                 informationArea.setEditable(false);
-                informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentPlainCaretPosition ? currentPlainCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
+                if (htmlMode) {
+                    currentlySelectedActivityCaretPosition = 0; // reset
+                    informationArea.setCaretPosition(0); // the caret position in HTML mode doesn't apply to preview mode                    
+                } else {
+                    informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
+                }
             }
         });
         previewButton.setVisible(false);
@@ -350,15 +351,11 @@ public class CommentPanel extends JPanel {
                 } else { // html mode --> plain mode
                     displayButtonsForPlainMode();
                 }
+                currentlySelectedActivityCaretPosition = 0; // reset
+                // disable auto scrolling
+                informationArea.setCaretPosition(0);
                 // Show caret
                 informationArea.requestFocusInWindow();
-                //if (informationArea.isPlainMode()) {
-                //informationArea.setCaretPosition(currentPlainCaretPosition);
-                /*} else {
-                 // disable auto scrolling
-                 informationArea.setCaretPosition(0);
-                 }*/
-                informationArea.setCaretPosition(0);
             }
         });
         htmlButton.setVisible(false);
@@ -371,7 +368,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
+                    //informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -385,7 +382,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
+                    //informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -399,7 +396,7 @@ public class CommentPanel extends JPanel {
                 super.actionPerformed(e);
                 String selectedText = informationArea.getSelectedText();
                 if (selectedText != null && selectedText.length() > 0) {
-                    informationArea.setCaretPosition(informationArea.getSelectionEnd());
+                    //informationArea.setCaretPosition(informationArea.getSelectionEnd());
                     displaySaveCancelButton();
                 }
                 // show caret
@@ -487,7 +484,7 @@ public class CommentPanel extends JPanel {
                          } else {*/
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
                         //}
-                        informationArea.setCaretPosition(informationArea.getSelectionEnd());
+                        //informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
                 }
@@ -532,7 +529,7 @@ public class CommentPanel extends JPanel {
                     if (selectedText != null && selectedText.length() > 0) {
                         int start = informationArea.getSelectionStart();
                         informationArea.getStyledDocument().setCharacterAttributes(start, selectedText.length(), COLOR, false);
-                        informationArea.setCaretPosition(informationArea.getSelectionEnd());
+                        //informationArea.setCaretPosition(informationArea.getSelectionEnd());
                         displaySaveCancelButton();
                     }
                 }
@@ -549,7 +546,7 @@ public class CommentPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 4;
         // Clean text field when clicking
-        linkTextField.addMouseListener(new MouseAdapter() {
+        /*linkTextField.addMouseListener(new MouseAdapter() {
 
             // click
             @Override
@@ -558,7 +555,7 @@ public class CommentPanel extends JPanel {
                     linkTextField.setText("");
                 }
             }
-        });
+        });*/
         linkTextField.setText("http://");
         linkTextField.setVisible(false);
         add(linkTextField, gbc);
@@ -586,7 +583,7 @@ public class CommentPanel extends JPanel {
                     int start = informationArea.getCaretPosition();
                     if (!linkTextField.getText().isEmpty()) {
                         String href = linkTextField.getText().startsWith("www") ? ("http://" + linkTextField.getText()) : linkTextField.getText();
-                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";           
+                        String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
                         informationArea.setCaretPosition(start + linkTextField.getText().length());
                         linkTextField.setText("http://"); // reset field
@@ -684,8 +681,8 @@ public class CommentPanel extends JPanel {
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity activity = panel.getActivityById(id);
-                currentPlainInformation = activity.getNotes().trim();
-                currentPlainCaretPosition = 0;
+                currentlySelectedActivityText = activity.getNotes().trim();
+                currentlySelectedActivityCaretPosition = 0;
                 showInfo(activity);
             }
         });
@@ -694,28 +691,18 @@ public class CommentPanel extends JPanel {
 
     public void showInfo(final Activity activity) {
         String comment = activity.getNotes().trim();
-        if (comment.isEmpty()) { // no comment            
-            if (activity.isStory()) {
-                // default template for User Story type
-                comment = "<b>Story line</b>";
-                comment += "<ul>";
-                comment += "<li>As a {user role}, I want to {action} in order to {goal}.</li>";
-                comment += "</ul>";
-                comment += "<b>User acceptance criteria</b>";
-                comment += "<ol>";
-                comment += "<li>...</li>";
-                comment += "<li>...</li>";
-                comment += "<li>...</li>";
-                comment += "</ol>";
-                comment += "<b>Test cases</b>";
-                comment += "<ol>";
-                comment += "<li>...</li>";
-                comment += "<li>...</li>";
-                comment += "<li>...</li>";
-                comment += "</ol>";
-                comment += "<p style=\"margin-top: 0\">"; // allow some space at the end of the text
-                comment += "</p>";
-            }
+        if (comment.isEmpty() && activity.isStory()) {
+            // default template for User Story type
+            comment = "<b>Story line</b><br>";
+            comment += "As a {user role}, I want to {action} in order to {goal}.<br><br>";
+            comment += "<b>User acceptance criteria</b><br>";
+            comment += "+ ...<br>";
+            comment += "+ ...<br>";
+            comment += "+ ...<br><br>";
+            comment += "<b>Test cases</b><br>";
+            comment += "+ ...<br>";
+            comment += "+ ...<br>";
+            comment += "+ ...";
         }
         if (!comment.contains("</body>")) {
             // Backward compatility 3.0.X, imports and test data
@@ -726,38 +713,24 @@ public class CommentPanel extends JPanel {
         }
         int row = panel.getTable().getSelectedRow();
         int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-        if (selectedActivityId == activity.getId()) {
-            if (selectedActivityId != activityIdTmp) {
-                // New activity selected
+        if (selectedActivityId == activity.getId()) { // Activity actually selected with the mouse
+            if (selectedActivityId != currentlySelectedActivityId) { // New activity selected (compare to the current selected one)
                 hideSaveCancelButton();
-                informationArea.setText(comment);
-                // record temp info : only whe selecting an activity and recording edits    
-                activityIdTmp = selectedActivityId;
-                currentPlainInformation = comment;
-                currentPlainCaretPosition = 0;
-            } else {
-                // Currently selected activity                
-                //if (informationArea.isPlainMode()) {
-                // The comment might have been modified previously
-                comment = currentPlainInformation;
-                //displaySaveCancelButton();
-                //}
-                informationArea.setText(comment);
-                // Show caret
-                informationArea.requestFocusInWindow();
-                if (informationArea.isPlainMode()) {
-                    informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentPlainCaretPosition ? currentPlainCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
-                } else {
-                    // disable auto scrolling
-                    informationArea.setCaretPosition(0);
-                }
-            }
-        } else {
-            hideSaveCancelButton();
-            // any non-selected activity                           
+                currentlySelectedActivityId = selectedActivityId;
+                currentlySelectedActivityText = comment; // init
+                currentlySelectedActivityCaretPosition = 0; // reset
+            } else if (!comment.equalsIgnoreCase(currentlySelectedActivityText)) { // Currently selected activity was previously modified
+                comment = currentlySelectedActivityText;
+                displaySaveCancelButton();
+            }            
             informationArea.setText(comment);
+            // Set caret position
+            informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
             // Show caret
             informationArea.requestFocusInWindow();
+        } else { // Activity actually hovered on with the mouse
+            hideSaveCancelButton();
+            informationArea.setText(comment);
             // disable auto scrolling
             informationArea.setCaretPosition(0);
         }

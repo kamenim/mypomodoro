@@ -30,7 +30,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
 import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
@@ -124,16 +123,23 @@ public class HtmlEditor extends JTextPane {
                          if (!selectionAttributes.containsAttributes(UNDERLINE)) {
                          inputAttr.removeAttribute(StyleConstants.Underline);
                          }*/
+                        // Background
                         MutableAttributeSet BACKGROUND = new SimpleAttributeSet();
                         StyleConstants.setBackground(BACKGROUND, StyleConstants.getBackground(selectionAttributes));
                         if (!selectionAttributes.containsAttributes(BACKGROUND)) {
                             inputAttr.removeAttribute(StyleConstants.Background);
+                            Object spanTag = selectionAttributes.getAttribute(HTML.Tag.SPAN); // we must also take care of the SPAN tag used to set the background (see CommentPanel#backgroundColorButton#actionPerformed)
+                            if (spanTag == null) {
+                                inputAttr.removeAttribute(HTML.Tag.SPAN);
+                            }
                         }
+                        
                         /*MutableAttributeSet FOREGROUND = new SimpleAttributeSet();
                          StyleConstants.setBackground(FOREGROUND, StyleConstants.getForeground(selectionAttributes));
                          if (!selectionAttributes.containsAttributes(FOREGROUND)) {
                          inputAttr.removeAttribute(StyleConstants.Foreground);
                          }*/
+                        // Hyperlinks
                         Object tag = selectionAttributes.getAttribute(HTML.Tag.A);
                         if (tag == null) {
                             inputAttr.removeAttribute(HTML.Tag.A);
@@ -208,6 +214,10 @@ public class HtmlEditor extends JTextPane {
 
     public boolean isPlainMode() {
         return getContentType().equals("text/html");
+    }
+    
+    public boolean isHTMLMode() {
+        return getContentType().equals("text/plain");
     }
 
     public String getClipboard() {
