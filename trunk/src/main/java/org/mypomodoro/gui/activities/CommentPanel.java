@@ -67,7 +67,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO find a way to backspace LI without removing the line before
-// TODO bug plain to preview: contan disappear sometimes
+// TODO bug dots replacing values in combo in tables
+// TODO bug can't use combo in table while Comment panel open
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -197,9 +198,6 @@ public class CommentPanel extends JPanel {
                         } catch (IOException ignored) {
                         }
                     }
-
-                    //int row = panel.getTable().getSelectedRow();
-                    //activityIdTmp = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                     displaySaveCancelButton();
                 }
             }
@@ -544,18 +542,7 @@ public class CommentPanel extends JPanel {
         gbc.gridy = 2;
         gbc.weightx = 0.08;
         gbc.weighty = 0.1;
-        gbc.gridwidth = 4;
-        // Clean text field when clicking
-        /*linkTextField.addMouseListener(new MouseAdapter() {
-
-            // click
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (linkTextField.getText().equals("http://")) {
-                    linkTextField.setText("");
-                }
-            }
-        });*/
+        gbc.gridwidth = 4;        
         linkTextField.setText("http://");
         linkTextField.setVisible(false);
         add(linkTextField, gbc);
@@ -694,7 +681,8 @@ public class CommentPanel extends JPanel {
         if (comment.isEmpty() && activity.isStory()) {
             // default template for User Story type
             comment = "<b>Story line</b><br>";
-            comment += "As a {user role}, I want to {action} in order to {goal}.<br><br>";
+            comment += Labels.getString("Agile.ActivityListPanel.As a role");
+            comment += "<br><br>";
             comment += "<b>User acceptance criteria</b><br>";
             comment += "+ ...<br>";
             comment += "+ ...<br>";
