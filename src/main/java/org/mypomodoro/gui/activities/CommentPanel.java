@@ -23,6 +23,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -33,6 +35,8 @@ import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
@@ -67,8 +71,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO find a way to backspace LI without removing the line before
-// TODO bug dots replacing values in combo in tables
 // TODO bug can't use combo in table while Comment panel open
+// TODO set caret position when switching from html to editor and editor to html
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -121,18 +125,18 @@ public class CommentPanel extends JPanel {
         addSaveButton();
         addCancelButton();
 
-        // Display the buttons in plain mode when clicking or selecting with the mouse
+        // Display the buttons in editor mode when clicking or selecting with the mouse
         informationArea.addMouseListener(new MouseAdapter() {
 
             // click
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!informationArea.isEditable()) {
-                    activatePlainMode();
+                    activateEditorMode();
                 }
             }
 
-            private void activatePlainMode() {
+            private void activateEditorMode() {
                 informationArea.setEditable(true);
                 // show caret
                 informationArea.getCaret().setVisible(true);
@@ -187,8 +191,8 @@ public class CommentPanel extends JPanel {
 
                     // Add item to list when pressing ENTER within a list (overriding default behaviour)
                     if (e.getKeyCode() == KeyEvent.VK_ENTER
-                            && isParentElement(HTML.Tag.LI)) {
-                        Element element = getCurrentParentElement();
+                            && informationArea.isParentElement(HTML.Tag.LI)) {
+                        Element element = informationArea.getCurrentParentElement();
                         try {
                             e.consume(); // the event must be 'consumed' before inserting!
                             String item = "<li></li>";
@@ -203,7 +207,7 @@ public class CommentPanel extends JPanel {
             }
 
             /**
-             * KeyReleased is only used to record the current plain text and
+             * KeyReleased is only used to record the current edited text and
              * position (text AFTER modification)
              *
              */
@@ -334,7 +338,7 @@ public class CommentPanel extends JPanel {
         });
         previewButton.setVisible(false);
         add(previewButton, gbc);
-        // html/plain button
+        // html/editor button
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.weightx = 0.1;
@@ -343,15 +347,50 @@ public class CommentPanel extends JPanel {
         htmlButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (informationArea.isPlainMode()) { // plain mode --> html mode;
+            public void actionPerformed(ActionEvent e) {                
+                if (informationArea.isEditorOrPreviewMode()) { // editor mode --> html mode;                  
+                    Point pt = informationArea.getCaret().getMagicCaretPosition();
+                    System.err.println("pt = " + pt);
+                    int pos = informationArea.viewToModel(pt);  
+                    System.err.println("pos = " + pos);
+                    /*int pos = informationArea.getCaretPosition();
+                    try {
+                        Point pt = informationArea.modelToView(pos).getLocation(); 
+                        System.err.println("pt rectangle= " + pt); 
+                        displayButtonsForHTMLMode();
+                        informationArea.setLocation(pt);
+                        pos = informationArea.getCaretPosition();
+                        currentlySelectedActivityCaretPosition = pos;
+                        //informationArea.setCaretPosition(pos);
+                        System.err.println("pos = " + pos);
+                    } catch (BadLocationException ex) {
+                    }*/
+                    if (pos >= 0) {
+                        try {
+                            currentlySelectedActivityCaretPosition = pos;
+                            //informationArea.setCaretPosition(pos);
+                            Element el = ((HTMLDocument)informationArea.getDocument()).getCharacterElement(pos);
+                            el.getDocument().createPosition(pos);
+                        } catch (BadLocationException ex) {
+                        }
+                    } else {                        
+                        currentlySelectedActivityCaretPosition = 0; // reset
+                        // disable auto scrolling
+                        informationArea.setCaretPosition(0);
+                    }
                     displayButtonsForHTMLMode();
-                } else { // html mode --> plain mode
-                    displayButtonsForPlainMode();
+                } else { // html mode --> editor mode                    
+                    int pos = informationArea.getCaretPosition();
+                    try {
+                        Rectangle pt = informationArea.modelToView(pos); 
+                        System.err.println("pt rectangle= " + pt);
+                    } catch (BadLocationException ex) {
+                    }                    
+                    currentlySelectedActivityCaretPosition = 0; // reset
+                    // disable auto scrolling
+                    informationArea.setCaretPosition(0);
+                    displayButtonsForEditorMode();
                 }
-                currentlySelectedActivityCaretPosition = 0; // reset
-                // disable auto scrolling
-                informationArea.setCaretPosition(0);
                 // Show caret
                 informationArea.requestFocusInWindow();
             }
@@ -732,7 +771,7 @@ public class CommentPanel extends JPanel {
         String text = informationArea.getText();
         informationArea.setContentType("text/plain");
         informationArea.setText(text);
-        htmlButton.setText(Labels.getString("Common.Text Plain"));
+        htmlButton.setText(Labels.getString("Common.Editor"));
         boldButton.setVisible(false);
         italicButton.setVisible(false);
         underlineButton.setVisible(false);
@@ -742,7 +781,7 @@ public class CommentPanel extends JPanel {
         linkButton.setVisible(false);
     }
 
-    private void displayButtonsForPlainMode() {
+    private void displayButtonsForEditorMode() {
         String text = informationArea.getText();
         informationArea.setContentType("text/html");
         informationArea.setText(text);
@@ -780,18 +819,5 @@ public class CommentPanel extends JPanel {
     private void hideSaveCancelButton() {
         saveButton.setVisible(false);
         cancelButton.setVisible(false);
-    }
-
-    private boolean isParentElement(HTML.Tag tag) {
-        boolean isParentElement = false;
-        Element e = getCurrentParentElement();
-        if (e.getName().equalsIgnoreCase(tag.toString())) {
-            isParentElement = true;
-        }
-        return isParentElement;
-    }
-
-    private Element getCurrentParentElement() {
-        return ((HTMLDocument) informationArea.getDocument()).getParagraphElement(informationArea.getCaretPosition()).getParentElement();
     }
 }

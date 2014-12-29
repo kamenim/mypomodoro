@@ -46,10 +46,10 @@ class ActivitiesComboBoxPanel extends JPanel {
         }
         setOpaque(true);
         comboBox.setEditable(editable);
-        if (data instanceof String[]) {
-            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 3, 0, 3), 0, 0));
-        } else {
-            add(comboBox);
+        if (data instanceof String[]) { // combo of strings
+            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 3, 2, 3), 0, 0));
+        } else { // combo of numbers: leave some more (10) right and left cell space
+            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 10, 2, 10), 0, 0));
         }
         add(label);
     }
