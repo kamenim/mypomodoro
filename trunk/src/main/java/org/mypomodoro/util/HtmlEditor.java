@@ -132,8 +132,7 @@ public class HtmlEditor extends JTextPane {
                             if (spanTag == null) {
                                 inputAttr.removeAttribute(HTML.Tag.SPAN);
                             }
-                        }
-                        
+                        }                        
                         /*MutableAttributeSet FOREGROUND = new SimpleAttributeSet();
                          StyleConstants.setBackground(FOREGROUND, StyleConstants.getForeground(selectionAttributes));
                          if (!selectionAttributes.containsAttributes(FOREGROUND)) {
@@ -212,7 +211,7 @@ public class HtmlEditor extends JTextPane {
         return text;
     }
 
-    public boolean isPlainMode() {
+    public boolean isEditorOrPreviewMode() {
         return getContentType().equals("text/html");
     }
     
@@ -260,5 +259,18 @@ public class HtmlEditor extends JTextPane {
                 Toolkit.getDefaultToolkit().beep();
             }
         }
+    }
+    
+    public boolean isParentElement(HTML.Tag tag) {
+        boolean isParentElement = false;
+        Element e = getCurrentParentElement();
+        if (e.getName().equalsIgnoreCase(tag.toString())) {
+            isParentElement = true;
+        }
+        return isParentElement;
+    }
+
+    public Element getCurrentParentElement() {
+        return ((HTMLDocument) getDocument()).getParagraphElement(getCaretPosition()).getParentElement();
     }
 }
