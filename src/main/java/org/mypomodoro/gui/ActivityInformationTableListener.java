@@ -23,6 +23,10 @@ import javax.swing.event.ListSelectionListener;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 
+/**
+ * Activity info listener
+ *
+ */
 public class ActivityInformationTableListener implements ListSelectionListener {
 
     private final JTable table;
