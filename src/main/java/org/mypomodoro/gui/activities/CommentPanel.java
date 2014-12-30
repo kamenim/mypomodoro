@@ -66,7 +66,7 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO find a way to backspace LI without removing the line before
+// TODO find a way/shortcut to remove lists
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -110,7 +110,7 @@ public class CommentPanel extends JPanel {
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(informationArea);
         scrollPaneInformationArea = new JScrollPane(noWrapPanel);
-        
+
         setLayout(new GridBagLayout());
         setBorder(null);
 
@@ -349,9 +349,9 @@ public class CommentPanel extends JPanel {
             /**
              * Switch modes (Editor <--> HTML)
              *
-             * Problem unsolved: when switching, there is no apparent way 
-             * to know the corresponding caret position (viewToModel won't help)             
-             * 
+             * Problem unsolved: when switching, there is no apparent way to
+             * know the corresponding caret position (viewToModel won't help)
+             *
              * @param e
              */
             @Override
@@ -692,42 +692,66 @@ public class CommentPanel extends JPanel {
 
     public void showInfo(final Activity activity) {
         String comment = activity.getNotes().trim();
-        if (comment.isEmpty() && activity.isStory()) {
-            // default template for User Story type
-            comment = "<b>Story line</b><br>";
-            comment += Labels.getString("Agile.ActivityListPanel.As a role");
-            comment += "<br><br>";
-            comment += "<b>User acceptance criteria</b><br>";
-            comment += "+ ...<br>";
-            comment += "+ ...<br>";
-            comment += "+ ...<br><br>";
-            comment += "<b>Test cases</b><br>";
-            comment += "+ ...<br>";
-            comment += "+ ...<br>";
-            comment += "+ ...";
-        }
-        if (!comment.contains("</body>")) {
-            // Backward compatility 3.0.X, imports and test data
-            // Check if there is a body tag; if not replace trailing return carriage with P tag
+        // Backward compatility 3.0.X and imported data
+        // Simplistic check to see if there is a HTML tag; if not replace trailing return carriage with P tag        
+        if (!comment.isEmpty() && !comment.contains("<html>")) {
             comment = "<p style=\"margin-top: 0\">" + comment;
             comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
             comment = comment + "</p>";
         }
+        if (comment.isEmpty() && activity.isStory()) {
+            // default template for User Story type
+            comment = "<p style=\"margin-top: 0\">";
+            comment += "<b>Story line</b>";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += Labels.getString("Agile.ActivityListPanel.As a role");            
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";            
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "<b>User acceptance criteria</b>";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";            
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "<b>Test cases</b>";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+            comment += "<p style=\"margin-top: 0\">";
+            comment += "+ ...";
+            comment += "</p>";
+        }
         int row = panel.getTable().getSelectedRow();
         int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-        if (selectedActivityId == activity.getId()) { // Activity actually selected with the mouse
+        if (selectedActivityId == activity.getId()) { // Activity actually selected
             if (selectedActivityId != currentlySelectedActivityId) { // New activity selected (compare to the current selected one)
                 hideSaveCancelButton();
                 currentlySelectedActivityId = selectedActivityId;
                 currentlySelectedActivityText = comment; // init
                 currentlySelectedActivityCaretPosition = 0; // reset
-            } else if (!comment.equalsIgnoreCase(currentlySelectedActivityText)) { // Currently selected activity was previously modified
+            } else if (currentlySelectedActivityText.length() > 0 
+                    && !comment.equalsIgnoreCase(currentlySelectedActivityText)) { // Currently selected activity was previously modified
                 comment = currentlySelectedActivityText;
                 displaySaveCancelButton();
             }
             informationArea.setText(comment);
             // Set caret position
-            informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
+            informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());            
             // Warning: do not request focus in Window here. Focus will be lost on table hence prevent shorcuts and combos from working
         } else { // Activity actually hovered on with the mouse
             hideSaveCancelButton();
