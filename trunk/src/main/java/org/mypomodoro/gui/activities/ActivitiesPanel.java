@@ -118,8 +118,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
     private int currentSelectedRow = 0;
-    // Copied activity id
-    private int copiedActivityId = -1;
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());

@@ -24,6 +24,10 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 
+/**
+ * Activity comment listener
+ *
+ */
 public class ActivityCommentTableListener implements ListSelectionListener {
 
     private final JTable table;

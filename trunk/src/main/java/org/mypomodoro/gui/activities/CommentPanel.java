@@ -23,8 +23,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -35,8 +33,6 @@ import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
@@ -71,8 +67,6 @@ import org.mypomodoro.util.Labels;
  *
  */
 // TODO find a way to backspace LI without removing the line before
-// TODO bug can't use combo in table while Comment panel open
-// TODO set caret position when switching from html to editor and editor to html
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -91,7 +85,7 @@ public class CommentPanel extends JPanel {
     private final JButton foregroundColorButton = new AbstractButton("A");
     private final JTextField linkTextField = new JTextField();
     private final JButton linkButton = new AbstractButton(">>");
-    protected final HtmlEditor informationArea = new HtmlEditor();
+    private final HtmlEditor informationArea = new HtmlEditor();
     private final JScrollPane scrollPaneInformationArea;
     private boolean showIconLabel = false;
 
@@ -116,7 +110,7 @@ public class CommentPanel extends JPanel {
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(informationArea);
         scrollPaneInformationArea = new JScrollPane(noWrapPanel);
-
+        
         setLayout(new GridBagLayout());
         setBorder(null);
 
@@ -198,6 +192,8 @@ public class CommentPanel extends JPanel {
                             String item = "<li></li>";
                             ((HTMLDocument) informationArea.getDocument()).insertAfterEnd(element, item);
                             informationArea.setCaretPosition(element.getEndOffset());
+                            // Show caret
+                            informationArea.requestFocusInWindow();
                         } catch (BadLocationException ignored) {
                         } catch (IOException ignored) {
                         }
@@ -214,7 +210,7 @@ public class CommentPanel extends JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 currentlySelectedActivityCaretPosition = informationArea.getCaretPosition();
-                currentlySelectedActivityText = informationArea.getText();                
+                currentlySelectedActivityText = informationArea.getText();
             }
         });
 
@@ -280,6 +276,8 @@ public class CommentPanel extends JPanel {
                     String list = "<" + type + "><li></li></" + type + ">";
                     informationArea.insertText(start, list, 1, tag);
                     informationArea.setCaretPosition(start + 1);
+                    // Show caret
+                    informationArea.requestFocusInWindow();
                     displaySaveCancelButton();
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
@@ -334,6 +332,8 @@ public class CommentPanel extends JPanel {
                 } else {
                     informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
                 }
+                // Show caret
+                informationArea.requestFocusInWindow();
             }
         });
         previewButton.setVisible(false);
@@ -346,51 +346,24 @@ public class CommentPanel extends JPanel {
         gbc.gridwidth = 5;
         htmlButton.addActionListener(new ActionListener() {
 
+            /**
+             * Switch modes (Editor <--> HTML)
+             *
+             * Problem unsolved: when switching, there is no apparent way 
+             * to know the corresponding caret position (viewToModel won't help)             
+             * 
+             * @param e
+             */
             @Override
-            public void actionPerformed(ActionEvent e) {                
-                if (informationArea.isEditorOrPreviewMode()) { // editor mode --> html mode;                  
-                    Point pt = informationArea.getCaret().getMagicCaretPosition();
-                    System.err.println("pt = " + pt);
-                    int pos = informationArea.viewToModel(pt);  
-                    System.err.println("pos = " + pos);
-                    /*int pos = informationArea.getCaretPosition();
-                    try {
-                        Point pt = informationArea.modelToView(pos).getLocation(); 
-                        System.err.println("pt rectangle= " + pt); 
-                        displayButtonsForHTMLMode();
-                        informationArea.setLocation(pt);
-                        pos = informationArea.getCaretPosition();
-                        currentlySelectedActivityCaretPosition = pos;
-                        //informationArea.setCaretPosition(pos);
-                        System.err.println("pos = " + pos);
-                    } catch (BadLocationException ex) {
-                    }*/
-                    if (pos >= 0) {
-                        try {
-                            currentlySelectedActivityCaretPosition = pos;
-                            //informationArea.setCaretPosition(pos);
-                            Element el = ((HTMLDocument)informationArea.getDocument()).getCharacterElement(pos);
-                            el.getDocument().createPosition(pos);
-                        } catch (BadLocationException ex) {
-                        }
-                    } else {                        
-                        currentlySelectedActivityCaretPosition = 0; // reset
-                        // disable auto scrolling
-                        informationArea.setCaretPosition(0);
-                    }
+            public void actionPerformed(ActionEvent e) {
+                if (informationArea.isEditorOrPreviewMode()) { // editor mode --> html mode;                    
                     displayButtonsForHTMLMode();
-                } else { // html mode --> editor mode                    
-                    int pos = informationArea.getCaretPosition();
-                    try {
-                        Rectangle pt = informationArea.modelToView(pos); 
-                        System.err.println("pt rectangle= " + pt);
-                    } catch (BadLocationException ex) {
-                    }                    
-                    currentlySelectedActivityCaretPosition = 0; // reset
-                    // disable auto scrolling
-                    informationArea.setCaretPosition(0);
+                } else { // html mode --> editor mode
                     displayButtonsForEditorMode();
                 }
+                currentlySelectedActivityCaretPosition = 0; // reset
+                // disable auto scrolling
+                informationArea.setCaretPosition(0);
                 // Show caret
                 informationArea.requestFocusInWindow();
             }
@@ -581,7 +554,7 @@ public class CommentPanel extends JPanel {
         gbc.gridy = 2;
         gbc.weightx = 0.08;
         gbc.weighty = 0.1;
-        gbc.gridwidth = 4;        
+        gbc.gridwidth = 4;
         linkTextField.setText("http://");
         linkTextField.setVisible(false);
         add(linkTextField, gbc);
@@ -612,6 +585,8 @@ public class CommentPanel extends JPanel {
                         String link = "<a href=\"" + href + "\">" + linkTextField.getText() + "</a>";
                         informationArea.insertText(start, link, HTML.Tag.A);
                         informationArea.setCaretPosition(start + linkTextField.getText().length());
+                        // Show caret
+                        informationArea.requestFocusInWindow();
                         linkTextField.setText("http://"); // reset field
                         displaySaveCancelButton();
                     }
@@ -749,12 +724,11 @@ public class CommentPanel extends JPanel {
             } else if (!comment.equalsIgnoreCase(currentlySelectedActivityText)) { // Currently selected activity was previously modified
                 comment = currentlySelectedActivityText;
                 displaySaveCancelButton();
-            }            
+            }
             informationArea.setText(comment);
             // Set caret position
             informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset());
-            // Show caret
-            informationArea.requestFocusInWindow();
+            // Warning: do not request focus in Window here. Focus will be lost on table hence prevent shorcuts and combos from working
         } else { // Activity actually hovered on with the mouse
             hideSaveCancelButton();
             informationArea.setText(comment);
