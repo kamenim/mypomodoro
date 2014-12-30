@@ -89,13 +89,13 @@ public class Main {
         // http://www.cosmix.org/software/
         try {
             font = Font.createFont(Font.TRUETYPE_FONT,
-                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);
+                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 14f);            
         } catch (FontFormatException ex) {
             font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-            logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);
+            logger.error("DroidSansMonoSlashed font format not supported. Replaced with default System font.", ex);
         } catch (IOException ex) {
             font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-            logger.error("Ubuntu-R TTF file not found. Replaced with default System font.", ex);
+            logger.error("DroidSansMonoSlashed TTF file not found. Replaced with default System font.", ex);
         }
         // Does this work?
         if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
