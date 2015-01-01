@@ -830,7 +830,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             Activity selectedActivity = ChartList.getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdate();
+                selectedActivity.databaseUpdateComment();
             }
         }
     }

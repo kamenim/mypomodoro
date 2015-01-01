@@ -923,7 +923,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             Activity selectedActivity = ActivityList.getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdate();
+                selectedActivity.databaseUpdateComment();
             }
         }
     }

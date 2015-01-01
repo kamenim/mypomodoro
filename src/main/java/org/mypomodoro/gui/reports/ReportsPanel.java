@@ -934,7 +934,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             Activity selectedReport = ReportList.getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
-                selectedReport.databaseUpdate();
+                selectedReport.databaseUpdateComment();
             }
         }
     }
