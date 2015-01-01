@@ -119,6 +119,20 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
+    
+    public void updateComment(Activity activity) {
+        String updateSQL = "UPDATE activities SET " 
+                + "notes = '" + activity.getNotes().replace("'", "''") + "'"                
+                + " WHERE id = " + activity.getId() + ";";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+            database.update("commit;");
+        } finally {
+            database.unlock();
+        }
+    }
 
     public void delete(Activity activity) {
         try {

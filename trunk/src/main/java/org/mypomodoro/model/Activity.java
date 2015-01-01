@@ -481,6 +481,10 @@ public class Activity implements Cloneable {
         PlaceList.addPlace(getPlace());
         ActivitiesDAO.getInstance().update(this);
     }
+    
+    public void databaseUpdateComment() {
+        ActivitiesDAO.getInstance().updateComment(this);
+    }    
 
     public void databaseDelete() {
         // update lists

@@ -1162,7 +1162,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity selectedActivity = ToDoList.getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdate();
+                selectedActivity.databaseUpdateComment();
             }
         }
     }

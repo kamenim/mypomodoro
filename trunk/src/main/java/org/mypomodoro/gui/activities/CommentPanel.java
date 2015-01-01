@@ -66,7 +66,6 @@ import org.mypomodoro.util.Labels;
  * Panel that displays comment on the current Activity and allows editing it
  *
  */
-// TODO find a way/shortcut to remove lists
 public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
@@ -132,9 +131,6 @@ public class CommentPanel extends JPanel {
 
             private void activateEditorMode() {
                 informationArea.setEditable(true);
-                // show caret
-                informationArea.getCaret().setVisible(true);
-                informationArea.requestFocusInWindow();
                 htmlButton.setVisible(true);
                 previewButton.setVisible(true);
                 boldButton.setVisible(true);
@@ -143,7 +139,11 @@ public class CommentPanel extends JPanel {
                 backgroundColorButton.setVisible(true);
                 foregroundColorButton.setVisible(true);
                 linkTextField.setVisible(true);
-                linkButton.setVisible(true);
+                linkButton.setVisible(true);                
+                // show caret
+                informationArea.getCaret().setVisible(true);
+                informationArea.setCaretPosition(informationArea.getCaretPosition()); // reset position (activates automatic horizontal scrolling in case of long line)
+                informationArea.requestFocusInWindow();
             }
         });
 
@@ -185,7 +185,7 @@ public class CommentPanel extends JPanel {
 
                     // Add item to list when pressing ENTER within a list (overriding default behaviour)
                     if (e.getKeyCode() == KeyEvent.VK_ENTER
-                            && informationArea.isParentElement(HTML.Tag.LI)) {
+                            && informationArea.isParentElement(HTML.Tag.LI)) {                        
                         Element element = informationArea.getCurrentParentElement();
                         try {
                             e.consume(); // the event must be 'consumed' before inserting!
@@ -276,9 +276,7 @@ public class CommentPanel extends JPanel {
                     String list = "<" + type + "><li></li></" + type + ">";
                     informationArea.insertText(start, list, 1, tag);
                     informationArea.setCaretPosition(start + 1);
-                    // Show caret
-                    informationArea.requestFocusInWindow();
-                    displaySaveCancelButton();
+                    displaySaveCancelButton();                    
                 } catch (BadLocationException ignored) {
                 } catch (IOException ignored) {
                 }
@@ -288,6 +286,28 @@ public class CommentPanel extends JPanel {
         }
         informationArea.getActionMap().put("Create List", new createList());
         informationArea.getActionMap().put("Create Ordered List", new createList(HTML.Tag.OL));
+        
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "Remove List");        
+        class removeList extends AbstractAction {
+            
+            public removeList() {
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (informationArea.isParentElement(HTML.Tag.LI)) {
+                    Element element = informationArea.getCurrentParentElement();                    
+                    try {
+                        informationArea.getDocument().remove(element.getStartOffset(), element.getEndOffset() - element.getStartOffset());
+                        displaySaveCancelButton();
+                    } catch (BadLocationException ignored) {
+                    }
+                }                
+                // Show caret
+                informationArea.requestFocusInWindow();
+            }
+        }
+        informationArea.getActionMap().put("Remove List", new removeList());
     }
 
     private void addEditorButtons() {
