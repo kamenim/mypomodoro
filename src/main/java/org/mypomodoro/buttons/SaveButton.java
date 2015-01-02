@@ -32,7 +32,7 @@ public class SaveButton extends TabPanelButton {
         // Listener for mouse action
         addActionListener(save);
         // Keystrokes for keyboard action
-        // These two lines are required to enable Enter everywhere in the form (including text fields and textarea) once the save button is enabled
+        // These two lines are required to enable Enter anywhere in the form
         registerKeyboardAction(save,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
