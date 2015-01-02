@@ -75,7 +75,8 @@ public class CommentPanel extends JPanel {
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-    private final String html32 = "HTML 3.2";
+    private final JButton foldButton = new AbstractButton(">");
+    private final String html32 = "HTML";
     private final JButton htmlButton = new AbstractButton(html32);
     private final JButton boldButton = new AbstractButton("B");
     private final JButton italicButton = new AbstractButton("I");
@@ -114,6 +115,7 @@ public class CommentPanel extends JPanel {
         setBorder(null);
 
         addEditorButtons();
+        addFoldButton();
         addCommentArea();
         addSaveButton();
         addCancelButton();
@@ -125,25 +127,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!informationArea.isEditable()) {
-                    activateEditorMode();
+                    informationArea.setEditable(true);
+                    foldButton.setVisible(true);
+                    // show caret
+                    informationArea.getCaret().setVisible(true);
+                    informationArea.setCaretPosition(informationArea.getCaretPosition()); // reset position (activates automatic horizontal scrolling in case of long line)
+                    informationArea.requestFocusInWindow();
                 }
-            }
-
-            private void activateEditorMode() {
-                informationArea.setEditable(true);
-                htmlButton.setVisible(true);
-                previewButton.setVisible(true);
-                boldButton.setVisible(true);
-                italicButton.setVisible(true);
-                underlineButton.setVisible(true);
-                backgroundColorButton.setVisible(true);
-                foregroundColorButton.setVisible(true);
-                linkTextField.setVisible(true);
-                linkButton.setVisible(true);                
-                // show caret
-                informationArea.getCaret().setVisible(true);
-                informationArea.setCaretPosition(informationArea.getCaretPosition()); // reset position (activates automatic horizontal scrolling in case of long line)
-                informationArea.requestFocusInWindow();
             }
         });
 
@@ -311,7 +301,6 @@ public class CommentPanel extends JPanel {
     }
 
     private void addEditorButtons() {
-
         boldButton.setFont(getFont().deriveFont(Font.BOLD));
         boldButton.setMargin(new Insets(0, 0, 0, 0));
 
@@ -344,7 +333,13 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean htmlMode = informationArea.isHTMLMode();
-                displayPreviewMode();
+                displayPreviewMode();                
+                if (getFont().canDisplay('\u25b6')) {
+                    foldButton.setText("\u25b6");
+                } else {
+                    foldButton.setText(">");
+                }
+                foldButton.setToolTipText(Labels.getString("Common.Show editor"));
                 informationArea.setEditable(false);
                 if (htmlMode) {
                     currentlySelectedActivityCaretPosition = 0; // reset
@@ -377,9 +372,9 @@ public class CommentPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (informationArea.isEditorOrPreviewMode()) { // editor mode --> html mode;                    
-                    displayButtonsForHTMLMode();
+                    displayHTMLMode();
                 } else { // html mode --> editor mode
-                    displayButtonsForEditorMode();
+                    displayEditorMode();
                 }
                 currentlySelectedActivityCaretPosition = 0; // reset
                 // disable auto scrolling
@@ -584,6 +579,9 @@ public class CommentPanel extends JPanel {
         gbc.weightx = 0.02;
         gbc.weighty = 0.1;
         gbc.gridwidth = 1;
+        if (getFont().canDisplay('\u21e8')) {
+            linkButton.setText("\u21e8");
+        }
         // ENTER: insert link (requires focus on the link text field)        
         linkButton.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
         class linkEnterAction extends AbstractAction {
@@ -623,6 +621,51 @@ public class CommentPanel extends JPanel {
         linkButton.setVisible(false);
         add(linkButton, gbc);
     }
+    
+    private void addFoldButton() {
+        // Fold button
+        gbc.gridx = 5;
+        gbc.gridy = 0;
+        gbc.weightx = 0.02; // 2 %
+        gbc.weighty = 1.0;
+        gbc.gridheight = 4;
+        gbc.fill = GridBagConstraints.BOTH; 
+        if (getFont().canDisplay('\u25b6')) {
+            foldButton.setText("\u25b6");
+        }
+        //Remove marging /transparent border around text 
+        foldButton.setBorder(null);
+        foldButton.setBorderPainted(false);
+        foldButton.setMargin(new Insets(0,0,0,0));
+        foldButton.setToolTipText(Labels.getString("Common.Show editor"));
+        foldButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (informationArea.isEditable()) {
+                    if (previewButton.isVisible()) {
+                        hideEditorButtons();
+                        if (getFont().canDisplay('\u25b6')) {
+                            foldButton.setText("\u25b6");
+                        } else {
+                            foldButton.setText(">");
+                        }
+                        foldButton.setToolTipText(Labels.getString("Common.Show editor"));
+                    } else {
+                        showEditorButtons();
+                        if (getFont().canDisplay('\u25c0')) {
+                            foldButton.setText("\u25c0");
+                        } else {
+                            foldButton.setText("<");
+                        }
+                        foldButton.setToolTipText(Labels.getString("Common.Hide editor"));
+                    }
+                }
+            }
+        });
+        foldButton.setVisible(false);
+        add(foldButton, gbc);
+    }
 
     private void addCommentArea() {
         JPanel commentArea = new JPanel();
@@ -645,7 +688,7 @@ public class CommentPanel extends JPanel {
         commentgbc.weighty = 1.0;
         informationArea.setEditable(false);
         commentArea.add(scrollPaneInformationArea, commentgbc);
-        gbc.gridx = 5;
+        gbc.gridx = 6;
         gbc.gridy = 0;
         gbc.weightx = 0.8;
         gbc.weighty = 1.0;
@@ -654,7 +697,7 @@ public class CommentPanel extends JPanel {
     }
 
     private void addSaveButton() {
-        gbc.gridx = 6;
+        gbc.gridx = 7;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
         gbc.weighty = 0.8;
@@ -665,6 +708,9 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!previewButton.isVisible()) { // go to starigh to preview as the editor buttons are not used here (fold)
+                    previewButton.getActionListeners()[0].actionPerformed(e);
+                }
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 hideSaveCancelButton();
                 // show caret
@@ -686,7 +732,7 @@ public class CommentPanel extends JPanel {
     }
 
     private void addCancelButton() {
-        gbc.gridx = 6;
+        gbc.gridx = 7;
         gbc.gridy = 3;
         gbc.weightx = 0.1;
         gbc.weighty = 0.2;
@@ -785,7 +831,7 @@ public class CommentPanel extends JPanel {
         return iconLabel;
     }
 
-    private void displayButtonsForHTMLMode() {
+    private void displayHTMLMode() {
         String text = informationArea.getText();
         informationArea.setContentType("text/plain");
         informationArea.setText(text);
@@ -797,12 +843,13 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setVisible(false);
         linkTextField.setVisible(false);
         linkButton.setVisible(false);
+        foldButton.setVisible(false);
     }
 
-    private void displayButtonsForEditorMode() {
+    private void displayEditorMode() {
         String text = informationArea.getText();
         informationArea.setContentType("text/html");
-        informationArea.setText(text);
+        informationArea.setText(text);        
         htmlButton.setText(html32);
         boldButton.setVisible(true);
         italicButton.setVisible(true);
@@ -810,7 +857,8 @@ public class CommentPanel extends JPanel {
         backgroundColorButton.setVisible(true);
         foregroundColorButton.setVisible(true);
         linkTextField.setVisible(true);
-        linkButton.setVisible(true);
+        linkButton.setVisible(true);        
+        foldButton.setVisible(true);
     }
 
     private void displayPreviewMode() {
@@ -827,6 +875,7 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setVisible(false);
         linkTextField.setVisible(false);
         linkButton.setVisible(false);
+        foldButton.setVisible(false);
     }
 
     private void displaySaveCancelButton() {
@@ -837,5 +886,29 @@ public class CommentPanel extends JPanel {
     private void hideSaveCancelButton() {
         saveButton.setVisible(false);
         cancelButton.setVisible(false);
+    }
+    
+    private void hideEditorButtons() {
+        previewButton.setVisible(false);
+        htmlButton.setVisible(false);
+        boldButton.setVisible(false);
+        italicButton.setVisible(false);
+        underlineButton.setVisible(false);
+        backgroundColorButton.setVisible(false);
+        foregroundColorButton.setVisible(false);
+        linkTextField.setVisible(false);
+        linkButton.setVisible(false);        
+    }
+    
+    private void showEditorButtons() {
+        previewButton.setVisible(true);
+        htmlButton.setVisible(true);
+        boldButton.setVisible(true);
+        italicButton.setVisible(true);
+        underlineButton.setVisible(true);
+        backgroundColorButton.setVisible(true);
+        foregroundColorButton.setVisible(true);
+        linkTextField.setVisible(true);
+        linkButton.setVisible(true);        
     }
 }

@@ -204,7 +204,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 9] = Labels.getString("Common.Unplanned");
         cloneColumnNames[ID_KEY - 8] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+" + Labels.getString("Common.Overestimated") + ")";
+        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
