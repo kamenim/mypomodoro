@@ -582,13 +582,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
+        
         // set custom render for title
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // priority
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // title                
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new TitleRenderer()); // title                
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
@@ -1049,6 +1047,22 @@ public class ToDoPanel extends JPanel implements IListPanel {
             return renderer;
         }
     }
+    
+    class TitleRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            /*if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                Activity toDo = ToDoList.getList().getById(id);
+                if (toDo != null && toDo.isOverdue()) {
+                    
+                }
+            }*/
+            return renderer;
+        }
+    }
 
     class UnplannedRenderer extends CustomTableRenderer {
 
@@ -1057,7 +1071,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
                 //renderer.setIcon(unplannedIcon);
-                renderer.setText("U");
+                if (!getFont().canDisplay('\u2714')) { // unicode tick
+                    renderer.setText("U");
+                } else {
+                    renderer.setText("\u2714");
+                }
             } else {
                 renderer.setText("");
             }

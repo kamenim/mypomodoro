@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -466,7 +467,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // set custom render for dates
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new CustomTableRenderer()); // title
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new TitleRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
@@ -880,12 +881,27 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 renderer.setForeground(ColorUtil.GREEN);
             }
             /* Strikethrough task with no estimation
-             if (activity != null && activity.getEstimatedPoms() == 0) {
-             // underline url
+             if (activity != null && activity.getEstimatedPoms() == 0) {             
              Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
              map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
              renderer.setFont(getFont().deriveFont(map));
              }*/
+            return renderer;
+        }
+    }
+    
+    class TitleRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                Activity activity = ActivityList.getList().getById(id);
+                if (activity != null && (activity.isOverdue() || activity.isDateToday())) {
+                    renderer.setText("\u226b " + (String) value);                    
+                }
+            }
             return renderer;
         }
     }
@@ -897,7 +913,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
                 //renderer.setIcon(unplannedIcon);
-                renderer.setText("U");
+                if (!getFont().canDisplay('\u2714')) { // unicode tick
+                    renderer.setText("U");
+                } else {
+                    renderer.setText("\u2714");
+                }
             } else {
                 renderer.setText("");
             }

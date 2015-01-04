@@ -864,7 +864,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
                 //renderer.setIcon(unplannedIcon);
-                renderer.setText("U");
+                if (!getFont().canDisplay('\u2714')) { // unicode tick
+                    renderer.setText("U");
+                } else {
+                    renderer.setText("\u2714");
+                }
             } else {
                 renderer.setText("");
             }
