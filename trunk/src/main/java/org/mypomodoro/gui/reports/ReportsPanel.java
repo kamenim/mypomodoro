@@ -40,6 +40,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -323,7 +324,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("ActivityListPanel.Delete activity"), Labels.getString("ActivityListPanel.Are you sure to delete those activities?"), panel);
+                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
                 b.doClick();
             }
         }
@@ -383,7 +384,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         }
         
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Control D");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -395,21 +396,23 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName("(+) " + copiedActivity.getName());
+                        copiedActivity.setName(copiedActivity.getName() + " (2)");
                         copiedActivity.setActualPoms(0);
-                        copiedActivity.setEstimatedPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         // Insert the duplicate into the activity list
-                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));                        
+                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                        String title = Labels.getString("Common.Add Duplicated task");
+                        String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     } catch (CloneNotSupportedException ignored) {
                     }                    
                 }
             }
         }
-        am.put("Control D", new duplicate());
+        am.put("Duplicate", new duplicate());
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -417,7 +420,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 showCurrentSelectedRow();
             }
         }
-        am.put("Control R", new scrollBackToTask());
+        am.put("Scroll", new scrollBackToTask());
     }
 
     // Retrieve key event with name

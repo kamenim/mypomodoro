@@ -42,6 +42,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -62,6 +63,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
@@ -110,6 +112,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final JLabel pomodoroTime = new JLabel();
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this, true);
+    private InputMap im = null;
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
@@ -346,9 +349,33 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     }
                 });
 
-        // Activate Shift + '>'
-        InputMap im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        // Activate Delete key stroke
+        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
+        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
+        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
+        class deleteAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public deleteAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
+                b.doClick();
+            }
+        }
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        } else {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        }
+        am.put("Delete", new deleteAction(this));
+        // Activate Shift + '>'
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");
         class completeAction extends AbstractAction {
 
@@ -479,9 +506,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         am.put("Control E", new createExternal());
-        
+
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Control D");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -489,25 +516,27 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (table.getSelectedRowCount() == 1) {
                     int row = table.getSelectedRow();
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);                    
+                    Activity originalCopiedActivity = getActivityById(id);
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName("(+) " + copiedActivity.getName());
+                        copiedActivity.setName(copiedActivity.getName() + " (2)");
                         copiedActivity.setActualPoms(0);
-                        copiedActivity.setEstimatedPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         // Insert the duplicate into the activity list
-                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));                        
+                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                        String title = Labels.getString("Common.Add Duplicated task");
+                        String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     } catch (CloneNotSupportedException ignored) {
-                    }                    
+                    }
                 }
             }
         }
-        am.put("Control D", new duplicate());
+        am.put("Duplicate", new duplicate());
 
         // Activate Control R (scroll back to the current running/selected task
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -524,7 +553,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 showCurrentSelectedRow();
             }
         }
-        am.put("Control R", new scrollBackToTask());
+        am.put("Scroll", new scrollBackToTask());
     }
 
     // Retrieve key event with name
@@ -1140,7 +1169,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 showCurrentSelectedRow();
             }
         });
-        //pomodoroButton.setToolTipText(Labels.getString("ToDoListPanel.Show current task")); // we don't want to display a tooltip over the image (confusing information)
 
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
