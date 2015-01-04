@@ -338,7 +338,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         }
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), "Control R");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -346,7 +346,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 showCurrentSelectedRow();
             }
         }
-        am.put("Control R", new scrollBackToTask());
+        am.put("Scroll", new scrollBackToTask());
     }
 
     // Retrieve key event with name

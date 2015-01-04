@@ -51,7 +51,7 @@ public class AboutPanel extends JDialog {
 
     public AboutPanel(String str) {
         setTitle(str);
-        setFont(Main.font); // this is the only place where the font has to be set manually
+        setFont((new JPanel()).getFont()); // this is the only place where the font has to be set manually
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setIconImage(ImageIcons.MAIN_ICON.getImage());
         setResizable(false);
@@ -66,12 +66,12 @@ public class AboutPanel extends JDialog {
 
         setLayout(new GridBagLayout());
 
-        addmyPomodoroImage();
+        addMyAgilePomodoroImage();
         addAbout();
         addLicence();
     }
 
-    private void addmyPomodoroImage() {
+    private void addMyAgilePomodoroImage() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.2;

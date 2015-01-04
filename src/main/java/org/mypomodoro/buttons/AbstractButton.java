@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.buttons;
 
+import java.awt.Font;
 import javax.swing.JButton;
 
 /**
@@ -28,5 +29,6 @@ public class AbstractButton extends JButton {
         super(label);
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
+        setFont(getFont().deriveFont(Font.BOLD));
     }
 }

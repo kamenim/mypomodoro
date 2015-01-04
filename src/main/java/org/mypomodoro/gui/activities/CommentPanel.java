@@ -277,7 +277,7 @@ public class CommentPanel extends JPanel {
         informationArea.getActionMap().put("Create List", new createList());
         informationArea.getActionMap().put("Create Ordered List", new createList(HTML.Tag.OL));
         
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "Remove List");        
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), "Remove List item");        
         class removeList extends AbstractAction {
             
             public removeList() {
@@ -297,7 +297,7 @@ public class CommentPanel extends JPanel {
                 informationArea.requestFocusInWindow();
             }
         }
-        informationArea.getActionMap().put("Remove List", new removeList());
+        informationArea.getActionMap().put("Remove List item", new removeList());
     }
 
     private void addEditorButtons() {
