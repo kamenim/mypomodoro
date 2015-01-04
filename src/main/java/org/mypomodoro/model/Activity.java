@@ -505,6 +505,10 @@ public class Activity implements Cloneable {
     public boolean isDateInFuture() {
         return DateUtil.inFuture(getDate());
     }
+    
+    public boolean isOverdue() {
+        return DateUtil.inPast(getDate());
+    }
 
     // Activity (not a ToDo nor a Report)
     public boolean isActivity() {
