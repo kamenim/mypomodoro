@@ -98,11 +98,8 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(final Activity newActivity) {
-        newActivity.setIsUnplanned(true);
+    protected void validActivityAction(final Activity newActivity) {        
         StringBuilder comments = new StringBuilder();
-        //int estimatedPoms = 0;
-        //int overestimatedPoms = 0;
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
@@ -121,13 +118,13 @@ public class MergingPanel extends CreatePanel {
                     comments.append("</p>");
                     comments.append("<p style=\"margin-top: 0\">");
                     comments.append(selectedToDo.getNotes());
-                    comments.append("</p><br>");
+                    comments.append("</p>");
                 } else {
                     comments.append(": -");
-                    comments.append("</p><br>");
+                    comments.append("</p>");
                 }
-                //estimatedPoms += selectedToDo.getEstimatedPoms();
-                //overestimatedPoms += selectedToDo.getOverestimatedPoms();
+                comments.append("<p style=\"margin-top: 0\">");
+                comments.append("</p>");
                 actualPoms += selectedToDo.getActualPoms();
             }
             // set comment
@@ -203,12 +200,11 @@ public class MergingPanel extends CreatePanel {
                             panel.setCurrentSelectedRow(panel.getTable().getRowCount());
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
-                            // After cursor stops, refresh ToDo List and clear the form
+                            // Select new created unplanned task at the bottom of the list before refresh
+                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
+                            // After cursor stops, refresh ToDo List and clear the form                            
                             panel.refresh();
                             clearForm();
-                            String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
-                            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }.start();
@@ -271,7 +267,7 @@ public class MergingPanel extends CreatePanel {
                             });
                             // refresh the whole table
                             panel.refresh();
-                            String message = Labels.getString("ToDoListPanel.Unplanned task added to Activity List");
+                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
                             // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh

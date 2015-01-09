@@ -131,18 +131,17 @@ public class UnplannedPanel extends CreatePanel {
             // Select new created unplanned task at the bottom of the list before refresh
             panel.setCurrentSelectedRow(panel.getTable().getRowCount());
             // refresh the whole table
-            panel.refresh();
+            panel.refresh();            
             clearForm();
-            message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Unplanned task added to ToDo List");
         } else {
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
             // refresh the whole table
             panel.refresh();
-            message = Labels.getString("ToDoListPanel.Unplanned task added to Activity List");
-        }
-        JOptionPane.showConfirmDialog(Main.gui, message, title,
+            message = Labels.getString("ToDoListPanel.Task added to Activity List");            
+            JOptionPane.showConfirmDialog(Main.gui, message, title,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     @Override

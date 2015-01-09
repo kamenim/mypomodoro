@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -109,6 +108,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
+    private final EditPanel editPanel = new EditPanel(this, detailsPanel);
+    private final MergingPanel mergingPanel = new MergingPanel(this);        
     private InputMap im = null;
     private int mouseHoverRow = 0;
     // Border
@@ -286,7 +287,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                 if (table.getSelectedRowCount() > 1) { // multiple selection
                                     // diactivate/gray out unused tabs
                                     controlPane.setEnabledAt(1, false); // comment
-                                    controlPane.setEnabledAt(2, false); // edit
+                                    controlPane.setEnabledAt(2, false); // edit                                    
+                                    controlPane.setEnabledAt(3, true); // merging                                    
                                     if (controlPane.getSelectedIndex() == 1
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
@@ -295,7 +297,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
-                                        controlPane.setEnabledAt(index, true);
+                                        if (index == 3) {
+                                            controlPane.setEnabledAt(3, false); // merging
+                                            if (controlPane.getSelectedIndex() == 3) {
+                                                controlPane.setSelectedIndex(0); // switch to details panel
+                                            }
+                                        } else {
+                                            controlPane.setEnabledAt(index, true);
+                                        }
                                     }
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
@@ -541,7 +550,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // diactivate/gray out all tabs (except import)
         if (table.getRowCount() == 0) {
             for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                if (index == 3) { // import tab
+                if (index == 4) { // import tab
                     controlPane.setSelectedIndex(index);
                     continue;
                 }
@@ -625,9 +634,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        EditPanel editPanel = new EditPanel(this, detailsPanel);
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
+        controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
@@ -741,7 +750,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // diactivate/gray out all tabs (except import)
                 if (table.getRowCount() == 0) {
                     for (int index = 0; index < controlPane.getComponentCount(); index++) {
-                        if (index == 3) { // import panel
+                        if (index == 4) { // import panel
                             controlPane.setSelectedIndex(index);
                             continue;
                         }
@@ -898,7 +907,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
                 int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity activity = ActivityList.getList().getById(id);
-                if (activity != null && (activity.isOverdue() || activity.isDateToday())) {
+                if (activity != null && activity.isOverdue()) {
                     renderer.setText("\u226b " + (String) value);                    
                 }
             }

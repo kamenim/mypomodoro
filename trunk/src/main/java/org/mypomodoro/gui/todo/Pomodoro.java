@@ -140,7 +140,6 @@ public class Pomodoro {
         if (inpomodoro) { // in pomodoro only, not during breaks            
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
-            message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please create an unplanned activity in order to record this interruption") + ")";
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (reply == JOptionPane.YES_OPTION) {
                 stop();

@@ -20,9 +20,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import org.mypomodoro.gui.create.ActivityInputForm;
 
 import org.mypomodoro.gui.create.CreatePanel;
