@@ -36,7 +36,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -89,7 +88,7 @@ public class HtmlEditor extends JTextPane {
         putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
 
         // limit the number of characters to 1000 to avoid java head size issue
-        ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000));
+        // ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000)); // this will make mergind of tasks (comments) difficult
 
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:

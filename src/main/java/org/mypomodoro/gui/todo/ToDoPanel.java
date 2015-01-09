@@ -1286,5 +1286,5 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
-    }
+    }   
 }
