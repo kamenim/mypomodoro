@@ -664,6 +664,8 @@ public class CommentPanel extends JPanel {
                         }
                         foldButton.setToolTipText(Labels.getString("Common.Hide editor"));
                     }
+                    // Show caret
+                    informationArea.requestFocusInWindow();
                 }
             }
         });
@@ -712,9 +714,6 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!previewButton.isVisible()) { // go to starigh to preview as the editor buttons are not used here (fold)
-                    previewButton.getActionListeners()[0].actionPerformed(e);
-                }
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
                 hideSaveCancelButton();
                 // show caret
@@ -765,16 +764,18 @@ public class CommentPanel extends JPanel {
         // Backward compatility 3.0.X and imported data
         // Using Jsoup to check for HTML tag; if none is found, replace trailing return carriage with P tag 
         if (!comment.isEmpty()) {
-            // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)
+            // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)            
             Document doc = Jsoup.parse(comment, "", Parser.xmlParser());
-            Elements elements = doc.getElementsByTag(HTML.Tag.HTML.toString());
+            Elements elements = doc.getElementsByTag(HTML.Tag.BODY.toString());
             if (elements.isEmpty()) {
                 comment = "<p style=\"margin-top: 0\">" + comment;
-                comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
+                // Using regex \\r|\\n rather than System.getProperty("line.separator")
+                // 1- System.getProperty("line.separator") does not seem to work in this peculiar case
+                // 2- the database could come from any system
+                comment = comment.replaceAll("\\r|\\n", "</p><p style=\"margin-top: 0\">");
                 comment = comment + "</p>";
             }
-        }
-        
+        }        
         if (comment.isEmpty() && activity.isStory()) {
             // default template for User Story type
             comment = "<p style=\"margin-top: 0\">";
