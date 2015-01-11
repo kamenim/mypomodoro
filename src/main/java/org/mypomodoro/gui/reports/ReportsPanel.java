@@ -57,6 +57,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
@@ -328,7 +329,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 b.doClick();
             }
         }
-        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
         } else {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");

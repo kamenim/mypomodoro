@@ -24,6 +24,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.html.HTML;
+import org.jsoup.nodes.Document;
+import org.jsoup.Jsoup;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
@@ -108,20 +113,26 @@ public class MergingPanel extends CreatePanel {
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedActivity = panel.getActivityById(id);
                 // aggregate comments
-                comments.append("<p style=\"margin-top: 0\">");
-                comments.append(selectedActivity.getName());
-                if (selectedActivity.getNotes() != null && selectedActivity.getNotes().length() > 0) {
-                    comments.append(":");
-                    comments.append("</p>");
+                if (selectedActivity.getNotes().length() > 0) {
                     comments.append("<p style=\"margin-top: 0\">");
-                    comments.append(selectedActivity.getNotes());
+                    comments.append("<b>");
+                    comments.append(selectedActivity.getName());
+                    comments.append(" :");
+                    comments.append("</b>");
                     comments.append("</p>");
-                } else {
-                    comments.append(": -");
+                    // Parsing HTML
+                    // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)
+                    Document doc = Jsoup.parse(selectedActivity.getNotes(), "", Parser.xmlParser());
+                    //Document doc = Jsoup.parse(selectedActivity.getNotes());
+                    Elements elements = doc.getElementsByTag(HTML.Tag.BODY.toString());
+                    if (!elements.isEmpty()) {
+                        comments.append(elements.html());
+                    } else { // Backward compatility 3.0.X and imported data
+                        comments.append(selectedActivity.getNotes());
+                    }
+                    comments.append("<p style=\"margin-top: 0\">");
                     comments.append("</p>");
                 }
-                comments.append("<p style=\"margin-top: 0\">");
-                comments.append("</p>");
                 actualPoms += selectedActivity.getActualPoms();
             }
             // set comment
@@ -178,9 +189,11 @@ public class MergingPanel extends CreatePanel {
                                 }.start();
                             }
                         });
-                        // Select new created unplanned task at the bottom of the list before refresh
+                        // Stop wait cursor
+                        WaitCursor.stopWaitCursor();
+                        // Select new created task at the bottom of the list before refresh
                         panel.setCurrentSelectedRow(panel.getTable().getRowCount());
-                        // refresh the whole table
+                        // After cursor stops, refresh Activities List and clear the form
                         panel.refresh();
                         clearForm();
                     }

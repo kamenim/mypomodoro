@@ -29,10 +29,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.font.TextAttribute;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
@@ -56,6 +59,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
@@ -109,7 +113,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
-    private final MergingPanel mergingPanel = new MergingPanel(this);        
+    private final MergingPanel mergingPanel = new MergingPanel(this);
     private InputMap im = null;
     private int mouseHoverRow = 0;
     // Border
@@ -326,7 +330,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
-        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
         } else {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
@@ -421,19 +425,19 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 if (table.getSelectedRowCount() == 1) {
                     int row = table.getSelectedRow();
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);                    
+                    Activity originalCopiedActivity = getActivityById(id);
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
                         copiedActivity.setName(copiedActivity.getName() + " (2)");
                         copiedActivity.setActualPoms(0);
-                        copiedActivity.setOverestimatedPoms(0);            
+                        copiedActivity.setOverestimatedPoms(0);
                         addActivity(copiedActivity, new Date(), new Date(0));
                         // Select new created task at the bottom of the list before refresh
                         setCurrentSelectedRow(table.getRowCount());
                         refresh();
                     } catch (CloneNotSupportedException ignored) {
-                    }                    
+                    }
                 }
             }
         }
@@ -634,7 +638,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
+        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
@@ -889,28 +893,26 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
-            /* Strikethrough task with no estimation
-             if (activity != null && activity.getEstimatedPoms() == 0) {             
-             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-             renderer.setFont(getFont().deriveFont(map));
-             }*/
             return renderer;
         }
     }
-    
+
     class TitleRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
-                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                Activity activity = ActivityList.getList().getById(id);
-                if (activity != null && activity.isOverdue()) {
-                    renderer.setText("\u226b " + (String) value);                    
-                }
-            }
+            /*if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+             Activity activity = ActivityList.getList().getById(id);
+             if (activity != null && activity.isOverdue()) {
+             if (!getFont().canDisplay('\u226b')) { // unicode tick
+             renderer.setText(">> " + (String) value);
+             } else {
+             renderer.setText("\u226b " + (String) value);
+             }
+             }
+             }*/
             return renderer;
         }
     }
@@ -940,6 +942,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
+            // Strikethrough date when task overdue
+            if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                Activity activity = ActivityList.getList().getById(id);
+                if (activity != null && activity.isOverdue()) {
+                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    //map.put(TextAttribute.FOREGROUND, ColorUtil.RED);
+                    renderer.setFont(getFont().deriveFont(map));
+                }
+            }
             return renderer;
         }
     }

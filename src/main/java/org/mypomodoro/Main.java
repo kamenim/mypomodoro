@@ -18,15 +18,14 @@ package org.mypomodoro;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentEvent;
-import java.io.IOException;
 import java.util.Enumeration;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
+import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
@@ -71,7 +70,7 @@ public class Main {
     public static TabbedPanel chartTabbedPanel;
     public static ProgressBar progressBar;
     public static MainPanel gui;
-    public static Font font;
+    private static Font font;
 
     /**
      * Main
@@ -79,26 +78,41 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // There is no point to load the font from file: to handle all types of languages, the file would be to big to load (eg Arial Unicode MS tff file is around 22 Mo).
+        // Better live it to the appropriate System font: "Arial Unicode MS" for Windows and MAC;  default font otherwise ("Deja Vu Sans" does not cover chinese, ... languages)
+
         // Set font from font file
         // DroidSansMonoSlashed font (Apache licence) to support unicode characters
         // Supported character sets: Western European, Eastern/Central European, Baltic, Cyrillic, Greek and Turkish
-        // Supported languages: Simplified and Traditional Chinese, Japanese, Korean, Arabic, Armenian, Ethiopic, Georgian, Hebrew and Thai
-        // Tested: chinese (政府派高层), japanese (施する外), arabic (راديو مباشر), hebrew(מוטיבציה לר), hindi (भूत-प्रेत की कहानियाँ)
-        // Also tested: russian (Поездка), greek (δημοφιλέστερα), thai (ทำเนียบรัฐบาล), viet (yêu thích nhấ), korean (한국관광공사;)
-        // Tested but not working: Tamil
-        // http://www.cosmix.org/software/
-        try {
-            font = Font.createFont(Font.TRUETYPE_FONT,
-                    Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 14f);            
-        } catch (FontFormatException ex) {
-            font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-            logger.error("DroidSansMonoSlashed font format not supported. Replaced with default System font.", ex);
-        } catch (IOException ex) {
-            font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-            logger.error("DroidSansMonoSlashed TTF file not found. Replaced with default System font.", ex);
+        /*try {
+         font = Font.createFont(Font.TRUETYPE_FONT,
+         Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);
+         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+         // The font won't work if it is not registered (unless it is already installed on the System)
+         ge.registerFont(font);            
+         } catch (FontFormatException ex) {
+         font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
+         logger.error("DroidSansMonoSlashed font format not supported. Replaced with default System font.", ex);
+         } catch (IOException ex) {
+         font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
+         logger.error("DroidSansMonoSlashed TTF file not found. Replaced with default System font.", ex);
+         }*/
+        
+        GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] fonts = g.getAvailableFontFamilyNames();
+        for (String fontName : fonts) {
+            if (fontName.equals("Arial Unicode MS")) {
+                // Arial MS Unicode font
+                // Microsoft license: http://www.microsoft.com/typography/fonts/font.aspx?FMID=1081
+                // For testing: chinese (政府派高层), japanese (施する外), arabic (راديو مباشر), hebrew(מוטיבציה לר), hindi (भूत-प्रेत की कहानियाँ)
+                // russian (Поездка), greek (δημοφιλέστερα), thai (ทำเนียบรัฐบาล), viet (yêu thích nhấ), korean (한국관광공사;)
+                // Bundled with Windows and Mac OS
+                font = new Font("Arial Unicode MS", Font.PLAIN, 15);
+                break;
+            }
         }
-        // Does this work?
-        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+        // MAC
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             // deletes files created with RestartMac()
             new RestartMac(1);
             return;
