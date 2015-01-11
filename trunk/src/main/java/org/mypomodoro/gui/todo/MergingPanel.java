@@ -24,6 +24,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.html.HTML;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
@@ -111,20 +116,27 @@ public class MergingPanel extends CreatePanel {
                     continue;
                 }
                 // aggregate comments
-                comments.append("<p style=\"margin-top: 0\">");
-                comments.append(selectedToDo.getName());
-                if (selectedToDo.getNotes() != null && selectedToDo.getNotes().length() > 0) {
-                    comments.append(":");
-                    comments.append("</p>");
+                // aggregate comments
+                if (selectedToDo.getNotes().length() > 0) {
                     comments.append("<p style=\"margin-top: 0\">");
-                    comments.append(selectedToDo.getNotes());
+                    comments.append("<b>");
+                    comments.append(selectedToDo.getName());
+                    comments.append(" :");
+                    comments.append("</b>");
                     comments.append("</p>");
-                } else {
-                    comments.append(": -");
+                    // Parsing HTML
+                    // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)
+                    Document doc = Jsoup.parse(selectedToDo.getNotes(), "", Parser.xmlParser());
+                    //Document doc = Jsoup.parse(selectedToDo.getNotes());
+                    Elements elements = doc.getElementsByTag(HTML.Tag.BODY.toString());
+                    if (!elements.isEmpty()) {
+                        comments.append(elements.html());
+                    } else { // Backward compatility 3.0.X and imported data
+                        comments.append(selectedToDo.getNotes());
+                    }
+                    comments.append("<p style=\"margin-top: 0\">");
                     comments.append("</p>");
                 }
-                comments.append("<p style=\"margin-top: 0\">");
-                comments.append("</p>");
                 actualPoms += selectedToDo.getActualPoms();
             }
             // set comment
@@ -196,11 +208,9 @@ public class MergingPanel extends CreatePanel {
                                 }
                             });
                             panel.addActivity(newActivity);
-                            // Select new created unplanned task at the bottom of the list before refresh
-                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
-                            // Select new created unplanned task at the bottom of the list before refresh
+                            // Select new created task at the bottom of the list before refresh
                             panel.setCurrentSelectedRow(panel.getTable().getRowCount());
                             // After cursor stops, refresh ToDo List and clear the form                            
                             panel.refresh();
@@ -265,13 +275,12 @@ public class MergingPanel extends CreatePanel {
                                     }.start();
                                 }
                             });
-                            // refresh the whole table
-                            panel.refresh();
-                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
-                            // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh
-                            Main.gui.getActivityListPanel().refresh();
+                            // After cursor stops, refresh ToDo List and clear the form
+                            panel.refresh();
+                            clearForm();
+                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");                            
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }

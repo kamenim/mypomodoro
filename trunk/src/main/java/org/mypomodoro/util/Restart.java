@@ -23,6 +23,7 @@ import java.lang.management.ManagementFactory;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.SystemUtils;
 
 import org.mypomodoro.Main;
 
@@ -55,7 +56,7 @@ public class Restart {
      * @param runBeforeRestart some custom code to be run before restarting
      */
     public static void restartApplication(Runnable runBeforeRestart) {
-        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
             new RestartMac(0);
         } else {
             try {

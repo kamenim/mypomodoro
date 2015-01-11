@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import org.apache.commons.lang3.SystemUtils;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.RestartButton;
@@ -173,7 +174,7 @@ public class PreferencesPanel extends JPanel {
         vgbc.gridx = 1;
         vgbc.gridy = 0;
         vgbc.fill = GridBagConstraints.NONE;
-        if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) { // no restart button for Mac OS (does not work - see RestartMac classe)
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart button for Mac OS (does not work - see RestartMac classe)
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
             restartLabel.setForeground(ColorUtil.BLACK);
             restartLabel.setFont(getFont().deriveFont(Font.BOLD));

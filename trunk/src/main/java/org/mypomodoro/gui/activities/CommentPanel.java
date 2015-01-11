@@ -55,6 +55,10 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
@@ -75,9 +79,8 @@ public class CommentPanel extends JPanel {
     private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
     private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
     private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-    private final JButton foldButton = new AbstractButton(">");
-    private final String html32 = "HTML";
-    private final JButton htmlButton = new AbstractButton(html32);
+    private final JButton foldButton = new AbstractButton(">");    
+    private final JButton htmlButton = new AbstractButton("HTML");
     private final JButton boldButton = new AbstractButton("B");
     private final JButton italicButton = new AbstractButton("I");
     private final JButton underlineButton = new AbstractButton("U");
@@ -384,6 +387,7 @@ public class CommentPanel extends JPanel {
             }
         });
         htmlButton.setVisible(false);
+        htmlButton.setToolTipText("HTML 3.2");
         add(htmlButton, gbc);
         // Formatting actions
         class boldAction extends StyledEditorKit.BoldAction {
@@ -759,12 +763,18 @@ public class CommentPanel extends JPanel {
     public void showInfo(final Activity activity) {
         String comment = activity.getNotes().trim();
         // Backward compatility 3.0.X and imported data
-        // Simplistic check to see if there is a HTML tag; if not replace trailing return carriage with P tag        
-        if (!comment.isEmpty() && !comment.contains("<html>")) {
-            comment = "<p style=\"margin-top: 0\">" + comment;
-            comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
-            comment = comment + "</p>";
+        // Using Jsoup to check for HTML tag; if none is found, replace trailing return carriage with P tag 
+        if (!comment.isEmpty()) {
+            // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)
+            Document doc = Jsoup.parse(comment, "", Parser.xmlParser());
+            Elements elements = doc.getElementsByTag(HTML.Tag.HTML.toString());
+            if (elements.isEmpty()) {
+                comment = "<p style=\"margin-top: 0\">" + comment;
+                comment = comment.replaceAll(System.getProperty("line.separator"), "</p><p style=\"margin-top: 0\">");
+                comment = comment + "</p>";
+            }
         }
+        
         if (comment.isEmpty() && activity.isStory()) {
             // default template for User Story type
             comment = "<p style=\"margin-top: 0\">";
@@ -836,6 +846,7 @@ public class CommentPanel extends JPanel {
         informationArea.setContentType("text/plain");
         informationArea.setText(text);
         htmlButton.setText(Labels.getString("Common.Editor"));
+        htmlButton.setToolTipText(null);
         boldButton.setVisible(false);
         italicButton.setVisible(false);
         underlineButton.setVisible(false);
@@ -850,7 +861,8 @@ public class CommentPanel extends JPanel {
         String text = informationArea.getText();
         informationArea.setContentType("text/html");
         informationArea.setText(text);        
-        htmlButton.setText(html32);
+        htmlButton.setText("HTML");
+        htmlButton.setToolTipText("HTML 3.2");
         boldButton.setVisible(true);
         italicButton.setVisible(true);
         underlineButton.setVisible(true);
@@ -864,8 +876,9 @@ public class CommentPanel extends JPanel {
     private void displayPreviewMode() {
         String text = informationArea.getText();
         informationArea.setContentType("text/html");
-        informationArea.setText(text);
-        htmlButton.setText(html32);
+        informationArea.setText(text);        
+        htmlButton.setText("HTML");
+        htmlButton.setToolTipText("HTML 3.2");
         previewButton.setVisible(false);
         htmlButton.setVisible(false);
         boldButton.setVisible(false);

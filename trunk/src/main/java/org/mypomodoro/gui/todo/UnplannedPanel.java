@@ -136,8 +136,6 @@ public class UnplannedPanel extends CreatePanel {
         } else {
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
-            // refresh the whole table
-            panel.refresh();
             message = Labels.getString("ToDoListPanel.Task added to Activity List");            
             JOptionPane.showConfirmDialog(Main.gui, message, title,
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
