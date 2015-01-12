@@ -46,7 +46,7 @@ public class OverestimationInputForm extends JPanel {
 
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
     private static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
-    private static final Dimension COMBO_BOX_DIMENSION = new Dimension(50, 25);
+    private static final Dimension COMBO_BOX_DIMENSION = new Dimension(60, 25);
     protected JComboBox overestimatedPomodoros = new JComboBox();
     protected final GridBagConstraints c = new GridBagConstraints();
     protected final JLabel overestimatedLengthLabel = new JLabel("", JLabel.LEFT);

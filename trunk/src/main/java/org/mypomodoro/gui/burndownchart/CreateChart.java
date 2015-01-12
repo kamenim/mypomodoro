@@ -353,7 +353,7 @@ public class CreateChart extends JPanel {
         //////////////////// X-AXIS //////////////////////////
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
-        categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD));
+        categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // x-axis font
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45); // display diagonally
         }
@@ -388,7 +388,7 @@ public class CreateChart extends JPanel {
             }
             burndownCustomUnits.add(new NumberTickUnit(unit));
             burndownRangeAxis.setStandardTickUnits(burndownCustomUnits);
-            burndownRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 1));
+            burndownRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // left-y-axis font
             // Add the custom bar layered renderer to plot
             CategoryDataset burndownDataset = createBurndownChartDataset();
             plot.setDataset(4, burndownDataset);
@@ -454,7 +454,7 @@ public class CreateChart extends JPanel {
             }
             burnupCustomUnits.add(new NumberTickUnit(unit));
             burnupRangeAxis.setStandardTickUnits(burnupCustomUnits);
-            burnupRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 1));
+            burnupRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // right-y-axis font
             // when burndown, add the secondary Y axis to plot for burnup
             CategoryDataset burnupDataset = createBurnupChartDataset();
             if (chooseInputForm.getBurndownChartCheckBox().isSelected()) {
