@@ -83,8 +83,10 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHEAST;
         TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
+        // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
+        // setOpaque(false) makes nice round button on Win7 aero        
         timeMinus.setOpaque(true);
-        timeMinus.setMargin(new Insets(1, 1, 1, 1));
+        timeMinus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timeMinus.setFocusPainted(false); // removes borders around text
         add(timeMinus, gbc);
     }
@@ -107,8 +109,10 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.3;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         TimePlusButton timePlus = new TimePlusButton(pomodoro);
-        timePlus.setOpaque(true); // must be set to 'true' otherwise the current UI of the system (eg Windows XP) could make it completely transparent
-        timePlus.setMargin(new Insets(1, 1, 1, 1));
+        // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
+        // setOpaque(false) makes nice round button on Win7 aero 
+        timePlus.setOpaque(true);        
+        timePlus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timePlus.setFocusPainted(false); // removes borders around text
         add(timePlus, gbc);
     }
@@ -120,9 +124,11 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.165;
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.SOUTH;
+        // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
+        // setOpaque(false) makes nice round button on Win7 aero
         startButton.setOpaque(true);
         startButton.setForeground(ColorUtil.BLACK);
-        startButton.setMargin(new Insets(5, 15, 5, 15));
+        startButton.setMargin(new Insets(5, 15, 5, 15)); // inner margin
         startButton.setFocusPainted(false); // removes borders around text        
         startButton.setFont(startButton.getFont().deriveFont(20f));
         startButton.addActionListener(new ActionListener() {
