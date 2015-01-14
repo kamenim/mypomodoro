@@ -740,14 +740,13 @@ public class CommentPanel extends JPanel {
                     informationArea.requestFocusInWindow();
                 } else {
                     previewButton.getActionListeners()[0].actionPerformed(e);
-                    currentlySelectedActivityCaretPosition = 0;
+                    currentlySelectedActivityCaretPosition = 0; // reset
                 }
                 hideSaveCancelButton();
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity activity = panel.getActivityById(id);
-                currentlySelectedActivityText = activity.getNotes().trim();
-                currentlySelectedActivityCaretPosition = 0;
+                currentlySelectedActivityText = ""; // reset
                 showInfo(activity);
             }
         };
@@ -781,8 +780,8 @@ public class CommentPanel extends JPanel {
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity activity = panel.getActivityById(id);
-                currentlySelectedActivityText = activity.getNotes().trim();
-                currentlySelectedActivityCaretPosition = 0;
+                currentlySelectedActivityCaretPosition = 0; // reset
+                currentlySelectedActivityText = ""; // reset
                 showInfo(activity);
             }
         });

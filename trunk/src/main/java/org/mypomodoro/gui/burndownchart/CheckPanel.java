@@ -99,6 +99,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     public static int ID_KEY = 7;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
+    private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
@@ -178,7 +179,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         addCreateButton(c);
 
         // Split pane
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
@@ -187,7 +188,25 @@ public class CheckPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
-        add(splitPane, gbc);
+        add(splitPane, gbc);        
+        // once the split pane is added we can get it's divider location
+        controlPane.addMouseListener(new MouseAdapter() {
+            
+            private int dividerLocation = splitPane.getDividerLocation();
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    // Expand
+                    if (splitPane.getDividerLocation() != 0) { // double left click
+                        dividerLocation = splitPane.getDividerLocation();
+                        splitPane.setDividerLocation(0.0);                        
+                    } else { // back to original position
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                }
+            }
+        });
     }
 
     // add all listener once and for all
