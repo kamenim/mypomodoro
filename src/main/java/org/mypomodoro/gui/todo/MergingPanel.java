@@ -109,13 +109,13 @@ public class MergingPanel extends CreatePanel {
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             int[] rows = panel.getTable().getSelectedRows();
+            comments.append("<html><head></head><body>");
             for (int row : rows) {
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                 Activity selectedToDo = panel.getActivityById(id);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                     continue;
                 }
-                // aggregate comments
                 // aggregate comments
                 if (selectedToDo.getNotes().length() > 0) {
                     comments.append("<p style=\"margin-top: 0\">");
@@ -139,6 +139,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 actualPoms += selectedToDo.getActualPoms();
             }
+            comments.append("</body>");
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
