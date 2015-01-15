@@ -58,11 +58,13 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 
@@ -507,7 +509,7 @@ public class CommentPanel extends JPanel {
                 Color newColor = JColorChooser.showDialog(
                         null,
                         Labels.getString("BurndownChartPanel.Choose a color"),
-                        Color.YELLOW);
+                        ColorUtil.YELLOW_HIGHLIGHT);
                 if (newColor != null) {
                     //Add span Tag
                     String htmlStyle = "background-color:" + getHTMLColor(newColor);
@@ -602,8 +604,8 @@ public class CommentPanel extends JPanel {
         if (getFont().canDisplay('\u21e8')) {
             linkButton.setText("\u21e8");
         }
-        // ENTER: insert link (requires focus on the link text field)        
-        linkButton.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
+        // ENTER: insert link (requires focus on the link text field) (WHEN_IN_FOCUSED_WINDOW must be used here)        
+        linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");
         class linkEnterAction extends AbstractAction {
 
             /**
@@ -734,7 +736,21 @@ public class CommentPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.saveComment(StringEscapeUtils.unescapeHtml4(informationArea.getText()));
+                // Metatag charset directive
+                // using the HTML 5 short directive http://www.w3schools.com/tags/att_meta_charset.asp
+                // <meta charset="UTF-8">
+                // IgnoreCharsetDirective set to true on HTMLEditor
+                String comment = informationArea.getText();
+                // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)            
+                Document doc = Jsoup.parse(comment, "UTF-8", Parser.xmlParser());
+                Elements elements = doc.getElementsByTag(HTML.Tag.META.toString());
+                if (elements.isEmpty()) {
+                    org.jsoup.nodes.Element tagMetaCharset = new org.jsoup.nodes.Element(Tag.valueOf("meta"), "");
+                    tagMetaCharset.attr("charset", "UTF-8");
+                    doc.head().appendChild(tagMetaCharset);
+                    comment = doc.toString();
+                }
+                panel.saveComment(StringEscapeUtils.unescapeHtml4(comment)); // remove HTML encoding; eg: &nbsp; --> semicolon 
                 if (previewButton.isVisible()) { // editor opened; no switch to preview mode
                     // show caret
                     informationArea.requestFocusInWindow();
@@ -794,7 +810,7 @@ public class CommentPanel extends JPanel {
         // Using Jsoup to check for HTML tag; if none is found, replace trailing return carriage with P tag 
         if (!comment.isEmpty()) {
             // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)            
-            Document doc = Jsoup.parse(comment, "", Parser.xmlParser());
+            Document doc = Jsoup.parse(comment, "UTF-8", Parser.xmlParser());
             Elements elements = doc.getElementsByTag(HTML.Tag.BODY.toString());
             if (elements.isEmpty()) {
                 comment = "<p style=\"margin-top: 0\">" + comment;
@@ -859,7 +875,7 @@ public class CommentPanel extends JPanel {
             informationArea.setText(comment);
             // Set caret position            
             //try {
-                informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset() - 1);
+            informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset() - 1);
             //} catch (java.lang.IllegalArgumentException ex) { // bad position exception
 
             //}

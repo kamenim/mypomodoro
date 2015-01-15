@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentEvent;
 import java.util.Enumeration;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -145,7 +146,10 @@ public class Main {
                 }
                 //}
                 // Set global font (before intanstiating the components and the gui)
-                // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)
+                // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
+                if (font == null) { // In case , Arial Unicode MS isn't exist; let's hope the default OS font is unicode
+                    font = new JPanel().getFont().deriveFont(Font.PLAIN, 15f);
+                }
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)
                 UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); // colour of the background // this does not work

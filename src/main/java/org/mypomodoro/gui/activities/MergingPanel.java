@@ -123,7 +123,7 @@ public class MergingPanel extends CreatePanel {
                     comments.append("</p>");
                     // Parsing HTML
                     // Jsoup: parsing the html content without reformating (because JSoup is HTML 5 compliant only - not 3.2)
-                    Document doc = Jsoup.parse(selectedActivity.getNotes(), "", Parser.xmlParser());
+                    Document doc = Jsoup.parse(selectedActivity.getNotes(), "UTF-8", Parser.xmlParser());
                     //Document doc = Jsoup.parse(selectedActivity.getNotes());
                     Elements elements = doc.getElementsByTag(HTML.Tag.BODY.toString());
                     if (!elements.isEmpty()) {
