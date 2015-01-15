@@ -73,9 +73,15 @@ public class HtmlEditor extends JTextPane {
 
     public HtmlEditor() {
         setEditorKit(new HTMLEditorKit()); // content type = text/html        
-        setContentType("text/html;charset=UTF-8");
+        setContentType("text/html;charset=UTF-8"); // make editor utf-8 compliant but won't add any metatag charset directive to the header of the html doc        
+        // Ignore metatag charset directive (JTextPane doesn't support it)
+        getDocument().putProperty("IgnoreCharsetDirective", true);
+        
         // Turn on bi-directional text
-        getDocument().putProperty("i18n", Boolean.TRUE);        
+        getDocument().putProperty("i18n", Boolean.TRUE);          
+        // Right to Left
+        // setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        
         // set default HTML body settings        
         /*String bodyRule = "body {"
          + "color: #000;"

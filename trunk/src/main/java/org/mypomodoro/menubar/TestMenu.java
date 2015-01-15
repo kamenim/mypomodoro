@@ -80,7 +80,8 @@ public class TestMenu extends JMenu {
                         Main.progressBar.setVisible(true);
                         Main.progressBar.getBar().setValue(0);
                         Main.progressBar.getBar().setMaximum(nbTask);
-
+                        
+                        String[] tasks = new String[]{"Task", "Tâche", "任务", "задача", "कार्य"}; // English, French, Hindi, Russian, Chinese simplified                        
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f};
                         Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
                         Integer[] iterationsForActivities = new Integer[]{-1, -1, -1, iterations.length - 1, iterations.length};
@@ -97,7 +98,7 @@ public class TestMenu extends JMenu {
                             final Activity a = new Activity(
                                     "Place" + " " + (rand.nextInt(10) + 1),
                                     "Author" + " " + (rand.nextInt(10) + 1),
-                                    "Task" + " " + (i + 1),
+                                    tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
                                     "",
                                     (PreferencesPanel.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
                                     rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
