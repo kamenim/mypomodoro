@@ -413,7 +413,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
             }
         }
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 6; i++) {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
