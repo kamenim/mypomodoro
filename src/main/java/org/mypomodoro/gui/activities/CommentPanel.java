@@ -603,6 +603,8 @@ public class CommentPanel extends JPanel {
         gbc.gridwidth = 1;
         if (getFont().canDisplay('\u21e8')) {
             linkButton.setText("\u21e8");
+        } else {
+            linkButton.setText(">>");
         }
         // ENTER: insert link (requires focus on the link text field) (WHEN_IN_FOCUSED_WINDOW must be used here)        
         linkButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Create link");

@@ -26,7 +26,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
-import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
@@ -46,7 +45,6 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.RestartMac;
 
 /**
  * Main Application Starter
@@ -113,11 +111,12 @@ public class Main {
             }
         }
         // MAC
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+        // Commented out: won't work on MAC_OSX
+        /*if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             // deletes files created with RestartMac()
             new RestartMac(1);
             return;
-        }
+        }*/
         // Display GUI
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -188,7 +187,7 @@ public class Main {
                         Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()),
                                 Math.max(580, gui.getHeight()));
                         Dimension mindGUI = new Dimension(780, 580);
-                        gui.setMinimumSize(mindGUI);
+                        //gui.setMinimumSize(mindGUI);
                         gui.setPreferredSize(mindGUI);
                         gui.setSize(dGUI);
                     }

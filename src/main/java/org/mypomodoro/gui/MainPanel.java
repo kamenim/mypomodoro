@@ -39,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import org.mypomodoro.Main;
-import static org.mypomodoro.Main.gui;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -150,15 +149,43 @@ public final class MainPanel extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (gui.getExtendedState() != (gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
-                    guiRecordedSize = gui.getSize();
-                    guiRecordedLocation = gui.getLocation();
+                if (getExtendedState() != (getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
+                    guiRecordedSize = getSize();
+                    guiRecordedLocation = getLocation();
                     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                    gui.setMaximizedBounds(env.getMaximumWindowBounds());
-                    gui.setExtendedState(gui.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+                    setMaximizedBounds(env.getMaximumWindowBounds());
+                    setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
                 } else { // back to the original size
-                    gui.setSize(guiRecordedSize);
-                    gui.setLocation(guiRecordedLocation);
+                    /*int state = 1;
+                    switch (state) {
+                        case 1:
+                            menuBar.setVisible(false);
+                            iconBar.setVisible(false);
+                            // Components frame work architecture. Closely the problem'is in the one thing:
+                            // each component has one owner. when you are adding component
+                            // to container. His owner is changing automatically.
+                            JPanel test = new JPanel();
+                            //test.add(getToDoPanel().getTimerPanel());
+                            test.add(getToDoPanel().getTodoTable());
+                            state = 2;
+                            break;
+                        case 2:
+                            menuBar.setVisible(true);
+                            iconBar.setVisible(true);
+                                //getToDoPanel().addToDoTable();
+                            //gui.setSize(guiRecordedSize);
+                            //gui.setMinimumSize(new Dimension(50, 100));
+                            //gui.setPreferredSize(new Dimension(50, 100));
+                            state = 3;
+                            break;
+                        default:
+                            gui.setSize(guiRecordedSize);
+                            gui.setLocation(guiRecordedLocation);
+                            break;
+                    }*/
+                    //setSize(new Dimension(50, 100));
+                    setSize(guiRecordedSize);
+                    setLocation(guiRecordedLocation);
                 }
             }
         };

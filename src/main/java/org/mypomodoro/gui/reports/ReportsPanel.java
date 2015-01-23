@@ -416,7 +416,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName(copiedActivity.getName() + " (2)");
+                        copiedActivity.setName("(D) " + copiedActivity.getName());
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         // Insert the duplicate into the activity list

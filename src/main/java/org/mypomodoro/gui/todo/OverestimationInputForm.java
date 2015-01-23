@@ -77,7 +77,7 @@ public class OverestimationInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         // In Agile mode you should be able to overestimate your task by half day or even one day
-        String items[] = PreferencesPanel.preferences.getAgileMode() ? new String[PreferencesPanel.preferences.getMaxNbPomPerDay()] : new String[5];
+        String items[] = PreferencesPanel.preferences.getAgileMode() ? new String[10] : new String[5];
         for (int i = 0; i < items.length; i++) {
             items[i] = "+ " + (i + 1);
         }

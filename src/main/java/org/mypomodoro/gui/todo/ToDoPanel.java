@@ -122,6 +122,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
+    private JScrollPane todoScrollPane;
+    private JPanel wrap;
     //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
@@ -129,6 +131,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    
+    private GridBagConstraints c = new GridBagConstraints();
+    
     // Unplanned
     //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
@@ -198,14 +203,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
-        addToDoTable(c);
-        addTimerPanel(c);
+        addToDoTable();
+        addTimerPanel();
         //addRemainingPomodoroPanel(c);
         //addToDoIconPanel(c);
 
@@ -368,35 +373,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         }
                     }
                 });
-
-        // Activate Delete key stroke
-        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
-        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
+        
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
-        class deleteAction extends AbstractAction {
-
-            final IListPanel panel;
-
-            public deleteAction(IListPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
-                b.doClick();
-            }
-        }
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
-        } else {
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        }
-        am.put("Delete", new deleteAction(this));
         // Activate Shift + '>'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");        
         class completeAction extends AbstractAction {
 
             final ToDoPanel panel;
@@ -540,7 +521,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName(copiedActivity.getName() + " (2)");
+                        copiedActivity.setName("(D) " + copiedActivity.getName());
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         // Insert the duplicate into the activity list
@@ -741,31 +722,32 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titledborder.repaint();
     }
 
-    private void addToDoTable(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.7;
-        gbc.weighty = 0.7;
-        gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane todoScrollPane = new JScrollPane(table);
+    public void addToDoTable() {
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.7;
+        c.weighty = 0.7;
+        c.gridheight = 1;
+        c.fill = GridBagConstraints.BOTH;
+        todoScrollPane = new JScrollPane(table);
         todoScrollPane.setMinimumSize(LISTPANE_DIMENSION);
         todoScrollPane.setPreferredSize(LISTPANE_DIMENSION);
-        scrollPane.add(todoScrollPane, gbc);
+        scrollPane.add(todoScrollPane, c);
     }
 
-    private void addTimerPanel(GridBagConstraints gbc) {
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0.3;
-        gbc.weighty = 0.6;
-        gbc.gridheight = 1;
+    public void addTimerPanel() {
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weightx = 0.3;
+        c.weighty = 0.6;
+        c.gridheight = 1;
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-        scrollPane.add(wrapInBackgroundImage(
+        wrap = wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
-                JLabel.TOP, JLabel.LEADING), gbc);
+                JLabel.TOP, JLabel.LEADING);
+        scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
 
@@ -1307,4 +1289,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }   
+    
+    /*
+    
+    public JPanel getTimerPanel() {        
+        return wrap;
+    }
+    
+    public JScrollPane getTodoTable() {        
+        return todoScrollPane;
+    }
+    */
+    
+    
 }

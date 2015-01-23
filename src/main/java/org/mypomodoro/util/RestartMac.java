@@ -38,19 +38,19 @@ public class RestartMac {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     /* AppleScript */
-    private final String restartScript = "tell application \"myPomodoro\" to quit" + System.getProperty("line.separator")
+    private final String restartScript = "tell application \"myAgilePomodoro\" to quit" + System.getProperty("line.separator")
             + "tell application \"System Events\"" + System.getProperty("line.separator")
-            + "repeat until not (exists process \"myPomodoro\")" + System.getProperty("line.separator")
+            + "repeat until not (exists process \"myAgilePomodoro\")" + System.getProperty("line.separator")
             + "delay 0.2" + System.getProperty("line.separator")
             + "end repeat" + System.getProperty("line.separator")
             + "end tell" + System.getProperty("line.separator")
-            + "tell application \"myPomodoro\" to activate";
+            + "tell application \"myAgilePomodoro\" to activate";
     /* AppleScript FileName */
-    private final File restartFile = new File("myPomodoroRestart.scpt");
+    private final File restartFile = new File("myAgilePomodoroRestart.scpt");
     /* Created Application FileName
      * Is created when the AppleScript is Compiled
      */
-    private final String restartApp = "myPomodoroRestart.app";
+    private final String restartApp = "myAgilePomodoroRestart.app";
     /* String[] used to Compile AppleScript to Application */
     private final String[] osacompileString = new String[]{"/usr/bin/osacompile", "-o", restartApp, restartFile.toString()};
     /* String[] used to Open created Application */
