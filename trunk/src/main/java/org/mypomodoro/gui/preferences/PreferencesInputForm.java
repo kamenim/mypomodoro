@@ -188,10 +188,14 @@ public class PreferencesInputForm extends JPanel {
                 // In the Agile world, a task may last up to 2 days (2 times the max nb of pom per day)
                 maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivityAgileMode);
                 maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() * 2);
+                maxNbPomPerDaySlider.setVisible(false);
                 agileModeBox.setSelected(true);
-                pomodoroModeBox.setSelected(false);
+                pomodoroModeBox.setSelected(false);                
             }
         });
+        if (agileModeBox.isSelected()) {
+            maxNbPomPerDaySlider.setVisible(false);
+        }
         pomodoroModeBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Agile.Pomodoro Mode"),
                 !PreferencesPanel.preferences.getAgileMode());
@@ -203,6 +207,7 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
                 maxNbPomPerActivitySlider.changeSlider(maxNbPomPerActivity);
                 maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() < initMaxNbPomPerActivity ? maxNbPomPerDaySlider.getSliderValue() : initMaxNbPomPerActivity);
+                maxNbPomPerDaySlider.setVisible(true);
                 pomodoroModeBox.setSelected(true);
                 agileModeBox.setSelected(false);
             }
