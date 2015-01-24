@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014
+ * Copyright (C) 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,6 +148,7 @@ public class Main {
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
                 if (font == null) { // In case , Arial Unicode MS isn't exist; let's hope the default OS font is unicode
                     font = new JPanel().getFont().deriveFont(Font.PLAIN, 15f);
+                    logger.error("Arial Unicode MS not supported. Replaced with default System font.");                    
                 }
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)

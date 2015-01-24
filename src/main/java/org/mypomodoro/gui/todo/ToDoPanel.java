@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014
+ * Copyright (C) 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,11 +60,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
-import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
@@ -1132,7 +1130,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(TimerPanel timerPanel,
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
             MuteButton muteButton, Icon backgroundIcon, int verticalAlignment,
             int horizontalAlignment) {
 
@@ -1163,20 +1161,24 @@ public class ToDoPanel extends JPanel implements IListPanel {
             backgroundPanel.add(timerPanel, gbc);
         }
 
-        // Set background image in a button to be able to add an action to it
+        // Set background image (tomato) in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);
         pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
-        pomodoroButton.setContentAreaFilled(false);
+        pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
         pomodoroButton.setOpaque(false);
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)        
-        // Scroll back to current running/selected task
-        // Equivalent to CTR + R shortcut
+        
+        // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         pomodoroButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                
+                timerPanel.switchPomodoroCompliance();
+                
+                /* Equivalent to CTRL + G
                 if (pomodoro.inPomodoro()) {
                     for (int row = 0; row < table.getRowCount(); row++) {
                         Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
@@ -1186,7 +1188,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     }
                     table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
                 }
-                showCurrentSelectedRow();
+                showCurrentSelectedRow();*/
             }
         });
 
