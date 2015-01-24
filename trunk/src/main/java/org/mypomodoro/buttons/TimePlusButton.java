@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014
+ * Copyright (C) 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
+import org.mypomodoro.util.TransparentButton;
 
 /**
  * Time plus button
  *
  */
-public class TimePlusButton extends JButton {
+public class TimePlusButton extends TransparentButton {
 
     private final ImageIcon timePlusIcon = new ImageIcon(Main.class.getResource("/images/timeplus.png"));
 
     public TimePlusButton(final Pomodoro pomodoro) {
+        super("");
         setIcon(timePlusIcon);
         addActionListener(new ActionListener() {
 

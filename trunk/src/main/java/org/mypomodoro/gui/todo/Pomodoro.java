@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014
+ * Copyright (C) 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,32 @@ public class Pomodoro {
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
         panel.setIconLabels();
         panel.getTable().repaint(); // trigger row renderers
+    }
+
+    public void pause() {
+        pomodoroTimer.stop();
+        stopSound();
+        if (inPomodoro() && isSystemTray()) {
+            if (isSystemTrayMessage()) {
+                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Paused"), TrayIcon.MessageType.NONE);
+            }
+            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Paused"));
+            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+        }
+    }
+    
+    public void resume() {
+        pomodoroTimer.start();
+        if (PreferencesPanel.preferences.getTicking() && !isMute) {
+            tick();
+        }
+        if (inPomodoro() && isSystemTray()) {
+            if (isSystemTrayMessage()) {
+                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Resumed"), TrayIcon.MessageType.NONE);
+            }
+            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Resumed"));
+            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+        }
     }
 
     public boolean stopWithWarning() {

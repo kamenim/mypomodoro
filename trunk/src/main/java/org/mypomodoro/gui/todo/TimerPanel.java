@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014
+ * Copyright (C)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import org.mypomodoro.buttons.TimePlusButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TransparentButton;
 
 public class TimerPanel extends JPanel {
 
@@ -47,8 +48,12 @@ public class TimerPanel extends JPanel {
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JButton startButton = new JButton(Labels.getString("ToDoListPanel.Start"));
+    private final TransparentButton pauseButton = new TransparentButton("Pause");
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
+    private final TimePlusButton timePlus;
+    private final TimeMinusButton timeMinus;
+    public static boolean strictPomodoro = false;
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
@@ -60,7 +65,7 @@ public class TimerPanel extends JPanel {
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
         } catch (FontFormatException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
-            logger.error("TrueType not supported for font Timer. Replacoed with default System font.", ex);
+            logger.error("TrueType not supported. Replaced with default System font.", ex);
         } catch (IOException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
@@ -69,23 +74,60 @@ public class TimerPanel extends JPanel {
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 
-        addTimeMinusButton(pomodoro);
+        timeMinus = new TimeMinusButton(pomodoro);
+        addTimeMinusButton();
         addPomodoroTimerLabel();
-        addTimePlusButton(pomodoro);
+        timePlus = new TimePlusButton(pomodoro);
+        addTimePlusButton();
         addStartButton(pomodoro);
+        addPauseButton(pomodoro);
     }
 
-    private void addTimeMinusButton(final Pomodoro pomodoro) {
+    private void addPauseButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
+        gbc.weighty = 0.1;
+        //gbc.gridwidth = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
+        pauseButton.setEnabled(false);
+        pauseButton.setForeground(ColorUtil.BLACK);
+        pauseButton.setMargin(new Insets(5, 15, 5, 15)); // inner margin
+        pauseButton.setFocusPainted(false); // removes borders around text        
+        pauseButton.setFont(pauseButton.getFont().deriveFont(20f));
+        pauseButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Activity currentToDo = pomodoro.getCurrentToDo();
+                if (currentToDo != null) {
+                    if (!pomodoro.getTimer().isRunning()) { // resume 
+                        pomodoro.resume();
+                        pauseButton.setText("Pause");
+                    } else { // pause
+                        pomodoro.pause();
+                        if (pomodoro.inPomodoro()) {
+                            pauseButton.setForeground(ColorUtil.RED);
+                        }
+                        pauseButton.setText("Resume");
+                    }
+                }
+            }
+        });
+        add(pauseButton, gbc);
+    }
+
+    private void addTimeMinusButton() {
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
-        gbc.weighty = 0.3;
-        gbc.anchor = GridBagConstraints.SOUTHEAST;
-        TimeMinusButton timeMinus = new TimeMinusButton(pomodoro);
+        //gbc.weighty = 0.1;
+        gbc.anchor = GridBagConstraints.EAST;
         // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
         // setOpaque(false) makes nice round button on Win7 aero        
-        timeMinus.setOpaque(true);
+        //timeMinus.setOpaque(true);
+        timeMinus.setVisible(true); // this is a TransparentButton
         timeMinus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timeMinus.setFocusPainted(false); // removes borders around text
         add(timeMinus, gbc);
@@ -93,25 +135,25 @@ public class TimerPanel extends JPanel {
 
     private void addPomodoroTimerLabel() {
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.3;
-        gbc.anchor = GridBagConstraints.SOUTH;
+        //gbc.weighty = 0.1;
+        gbc.anchor = GridBagConstraints.CENTER;
         pomodoroTime.setFont(pomodoroTime.getFont().deriveFont(40f));
         add(pomodoroTime, gbc);
     }
 
-    private void addTimePlusButton(final Pomodoro pomodoro) {
+    private void addTimePlusButton() {
         gbc.gridx = 2;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
-        gbc.weighty = 0.3;
-        gbc.anchor = GridBagConstraints.SOUTHWEST;
-        TimePlusButton timePlus = new TimePlusButton(pomodoro);
+        //gbc.weighty = 0.1;
+        gbc.anchor = GridBagConstraints.WEST;
         // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
         // setOpaque(false) makes nice round button on Win7 aero 
-        timePlus.setOpaque(true);        
+        //timePlus.setOpaque(true);
+        timePlus.setVisible(true); // this is a TransparentButton
         timePlus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timePlus.setFocusPainted(false); // removes borders around text
         add(timePlus, gbc);
@@ -119,11 +161,11 @@ public class TimerPanel extends JPanel {
 
     private void addStartButton(final Pomodoro pomodoro) {
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.165;
+        gbc.weighty = 0.13; // this will center the counter and give some spaces to the start and pause buttons
         gbc.gridwidth = 3;
-        gbc.anchor = GridBagConstraints.SOUTH;
+        gbc.anchor = GridBagConstraints.CENTER;
         // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
         // setOpaque(false) makes nice round button on Win7 aero
         startButton.setOpaque(true);
@@ -157,7 +199,10 @@ public class TimerPanel extends JPanel {
                                 pomodoro.start();
                                 startButton.setText(Labels.getString("ToDoListPanel.Stop"));
                                 startButton.setForeground(ColorUtil.RED);
-                                pomodoroTime.setForeground(ColorUtil.RED);
+                                pomodoroTime.setForeground(ColorUtil.RED);                               
+                                pauseButton.setVisible(true);
+                                pauseButton.setEnabled(true);
+                                pauseButton.setForeground(ColorUtil.RED);
                             }
                         }
                     } else if (pomodoro.stopWithWarning()) {
@@ -165,6 +210,9 @@ public class TimerPanel extends JPanel {
                         startButton.setText(Labels.getString("ToDoListPanel.Start"));
                         startButton.setForeground(ColorUtil.BLACK);
                         pomodoroTime.setForeground(ColorUtil.BLACK);
+                        pauseButton.setVisible(false);
+                        pauseButton.setEnabled(false);
+                        pauseButton.setForeground(ColorUtil.BLACK);
                     }
                 }
             }
@@ -179,6 +227,28 @@ public class TimerPanel extends JPanel {
 
     public void setStartColor(Color color) {
         startButton.setForeground(color);
+        pauseButton.setForeground(color);
         pomodoroTime.setForeground(color);
+    }
+
+    public void switchPomodoroCompliance() {
+        if (!strictPomodoro) { // make it strict pomodoro
+            pauseButton.setVisible(false);
+            pauseButton.setEnabled(false);
+            timePlus.setVisible(false);
+            timePlus.setEnabled(false);
+            timeMinus.setVisible(false);
+            timeMinus.setEnabled(false);
+
+            strictPomodoro = true;
+        } else { // default
+            pauseButton.setVisible(true);
+            pauseButton.setEnabled(true);
+            timePlus.setVisible(true);
+            timePlus.setEnabled(true);
+            timeMinus.setVisible(true);
+            timeMinus.setEnabled(true);
+            strictPomodoro = false;
+        }
     }
 }
