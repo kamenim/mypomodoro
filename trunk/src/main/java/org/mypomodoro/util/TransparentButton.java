@@ -24,23 +24,22 @@ import javax.swing.JButton;
 /**
  * Transparent button (including text)
  *
- * Transparent button (excluding text) : button.setContentAreaFilled(false); //
- * setOpaque(false) not needed button.setBorderPainted(false);
- *
  */
 public class TransparentButton extends JButton {
 
-    float alpha = 0.0f; // completely transparent
+    private float alpha = 0.0f; // completely transparent
+
+    private boolean fireRepaint = true;
+    
+    public TransparentButton() {        
+        setOpaque(false);
+        setEnabled(false);
+    }
 
     public TransparentButton(String text) {
         super(text);
-        setOpaque(true);
-    }
-
-    public TransparentButton(String text, float alpha) {
-        super(text);
-        this.alpha = alpha;
-        setOpaque(true);
+        setOpaque(false);
+        setEnabled(false);
     }
 
     @Override
@@ -51,15 +50,38 @@ public class TransparentButton extends JButton {
         g2.dispose();
     }
 
+    // this calls paint(...)
+    @Override
+    public void repaint() {
+        if (fireRepaint) {
+            super.repaint();
+        }
+    }
+
+    // fireRepaint to prevent the button to flicker on Win7 aero theme (repaint() called multiple time because of setEnabled and other fire actions)
     @Override
     public void setVisible(boolean aFlag) {
         if (aFlag) {
             alpha = 1.0f;
-            setOpaque(true);
+            // must be setOpaque(true) to make the button opaque with Win XP classic             
+            if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
+                setOpaque(true);
+            } else {
+                setOpaque(false);
+            }
+            fireRepaint = true;
+            setEnabled(true);
+            fireRepaint = false;
         } else {
             alpha = 0.0f;
             setOpaque(false);
+            fireRepaint = true;
+            setEnabled(false);
+            fireRepaint = false;
         }
-        repaint();
     }
+
+    public void setFireRepaint(boolean repaint) {
+        fireRepaint = repaint;
+    }    
 }

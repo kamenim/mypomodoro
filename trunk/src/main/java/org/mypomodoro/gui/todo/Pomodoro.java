@@ -96,7 +96,7 @@ public class Pomodoro {
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
     }
 
-    public void start() {
+    public void start() {        
         pomodoroTimer.start();
         if (PreferencesPanel.preferences.getTicking() && !isMute) {
             tick();
