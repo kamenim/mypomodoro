@@ -758,7 +758,7 @@ public class CommentPanel extends JPanel {
                     informationArea.requestFocusInWindow();
                 } else {
                     previewButton.getActionListeners()[0].actionPerformed(e);
-                    currentlySelectedActivityCaretPosition = 0; // reset
+                    //currentlySelectedActivityCaretPosition = 0; // reset
                 }
                 hideSaveCancelButton();
                 int row = panel.getTable().getSelectedRow();
