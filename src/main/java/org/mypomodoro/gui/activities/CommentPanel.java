@@ -358,8 +358,6 @@ public class CommentPanel extends JPanel {
                 } else {
                     informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset() - 1);
                 }
-                // Show caret
-                informationArea.requestFocusInWindow();
             }
         });
         previewButton.setVisible(false);
@@ -753,13 +751,12 @@ public class CommentPanel extends JPanel {
                     comment = doc.toString();
                 }
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(comment)); // remove HTML encoding; eg: &nbsp; --> semicolon 
-                if (previewButton.isVisible()) { // editor opened; no switch to preview mode
+                //if (previewButton.isVisible()) { // editor opened; no switch to preview mode
                     // show caret
                     informationArea.requestFocusInWindow();
-                } else {
+                /*} else {
                     previewButton.getActionListeners()[0].actionPerformed(e);
-                    //currentlySelectedActivityCaretPosition = 0; // reset
-                }
+                }*/
                 hideSaveCancelButton();
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
