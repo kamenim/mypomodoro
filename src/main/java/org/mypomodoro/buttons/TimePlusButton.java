@@ -32,9 +32,9 @@ import org.mypomodoro.util.TransparentButton;
 public class TimePlusButton extends TransparentButton {
 
     private final ImageIcon timePlusIcon = new ImageIcon(Main.class.getResource("/images/timeplus.png"));
+    private final ImageIcon timePlusRedIcon = new ImageIcon(Main.class.getResource("/images/timeplusred.png"));
 
-    public TimePlusButton(final Pomodoro pomodoro) {
-        super("");
+    public TimePlusButton(final Pomodoro pomodoro) {        
         setIcon(timePlusIcon);
         addActionListener(new ActionListener() {
 
@@ -43,5 +43,14 @@ public class TimePlusButton extends TransparentButton {
                 pomodoro.increaseTime();
             }
         });
+    }
+    
+    public void setTimePlusRedIcon(boolean aFlag) {
+        setFireRepaint(true);
+        if (aFlag) {
+            setIcon(timePlusRedIcon);
+        } else {
+            setIcon(timePlusIcon);
+        }
     }
 }
