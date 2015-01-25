@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.db;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,7 +38,8 @@ public class Database {
     private Connection connection = null;
     private Statement statement = null;
     private String driverClassName = "org.sqlite.JDBC";
-    private String connectionStatement = "jdbc:sqlite:myagilepomodoro.db";
+    private String databaseFileName = "myagilepomodoro.db";
+    private String connectionStatement = "jdbc:sqlite:" + databaseFileName;
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
     // SQLLite database specific
@@ -45,6 +47,7 @@ public class Database {
     private String longInteger = "INTEGER";
     public String selectStatementSeqId = "SELECT seq FROM sqlite_sequence WHERE name = 'activities'";
     public String sequenceIdName = "seq";
+    public static boolean firstTime = false;
     /*
      // Postgresql database specific
      autoIncrementKeyword = "???";
@@ -63,6 +66,11 @@ public class Database {
             longInteger = "BIGINT";
             selectStatementSeqId = "SELECT LAST_INSERT_ID()";
             sequenceIdName = "last_insert_id()";
+        } else { // SQLite
+            File file = new File(databaseFileName);
+            if (!file.exists()) { // SQLlite database not created yet            
+                firstTime = true;
+            }
         }
         // Connect to database
         try {

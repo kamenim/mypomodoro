@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 
 import javax.swing.JPanel;
+import org.mypomodoro.db.Database;
 
 public class WindowPanel extends JPanel {
 
@@ -30,8 +31,13 @@ public class WindowPanel extends JPanel {
         setLayout(new BorderLayout());
         setOpaque(true);
         add(iconBar, BorderLayout.NORTH);
-        windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
-        windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
+        if (Database.firstTime) { // display preferences as splash screen when MSQlite database is being created for the first time
+            windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
+            windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
+        } else {
+            windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
+            windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
+        }
         windowPanel.add(view.getCreatePanel(), view.getCreatePanel().getClass().getName());
         windowPanel.add(view.getActivityListPanel(), view.getActivityListPanel().getClass().getName());
         windowPanel.add(view.getToDoPanel(), view.getToDoPanel().getClass().getName());
