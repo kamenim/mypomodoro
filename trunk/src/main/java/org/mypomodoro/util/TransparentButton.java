@@ -30,8 +30,8 @@ public class TransparentButton extends JButton {
     private float alpha = 0.0f; // completely transparent
 
     private boolean fireRepaint = true;
-    
-    public TransparentButton() {        
+
+    public TransparentButton() {
         setOpaque(false);
         setEnabled(false);
     }
@@ -83,5 +83,5 @@ public class TransparentButton extends JButton {
 
     public void setFireRepaint(boolean repaint) {
         fireRepaint = repaint;
-    }    
+    }
 }

@@ -19,7 +19,6 @@ package org.mypomodoro;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ComponentEvent;
 import java.util.Enumeration;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -96,7 +95,6 @@ public class Main {
          font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
          logger.error("DroidSansMonoSlashed TTF file not found. Replaced with default System font.", ex);
          }*/
-        
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fonts = g.getAvailableFontFamilyNames();
         for (String fontName : fonts) {
@@ -113,10 +111,10 @@ public class Main {
         // MAC
         // Commented out: won't work on MAC_OSX
         /*if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            // deletes files created with RestartMac()
-            new RestartMac(1);
-            return;
-        }*/
+         // deletes files created with RestartMac()
+         new RestartMac(1);
+         return;
+         }*/
         // Display GUI
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -148,7 +146,7 @@ public class Main {
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
                 if (font == null) { // In case , Arial Unicode MS isn't exist; let's hope the default OS font is unicode
                     font = new JPanel().getFont().deriveFont(Font.PLAIN, 15f);
-                    logger.error("Arial Unicode MS not supported. Replaced with default System font.");                    
+                    logger.error("Arial Unicode MS not supported. Replaced with default System font.");
                 }
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)
@@ -181,18 +179,22 @@ public class Main {
                 if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
-                gui.addComponentListener(new java.awt.event.ComponentAdapter() {
+                Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
+                Dimension mindGUI = new Dimension(780, 580);
+                gui.setPreferredSize(mindGUI);
+                gui.setSize(dGUI);
+                /* this may prevent the gui to be resizable
+                 gui.addComponentListener(new ComponentAdapter() {
 
-                    @Override
-                    public void componentResized(ComponentEvent event) {
-                        Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()),
-                                Math.max(580, gui.getHeight()));
-                        Dimension mindGUI = new Dimension(780, 580);
-                        //gui.setMinimumSize(mindGUI);
-                        gui.setPreferredSize(mindGUI);
-                        gui.setSize(dGUI);
-                    }
-                });
+                 @Override
+                 public void componentResized(ComponentEvent event) {
+                 Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()),
+                 Math.max(580, gui.getHeight()));
+                 Dimension mindGUI = new Dimension(780, 580);                        
+                 //gui.setPreferredSize(mindGUI);
+                 gui.setSize(dGUI);
+                 }
+                 });*/
             }
         });
     }

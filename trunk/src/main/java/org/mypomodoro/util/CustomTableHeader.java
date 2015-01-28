@@ -40,24 +40,23 @@ public class CustomTableHeader extends JTableHeader {
         this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
-        setBorder(border);       
+        setBorder(border);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
-        
-        /* This code sets a black border around each cell of the header but the rendering is not that nice
-        final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
-        setDefaultRenderer(new TableCellRenderer() {
 
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JLabel label = (JLabel) render.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);                
-                Border border = BorderFactory.createLineBorder(ColorUtil.BLACK, 1);                
-                label.setBorder(border);                
-                label.setHorizontalAlignment(SwingConstants.CENTER);                
-                return label;
-            }
-        });
-        */
-        
+        /* This code sets a black border around each cell of the header but the rendering is not that nice
+         final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
+         setDefaultRenderer(new TableCellRenderer() {
+
+         @Override
+         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+         JLabel label = (JLabel) render.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);                
+         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK, 1);                
+         label.setBorder(border);                
+         label.setHorizontalAlignment(SwingConstants.CENTER);                
+         return label;
+         }
+         });
+         */
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         setDefaultRenderer(renderer);

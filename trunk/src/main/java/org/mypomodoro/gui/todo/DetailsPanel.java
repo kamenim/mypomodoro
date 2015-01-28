@@ -67,7 +67,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         moveButton = new MoveToDoButton(unicode_arrow_move_left, todoPanel);
         if (!getFont().canDisplay('\u226a')) {
             moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 6));
-        } else {            
+        } else {
             moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 30));
         }
         add(moveButton, gbc);

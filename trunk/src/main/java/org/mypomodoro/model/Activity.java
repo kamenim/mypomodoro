@@ -36,7 +36,7 @@ public class Activity implements Cloneable {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public Activity clone() throws CloneNotSupportedException {        
+    public Activity clone() throws CloneNotSupportedException {
         return (Activity) super.clone();
     }
 
@@ -481,10 +481,10 @@ public class Activity implements Cloneable {
         PlaceList.addPlace(getPlace());
         ActivitiesDAO.getInstance().update(this);
     }
-    
+
     public void databaseUpdateComment() {
         ActivitiesDAO.getInstance().updateComment(this);
-    }    
+    }
 
     public void databaseDelete() {
         // update lists
@@ -505,7 +505,7 @@ public class Activity implements Cloneable {
     public boolean isDateInFuture() {
         return DateUtil.inFuture(getDate());
     }
-    
+
     public boolean isOverdue() {
         return DateUtil.inPast(getDate());
     }

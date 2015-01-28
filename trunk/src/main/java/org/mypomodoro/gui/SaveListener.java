@@ -36,11 +36,10 @@ public class SaveListener implements ActionListener {
 
     /**
      * Action performer that reacts on button click or on Enter keystroke (see
-     * SaveButton) 
-     * Condition added to prevent the action to be performed when
-     * the Enter key is used while editing in a text area, a combo or date picker
-     * box
-     * 
+     * SaveButton) Condition added to prevent the action to be performed when
+     * the Enter key is used while editing in a text area, a combo or date
+     * picker box
+     *
      * @param event
      */
     @Override
@@ -49,15 +48,15 @@ public class SaveListener implements ActionListener {
         ActivityInputForm inputForm = (ActivityInputForm) panel.getFormPanel();
         // Check for focus ownership on editable jComboBox
         // Note: isFocusOwner not working on either non-editable combo boxes or textarea embedded in scrollpane 
-        Component[] components = ((ActivityInputForm) panel.getFormPanel()).getComponents();         
+        Component[] components = ((ActivityInputForm) panel.getFormPanel()).getComponents();
         for (Component component : components) {
-            if ((component instanceof JComboBox && (((JComboBox)component).getEditor().getEditorComponent().isFocusOwner()))
-                    || (component instanceof DatePicker && (((DatePicker)component).getEditor().isFocusOwner()))
+            if ((component instanceof JComboBox && (((JComboBox) component).getEditor().getEditorComponent().isFocusOwner()))
+                    || (component instanceof DatePicker && (((DatePicker) component).getEditor().isFocusOwner()))
                     || inputForm.getDescriptionField().isFocusOwner()) {
                 doSave = false;
                 break;
             }
-        }        
+        }
         if (doSave) {
             Activity newActivity = panel.getFormPanel().getActivityFromFields();
             if (newActivity != null) {
