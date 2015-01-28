@@ -14,24 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.util;
 
 import java.awt.Toolkit;
 import javax.swing.UIManager;
 
 /**
- * Check if the Windows current theme is XP classic 
- * 
+ * Check if the Windows current theme is XP classic
+ *
  */
 public class CheckWindowsClassicTheme {
-       
+
     public static boolean isWindowsClassicLAF() {
         return isWindowsLAF()
                 && !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty(
                         "win.xpstyle.themeActive");
     }
-    
+
     private static boolean isWindowsLAF() {
         return UIManager.getLookAndFeel().getID().equals("Windows");
     }

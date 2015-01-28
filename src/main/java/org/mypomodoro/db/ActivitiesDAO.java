@@ -119,10 +119,10 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void updateComment(Activity activity) {
-        String updateSQL = "UPDATE activities SET " 
-                + "notes = '" + activity.getNotes().replace("'", "''") + "'"                
+        String updateSQL = "UPDATE activities SET "
+                + "notes = '" + activity.getNotes().replace("'", "''") + "'"
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();

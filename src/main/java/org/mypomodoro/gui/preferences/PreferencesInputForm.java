@@ -190,7 +190,7 @@ public class PreferencesInputForm extends JPanel {
                 maxNbPomPerActivitySlider.setSliderValue(maxNbPomPerDaySlider.getSliderValue() * 2);
                 maxNbPomPerDaySlider.setVisible(false);
                 agileModeBox.setSelected(true);
-                pomodoroModeBox.setSelected(false);                
+                pomodoroModeBox.setSelected(false);
             }
         });
         if (agileModeBox.isSelected()) {

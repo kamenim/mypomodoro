@@ -176,17 +176,17 @@ public class ReportsPanel extends JPanel implements IListPanel {
         });
         setBorder(titledborder);
 
+        // Top pane
+        scrollPane = new JScrollPane(table);
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-
-        // Top pane
-        scrollPane = new JScrollPane(table);
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
 
         // Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
@@ -198,25 +198,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
-        add(splitPane, gbc);        
-        // once the split pane is added we can get it's divider location
-        controlPane.addMouseListener(new MouseAdapter() {
-            
-            private int dividerLocation = splitPane.getDividerLocation();
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
-                    // Expand
-                    if (splitPane.getDividerLocation() != 0) { // double left click
-                        dividerLocation = splitPane.getDividerLocation();
-                        splitPane.setDividerLocation(0.0);                        
-                    } else { // back to original position
-                        splitPane.setDividerLocation(dividerLocation);
-                    }
-                }
-            }
-        });
+        add(splitPane, gbc);
     }
 
     // add all listener once and for all
@@ -402,7 +384,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-        
+
         // Activate Control D (duplicate task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Duplicate");
         class duplicate extends AbstractAction {
@@ -412,7 +394,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 if (table.getSelectedRowCount() == 1) {
                     int row = table.getSelectedRow();
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);                    
+                    Activity originalCopiedActivity = getActivityById(id);
                     try {
                         Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
                         copiedActivity.setId(-1); // new activity
@@ -425,7 +407,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
                         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     } catch (CloneNotSupportedException ignored) {
-                    }                    
+                    }
                 }
             }
         }
@@ -634,6 +616,22 @@ public class ReportsPanel extends JPanel implements IListPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        controlPane.addMouseListener(new MouseAdapter() {
+            private int dividerLocation;
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    // Expand
+                    if (splitPane.getDividerLocation() != 0) { // double left click
+                        dividerLocation = splitPane.getDividerLocation();
+                        splitPane.setDividerLocation(0.0);
+                    } else { // back to original position
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                }
+            }
+        });
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
         showSelectedItemEdit(editPanel);

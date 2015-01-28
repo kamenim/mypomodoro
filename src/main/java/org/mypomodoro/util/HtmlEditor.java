@@ -76,12 +76,12 @@ public class HtmlEditor extends JTextPane {
         setContentType("text/html;charset=UTF-8"); // make editor utf-8 compliant but won't add any metatag charset directive to the header of the html doc        
         // Ignore metatag charset directive (JTextPane doesn't support it)
         getDocument().putProperty("IgnoreCharsetDirective", true);
-        
+
         // Turn on bi-directional text
-        getDocument().putProperty("i18n", Boolean.TRUE);          
+        getDocument().putProperty("i18n", Boolean.TRUE);
         // Right to Left
         // setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        
+
         // set default HTML body settings        
         /*String bodyRule = "body {"
          + "color: #000;"
@@ -95,7 +95,6 @@ public class HtmlEditor extends JTextPane {
 
         // limit the number of characters to 1000 to avoid java head size issue
         // ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000)); // this will make mergind of tasks (comments) difficult
-
         // Remove some formatting when typing before or after a formatted text
         // we do it the same way MICROSOFT Word Office does:
         // - Formatting is preserved after: bold, italic, underline, foreground style --> nothing to do here
@@ -137,7 +136,7 @@ public class HtmlEditor extends JTextPane {
                             if (spanTag == null) {
                                 inputAttr.removeAttribute(HTML.Tag.SPAN);
                             }
-                        }                        
+                        }
                         /*MutableAttributeSet FOREGROUND = new SimpleAttributeSet();
                          StyleConstants.setBackground(FOREGROUND, StyleConstants.getForeground(selectionAttributes));
                          if (!selectionAttributes.containsAttributes(FOREGROUND)) {
@@ -178,11 +177,11 @@ public class HtmlEditor extends JTextPane {
         String toolTip = null;
         JTextPane editor = (JTextPane) event.getSource();
         if (!editor.isEditable()
-                && editor.getCursor().getType() == Cursor.HAND_CURSOR) {            
+                && editor.getCursor().getType() == Cursor.HAND_CURSOR) {
             Point pt = new Point(event.getX(), event.getY());
             int pos = editor.viewToModel(pt);
             if (pos >= 0) {
-                Element e = ((HTMLDocument)editor.getDocument()).getCharacterElement(pos);                              
+                Element e = ((HTMLDocument) editor.getDocument()).getCharacterElement(pos);
                 SimpleAttributeSet attribute = (SimpleAttributeSet) e.getAttributes().getAttribute(HTML.Tag.A);
                 if (attribute != null) {
                     String href = (String) attribute.getAttribute(HTML.Attribute.HREF);
@@ -194,7 +193,7 @@ public class HtmlEditor extends JTextPane {
         }
         return toolTip;
     }
-    
+
     // Insert text at the cursor position
     public void insertText(int start, String text, Tag insertTag) throws BadLocationException, IOException {
         insertText(start, text, 0, insertTag);
@@ -219,7 +218,7 @@ public class HtmlEditor extends JTextPane {
     public boolean isEditorOrPreviewMode() {
         return getContentType().equals("text/html");
     }
-    
+
     public boolean isHTMLMode() {
         return getContentType().equals("text/plain");
     }
@@ -265,7 +264,7 @@ public class HtmlEditor extends JTextPane {
             }
         }
     }
-    
+
     public boolean isParentElement(HTML.Tag tag) {
         boolean isParentElement = false;
         Element e = getCurrentParentElement();

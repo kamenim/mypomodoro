@@ -131,14 +131,14 @@ public class UnplannedPanel extends CreatePanel {
             // Select new created unplanned task at the bottom of the list before refresh
             panel.setCurrentSelectedRow(panel.getTable().getRowCount());
             // refresh the whole table
-            panel.refresh();            
+            panel.refresh();
             clearForm();
         } else {
             validation.setVisible(false);
             super.validActivityAction(newActivity); // validation and clear form
-            message = Labels.getString("ToDoListPanel.Task added to Activity List");            
+            message = Labels.getString("ToDoListPanel.Task added to Activity List");
             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

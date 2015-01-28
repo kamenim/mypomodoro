@@ -103,7 +103,7 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(final Activity newActivity) {        
+    protected void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
@@ -281,7 +281,7 @@ public class MergingPanel extends CreatePanel {
                             // After cursor stops, refresh ToDo List and clear the form
                             panel.refresh();
                             clearForm();
-                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");                            
+                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }

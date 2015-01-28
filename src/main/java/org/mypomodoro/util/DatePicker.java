@@ -65,8 +65,8 @@ public final class DatePicker extends JXDatePicker {
     public void setTodayWithUpperBounds() {
         setDateWithUpperBounds(new Date());
     }
-    
-    public void setEmptyTodayWithLowerBounds() {        
+
+    public void setEmptyTodayWithLowerBounds() {
         getMonthView().setLowerBound(new Date());
         getEditor().setText("");
     }

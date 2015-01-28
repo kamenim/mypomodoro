@@ -752,11 +752,11 @@ public class CommentPanel extends JPanel {
                 }
                 panel.saveComment(StringEscapeUtils.unescapeHtml4(comment)); // remove HTML encoding; eg: &nbsp; --> semicolon 
                 //if (previewButton.isVisible()) { // editor opened; no switch to preview mode
-                    // show caret
-                    informationArea.requestFocusInWindow();
+                // show caret
+                informationArea.requestFocusInWindow();
                 /*} else {
-                    previewButton.getActionListeners()[0].actionPerformed(e);
-                }*/
+                 previewButton.getActionListeners()[0].actionPerformed(e);
+                 }*/
                 hideSaveCancelButton();
                 int row = panel.getTable().getSelectedRow();
                 Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());

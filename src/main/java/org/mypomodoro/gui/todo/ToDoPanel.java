@@ -121,17 +121,16 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
     private JScrollPane todoScrollPane;
-    private JPanel wrap;
     //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
     // Border
     private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));    
+
     private GridBagConstraints c = new GridBagConstraints();
-    
+
     // Unplanned
     //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
@@ -164,6 +163,25 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Set up table listeners once anf for all
         setUpTable();
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        // Split pane
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, scrollPane, controlPane); // continuous layout = true: important for resizing
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setBorder(null);
+        splitPane.setDividerSize(10);
+        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
+        //divider.setBackground(ColorUtil.YELLOW_ROW);
+        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        add(splitPane, gbc);
+
         // Init control pane before the table so we can set the default tab at start up time               
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
@@ -190,18 +208,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         });
         setBorder(titledborder);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-
         // Top pane
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        
+
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
@@ -211,36 +222,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         addTimerPanel();
         //addRemainingPomodoroPanel(c);
         //addToDoIconPanel(c);
-
-        // Split pane
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setContinuousLayout(true);
-        splitPane.setResizeWeight(0.5);
-        splitPane.setBorder(null);
-        splitPane.setDividerSize(10);
-        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        //divider.setBackground(ColorUtil.YELLOW_ROW);
-        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
-        add(splitPane, gbc);        
-        // once the split pane is added we can get it's divider location
-        controlPane.addMouseListener(new MouseAdapter() {
-            
-            private int dividerLocation = splitPane.getDividerLocation();
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
-                    // Expand
-                    if (splitPane.getDividerLocation() != 0) { // double left click
-                        dividerLocation = splitPane.getDividerLocation();
-                        splitPane.setDividerLocation(0.0);                        
-                    } else { // back to original position
-                        splitPane.setDividerLocation(dividerLocation);
-                    }
-                }
-            }
-        });
     }
 
     // add all listener once and for all
@@ -371,11 +352,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         }
                     }
                 });
-        
+
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         // Activate Shift + '>'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");        
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");
         class completeAction extends AbstractAction {
 
             final ToDoPanel panel;
@@ -534,7 +515,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
         am.put("Duplicate", new duplicate());
 
-        // Activate Control R (scroll back to the current running/selected task
+        // Activate Control G (scroll back to the current running/selected task
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
@@ -581,7 +562,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        
+
         // set custom render for title
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
@@ -740,7 +721,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         c.weighty = 0.6;
         c.gridheight = 1;
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-        wrap = wrapInBackgroundImage(
+        JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
@@ -769,7 +750,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
      iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
      scrollPane.add(iconLabel, gbc);
      }*/
-    private void addTabPane() {
+    public void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
         controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
@@ -781,6 +762,22 @@ public class ToDoPanel extends JPanel implements IListPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        controlPane.addMouseListener(new MouseAdapter() {
+            private int dividerLocation;
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    // Expand
+                    if (splitPane.getDividerLocation() != 0) { // double left click
+                        dividerLocation = splitPane.getDividerLocation();
+                        splitPane.setDividerLocation(0.0);
+                    } else { // back to original position
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                }
+            }
+        });
         showSelectedItemDetails(detailsPanel);
         showSelectedItemComment(commentPanel);
         showSelectedItemEdit(editPanel);
@@ -1047,19 +1044,19 @@ public class ToDoPanel extends JPanel implements IListPanel {
             return renderer;
         }
     }
-    
+
     class TitleRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             /*if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
-                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                Activity toDo = ToDoList.getList().getById(id);
-                if (toDo != null && toDo.isOverdue()) {
+             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+             Activity toDo = ToDoList.getList().getById(id);
+             if (toDo != null && toDo.isOverdue()) {
                     
-                }
-            }*/
+             }
+             }*/
             return renderer;
         }
     }
@@ -1133,8 +1130,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
             MuteButton muteButton, Icon backgroundIcon, int verticalAlignment,
             int horizontalAlignment) {
-
-        // make the passed in swing component transparent
+        // transparent
         timerPanel.setOpaque(false);
 
         // create wrapper JPanel
@@ -1169,26 +1165,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
         pomodoroButton.setOpaque(false);
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)        
-        
+
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         pomodoroButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 timerPanel.switchPomodoroCompliance();
-                
-                /* Equivalent to CTRL + G
-                if (pomodoro.inPomodoro()) {
-                    for (int row = 0; row < table.getRowCount(); row++) {
-                        Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                        if (pomodoro.getCurrentToDo().getId() == id) {
-                            currentSelectedRow = row;
-                        }
-                    }
-                    table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
-                }
-                showCurrentSelectedRow();*/
             }
         });
 
@@ -1290,18 +1274,21 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
-    }   
-    
-    /*
-    
-    public JPanel getTimerPanel() {        
-        return wrap;
     }
-    
-    public JScrollPane getTodoTable() {        
+
+    public JScrollPane getTodoScrollPane() {
         return todoScrollPane;
     }
-    */
-    
-    
+
+    public JTabbedPane getControlPane() {
+        return controlPane;
+    }
+
+    public void addControlPane() {
+        splitPane.setRightComponent(controlPane); // bottom
+    }
+
+    public void setTitledBorder() {
+        setBorder(titledborder);
+    }
 }
