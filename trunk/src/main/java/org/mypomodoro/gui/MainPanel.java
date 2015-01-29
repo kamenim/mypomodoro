@@ -19,6 +19,7 @@ package org.mypomodoro.gui;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ProgressBar;
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -153,18 +154,11 @@ public final class MainPanel extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if ((!getToDoPanel().isVisible() || viewCount == 0) && getExtendedState() != (getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
                     guiRecordedLocation = getLocation();
-                    if (!getToDoPanel().isVisible()) {
-                        guiRecordedSize = getSize();
-                    }
+                    guiRecordedSize = getSize();                    
                     guiRecordedLocation = getLocation();
                     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
                     setMaximizedBounds(env.getMaximumWindowBounds());
                     setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-                    // we make sure the selected task appears on screen despite the resizing
-                    getActivityListPanel().showCurrentSelectedRow();
-                    getToDoPanel().showCurrentSelectedRow();
-                    getReportListPanel().showCurrentSelectedRow();
-                    getChartTabbedPanel().getCheckPanel().showCurrentSelectedRow();
                     viewCount = 1;
                 } else { // back to the original location
                     Dimension size;
@@ -175,6 +169,8 @@ public final class MainPanel extends JFrame {
                             iconBar.setVisible(false);
                             size = new Dimension(300, 350);
                             JPanel test = new JPanel();
+                            //test.add(menuBar);
+                            //test.add(iconBar);
                             test.add(getToDoPanel().getTodoScrollPane()); // add component to a panel so it is removed from ToDoPanel
                             test.add(getToDoPanel().getControlPane()); // add component to a panel so it is removed from ToDoPanel
                             getToDoPanel().setBorder(null); // remove border
@@ -185,24 +181,20 @@ public final class MainPanel extends JFrame {
                             size = new Dimension(780, 360); // on Win 7 aero graphical/theme, 350 is slightly to short
                             getToDoPanel().addToDoTable(); // put component back in its place
                             getToDoPanel().setTitledBorder(); // put border back in its place
-                            getToDoPanel().showCurrentSelectedRow();
                             //getRootPane().putClientProperty("Window.alpha", new Float(1.0f)); // this is a MAC OSX Java transparency effect
                             viewCount = 3;
                         } else { // timer + list + tabs
                             guiRecordedLocation = getLocation();
+                            size = guiRecordedSize;
                             menuBar.setVisible(true);
                             iconBar.setVisible(true);
-                            size = new Dimension(780, 580);
+                            //setJMenuBar(menuBar);
+                            //windowPanel.add(iconBar, BorderLayout.NORTH);
                             getToDoPanel().addControlPane(); // put component back in its place
-                            getToDoPanel().showCurrentSelectedRow(); // this doesn't work
                             viewCount = 0;
                         }
                         setSize(size);
                     } else {
-                        // we make sure the selected task appears on screen despite the resizing
-                        getActivityListPanel().showCurrentSelectedRow();
-                        getReportListPanel().showCurrentSelectedRow();
-                        getChartTabbedPanel().getCheckPanel().showCurrentSelectedRow();
                         size = guiRecordedSize;
                         viewCount = 0;
                     }
@@ -211,6 +203,11 @@ public final class MainPanel extends JFrame {
                     setSize(size);
                     setLocation(guiRecordedLocation);
                 }
+                // we make sure the selected task appears on screen despite the resizing
+                getActivityListPanel().showCurrentSelectedRow();
+                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs)
+                getReportListPanel().showCurrentSelectedRow();
+                getChartTabbedPanel().showCurrentSelectedRow();
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "Maximize");
