@@ -720,12 +720,21 @@ public class ToDoPanel extends JPanel implements IListPanel {
         c.weightx = 0.3;
         c.weighty = 0.6;
         c.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
+        // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
+        wrap.addMouseListener(new MouseAdapter() {
+
+            // click
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                timerPanel.switchPomodoroCompliance();
+            }
+        });
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1272,8 +1281,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         currentSelectedRow = row;
     }
 
-    public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+    public void showCurrentSelectedRow() {        
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));        
     }
 
     public JScrollPane getTodoScrollPane() {
