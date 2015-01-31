@@ -63,6 +63,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.gui.IListPanel;
@@ -127,7 +128,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // Border
     private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));    
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
 
     private GridBagConstraints c = new GridBagConstraints();
 
@@ -720,9 +722,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
         c.weightx = 0.3;
         c.weighty = 0.6;
         c.gridheight = 1;
-        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
+                discontinuousButton,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
@@ -1137,34 +1140,34 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
-            MuteButton muteButton, Icon backgroundIcon, int verticalAlignment,
-            int horizontalAlignment) {
+            DiscontinuousButton linkButton, MuteButton muteButton, Icon backgroundIcon,
+            int verticalAlignment, int horizontalAlignment) {
         // transparent
         timerPanel.setOpaque(false);
 
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        JPanel j = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();        
+        linkButton.setVisible(true); // this is a TransparentButton       
+        linkButton.setMargin(new Insets(1, 1, 1, 1));
+        linkButton.setFocusPainted(false); // removes borders around text
+        j.add(linkButton,  c);
         if (PreferencesPanel.preferences.getTicking()
                 || PreferencesPanel.preferences.getRinging()) {
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.anchor = GridBagConstraints.EAST;
             muteButton.setOpaque(false);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
-            backgroundPanel.add(muteButton, gbc);
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            backgroundPanel.add(timerPanel, gbc);
-        } else {
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            // add the passed in swing component first to ensure that it is in
-            // front
-            backgroundPanel.add(timerPanel, gbc);
-        }
+            j.add(muteButton, c);
+        }       
+        backgroundPanel.add(j, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        backgroundPanel.add(timerPanel, gbc);
 
         // Set background image (tomato) in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
@@ -1281,8 +1284,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         currentSelectedRow = row;
     }
 
-    public void showCurrentSelectedRow() {        
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));        
+    public void showCurrentSelectedRow() {
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
     public JScrollPane getTodoScrollPane() {
@@ -1299,5 +1302,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void setTitledBorder() {
         setBorder(titledborder);
+    }
+    
+    public void hideDiscontinuousButton() {
+        discontinuousButton.setVisible(false);
+        pomodoro.continuous(); // pomodoro strict mode --> force continuous workflow
+    }
+    
+    public void showDiscontinuousButton() {
+        discontinuousButton.setVisible(true);
+        if (!discontinuousButton.isDiscontinuous()) {
+            pomodoro.discontinuous();
+        }
     }
 }
