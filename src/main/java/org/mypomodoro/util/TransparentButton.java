@@ -67,7 +67,7 @@ public class TransparentButton extends JButton {
             if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {
-                setOpaque(false);
+                setOpaque(false); // nice rounded button on Win7 aero
             }
             fireRepaint = true;
             setEnabled(true);

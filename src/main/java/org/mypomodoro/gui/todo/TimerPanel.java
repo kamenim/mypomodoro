@@ -122,9 +122,6 @@ public class TimerPanel extends JPanel {
         gbc.weightx = 0.1;
         //gbc.weighty = 0.1;
         gbc.anchor = GridBagConstraints.EAST;
-        // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
-        // setOpaque(false) makes nice round button on Win7 aero        
-        //timeMinus.setOpaque(true);
         timeMinus.setVisible(true); // this is a TransparentButton
         timeMinus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timeMinus.setFocusPainted(false); // removes borders around text
@@ -148,9 +145,6 @@ public class TimerPanel extends JPanel {
         gbc.weightx = 0.1;
         //gbc.weighty = 0.1;
         gbc.anchor = GridBagConstraints.WEST;
-        // must be set to 'true' to make the button opaque in all type of graphical/theme System environment (eg Win7 aero vs Win XP classic)
-        // setOpaque(false) makes nice round button on Win7 aero 
-        //timePlus.setOpaque(true);
         timePlus.setVisible(true); // this is a TransparentButton
         timePlus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
         timePlus.setFocusPainted(false); // removes borders around text
@@ -228,6 +222,9 @@ public class TimerPanel extends JPanel {
 
     public void setStart() {
         startButton.setText(Labels.getString("ToDoListPanel.Start"));
+        pauseButton.setVisible(false);
+        pauseButton.setText(Labels.getString("ToDoListPanel.Pause"));
+        pauseButton.setForeground(ColorUtil.BLACK);
         setStartColor(ColorUtil.BLACK);
     }
 
@@ -251,6 +248,7 @@ public class TimerPanel extends JPanel {
                 startButton.setVisible(false);
             }
             pauseButton.setVisible(false);
+            panel.hideDiscontinuousButton();            
             timePlus.setVisible(false);
             timeMinus.setVisible(false);
             strictPomodoro = true;
@@ -259,6 +257,7 @@ public class TimerPanel extends JPanel {
             if (!Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
                 pauseButton.setVisible(true);
             }
+            panel.showDiscontinuousButton(); 
             timePlus.setVisible(true);
             timeMinus.setVisible(true);
             strictPomodoro = false;

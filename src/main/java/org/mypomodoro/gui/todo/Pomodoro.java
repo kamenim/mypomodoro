@@ -85,6 +85,7 @@ public class Pomodoro {
     private boolean inpomodoro = false;
     private Clip clip;
     private boolean isMute = false;
+    private boolean isDiscontinuous = false;
 
     public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel) {
         this.panel = panel;
@@ -235,14 +236,20 @@ public class Pomodoro {
                     }
                     // update the current ToDo from the database (in case someone's changed it)
                     ToDoList.getList().refreshById(currentToDoId);
-                    if (getCurrentToDo().isFinished()) { // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
+                    // or unlinked: stop after break
+                    if (getCurrentToDo().isFinished() || isDiscontinuous) {
                         stop();
                         timerPanel.setStart();
                         if (isSystemTray()) {
-                            if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Finished"), TrayIcon.MessageType.NONE);
+                            String message = Labels.getString("ToDoListPanel.Finished");
+                            if (isDiscontinuous) {
+                                message = Labels.getString("ToDoListPanel.Stopped");
                             }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Finished"));
+                            if (isSystemTrayMessage()) {
+                                MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
+                            }
+                            MainPanel.trayIcon.setToolTip(message);
                         }
                     } else {
                         if (PreferencesPanel.preferences.getTicking() && !isMute) {
@@ -515,5 +522,15 @@ public class Pomodoro {
                 }
             }
         }
+    }
+
+    // set the pomodoros to stop after each break
+    public void discontinuous() {
+        isDiscontinuous = true;
+    }
+
+    // set the pomodoros and breaks to run continiously
+    public void continuous() {
+        isDiscontinuous = false;
     }
 }

@@ -19,7 +19,6 @@ package org.mypomodoro.gui;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ProgressBar;
 import java.awt.AWTException;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;

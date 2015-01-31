@@ -138,6 +138,18 @@
     
   <!-- BUILD CONFIGURATION -->
   <build>
+    <!-- exclusions -->
+    <!-- excluding sub folder 'material' by excluding its files -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>images/material/*.*</exclude>
+          <exclude>icons/material/*.*</exclude>
+        </excludes>
+      </resource>      
+    </resources>
+    <!-- plugins -->    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -204,7 +216,7 @@
           </libs>
         </configuration>
       </plugin-->
-    </plugins>
+    </plugins>    
   </build>
     
   <!-- OS PROFILES -->
