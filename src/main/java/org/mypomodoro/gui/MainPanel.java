@@ -173,6 +173,7 @@ public final class MainPanel extends JFrame {
                             test.add(getToDoPanel().getTodoScrollPane()); // add component to a panel so it is removed from ToDoPanel
                             test.add(getToDoPanel().getControlPane()); // add component to a panel so it is removed from ToDoPanel
                             getToDoPanel().setBorder(null); // remove border
+                            getToDoPanel().hideSplitPaneDivider();
                             //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                             viewCount = 2;
                         } else if (viewCount == 2) { // timer + list
@@ -190,6 +191,7 @@ public final class MainPanel extends JFrame {
                             //setJMenuBar(menuBar);
                             //windowPanel.add(iconBar, BorderLayout.NORTH);
                             getToDoPanel().addControlPane(); // put component back in its place
+                            getToDoPanel().showSplitPaneDivider();
                             viewCount = 0;
                         }
                         setSize(size);

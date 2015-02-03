@@ -32,9 +32,11 @@ import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.DefaultCellEditor;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -44,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -373,6 +376,19 @@ public class CheckPanel extends JPanel implements IListPanel {
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        
+        // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
+        DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
+
+            @Override
+            public boolean isCellEditable(EventObject e) {
+                if (e instanceof KeyEvent) {
+                    return false;
+                }
+                return super.isCellEditable(e);
+            }
+        };
+        table.setDefaultEditor(Object.class, editor);
 
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
