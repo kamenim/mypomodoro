@@ -32,9 +32,11 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -48,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -565,6 +568,19 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
+        // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
+        DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
+
+            @Override
+            public boolean isCellEditable(EventObject e) {
+                if (e instanceof KeyEvent) {
+                    return false;
+                }
+                return super.isCellEditable(e);
+            }
+        };
+        table.setDefaultEditor(Object.class, editor);       
+
         // set custom render for title
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
@@ -722,7 +738,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         c.weightx = 0.3;
         c.weighty = 0.6;
         c.gridheight = 1;
-        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
+        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
                 discontinuousButton,
@@ -1152,18 +1168,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         JPanel j = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();        
+        GridBagConstraints c = new GridBagConstraints();
         linkButton.setVisible(true); // this is a TransparentButton       
         linkButton.setMargin(new Insets(1, 1, 1, 1));
         linkButton.setFocusPainted(false); // removes borders around text
-        j.add(linkButton,  c);
+        j.add(linkButton, c);
         if (PreferencesPanel.preferences.getTicking()
                 || PreferencesPanel.preferences.getRinging()) {
             muteButton.setOpaque(false);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
             j.add(muteButton, c);
-        }       
+        }
         backgroundPanel.add(j, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -1303,16 +1319,24 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void setTitledBorder() {
         setBorder(titledborder);
     }
-    
+
     public void hideDiscontinuousButton() {
         discontinuousButton.setVisible(false);
         pomodoro.continuous(); // pomodoro strict mode --> force continuous workflow
     }
-    
+
     public void showDiscontinuousButton() {
         discontinuousButton.setVisible(true);
         if (!discontinuousButton.isDiscontinuous()) {
             pomodoro.discontinuous();
         }
+    }
+
+    public void showSplitPaneDivider() {
+        splitPane.setDividerSize(10);
+    }
+
+    public void hideSplitPaneDivider() {
+        splitPane.setDividerSize(0);
     }
 }
