@@ -75,7 +75,11 @@ public class MoveToDoButton extends TabPanelButton {
                             Activity selectedToDo = panel.getActivityById(id);
                             // excluding current running task
                             if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                continue;
+                                if (rows.length > 1) {
+                                    continue;
+                                } else {
+                                    break;
+                                }
                             }
                             panel.move(selectedToDo);
                             panel.removeRow(row);

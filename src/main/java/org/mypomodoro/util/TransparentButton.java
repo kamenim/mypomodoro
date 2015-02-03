@@ -19,16 +19,16 @@ package org.mypomodoro.util;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import javax.swing.Icon;
 import javax.swing.JButton;
 
 /**
- * Transparent button (including text)
+ * Transparent button (including text and icon)
  *
  */
 public class TransparentButton extends JButton {
 
     private float alpha = 0.0f; // completely transparent
-
     private boolean fireRepaint = true;
 
     public TransparentButton() {
@@ -38,6 +38,12 @@ public class TransparentButton extends JButton {
 
     public TransparentButton(String text) {
         super(text);
+        setOpaque(false);
+        setEnabled(false);
+    }
+    
+    public TransparentButton(Icon icon) {
+        super(icon);
         setOpaque(false);
         setEnabled(false);
     }
@@ -81,7 +87,19 @@ public class TransparentButton extends JButton {
         }
     }
 
-    public void setFireRepaint(boolean repaint) {
-        fireRepaint = repaint;
+    // no tool tip when disabled
+    @Override
+    public String getToolTipText() {
+        String toolTip = null;
+        if (this.isEnabled()) {
+            toolTip = super.getToolTipText();
+        }
+        return toolTip;
+    }
+        
+    @Override
+    public void setIcon(Icon icon) {
+        fireRepaint = true; // make sure repaint() is fired
+        super.setIcon(icon);
     }
 }

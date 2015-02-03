@@ -58,13 +58,11 @@ public class DiscontinuousButton extends TransparentButton {
         });
     }
 
-    private void setDiscontinuousIcon() {
-        setFireRepaint(true);
+    private void setDiscontinuousIcon() {        
         setIcon(discontinuousIcon);
     }
 
-    private void setContinuousIcon() {
-        setFireRepaint(true);
+    private void setContinuousIcon() {        
         setIcon(continuousIcon);
     }
 
