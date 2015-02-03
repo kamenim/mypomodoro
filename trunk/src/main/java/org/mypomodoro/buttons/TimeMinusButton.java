@@ -45,8 +45,7 @@ public class TimeMinusButton extends TransparentButton {
         });
     }
 
-    public void setTimeMinusRedIcon(boolean aFlag) {
-        setFireRepaint(true);
+    public void setTimeMinusRedIcon(boolean aFlag) {        
         if (aFlag) {
             setIcon(timeMinusRedIcon);
         } else {

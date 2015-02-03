@@ -46,8 +46,15 @@ public class TimerPanel extends JPanel {
 
     private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final TransparentButton startButton = new TransparentButton(Labels.getString("ToDoListPanel.Start"));
-    private final TransparentButton pauseButton = new TransparentButton(Labels.getString("ToDoListPanel.Pause"));
+    private final ImageIcon startIcon = new ImageIcon(Main.class.getResource("/images/start.png"));
+    private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource("/images/stop.png"));
+    private final ImageIcon stopRedIcon = new ImageIcon(Main.class.getResource("/images/stopred.png"));
+    private final TransparentButton startButton = new TransparentButton(startIcon);
+    private final ImageIcon pauseIcon = new ImageIcon(Main.class.getResource("/images/pause.png"));
+    private final ImageIcon pauseRedIcon = new ImageIcon(Main.class.getResource("/images/pausered.png"));
+    private final ImageIcon resumeIcon = new ImageIcon(Main.class.getResource("/images/resume.png"));
+    private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource("/images/resumered.png"));
+    private final TransparentButton pauseButton = new TransparentButton(pauseRedIcon);
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
     private final TimePlusButton timePlus;
@@ -87,12 +94,10 @@ public class TimerPanel extends JPanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.1;
-        //gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        pauseButton.setForeground(ColorUtil.BLACK);
-        pauseButton.setMargin(new Insets(5, 15, 5, 15)); // inner margin
-        pauseButton.setFocusPainted(false); // removes borders around text        
-        pauseButton.setFont(pauseButton.getFont().deriveFont(20f));
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+        pauseButton.setMargin(new Insets(0, 20, 0, 20)); // inner margin
+        pauseButton.setFocusPainted(false); // removes borders around icon
         pauseButton.addActionListener(new ActionListener() {
 
             @Override
@@ -101,13 +106,22 @@ public class TimerPanel extends JPanel {
                 if (currentToDo != null) {
                     if (!pomodoro.getTimer().isRunning()) { // resume 
                         pomodoro.resume();
-                        pauseButton.setText(Labels.getString("ToDoListPanel.Pause"));
+                        if (pomodoro.inPomodoro()) {
+                            pauseButton.setIcon(pauseRedIcon);
+                        } else {
+                            pauseButton.setIcon(pauseIcon);
+                        }
+                        pauseButton.setMargin(new Insets(0, 20, 0, 20)); // icon 21 px wide                       
+                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     } else { // pause
                         pomodoro.pause();
                         if (pomodoro.inPomodoro()) {
-                            pauseButton.setForeground(ColorUtil.RED);
+                            pauseButton.setIcon(resumeRedIcon);
+                        } else {
+                            pauseButton.setIcon(resumeIcon);
                         }
-                        pauseButton.setText(Labels.getString("ToDoListPanel.Resume"));
+                        pauseButton.setMargin(new Insets(0, 17, 0, 16)); // icon 28 px wide
+                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
                     }
                 }
             }
@@ -124,7 +138,7 @@ public class TimerPanel extends JPanel {
         gbc.anchor = GridBagConstraints.EAST;
         timeMinus.setVisible(true); // this is a TransparentButton
         timeMinus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
-        timeMinus.setFocusPainted(false); // removes borders around text
+        timeMinus.setFocusPainted(false); // removes borders around icon
         add(timeMinus, gbc);
     }
 
@@ -147,7 +161,7 @@ public class TimerPanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         timePlus.setVisible(true); // this is a TransparentButton
         timePlus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
-        timePlus.setFocusPainted(false); // removes borders around text
+        timePlus.setFocusPainted(false); // removes borders around icon
         add(timePlus, gbc);
     }
 
@@ -158,18 +172,17 @@ public class TimerPanel extends JPanel {
         gbc.weighty = 0.13; // this will center the counter and give some spaces to the start and pause buttons
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.CENTER;
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
         startButton.setVisible(true);
-        startButton.setForeground(ColorUtil.BLACK);
-        startButton.setMargin(new Insets(5, 15, 5, 15)); // inner margin
-        startButton.setFocusPainted(false); // removes borders around text        
-        startButton.setFont(startButton.getFont().deriveFont(20f));
+        startButton.setMargin(new Insets(0, 20, 0, 20)); // inner margin
+        startButton.setFocusPainted(false); // removes borders around icon
         startButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Activity currentToDo = pomodoro.getCurrentToDo();
                 if (currentToDo != null) {
-                    if (Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+                    if (startButton.getIcon().equals(startIcon)) {
                         if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                             int row = panel.getTable().getSelectedRow();
                             pomodoro.setCurrentToDoId((Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey()));
@@ -188,8 +201,8 @@ public class TimerPanel extends JPanel {
                             } else {
                                 if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
                                     pomodoro.start();
-                                    startButton.setText(Labels.getString("ToDoListPanel.Stop"));
-                                    startButton.setForeground(ColorUtil.RED);
+                                    startButton.setIcon(stopRedIcon);
+                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
                                     if (strictPomodoro) {
                                         startButton.setVisible(false);
                                     }
@@ -199,20 +212,20 @@ public class TimerPanel extends JPanel {
                                     if (!strictPomodoro) {
                                         pauseButton.setVisible(true);
                                     }
-                                    pauseButton.setForeground(ColorUtil.RED);
                                 }
                             }
                         }
                     } else if (pomodoro.stopWithWarning()) {
                         panel.showCurrentSelectedRow(); // in any case
-                        startButton.setText(Labels.getString("ToDoListPanel.Start"));
-                        startButton.setForeground(ColorUtil.BLACK);
+                        startButton.setIcon(startIcon);
+                        startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
                         pomodoroTime.setForeground(ColorUtil.BLACK);
                         timePlus.setTimePlusRedIcon(false);
                         timeMinus.setTimeMinusRedIcon(false);
                         pauseButton.setVisible(false);
-                        pauseButton.setText(Labels.getString("ToDoListPanel.Pause"));
-                        pauseButton.setForeground(ColorUtil.BLACK);
+                        pauseButton.setIcon(pauseRedIcon);
+                        pauseButton.setMargin(new Insets(0, 20, 0, 20));
+                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     }
                 }
             }
@@ -220,44 +233,56 @@ public class TimerPanel extends JPanel {
         add(startButton, gbc);
     }
 
-    public void setStart() {
-        startButton.setText(Labels.getString("ToDoListPanel.Start"));
+    // prepare env to start
+    public void setStartEnv() {
+        startButton.setIcon(startIcon);
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
         pauseButton.setVisible(false);
-        pauseButton.setText(Labels.getString("ToDoListPanel.Pause"));
-        pauseButton.setForeground(ColorUtil.BLACK);
-        setStartColor(ColorUtil.BLACK);
+        pauseButton.setIcon(pauseRedIcon);
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+        timePlus.setTimePlusRedIcon(false);
+        timeMinus.setTimeMinusRedIcon(false);
+        pomodoroTime.setForeground(ColorUtil.BLACK);
     }
 
-    public void setStartColor(Color color) {
-        startButton.setForeground(color);
-        pauseButton.setForeground(color);
-        if (color.equals(ColorUtil.BLACK)) {
-            timePlus.setTimePlusRedIcon(false);
-            timeMinus.setTimeMinusRedIcon(false);
-        } else {
-            timePlus.setTimePlusRedIcon(true);
-            timeMinus.setTimeMinusRedIcon(true);
-
-        }
-        pomodoroTime.setForeground(color);
+    // turn icons red
+    public void setBreakEnv() {
+        startButton.setIcon(stopIcon);
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+        pauseButton.setIcon(pauseIcon);
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+        timePlus.setTimePlusRedIcon(false);
+        timeMinus.setTimeMinusRedIcon(false);
+        pomodoroTime.setForeground(ColorUtil.BLACK);
+    }
+    
+    // turn icons red
+    public void setPomodoroEnv() {
+        startButton.setIcon(stopRedIcon);
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+        pauseButton.setIcon(pauseRedIcon);
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+        timePlus.setTimePlusRedIcon(true);
+        timeMinus.setTimeMinusRedIcon(true);
+        pomodoroTime.setForeground(ColorUtil.RED);
     }
 
     public void switchPomodoroCompliance() {
         if (!strictPomodoro) { // make it strict pomodoro
-            if (!Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+            if (!startButton.getIcon().equals(startIcon)) {
                 startButton.setVisible(false);
             }
             pauseButton.setVisible(false);
-            panel.hideDiscontinuousButton();            
+            panel.hideDiscontinuousButton();
             timePlus.setVisible(false);
             timeMinus.setVisible(false);
             strictPomodoro = true;
         } else { // default
             startButton.setVisible(true);
-            if (!Labels.getString("ToDoListPanel.Start").equals(startButton.getText())) {
+            if (!startButton.getIcon().equals(startIcon)) {
                 pauseButton.setVisible(true);
             }
-            panel.showDiscontinuousButton(); 
+            panel.showDiscontinuousButton();
             timePlus.setVisible(true);
             timeMinus.setVisible(true);
             strictPomodoro = false;

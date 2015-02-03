@@ -224,7 +224,7 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
                         }
                     }
-                    timerPanel.setStartColor(ColorUtil.BLACK);
+                    timerPanel.setBreakEnv();
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
                     inpomodoro = false;
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
@@ -240,7 +240,7 @@ public class Pomodoro {
                     // or unlinked: stop after break
                     if (getCurrentToDo().isFinished() || isDiscontinuous) {
                         stop();
-                        timerPanel.setStart();
+                        timerPanel.setStartEnv();
                         if (isSystemTray()) {
                             String message = Labels.getString("ToDoListPanel.Finished");
                             if (isDiscontinuous) {
@@ -255,7 +255,7 @@ public class Pomodoro {
                         if (PreferencesPanel.preferences.getTicking() && !isMute) {
                             tick();
                         }
-                        timerPanel.setStartColor(ColorUtil.RED);
+                        timerPanel.setPomodoroEnv();
                         inpomodoro = true;
                         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
                         Main.gui.getIconBar().getIcon(2).highlight();

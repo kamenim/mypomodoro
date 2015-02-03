@@ -929,7 +929,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         if (ToDoList.getList().isEmpty()
                 && pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
+            pomodoro.getTimerPanel().setStartEnv();
         }
     }
 
@@ -939,7 +939,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         ToDoList.getList().moveAll();
         if (pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
+            pomodoro.getTimerPanel().setStartEnv();
         }
     }
 
@@ -949,7 +949,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         if (ToDoList.getList().isEmpty()
                 && pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
+            pomodoro.getTimerPanel().setStartEnv();
         }
     }
 
@@ -959,7 +959,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         ToDoList.getList().completeAll();
         if (pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
-            pomodoro.getTimerPanel().setStart();
+            pomodoro.getTimerPanel().setStartEnv();
         }
     }
 

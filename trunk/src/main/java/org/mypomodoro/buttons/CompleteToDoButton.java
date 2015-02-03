@@ -74,7 +74,11 @@ public class CompleteToDoButton extends TabPanelButton {
                                         Activity selectedActivity = panel.getActivityById(id);
                                         // excluding current running task
                                         if (panel.getPomodoro().inPomodoro() && selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                            continue;
+                                            if (rows.length > 1) {
+                                                continue;
+                                            } else {
+                                                break;
+                                            }
                                         }
                                         panel.complete(selectedActivity);
                                         panel.removeRow(row);
