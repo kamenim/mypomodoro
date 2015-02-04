@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.create;
 
 import java.awt.Dimension;
-
 import javax.swing.JLabel;
 
 public class FormLabel extends JLabel {

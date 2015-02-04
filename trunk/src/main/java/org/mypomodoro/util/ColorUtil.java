@@ -19,7 +19,7 @@ package org.mypomodoro.util;
 import java.awt.Color;
 
 /**
- * Color
+ * Color util
  *
  */
 public class ColorUtil {
@@ -31,7 +31,29 @@ public class ColorUtil {
     public static final Color YELLOW_CHART = new Color(249, 192, 9);
     public static final Color RED_CHART = new Color(228, 92, 17);
     public static final Color BLUE_ROW = new Color(200, 221, 242);
+    public static final Color BLUE_ROW_DARKER = new Color(200, 221, 242);
     public static final Color YELLOW_ROW = new Color(255, 255, 204);
     public static final Color GRAY = new Color(238, 238, 238);
     public static final Color YELLOW_HIGHLIGHT = new Color(255, 255, 102);
+    
+    /**
+     * Returns a web browser-friendly HEX value representing the colour in the
+     * default sRGB ColorModel.
+     *
+     * Adapted from http://sny.no/2011/11/java-hex
+     * 
+     * @param color
+     * @return a browser-friendly HEX value
+     */
+    public static String toHex(Color color) {
+        return "#" + toBrowserHexValue(color.getRed()) + toBrowserHexValue(color.getGreen()) + toBrowserHexValue(color.getBlue());
+    }
+
+    private static String toBrowserHexValue(int number) {
+        StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
+        while (builder.length() < 2) {
+            builder.append("0");
+        }
+        return builder.toString().toUpperCase();
+    }
 }

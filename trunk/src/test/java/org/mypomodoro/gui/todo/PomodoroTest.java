@@ -1,9 +1,7 @@
 package org.mypomodoro.gui.todo;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.swing.JLabel;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 

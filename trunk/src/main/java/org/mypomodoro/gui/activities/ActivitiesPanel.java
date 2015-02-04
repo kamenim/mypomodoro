@@ -67,15 +67,15 @@ import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -602,6 +602,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 int[] rows = table.getSelectedRows();
                 int estimated = 0;
                 int overestimated = 0;
+                int real = 0;
                 float storypoints = 0;
                 for (int row : rows) {
                     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
@@ -609,15 +610,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
+                    real += selectedActivity.getActualPoms();
                 }
-                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ActivityList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + estimated;
+                titleActivitiesList += " (" + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ActivityList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
+                titleActivitiesList += "&nbsp;</span>";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
@@ -629,13 +632,15 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ActivityList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + ActivityList.getList().getNbEstimatedPom();
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
+                titleActivitiesList += ActivityList.getList().getNbRealPom();
+                titleActivitiesList += " / " + ActivityList.getList().getNbEstimatedPom();
                 if (ActivityList.getList().getNbOverestimatedPom() > 0) {
                     titleActivitiesList += " + " + ActivityList.getList().getNbOverestimatedPom();
                 }
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ActivityList.getList().getNbEstimatedPom() + ActivityList.getList().getNbOverestimatedPom());
@@ -648,7 +653,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         }
         // Update titled border          
-        titledButton.setText(titleActivitiesList);
+        titledButton.setText("<html>" + titleActivitiesList + "</html>");
         titledborder.repaint();
     }
 

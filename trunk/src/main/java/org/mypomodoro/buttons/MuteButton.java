@@ -18,10 +18,8 @@ package org.mypomodoro.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
 

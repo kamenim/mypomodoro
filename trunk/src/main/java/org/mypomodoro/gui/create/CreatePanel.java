@@ -23,7 +23,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,7 +32,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
-
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.gui.preferences.PreferencesPanel;

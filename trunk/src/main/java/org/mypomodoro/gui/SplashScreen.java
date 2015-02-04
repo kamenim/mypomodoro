@@ -18,7 +18,6 @@ package org.mypomodoro.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.mypomodoro.util.ColorUtil;

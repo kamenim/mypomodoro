@@ -16,8 +16,6 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
-import org.mypomodoro.gui.burndownchart.types.StoryPointChart;
-import org.mypomodoro.gui.burndownchart.types.IChartType;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -35,8 +33,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.burndownchart.types.EffectiveHourChart;
+import org.mypomodoro.gui.burndownchart.types.IChartType;
 import org.mypomodoro.gui.burndownchart.types.PlainHourChart;
 import org.mypomodoro.gui.burndownchart.types.PomodoroChart;
+import org.mypomodoro.gui.burndownchart.types.StoryPointChart;
 import org.mypomodoro.gui.burndownchart.types.TaskChart;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;

@@ -22,16 +22,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
-
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;

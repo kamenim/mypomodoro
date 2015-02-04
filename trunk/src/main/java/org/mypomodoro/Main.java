@@ -29,8 +29,6 @@ import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.SplashScreen;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
-import org.mypomodoro.util.ProgressBar;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -38,12 +36,14 @@ import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ProgressBar;
 
 /**
  * Main Application Starter

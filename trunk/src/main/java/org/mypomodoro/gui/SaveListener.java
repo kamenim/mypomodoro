@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import org.mypomodoro.gui.create.ActivityInputForm;
-
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DatePicker;

@@ -60,13 +60,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
@@ -487,14 +487,15 @@ public class CheckPanel extends JPanel implements IListPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ChartList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ChartList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
+                titleActivitiesList += "&nbsp;</span>";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
@@ -506,7 +507,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ChartList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ChartList.getList().getNbRealPom();
                 titleActivitiesList += " / " + ChartList.getList().getNbEstimatedPom();
                 if (ChartList.getList().getNbOverestimatedPom() > 0) {
@@ -514,7 +515,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 }
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ChartList.getList().getNbEstimatedPom() + ChartList.getList().getNbOverestimatedPom());
@@ -527,7 +528,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             }
         }
         // Update titled border          
-        titledButton.setText(titleActivitiesList);
+        titledButton.setText("<html>" + titleActivitiesList + "</html>");
         titledborder.repaint();
     }
 

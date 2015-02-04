@@ -18,7 +18,6 @@ package org.mypomodoro.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.Restart;
 

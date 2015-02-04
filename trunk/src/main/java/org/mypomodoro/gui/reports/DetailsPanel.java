@@ -18,9 +18,7 @@ package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.JScrollPane;
-
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IActivityInformation;

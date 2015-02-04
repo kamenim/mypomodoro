@@ -22,18 +22,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
-import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.util.Labels;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
+import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
 /**
