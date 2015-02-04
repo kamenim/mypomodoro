@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
-import org.mypomodoro.gui.burndownchart.types.IChartType;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,6 +43,7 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.mypomodoro.gui.burndownchart.types.IChartType;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;

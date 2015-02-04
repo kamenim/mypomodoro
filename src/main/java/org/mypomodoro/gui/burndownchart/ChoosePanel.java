@@ -20,15 +20,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
-import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.util.Labels;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.util.Labels;
 
 /**
  * Panel to generate burndown charts

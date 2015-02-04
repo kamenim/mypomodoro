@@ -17,9 +17,7 @@
 package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
-
 import javax.swing.JOptionPane;
-
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

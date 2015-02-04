@@ -16,16 +16,14 @@
  */
 package org.mypomodoro.gui;
 
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.Labels;
 
 /**

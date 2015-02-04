@@ -19,12 +19,10 @@ package org.mypomodoro.gui;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.ToDoPanel;
 

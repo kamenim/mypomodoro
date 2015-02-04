@@ -19,12 +19,10 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
-
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;

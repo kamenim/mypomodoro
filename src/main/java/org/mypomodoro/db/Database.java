@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 
 /**

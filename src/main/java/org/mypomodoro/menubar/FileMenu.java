@@ -21,7 +21,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -29,9 +28,8 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
-
-import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.util.Labels;
 

@@ -18,10 +18,8 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.JScrollPane;
 import org.mypomodoro.buttons.RemoveButton;
-
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;

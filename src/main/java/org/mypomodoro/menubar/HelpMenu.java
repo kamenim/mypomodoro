@@ -20,14 +20,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
-
 import org.mypomodoro.gui.MainPanel;
 import static org.mypomodoro.gui.MainPanel.MYPOMODORO_VERSION;
 import org.mypomodoro.menubar.help.AboutPanel;

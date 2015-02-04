@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -60,7 +59,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
-
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.model.Activity;

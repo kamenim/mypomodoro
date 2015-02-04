@@ -18,7 +18,6 @@ package org.mypomodoro.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-
 import javax.swing.JPanel;
 import org.mypomodoro.db.Database;
 

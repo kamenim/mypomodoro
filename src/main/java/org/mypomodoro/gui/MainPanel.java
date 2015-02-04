@@ -16,8 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import org.mypomodoro.gui.preferences.PreferencesPanel;
-import org.mypomodoro.util.ProgressBar;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
@@ -43,9 +41,11 @@ import static org.mypomodoro.Main.gui;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.ProgressBar;
 
 /**
  * Application GUI for myPomodoro.
@@ -206,7 +206,7 @@ public final class MainPanel extends JFrame {
                 }
                 // we make sure the selected task appears on screen despite the resizing
                 getActivityListPanel().showCurrentSelectedRow();
-                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs)
+                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs)                
                 getReportListPanel().showCurrentSelectedRow();
                 getChartTabbedPanel().showCurrentSelectedRow();
             }

@@ -19,7 +19,6 @@ package org.mypomodoro.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;

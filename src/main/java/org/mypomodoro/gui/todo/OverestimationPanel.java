@@ -20,12 +20,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;

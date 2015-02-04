@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 /**
  * Locale

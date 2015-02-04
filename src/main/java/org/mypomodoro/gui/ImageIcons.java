@@ -17,7 +17,6 @@
 package org.mypomodoro.gui;
 
 import javax.swing.ImageIcon;
-
 import org.mypomodoro.Main;
 
 public class ImageIcons {

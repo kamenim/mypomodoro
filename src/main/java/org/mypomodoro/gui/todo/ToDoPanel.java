@@ -69,14 +69,14 @@ import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
+import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
@@ -675,14 +675,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " (" + table.getSelectedRowCount() + "/" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": " + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ToDoList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
-                }
+                }                
+                titleActivitiesList += "&nbsp;</span>";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
@@ -694,7 +695,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 titledborder.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " : " + Labels.getString("Common.Estimated") + ": ";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ToDoList.getList().getNbRealPom();
                 titleActivitiesList += " / " + ToDoList.getList().getNbEstimatedPom();
                 if (ToDoList.getList().getNbOverestimatedPom() > 0) {
@@ -702,7 +703,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 }
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " - " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
@@ -715,7 +716,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         // Update titled border          
-        titledButton.setText(titleActivitiesList);
+        titledButton.setText("<html>" + titleActivitiesList + "</html>");
         titledborder.repaint();
     }
 
@@ -1168,17 +1169,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         JPanel j = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints wc = new GridBagConstraints();
         linkButton.setVisible(true); // this is a TransparentButton       
         linkButton.setMargin(new Insets(1, 1, 1, 1));
         linkButton.setFocusPainted(false); // removes borders around text
-        j.add(linkButton, c);
+        j.add(linkButton, wc);
         if (PreferencesPanel.preferences.getTicking()
                 || PreferencesPanel.preferences.getRinging()) {
             muteButton.setOpaque(false);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
-            j.add(muteButton, c);
+            j.add(muteButton, wc);
         }
         backgroundPanel.add(j, gbc);
         gbc.gridx = 0;
@@ -1301,7 +1302,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));        
     }
 
     public JScrollPane getTodoScrollPane() {

@@ -16,11 +16,10 @@
  */
 package org.mypomodoro.gui.todo;
 
-import org.mypomodoro.gui.*;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
+import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 
