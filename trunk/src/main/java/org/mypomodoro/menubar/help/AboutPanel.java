@@ -26,7 +26,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -52,7 +51,7 @@ public class AboutPanel extends JDialog {
     public AboutPanel(String str) {
         setTitle(str);
         setFont((new JPanel()).getFont()); // this is the only place where the font has to be set manually
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // garbage collection
         setIconImage(ImageIcons.MAIN_ICON.getImage());
         setResizable(false);
 

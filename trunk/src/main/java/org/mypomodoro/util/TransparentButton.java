@@ -41,7 +41,7 @@ public class TransparentButton extends JButton {
         setOpaque(false);
         setEnabled(false);
     }
-    
+
     public TransparentButton(Icon icon) {
         super(icon);
         setOpaque(false);
@@ -96,7 +96,7 @@ public class TransparentButton extends JButton {
         }
         return toolTip;
     }
-        
+
     @Override
     public void setIcon(Icon icon) {
         fireRepaint = true; // make sure repaint() is fired

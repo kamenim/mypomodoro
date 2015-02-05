@@ -579,7 +579,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 return super.isCellEditable(e);
             }
         };
-        table.setDefaultEditor(Object.class, editor);       
+        table.setDefaultEditor(Object.class, editor);
 
         // set custom render for title
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
@@ -679,7 +679,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
-                }                
+                }
                 titleActivitiesList += "&nbsp;</span>";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
@@ -1302,7 +1302,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));        
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
     public JScrollPane getTodoScrollPane() {

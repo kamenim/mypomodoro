@@ -23,11 +23,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -127,7 +125,7 @@ public class FileMenu extends JMenu {
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
-            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+            //setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0)); // ESC keystroke implemented in MainPanel
             addActionListener(new MenuItemListener());
         }
 
@@ -135,13 +133,7 @@ public class FileMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = Labels.getString("FileMenu.Exit myPomodoro");
-                String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
-                int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                        title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (reply == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
+                MainPanel.exit();
             }
         }
     }

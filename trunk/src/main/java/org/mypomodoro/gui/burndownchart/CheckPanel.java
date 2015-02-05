@@ -376,7 +376,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        
+
         // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
 
@@ -493,9 +493,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
+                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
@@ -513,6 +514,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 if (ChartList.getList().getNbOverestimatedPom() > 0) {
                     titleActivitiesList += " + " + ChartList.getList().getNbOverestimatedPom();
                 }
+                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + ChartList.getList().getAccuracy() + "%)";
                 if (PreferencesPanel.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());

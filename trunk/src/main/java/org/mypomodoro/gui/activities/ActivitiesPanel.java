@@ -480,7 +480,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Make table allowing multiple selections
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        
+
         // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
 

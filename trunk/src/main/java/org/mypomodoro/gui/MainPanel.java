@@ -133,27 +133,33 @@ public final class MainPanel extends JFrame {
 
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    String title = Labels.getString("FileMenu.Exit myPomodoro");
-                    String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
-                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if (reply == JOptionPane.YES_OPTION) {
-                        System.exit(0);
-                    }
+                    exit();
                 }
             };
             addWindowListener(exitListener);
         }
 
+        // Exit keystroke
+        KeyStroke exitKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        Action exitAction = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exit();
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(exitKeyStroke, "Exit");
+        getRootPane().getActionMap().put("Exit", exitAction);
+
         // Maximize keystoke
-        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK);
+        KeyStroke maximizeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK);
         Action maximizeAction = new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if ((!getToDoPanel().isVisible() || viewCount == 0) && getExtendedState() != (getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
                     guiRecordedLocation = getLocation();
-                    guiRecordedSize = getSize();                    
+                    guiRecordedSize = getSize();
                     guiRecordedLocation = getLocation();
                     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
                     setMaximizedBounds(env.getMaximumWindowBounds());
@@ -162,18 +168,21 @@ public final class MainPanel extends JFrame {
                 } else { // back to the original location
                     Dimension size;
                     pack();
-                    if (getToDoPanel().isVisible()) { // only when the ToDo panel is visible                        
+                    if (getToDoPanel().isVisible()) { // only when the ToDo panel is visible
+                        JPanel tempPanel = new JPanel();
                         if (viewCount == 1) { // timer only
                             menuBar.setVisible(false);
                             iconBar.setVisible(false);
                             size = new Dimension(300, 350);
-                            JPanel test = new JPanel();
                             //test.add(menuBar);
                             //test.add(iconBar);
-                            test.add(getToDoPanel().getTodoScrollPane()); // add component to a panel so it is removed from ToDoPanel
-                            test.add(getToDoPanel().getControlPane()); // add component to a panel so it is removed from ToDoPanel
+                            tempPanel.add(getToDoPanel().getTodoScrollPane()); // add component to a panel so it is removed from ToDoPanel
+                            tempPanel.add(getToDoPanel().getControlPane()); // add component to a panel so it is removed from ToDoPanel
                             getToDoPanel().setBorder(null); // remove border
                             getToDoPanel().hideSplitPaneDivider();
+                            // we migth have lost focus when previously editing, overstimating... tasks 
+                            // and therefore ESC and ALT+M sortcuts in MainPanel might not work
+                            getRootPane().requestFocus();
                             //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                             viewCount = 2;
                         } else if (viewCount == 2) { // timer + list
@@ -181,7 +190,7 @@ public final class MainPanel extends JFrame {
                             size = new Dimension(780, 360); // on Win 7 aero graphical/theme, 350 is slightly to short
                             getToDoPanel().addToDoTable(); // put component back in its place
                             getToDoPanel().setTitledBorder(); // put border back in its place
-                            //getRootPane().putClientProperty("Window.alpha", new Float(1.0f)); // this is a MAC OSX Java transparency effect
+                            //getRootPane().putClientProperty("Window.alpha", new Float(1.0f)); // this is a MAC OSX Java transparency effect                           
                             viewCount = 3;
                         } else { // timer + list + tabs
                             guiRecordedLocation = getLocation();
@@ -194,24 +203,26 @@ public final class MainPanel extends JFrame {
                             getToDoPanel().showSplitPaneDivider();
                             viewCount = 0;
                         }
+                        // garbage collect tempPanel quicker
+                        tempPanel = null;
                         setSize(size);
                     } else {
                         size = guiRecordedSize;
                         viewCount = 0;
                     }
-                    Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
-                    setPreferredSize(dGUI);
+                    //Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
+                    //setPreferredSize(dGUI);
                     setSize(size);
                     setLocation(guiRecordedLocation);
                 }
                 // we make sure the selected task appears on screen despite the resizing
                 getActivityListPanel().showCurrentSelectedRow();
-                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs)                
+                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
                 getReportListPanel().showCurrentSelectedRow();
                 getChartTabbedPanel().showCurrentSelectedRow();
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "Maximize");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(maximizeKeyStroke, "Maximize");
         getRootPane().getActionMap().put("Maximize", maximizeAction);
     }
 
@@ -232,5 +243,21 @@ public final class MainPanel extends JFrame {
 
     public IconBar getIconBar() {
         return iconBar;
+    }
+
+    public static void exit() {
+        String title = Labels.getString("FileMenu.Exit myPomodoro");
+        String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
+        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (reply == JOptionPane.YES_OPTION) {
+            if (SystemTray.isSupported()
+                    && PreferencesPanel.preferences.getSystemTray()) {
+                // kill tray
+                SystemTray sysTray = SystemTray.getSystemTray();
+                sysTray.remove(trayIcon);
+            }
+            System.exit(0);
+        }
     }
 }
