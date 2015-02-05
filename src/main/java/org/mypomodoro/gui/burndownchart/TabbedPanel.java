@@ -68,7 +68,7 @@ public class TabbedPanel extends JPanel {
         });
         add(chartTabbedPane, gbc);
     }
-    
+
     public void showCurrentSelectedRow() {
         checkPanel.showCurrentSelectedRow();
     }

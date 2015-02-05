@@ -25,10 +25,10 @@ import org.mypomodoro.util.TransparentButton;
 
 /**
  * Continuous/discontinuous the pomodoro workflow
- * 
- * Continuous = pomodoro and breaks run continiously
- * Discontinous = workflow stops after each break
- * 
+ *
+ * Continuous = pomodoro and breaks run continiously Discontinous = workflow
+ * stops after each break
+ *
  */
 public class DiscontinuousButton extends TransparentButton {
 
@@ -56,11 +56,11 @@ public class DiscontinuousButton extends TransparentButton {
         });
     }
 
-    private void setDiscontinuousIcon() {        
+    private void setDiscontinuousIcon() {
         setIcon(discontinuousIcon);
     }
 
-    private void setContinuousIcon() {        
+    private void setContinuousIcon() {
         setIcon(continuousIcon);
     }
 

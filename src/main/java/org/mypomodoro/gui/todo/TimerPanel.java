@@ -253,7 +253,7 @@ public class TimerPanel extends JPanel {
         timeMinus.setTimeMinusRedIcon(false);
         pomodoroTime.setForeground(ColorUtil.BLACK);
     }
-    
+
     // turn icons red
     public void setPomodoroEnv() {
         startButton.setIcon(stopRedIcon);

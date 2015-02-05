@@ -24,6 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.mypomodoro.gui.create.FormLabel;
@@ -73,6 +74,7 @@ public class ImportInputForm extends ExportInputForm {
         gbcf.gridy = 0;
         gbcf.fill = GridBagConstraints.NONE;
         JDialog d = new JDialog();
+        d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // garbage collection
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
         Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
         browseButton.setFont(getFont().deriveFont(Font.BOLD));

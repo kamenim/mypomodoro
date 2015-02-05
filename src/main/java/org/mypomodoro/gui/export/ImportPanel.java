@@ -374,7 +374,7 @@ public class ImportPanel extends JPanel {
             panel.addActivity(newActivity, org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
         } else {
             panel.addActivity(newActivity);
-            System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
+            //System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
         }
     }
 }

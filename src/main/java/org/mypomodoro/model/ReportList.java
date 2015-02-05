@@ -96,16 +96,4 @@ public final class ReportList extends AbstractActivities {
         ActivitiesDAO.getInstance().reopenAllReports();
         removeAll();
     }
-
-    public int getAccuracy() {
-        int estover = 0;
-        int real = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
-            estover += a.getEstimatedPoms() + a.getOverestimatedPoms();
-            real += a.getActualPoms();
-        }
-        int accuracy = Math.round(((float) real / (float) estover) * 100);
-        return accuracy;
-    }
 }

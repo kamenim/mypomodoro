@@ -35,13 +35,13 @@ public class ColorUtil {
     public static final Color YELLOW_ROW = new Color(255, 255, 204);
     public static final Color GRAY = new Color(238, 238, 238);
     public static final Color YELLOW_HIGHLIGHT = new Color(255, 255, 102);
-    
+
     /**
      * Returns a web browser-friendly HEX value representing the colour in the
      * default sRGB ColorModel.
      *
      * Adapted from http://sny.no/2011/11/java-hex
-     * 
+     *
      * @param color
      * @return a browser-friendly HEX value
      */
