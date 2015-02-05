@@ -220,8 +220,8 @@ public class TimerPanel extends JPanel {
                         pomodoroTime.setForeground(ColorUtil.BLACK);
                         timePlus.setTimePlusRedIcon(false);
                         timeMinus.setTimeMinusRedIcon(false);
+                        pauseButton.setIcon(pauseRedIcon); // set the icon before setting the visibility to false so it doesn't flicker on Win7 aero
                         pauseButton.setVisible(false);
-                        pauseButton.setIcon(pauseRedIcon);
                         pauseButton.setMargin(new Insets(0, 20, 0, 20));
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     }
