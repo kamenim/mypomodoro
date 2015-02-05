@@ -240,9 +240,9 @@ public class Pomodoro {
                         stop();
                         timerPanel.setStartEnv();
                         if (isSystemTray()) {
-                            String message = Labels.getString("ToDoListPanel.Finished");
-                            if (isDiscontinuous) {
-                                message = Labels.getString("ToDoListPanel.Stopped");
+                            String message = Labels.getString("ToDoListPanel.Stopped");
+                            if (getCurrentToDo().isFinished()) {
+                                message = Labels.getString("ToDoListPanel.Finished");
                             }
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);

@@ -748,14 +748,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        wrap.addMouseListener(new MouseAdapter() {
+        /*wrap.addMouseListener(new MouseAdapter() {
 
             // click
             @Override
             public void mouseClicked(MouseEvent e) {
                 timerPanel.switchPomodoroCompliance();
             }
-        });
+        });*/
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1203,14 +1203,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)        
 
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        pomodoroButton.addActionListener(new ActionListener() {
+        /*pomodoroButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 timerPanel.switchPomodoroCompliance();
             }
-        });
+        });*/
 
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
