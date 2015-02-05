@@ -69,6 +69,7 @@ import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
+import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -1168,24 +1169,30 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        JPanel j = new JPanel(new GridBagLayout());
+        JPanel toolBar = new JPanel(new GridBagLayout());
         GridBagConstraints wc = new GridBagConstraints();
         linkButton.setVisible(true); // this is a TransparentButton       
         linkButton.setMargin(new Insets(1, 1, 1, 1));
         linkButton.setFocusPainted(false); // removes borders around text
-        j.add(linkButton, wc);
+        toolBar.add(linkButton, wc);
         if (PreferencesPanel.preferences.getTicking()
                 || PreferencesPanel.preferences.getRinging()) {
             muteButton.setOpaque(false);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
-            j.add(muteButton, wc);
+            toolBar.add(muteButton, wc);
         }
-        backgroundPanel.add(j, gbc);
+        if (!org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
+            PinButton pin = new PinButton();
+            pin.setVisible(true); // this is a TransparentButton       
+            pin.setMargin(new Insets(1, 1, 1, 1));
+            pin.setFocusPainted(false); // removes borders around text
+            toolBar.add(pin, wc);
+        }
+        backgroundPanel.add(toolBar, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
         backgroundPanel.add(timerPanel, gbc);
-
         // Set background image (tomato) in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
         pomodoroButton.setEnabled(true);

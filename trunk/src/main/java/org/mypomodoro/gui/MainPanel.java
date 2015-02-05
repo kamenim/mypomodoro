@@ -210,8 +210,8 @@ public final class MainPanel extends JFrame {
                         size = guiRecordedSize;
                         viewCount = 0;
                     }
-                    //Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
-                    //setPreferredSize(dGUI);
+                    Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
+                    setPreferredSize(dGUI);
                     setSize(size);
                     setLocation(guiRecordedLocation);
                 }
