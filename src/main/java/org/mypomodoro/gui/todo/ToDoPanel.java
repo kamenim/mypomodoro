@@ -750,12 +750,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
 
-            // click
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                timerPanel.switchPomodoroCompliance();
-            }
-        });*/
+         // click
+         @Override
+         public void mouseClicked(MouseEvent e) {
+         timerPanel.switchPomodoroCompliance();
+         }
+         });*/
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1182,13 +1182,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
             muteButton.setFocusPainted(false); // removes borders around text
             toolBar.add(muteButton, wc);
         }
-        if (!org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
-            PinButton pin = new PinButton();
-            pin.setVisible(true); // this is a TransparentButton       
-            pin.setMargin(new Insets(1, 1, 1, 1));
-            pin.setFocusPainted(false); // removes borders around text
-            toolBar.add(pin, wc);
+        PinButton pin = new PinButton();
+        if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
+            pin.setUnpinIcon();
         }
+        pin.setVisible(true); // this is a TransparentButton       
+        pin.setMargin(new Insets(1, 1, 1, 1));
+        pin.setFocusPainted(false); // removes borders around text
+        toolBar.add(pin, wc);
         backgroundPanel.add(toolBar, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -1205,13 +1206,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*pomodoroButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+         @Override
+         public void actionPerformed(ActionEvent e) {
 
-                timerPanel.switchPomodoroCompliance();
-            }
-        });*/
-
+         timerPanel.switchPomodoroCompliance();
+         }
+         });*/
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
         pomodoroButton.setPreferredSize(new Dimension(250, 240));
@@ -1330,13 +1330,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void hideDiscontinuousButton() {
         discontinuousButton.setVisible(false);
-        pomodoro.continuous(); // pomodoro strict mode --> force continuous workflow
+        pomodoro.continueWorkflow(); // pomodoro strict mode --> force continuous workflow
     }
 
     public void showDiscontinuousButton() {
         discontinuousButton.setVisible(true);
-        if (!discontinuousButton.isDiscontinuous()) {
-            pomodoro.discontinuous();
+        //if (!discontinuousButton.isDiscontinuous()) {
+        if (pomodoro.isDiscontinuous()) {
+            pomodoro.discontinueWorkflow();
         }
     }
 
