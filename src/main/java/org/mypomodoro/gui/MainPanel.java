@@ -18,7 +18,6 @@ package org.mypomodoro.gui;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -37,12 +36,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import org.mypomodoro.Main;
-import static org.mypomodoro.Main.gui;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
+import org.mypomodoro.gui.todo.Resize;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.ProgressBar;
@@ -65,6 +64,7 @@ public final class MainPanel extends JFrame {
     private static Dimension guiRecordedSize;
     private static Point guiRecordedLocation;
     private static int viewCount = 0;
+    public static Resize resize = new Resize();
 
     public SplashScreen getSplashScreen() {
         return Main.splashScreen;
@@ -157,82 +157,7 @@ public final class MainPanel extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ((!getToDoPanel().isVisible() || viewCount == 0) && getExtendedState() != (getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
-                    guiRecordedLocation = getLocation(); // record location of the previous window
-                    guiRecordedSize = getSize(); // record size of the previous window
-                    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                    setMaximizedBounds(env.getMaximumWindowBounds());
-                    setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-                    viewCount = 1;
-                } else { // back to the original location
-                    Dimension size;
-                    pack();
-                    if (getToDoPanel().isVisible()) { // only when the ToDo panel is visible
-                        JPanel tempPanel = new JPanel();
-                        if (viewCount == 1) { // timer only
-                            // record location after the location of the right corner
-                            guiRecordedLocation.setLocation(guiRecordedLocation.getX() + (guiRecordedSize.getWidth() > 300 ? guiRecordedSize.getWidth() : 780) - 300, guiRecordedLocation.getY());
-                            // fix size
-                            size = new Dimension(300, 350);
-                            // hide menu and icon bar
-                            menuBar.setVisible(false);
-                            iconBar.setVisible(false);
-                            // add component to temp panel so it is removed from ToDoPanel
-                            tempPanel.add(getToDoPanel().getTodoScrollPane());
-                            tempPanel.add(getToDoPanel().getControlPane());
-                            //test.add(menuBar); // this may replace setVisible(false)
-                            //test.add(iconBar); // this may replace setVisible(false)
-                            // remove border
-                            getToDoPanel().setBorder(null);
-                            // hide divider
-                            getToDoPanel().hideSplitPaneDivider();
-                            // we migth have lost focus when previously editing, overstimating... tasks 
-                            // and therefore ESC and ALT+M sortcuts in MainPanel might not work
-                            getRootPane().requestFocus();
-                            // MAC OSX Java transparency effect
-                            //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
-                            viewCount = 2;
-                        } else if (viewCount == 2) { // timer + list
-                            guiRecordedLocation = getLocation(); // record location of the previous window                           
-                            guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 300 - (guiRecordedSize.getWidth() > 300 ? guiRecordedSize.getWidth() : 780), guiRecordedLocation.getY());
-                            size = new Dimension(780, 360);  // fix size; on Win 7 aero graphical/theme, 350 is slightly to short
-                            // put components back in place
-                            getToDoPanel().addToDoTable();
-                            getToDoPanel().setTitledBorder();
-                            // MAC OSX Java transparency effect : 1.0f = opaque
-                            //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
-                            viewCount = 3;
-                        } else { // timer + list + tabs
-                            guiRecordedLocation = getLocation(); // record location in case the previous window was moved
-                            size = guiRecordedSize;
-                            // show menu and icon bar
-                            menuBar.setVisible(true);
-                            iconBar.setVisible(true);
-                            // put component back in place
-                            getToDoPanel().addControlPane();
-                            //setJMenuBar(menuBar); // this may replace setVisible(true)
-                            //windowPanel.add(iconBar, BorderLayout.NORTH); // this may replace setVisible(true)
-                            // show divider
-                            getToDoPanel().showSplitPaneDivider();
-                            viewCount = 0;
-                        }
-                        // garbage collect tempPanel quicker
-                        tempPanel = null;
-                        setSize(size);
-                    } else { // create, activities... panels
-                        size = guiRecordedSize;
-                        viewCount = 0;
-                    }
-                    Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
-                    setPreferredSize(dGUI);
-                    setSize(size);
-                    setLocation(guiRecordedLocation);
-                }
-                // we make sure the selected task appears on screen despite the resizing
-                getActivityListPanel().showCurrentSelectedRow();
-                getToDoPanel().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
-                getReportListPanel().showCurrentSelectedRow();
-                getChartTabbedPanel().showCurrentSelectedRow();
+                resize.resize();
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(maximizeKeyStroke, "Maximize");

@@ -70,6 +70,7 @@ import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
+import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -134,6 +135,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
+    private static final ResizeButton resizeButton = new ResizeButton();
 
     private GridBagConstraints c = new GridBagConstraints();
 
@@ -743,7 +745,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
-                discontinuousButton,
                 PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
@@ -1157,8 +1158,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
-            DiscontinuousButton linkButton, MuteButton muteButton, Icon backgroundIcon,
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, 
+            MuteButton muteButton, Icon backgroundIcon,
             int verticalAlignment, int horizontalAlignment) {
         // transparent
         timerPanel.setOpaque(false);
@@ -1171,10 +1172,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.anchor = GridBagConstraints.EAST;
         JPanel toolBar = new JPanel(new GridBagLayout());
         GridBagConstraints wc = new GridBagConstraints();
-        linkButton.setVisible(true); // this is a TransparentButton       
-        linkButton.setMargin(new Insets(1, 1, 1, 1));
-        linkButton.setFocusPainted(false); // removes borders around text
-        toolBar.add(linkButton, wc);
+        discontinuousButton.setVisible(true); // this is a TransparentButton       
+        discontinuousButton.setMargin(new Insets(1, 1, 1, 1));
+        discontinuousButton.setFocusPainted(false); // removes borders around text
+        toolBar.add(discontinuousButton, wc);
         if (PreferencesPanel.preferences.getTicking()
                 || PreferencesPanel.preferences.getRinging()) {
             muteButton.setOpaque(false);
@@ -1182,14 +1183,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
             muteButton.setFocusPainted(false); // removes borders around text
             toolBar.add(muteButton, wc);
         }
-        PinButton pin = new PinButton();
+        PinButton pinButton = new PinButton();
         if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
-            pin.setUnpinIcon();
+            pinButton.setUnpinIcon();
         }
-        pin.setVisible(true); // this is a TransparentButton       
-        pin.setMargin(new Insets(1, 1, 1, 1));
-        pin.setFocusPainted(false); // removes borders around text
-        toolBar.add(pin, wc);
+        pinButton.setVisible(true); // this is a TransparentButton       
+        pinButton.setMargin(new Insets(1, 1, 1, 1));
+        pinButton.setFocusPainted(false); // removes borders around text
+        toolBar.add(pinButton, wc);        
+        resizeButton.setVisible(true); // this is a TransparentButton       
+        resizeButton.setMargin(new Insets(1, 1, 1, 1));
+        resizeButton.setFocusPainted(false); // removes borders around text
+        toolBar.add(resizeButton, wc);
         backgroundPanel.add(toolBar, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -1347,5 +1352,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void hideSplitPaneDivider() {
         splitPane.setDividerSize(0);
+    }
+    
+    public static ResizeButton getResizeButton() {
+        return resizeButton;
     }
 }
