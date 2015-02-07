@@ -523,12 +523,16 @@ public class Pomodoro {
     }
 
     // set the pomodoros to stop after each break
-    public void discontinuous() {
+    public void discontinueWorkflow() {
         isDiscontinuous = true;
     }
 
     // set the pomodoros and breaks to run continiously
-    public void continuous() {
+    public void continueWorkflow() {
         isDiscontinuous = false;
+    }
+
+    public boolean isDiscontinuous() {
+        return isDiscontinuous;
     }
 }

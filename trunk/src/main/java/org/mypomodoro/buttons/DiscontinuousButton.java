@@ -24,17 +24,20 @@ import org.mypomodoro.gui.todo.Pomodoro;
 import org.mypomodoro.util.TransparentButton;
 
 /**
- * Continuous/discontinuous the pomodoro workflow
+ * Worflow interruption
  *
- * Continuous = pomodoro and breaks run continiously Discontinous = workflow
- * stops after each break
+ * Continue/discontine the pomodoro workflow
+ *
+ * Continuous : pomodoro and breaks run continiously
+ *
+ * Discontinous : workflow stops after each break
  *
  */
 public class DiscontinuousButton extends TransparentButton {
 
     private final ImageIcon discontinuousIcon = new ImageIcon(Main.class.getResource("/images/discontinuous.png"));
     private final ImageIcon continuousIcon = new ImageIcon(Main.class.getResource("/images/continuous.png"));
-    private boolean isDiscontinuous = true;
+    private boolean isDiscontinuousIcon = true;
 
     public DiscontinuousButton(final Pomodoro pomodoro) {
         setDiscontinuousIcon();
@@ -43,14 +46,12 @@ public class DiscontinuousButton extends TransparentButton {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (isDiscontinuous) {
+                if (isDiscontinuousIcon) {
                     setContinuousIcon();
-                    pomodoro.discontinuous();
-                    isDiscontinuous = false;
+                    pomodoro.discontinueWorkflow();
                 } else {
                     setDiscontinuousIcon();
-                    pomodoro.continuous();
-                    isDiscontinuous = true;
+                    pomodoro.continueWorkflow();
                 }
             }
         });
@@ -58,13 +59,11 @@ public class DiscontinuousButton extends TransparentButton {
 
     private void setDiscontinuousIcon() {
         setIcon(discontinuousIcon);
+        isDiscontinuousIcon = true;
     }
 
     private void setContinuousIcon() {
         setIcon(continuousIcon);
-    }
-
-    public boolean isDiscontinuous() {
-        return isDiscontinuous;
+        isDiscontinuousIcon = false;
     }
 }

@@ -31,7 +31,7 @@ public class PinButton extends TransparentButton {
 
     private final ImageIcon pinIcon = new ImageIcon(Main.class.getResource("/images/pin.png"));
     private final ImageIcon unpinIcon = new ImageIcon(Main.class.getResource("/images/unpin.png"));
-    private boolean isDiscontinuous = true;
+    private boolean isPinIcon = true;
 
     public PinButton() {
         setPinIcon();
@@ -40,14 +40,12 @@ public class PinButton extends TransparentButton {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (isDiscontinuous) {
+                if (isPinIcon) {
                     setUnpinIcon();
                     Main.gui.setAlwaysOnTop(true);
-                    isDiscontinuous = false;
                 } else {
                     setPinIcon();
                     Main.gui.setAlwaysOnTop(false);
-                    isDiscontinuous = true;
                 }
             }
         });
@@ -55,9 +53,11 @@ public class PinButton extends TransparentButton {
 
     private void setPinIcon() {
         setIcon(pinIcon);
+        isPinIcon = true;
     }
 
-    private void setUnpinIcon() {
+    public void setUnpinIcon() {
         setIcon(unpinIcon);
+        isPinIcon = false;
     }
 }
