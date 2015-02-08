@@ -17,7 +17,6 @@
 package org.mypomodoro.model;
 
 import java.util.Date;
-import java.util.Iterator;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**

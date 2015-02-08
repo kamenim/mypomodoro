@@ -402,7 +402,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-        
+
         // Activate Control T (create new task)        
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "Control T");
         class create extends AbstractAction {

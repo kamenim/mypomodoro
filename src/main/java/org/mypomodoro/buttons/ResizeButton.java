@@ -24,15 +24,14 @@ import static org.mypomodoro.gui.MainPanel.resize;
 import org.mypomodoro.util.TransparentButton;
 
 /**
- * Up / Down size the app
+ * Up / Downsize the app
  *
  *
  */
-public class ResizeButton extends TransparentButton {
-    
+public final class ResizeButton extends TransparentButton {
+
     private final ImageIcon upSizeIcon = new ImageIcon(Main.class.getResource("/images/upsize.png"));
     private final ImageIcon downSizeIcon = new ImageIcon(Main.class.getResource("/images/downsize.png"));
-    private boolean isUpSizeIcon = true;
 
     public ResizeButton() {
         setUpSizeIcon();
@@ -48,11 +47,9 @@ public class ResizeButton extends TransparentButton {
 
     public void setUpSizeIcon() {
         setIcon(upSizeIcon);
-        isUpSizeIcon = true;
     }
 
     public void setDownSizeIcon() {
         setIcon(downSizeIcon);
-        isUpSizeIcon = false;
     }
 }
