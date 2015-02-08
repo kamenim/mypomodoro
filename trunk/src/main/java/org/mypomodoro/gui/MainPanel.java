@@ -17,8 +17,6 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -61,9 +59,6 @@ public final class MainPanel extends JFrame {
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
-    private static Dimension guiRecordedSize;
-    private static Point guiRecordedLocation;
-    private static int viewCount = 0;
     public static Resize resize = new Resize();
 
     public SplashScreen getSplashScreen() {

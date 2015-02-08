@@ -26,7 +26,7 @@ import static org.mypomodoro.Main.gui;
 
 /**
  * Resize app either using the shortcut or the resize button
- * 
+ *
  */
 public class Resize {
 
@@ -49,11 +49,17 @@ public class Resize {
             Main.gui.pack();
             if (Main.gui.getToDoPanel().isVisible()) { // only when the ToDo panel is visible
                 JPanel tempPanel = new JPanel();
-                if (viewCount == 1) { // timer only
-                    // record location after the location of the right corner
-                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + (guiRecordedSize.getWidth() > 300 ? guiRecordedSize.getWidth() : 780) - 300, guiRecordedLocation.getY());
-                    // fix size
+                if (viewCount == 1) { // timer only                    
+                    // timer fix size
                     size = new Dimension(300, 350);
+                    // record location after the location of the upper right corner
+                    // whatever the original size, the reference point is now the upper right corner
+                    Dimension screenSize = gui.getToolkit().getScreenSize();
+                    double timerXLocation = guiRecordedLocation.getX() + guiRecordedSize.getWidth() - size.getWidth();
+                    // prevent the timer to disappear on the right side of the screen 
+                    timerXLocation = timerXLocation > screenSize.getWidth() ? screenSize.getWidth() : timerXLocation;
+                    // set timer location as new recorded location
+                    guiRecordedLocation.setLocation(timerXLocation, guiRecordedLocation.getY());
                     // hide menu and icon bar
                     Main.gui.getJMenuBar().setVisible(false);
                     Main.gui.getIconBar().setVisible(false);
@@ -73,9 +79,12 @@ public class Resize {
                     //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                     viewCount = 2;
                 } else if (viewCount == 2) { // timer + list
-                    guiRecordedLocation = Main.gui.getLocation(); // record location of the previous window                           
-                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 300 - (guiRecordedSize.getWidth() > 300 ? guiRecordedSize.getWidth() : 780), guiRecordedLocation.getY());
-                    size = new Dimension(780, 360);  // fix size; on Win 7 aero graphical/theme, 350 is slightly to short
+                    // fix size; on Win 7 aero graphical/theme, 350 is slightly to short
+                    size = new Dimension(780, 360);
+                    // get location : the timer window may have been moved around
+                    guiRecordedLocation = Main.gui.getLocation();
+                    double timerWidth = 300; // ignoring any resize of timer
+                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 780, guiRecordedLocation.getY());
                     // put components back in place
                     Main.gui.getToDoPanel().addToDoTable();
                     Main.gui.getToDoPanel().setTitledBorder();
@@ -83,8 +92,11 @@ public class Resize {
                     //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
                     viewCount = 3;
                 } else { // timer + list + tabs
-                    guiRecordedLocation = Main.gui.getLocation(); // record location in case the previous window was moved
+                    // original size
                     size = guiRecordedSize;
+                    // get location : the timer + list window may have been moved around
+                    guiRecordedLocation = Main.gui.getLocation();
+                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 780 - size.getWidth(), guiRecordedLocation.getY());
                     // show menu and icon bar
                     Main.gui.getJMenuBar().setVisible(true);
                     Main.gui.getIconBar().setVisible(true);

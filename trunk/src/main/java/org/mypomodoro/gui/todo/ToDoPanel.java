@@ -1158,7 +1158,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, 
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
             MuteButton muteButton, Icon backgroundIcon,
             int verticalAlignment, int horizontalAlignment) {
         // transparent
@@ -1190,7 +1190,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pinButton.setVisible(true); // this is a TransparentButton       
         pinButton.setMargin(new Insets(1, 1, 1, 1));
         pinButton.setFocusPainted(false); // removes borders around text
-        toolBar.add(pinButton, wc);        
+        toolBar.add(pinButton, wc);
         resizeButton.setVisible(true); // this is a TransparentButton       
         resizeButton.setMargin(new Insets(1, 1, 1, 1));
         resizeButton.setFocusPainted(false); // removes borders around text
@@ -1353,7 +1353,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void hideSplitPaneDivider() {
         splitPane.setDividerSize(0);
     }
-    
+
     public static ResizeButton getResizeButton() {
         return resizeButton;
     }
