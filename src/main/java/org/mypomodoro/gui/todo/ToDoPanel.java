@@ -398,7 +398,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
         am.put("Move Back To Activity List", new moveBackAction(this));
         // Activate Control A        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK), "Control A");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 
             @Override
@@ -425,12 +425,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         for (int i = 1; i <= 8; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_MASK), "Tab" + i);
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
 
         // Activate Control U (quick unplanned task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK), "Control U");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK), "Control U");
         class createUnplanned extends AbstractAction {
 
             @Override
@@ -448,7 +448,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         am.put("Control U", new createUnplanned());
 
         // Activate Control I (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), "Control I");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK), "Control I");
         class createInternal extends AbstractAction {
 
             @Override
@@ -472,7 +472,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         am.put("Control I", new createInternal());
 
         // Activate Control E (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK), "Control E");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK), "Control E");
         class createExternal extends AbstractAction {
 
             @Override
@@ -496,7 +496,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         am.put("Control E", new createExternal());
 
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK), "Duplicate");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -524,7 +524,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         am.put("Duplicate", new duplicate());
 
         // Activate Control G (scroll back to the current running/selected task
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
