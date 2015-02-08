@@ -48,7 +48,9 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel), gbc);
+        MoveButton reopenButton = new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel);
+        reopenButton.setToolTipText("SHIFT + <");
+        add(reopenButton, gbc);
     }
 
     private void addInformationArea() {

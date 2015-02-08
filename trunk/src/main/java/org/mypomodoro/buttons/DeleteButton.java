@@ -37,6 +37,7 @@ public class DeleteButton extends TabPanelButton {
 
     public DeleteButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
+        setToolTipText("DEL");
         addActionListener(new ActionListener() {
 
             @Override

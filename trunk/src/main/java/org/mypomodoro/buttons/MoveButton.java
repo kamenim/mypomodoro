@@ -41,6 +41,7 @@ public class MoveButton extends TabPanelButton {
 
     public MoveButton(String label, final IListPanel panel) {
         super(label);
+        setToolTipText("SHIFT + >");
         addActionListener(new ActionListener() {
 
             @Override
