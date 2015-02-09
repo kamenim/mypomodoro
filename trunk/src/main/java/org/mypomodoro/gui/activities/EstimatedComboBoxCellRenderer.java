@@ -44,7 +44,7 @@ class EstimatedComboBoxCellRenderer extends ComboBoxCellRenderer {
             comboBox.removeAllItems();
             comboBox.addItem(activity.getEstimatedPoms());
             int overestimatedpoms = activity.getOverestimatedPoms();
-            label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+            label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }

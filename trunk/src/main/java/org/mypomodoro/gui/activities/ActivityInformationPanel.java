@@ -51,10 +51,10 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
         // Date reopened
-        textMap.put("date_reopened", "<b>" + Labels.getString("Common.Date reopened") + ":</b> "
+        textMap.put("date_reopened", "<span style=\"background-color:#FFFF66\"><b>" + Labels.getString("Common.Date reopened") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
-                + (activity.isUnplanned() ? "]" : "") + "<br>");
+                + (activity.isUnplanned() ? "]" : "") + "</span><br>");
         textMap.put("title", "<b>" + Labels.getString("Common.Title") + ":</b> " + activity.getName() + "<br>");
         textMap.put("type", "<b>" + Labels.getString("Common.Type") + ":</b> " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "<br>");
         textMap.put("estimated", "<b>" + Labels.getString("Common.Estimated pomodoros") + ":</b> "

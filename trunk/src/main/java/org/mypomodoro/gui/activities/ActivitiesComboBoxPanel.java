@@ -21,10 +21,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import org.mypomodoro.util.ColorUtil;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
@@ -48,8 +50,22 @@ class ActivitiesComboBoxPanel extends JPanel {
         comboBox.setEditable(editable);
         if (data instanceof String[]) { // combo of strings
             add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 3, 2, 3), 0, 0));
-        } else { // combo of numbers: leave some more (10) right and left cell space
-            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 10, 2, 10), 0, 0));
+        } else { // combo of numbers            
+            // Hide combo arrow
+            comboBox.setUI(new BasicComboBoxUI() {
+
+                @Override
+                protected JButton createArrowButton() {
+                    return new JButton() {
+
+                        @Override
+                        public int getWidth() {
+                            return 0;
+                        }
+                    };
+                }
+            });
+            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 5, 2, 5), 0, 0));
         }
         add(label);
     }
