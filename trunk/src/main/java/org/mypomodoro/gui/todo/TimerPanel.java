@@ -184,9 +184,10 @@ public class TimerPanel extends JPanel {
                         if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                             int row = panel.getTable().getSelectedRow();
                             pomodoro.setCurrentToDoId((Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey()));
+                            currentToDo = pomodoro.getCurrentToDo();
                         }
                         panel.showCurrentSelectedRow(); // in any case
-                        // Retrieve activity from the database in case it's changed (concurrent work : another use may have worked on it)                                       
+                        // Retrieve activity from the database in case it's changed (concurrent work : another user may have worked on it)                                       
                         if (currentToDo.hasChanged()) {
                             String title = Labels.getString("ToDoListPanel.ToDo changed");
                             String message = Labels.getString("ToDoListPanel.The ToDo has changed");
@@ -196,6 +197,7 @@ public class TimerPanel extends JPanel {
                                 String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
                                 message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                                 JOptionPane.showMessageDialog(Main.gui, message);
+                                setToolTipText(null);
                             } else {
                                 if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
                                     pomodoro.start();
@@ -210,6 +212,7 @@ public class TimerPanel extends JPanel {
                                     if (!strictPomodoro) {
                                         pauseButton.setVisible(true);
                                     }
+                                    setToolTipText(currentToDo.getName());
                                 }
                             }
                         }
@@ -224,6 +227,7 @@ public class TimerPanel extends JPanel {
                         pauseButton.setVisible(false);
                         pauseButton.setMargin(new Insets(0, 20, 0, 20));
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+                        setToolTipText(null);
                     }
                 }
             }

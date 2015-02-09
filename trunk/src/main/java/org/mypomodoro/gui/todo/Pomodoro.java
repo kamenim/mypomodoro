@@ -248,6 +248,7 @@ public class Pomodoro {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
                             MainPanel.trayIcon.setToolTip(message);
+                            timerPanel.setToolTipText(null);
                         }
                     } else {
                         if (PreferencesPanel.preferences.getTicking() && !isMute) {
@@ -264,6 +265,7 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
+                        timerPanel.setToolTipText(getCurrentToDo().getName());
                     }
                 }
                 // update details panel
