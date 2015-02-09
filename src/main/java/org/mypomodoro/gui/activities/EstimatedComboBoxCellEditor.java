@@ -44,7 +44,7 @@ class EstimatedComboBoxCellEditor extends ComboBoxCellEditor {
         if (activity != null) {
             comboBox.removeAllItems();
             if (activity.getActualPoms() > 0) {
-                for (int i = activity.getActualPoms() - activity.getOverestimatedPoms(); i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
+                for (int i = (activity.getActualPoms() - activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getOverestimatedPoms() : 0); i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
                 }
             } else {
@@ -53,8 +53,9 @@ class EstimatedComboBoxCellEditor extends ComboBoxCellEditor {
                 }
             }
             comboBox.setSelectedItem(activity.getEstimatedPoms());
-            int overestimatedpoms = activity.getOverestimatedPoms();
-            label.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+            // don't show the overestimated pom so we have more space for edition
+            //int overestimatedpoms = activity.getOverestimatedPoms();
+            //label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }
