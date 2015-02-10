@@ -69,7 +69,7 @@ public class TransparentButton extends JButton {
     public void setVisible(boolean aFlag) {
         if (aFlag) {
             alpha = 1.0f;
-            // must be setOpaque(true) to make the button opaque with Win XP classic             
+            // must be setOpaque(true) to make the button opaque with Win XP classic theme             
             if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {
