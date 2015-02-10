@@ -42,6 +42,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
+import org.mypomodoro.util.CheckWindowsClassicTheme;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ProgressBar;
 
@@ -120,14 +121,14 @@ public class Main {
 
             @Override
             public void run() {
-                // Substance look and feel not that nice... (enable dependency in pom.xml)  
-                /*try {
-                 JFrame.setDefaultLookAndFeelDecorated(true);
-                 UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel());
-                 updateComponentTreeUI(gui);
-                 } catch (UnsupportedLookAndFeelException ex) {*/
+                // Look & Feel
+                // http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    // When Win XP classic theme is used, set the cross platform look and feel (which is the java Metal lok and feel)
+                    if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {                        
+                        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    }
                 } catch (ClassNotFoundException ex) {
                     // cross platform look and feel is used by default by the JVM
                     logger.error("", ex);
