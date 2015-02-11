@@ -570,6 +570,12 @@ public class ExportInputForm extends JPanel {
             datePatternsComboBox2.setRenderer(new AbstractComboBoxRenderer());
             dateSeparatorComboBox2.setRenderer(new AbstractComboBoxRenderer());
             datePatternsComboBox3.setRenderer(new AbstractComboBoxRenderer());
+            // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
+            datePatternsComboBox1.setBackground(ColorUtil.WHITE);
+            dateSeparatorComboBox1.setBackground(ColorUtil.WHITE);
+            datePatternsComboBox2.setBackground(ColorUtil.WHITE);
+            dateSeparatorComboBox2.setBackground(ColorUtil.WHITE);
+            datePatternsComboBox3.setBackground(ColorUtil.WHITE);
         }
 
         public JComboBox getDatePatternsComboBox1() {
@@ -620,7 +626,7 @@ public class ExportInputForm extends JPanel {
         exportFormPanel.add(fileName, c);
     }
 
-    private class Column {
+    /*private class Column {
 
         private int columnIndex;
         private String columnText;
@@ -688,7 +694,7 @@ public class ExportInputForm extends JPanel {
         public int getLength() {
             return headerEntries.length;
         }
-    }
+    }*/
 
     public static class activityToArray {
 

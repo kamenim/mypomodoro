@@ -745,7 +745,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
-                PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false),
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
@@ -1158,8 +1157,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel,
-            MuteButton muteButton, Icon backgroundIcon,
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, Icon backgroundIcon,
             int verticalAlignment, int horizontalAlignment) {
         // transparent
         timerPanel.setOpaque(false);
@@ -1177,8 +1175,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         discontinuousButton.setFocusPainted(false); // removes borders around text
         toolBar.add(discontinuousButton, wc);
         if (PreferencesPanel.preferences.getTicking()
-                || PreferencesPanel.preferences.getRinging()) {
-            muteButton.setOpaque(false);
+                || PreferencesPanel.preferences.getRinging()) {            
+            MuteButton muteButton = PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false);
+            muteButton.setVisible(true);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
             toolBar.add(muteButton, wc);

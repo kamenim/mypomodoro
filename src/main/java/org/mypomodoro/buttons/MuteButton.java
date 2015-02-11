@@ -19,15 +19,15 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
+import org.mypomodoro.util.TransparentButton;
 
 /**
  * Mute sound button
  *
  */
-public class MuteButton extends JButton {
+public class MuteButton extends TransparentButton {
 
     private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource("/images/mute.png"));
     private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource("/images/sound.png"));

@@ -77,25 +77,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // There is no point to load the font from file: to handle all types of languages, the file would be to big to load (eg Arial Unicode MS tff file is around 22 Mo).
-        // Better live it to the appropriate System font: "Arial Unicode MS" for Windows and MAC;  default font otherwise ("Deja Vu Sans" does not cover chinese, ... languages)
-
         // Set font from font file
-        // DroidSansMonoSlashed font (Apache licence) to support unicode characters
-        // Supported character sets: Western European, Eastern/Central European, Baltic, Cyrillic, Greek and Turkish
-        /*try {
-         font = Font.createFont(Font.TRUETYPE_FONT,
-         Main.class.getResourceAsStream("/fonts/DroidSansMonoSlashed.ttf")).deriveFont(Font.PLAIN, 15f);
-         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-         // The font won't work if it is not registered (unless it is already installed on the System)
-         ge.registerFont(font);            
-         } catch (FontFormatException ex) {
-         font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-         logger.error("DroidSansMonoSlashed font format not supported. Replaced with default System font.", ex);
-         } catch (IOException ex) {
-         font = new JLabel().getFont().deriveFont(Font.PLAIN, 14f);
-         logger.error("DroidSansMonoSlashed TTF file not found. Replaced with default System font.", ex);
-         }*/
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fonts = g.getAvailableFontFamilyNames();
         for (String fontName : fonts) {
@@ -121,12 +103,37 @@ public class Main {
 
             @Override
             public void run() {
-                // Look & Feel
+                // Look & Feel (laf)
                 // http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+                // About custom laf: http://wiki.netbeans.org/FaqCustomLaf
+                // To switch from one theme to another: SwingUtilities.updateComponentTreeUI(this); pack();
+                // To load a theme: -Dswing.defaultlaf=net.sourceforge.napkinlaf.NapkinLookAndFeel
+                // Lafs that work well with mAP
+                // Napkin: UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel"); (enable dependency in pom.xml) 
+                // NimRod: UIManager.setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel"); (enable dependency in pom.xml)
+                // Kunststoff: UIManager.setLookAndFeel(new LookAndFeel()); (enable dependency in pom.xml)
+                // JGoodies: UIManager.setLookAndFeel(new Plastic3DLookAndFeel()); (enable dependency in pom.xml)
+                // TinyLaf: UIManager.setLookAndFeel("net.sf.tinylaf.TinyLookAndFeel"); (enable dependency in pom.xml)
+                // Metal: UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); (same as cross platform)
+                // GT: UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+                // InfoNode: UIManager.setLookAndFeel(new InfoNodeLookAndFeel());                 
+                // Other laf that don't work too well with mAP
+                // Substance: UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel()); (enable dependency in pom.xml)
+                // Nimbus: UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                // Motif: UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");                
+                // Tonic: UIManager.setLookAndFeel("com.digitprop.tonic.TonicLookAndFeel"); (enable dependency in pom.xml)
+                /* Skin: (enable dependency in pom.xml)
+                 try {
+                 Skin theSkinToUse = SkinLookAndFeel.loadThemePack("themepack.zip");
+                 SkinLookAndFeel.setSkin(theSkinToUse);
+                 UIManager.setLookAndFeel(new SkinLookAndFeel());
+                 } catch (Exception ex) {
+                 }
+                 */
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    // When Win XP classic theme is used, set the cross platform look and feel (which is the java Metal lok and feel)
-                    if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {                        
+                    // With the Win XP classic theme, set the cross platform look and feel
+                    if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     }
                 } catch (ClassNotFoundException ex) {

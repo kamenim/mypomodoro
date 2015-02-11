@@ -69,12 +69,6 @@
       <artifactId>jfreechart</artifactId>
       <version>1.0.13</version>
     </dependency>
-    <!-- Substance look and feel / not working properly with myAgilePomodoro -->
-    <!--dependency>
-      <groupId>org.java.net.substance</groupId>
-      <artifactId>substance</artifactId>
-      <version>6.0</sversion>
-    </dependency-->
     <!-- SQLite DB embedded driver -->
     <!-- https://bitbucket.org/xerial/sqlite-jdbc -->
     <dependency>
@@ -127,7 +121,67 @@
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>1.8.1</version>
+    </dependency>    
+    <!-- Look and Feel -->
+    <!-- Substance look and feel -->
+    <!--dependency>
+      <groupId>org.java.net.substance</groupId>
+      <artifactId>substance</artifactId>
+      <version>6.0</version>
+    </dependency-->
+    <!-- JGoodies look and feel -->
+    <!--dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>jgoodies-looks</artifactId>
+      <version>2.5.3</version>
+    </dependency-->
+    <!-- Napkin look and feel -->
+    <dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>napkinlaf</artifactId>
+      <version>1.2</version>
     </dependency>
+    <!-- Tinylaf look and feel -->
+    <!--dependency>
+      <groupId>net.sf.tinylaf</groupId>
+      <artifactId>tinylaf</artifactId>
+      <version>1.4.0</version>
+    </dependency-->
+    <!-- Tonic look and feel -->
+    <!--dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>toniclf</artifactId>
+      <version>1.0.5</version>
+    </dependency-->
+    <!-- Skinlf look and feel -->
+    <!--dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>skinlf</artifactId>
+      <version>6.7</version>
+    </dependency-->
+    <!--dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>skinlf-theme-packs</artifactId>
+      <version>1.0.0</version>
+    </dependency-->
+    <!-- InfoNode look and feel -->
+    <!--dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>ilf-gpl</artifactId>
+      <version>1.6.1</version>
+    </dependency-->
+    <!-- Nimrod look and feel --> 
+    <!--dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>nimrodlf</artifactId>
+      <version>1.1</version>
+    </dependency-->
+    <!-- kunstoff look and feel --> 
+    <!--dependency>
+      <groupId>com.incors</groupId>
+      <artifactId>kunstoff-laf</artifactId>
+      <version>2.0.2</version>
+    </dependency-->
   </dependencies>
     
   <!-- PROPERTIES -->

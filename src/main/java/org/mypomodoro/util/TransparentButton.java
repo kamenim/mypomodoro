@@ -21,6 +21,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 /**
  * Transparent button (including text and icon)
@@ -69,8 +70,10 @@ public class TransparentButton extends JButton {
     public void setVisible(boolean aFlag) {
         if (aFlag) {
             alpha = 1.0f;
-            // must be setOpaque(true) to make the button opaque with Win XP classic theme             
-            if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
+            // must be setOpaque(true) to make the button opaque with Win XP classic theme and lafs other than system and cross platform            
+            if (CheckWindowsClassicTheme.isWindowsClassicLAF()
+                    || (!UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName())
+                    && !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getCrossPlatformLookAndFeelClassName()))) {                
                 setOpaque(true);
             } else {
                 setOpaque(false); // nice rounded button on Win7 aero

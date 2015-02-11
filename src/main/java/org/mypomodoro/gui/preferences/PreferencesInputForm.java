@@ -31,6 +31,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -129,6 +130,8 @@ public class PreferencesInputForm extends JPanel {
                 localesComboBox.setSelectedIndex(i);
             }
         }
+        // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
+        localesComboBox.setBackground(ColorUtil.WHITE);
         localesComboBox.addActionListener(new ActionListener() {
 
             @Override
