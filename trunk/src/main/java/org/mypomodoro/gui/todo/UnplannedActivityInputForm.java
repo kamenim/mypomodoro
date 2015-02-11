@@ -21,11 +21,12 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.FormLabel;
+import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 public class UnplannedActivityInputForm extends ActivityInputForm {
 
-    protected JComboBox interruptions;
+    protected JComboBox interruptionsComboBox;
     protected final String unplanned = Labels.getString("ToDoListPanel.Unplanned task");
     protected final String internal = Labels.getString("ToDoListPanel.Internal interruption");
     protected final String external = Labels.getString("ToDoListPanel.External interruption");
@@ -44,34 +45,36 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
-        interruptions = new JComboBox();
-        interruptions.addItem(unplanned);
-        interruptions.setRenderer(new AbstractComboBoxRenderer());
-        add(interruptions, c);
+        interruptionsComboBox = new JComboBox();
+        interruptionsComboBox.addItem(unplanned);
+        interruptionsComboBox.setRenderer(new AbstractComboBoxRenderer());        
+        // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
+        interruptionsComboBox.setBackground(ColorUtil.WHITE);
+        add(interruptionsComboBox, c);
     }
 
     public boolean isSelectedInternalInterruption() {
-        return ((String) interruptions.getSelectedItem()).equals(internal);
+        return ((String) interruptionsComboBox.getSelectedItem()).equals(internal);
     }
 
     public boolean isSelectedExternalInterruption() {
-        return ((String) interruptions.getSelectedItem()).equals(external);
+        return ((String) interruptionsComboBox.getSelectedItem()).equals(external);
     }
 
     public void setInterruption(int index) {
-        interruptions.setSelectedIndex(index);
+        interruptionsComboBox.setSelectedIndex(index);
     }
 
     public void refreshInterruptionComboBox(boolean inPomodoro) {
-        interruptions.removeAllItems();
+        interruptionsComboBox.removeAllItems();
         if (Main.toDoPanel.getPomodoro().inPomodoro()) {
-            interruptions.addItem(unplanned);
-            interruptions.addItem(internal);
-            interruptions.addItem(external);
-            interruptions.setSelectedItem(internal);
+            interruptionsComboBox.addItem(unplanned);
+            interruptionsComboBox.addItem(internal);
+            interruptionsComboBox.addItem(external);
+            interruptionsComboBox.setSelectedItem(internal);
         } else {
-            interruptions.addItem(unplanned);
+            interruptionsComboBox.addItem(unplanned);
         }
-        interruptions.repaint();
+        interruptionsComboBox.repaint();
     }
 }

@@ -23,7 +23,9 @@ import javax.swing.border.EmptyBorder;
 import org.mypomodoro.util.ColorUtil;
 
 /**
- * Combo box renderer fro most of the combo boxes
+ * Combo box renderer for most of the combo boxes
+ * 
+ * This only applies when opening the combo box
  *
  */
 public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
