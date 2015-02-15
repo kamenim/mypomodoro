@@ -34,6 +34,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -103,7 +104,7 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    protected void validActivityAction(final Activity newActivity) {
+    public void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
         final int selectedRowCount = panel.getTable().getSelectedRowCount();
@@ -147,8 +148,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 newActivity.setActualPoms(actualPoms);
             }
-            validation.setVisible(false);
-            super.validActivityAction(newActivity); // validation and clear form
+            //validation.setVisible(false);
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
@@ -171,6 +171,8 @@ public class MergingPanel extends CreatePanel {
                             panel.removeRow(row);
                             increment++;
                         }
+                        ActivityList.getList().add(newActivity);
+                        Main.gui.getActivityListPanel().insertRow(newActivity);
                         // Close progress bar
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
@@ -193,10 +195,6 @@ public class MergingPanel extends CreatePanel {
                         });
                         // Stop wait cursor
                         WaitCursor.stopWaitCursor();
-                        // Select new created task at the bottom of the list before refresh
-                        panel.setCurrentSelectedRow(panel.getTable().getRowCount());
-                        // After cursor stops, refresh Activities List and clear the form
-                        panel.refresh();
                         clearForm();
                     }
                 }
@@ -217,7 +215,7 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    public void clearForm() {
+    public void clearForm() {        
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
         if (PreferencesPanel.preferences.getAgileMode()) {

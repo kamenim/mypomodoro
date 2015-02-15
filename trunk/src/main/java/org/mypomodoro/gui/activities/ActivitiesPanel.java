@@ -413,9 +413,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 newActivity.setEstimatedPoms(0);
                 newActivity.setName(Labels.getString("Common.Task"));
                 addActivity(newActivity);
-                // Select new created task at the bottom of the list before refresh
-                setCurrentSelectedRow(table.getRowCount());
-                refresh();
+                insertRow(newActivity);
             }
         }
         am.put("Control T", new create());
@@ -437,9 +435,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         addActivity(copiedActivity, new Date(), new Date(0));
-                        // Select new created task at the bottom of the list before refresh
-                        setCurrentSelectedRow(table.getRowCount());
-                        refresh();
+                        insertRow(copiedActivity);
                     } catch (CloneNotSupportedException ignored) {
                     }
                 }
@@ -740,7 +736,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE) {
+                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
@@ -823,6 +819,30 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
+    }
+
+    @Override
+    public void insertRow(Activity activity) {
+        table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        Object[] rowData = new Object[8];
+        rowData[0] = activity.isUnplanned();
+        rowData[1] = activity.getDate();
+        rowData[2] = activity.getName();
+        rowData[3] = activity.getType();
+        Integer poms = new Integer(activity.getEstimatedPoms());
+        rowData[4] = poms;
+        Float points = new Float(activity.getStoryPoints());
+        rowData[5] = points;
+        Integer iteration = new Integer(activity.getIteration());
+        rowData[6] = iteration;
+        rowData[7] = activity.getId();
+        // By default, the row is added at the bottom of the list
+        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+        activitiesTableModel.addRow(rowData); // we add in the Model...        
+        //activitiesTableModel.insertRow(table.getRowCount(), rowData); // we add in the Model... 
+        int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
+        table.setRowSelectionInterval(currentRow, currentRow);
+        table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
     }
 
     @Override

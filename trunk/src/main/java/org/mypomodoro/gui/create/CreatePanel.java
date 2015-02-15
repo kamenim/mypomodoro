@@ -143,6 +143,7 @@ public class CreatePanel extends JPanel {
 
     protected void validActivityAction(Activity newActivity) {
         ActivityList.getList().add(newActivity);
+        Main.gui.getActivityListPanel().insertRow(newActivity);
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(getFont().deriveFont(Font.BOLD));

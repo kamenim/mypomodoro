@@ -34,6 +34,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -150,144 +151,79 @@ public class MergingPanel extends CreatePanel {
                 }
                 newActivity.setActualPoms(actualPoms);
             }
-            final String title = Labels.getString("ToDoListPanel.Merge ToDos");
-            if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
-                // we must reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
-                new Thread() { // This new thread is necessary for updating the progress bar
-                    @Override
-                    public void run() {
-                        if (!WaitCursor.isStarted()) {
-                            // Start wait cursor
-                            WaitCursor.startWaitCursor();
-                            // Set progress bar
-                            Main.gui.getProgressBar().setVisible(true);
-                            Main.gui.getProgressBar().getBar().setValue(0);
-                            Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                            // Indicate reordoring by priority in progress bar
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-                                }
-                            });
-                            // only now we can remove the merged tasks
-                            int[] rows = panel.getTable().getSelectedRows();
-                            int increment = 0;
-                            for (int row : rows) {
-                                // removing a row requires decreasing the row index number
-                                row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedToDo = panel.getActivityById(id);
-                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                    continue;
-                                }
-                                panel.delete(selectedToDo);
-                                panel.removeRow(row);
-                                increment++;
+            final String title = Labels.getString("ToDoListPanel.Merge ToDos");             
+            new Thread() { // This new thread is necessary for updating the progress bar
+                @Override
+                public void run() {
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        // Set progress bar
+                        Main.gui.getProgressBar().setVisible(true);
+                        Main.gui.getProgressBar().getBar().setValue(0);
+                        Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                        // Indicate reordoring by priority in progress bar
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
+                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
-                            // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
-                            panel.reorderByPriority();
-                            // Close progress bar
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ex) {
-                                                logger.error("", ex);
-                                            }
-                                            // hide progress bar
-                                            Main.gui.getProgressBar().getBar().setString(null);
-                                            Main.gui.getProgressBar().setVisible(false);
-                                        }
-                                    }.start();
-                                }
-                            });
-                            panel.addActivity(newActivity);
-                            // Stop wait cursor
-                            WaitCursor.stopWaitCursor();
-                            // Select new created task at the bottom of the list before refresh
-                            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
-                            // After cursor stops, refresh ToDo List and clear the form                            
-                            panel.refresh();
-                            clearForm();
+                        });
+                        // only now we can remove the merged tasks
+                        int[] rows = panel.getTable().getSelectedRows();
+                        int increment = 0;
+                        for (int row : rows) {
+                            // removing a row requires decreasing the row index number
+                            row = row - increment;
+                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                            Activity selectedToDo = panel.getActivityById(id);
+                            if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                continue;
+                            }
+                            panel.delete(selectedToDo);
+                            panel.removeRow(row);
+                            increment++;
                         }
-                    }
-                }.start();
-            } else {
-                validation.setVisible(false);
-                super.validActivityAction(newActivity); // validation and clear form
-                // Indicate reordoring by priority in progress bar
-                new Thread() { // This new thread is necessary for updating the progress bar
-                    @Override
-                    public void run() {
-                        if (!WaitCursor.isStarted()) {
-                            // Start wait cursor
-                            WaitCursor.startWaitCursor();
-                            // Set progress bar
-                            Main.gui.getProgressBar().setVisible(true);
-                            Main.gui.getProgressBar().getBar().setValue(0);
-                            Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-                                }
-                            });
-                            // only now we may remove the merged tasks
-                            int[] rows = panel.getTable().getSelectedRows();
-                            int increment = 0;
-                            for (int row : rows) {
-                                // removing a row requires decreasing the row index number
-                                row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedToDo = panel.getActivityById(id);
-                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                    continue;
-                                }
-                                panel.delete(selectedToDo);
-                                panel.removeRow(row);
-                                increment++;
-                            }
-                            panel.reorderByPriority();
-                            // Close progress bar
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ex) {
-                                                logger.error("", ex);
-                                            }
-                                            // hide progress bar
-                                            Main.gui.getProgressBar().getBar().setString(null);
-                                            Main.gui.getProgressBar().setVisible(false);
-                                        }
-                                    }.start();
-                                }
-                            });
-                            // Stop wait cursor
-                            WaitCursor.stopWaitCursor();
-                            // After cursor stops, refresh ToDo List and clear the form
-                            panel.refresh();
-                            clearForm();
+                        // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
+                        // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
+                        panel.reorderByPriority();
+                        if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) { // add new activity to ToDo list                                
+                            panel.addActivity(newActivity);
+                            panel.insertRow(newActivity);
+                        } else { // add merged activity to activities list
+                            ActivityList.getList().add(newActivity);
+                            Main.gui.getActivityListPanel().insertRow(newActivity);
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }
+                        // Close progress bar
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000); // wait one second before hiding the progress bar
+                                        } catch (InterruptedException ex) {
+                                            logger.error("", ex);
+                                        }
+                                        // hide progress bar
+                                        Main.gui.getProgressBar().getBar().setString(null);
+                                        Main.gui.getProgressBar().setVisible(false);
+                                    }
+                                }.start();
+                            }
+                        });
+                        // Stop wait cursor
+                        WaitCursor.stopWaitCursor();
+                        clearForm();
                     }
-                }.start();
-            }
+                }
+            }.start();
         }
     }
 

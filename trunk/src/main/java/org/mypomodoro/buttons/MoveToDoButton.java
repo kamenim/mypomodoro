@@ -83,7 +83,8 @@ public class MoveToDoButton extends TabPanelButton {
                                 }
                             }
                             panel.move(selectedToDo);
-                            panel.removeRow(row);
+                            panel.removeRow(row);                        
+                            Main.gui.getActivityListPanel().insertRow(selectedToDo);
                             increment++;
                             final int progressValue = increment;
                             SwingUtilities.invokeLater(new Runnable() {
@@ -130,8 +131,6 @@ public class MoveToDoButton extends TabPanelButton {
                         setEnabled(true);
                         // Stop wait cursor
                         WaitCursor.stopWaitCursor();
-                        // After cursor stops, refresh Activity List (target list) in case the user is waiting for the list to refresh
-                        Main.gui.getActivityListPanel().refresh();
                     }
                 }
             }.start();

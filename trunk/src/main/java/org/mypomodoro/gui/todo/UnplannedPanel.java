@@ -128,10 +128,7 @@ public class UnplannedPanel extends CreatePanel {
         String message;
         if (unplannedInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) {
             panel.addActivity(newActivity);
-            // Select new created unplanned task at the bottom of the list before refresh
-            panel.setCurrentSelectedRow(panel.getTable().getRowCount());
-            // refresh the whole table
-            panel.refresh();
+            panel.insertRow(newActivity);
             clearForm();
         } else {
             validation.setVisible(false);

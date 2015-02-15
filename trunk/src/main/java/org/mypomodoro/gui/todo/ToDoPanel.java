@@ -440,9 +440,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 unplanned.setIsUnplanned(true);
                 unplanned.setName(Labels.getString("Common.Unplanned"));
                 addActivity(unplanned);
-                // Select new created task at the bottom of the list before refresh
-                setCurrentSelectedRow(table.getRowCount());
-                refresh();
+                insertRow(unplanned);
             }
         }
         am.put("Control U", new createUnplanned());
@@ -463,9 +461,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     interruption.setIsUnplanned(true);
                     interruption.setName(Labels.getString("ToDoListPanel.Internal"));
                     addActivity(interruption);
-                    // Select new created task at the bottom of the list before refresh
-                    setCurrentSelectedRow(table.getRowCount());
-                    refresh();
+                    insertRow(interruption);
                 }
             }
         }
@@ -487,9 +483,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     interruption.setIsUnplanned(true);
                     interruption.setName(Labels.getString("ToDoListPanel.External"));
                     addActivity(interruption);
-                    // Select new created task at the bottom of the list before refresh
-                    setCurrentSelectedRow(table.getRowCount());
-                    refresh();
+                    insertRow(interruption);
                 }
             }
         }
@@ -511,8 +505,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         copiedActivity.setName("(D) " + copiedActivity.getName());
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
+                        copiedActivity.setIteration(-1);
                         // Insert the duplicate into the activity list
                         ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                        Main.gui.getActivityListPanel().insertRow(copiedActivity);
                         String title = Labels.getString("Common.Add Duplicated task");
                         String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
                         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -866,7 +862,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) {
+                if (e.getType() == TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
@@ -924,6 +920,28 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
+    }    
+
+    @Override
+    public void insertRow(Activity activity) {
+        table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        Object[] rowData = new Object[7];
+        rowData[0] = activity.getPriority();
+        rowData[1] = activity.isUnplanned();
+        rowData[2] = activity.getName();
+        Integer poms = new Integer(activity.getEstimatedPoms());
+        rowData[3] = poms;
+        Float points = new Float(activity.getStoryPoints());
+        rowData[4] = points;
+        Integer iteration = new Integer(activity.getIteration());
+        rowData[5] = iteration;
+        rowData[6] = activity.getId();
+        // By default, the row is added at the bottom of the list
+        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+        activitiesTableModel.addRow(rowData); // we add in the Model...        
+        int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
+        table.setRowSelectionInterval(currentRow, currentRow);
+        table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
     }
 
     @Override

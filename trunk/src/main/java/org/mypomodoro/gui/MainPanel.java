@@ -113,7 +113,14 @@ public final class MainPanel extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() > 0) { // single left click
-                        setVisible(!isVisible());
+                        if(!isVisible()) {
+                            setVisible(true);
+                            setExtendedState(JFrame.NORMAL);
+                        } else {
+                            // Use  dispose() instead of setVisible(false) to make it work on Linux
+                            // http://stackoverflow.com/questions/24315952/java-swing-restore-from-system-tray-not-working-in-linux
+                            dispose();
+                        }
                     }
                 }
             });
@@ -168,9 +175,9 @@ public final class MainPanel extends JFrame {
     }
 
     public final void setWindow(JPanel e) {
-        if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
+        /*if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
             ((IListPanel) e).refresh();
-        }
+        }*/
         windowPanel.showPanel(e.getClass().getName());
     }
 

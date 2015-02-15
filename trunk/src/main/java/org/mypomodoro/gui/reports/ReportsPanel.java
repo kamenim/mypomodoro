@@ -404,8 +404,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         copiedActivity.setName("(D) " + copiedActivity.getName());
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
+                        copiedActivity.setIteration(-1);
                         // Insert the duplicate into the activity list
                         ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                        Main.gui.getActivityListPanel().insertRow(copiedActivity);
                         String title = Labels.getString("Common.Add Duplicated task");
                         String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
                         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -472,8 +474,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // title
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // type
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new EstimatedCellRenderer()); // estimated        
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr);
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(dtcr);
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // Diff I
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new Diff2CellRenderer()); // Diff II
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
@@ -661,23 +663,25 @@ public class ReportsPanel extends JPanel implements IListPanel {
         Object[][] tableData = new Object[rowIndex][colIndex];
         Iterator<Activity> iterator = ReportList.getList().iterator();
         for (int i = 0; i < ReportList.getList().size() && iterator.hasNext(); i++) {
-            Activity currentActivity = iterator.next();
-            tableData[i][0] = currentActivity.isUnplanned();
-            tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
-            //tableData[i][2] = DateUtil.getFormatedTime(currentActivity.getDate());
-            tableData[i][2] = currentActivity.getName();
-            tableData[i][3] = currentActivity.getType();
-            Integer poms = new Integer(currentActivity.getEstimatedPoms());
+            Activity a = iterator.next();
+            tableData[i][0] = a.isUnplanned();
+            tableData[i][1] = a.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
+            //tableData[i][2] = DateUtil.getFormatedTime(a.getDate());
+            tableData[i][2] = a.getName();
+            tableData[i][3] = a.getType();
+            Integer poms = new Integer(a.getEstimatedPoms());
             tableData[i][4] = poms;
-            tableData[i][5] = currentActivity.getActualPoms()
-                    - currentActivity.getEstimatedPoms(); // Diff I
-            tableData[i][6] = currentActivity.getOverestimatedPoms() > 0 ? currentActivity.getActualPoms()
-                    - currentActivity.getEstimatedPoms()
-                    - currentActivity.getOverestimatedPoms()
-                    : ""; // Diff II
-            tableData[i][7] = currentActivity.getStoryPoints();
-            tableData[i][8] = currentActivity.getIteration();
-            tableData[i][9] = currentActivity.getId();
+            Integer diffIPoms = new Integer(a.getActualPoms() - a.getEstimatedPoms());
+            tableData[i][5] = diffIPoms; // Diff I
+            Integer diffIIPoms = new Integer(a.getActualPoms()
+                    - a.getEstimatedPoms()
+                    - a.getOverestimatedPoms());
+            tableData[i][6] = diffIIPoms; // Diff II
+            Float points = new Float(a.getStoryPoints());
+            tableData[i][7] = points;
+            Integer iteration = new Integer(a.getIteration());
+            tableData[i][8] = iteration;
+            tableData[i][9] = a.getId();
         }
 
         AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
@@ -716,7 +720,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE) {
+                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
@@ -774,6 +778,35 @@ public class ReportsPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
+    }
+
+    @Override
+    public void insertRow(Activity activity) {
+        table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        Object[] rowData = new Object[10];
+        rowData[0] = activity.isUnplanned();
+        rowData[1] = activity.getDateCompleted();
+        rowData[2] = activity.getName();
+        rowData[3] = activity.getType();
+        Integer poms = new Integer(activity.getEstimatedPoms());
+        rowData[4] = poms;
+        Integer diffIPoms = new Integer(activity.getActualPoms() - activity.getEstimatedPoms());
+        rowData[5] = diffIPoms; // Diff I
+        Integer diffIIPoms = new Integer(activity.getActualPoms()
+                - activity.getEstimatedPoms()
+                - activity.getOverestimatedPoms());
+        rowData[6] = diffIIPoms; // Diff II
+        Float points = new Float(activity.getStoryPoints());
+        rowData[7] = points;
+        Integer iteration = new Integer(activity.getIteration());
+        rowData[8] = iteration;
+        rowData[9] = activity.getId();
+        // By default, the row is added at the bottom of the list
+        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+        activitiesTableModel.addRow(rowData); // we add in the Model...        
+        int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
+        table.setRowSelectionInterval(currentRow, currentRow);
+        table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
     }
 
     @Override
@@ -966,6 +999,22 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
                 renderer.setText(text);
             }
+            return renderer;
+        }
+    }
+    
+    class Diff2CellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+            Activity activity = ReportList.getList().getById(id);
+            String text = value.toString();
+            if (activity != null && activity.getOverestimatedPoms() == 0) {
+                text = "";
+            }
+            renderer.setText(text);
             return renderer;
         }
     }
