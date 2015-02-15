@@ -134,6 +134,7 @@ public class TestMenu extends JMenu {
                                 }
                                 Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
                                 ReportList.getList().add(a, dateAdded, dateCompleted);
+                                Main.gui.getReportListPanel().insertRow(a);
                                 reportListValue++;
                             } else { // Tasks for the Activity and ToDo list
                                 if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
@@ -145,6 +146,7 @@ public class TestMenu extends JMenu {
                                         a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                     }
                                     ToDoList.getList().add(a);
+                                    Main.gui.getToDoPanel().insertRow(a);
                                     todoListValue++;
                                 } else { // Tasks for the Activity list
                                     iteration = PreferencesPanel.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
@@ -152,6 +154,7 @@ public class TestMenu extends JMenu {
                                     a.setOverestimatedPoms(0);
                                     a.setActualPoms(0);
                                     ActivityList.getList().add(a, a.getDate());
+                                    Main.gui.getActivityListPanel().insertRow(a);
                                     activityListValue++;
                                 }
                             }
@@ -200,7 +203,7 @@ public class TestMenu extends JMenu {
                         WaitCursor.stopWaitCursor();
                         // Updating views at once (updating individual view in the loop is likely to create ConcurrentModificationException exceptions)
                         // we could also refresh() the lists ActivityList, ToDoList and ReportList to get the tasks sorted in order of dates
-                        Main.updateViews(); // this has to be done inside the current thread
+                        //Main.updateViews(); // this has to be done inside the current thread
                     }
                 }
             }.start();

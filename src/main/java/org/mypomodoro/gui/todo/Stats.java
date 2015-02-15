@@ -30,7 +30,7 @@ public class Stats {
     private static int internalInterruptions = 0;
     private static int externalInterruptions = 0;
     private static int unplanned = 0;
-    private static int Overestimated = 0;
+    private static int overestimated = 0;
     private static int edited = 0;
     private static int commented = 0;
     private static int prioritized = 0;
@@ -39,4 +39,5 @@ public class Stats {
     private static int lenghtIncreased = 0;
     private static int paused = 0;
     private static int overwholeTimeSpentWorking = 0;
+    private static int workflowInterrupted = 0;    
 }

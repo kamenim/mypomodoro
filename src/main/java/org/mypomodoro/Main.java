@@ -74,6 +74,8 @@ public class Main {
     /**
      * Main
      *
+     * Command line: java -jar myAgilePomodoro-....jar
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -148,8 +150,7 @@ public class Main {
                 } catch (UnsupportedLookAndFeelException ex) {
                     // cross platform look and feel is used by default by the JVM
                     logger.error("", ex);
-                }
-                //}
+                }                
                 // Set global font (before intanstiating the components and the gui)
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
                 if (font == null) { // In case , Arial Unicode MS isn't exist; let's hope the default OS font is unicode
@@ -193,7 +194,6 @@ public class Main {
                 gui.setSize(dGUI);
                 /* this may prevent the gui to be resizable
                  gui.addComponentListener(new ComponentAdapter() {
-
                  @Override
                  public void componentResized(ComponentEvent event) {
                  Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()),
@@ -208,7 +208,7 @@ public class Main {
     }
 
     // Set default global font for the application
-    public static void setUIFont(FontUIResource f) {
+    private static void setUIFont(FontUIResource f) {
         Enumeration keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();

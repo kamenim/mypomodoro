@@ -106,6 +106,11 @@ public class MoveButton extends TabPanelButton {
                             }
                             panel.move(selectedActivity);
                             panel.removeRow(row);
+                            if (panel instanceof ActivitiesPanel) {
+                                Main.gui.getToDoPanel().insertRow(selectedActivity);
+                            } else if (panel instanceof ReportsPanel) { // reopen tasks
+                                Main.gui.getActivityListPanel().insertRow(selectedActivity);
+                            }
                             increment++;
                             final int progressValue = increment;
                             SwingUtilities.invokeLater(new Runnable() {
@@ -142,12 +147,6 @@ public class MoveButton extends TabPanelButton {
                         setEnabled(true);
                         // Stop wait cursor
                         WaitCursor.stopWaitCursor();
-                        // After cursor stops, refresh Activity/Report List (target list) in case the user is waiting for the list to refresh
-                        if (panel instanceof ActivitiesPanel) {
-                            Main.gui.getToDoPanel().refresh();
-                        } else if (panel instanceof ReportsPanel) { // reopen tasks
-                            Main.gui.getActivityListPanel().refresh();
-                        }
                     }
                 }
             }.start();

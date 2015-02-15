@@ -29,6 +29,8 @@ public interface IListPanel {
     void moveAll();
 
     void removeRow(int row);
+    
+    void insertRow(Activity activity);
 
     void setPanelBorder();
 

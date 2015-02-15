@@ -111,7 +111,6 @@ public class ImportPanel extends JPanel {
                     if (!WaitCursor.isStarted()) {
                         // Start wait cursor
                         WaitCursor.startWaitCursor();
-                        boolean error = false;
                         try {
                             if (importInputForm.isFileCSVFormat()) {
                                 importCSV(fileName);
@@ -122,7 +121,6 @@ public class ImportPanel extends JPanel {
                             }
                         } catch (Exception ex) {
                             logger.error("Import failed", ex);
-                            error = true;
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Import failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -131,9 +129,15 @@ public class ImportPanel extends JPanel {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
                                     new Thread() {
                                         @Override
                                         public void run() {
+                                            try {
+                                                sleep(1000); // wait one second before hiding the progress bar
+                                            } catch (InterruptedException ex) {
+                                                logger.error("", ex);
+                                            }
                                             // hide progress bar
                                             Main.gui.getProgressBar().getBar().setString(null);
                                             Main.gui.getProgressBar().setVisible(false);
@@ -143,10 +147,6 @@ public class ImportPanel extends JPanel {
                             });
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
-                            // refresh panel
-                            if (!error) {
-                                panel.refresh();
-                            }
                         }
                     }
                 }
@@ -376,5 +376,6 @@ public class ImportPanel extends JPanel {
             panel.addActivity(newActivity);
             //System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
         }
+        panel.insertRow(newActivity);
     }
 }

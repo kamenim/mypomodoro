@@ -35,6 +35,7 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -268,6 +269,11 @@ public class Pomodoro {
                         timerPanel.setToolTipText(getCurrentToDo().getName());
                     }
                 }
+                // Display app is any case when restore option is on (system tray, minimized, in the background)
+                //if (PreferencesPanel.preferences.getRestore()
+                    Main.gui.setVisible(true); 
+                    Main.gui.setExtendedState(JFrame.NORMAL); // Note: full screen shrinks to preferred size (see Main) which is ok
+                //}
                 // update details panel
                 detailsPanel.selectInfo(getCurrentToDo());
                 detailsPanel.showInfo();
