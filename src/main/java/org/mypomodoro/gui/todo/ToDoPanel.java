@@ -744,14 +744,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        /*wrap.addMouseListener(new MouseAdapter() {
+        wrap.addMouseListener(new MouseAdapter() {
 
-         // click
-         @Override
-         public void mouseClicked(MouseEvent e) {
-         timerPanel.switchPomodoroCompliance();
-         }
-         });*/
+            // click
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                timerPanel.switchPomodoroCompliance();
+            }
+        });
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -920,7 +920,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
-    }    
+    }
 
     @Override
     public void insertRow(Activity activity) {
@@ -1193,7 +1193,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         discontinuousButton.setFocusPainted(false); // removes borders around text
         toolBar.add(discontinuousButton, wc);
         if (PreferencesPanel.preferences.getTicking()
-                || PreferencesPanel.preferences.getRinging()) {            
+                || PreferencesPanel.preferences.getRinging()) {
             MuteButton muteButton = PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false);
             muteButton.setVisible(true);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
@@ -1222,18 +1222,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
         pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
-        pomodoroButton.setOpaque(false);
-        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)        
-
+        pomodoroButton.setOpaque(false);        
+        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        /*pomodoroButton.addActionListener(new ActionListener() {
+        pomodoroButton.addMouseListener(new MouseAdapter() {
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-
-         timerPanel.switchPomodoroCompliance();
-         }
-         });*/
+            // click
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                timerPanel.switchPomodoroCompliance();
+            }
+        });
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
         pomodoroButton.setPreferredSize(new Dimension(250, 240));

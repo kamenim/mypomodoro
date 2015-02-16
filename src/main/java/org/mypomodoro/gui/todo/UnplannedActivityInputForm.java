@@ -17,7 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import javax.swing.JComboBox;
-import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.FormLabel;
@@ -67,7 +67,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
 
     public void refreshInterruptionComboBox(boolean inPomodoro) {
         interruptionsComboBox.removeAllItems();
-        if (Main.toDoPanel.getPomodoro().inPomodoro()) {
+        if (MainPanel.toDoPanel.getPomodoro().inPomodoro()) {
             interruptionsComboBox.addItem(unplanned);
             interruptionsComboBox.addItem(internal);
             interruptionsComboBox.addItem(external);

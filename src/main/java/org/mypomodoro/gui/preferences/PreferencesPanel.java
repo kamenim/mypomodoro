@@ -136,10 +136,12 @@ public class PreferencesPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
+                preferencesInputFormPanel.recallBox.setSelected(false);
                 preferencesInputFormPanel.agileModeBox.setSelected(true);
                 preferencesInputFormPanel.pomodoroModeBox.setSelected(false);
                 preferencesInputFormPanel.plainHoursBox.setSelected(true);
                 preferencesInputFormPanel.effectiveHoursBox.setSelected(false);
+                // no reset for themes
                 setValidation(Labels.getString("PreferencesPanel.Preferences reset.") + " ");
                 updatePreferences();
                 disableSaveButton();
@@ -172,7 +174,7 @@ public class PreferencesPanel extends JPanel {
         vgbc.gridx = 1;
         vgbc.gridy = 0;
         vgbc.fill = GridBagConstraints.NONE;
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart button for Mac OS (does not work - see RestartMac classe)
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart button for Mac OS (does not work - see RestartMac class)
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
             restartLabel.setForeground(ColorUtil.BLACK);
             restartLabel.setFont(getFont().deriveFont(Font.BOLD));
@@ -219,8 +221,10 @@ public class PreferencesPanel extends JPanel {
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
+        preferences.setRecall(preferencesInputFormPanel.recallBox.isSelected());
         preferences.setAgileMode(preferencesInputFormPanel.agileModeBox.isSelected());
         preferences.setPlainHours(preferencesInputFormPanel.plainHoursBox.isSelected());
+        preferences.setTheme((String)preferencesInputFormPanel.themesComboBox.getSelectedItem());
         preferences.updatePreferences();
     }
 }

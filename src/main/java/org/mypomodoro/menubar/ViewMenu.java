@@ -30,7 +30,10 @@ import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.Labels;
 
-//View Menu
+/**
+ * View Menu
+ * 
+ */
 public class ViewMenu extends JMenu {
 
     private final MainPanel view;
@@ -41,9 +44,7 @@ public class ViewMenu extends JMenu {
         add(new ActivityListItem());
         add(new ToDoListItem());
         add(new ReportListItem());
-        //if (PreferencesPanel.preferences.getAgileMode()) {
         add(new BurndownChartItem());
-        //}
         addFocusListener(new FocusListener() {
 
             @Override
@@ -71,7 +72,6 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateViews();
                 MyIcon activityListIcon = view.getIconBar().getIcon(1);
                 view.getIconBar().highlightIcon(activityListIcon);
                 view.setWindow(view.getActivityListPanel());
@@ -93,7 +93,6 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateViews();
                 MyIcon toDoListIcon = view.getIconBar().getIcon(2);
                 view.getIconBar().highlightIcon(toDoListIcon);
                 view.setWindow(view.getToDoPanel());
@@ -115,7 +114,6 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateViews();
                 MyIcon reportListIcon = view.getIconBar().getIcon(3);
                 view.getIconBar().highlightIcon(reportListIcon);
                 view.setWindow(view.getReportListPanel());
@@ -137,7 +135,6 @@ public class ViewMenu extends JMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.updateViews();
                 MyIcon burndownChartIcon = view.getIconBar().getIcon(4);
                 view.getIconBar().highlightIcon(burndownChartIcon);
                 view.setWindow(view.getChartTabbedPanel());

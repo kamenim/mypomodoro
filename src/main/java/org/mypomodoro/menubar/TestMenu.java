@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
@@ -236,7 +237,7 @@ public class TestMenu extends JMenu {
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivitiesDAO.getInstance().deleteAll();
                         Main.updateLists();
-                        Main.updateViews();
+                        MainPanel.updateViews();
                         Main.updateComboBoxLists();
                     }
                 }

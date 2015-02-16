@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.preferences;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -23,12 +24,19 @@ import java.awt.GridBagLayout;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.util.ColorUtil;
@@ -53,10 +61,12 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox systemTrayBox;
     protected final JCheckBox systemTrayMessageBox;
     protected final JCheckBox alwaysOnTopBox;
+    protected final JCheckBox recallBox;
     protected final JCheckBox agileModeBox;
     protected final JCheckBox pomodoroModeBox;
     protected final JCheckBox plainHoursBox;
     protected final JCheckBox effectiveHoursBox;
+    protected final JComboBox themesComboBox;
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("PreferencesPanel.Preferences"));
@@ -179,6 +189,17 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
+        recallBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Recall"),
+                PreferencesPanel.preferences.getRecall());
+        recallBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
+            }
+        });
         agileModeBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Agile.Agile Mode"),
                 PreferencesPanel.preferences.getAgileMode());
@@ -242,7 +263,81 @@ public class PreferencesInputForm extends JPanel {
                 plainHoursBox.setSelected(false);
             }
         });
+        // Themes
+        // http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+        // About custom laf: http://wiki.netbeans.org/FaqCustomLaf
+        // To switch from one theme to another: SwingUtilities.updateComponentTreeUI(this); pack();
+        // To load a theme: -Dswing.defaultlaf=net.sourceforge.napkinlaf.NapkinLookAndFeel
+        // Lafs that work well with mAP
+        // Napkin: UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel"); (enable dependency in pom.xml)
+        // (with Napkin, the play button does not work at all)
+        // NimRod: UIManager.setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel"); (enable dependency in pom.xml)
+        // Kunststoff: UIManager.setLookAndFeel(new KunststoffLookAndFeel()); (enable dependency in pom.xml)
+        // (Kunststoff is an enhanced version of Metal but not quite as good)
+        // JGoodies: UIManager.setLookAndFeel(new Plastic3DLookAndFeel()); (enable dependency in pom.xml)
+        // TinyLaf: UIManager.setLookAndFeel("net.sf.tinylaf.TinyLookAndFeel"); (enable dependency in pom.xml)
+        // Metal: UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); (same as cross platform)
+        // GT: UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel"); (same as System on Linux)        
+        // Nimbus: UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); (if it exists in the jre)
+        // InfoNode: UIManager.setLookAndFeel(new InfoNodeLookAndFeel());                 
+        // Other laf that don't work too well with mAP
+        // Substance: UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel()); (enable dependency in pom.xml)
+        // Motif: UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");                
+        // Tonic: UIManager.setLookAndFeel("com.digitprop.tonic.TonicLookAndFeel"); (enable dependency in pom.xml)
+        // WebLaf: UIManager.setLookAndFeel("com.alee.laf.WebLookAndFeel"); (enable dependency in pom.xml)
+        /* Skin: (enable dependency in pom.xml)
+         try {
+         Skin theSkinToUse = SkinLookAndFeel.loadThemePack("themepack.zip");
+         SkinLookAndFeel.setSkin(theSkinToUse);
+         UIManager.setLookAndFeel(new SkinLookAndFeel());
+         } catch (Exception ex) {
+         }
+         */
+        ArrayList<String> themes = new ArrayList<String>();
+        if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
+            themes.add(UIManager.getSystemLookAndFeelClassName());
+        }
+        themes.add(UIManager.getCrossPlatformLookAndFeelClassName());
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    themes.add(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ignored) {
+            // Nimbus is not available
+        }
+        themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel");
+        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
+        //themes.add("com.alee.laf.WebLookAndFeel");
+        themesComboBox = new JComboBox(themes.toArray());
+        for (int i = 0; i < themes.size(); i++) {
+            if (themes.get(i).equalsIgnoreCase(PreferencesPanel.preferences.getTheme())) {
+                themesComboBox.setSelectedIndex(i);
+            }
+        }
+        // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
+        themesComboBox.setBackground(ColorUtil.WHITE);
+        themesComboBox.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /* The following block has been commented because it doesn't work well, and doesn't work at all with Metal (cross platform) laf
+                try {
+                    // Show look and feel at run time
+                    UIManager.setLookAndFeel((String)themesComboBox.getSelectedItem());
+                    SwingUtilities.updateComponentTreeUI(Main.gui);
+                    Main.gui.pack();*/
+                    controlPanel.enableSaveButton();
+                    controlPanel.clearValidation();
+                /*} catch (ClassNotFoundException ignored) {
+                } catch (InstantiationException ignored) {
+                } catch (IllegalAccessException ignored) {
+                } catch (UnsupportedLookAndFeelException ignored) {
+                }*/
+            }
+        });
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -278,6 +373,9 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 11;
         gbc.gridwidth = 2;
         addAlwaysOnTop(gbc);
+        gbc.gridy = 12;
+        gbc.gridwidth = 2;
+        addThemes(gbc);
     }
 
     private void addAgileMode(GridBagConstraints gbc) {
@@ -356,12 +454,40 @@ public class PreferencesInputForm extends JPanel {
     private void addAlwaysOnTop(GridBagConstraints gbc) {
         JPanel alwaysOnTop = new JPanel();
         alwaysOnTop.setLayout(new GridBagLayout());
-        GridBagConstraints gbcAgileMode = new GridBagConstraints();
-        gbcAgileMode.fill = GridBagConstraints.HORIZONTAL;
-        gbcAgileMode.anchor = GridBagConstraints.NORTH;
-        gbcAgileMode.gridx = 0;
-        gbcAgileMode.gridy = 0;
-        alwaysOnTop.add(alwaysOnTopBox, gbcAgileMode);
+        GridBagConstraints gbcAlwaysOnTop = new GridBagConstraints();
+        gbcAlwaysOnTop.fill = GridBagConstraints.HORIZONTAL;
+        gbcAlwaysOnTop.anchor = GridBagConstraints.NORTH;
+        gbcAlwaysOnTop.gridx = 0;
+        gbcAlwaysOnTop.gridy = 0;
+        alwaysOnTop.add(alwaysOnTopBox, gbcAlwaysOnTop);
+        gbcAlwaysOnTop.gridx = 1;
+        gbcAlwaysOnTop.gridy = 0;
+        alwaysOnTop.add(recallBox, gbcAlwaysOnTop);
         add(alwaysOnTop, gbc);
+    }
+
+    private void addThemes(GridBagConstraints gbc) {
+        JPanel themes = new JPanel();
+        themes.setLayout(new GridBagLayout());
+        GridBagConstraints gbcThemes = new GridBagConstraints();
+        gbcThemes.fill = GridBagConstraints.HORIZONTAL;
+        gbcThemes.anchor = GridBagConstraints.NORTH;
+        gbcThemes.gridx = 0;
+        gbcThemes.gridy = 0;
+        themesComboBox.setRenderer(new ThemeComboBoxRenderer());
+        themes.add(themesComboBox, gbcThemes);
+        add(themes, gbc);
+    }
+
+    // Display the class name of the look and feel instead of the whole class path
+    class ThemeComboBoxRenderer extends AbstractComboBoxRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            String text = value.toString();
+            setText(text.substring(text.lastIndexOf(".") + 1, text.length()));
+            return this;
+        }
     }
 }

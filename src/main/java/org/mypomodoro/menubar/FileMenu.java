@@ -26,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -116,7 +117,7 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 // unhighlight the current hightlighted icon                
                 view.getIconBar().unHighlightIcon();
-                view.setWindow(view.getPreferencesPanel());
+                view.setWindow(Main.preferencesPanel);
             }
         }
     }

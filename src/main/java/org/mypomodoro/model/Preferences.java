@@ -17,6 +17,7 @@
 package org.mypomodoro.model;
 
 import java.util.Locale;
+import javax.swing.UIManager;
 import org.mypomodoro.db.PreferencesDAO;
 import org.mypomodoro.util.DateUtil;
 
@@ -95,13 +96,25 @@ public final class Preferences {
     /**
      * Agile mode
      */
-    public static final boolean AGILE = false;
+    public static final boolean AGILE = true;
     private boolean agileMode = AGILE;
     /**
      * Plain hours
      */
     public static final boolean PLAIN = true;
     private boolean plainHours = PLAIN;
+    /**
+     * Recall
+     * put app back in front
+     */
+    public static final boolean RECALL = false;
+    private boolean recall = RECALL;
+    /**
+     * Theme
+     * Class name of the look and feel
+     */
+    public static final String THEME = UIManager.getSystemLookAndFeelClassName();
+    private String theme = THEME;
 
     // GETTERS
     public int getPomodoroLength() {
@@ -159,6 +172,14 @@ public final class Preferences {
     public boolean getPlainHours() {
         return plainHours;
     }
+    
+    public boolean getRecall() {
+        return recall;
+    }
+    
+    public String getTheme() {
+        return theme;
+    }
 
     // SETTERS
     public void setPomodoroLength(int value) {
@@ -215,6 +236,14 @@ public final class Preferences {
 
     public void setPlainHours(boolean value) {
         plainHours = value;
+    }
+    
+    public void setRecall(boolean value) {
+        recall = value;
+    }
+    
+    public void setTheme(String value) {
+        theme = value;
     }
 
     public void refresh() {
