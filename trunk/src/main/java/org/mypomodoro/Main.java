@@ -28,21 +28,14 @@ import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.SplashScreen;
-import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.burndownchart.TabbedPanel;
-import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
-import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
-import org.mypomodoro.util.CheckWindowsClassicTheme;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ProgressBar;
 
@@ -59,14 +52,9 @@ public class Main {
     public static final Database database = new Database(); // create database if necessary
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
-    // GUI    
-    public static SplashScreen splashScreen = new SplashScreen();
-    public static PreferencesPanel preferencesPanel;
-    public static CreatePanel createPanel;
-    public static ActivitiesPanel activitiesPanel;
-    public static ToDoPanel toDoPanel;
-    public static ReportsPanel reportListPanel;
-    public static TabbedPanel chartTabbedPanel;
+    // Preferences
+    public static PreferencesPanel preferencesPanel = new PreferencesPanel();
+    // GUI
     public static ProgressBar progressBar;
     public static MainPanel gui;
     private static Font font;
@@ -106,37 +94,13 @@ public class Main {
             @Override
             public void run() {
                 // Look & Feel (laf)
-                // http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-                // About custom laf: http://wiki.netbeans.org/FaqCustomLaf
-                // To switch from one theme to another: SwingUtilities.updateComponentTreeUI(this); pack();
-                // To load a theme: -Dswing.defaultlaf=net.sourceforge.napkinlaf.NapkinLookAndFeel
-                // Lafs that work well with mAP
-                // Napkin: UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel"); (enable dependency in pom.xml) 
-                // NimRod: UIManager.setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel"); (enable dependency in pom.xml)
-                // Kunststoff: UIManager.setLookAndFeel(new LookAndFeel()); (enable dependency in pom.xml)
-                // JGoodies: UIManager.setLookAndFeel(new Plastic3DLookAndFeel()); (enable dependency in pom.xml)
-                // TinyLaf: UIManager.setLookAndFeel("net.sf.tinylaf.TinyLookAndFeel"); (enable dependency in pom.xml)
-                // Metal: UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); (same as cross platform)
-                // GT: UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-                // InfoNode: UIManager.setLookAndFeel(new InfoNodeLookAndFeel());                 
-                // Other laf that don't work too well with mAP
-                // Substance: UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel()); (enable dependency in pom.xml)
-                // Nimbus: UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                // Motif: UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");                
-                // Tonic: UIManager.setLookAndFeel("com.digitprop.tonic.TonicLookAndFeel"); (enable dependency in pom.xml)
-                /* Skin: (enable dependency in pom.xml)
-                 try {
-                 Skin theSkinToUse = SkinLookAndFeel.loadThemePack("themepack.zip");
-                 SkinLookAndFeel.setSkin(theSkinToUse);
-                 UIManager.setLookAndFeel(new SkinLookAndFeel());
-                 } catch (Exception ex) {
-                 }
-                 */
+                // Theme set in Preferences
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    // With the Win XP classic theme, set the cross platform look and feel
-                    if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
-                        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    String theme = PreferencesPanel.preferences.getTheme();
+                    if (!theme.isEmpty()) {
+                        UIManager.setLookAndFeel(theme);
+                    } else {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     }
                 } catch (ClassNotFoundException ex) {
                     // cross platform look and feel is used by default by the JVM
@@ -163,13 +127,7 @@ public class Main {
                 UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); // colour of progress bar
                 UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); // colour of percentage counter on background
                 UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); // colour of precentage counter on progress bar
-                // init the gui AFTER setting the UIManager and font
-                preferencesPanel = new PreferencesPanel();
-                createPanel = new CreatePanel();
-                activitiesPanel = new ActivitiesPanel();
-                toDoPanel = new ToDoPanel();
-                reportListPanel = new ReportsPanel();
-                chartTabbedPanel = new TabbedPanel();
+                // init the progress bar and the gui AFTER setting the UIManager and font      
                 progressBar = new ProgressBar();
                 gui = new MainPanel();
                 // Load combo boxes data (type, author...)
@@ -185,7 +143,7 @@ public class Main {
                 gui.pack();
                 gui.setLocationRelativeTo(null); // center the component onscreen
                 gui.setVisible(true);
-                if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
+                if (PreferencesPanel.preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
                 Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
@@ -208,7 +166,7 @@ public class Main {
     }
 
     // Set default global font for the application
-    private static void setUIFont(FontUIResource f) {
+    public static void setUIFont(FontUIResource f) {
         Enumeration keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
@@ -217,18 +175,6 @@ public class Main {
                 UIManager.put(key, f);
             }
         }
-    }
-
-    public static void updateViews() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                activitiesPanel.refresh();
-                toDoPanel.refresh();
-                reportListPanel.refresh();
-            }
-        });
     }
 
     public static void updateLists() {

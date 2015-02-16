@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.UIManager;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 
@@ -72,9 +73,14 @@ public class PreferencesDAO {
                     PreferencesPanel.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1);
                     PreferencesPanel.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
                     PreferencesPanel.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
+                    PreferencesPanel.preferences.setRecall(rs.getInt("recall") == 1);
+                    PreferencesPanel.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
-                logger.error("", ex);
+                logger.error("Fixing following issue... Done", ex);
+                // Here we migrate db version 3.0, 3.1, 3.2 to 3.3
+                database.update("ALTER TABLE preferences ADD recall BOOLEAN DEFAULT 0;");
+                database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + UIManager.getSystemLookAndFeelClassName() + "';");
             } finally {
                 try {
                     rs.close();
@@ -102,7 +108,9 @@ public class PreferencesDAO {
                 + "system_tray_msg = " + (PreferencesPanel.preferences.getSystemTrayMessage() ? 1 : 0) + ", "
                 + "always_on_top = " + (PreferencesPanel.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
                 + "agile_mode = " + (PreferencesPanel.preferences.getAgileMode() ? 1 : 0) + ", "
-                + "plain_hours = " + (PreferencesPanel.preferences.getPlainHours() ? 1 : 0) + ";";
+                + "plain_hours = " + (PreferencesPanel.preferences.getPlainHours() ? 1 : 0) + ", "
+                + "recall = " + (PreferencesPanel.preferences.getRecall() ? 1 : 0) + ", "
+                + "theme = '" + PreferencesPanel.preferences.getTheme().toString() + "'" + ";";
         database.lock();
         try {
             database.update("begin;");

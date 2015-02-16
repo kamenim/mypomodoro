@@ -18,7 +18,6 @@ package org.mypomodoro.gui.export;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -38,7 +37,6 @@ import javax.swing.JTextField;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
 import org.mypomodoro.util.ColorUtil;

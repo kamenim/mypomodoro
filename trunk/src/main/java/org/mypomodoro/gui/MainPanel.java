@@ -33,6 +33,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.TabbedPanel;
@@ -56,37 +57,39 @@ public final class MainPanel extends JFrame {
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "3.3.0";
+    public static Resize resize = new Resize();    
+    public static SplashScreen splashScreen = new SplashScreen();
+    public static CreatePanel createPanel = new CreatePanel();
+    public static ActivitiesPanel activitiesPanel = new ActivitiesPanel();
+    public static ToDoPanel toDoPanel = new ToDoPanel();
+    public static ReportsPanel reportListPanel = new ReportsPanel();
+    public static TabbedPanel chartTabbedPanel = new TabbedPanel();
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
-    public static Resize resize = new Resize();
 
     public SplashScreen getSplashScreen() {
-        return Main.splashScreen;
-    }
-
-    public PreferencesPanel getPreferencesPanel() {
-        return Main.preferencesPanel;
+        return splashScreen;
     }
 
     public CreatePanel getCreatePanel() {
-        return Main.createPanel;
+        return createPanel;
     }
 
     public ActivitiesPanel getActivityListPanel() {
-        return Main.activitiesPanel;
+        return activitiesPanel;
     }
 
     public ToDoPanel getToDoPanel() {
-        return Main.toDoPanel;
+        return toDoPanel;
     }
 
     public ReportsPanel getReportListPanel() {
-        return Main.reportListPanel;
+        return reportListPanel;
     }
 
     public TabbedPanel getChartTabbedPanel() {
-        return Main.chartTabbedPanel;
+        return chartTabbedPanel;
     }
 
     public ProgressBar getProgressBar() {
@@ -100,6 +103,8 @@ public final class MainPanel extends JFrame {
         setJMenuBar(menuBar);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setContentPane(windowPanel);
+        // set JOptionPane dialog locale to localize the buttons
+        JOptionPane.setDefaultLocale(Labels.getLocale());
         // Set system tray
         if (SystemTray.isSupported()
                 && PreferencesPanel.preferences.getSystemTray()) {
@@ -166,14 +171,6 @@ public final class MainPanel extends JFrame {
         getRootPane().getActionMap().put("Maximize", maximizeAction);
     }
 
-    public void updateLists() {
-        Main.updateLists();
-    }
-
-    public void updateViews() {
-        Main.updateViews();
-    }
-
     public final void setWindow(JPanel e) {
         /*if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
             ((IListPanel) e).refresh();
@@ -199,5 +196,17 @@ public final class MainPanel extends JFrame {
             }
             System.exit(0);
         }
+    }
+    
+    public static void updateViews() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                activitiesPanel.refresh();
+                toDoPanel.refresh();
+                reportListPanel.refresh();
+            }
+        });
     }
 }

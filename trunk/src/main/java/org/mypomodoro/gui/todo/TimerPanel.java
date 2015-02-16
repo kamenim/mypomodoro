@@ -247,7 +247,7 @@ public class TimerPanel extends JPanel {
         pomodoroTime.setForeground(ColorUtil.BLACK);
     }
 
-    // turn icons red
+    // turn icons black
     public void setBreakEnv() {
         startButton.setIcon(stopIcon);
         startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));

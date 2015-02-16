@@ -269,11 +269,11 @@ public class Pomodoro {
                         timerPanel.setToolTipText(getCurrentToDo().getName());
                     }
                 }
-                // Display app is any case when restore option is on (system tray, minimized, in the background)
-                //if (PreferencesPanel.preferences.getRestore()
+                // Put app back in front (system tray, minimized, in the background)
+                if (PreferencesPanel.preferences.getRecall()) {
                     Main.gui.setVisible(true); 
                     Main.gui.setExtendedState(JFrame.NORMAL); // Note: full screen shrinks to preferred size (see Main) which is ok
-                //}
+                }
                 // update details panel
                 detailsPanel.selectInfo(getCurrentToDo());
                 detailsPanel.showInfo();
