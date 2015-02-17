@@ -30,13 +30,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.mypomodoro.Main;
+import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.util.ColorUtil;
@@ -295,9 +293,10 @@ public class PreferencesInputForm extends JPanel {
          */
         ArrayList<String> themes = new ArrayList<String>();
         if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
-            themes.add(UIManager.getSystemLookAndFeelClassName());
+            themes.add(UIManager.getSystemLookAndFeelClassName()); // Windows / GTK / Motif
         }
-        themes.add(UIManager.getCrossPlatformLookAndFeelClassName());
+        themes.add(UIManager.getCrossPlatformLookAndFeelClassName()); // Metal
+        /* Nimbus laf doesn't work well with mAP
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -307,10 +306,16 @@ public class PreferencesInputForm extends JPanel {
             }
         } catch (Exception ignored) {
             // Nimbus is not available
-        }
-        themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel");
-        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-        //themes.add("com.alee.laf.WebLookAndFeel");
+        }*/
+        themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel"); // NimROD
+        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies
+        //themes.add("com.jtattoo.plaf.smart.SmartLookAndFeel"); // JTatoo
+        //themes.add("com.alee.laf.WebLookAndFeel"); // WebLAF
+        // Quaqua
+        // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
+        //if (SystemUtils.IS_OS_MAC_OSX) {
+        //themes.add("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+        //}
         themesComboBox = new JComboBox(themes.toArray());
         for (int i = 0; i < themes.size(); i++) {
             if (themes.get(i).equalsIgnoreCase(PreferencesPanel.preferences.getTheme())) {

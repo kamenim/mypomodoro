@@ -605,7 +605,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             tableData[i][1] = currentActivity.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
             tableData[i][2] = currentActivity.getName();
             tableData[i][3] = currentActivity.getType();
-            Integer poms = new Integer(currentActivity.getEstimatedPoms());
+            Integer poms = new Integer(currentActivity.getActualPoms());
             tableData[i][4] = poms;
             tableData[i][5] = currentActivity.getStoryPoints();
             tableData[i][6] = currentActivity.getIteration();
@@ -855,8 +855,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ChartList.getList().getById(id);
             if (activity != null) {
-                String text = activity.getActualPoms() + " / ";
-                text += value.toString();
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms();
                 Integer overestimatedpoms = activity.getOverestimatedPoms();
                 text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
                 renderer.setText(text);

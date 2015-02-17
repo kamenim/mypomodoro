@@ -97,23 +97,13 @@ public class Main {
                 // Theme set in Preferences
                 try {
                     String theme = PreferencesPanel.preferences.getTheme();
-                    if (!theme.isEmpty()) {
-                        UIManager.setLookAndFeel(theme);
-                    } else {
+                    UIManager.setLookAndFeel(theme);
+                } catch (Exception ex) {
+                    try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } catch (Exception ex2) {
+                        logger.error("", ex2);
                     }
-                } catch (ClassNotFoundException ex) {
-                    // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
-                } catch (InstantiationException ex) {
-                    // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
-                } catch (IllegalAccessException ex) {
-                    // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
-                } catch (UnsupportedLookAndFeelException ex) {
-                    // cross platform look and feel is used by default by the JVM
-                    logger.error("", ex);
                 }                
                 // Set global font (before intanstiating the components and the gui)
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                

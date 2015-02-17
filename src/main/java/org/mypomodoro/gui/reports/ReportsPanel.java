@@ -669,7 +669,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             //tableData[i][2] = DateUtil.getFormatedTime(a.getDate());
             tableData[i][2] = a.getName();
             tableData[i][3] = a.getType();
-            Integer poms = new Integer(a.getEstimatedPoms());
+            Integer poms = new Integer(a.getActualPoms()); // sorting done on real pom
             tableData[i][4] = poms;
             Integer diffIPoms = new Integer(a.getActualPoms() - a.getEstimatedPoms());
             tableData[i][5] = diffIPoms; // Diff I
@@ -788,7 +788,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         rowData[1] = activity.getDateCompleted();
         rowData[2] = activity.getName();
         rowData[3] = activity.getType();
-        Integer poms = new Integer(activity.getEstimatedPoms());
+        Integer poms = new Integer(activity.getActualPoms());
         rowData[4] = poms;
         Integer diffIPoms = new Integer(activity.getActualPoms() - activity.getEstimatedPoms());
         rowData[5] = diffIPoms; // Diff I
@@ -993,8 +993,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ReportList.getList().getById(id);
             if (activity != null) {
-                String text = activity.getActualPoms() + " / ";
-                text += value.toString();
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms();
                 Integer overestimatedpoms = activity.getOverestimatedPoms();
                 text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
                 renderer.setText(text);

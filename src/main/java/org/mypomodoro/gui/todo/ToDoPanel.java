@@ -744,14 +744,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 pomodoroIcon,
                 JLabel.TOP, JLabel.LEADING);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        wrap.addMouseListener(new MouseAdapter() {
+        /*wrap.addMouseListener(new MouseAdapter() {
 
             // click
             @Override
             public void mouseClicked(MouseEvent e) {
                 timerPanel.switchPomodoroCompliance();
             }
-        });
+        });*/
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -819,7 +819,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             tableData[i][0] = a.getPriority();
             tableData[i][1] = a.isUnplanned();
             tableData[i][2] = a.getName();
-            Integer poms = new Integer(a.getEstimatedPoms());
+            Integer poms = new Integer(a.getActualPoms()); // sorting done on real pom
             tableData[i][3] = poms;
             Float points = new Float(a.getStoryPoints());
             tableData[i][4] = points;
@@ -929,7 +929,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         rowData[0] = activity.getPriority();
         rowData[1] = activity.isUnplanned();
         rowData[2] = activity.getName();
-        Integer poms = new Integer(activity.getEstimatedPoms());
+        Integer poms = new Integer(activity.getActualPoms());
         rowData[3] = poms;
         Float points = new Float(activity.getStoryPoints());
         rowData[4] = points;
@@ -1225,18 +1225,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setOpaque(false);        
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
-        pomodoroButton.addMouseListener(new MouseAdapter() {
+        /*pomodoroButton.addMouseListener(new MouseAdapter() {
 
             // click
             @Override
             public void mouseClicked(MouseEvent e) {
                 timerPanel.switchPomodoroCompliance();
             }
-        });
+        });*/
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
         pomodoroButton.setPreferredSize(new Dimension(250, 240));
-        pomodoroButton.setMinimumSize(new Dimension(260, 250));
+        pomodoroButton.setMinimumSize(new Dimension(250, 240));
 
         pomodoroButton.setVerticalAlignment(verticalAlignment);
         pomodoroButton.setHorizontalAlignment(horizontalAlignment);

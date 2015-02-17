@@ -130,6 +130,7 @@
       <version>6.0</version>
     </dependency-->
     <!-- JGoodies look and feel -->
+    <!-- BSD Open Source: http://www.jgoodies.com/freeware/ -->
     <dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>jgoodies-looks</artifactId>
@@ -140,6 +141,13 @@
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
       <artifactId>napkinlaf</artifactId>
       <version>1.2</version>
+    </dependency-->
+    <!-- JTatoo look and feel -->
+    <!-- GPL3: http://www.jtattoo.net/License.html -->
+    <!--dependency>
+      <groupId>com.jtattoo</groupId>
+      <artifactId>JTattoo</artifactId>
+      <version>1.6.11</version>
     </dependency-->
     <!-- Tinylaf look and feel -->
     <!--dependency>
@@ -170,7 +178,8 @@
       <artifactId>ilf-gpl</artifactId>
       <version>1.6.1</version>
     </dependency-->
-    <!-- Nimrod look and feel --> 
+    <!-- Nimrod look and feel -->
+    <!-- LGPL: http://nilogonzalez.es/nimrodlf/licencia-en.html --> 
     <dependency>
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
       <artifactId>nimrodlf</artifactId>
@@ -188,6 +197,13 @@
       <groupId>de.sciss</groupId>
       <artifactId>weblaf</artifactId>
       <version>1.28</version>
+    </dependency-->
+    <!-- Quaqua look and feel -->
+    <!-- LGPL/BSD: http://www.randelshofer.ch/quaqua/ --> 
+    <!--dependency>
+      <groupId>org.devzendo</groupId>
+      <artifactId>Quaqua</artifactId>
+      <version>7.3.4</version>
     </dependency-->
   </dependencies>
     
