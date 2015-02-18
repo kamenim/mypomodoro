@@ -120,11 +120,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     // Border
-    private final JButton titledButton = new JButton();    
+    private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    // Unplanned
-    //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
     private int currentSelectedRow = 0;
 
