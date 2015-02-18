@@ -23,7 +23,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -40,13 +40,13 @@ public class IconBar extends JPanel {
                 Labels.getString("IconBar.Create"), "createButton",
                 view.getCreatePanel()));
         myIcons.add(MyIcon.getInstance(view,
-                Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Activity"), "activityButton",
+                Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Activity"), "activityButton",
                 view.getActivityListPanel()));
         myIcons.add(MyIcon.getInstance(view,
-                Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.ToDo"),
+                Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "IconBar.ToDo"),
                 "todoButton", view.getToDoPanel()));
         myIcons.add(MyIcon.getInstance(view,
-                Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Report"), "reportButton",
+                Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "IconBar.Report"), "reportButton",
                 view.getReportListPanel()));
         myIcons.add(MyIcon.getInstance(view,
                 Labels.getString("IconBar.Burndown Chart"), "burndownButton",

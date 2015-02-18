@@ -109,9 +109,9 @@ public class ItemLocale {
             logger.error("", ex);
         } finally {
             if (vLocales.isEmpty()) {
-                vLocales.add(new ItemLocale(PreferencesPanel.preferences.getLocale(), PreferencesPanel.preferences.getLocale().getDisplayLanguage()
+                vLocales.add(new ItemLocale(Main.preferences.getLocale(), Main.preferences.getLocale().getDisplayLanguage()
                         + " ("
-                        + PreferencesPanel.preferences.getLocale().getDisplayCountry() + ")"));
+                        + Main.preferences.getLocale().getDisplayCountry() + ")"));
             }
         }
         return vLocales;

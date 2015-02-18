@@ -19,7 +19,7 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.SwingUtilities;
-import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.burndownchart.CheckPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -57,9 +57,9 @@ public class RemoveButton extends TabPanelButton {
                         // Disable button
                         setEnabled(false);
                         // Set progress bar
-                        Main.gui.getProgressBar().setVisible(true);
-                        Main.gui.getProgressBar().getBar().setValue(0);
-                        Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         int increment = 0;
                         int[] rows = panel.getTable().getSelectedRows();
                         for (int row : rows) {
@@ -74,8 +74,8 @@ public class RemoveButton extends TabPanelButton {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                    Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                 }
                             });
                         }
@@ -84,7 +84,7 @@ public class RemoveButton extends TabPanelButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -94,8 +94,8 @@ public class RemoveButton extends TabPanelButton {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.gui.getProgressBar().getBar().setString(null);
-                                        Main.gui.getProgressBar().setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
                             }

@@ -61,9 +61,9 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTE = 60 * SECOND;
-    private final long POMODORO_LENGTH = PreferencesPanel.preferences.getPomodoroLength() * MINUTE;
-    private final long POMODORO_BREAK_LENGTH = PreferencesPanel.preferences.getShortBreakLength() * MINUTE;
-    private final long POMODORO_LONG_LENGTH = PreferencesPanel.preferences.getLongBreakLength() * MINUTE;
+    private final long POMODORO_LENGTH = Main.preferences.getPomodoroLength() * MINUTE;
+    private final long POMODORO_BREAK_LENGTH = Main.preferences.getShortBreakLength() * MINUTE;
+    private final long POMODORO_LONG_LENGTH = Main.preferences.getLongBreakLength() * MINUTE;
     /*Test
      private final long POMODORO_LENGTH = 10 * SECOND;
      private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
@@ -98,7 +98,7 @@ public class Pomodoro {
 
     public void start() {
         pomodoroTimer.start();
-        if (PreferencesPanel.preferences.getTicking() && !isMute) {
+        if (Main.preferences.getTicking() && !isMute) {
             tick();
         }
         if (isSystemTray()) {
@@ -150,7 +150,7 @@ public class Pomodoro {
 
     public void resume() {
         pomodoroTimer.start();
-        if (PreferencesPanel.preferences.getTicking() && !isMute) {
+        if (Main.preferences.getTicking() && !isMute) {
             tick();
         }
         if (inPomodoro() && isSystemTray()) {
@@ -188,7 +188,7 @@ public class Pomodoro {
                 popupTime();
             } else {
                 stopSound();
-                if (PreferencesPanel.preferences.getRinging() && !isMute) {
+                if (Main.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
                 if (inPomodoro()) { // break time
@@ -205,7 +205,7 @@ public class Pomodoro {
                     getCurrentToDo().databaseUpdate();
                     pomSetNumber++;
                     // break time
-                    if (pomSetNumber == PreferencesPanel.preferences.getNbPomPerSet()) {
+                    if (pomSetNumber == Main.preferences.getNbPomPerSet()) {
                         goInLongBreak();
                         pomSetNumber = 0;
                         if (isSystemTray()) {
@@ -252,7 +252,7 @@ public class Pomodoro {
                             timerPanel.setToolTipText(null);
                         }
                     } else {
-                        if (PreferencesPanel.preferences.getTicking() && !isMute) {
+                        if (Main.preferences.getTicking() && !isMute) {
                             tick();
                         }
                         timerPanel.setPomodoroEnv();
@@ -270,7 +270,7 @@ public class Pomodoro {
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)
-                if (PreferencesPanel.preferences.getRecall()) {
+                if (Main.preferences.getRecall()) {
                     Main.gui.setVisible(true); 
                     Main.gui.setExtendedState(JFrame.NORMAL); // Note: full screen shrinks to preferred size (see Main) which is ok
                 }
@@ -458,11 +458,11 @@ public class Pomodoro {
     }
 
     private boolean isSystemTray() {
-        return SystemTray.isSupported() && PreferencesPanel.preferences.getSystemTray();
+        return SystemTray.isSupported() && Main.preferences.getSystemTray();
     }
 
     private boolean isSystemTrayMessage() {
-        return SystemTray.isSupported() && PreferencesPanel.preferences.getSystemTrayMessage();
+        return SystemTray.isSupported() && Main.preferences.getSystemTrayMessage();
     }
 
     // mute ticking and ringing

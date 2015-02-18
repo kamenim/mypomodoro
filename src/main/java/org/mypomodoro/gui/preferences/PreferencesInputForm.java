@@ -31,10 +31,9 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.apache.commons.lang3.SystemUtils;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.util.ColorUtil;
@@ -79,15 +78,15 @@ public class PreferencesInputForm extends JPanel {
         int unitMinute = 0;
         int unitPomodoro = 1;
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45,
-                PreferencesPanel.preferences.getPomodoroLength(),
+                Main.preferences.getPomodoroLength(),
                 Labels.getString("PreferencesPanel.Pomodoro Length") + ": ",
                 25, 30, unitMinute);
         shortBreakSlider = new TimerValueSlider(controlPanel, 1, 15,
-                PreferencesPanel.preferences.getShortBreakLength(),
+                Main.preferences.getShortBreakLength(),
                 Labels.getString("PreferencesPanel.Short Break Length") + ": ",
                 3, 5, unitMinute);
         longBreakSlider = new TimerValueSlider(controlPanel, 5, 45,
-                PreferencesPanel.preferences.getLongBreakLength(),
+                Main.preferences.getLongBreakLength(),
                 Labels.getString("PreferencesPanel.Long Break Length") + ": ",
                 15, 30, unitMinute);
         final int maxNbPomPerActivity = 7;
@@ -97,23 +96,23 @@ public class PreferencesInputForm extends JPanel {
         final int maxNbPomPerDay = 12;
         final int initMaxNbPomPerDay = 10;
         maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
-                PreferencesPanel.preferences.getMaxNbPomPerActivity(),
+                Main.preferences.getMaxNbPomPerActivity(),
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",
                 1, initMaxNbPomPerActivityAgileMode, unitPomodoro);
         maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerDay,
-                PreferencesPanel.preferences.getMaxNbPomPerDay(),
+                Main.preferences.getMaxNbPomPerDay(),
                 Labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1,
                 initMaxNbPomPerDay, unitPomodoro);
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5,
-                PreferencesPanel.preferences.getNbPomPerSet(),
+                Main.preferences.getNbPomPerSet(),
                 Labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4,
                 unitPomodoro);
         tickingBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.ticking"),
-                PreferencesPanel.preferences.getTicking());
+                Main.preferences.getTicking());
         ringingBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.ringing"),
-                PreferencesPanel.preferences.getRinging());
+                Main.preferences.getRinging());
         tickingBox.addActionListener(new ActionListener() {
 
             @Override
@@ -134,7 +133,7 @@ public class PreferencesInputForm extends JPanel {
         localesComboBox = new JComboBox(locales.toArray());
         for (int i = 0; i < locales.size(); i++) {
             if (locales.get(i).getLocale().equals(
-                    PreferencesPanel.preferences.getLocale())) {
+                    Main.preferences.getLocale())) {
                 localesComboBox.setSelectedIndex(i);
             }
         }
@@ -150,10 +149,10 @@ public class PreferencesInputForm extends JPanel {
         });
         systemTrayBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.System Tray"),
-                PreferencesPanel.preferences.getSystemTray());
+                Main.preferences.getSystemTray());
         systemTrayMessageBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Popup Message"),
-                PreferencesPanel.preferences.getSystemTrayMessage());
+                Main.preferences.getSystemTrayMessage());
         systemTrayBox.addActionListener(new ActionListener() {
 
             @Override
@@ -178,7 +177,7 @@ public class PreferencesInputForm extends JPanel {
         });
         alwaysOnTopBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Always On Top"),
-                PreferencesPanel.preferences.getAlwaysOnTop());
+                Main.preferences.getAlwaysOnTop());
         alwaysOnTopBox.addActionListener(new ActionListener() {
 
             @Override
@@ -189,7 +188,7 @@ public class PreferencesInputForm extends JPanel {
         });
         recallBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Recall"),
-                PreferencesPanel.preferences.getRecall());
+                Main.preferences.getRecall());
         recallBox.addActionListener(new ActionListener() {
 
             @Override
@@ -200,7 +199,7 @@ public class PreferencesInputForm extends JPanel {
         });
         agileModeBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Agile.Agile Mode"),
-                PreferencesPanel.preferences.getAgileMode());
+                Main.preferences.getAgileMode());
         agileModeBox.addActionListener(new ActionListener() {
 
             @Override
@@ -220,7 +219,7 @@ public class PreferencesInputForm extends JPanel {
         }
         pomodoroModeBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Agile.Pomodoro Mode"),
-                !PreferencesPanel.preferences.getAgileMode());
+                !Main.preferences.getAgileMode());
         pomodoroModeBox.addActionListener(new ActionListener() {
 
             @Override
@@ -236,7 +235,7 @@ public class PreferencesInputForm extends JPanel {
         });
         plainHoursBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Plain hours"),
-                PreferencesPanel.preferences.getPlainHours());
+                Main.preferences.getPlainHours());
         plainHoursBox.addActionListener(new ActionListener() {
 
             @Override
@@ -250,7 +249,7 @@ public class PreferencesInputForm extends JPanel {
         });
         effectiveHoursBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Effective hours"),
-                !PreferencesPanel.preferences.getPlainHours());
+                !Main.preferences.getPlainHours());
         effectiveHoursBox.addActionListener(new ActionListener() {
 
             @Override
@@ -318,7 +317,7 @@ public class PreferencesInputForm extends JPanel {
         //}
         themesComboBox = new JComboBox(themes.toArray());
         for (int i = 0; i < themes.size(); i++) {
-            if (themes.get(i).equalsIgnoreCase(PreferencesPanel.preferences.getTheme())) {
+            if (themes.get(i).equalsIgnoreCase(Main.preferences.getTheme())) {
                 themesComboBox.setSelectedIndex(i);
             }
         }

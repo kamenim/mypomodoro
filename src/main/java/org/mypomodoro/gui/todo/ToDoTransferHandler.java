@@ -27,6 +27,7 @@ import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -83,9 +84,9 @@ public class ToDoTransferHandler extends TransferHandler {
                                 // Start wait cursor
                                 WaitCursor.startWaitCursor();
                                 // Set progress bar
-                                Main.gui.getProgressBar().setVisible(true);
-                                Main.gui.getProgressBar().getBar().setValue(0);
-                                Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                                MainPanel.progressBar.setVisible(true);
+                                MainPanel.progressBar.getBar().setValue(0);
+                                MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                                 int[] fromRows = panel.getTable().getSelectedRows();
                                 int toRow = dropLocation.getRow();
                                 toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
@@ -105,8 +106,8 @@ public class ToDoTransferHandler extends TransferHandler {
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                        MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                        MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                     }
                                 });
                                 panel.reorderByPriority();
@@ -114,7 +115,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                        MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
                                         new Thread() {
                                             @Override
                                             public void run() {
@@ -124,8 +125,8 @@ public class ToDoTransferHandler extends TransferHandler {
                                                     logger.error("", ex);
                                                 }
                                                 // hide progress bar
-                                                Main.gui.getProgressBar().getBar().setString(null);
-                                                Main.gui.getProgressBar().setVisible(false);
+                                                MainPanel.progressBar.getBar().setString(null);
+                                                MainPanel.progressBar.setVisible(false);
                                             }
                                         }.start();
                                     }

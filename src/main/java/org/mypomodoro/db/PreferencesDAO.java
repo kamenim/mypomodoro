@@ -46,35 +46,35 @@ public class PreferencesDAO {
             ResultSet rs = database.query("SELECT * FROM preferences;");
             try {
                 if (rs.next()) {
-                    PreferencesPanel.preferences.setPomodoroLength(rs.getInt("pom_length"));
-                    PreferencesPanel.preferences.setShortBreakLength(rs.getInt("short_break_length"));
-                    PreferencesPanel.preferences.setLongBreakLength(rs.getInt("long_break_length"));
-                    PreferencesPanel.preferences.setMaxNbPomPerActivity(rs.getInt("max_nb_pom_per_activity"));
-                    PreferencesPanel.preferences.setMaxNbPomPerDay(rs.getInt("max_nb_pom_per_day"));
-                    PreferencesPanel.preferences.setNbPomPerSet(rs.getInt("nb_pom_per_set"));
-                    PreferencesPanel.preferences.setTicking(rs.getInt("ticking") == 1);
-                    PreferencesPanel.preferences.setRinging(rs.getInt("ringing") == 1);
+                    Main.preferences.setPomodoroLength(rs.getInt("pom_length"));
+                    Main.preferences.setShortBreakLength(rs.getInt("short_break_length"));
+                    Main.preferences.setLongBreakLength(rs.getInt("long_break_length"));
+                    Main.preferences.setMaxNbPomPerActivity(rs.getInt("max_nb_pom_per_activity"));
+                    Main.preferences.setMaxNbPomPerDay(rs.getInt("max_nb_pom_per_day"));
+                    Main.preferences.setNbPomPerSet(rs.getInt("nb_pom_per_set"));
+                    Main.preferences.setTicking(rs.getInt("ticking") == 1);
+                    Main.preferences.setRinging(rs.getInt("ringing") == 1);
                     String locale = rs.getString("locale");
                     String regularExpression = "[a-z]{2}_[A-Z]{2}_[a-zA-Z]+"; // locale with variant        
                     Pattern pat = Pattern.compile(regularExpression);
                     Matcher mat = pat.matcher(locale);
                     if (mat.find()) {
-                        PreferencesPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5), locale.substring(6)));
+                        Main.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5), locale.substring(6)));
                     } else {
                         regularExpression = "[a-z]{2}_[A-Z]{2}"; // locale without variant
                         pat = Pattern.compile(regularExpression);
                         mat = pat.matcher(locale);
                         if (mat.find()) {
-                            PreferencesPanel.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5)));
+                            Main.preferences.setLocale(new Locale(locale.substring(0, 2), locale.substring(3, 5)));
                         }
                     }
-                    PreferencesPanel.preferences.setSystemTray(rs.getInt("system_tray") == 1);
-                    PreferencesPanel.preferences.setSystemTrayMessage(rs.getInt("system_tray_msg") == 1);
-                    PreferencesPanel.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1);
-                    PreferencesPanel.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
-                    PreferencesPanel.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
-                    PreferencesPanel.preferences.setRecall(rs.getInt("recall") == 1);
-                    PreferencesPanel.preferences.setTheme(rs.getString("theme"));
+                    Main.preferences.setSystemTray(rs.getInt("system_tray") == 1);
+                    Main.preferences.setSystemTrayMessage(rs.getInt("system_tray_msg") == 1);
+                    Main.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1);
+                    Main.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
+                    Main.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
+                    Main.preferences.setRecall(rs.getInt("recall") == 1);
+                    Main.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
                 logger.error("Fixing following issue... Done", ex);
@@ -95,22 +95,22 @@ public class PreferencesDAO {
 
     public void update() {
         String updateSQL = "UPDATE preferences SET "
-                + "pom_length = " + PreferencesPanel.preferences.getPomodoroLength() + ", "
-                + "short_break_length = " + PreferencesPanel.preferences.getShortBreakLength() + ", "
-                + "long_break_length = " + PreferencesPanel.preferences.getLongBreakLength() + ", "
-                + "max_nb_pom_per_activity = " + PreferencesPanel.preferences.getMaxNbPomPerActivity() + ", "
-                + "max_nb_pom_per_day = " + PreferencesPanel.preferences.getMaxNbPomPerDay() + ", "
-                + "nb_pom_per_set = " + PreferencesPanel.preferences.getNbPomPerSet() + ", "
-                + "ticking = " + (PreferencesPanel.preferences.getTicking() ? 1 : 0) + ", "
-                + "ringing = " + (PreferencesPanel.preferences.getRinging() ? 1 : 0) + ", "
-                + "locale = '" + PreferencesPanel.preferences.getLocale().toString() + "'" + ", "
-                + "system_tray = " + (PreferencesPanel.preferences.getSystemTray() ? 1 : 0) + ", "
-                + "system_tray_msg = " + (PreferencesPanel.preferences.getSystemTrayMessage() ? 1 : 0) + ", "
-                + "always_on_top = " + (PreferencesPanel.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
-                + "agile_mode = " + (PreferencesPanel.preferences.getAgileMode() ? 1 : 0) + ", "
-                + "plain_hours = " + (PreferencesPanel.preferences.getPlainHours() ? 1 : 0) + ", "
-                + "recall = " + (PreferencesPanel.preferences.getRecall() ? 1 : 0) + ", "
-                + "theme = '" + PreferencesPanel.preferences.getTheme().toString() + "'" + ";";
+                + "pom_length = " + Main.preferences.getPomodoroLength() + ", "
+                + "short_break_length = " + Main.preferences.getShortBreakLength() + ", "
+                + "long_break_length = " + Main.preferences.getLongBreakLength() + ", "
+                + "max_nb_pom_per_activity = " + Main.preferences.getMaxNbPomPerActivity() + ", "
+                + "max_nb_pom_per_day = " + Main.preferences.getMaxNbPomPerDay() + ", "
+                + "nb_pom_per_set = " + Main.preferences.getNbPomPerSet() + ", "
+                + "ticking = " + (Main.preferences.getTicking() ? 1 : 0) + ", "
+                + "ringing = " + (Main.preferences.getRinging() ? 1 : 0) + ", "
+                + "locale = '" + Main.preferences.getLocale().toString() + "'" + ", "
+                + "system_tray = " + (Main.preferences.getSystemTray() ? 1 : 0) + ", "
+                + "system_tray_msg = " + (Main.preferences.getSystemTrayMessage() ? 1 : 0) + ", "
+                + "always_on_top = " + (Main.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
+                + "agile_mode = " + (Main.preferences.getAgileMode() ? 1 : 0) + ", "
+                + "plain_hours = " + (Main.preferences.getPlainHours() ? 1 : 0) + ", "
+                + "recall = " + (Main.preferences.getRecall() ? 1 : 0) + ", "
+                + "theme = '" + Main.preferences.getTheme().toString() + "'" + ";";
         database.lock();
         try {
             database.update("begin;");

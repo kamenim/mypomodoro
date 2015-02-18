@@ -30,9 +30,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -156,9 +156,9 @@ public class MergingPanel extends CreatePanel {
                         // Start wait cursor
                         WaitCursor.startWaitCursor();
                         // Set progress bar
-                        Main.gui.getProgressBar().setVisible(true);
-                        Main.gui.getProgressBar().getBar().setValue(0);
-                        Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // only now we may remove the merged tasks
                         int[] rows = panel.getTable().getSelectedRows();
                         int increment = 0;
@@ -177,7 +177,7 @@ public class MergingPanel extends CreatePanel {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -187,8 +187,8 @@ public class MergingPanel extends CreatePanel {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.gui.getProgressBar().getBar().setString(null);
-                                        Main.gui.getProgressBar().setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
                             }
@@ -218,7 +218,7 @@ public class MergingPanel extends CreatePanel {
     public void clearForm() {        
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             mergingInputFormPanel.setStoryPoints(0);
             mergingInputFormPanel.setIterations(0);
         }

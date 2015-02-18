@@ -30,9 +30,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -159,15 +159,15 @@ public class MergingPanel extends CreatePanel {
                         // Start wait cursor
                         WaitCursor.startWaitCursor();
                         // Set progress bar
-                        Main.gui.getProgressBar().setVisible(true);
-                        Main.gui.getProgressBar().getBar().setValue(0);
-                        Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                         // Indicate reordoring by priority in progress bar
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
                         // only now we can remove the merged tasks
@@ -188,7 +188,7 @@ public class MergingPanel extends CreatePanel {
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                         panel.reorderByPriority();
-                        if (mergingInputFormPanel.isDateToday() || PreferencesPanel.preferences.getAgileMode()) { // add new activity to ToDo list                                
+                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                
                             panel.addActivity(newActivity);
                             panel.insertRow(newActivity);
                         } else { // add merged activity to activities list
@@ -202,7 +202,7 @@ public class MergingPanel extends CreatePanel {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -212,8 +212,8 @@ public class MergingPanel extends CreatePanel {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.gui.getProgressBar().getBar().setString(null);
-                                        Main.gui.getProgressBar().setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
                             }
@@ -243,7 +243,7 @@ public class MergingPanel extends CreatePanel {
     public void clearForm() {
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             mergingInputFormPanel.setStoryPoints(0);
             mergingInputFormPanel.setIterations(0);
         }

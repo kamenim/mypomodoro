@@ -148,7 +148,7 @@ public class CreatePanel extends JPanel {
         clearForm();
         validation.setForeground(ColorUtil.BLACK);
         validation.setFont(getFont().deriveFont(Font.BOLD));
-        validation.setText(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
+        validation.setText(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }
 
     public void saveActivity(Activity newActivity) {
@@ -185,7 +185,7 @@ public class CreatePanel extends JPanel {
     public void clearForm() {
         inputFormPanel.setNameField("");
         inputFormPanel.setEstimatedPomodoro(0);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             inputFormPanel.setStoryPoints(0);
             inputFormPanel.setIterations(0);
         }

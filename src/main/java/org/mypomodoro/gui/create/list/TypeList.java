@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 /**
  * List of types of activities and reports
@@ -33,7 +33,7 @@ public class TypeList extends AbstractList {
 
     public static void refresh() {
         types = ActivitiesDAO.getInstance().getTypes();
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             types.add("User Story");
             types.add("Epic");
             types.add("Defect");

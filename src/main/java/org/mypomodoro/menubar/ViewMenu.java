@@ -25,9 +25,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.MyIcon;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -61,7 +61,7 @@ public class ViewMenu extends JMenu {
     class ActivityListItem extends JMenuItem {
 
         public ActivityListItem() {
-            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
+            super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Activity List"));
             // Adds Keyboard Shortcut Alt-A
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     ActionEvent.ALT_MASK));
@@ -82,7 +82,7 @@ public class ViewMenu extends JMenu {
     class ToDoListItem extends JMenuItem {
 
         public ToDoListItem() {
-            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
+            super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.ToDo List"));
             // Adds Keyboard Shortcut Alt-T
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     ActionEvent.ALT_MASK));
@@ -103,7 +103,7 @@ public class ViewMenu extends JMenu {
     class ReportListItem extends JMenuItem {
 
         public ReportListItem() {
-            super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
+            super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ViewMenu.Report List"));
             // Adds Keyboard Shortcut Alt-R
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                     ActionEvent.ALT_MASK));

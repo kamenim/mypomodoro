@@ -31,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.burndownchart.types.EffectiveHourChart;
 import org.mypomodoro.gui.burndownchart.types.IChartType;
@@ -39,7 +40,6 @@ import org.mypomodoro.gui.burndownchart.types.PomodoroChart;
 import org.mypomodoro.gui.burndownchart.types.StoryPointChart;
 import org.mypomodoro.gui.burndownchart.types.TaskChart;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.Labels;
@@ -199,7 +199,7 @@ public class ChooseInputForm extends JPanel {
         // Types
         chartTypesBurndownComboBox.setRenderer(new AbstractComboBoxRenderer());
         PomodoroChart pomodoroChart = new PomodoroChart();
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             StoryPointChart storyPointChart = new StoryPointChart();
             chartTypesBurndownComboBox.addItem(storyPointChart);
             defaultPrimaryYAxisName = storyPointChart.getYLegend();
@@ -355,7 +355,7 @@ public class ChooseInputForm extends JPanel {
         // Secondary Y axis        
         // Types
         chartTypesBurnupComboBox.setRenderer(new AbstractComboBoxRenderer());
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             chartTypesBurnupComboBox.addItem(new StoryPointChart());
             defaultSecondaryYAxisName = new StoryPointChart().getYLegend();
             defaultSecondaryYAxisLegend = new StoryPointChart().getXLegend();

@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.util;
 
-import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.Main;
 
 /**
  * Time converter utility class
@@ -49,22 +49,22 @@ public class TimeConverter {
     // only pomodoros length
     // @return minutes
     public static float calculateEffectiveMinutes(float pomodoros) {
-        return pomodoros * PreferencesPanel.preferences.getPomodoroLength();
+        return pomodoros * Main.preferences.getPomodoroLength();
     }
 
     // pomodoros length + breaks
     // @return minutes
     public static float calculatePlainMinutes(float pomodoros) {
-        long nbLongBreaks = Math.round(Math.floor(pomodoros / PreferencesPanel.preferences.getNbPomPerSet())); // one long break per set
+        long nbLongBreaks = Math.round(Math.floor(pomodoros / Main.preferences.getNbPomPerSet())); // one long break per set
         long nbShortbreaks = Math.round(pomodoros - nbLongBreaks); // on short break per pomodoro minus the long breaks
         return calculateEffectiveMinutes(pomodoros)
-                + nbShortbreaks * PreferencesPanel.preferences.getShortBreakLength()
-                + nbLongBreaks * PreferencesPanel.preferences.getLongBreakLength();
+                + nbShortbreaks * Main.preferences.getShortBreakLength()
+                + nbLongBreaks * Main.preferences.getLongBreakLength();
     }
 
     public static String getLength(int pomodoros) {
         String length;
-        if (PreferencesPanel.preferences.getPlainHours()) {
+        if (Main.preferences.getPlainHours()) {
             length = convertMinutesToString(calculatePlainMinutes(pomodoros));
         } else {
             length = convertMinutesToString(calculateEffectiveMinutes(pomodoros));

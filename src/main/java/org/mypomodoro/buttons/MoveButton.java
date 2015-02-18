@@ -22,8 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -63,9 +63,9 @@ public class MoveButton extends TabPanelButton {
                         // Disable button
                         setEnabled(false);
                         // Set progress bar
-                        Main.gui.getProgressBar().setVisible(true);
-                        Main.gui.getProgressBar().getBar().setValue(0);
-                        Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                     /*if (selectedRowCount == panel.getTable().getRowCount()
                          && panel instanceof ReportsPanel) { // reopen all at once                
@@ -79,7 +79,7 @@ public class MoveButton extends TabPanelButton {
                             row = row - increment;
                             Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
                             Activity selectedActivity = panel.getActivityById(id);
-                            if (panel instanceof ActivitiesPanel && !PreferencesPanel.preferences.getAgileMode()) {
+                            if (panel instanceof ActivitiesPanel && !Main.preferences.getAgileMode()) {
                                 String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                                 if (selectedActivity.isDateInFuture()) {
                                     String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
@@ -96,7 +96,7 @@ public class MoveButton extends TabPanelButton {
                                     String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                     String message = Labels.getString(
                                             "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                            org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getMaxNbPomPerDay());
+                                            Main.preferences.getMaxNbPomPerDay());
                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message,
                                             title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                                     if (reply != JOptionPane.YES_OPTION) {
@@ -116,8 +116,8 @@ public class MoveButton extends TabPanelButton {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress                                    
-                                    Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                    
+                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                 }
                             });
                         }
@@ -127,7 +127,7 @@ public class MoveButton extends TabPanelButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -137,8 +137,8 @@ public class MoveButton extends TabPanelButton {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.gui.getProgressBar().getBar().setString(null);
-                                        Main.gui.getProgressBar().setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
                             }
@@ -156,6 +156,6 @@ public class MoveButton extends TabPanelButton {
     private boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
         int nbTotalEstimatedPom = ToDoList.getList().getNbTotalEstimatedPom();
         int nbTotalEstimatedPomWithActivity = nbTotalEstimatedPom + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
-        return nbTotalEstimatedPom <= PreferencesPanel.preferences.getMaxNbPomPerDay() && nbTotalEstimatedPomWithActivity > PreferencesPanel.preferences.getMaxNbPomPerDay();
+        return nbTotalEstimatedPom <= Main.preferences.getMaxNbPomPerDay() && nbTotalEstimatedPomWithActivity > Main.preferences.getMaxNbPomPerDay();
     }
 }

@@ -409,7 +409,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
                         Main.gui.getActivityListPanel().insertRow(copiedActivity);
                         String title = Labels.getString("Common.Add Duplicated task");
-                        String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                        String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
                         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     } catch (CloneNotSupportedException ignored) {
                     }
@@ -479,7 +479,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
+        if (!Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -496,7 +496,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -562,7 +562,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List");
+        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List");
         if (ReportList.getListSize() > 0) {
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
@@ -585,13 +585,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
                 titleActivitiesList += "&nbsp;</span>";
                 titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -606,13 +606,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " + " + ReportList.getList().getNbOverestimatedPom();
                 }
                 titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + ReportList.getList().getAccuracy() + "%)";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ReportList.getList().getNbEstimatedPom() + ReportList.getList().getNbOverestimatedPom());
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -629,7 +629,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         EditPanel editPanel = new EditPanel(detailsPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         ImportPanel importPanel = new ImportPanel(this);

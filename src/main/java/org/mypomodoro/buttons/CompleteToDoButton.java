@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -36,7 +36,7 @@ public class CompleteToDoButton extends TabPanelButton {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
-        super(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
+        super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         setToolTipText("SHIFT + >");
         addActionListener(new ActionListener() {
 
@@ -55,9 +55,9 @@ public class CompleteToDoButton extends TabPanelButton {
                                     // Disable button
                                     setEnabled(false);
                                     // Set progress bar
-                                    Main.gui.getProgressBar().setVisible(true);
-                                    Main.gui.getProgressBar().getBar().setValue(0);
-                                    Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                                    MainPanel.progressBar.setVisible(true);
+                                    MainPanel.progressBar.getBar().setValue(0);
+                                    MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                                     /*if (!panel.getPomodoro().inPomodoro() && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
                                      int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -89,8 +89,8 @@ public class CompleteToDoButton extends TabPanelButton {
                                         SwingUtilities.invokeLater(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                                Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                                MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                                MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
                                             }
                                         });
                                     }
@@ -99,8 +99,8 @@ public class CompleteToDoButton extends TabPanelButton {
                                     SwingUtilities.invokeLater(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                            MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                            MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                         }
                                     });
                                     // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
@@ -110,7 +110,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                     SwingUtilities.invokeLater(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                            MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                             new Thread() {
                                                 @Override
                                                 public void run() {
@@ -120,8 +120,8 @@ public class CompleteToDoButton extends TabPanelButton {
                                                         logger.error("", ex);
                                                     }
                                                     // hide progress bar
-                                                    Main.gui.getProgressBar().getBar().setString(null);
-                                                    Main.gui.getProgressBar().setVisible(false);
+                                                    MainPanel.progressBar.getBar().setString(null);
+                                                    MainPanel.progressBar.setVisible(false);
                                                 }
                                             }.start();
                                         }
