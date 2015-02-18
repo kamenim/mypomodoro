@@ -44,6 +44,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -129,7 +130,7 @@ public class ImportPanel extends JPanel {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done"));
+                                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
                                     new Thread() {
                                         @Override
                                         public void run() {
@@ -139,8 +140,8 @@ public class ImportPanel extends JPanel {
                                                 logger.error("", ex);
                                             }
                                             // hide progress bar
-                                            Main.gui.getProgressBar().getBar().setString(null);
-                                            Main.gui.getProgressBar().setVisible(false);
+                                            MainPanel.progressBar.getBar().setString(null);
+                                            MainPanel.progressBar.setVisible(false);
                                         }
                                     }.start();
                                 }
@@ -164,9 +165,9 @@ public class ImportPanel extends JPanel {
             FileInputStream fileIn = new FileInputStream(fileName);
             CSVReader reader = new CSVReader(new InputStreamReader(fileIn, "UTF-8"), importInputForm.getSeparator(), '\"', importInputForm.isHeaderSelected() ? 1 : 0);
             // Set progress bar
-            Main.gui.getProgressBar().setVisible(true);
-            Main.gui.getProgressBar().getBar().setValue(0);
-            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            MainPanel.progressBar.setVisible(true);
+            MainPanel.progressBar.getBar().setValue(0);
+            MainPanel.progressBar.getBar().setMaximum(rowCount);
             int increment = 0;
             String[] line;
             while ((line = reader.readNext()) != null) {
@@ -176,15 +177,15 @@ public class ImportPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
                     }
                 });
             }
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
                     new Thread() {
                         @Override
                         public void run() {
@@ -194,8 +195,8 @@ public class ImportPanel extends JPanel {
                                 logger.error("", ex);
                             }
                             // hide progress bar
-                            Main.gui.getProgressBar().getBar().setString(null);
-                            Main.gui.getProgressBar().setVisible(false);
+                            MainPanel.progressBar.getBar().setString(null);
+                            MainPanel.progressBar.setVisible(false);
                         }
                     }.start();
                 }
@@ -216,9 +217,9 @@ public class ImportPanel extends JPanel {
         final int rowCount = sheet.getPhysicalNumberOfRows();
         if (rowCount > 0) {
             // Set progress bar
-            Main.gui.getProgressBar().setVisible(true);
-            Main.gui.getProgressBar().getBar().setValue(0);
-            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            MainPanel.progressBar.setVisible(true);
+            MainPanel.progressBar.getBar().setValue(0);
+            MainPanel.progressBar.getBar().setMaximum(rowCount);
             int increment = 0;
             for (Row row : sheet) {
                 String[] line = new String[21];
@@ -233,15 +234,15 @@ public class ImportPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
                     }
                 });
             }
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
                     new Thread() {
                         @Override
                         public void run() {
@@ -251,8 +252,8 @@ public class ImportPanel extends JPanel {
                                 logger.error("", ex);
                             }
                             // hide progress bar
-                            Main.gui.getProgressBar().getBar().setString(null);
-                            Main.gui.getProgressBar().setVisible(false);
+                            MainPanel.progressBar.getBar().setString(null);
+                            MainPanel.progressBar.setVisible(false);
                         }
                     }.start();
                 }
@@ -272,9 +273,9 @@ public class ImportPanel extends JPanel {
         final int rowCount = sheet.getPhysicalNumberOfRows();
         if (rowCount > 0) {
             // Set progress bar
-            Main.gui.getProgressBar().setVisible(true);
-            Main.gui.getProgressBar().getBar().setValue(0);
-            Main.gui.getProgressBar().getBar().setMaximum(rowCount);
+            MainPanel.progressBar.setVisible(true);
+            MainPanel.progressBar.getBar().setValue(0);
+            MainPanel.progressBar.getBar().setMaximum(rowCount);
             int increment = 0;
             for (Row row : sheet) {
                 String[] line = new String[21];
@@ -289,15 +290,15 @@ public class ImportPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                        Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
+                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(rowCount)); // task
                     }
                 });
             }
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
                     new Thread() {
                         @Override
                         public void run() {
@@ -307,8 +308,8 @@ public class ImportPanel extends JPanel {
                                 logger.error("", ex);
                             }
                             // hide progress bar
-                            Main.gui.getProgressBar().getBar().setString(null);
-                            Main.gui.getProgressBar().setVisible(false);
+                            MainPanel.progressBar.getBar().setString(null);
+                            MainPanel.progressBar.setVisible(false);
                         }
                     }.start();
                 }

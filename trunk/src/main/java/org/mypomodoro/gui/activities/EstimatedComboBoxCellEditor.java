@@ -18,7 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import javax.swing.JTable;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 
@@ -44,11 +44,11 @@ class EstimatedComboBoxCellEditor extends ComboBoxCellEditor {
         if (activity != null) {
             comboBox.removeAllItems();
             if (activity.getActualPoms() > 0) {
-                for (int i = (activity.getActualPoms() - activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getOverestimatedPoms() : 0); i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
+                for (int i = (activity.getActualPoms() - activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getOverestimatedPoms() : 0); i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
                 }
             } else {
-                for (int i = 0; i <= (activity.getEstimatedPoms() >= PreferencesPanel.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + PreferencesPanel.preferences.getMaxNbPomPerActivity() : PreferencesPanel.preferences.getMaxNbPomPerActivity()); i++) {
+                for (int i = 0; i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
                 }
             }

@@ -21,10 +21,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Date;
 import javax.swing.JScrollPane;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IActivityInformation;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -89,7 +89,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
             textMap.remove("date_reopened");
         }
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
         }

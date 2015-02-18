@@ -33,11 +33,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.gui.create.list.TypeComboBox;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DatePicker;
@@ -82,7 +82,7 @@ public class ActivityInputForm extends JPanel {
         addName(++gridy);
         addType(++gridy);
         addEstimatedPoms(++gridy);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             addStoryPoints(++gridy);
             addIterations(++gridy);
         }
@@ -103,7 +103,7 @@ public class ActivityInputForm extends JPanel {
         c.weighty = 0.5;
         datePicker.setTodayWithLowerBounds();
         add(datePicker, c);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             dateLabel.setVisible(false);
             datePicker.setVisible(false);
         }
@@ -144,8 +144,8 @@ public class ActivityInputForm extends JPanel {
 
     protected void addEstimatedPoms(int gridy) {
         // init estimated Pomodoros combo box
-        Integer[] items = new Integer[PreferencesPanel.preferences.getMaxNbPomPerActivity() + 1];
-        for (int i = 0; i <= PreferencesPanel.preferences.getMaxNbPomPerActivity(); i++) {
+        Integer[] items = new Integer[Main.preferences.getMaxNbPomPerActivity() + 1];
+        for (int i = 0; i <= Main.preferences.getMaxNbPomPerActivity(); i++) {
             items[i] = i;
         }
         estimatedPomodoros = new JComboBox(items);
@@ -350,7 +350,7 @@ public class ActivityInputForm extends JPanel {
         Date dateActivity = datePicker.getDate();
         Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             float storypoint = (Float) storyPoints.getSelectedItem();
             int iteration = (Integer) iterations.getSelectedItem();
             activity = new Activity(place, author, name, description, type,
@@ -435,7 +435,7 @@ public class ActivityInputForm extends JPanel {
     protected void displayLength(int estimatedPomodoros) {
         String effectiveHours = TimeConverter.convertMinutesToString(calculateEffectiveMinutes(estimatedPomodoros));
         String plainHours = TimeConverter.convertMinutesToString(calculatePlainMinutes(estimatedPomodoros));
-        if (PreferencesPanel.preferences.getPlainHours()) {
+        if (Main.preferences.getPlainHours()) {
             estimatedLengthLabel.setText(" " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {
             estimatedLengthLabel.setText(" " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");

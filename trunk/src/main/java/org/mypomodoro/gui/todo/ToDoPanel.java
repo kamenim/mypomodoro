@@ -78,7 +78,6 @@ import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
@@ -510,7 +509,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
                         Main.gui.getActivityListPanel().insertRow(copiedActivity);
                         String title = Labels.getString("Common.Add Duplicated task");
-                        String message = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                        String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
                         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     } catch (CloneNotSupportedException ignored) {
                     }
@@ -588,7 +587,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
+        if (!Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -605,7 +604,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(0);
@@ -658,7 +657,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
+        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
         if (ToDoList.getListSize() > 0) {
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
@@ -680,13 +679,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -700,13 +699,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (ToDoList.getList().getNbOverestimatedPom() > 0) {
                     titleActivitiesList += " + " + ToDoList.getList().getNbOverestimatedPom();
                 }
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -779,7 +778,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
         controlPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
@@ -1098,7 +1097,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            /*if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+            /*if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
              int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
              Activity toDo = ToDoList.getList().getById(id);
              if (toDo != null && toDo.isOverdue()) {
@@ -1192,16 +1191,16 @@ public class ToDoPanel extends JPanel implements IListPanel {
         discontinuousButton.setMargin(new Insets(1, 1, 1, 1));
         discontinuousButton.setFocusPainted(false); // removes borders around text
         toolBar.add(discontinuousButton, wc);
-        if (PreferencesPanel.preferences.getTicking()
-                || PreferencesPanel.preferences.getRinging()) {
-            MuteButton muteButton = PreferencesPanel.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false);
+        if (Main.preferences.getTicking()
+                || Main.preferences.getRinging()) {
+            MuteButton muteButton = Main.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false);
             muteButton.setVisible(true);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
             toolBar.add(muteButton, wc);
         }
         PinButton pinButton = new PinButton();
-        if (org.mypomodoro.gui.preferences.PreferencesPanel.preferences.getAlwaysOnTop()) {
+        if (Main.preferences.getAlwaysOnTop()) {
             pinButton.setUnpinIcon();
         }
         pinButton.setVisible(true); // this is a TransparentButton       

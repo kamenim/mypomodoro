@@ -59,6 +59,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
@@ -66,7 +67,6 @@ import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
@@ -401,7 +401,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
+        if (!Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -418,7 +418,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -494,13 +494,13 @@ public class CheckPanel extends JPanel implements IListPanel {
                 }
                 titleActivitiesList += "&nbsp;</span>";
                 titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -515,13 +515,13 @@ public class CheckPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " + " + ChartList.getList().getNbOverestimatedPom();
                 }
                 titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + ChartList.getList().getAccuracy() + "%)";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ChartList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ChartList.getList().getNbEstimatedPom() + ChartList.getList().getNbOverestimatedPom());
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -571,7 +571,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         controlPane.addMouseListener(new MouseAdapter() {

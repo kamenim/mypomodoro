@@ -18,8 +18,8 @@ package org.mypomodoro.gui.burndownchart.types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
@@ -45,14 +45,14 @@ public class PlainHourChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(activity.getActualPoms() * PreferencesPanel.preferences.getPomodoroLength()));
+        return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(activity.getActualPoms() * Main.preferences.getPomodoroLength()));
     }
 
     @Override
     public float getTotalForBurndown() {
         float total = 0;
         for (Activity activity : ChartList.getList()) {
-            total += (activity.getEstimatedPoms() + activity.getOverestimatedPoms()) * PreferencesPanel.preferences.getPomodoroLength();
+            total += (activity.getEstimatedPoms() + activity.getOverestimatedPoms()) * Main.preferences.getPomodoroLength();
         }
         return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(total));
     }
@@ -62,7 +62,7 @@ public class PlainHourChart implements IChartType {
         float total = 0;
         for (Activity activity : ChartList.getList()) {
             if (activity.isCompleted()) {
-                total += activity.getActualPoms() * PreferencesPanel.preferences.getPomodoroLength();
+                total += activity.getActualPoms() * Main.preferences.getPomodoroLength();
             }
         }
         return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(total));
@@ -72,7 +72,7 @@ public class PlainHourChart implements IChartType {
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(sum.get(i) * PreferencesPanel.preferences.getPomodoroLength())));
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(sum.get(i) * Main.preferences.getPomodoroLength())));
         }
         return sum;
     }
@@ -81,7 +81,7 @@ public class PlainHourChart implements IChartType {
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesIterationRange(startIteration, endIteration);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(sum.get(i) * PreferencesPanel.preferences.getPomodoroLength())));
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(sum.get(i) * Main.preferences.getPomodoroLength())));
         }
         return sum;
     }

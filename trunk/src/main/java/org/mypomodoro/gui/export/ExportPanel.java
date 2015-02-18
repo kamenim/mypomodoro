@@ -77,7 +77,7 @@ public class ExportPanel extends JPanel {
     private final IListPanel panel;
     private JButton cancelButton;
     private final String[] headerEntries = new String[]{"U",
-        Labels.getString(PreferencesPanel.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
+        Labels.getString(Main.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
         Labels.getString("Common.Date completed"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Estimated"),
@@ -91,7 +91,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Common.Author"),
         Labels.getString("Common.Place"),
         Labels.getString("Common.Description"),
-        Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+        Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};

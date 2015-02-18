@@ -78,9 +78,9 @@ public class TestMenu extends JMenu {
                         // Disable item menu
                         setEnabled(false);
                         // Set progress bar
-                        Main.progressBar.setVisible(true);
-                        Main.progressBar.getBar().setValue(0);
-                        Main.progressBar.getBar().setMaximum(nbTask);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(nbTask);
 
                         String[] tasks = new String[]{"Task", "Tâche", "任务", "задача", "कार्य"}; // English, French, Hindi, Russian, Chinese simplified                        
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f};
@@ -92,8 +92,8 @@ public class TestMenu extends JMenu {
                         int reportListValue = 0;
                         final StringBuilder progressText = new StringBuilder();
                         for (int i = 0; i < nbTask; i++) {
-                            int iteration = PreferencesPanel.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
-                            if (iteration == -1 && PreferencesPanel.preferences.getAgileMode()) {
+                            int iteration = Main.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
+                            if (iteration == -1 && Main.preferences.getAgileMode()) {
                                 iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1                               
                             }
                             final Activity a = new Activity(
@@ -101,9 +101,9 @@ public class TestMenu extends JMenu {
                                     "Author" + " " + (rand.nextInt(10) + 1),
                                     tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
                                     "",
-                                    (PreferencesPanel.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
-                                    rand.nextInt(PreferencesPanel.preferences.getMaxNbPomPerActivity()) + 1,
-                                    PreferencesPanel.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
+                                    (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
+                                    rand.nextInt(Main.preferences.getMaxNbPomPerActivity()) + 1,
+                                    Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                     iteration,
                                     (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
                             a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
@@ -150,7 +150,7 @@ public class TestMenu extends JMenu {
                                     Main.gui.getToDoPanel().insertRow(a);
                                     todoListValue++;
                                 } else { // Tasks for the Activity list
-                                    iteration = PreferencesPanel.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
+                                    iteration = Main.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
                                     a.setIteration(iteration);
                                     a.setOverestimatedPoms(0);
                                     a.setActualPoms(0);
@@ -161,19 +161,19 @@ public class TestMenu extends JMenu {
                             }
                             final int progressValue = i + 1;
                             progressText.setLength(0); // reset string builder
-                            progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
+                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
                             progressText.append(Integer.toString(activityListValue));
                             progressText.append(" | ");
-                            progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
+                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
                             progressText.append(Integer.toString(todoListValue));
                             progressText.append(" | ");
-                            progressText.append(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
+                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
                             progressText.append(Integer.toString(reportListValue));
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
-                                    Main.progressBar.getBar().setString(progressText.toString()); // task
+                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
+                                    MainPanel.progressBar.getBar().setString(progressText.toString()); // task
                                 }
                             });
                         }
@@ -181,7 +181,7 @@ public class TestMenu extends JMenu {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressText + ")");
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressText + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -191,8 +191,8 @@ public class TestMenu extends JMenu {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.progressBar.getBar().setString(null);
-                                        Main.progressBar.setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
 

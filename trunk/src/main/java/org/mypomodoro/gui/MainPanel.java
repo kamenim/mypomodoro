@@ -57,7 +57,8 @@ public final class MainPanel extends JFrame {
     public static final int FRAME_HEIGHT = 580;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "3.3.0";
-    public static Resize resize = new Resize();    
+    public static Resize resize = new Resize();
+    public static PreferencesPanel preferencesPanel = new PreferencesPanel();
     public static SplashScreen splashScreen = new SplashScreen();
     public static CreatePanel createPanel = new CreatePanel();
     public static ActivitiesPanel activitiesPanel = new ActivitiesPanel();
@@ -67,7 +68,12 @@ public final class MainPanel extends JFrame {
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
-
+    public static ProgressBar progressBar = new ProgressBar();
+            
+    public PreferencesPanel getPreferencesPanel() {
+        return preferencesPanel;
+    }
+            
     public SplashScreen getSplashScreen() {
         return splashScreen;
     }
@@ -93,7 +99,7 @@ public final class MainPanel extends JFrame {
     }
 
     public ProgressBar getProgressBar() {
-        return Main.progressBar;
+        return progressBar;
     }
 
     public MainPanel() {
@@ -107,7 +113,7 @@ public final class MainPanel extends JFrame {
         JOptionPane.setDefaultLocale(Labels.getLocale());
         // Set system tray
         if (SystemTray.isSupported()
-                && PreferencesPanel.preferences.getSystemTray()) {
+                && Main.preferences.getSystemTray()) {
             setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             SystemTray sysTray = SystemTray.getSystemTray();
             trayIcon = new TrayIcon(ImageIcons.MAIN_ICON.getImage(),
@@ -189,7 +195,7 @@ public final class MainPanel extends JFrame {
                 title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (reply == JOptionPane.YES_OPTION) {
             if (SystemTray.isSupported()
-                    && PreferencesPanel.preferences.getSystemTray()) {
+                    && Main.preferences.getSystemTray()) {
                 // kill tray
                 SystemTray sysTray = SystemTray.getSystemTray();
                 sysTray.remove(trayIcon);

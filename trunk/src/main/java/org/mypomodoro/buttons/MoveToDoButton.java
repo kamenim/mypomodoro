@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
@@ -58,9 +59,9 @@ public class MoveToDoButton extends TabPanelButton {
                         // Disable button
                         setEnabled(false);
                         // Set progress bar
-                        Main.gui.getProgressBar().setVisible(true);
-                        Main.gui.getProgressBar().getBar().setValue(0);
-                        Main.gui.getProgressBar().getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                     /*if (!panel.getPomodoro().inPomodoro()
                          && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
@@ -90,8 +91,8 @@ public class MoveToDoButton extends TabPanelButton {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                    Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
                                 }
                             });
                         }
@@ -100,8 +101,8 @@ public class MoveToDoButton extends TabPanelButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setValue(Main.gui.getProgressBar().getBar().getMaximum());
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
@@ -111,7 +112,7 @@ public class MoveToDoButton extends TabPanelButton {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -121,8 +122,8 @@ public class MoveToDoButton extends TabPanelButton {
                                             logger.error("", ex);
                                         }
                                         // hide progress bar
-                                        Main.gui.getProgressBar().getBar().setString(null);
-                                        Main.gui.getProgressBar().setVisible(false);
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
                                     }
                                 }.start();
                             }

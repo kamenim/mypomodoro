@@ -668,7 +668,7 @@ public class ExportInputForm extends JPanel {
             Labels.getString("Common.Author"),
             Labels.getString("Common.Place"),
             Labels.getString("Common.Description"),
-            Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+            Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
             Labels.getString("Agile.Common.Story Points"),
             Labels.getString("Agile.Common.Iteration"),
             Labels.getString("Common.Priority"),

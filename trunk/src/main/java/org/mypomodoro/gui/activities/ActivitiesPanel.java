@@ -514,7 +514,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationComboBoxCellRenderer(iterations, false));
         table.getColumnModel().getColumn(ID_KEY - 1).setCellEditor(new IterationComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
-        if (!PreferencesPanel.preferences.getAgileMode()) {
+        if (!Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
             table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
@@ -531,7 +531,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(80);
         }
         // hide unplanned and date in Agile mode
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(0).setMaxWidth(0);
             table.getColumnModel().getColumn(0).setMinWidth(0);
             table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -592,7 +592,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
+        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
         if (ActivityList.getListSize() > 0) {
             if (table.getSelectedRowCount() > 1) {
                 int[] rows = table.getSelectedRows();
@@ -614,13 +614,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -634,13 +634,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 if (ActivityList.getList().getNbOverestimatedPom() > 0) {
                     titleActivitiesList += " + " + ActivityList.getList().getNbOverestimatedPom();
                 }
-                if (PreferencesPanel.preferences.getAgileMode()) {
+                if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ActivityList.getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(ActivityList.getList().getNbEstimatedPom() + ActivityList.getList().getNbOverestimatedPom());
-                if (PreferencesPanel.preferences.getPlainHours()) {
+                if (Main.preferences.getPlainHours()) {
                     toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
@@ -656,7 +656,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
@@ -758,7 +758,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         act.setType(data.toString());
                         act.databaseUpdate();
                         // load template for user stories
-                        if (PreferencesPanel.preferences.getAgileMode()) {
+                        if (Main.preferences.getAgileMode()) {
                             commentPanel.showInfo(act);
                         }
                         // refresh the combo boxes of all rows to display the new type (if any)
@@ -960,7 +960,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            /*if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+            /*if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
              int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
              Activity activity = ActivityList.getList().getById(id);
              if (activity != null && activity.isOverdue()) {
@@ -1001,7 +1001,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
             // Strikethrough date when task overdue
-            if (!PreferencesPanel.preferences.getAgileMode()) { // Pomodoro mode only
+            if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
                 int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity activity = ActivityList.getList().getById(id);
                 if (activity != null && activity.isOverdue()) {

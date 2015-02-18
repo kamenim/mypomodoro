@@ -40,9 +40,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.DatePicker;
@@ -63,7 +63,7 @@ public class ConfigureInputForm extends JPanel {
     protected final DatePicker endDatePicker = new DatePicker(Labels.getLocale());
     private final JCheckBox excludeSaturdays = new JCheckBox(Labels.getString("BurndownChartPanel.Saturdays"), true);
     private final JCheckBox excludeSundays = new JCheckBox(Labels.getString("BurndownChartPanel.Sundays"), true);
-    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((PreferencesPanel.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), false);
+    private final JCheckBox excludeToDos = new JCheckBox(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List"), false);
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     final JCheckBox datesCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Dates"), true);
@@ -88,7 +88,7 @@ public class ConfigureInputForm extends JPanel {
 
         addDatesInputFormPanel();
         addIterationsInputFormPanel();
-        if (!PreferencesPanel.preferences.getAgileMode()) {
+        if (!Main.preferences.getAgileMode()) {
             iterationsInputFormPanel.setVisible(false);
         }
         addImageInputFormPanel();

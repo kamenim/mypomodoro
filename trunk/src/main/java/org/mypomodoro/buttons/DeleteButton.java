@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -52,9 +53,9 @@ public class DeleteButton extends TabPanelButton {
                                 // Disable button
                                 setEnabled(false);
                                 // Set progress bar
-                                Main.gui.getProgressBar().setVisible(true);
-                                Main.gui.getProgressBar().getBar().setValue(0);
-                                Main.gui.getProgressBar().getBar().setMaximum(selectedRowCount);
+                                MainPanel.progressBar.setVisible(true);
+                                MainPanel.progressBar.getBar().setValue(0);
+                                MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                                 /*if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        
                                  panel.deleteAll();
                                  panel.refresh();
@@ -73,8 +74,8 @@ public class DeleteButton extends TabPanelButton {
                                     SwingUtilities.invokeLater(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Main.gui.getProgressBar().getBar().setValue(progressValue); // % - required to see the progress
-                                            Main.gui.getProgressBar().getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                            MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                            MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                         }
                                     });
                                 }
@@ -84,7 +85,7 @@ public class DeleteButton extends TabPanelButton {
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Main.gui.getProgressBar().getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
+                                        MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                         new Thread() {
                                             @Override
                                             public void run() {
@@ -94,8 +95,8 @@ public class DeleteButton extends TabPanelButton {
                                                     logger.error("", ex);
                                                 }
                                                 // hide progress bar
-                                                Main.gui.getProgressBar().getBar().setString(null);
-                                                Main.gui.getProgressBar().setVisible(false);
+                                                MainPanel.progressBar.getBar().setString(null);
+                                                MainPanel.progressBar.setVisible(false);
                                             }
                                         }.start();
                                     }

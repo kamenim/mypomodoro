@@ -32,6 +32,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import org.apache.commons.lang3.SystemUtils;
+import org.mypomodoro.Main;
+import static org.mypomodoro.Main.preferences;
 import org.mypomodoro.buttons.AbstractButton;
 import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.gui.ItemLocale;
@@ -41,8 +43,7 @@ import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class PreferencesPanel extends JPanel {
-
-    public static Preferences preferences = new Preferences();
+    
     public static Labels labels;
     public static DateUtil dateUtil;
     public JButton saveButton;
@@ -53,10 +54,9 @@ public class PreferencesPanel extends JPanel {
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel;
 
-    public PreferencesPanel() {
-        preferences.loadPreferences();
-        Locale locale = new Locale(preferences.getLocale().getLanguage(),
-                preferences.getLocale().getCountry(), preferences.getLocale().getVariant());
+    public PreferencesPanel() {        
+        Locale locale = new Locale(Main.preferences.getLocale().getLanguage(),
+                Main.preferences.getLocale().getCountry(), Main.preferences.getLocale().getVariant());
         labels = new Labels(locale);
         dateUtil = new DateUtil(locale);
         saveButton = new AbstractButton(Labels.getString("Common.Save"));

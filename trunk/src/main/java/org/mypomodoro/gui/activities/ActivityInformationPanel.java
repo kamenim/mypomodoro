@@ -19,8 +19,8 @@ package org.mypomodoro.gui.activities;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import javax.swing.JPanel;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.HtmlEditor;
@@ -42,7 +42,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     @Override
     public void selectInfo(Activity activity) {
         textMap = new LinkedHashMap<String, String>();
-        textMap.put("date", "<b>" + (PreferencesPanel.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
+        textMap.put("date", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy")
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
@@ -62,7 +62,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br>");
-        if (PreferencesPanel.preferences.getAgileMode()) {
+        if (Main.preferences.getAgileMode()) {
             textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br>");
             textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br>");
         }

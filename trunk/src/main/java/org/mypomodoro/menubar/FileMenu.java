@@ -117,7 +117,7 @@ public class FileMenu extends JMenu {
             public void actionPerformed(ActionEvent e) {
                 // unhighlight the current hightlighted icon                
                 view.getIconBar().unHighlightIcon();
-                view.setWindow(Main.preferencesPanel);
+                view.setWindow(view.getPreferencesPanel());
             }
         }
     }

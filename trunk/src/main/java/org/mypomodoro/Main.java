@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
 import org.mypomodoro.db.Database;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
@@ -32,8 +31,8 @@ import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.Preferences;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -53,9 +52,8 @@ public class Main {
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // Preferences
-    public static PreferencesPanel preferencesPanel = new PreferencesPanel();
+    public static Preferences preferences = new Preferences();    
     // GUI
-    public static ProgressBar progressBar;
     public static MainPanel gui;
     private static Font font;
 
@@ -67,6 +65,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Load preferences
+        preferences.loadPreferences();
         // Set font from font file
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fonts = g.getAvailableFontFamilyNames();
@@ -96,29 +96,29 @@ public class Main {
                 // Look & Feel (laf)
                 // Theme set in Preferences
                 try {
-                    String theme = PreferencesPanel.preferences.getTheme();
+                    String theme = preferences.getTheme();
                     UIManager.setLookAndFeel(theme);
                 } catch (Exception ex) {
+                    logger.error("Using the System Look and Feel library to fix the following issue: ", ex);
                     try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } catch (Exception ex2) {
-                        logger.error("", ex2);
+                    } catch (Exception ignored) {
+                         // should never happen
                     }
                 }                
                 // Set global font (before intanstiating the components and the gui)
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
-                if (font == null) { // In case , Arial Unicode MS isn't exist; let's hope the default OS font is unicode
+                if (font == null) { // In case , Arial Unicode MS isn't installed; let's hope the default OS font is unicode
                     font = new JPanel().getFont().deriveFont(Font.PLAIN, 15f);
                     logger.error("Arial Unicode MS not supported. Replaced with default System font.");
                 }
-                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
+                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));                
                 // Set progress bar font (before intanstiating the progress bar)
                 UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); // colour of the background // this does not work
                 UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); // colour of progress bar
                 UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); // colour of percentage counter on background
                 UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); // colour of precentage counter on progress bar
-                // init the progress bar and the gui AFTER setting the UIManager and font      
-                progressBar = new ProgressBar();
+                // init the gui, and all its components, AFTER setting the UIManager and font                      
                 gui = new MainPanel();
                 // Load combo boxes data (type, author...)
                 updateComboBoxLists();
@@ -133,7 +133,7 @@ public class Main {
                 gui.pack();
                 gui.setLocationRelativeTo(null); // center the component onscreen
                 gui.setVisible(true);
-                if (PreferencesPanel.preferences.getAlwaysOnTop()) {
+                if (Main.preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
                 Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
