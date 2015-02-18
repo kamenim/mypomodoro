@@ -75,7 +75,6 @@ import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.create.list.TypeList;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -121,7 +120,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private InputMap im = null;
     private int mouseHoverRow = 0;
     // Border
-    private final JButton titledButton = new JButton();
+    private final JButton titledButton = new JButton();    
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     // Unplanned

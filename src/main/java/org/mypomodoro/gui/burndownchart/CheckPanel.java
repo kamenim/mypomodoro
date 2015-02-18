@@ -679,9 +679,9 @@ public class CheckPanel extends JPanel implements IListPanel {
             table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
         }
     }
-    
+
     @Override
-    public void insertRow(Activity activity) {        
+    public void insertRow(Activity activity) {
     }
 
     @Override

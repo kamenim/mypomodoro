@@ -43,7 +43,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -270,8 +269,8 @@ public class Pomodoro {
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)
-                if (Main.preferences.getRecall()) {
-                    Main.gui.setVisible(true); 
+                if (Main.preferences.getBackInFront()) {
+                    Main.gui.setVisible(true);
                     Main.gui.setExtendedState(JFrame.NORMAL); // Note: full screen shrinks to preferred size (see Main) which is ok
                 }
                 // update details panel

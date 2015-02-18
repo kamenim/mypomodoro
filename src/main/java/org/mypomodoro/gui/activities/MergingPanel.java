@@ -215,7 +215,7 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    public void clearForm() {        
+    public void clearForm() {
         mergingInputFormPanel.setNameField("");
         mergingInputFormPanel.setEstimatedPomodoro(1);
         if (Main.preferences.getAgileMode()) {

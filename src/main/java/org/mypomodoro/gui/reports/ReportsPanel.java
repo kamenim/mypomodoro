@@ -73,7 +73,6 @@ import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
@@ -1001,7 +1000,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             return renderer;
         }
     }
-    
+
     class Diff2CellRenderer extends CustomTableRenderer {
 
         @Override

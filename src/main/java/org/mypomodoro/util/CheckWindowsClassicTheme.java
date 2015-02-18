@@ -17,7 +17,6 @@
 package org.mypomodoro.util;
 
 import java.awt.Toolkit;
-import javax.swing.UIManager;
 
 /**
  * Check if the Windows current theme is XP classic
@@ -26,13 +25,11 @@ import javax.swing.UIManager;
 public class CheckWindowsClassicTheme {
 
     public static boolean isWindowsClassicLAF() {
-        return isWindowsLAF()
-                && !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty(
-                        "win.xpstyle.themeActive");
+        return !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty(
+                "win.xpstyle.themeActive");
     }
 
-    private static boolean isWindowsLAF() {
-        return UIManager.getLookAndFeel().getID().equals("Windows");
-    }
-
+    /*private static boolean isWindowsLAF() {
+     return UIManager.getLookAndFeel().getID().equals("Windows");
+     }*/
 }

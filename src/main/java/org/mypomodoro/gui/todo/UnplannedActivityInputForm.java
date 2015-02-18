@@ -47,7 +47,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         c.weighty = 0.5;
         interruptionsComboBox = new JComboBox();
         interruptionsComboBox.addItem(unplanned);
-        interruptionsComboBox.setRenderer(new AbstractComboBoxRenderer());        
+        interruptionsComboBox.setRenderer(new AbstractComboBoxRenderer());
         // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
         interruptionsComboBox.setBackground(ColorUtil.WHITE);
         add(interruptionsComboBox, c);

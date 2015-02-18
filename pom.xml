@@ -123,12 +123,6 @@
       <version>1.8.1</version>
     </dependency>    
     <!-- Look and Feel -->
-    <!-- Substance look and feel -->
-    <!--dependency>
-      <groupId>org.java.net.substance</groupId>
-      <artifactId>substance</artifactId>
-      <version>6.0</version>
-    </dependency-->
     <!-- JGoodies look and feel -->
     <!-- BSD Open Source: http://www.jgoodies.com/freeware/ -->
     <dependency>
@@ -136,6 +130,19 @@
       <artifactId>jgoodies-looks</artifactId>
       <version>2.5.3</version>
     </dependency>
+    <!-- Nimrod look and feel -->
+    <!-- LGPL: http://nilogonzalez.es/nimrodlf/licencia-en.html --> 
+    <dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>nimrodlf</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <!-- Substance look and feel -->
+    <!--dependency>
+      <groupId>org.java.net.substance</groupId>
+      <artifactId>substance</artifactId>
+      <version>6.0</version>
+    </dependency-->
     <!-- Napkin look and feel -->
     <!--dependency>
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
@@ -161,30 +168,12 @@
       <artifactId>toniclf</artifactId>
       <version>1.0.5</version>
     </dependency-->
-    <!-- Skinlf look and feel -->
-    <!--dependency>
-      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
-      <artifactId>skinlf</artifactId>
-      <version>6.7</version>
-    </dependency-->
-    <!--dependency>
-      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
-      <artifactId>skinlf-theme-packs</artifactId>
-      <version>1.0.0</version>
-    </dependency-->
     <!-- InfoNode look and feel -->
     <!--dependency>
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
       <artifactId>ilf-gpl</artifactId>
       <version>1.6.1</version>
     </dependency-->
-    <!-- Nimrod look and feel -->
-    <!-- LGPL: http://nilogonzalez.es/nimrodlf/licencia-en.html --> 
-    <dependency>
-      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
-      <artifactId>nimrodlf</artifactId>
-      <version>1.1</version>
-    </dependency>
     <!-- kunstoff look and feel --> 
     <!--dependency>
       <groupId>com.incors</groupId>
@@ -196,7 +185,7 @@
     <!--dependency>
       <groupId>de.sciss</groupId>
       <artifactId>weblaf</artifactId>
-      <version>1.28</version>
+      <version>1.27</version>
     </dependency-->
     <!-- Quaqua look and feel -->
     <!-- LGPL/BSD: http://www.randelshofer.ch/quaqua/ --> 

@@ -626,74 +626,73 @@ public class ExportInputForm extends JPanel {
 
     /*private class Column {
 
-        private int columnIndex;
-        private String columnText;
+     private int columnIndex;
+     private String columnText;
 
-        public Column() {
-        }
+     public Column() {
+     }
 
-        public Column(int columnIndex, String columnText) {
-            this.columnIndex = columnIndex;
-            this.columnText = columnText;
-        }
+     public Column(int columnIndex, String columnText) {
+     this.columnIndex = columnIndex;
+     this.columnText = columnText;
+     }
 
-        public int getcolumnIndex() {
-            return columnIndex;
-        }
+     public int getcolumnIndex() {
+     return columnIndex;
+     }
 
-        public String getcolumnText() {
-            return columnText;
-        }
+     public String getcolumnText() {
+     return columnText;
+     }
 
-        @Override
-        public String toString() {
-            return columnText;
-        }
-    }
+     @Override
+     public String toString() {
+     return columnText;
+     }
+     }
 
-    private class Columns {
+     private class Columns {
 
-        private final String[] headerEntries = new String[]{"U",
-            Labels.getString("Common.Date"),
-            Labels.getString("Common.Date completed"),
-            Labels.getString("Common.Title"),
-            Labels.getString("Common.Estimated"),
-            Labels.getString("Common.Overestimated"),
-            Labels.getString("Common.Real"),
-            Labels.getString("ReportListPanel.Diff I"),
-            Labels.getString("ReportListPanel.Diff II"),
-            Labels.getString("ToDoListPanel.Internal"),
-            Labels.getString("ToDoListPanel.External"),
-            Labels.getString("Common.Type"),
-            Labels.getString("Common.Author"),
-            Labels.getString("Common.Place"),
-            Labels.getString("Common.Description"),
-            Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
-            Labels.getString("Agile.Common.Story Points"),
-            Labels.getString("Agile.Common.Iteration"),
-            Labels.getString("Common.Priority"),
-            ""};
-        private JComboBox columnsComboBox = new JComboBox();
+     private final String[] headerEntries = new String[]{"U",
+     Labels.getString("Common.Date"),
+     Labels.getString("Common.Date completed"),
+     Labels.getString("Common.Title"),
+     Labels.getString("Common.Estimated"),
+     Labels.getString("Common.Overestimated"),
+     Labels.getString("Common.Real"),
+     Labels.getString("ReportListPanel.Diff I"),
+     Labels.getString("ReportListPanel.Diff II"),
+     Labels.getString("ToDoListPanel.Internal"),
+     Labels.getString("ToDoListPanel.External"),
+     Labels.getString("Common.Type"),
+     Labels.getString("Common.Author"),
+     Labels.getString("Common.Place"),
+     Labels.getString("Common.Description"),
+     Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+     Labels.getString("Agile.Common.Story Points"),
+     Labels.getString("Agile.Common.Iteration"),
+     Labels.getString("Common.Priority"),
+     ""};
+     private JComboBox columnsComboBox = new JComboBox();
 
-        public Columns() {
-            Object[] columns = new Object[headerEntries.length];
-            for (int i = 0; i < headerEntries.length; i++) {
-                columns[i] = new Column(i, headerEntries[i]);
-            }
-            columnsComboBox = new JComboBox(columns);
-            columnsComboBox.setBackground(ColorUtil.WHITE);
-            columnsComboBox.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 2));
-        }
+     public Columns() {
+     Object[] columns = new Object[headerEntries.length];
+     for (int i = 0; i < headerEntries.length; i++) {
+     columns[i] = new Column(i, headerEntries[i]);
+     }
+     columnsComboBox = new JComboBox(columns);
+     columnsComboBox.setBackground(ColorUtil.WHITE);
+     columnsComboBox.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 2));
+     }
 
-        public JComboBox getColumnsComboBox() {
-            return columnsComboBox;
-        }
+     public JComboBox getColumnsComboBox() {
+     return columnsComboBox;
+     }
 
-        public int getLength() {
-            return headerEntries.length;
-        }
-    }*/
-
+     public int getLength() {
+     return headerEntries.length;
+     }
+     }*/
     public static class activityToArray {
 
         public static String[] toArray(Activity activity) {

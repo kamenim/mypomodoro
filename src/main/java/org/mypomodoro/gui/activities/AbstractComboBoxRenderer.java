@@ -24,7 +24,7 @@ import org.mypomodoro.util.ColorUtil;
 
 /**
  * Combo box renderer for most of the combo boxes
- * 
+ *
  * This only applies when opening the combo box
  *
  */

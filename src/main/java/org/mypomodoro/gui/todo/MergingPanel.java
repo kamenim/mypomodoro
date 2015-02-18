@@ -151,7 +151,7 @@ public class MergingPanel extends CreatePanel {
                 }
                 newActivity.setActualPoms(actualPoms);
             }
-            final String title = Labels.getString("ToDoListPanel.Merge ToDos");             
+            final String title = Labels.getString("ToDoListPanel.Merge ToDos");
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
