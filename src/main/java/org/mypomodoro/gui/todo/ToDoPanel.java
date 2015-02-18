@@ -135,11 +135,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
-
     private GridBagConstraints c = new GridBagConstraints();
-
-    // Unplanned
-    //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
     private int currentSelectedRow = 0;
 

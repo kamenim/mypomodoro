@@ -120,8 +120,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final JButton titledButton = new JButton();
     private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    // Unplanned
-    //private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     // Selected row
     private int currentSelectedRow = 0;
 
