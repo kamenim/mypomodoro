@@ -39,5 +39,5 @@ public class Stats {
     private static int lenghtIncreased = 0;
     private static int paused = 0;
     private static int overwholeTimeSpentWorking = 0;
-    private static int workflowInterrupted = 0;    
+    private static int workflowInterrupted = 0;
 }

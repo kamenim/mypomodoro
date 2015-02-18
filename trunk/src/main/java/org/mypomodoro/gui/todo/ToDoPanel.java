@@ -745,12 +745,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
 
-            // click
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                timerPanel.switchPomodoroCompliance();
-            }
-        });*/
+         // click
+         @Override
+         public void mouseClicked(MouseEvent e) {
+         timerPanel.switchPomodoroCompliance();
+         }
+         });*/
         scrollPane.add(wrap, c);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1214,6 +1214,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         backgroundPanel.add(toolBar, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;// this is very important to center the component (otherwise won't work with some themes such as Metal)        
+        gbc.anchor = GridBagConstraints.CENTER; // this is very important to center the component (otherwise won't work with some themes such as Metal)        
         backgroundPanel.add(timerPanel, gbc);
         // Set background image (tomato) in a button to be able to add an action to it
         final JButton pomodoroButton = new JButton();
@@ -1221,17 +1223,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setIcon(backgroundIcon);
         pomodoroButton.setBorder(null);
         pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
-        pomodoroButton.setOpaque(false);        
+        pomodoroButton.setOpaque(false);
         pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*pomodoroButton.addMouseListener(new MouseAdapter() {
 
-            // click
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                timerPanel.switchPomodoroCompliance();
-            }
-        });*/
+         // click
+         @Override
+         public void mouseClicked(MouseEvent e) {
+         timerPanel.switchPomodoroCompliance();
+         }
+         });*/
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
         pomodoroButton.setPreferredSize(new Dimension(250, 240));
@@ -1239,7 +1241,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
         pomodoroButton.setVerticalAlignment(verticalAlignment);
         pomodoroButton.setHorizontalAlignment(horizontalAlignment);
-
         backgroundPanel.add(pomodoroButton, gbc);
 
         return backgroundPanel;

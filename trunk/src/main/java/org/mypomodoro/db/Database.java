@@ -162,7 +162,7 @@ public class Database {
                 + "always_on_top BOOLEAN DEFAULT 0, "
                 + "agile_mode BOOLEAN DEFAULT 1, "
                 + "plain_hours BOOLEAN DEFAULT 1, "
-                + "recall BOOLEAN DEFAULT 0, "
+                + "backinfront BOOLEAN DEFAULT 0, "
                 + "theme TEXT" + ");";
         update(createPreferencesTableSQL);
         initPreferencesTable();
@@ -176,7 +176,7 @@ public class Database {
                 String insertPreferencesSQL = "INSERT INTO preferences ("
                         + "pom_length,short_break_length,long_break_length,"
                         + "max_nb_pom_per_activity,max_nb_pom_per_day,nb_pom_per_set,"
-                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode,plain_hours,recall,theme) "
+                        + "ticking,ringing,locale,system_tray,system_tray_msg,always_on_top,agile_mode,plain_hours,backinfront,theme) "
                         + "VALUES ("
                         + "25,5,20,20,10,4,1,1,'en_US',1,1,0,1,1,0,'" + UIManager.getSystemLookAndFeelClassName() + "');";
                 update(insertPreferencesSQL);

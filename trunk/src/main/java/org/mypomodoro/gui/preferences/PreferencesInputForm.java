@@ -58,7 +58,7 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox systemTrayBox;
     protected final JCheckBox systemTrayMessageBox;
     protected final JCheckBox alwaysOnTopBox;
-    protected final JCheckBox recallBox;
+    protected final JCheckBox backInFrontBox;
     protected final JCheckBox agileModeBox;
     protected final JCheckBox pomodoroModeBox;
     protected final JCheckBox plainHoursBox;
@@ -186,10 +186,10 @@ public class PreferencesInputForm extends JPanel {
                 controlPanel.clearValidation();
             }
         });
-        recallBox = new JCheckBox(
-                Labels.getString("PreferencesPanel.Recall"),
-                Main.preferences.getRecall());
-        recallBox.addActionListener(new ActionListener() {
+        backInFrontBox = new JCheckBox(
+                Labels.getString("PreferencesPanel.Back In Front"),
+                Main.preferences.getBackInFront());
+        backInFrontBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -262,58 +262,45 @@ public class PreferencesInputForm extends JPanel {
         });
         // Themes
         // http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-        // About custom laf: http://wiki.netbeans.org/FaqCustomLaf
-        // To switch from one theme to another: SwingUtilities.updateComponentTreeUI(this); pack();
-        // To load a theme: -Dswing.defaultlaf=net.sourceforge.napkinlaf.NapkinLookAndFeel
-        // Lafs that work well with mAP
+        // About custom laf: http://wiki.netbeans.org/FaqCustomLaf                
         // Napkin: UIManager.setLookAndFeel("net.sourceforge.napkinlaf.NapkinLookAndFeel"); (enable dependency in pom.xml)
         // (with Napkin, the play button does not work at all)
         // NimRod: UIManager.setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel"); (enable dependency in pom.xml)
         // Kunststoff: UIManager.setLookAndFeel(new KunststoffLookAndFeel()); (enable dependency in pom.xml)
-        // (Kunststoff is an enhanced version of Metal but not quite as good)
         // JGoodies: UIManager.setLookAndFeel(new Plastic3DLookAndFeel()); (enable dependency in pom.xml)
         // TinyLaf: UIManager.setLookAndFeel("net.sf.tinylaf.TinyLookAndFeel"); (enable dependency in pom.xml)
         // Metal: UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); (same as cross platform)
-        // GT: UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel"); (same as System on Linux)        
-        // Nimbus: UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"); (if it exists in the jre)
-        // InfoNode: UIManager.setLookAndFeel(new InfoNodeLookAndFeel());                 
-        // Other laf that don't work too well with mAP
-        // Substance: UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel()); (enable dependency in pom.xml)
-        // Motif: UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");                
+        // GT: UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel"); (same as System - Linux only)
+        // Motif: UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel"); (same as System - Solaris only)
+        // Nimbus: UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        // InfoNode: UIManager.setLookAndFeel(new InfoNodeLookAndFeel());
+        // Substance: UIManager.setLookAndFeel(new SubstanceCremeLookAndFeel()); (enable dependency in pom.xml)                        
         // Tonic: UIManager.setLookAndFeel("com.digitprop.tonic.TonicLookAndFeel"); (enable dependency in pom.xml)
         // WebLaf: UIManager.setLookAndFeel("com.alee.laf.WebLookAndFeel"); (enable dependency in pom.xml)
-        /* Skin: (enable dependency in pom.xml)
-         try {
-         Skin theSkinToUse = SkinLookAndFeel.loadThemePack("themepack.zip");
-         SkinLookAndFeel.setSkin(theSkinToUse);
-         UIManager.setLookAndFeel(new SkinLookAndFeel());
-         } catch (Exception ex) {
-         }
-         */
+        // JTatoo: themes.add("com.jtattoo.plaf.smart.SmartLookAndFeel"); (enable dependency in pom.xml)
         ArrayList<String> themes = new ArrayList<String>();
         if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
             themes.add(UIManager.getSystemLookAndFeelClassName()); // Windows / GTK / Motif
         }
         themes.add(UIManager.getCrossPlatformLookAndFeelClassName()); // Metal
         /* Nimbus laf doesn't work well with mAP
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    themes.add(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ignored) {
-            // Nimbus is not available
-        }*/
+         try {
+         for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+         if ("Nimbus".equals(info.getName())) {
+         themes.add(info.getClassName());
+         break;
+         }
+         }
+         } catch (Exception ignored) {
+         // Nimbus is not available
+         }*/
         themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel"); // NimROD
-        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies
-        //themes.add("com.jtattoo.plaf.smart.SmartLookAndFeel"); // JTatoo
+        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies         
         //themes.add("com.alee.laf.WebLookAndFeel"); // WebLAF
         // Quaqua
         // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
         //if (SystemUtils.IS_OS_MAC_OSX) {
-        //themes.add("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+        // themes.add("ch.randelshofer.quaqua.QuaquaLookAndFeel");
         //}
         themesComboBox = new JComboBox(themes.toArray());
         for (int i = 0; i < themes.size(); i++) {
@@ -327,19 +314,24 @@ public class PreferencesInputForm extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                /* The following block has been commented because it doesn't work well, and doesn't work at all with Metal (cross platform) laf
-                try {
-                    // Show look and feel at run time
-                    UIManager.setLookAndFeel((String)themesComboBox.getSelectedItem());
-                    SwingUtilities.updateComponentTreeUI(Main.gui);
-                    Main.gui.pack();*/
-                    controlPanel.enableSaveButton();
-                    controlPanel.clearValidation();
+                /*
+                 // The following block has been commented because it doesn't work well, and doesn't work at all with Metal (cross platform) laf
+                 // The problem here is that some Look and Feel classes are subclasses of MetalLookAndFeel. 
+                 // The color theme is a static field in the MetalLookAndFeel, which means that all instances of KunststoffLookAndFeel and MetalLookAndFeel are using one and the same color theme. 
+                 // JDK 7: To get the default metal color theme when switching to the Metal Look&Feel you will have to insert a line like this:
+                 // myMetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme())
+                 try {
+                 // Show look and feel at run time
+                 UIManager.setLookAndFeel((String)themesComboBox.getSelectedItem());
+                 SwingUtilities.updateComponentTreeUI(Main.gui);
+                 Main.gui.pack();*/
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
                 /*} catch (ClassNotFoundException ignored) {
-                } catch (InstantiationException ignored) {
-                } catch (IllegalAccessException ignored) {
-                } catch (UnsupportedLookAndFeelException ignored) {
-                }*/
+                 } catch (InstantiationException ignored) {
+                 } catch (IllegalAccessException ignored) {
+                 } catch (UnsupportedLookAndFeelException ignored) {
+                 }*/
             }
         });
         gbc.gridx = 0;
@@ -466,7 +458,7 @@ public class PreferencesInputForm extends JPanel {
         alwaysOnTop.add(alwaysOnTopBox, gbcAlwaysOnTop);
         gbcAlwaysOnTop.gridx = 1;
         gbcAlwaysOnTop.gridy = 0;
-        alwaysOnTop.add(recallBox, gbcAlwaysOnTop);
+        alwaysOnTop.add(backInFrontBox, gbcAlwaysOnTop);
         add(alwaysOnTop, gbc);
     }
 

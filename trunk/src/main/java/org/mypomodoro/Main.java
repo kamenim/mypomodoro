@@ -36,7 +36,6 @@ import org.mypomodoro.model.Preferences;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.ProgressBar;
 
 /**
  * Main Application Starter
@@ -52,7 +51,7 @@ public class Main {
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // Preferences
-    public static Preferences preferences = new Preferences();    
+    public static Preferences preferences = new Preferences();
     // GUI
     public static MainPanel gui;
     private static Font font;
@@ -88,6 +87,14 @@ public class Main {
          new RestartMac(1);
          return;
          }*/
+        // This must be done before setting the look and feel
+        // See http://alvinalexander.com/apple/mac/java-mac-native-look/Putting_your_application_na.shtml
+        /*if (SystemUtils.IS_OS_MAC_OSX) {
+         // take the menu bar off the jframe
+         System.setProperty("apple.laf.useScreenMenuBar", "true");
+         // set the name of the application menu item
+         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "myAgilePomodoro");
+         }*/
         // Display GUI
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -99,20 +106,20 @@ public class Main {
                     String theme = preferences.getTheme();
                     UIManager.setLookAndFeel(theme);
                 } catch (Exception ex) {
-                    logger.error("Using the System Look and Feel library to fix the following issue: ", ex);
+                    logger.error("Using the System Look and Feel library to fix the following issue...", ex);
                     try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     } catch (Exception ignored) {
-                         // should never happen
+                        // should never happen
                     }
-                }                
+                }
                 // Set global font (before intanstiating the components and the gui)
                 // This must be done AFTER the setLookAndFeel for the font to be also set on OptionPane dialog... (don't ask)                
                 if (font == null) { // In case , Arial Unicode MS isn't installed; let's hope the default OS font is unicode
                     font = new JPanel().getFont().deriveFont(Font.PLAIN, 15f);
                     logger.error("Arial Unicode MS not supported. Replaced with default System font.");
                 }
-                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));                
+                setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)
                 UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); // colour of the background // this does not work
                 UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); // colour of progress bar

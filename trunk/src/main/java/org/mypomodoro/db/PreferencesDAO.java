@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.UIManager;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 
 public class PreferencesDAO {
 
@@ -73,13 +72,13 @@ public class PreferencesDAO {
                     Main.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1);
                     Main.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
                     Main.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
-                    Main.preferences.setRecall(rs.getInt("recall") == 1);
+                    Main.preferences.setBackInFront(rs.getInt("backinfront") == 1);
                     Main.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
                 logger.error("Fixing following issue... Done", ex);
                 // Here we migrate db version 3.0, 3.1, 3.2 to 3.3
-                database.update("ALTER TABLE preferences ADD recall BOOLEAN DEFAULT 0;");
+                database.update("ALTER TABLE preferences ADD backinfront BOOLEAN DEFAULT 0;");
                 database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + UIManager.getSystemLookAndFeelClassName() + "';");
             } finally {
                 try {
@@ -109,7 +108,7 @@ public class PreferencesDAO {
                 + "always_on_top = " + (Main.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
                 + "agile_mode = " + (Main.preferences.getAgileMode() ? 1 : 0) + ", "
                 + "plain_hours = " + (Main.preferences.getPlainHours() ? 1 : 0) + ", "
-                + "recall = " + (Main.preferences.getRecall() ? 1 : 0) + ", "
+                + "backinfront = " + (Main.preferences.getBackInFront() ? 1 : 0) + ", "
                 + "theme = '" + Main.preferences.getTheme().toString() + "'" + ";";
         database.lock();
         try {

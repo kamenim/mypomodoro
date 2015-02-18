@@ -69,11 +69,11 @@ public final class MainPanel extends JFrame {
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
     public static ProgressBar progressBar = new ProgressBar();
-            
+
     public PreferencesPanel getPreferencesPanel() {
         return preferencesPanel;
     }
-            
+
     public SplashScreen getSplashScreen() {
         return splashScreen;
     }
@@ -124,7 +124,7 @@ public final class MainPanel extends JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() > 0) { // single left click
-                        if(!isVisible()) {
+                        if (!isVisible()) {
                             setVisible(true);
                             setExtendedState(JFrame.NORMAL);
                         } else {
@@ -179,8 +179,8 @@ public final class MainPanel extends JFrame {
 
     public final void setWindow(JPanel e) {
         /*if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
-            ((IListPanel) e).refresh();
-        }*/
+         ((IListPanel) e).refresh();
+         }*/
         windowPanel.showPanel(e.getClass().getName());
     }
 
@@ -203,7 +203,7 @@ public final class MainPanel extends JFrame {
             System.exit(0);
         }
     }
-    
+
     public static void updateViews() {
         SwingUtilities.invokeLater(new Runnable() {
 

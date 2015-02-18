@@ -104,14 +104,12 @@ public final class Preferences {
     public static final boolean PLAIN = true;
     private boolean plainHours = PLAIN;
     /**
-     * Recall
-     * put app back in front
+     * Back In Front put app back in front
      */
-    public static final boolean RECALL = false;
-    private boolean recall = RECALL;
+    public static final boolean BACKINFRONT = false;
+    private boolean backInFront = BACKINFRONT;
     /**
-     * Theme
-     * Class name of the look and feel
+     * Theme Class name of the look and feel
      */
     public static final String THEME = UIManager.getSystemLookAndFeelClassName();
     private String theme = THEME;
@@ -172,11 +170,11 @@ public final class Preferences {
     public boolean getPlainHours() {
         return plainHours;
     }
-    
-    public boolean getRecall() {
-        return recall;
+
+    public boolean getBackInFront() {
+        return backInFront;
     }
-    
+
     public String getTheme() {
         return theme;
     }
@@ -237,11 +235,11 @@ public final class Preferences {
     public void setPlainHours(boolean value) {
         plainHours = value;
     }
-    
-    public void setRecall(boolean value) {
-        recall = value;
+
+    public void setBackInFront(boolean value) {
+        backInFront = value;
     }
-    
+
     public void setTheme(String value) {
         theme = value;
     }

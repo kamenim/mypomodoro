@@ -43,7 +43,7 @@ import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 public class PreferencesPanel extends JPanel {
-    
+
     public static Labels labels;
     public static DateUtil dateUtil;
     public JButton saveButton;
@@ -54,7 +54,7 @@ public class PreferencesPanel extends JPanel {
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel;
 
-    public PreferencesPanel() {        
+    public PreferencesPanel() {
         Locale locale = new Locale(Main.preferences.getLocale().getLanguage(),
                 Main.preferences.getLocale().getCountry(), Main.preferences.getLocale().getVariant());
         labels = new Labels(locale);
@@ -136,7 +136,7 @@ public class PreferencesPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
-                preferencesInputFormPanel.recallBox.setSelected(false);
+                preferencesInputFormPanel.backInFrontBox.setSelected(false);
                 preferencesInputFormPanel.agileModeBox.setSelected(true);
                 preferencesInputFormPanel.pomodoroModeBox.setSelected(false);
                 preferencesInputFormPanel.plainHoursBox.setSelected(true);
@@ -221,10 +221,10 @@ public class PreferencesPanel extends JPanel {
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
-        preferences.setRecall(preferencesInputFormPanel.recallBox.isSelected());
+        preferences.setBackInFront(preferencesInputFormPanel.backInFrontBox.isSelected());
         preferences.setAgileMode(preferencesInputFormPanel.agileModeBox.isSelected());
         preferences.setPlainHours(preferencesInputFormPanel.plainHoursBox.isSelected());
-        preferences.setTheme((String)preferencesInputFormPanel.themesComboBox.getSelectedItem());
+        preferences.setTheme((String) preferencesInputFormPanel.themesComboBox.getSelectedItem());
         preferences.updatePreferences();
     }
 }

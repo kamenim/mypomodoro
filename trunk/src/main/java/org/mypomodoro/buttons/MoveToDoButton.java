@@ -84,7 +84,7 @@ public class MoveToDoButton extends TabPanelButton {
                                 }
                             }
                             panel.move(selectedToDo);
-                            panel.removeRow(row);                        
+                            panel.removeRow(row);
                             Main.gui.getActivityListPanel().insertRow(selectedToDo);
                             increment++;
                             final int progressValue = increment;

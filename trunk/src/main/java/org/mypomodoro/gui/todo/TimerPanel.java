@@ -91,8 +91,7 @@ public class TimerPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.1;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.SOUTH;
         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
         pauseButton.setMargin(new Insets(0, 20, 0, 20)); // inner margin
         pauseButton.setFocusPainted(false); // removes borders around icon
@@ -132,7 +131,7 @@ public class TimerPanel extends JPanel {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
-        //gbc.weighty = 0.1;
+        gbc.weighty = 0.1;
         gbc.anchor = GridBagConstraints.EAST;
         timeMinus.setVisible(true); // this is a TransparentButton
         timeMinus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
@@ -143,8 +142,9 @@ public class TimerPanel extends JPanel {
     private void addPomodoroTimerLabel() {
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.weightx = 0.1;
+        gbc.weighty = 0.1;
         gbc.fill = GridBagConstraints.NONE;
-        //gbc.weighty = 0.1;
         gbc.anchor = GridBagConstraints.CENTER;
         pomodoroTime.setFont(pomodoroTime.getFont().deriveFont(40f));
         add(pomodoroTime, gbc);
@@ -155,7 +155,7 @@ public class TimerPanel extends JPanel {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.1;
-        //gbc.weighty = 0.1;
+        gbc.weighty = 0.1;
         gbc.anchor = GridBagConstraints.WEST;
         timePlus.setVisible(true); // this is a TransparentButton
         timePlus.setMargin(new Insets(1, 1, 1, 1)); // inner margin
@@ -167,9 +167,8 @@ public class TimerPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.13; // this will center the counter and give some spaces to the start and pause buttons
         gbc.gridwidth = 3;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.NORTH;
         startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
         startButton.setVisible(true);
         startButton.setMargin(new Insets(0, 20, 0, 20)); // inner margin

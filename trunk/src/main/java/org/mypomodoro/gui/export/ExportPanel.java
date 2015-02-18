@@ -58,7 +58,6 @@ import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
-import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;

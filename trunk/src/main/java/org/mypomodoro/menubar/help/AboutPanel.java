@@ -113,7 +113,7 @@ public class AboutPanel extends JDialog {
         gbcpanel.gridy = 1;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JButton checkButton = new JButton(
-                Labels.getString("AboutPanel.Check for Updates"));        
+                Labels.getString("AboutPanel.Check for Updates"));
         checkButton.setFocusPainted(false);
         checkButton.addActionListener(new ActionListener() {
 

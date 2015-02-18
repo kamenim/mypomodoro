@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+import org.mypomodoro.Main;
 
 /**
  * Transparent button (including text and icon)
@@ -70,10 +71,10 @@ public class TransparentButton extends JButton {
     public void setVisible(boolean aFlag) {
         if (aFlag) {
             alpha = 1.0f;
-            // must be setOpaque(true) to make the button opaque with Win XP classic theme and lafs other than system and cross platform            
-            if (CheckWindowsClassicTheme.isWindowsClassicLAF()
-                    || (!UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName())
-                    && !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getCrossPlatformLookAndFeelClassName()))) {                
+            // must be setOpaque(true) to make the button opaque with some look adn feel and Win XP classic theme            
+            if (!Main.preferences.getTheme().equalsIgnoreCase("com.alee.laf.WebLookAndFeel")
+                    && (CheckWindowsClassicTheme.isWindowsClassicLAF()
+                    || !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName()))) {
                 setOpaque(true);
             } else {
                 setOpaque(false); // nice rounded button on Win7 aero

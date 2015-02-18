@@ -21,9 +21,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 /**
@@ -57,9 +55,6 @@ public class CustomTableHeader extends JTableHeader {
          }
          });
          */
-        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getDefaultRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        setDefaultRenderer(renderer);
     }
 
     @Override
