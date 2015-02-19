@@ -1231,8 +1231,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
          });*/
         // set minimum and preferred sizes so that the size of the image
         // does not affect the layout size
-        pomodoroButton.setPreferredSize(new Dimension(250, 240));
-        pomodoroButton.setMinimumSize(new Dimension(250, 240));
+        pomodoroButton.setPreferredSize(new Dimension(247, 239));
+        pomodoroButton.setMinimumSize(new Dimension(247, 239));
 
         pomodoroButton.setVerticalAlignment(verticalAlignment);
         pomodoroButton.setHorizontalAlignment(horizontalAlignment);

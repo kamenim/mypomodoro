@@ -31,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.mypomodoro.Main;
@@ -285,20 +286,19 @@ public class PreferencesInputForm extends JPanel {
         }
         themes.add(UIManager.getCrossPlatformLookAndFeelClassName()); // Metal
         /*for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            System.err.println("theme = " + info.getName());
-        }*/
-        /* Nimbus laf doesn't work well with mAP
-         try {
-         for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-        
-         if ("Nimbus".equals(info.getName())) {
-         themes.add(info.getClassName());
-         break;
-         }
-         }
-         } catch (Exception ignored) {
-         // Nimbus is not available
+         System.err.println("theme = " + info.getClassName());
          }*/
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+
+                if ("Nimbus".equals(info.getName())) {
+                    themes.add(info.getClassName()); // Nimbus
+                    break;
+                }
+            }
+        } catch (Exception ignored) {
+            // Nimbus not available
+        }
         themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel"); // NimROD
         themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies  
         themes.add("com.pagosoft.plaf.PgsLookAndFeel"); // Pgs
