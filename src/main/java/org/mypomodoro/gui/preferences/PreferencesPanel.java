@@ -136,7 +136,7 @@ public class PreferencesPanel extends JPanel {
                 preferencesInputFormPanel.systemTrayBox.setSelected(true);
                 preferencesInputFormPanel.systemTrayMessageBox.setSelected(true);
                 preferencesInputFormPanel.alwaysOnTopBox.setSelected(false);
-                preferencesInputFormPanel.backInFrontBox.setSelected(false);
+                preferencesInputFormPanel.bringToFrontBox.setSelected(false);
                 preferencesInputFormPanel.agileModeBox.setSelected(true);
                 preferencesInputFormPanel.pomodoroModeBox.setSelected(false);
                 preferencesInputFormPanel.plainHoursBox.setSelected(true);
@@ -221,7 +221,7 @@ public class PreferencesPanel extends JPanel {
         preferences.setSystemTray(preferencesInputFormPanel.systemTrayBox.isSelected());
         preferences.setSystemTrayMessage(preferencesInputFormPanel.systemTrayMessageBox.isSelected());
         preferences.setAlwaysOnTop(preferencesInputFormPanel.alwaysOnTopBox.isSelected());
-        preferences.setBackInFront(preferencesInputFormPanel.backInFrontBox.isSelected());
+        preferences.setBringToFront(preferencesInputFormPanel.bringToFrontBox.isSelected());
         preferences.setAgileMode(preferencesInputFormPanel.agileModeBox.isSelected());
         preferences.setPlainHours(preferencesInputFormPanel.plainHoursBox.isSelected());
         preferences.setTheme((String) preferencesInputFormPanel.themesComboBox.getSelectedItem());
