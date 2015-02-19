@@ -269,8 +269,10 @@ public class Pomodoro {
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)
-                if (Main.preferences.getBackInFront()) {
+                if (Main.preferences.getBringToFront()) {
+                    // There is no guarantee the following will work on Linux (see http://stackoverflow.com/questions/309023/how-to-bring-a-window-to-the-front)
                     Main.gui.setVisible(true);
+                    Main.gui.toFront();
                     Main.gui.setExtendedState(JFrame.NORMAL); // Note: full screen shrinks to preferred size (see Main) which is ok
                 }
                 // update details panel

@@ -137,6 +137,20 @@
       <artifactId>nimrodlf</artifactId>
       <version>1.1</version>
     </dependency>
+    <!-- PGS look and feel -->
+    <!-- Apache Software License 2: http://www.pagosoft.com/projects/pgslookandfeel/ --> 
+    <dependency>
+      <groupId>com.github.arnabk</groupId>
+      <artifactId>pgslookandfeel</artifactId>
+      <version>1.1.3</version>
+    </dependency>
+    <!-- Seaglass look and feel -->
+    <!-- Apache License 2.0: http://code.google.com/p/seaglass/ -->
+    <dependency>
+      <groupId>com.seaglasslookandfeel</groupId>
+      <artifactId>seaglasslookandfeel</artifactId>
+      <version>0.2</version>
+    </dependency>
     <!-- Substance look and feel -->
     <!--dependency>
       <groupId>org.java.net.substance</groupId>

@@ -73,6 +73,7 @@ public class TransparentButton extends JButton {
             alpha = 1.0f;
             // must be setOpaque(true) to make the button opaque with some look adn feel and Win XP classic theme            
             if (!Main.preferences.getTheme().equalsIgnoreCase("com.alee.laf.WebLookAndFeel")
+                    && !Main.preferences.getTheme().equalsIgnoreCase("com.seaglasslookandfeel.SeaGlassLookAndFeel")
                     && (CheckWindowsClassicTheme.isWindowsClassicLAF()
                     || !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName()))) {
                 setOpaque(true);

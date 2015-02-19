@@ -106,8 +106,8 @@ public final class Preferences {
     /**
      * Back In Front put app back in front
      */
-    public static final boolean BACKINFRONT = false;
-    private boolean backInFront = BACKINFRONT;
+    public static final boolean BRINGTOFRONT = false;
+    private boolean bringToFront = BRINGTOFRONT;
     /**
      * Theme Class name of the look and feel
      */
@@ -171,8 +171,8 @@ public final class Preferences {
         return plainHours;
     }
 
-    public boolean getBackInFront() {
-        return backInFront;
+    public boolean getBringToFront() {
+        return bringToFront;
     }
 
     public String getTheme() {
@@ -236,8 +236,8 @@ public final class Preferences {
         plainHours = value;
     }
 
-    public void setBackInFront(boolean value) {
-        backInFront = value;
+    public void setBringToFront(boolean value) {
+        bringToFront = value;
     }
 
     public void setTheme(String value) {

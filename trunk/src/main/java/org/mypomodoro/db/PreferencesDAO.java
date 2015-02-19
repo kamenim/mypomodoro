@@ -72,13 +72,13 @@ public class PreferencesDAO {
                     Main.preferences.setAlwaysOnTop(rs.getInt("always_on_top") == 1);
                     Main.preferences.setAgileMode(rs.getInt("agile_mode") == 1);
                     Main.preferences.setPlainHours(rs.getInt("plain_hours") == 1);
-                    Main.preferences.setBackInFront(rs.getInt("backinfront") == 1);
+                    Main.preferences.setBringToFront(rs.getInt("bring_to_front") == 1);
                     Main.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
                 logger.error("Fixing following issue... Done", ex);
                 // Here we migrate db version 3.0, 3.1, 3.2 to 3.3
-                database.update("ALTER TABLE preferences ADD backinfront BOOLEAN DEFAULT 0;");
+                database.update("ALTER TABLE preferences ADD bring_to_front BOOLEAN DEFAULT 0;");
                 database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + UIManager.getSystemLookAndFeelClassName() + "';");
             } finally {
                 try {
@@ -108,7 +108,7 @@ public class PreferencesDAO {
                 + "always_on_top = " + (Main.preferences.getAlwaysOnTop() ? 1 : 0) + ", "
                 + "agile_mode = " + (Main.preferences.getAgileMode() ? 1 : 0) + ", "
                 + "plain_hours = " + (Main.preferences.getPlainHours() ? 1 : 0) + ", "
-                + "backinfront = " + (Main.preferences.getBackInFront() ? 1 : 0) + ", "
+                + "bring_to_front = " + (Main.preferences.getBringToFront() ? 1 : 0) + ", "
                 + "theme = '" + Main.preferences.getTheme().toString() + "'" + ";";
         database.lock();
         try {

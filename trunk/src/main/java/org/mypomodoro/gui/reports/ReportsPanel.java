@@ -534,7 +534,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
         // diactivate/gray out all tabs (except import)
         if (table.getRowCount() == 0) {
-            for (int index = 0; index < controlPane.getComponentCount(); index++) {
+            for (int index = 0; index < controlPane.getTabCount(); index++) {
                 if (index == 3) { // import tab
                     controlPane.setSelectedIndex(index);
                     continue;
@@ -743,7 +743,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
                 // diactivate/gray out all tabs (except import)
                 if (table.getRowCount() == 0) {
-                    for (int index = 0; index < controlPane.getComponentCount(); index++) {
+                    for (int index = 0; index < controlPane.getTabCount(); index++) {
                         if (index == 3) { // import panel
                             controlPane.setSelectedIndex(index);
                             continue;
@@ -929,7 +929,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if ((Boolean) value) {
-                //renderer.setIcon(unplannedIcon);
                 if (!getFont().canDisplay('\u2714')) { // unicode tick
                     renderer.setText("U");
                 } else {
