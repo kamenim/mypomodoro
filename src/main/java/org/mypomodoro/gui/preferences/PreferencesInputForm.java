@@ -302,7 +302,7 @@ public class PreferencesInputForm extends JPanel {
         themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel"); // NimROD
         themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies  
         themes.add("com.pagosoft.plaf.PgsLookAndFeel"); // Pgs
-        themes.add("com.seaglasslookandfeel.SeaGlassLookAndFeel"); // Seaglass        
+        themes.add("com.seaglasslookandfeel.SeaGlassLookAndFeel"); // Seaglass
         // Quaqua
         // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
         //if (SystemUtils.IS_OS_MAC_OSX) {
