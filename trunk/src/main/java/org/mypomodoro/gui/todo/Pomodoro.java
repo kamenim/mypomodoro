@@ -149,7 +149,7 @@ public class Pomodoro {
 
     public void resume() {
         pomodoroTimer.start();
-        if (Main.preferences.getTicking() && !isMute) {
+        if (inPomodoro() && Main.preferences.getTicking() && !isMute) {
             tick();
         }
         if (inPomodoro() && isSystemTray()) {

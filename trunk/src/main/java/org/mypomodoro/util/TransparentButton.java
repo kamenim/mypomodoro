@@ -75,6 +75,7 @@ public class TransparentButton extends JButton {
             if (!Main.preferences.getTheme().equalsIgnoreCase("com.alee.laf.WebLookAndFeel")
                     && !Main.preferences.getTheme().equalsIgnoreCase("com.seaglasslookandfeel.SeaGlassLookAndFeel")
                     && !Main.preferences.getTheme().equalsIgnoreCase("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
+                    && !Main.preferences.getTheme().equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
                     && (CheckWindowsClassicTheme.isWindowsClassicLAF()
                     || !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName()))) {
                 setOpaque(true);
