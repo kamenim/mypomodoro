@@ -24,7 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -196,6 +196,11 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
+        table.setBackground(ColorUtil.WHITE);
+        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        table.setForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);
+        
         // Add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");
@@ -310,7 +315,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         // Activate Control A
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), "Control A");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 
             @Override
@@ -337,12 +342,12 @@ public class CheckPanel extends JPanel implements IListPanel {
             }
         }
         for (int i = 1; i <= 3; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override

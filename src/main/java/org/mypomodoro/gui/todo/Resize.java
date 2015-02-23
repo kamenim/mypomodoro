@@ -128,4 +128,18 @@ public class Resize {
         Main.gui.getReportListPanel().showCurrentSelectedRow();
         Main.gui.getChartTabbedPanel().showCurrentSelectedRow();
     }
+
+    /**
+     * Force resizing to original size
+     */
+    public void resizeToOriginalSize() {
+        if (Main.gui.getToDoPanel().isVisible()) {
+            if (viewCount == 2) { // resize two times
+                resize();
+                resize();
+            } else if (viewCount == 3) { // resize one time
+                resize();
+            }
+        }
+    }
 }

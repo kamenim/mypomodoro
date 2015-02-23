@@ -24,7 +24,6 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -352,7 +351,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         }
         am.put("Delete", new deleteAction(this));
         // Activate Shift + '>'                
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Add To ToDo List");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
         class moveAction extends AbstractAction {
 
             final IListPanel panel;
@@ -369,7 +368,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         }
         am.put("Add To ToDo List", new moveAction(this));
         // Activate Control A
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), "Control A");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 
             @Override
@@ -396,12 +395,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         }
         for (int i = 1; i <= 6; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
 
         // Activate Control T (create new task)        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "Control T");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK), "Control T");
         class create extends AbstractAction {
 
             @Override
@@ -409,14 +408,20 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 Activity newActivity = new Activity();
                 newActivity.setEstimatedPoms(0);
                 newActivity.setName(Labels.getString("Common.Task"));
-                addActivity(newActivity);
+                addActivity(newActivity); // save activity in database
+                newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                 insertRow(newActivity);
+                // Set the blinking cursor and the ability to type in right away
+                table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
+                table.setSurrendersFocusOnKeystroke(true); // focus
+                table.getEditorComponent().requestFocus(); 
+                controlPane.setSelectedIndex(2); // open edit tab               
             }
         }
         am.put("Control T", new create());
 
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), "Duplicate");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -432,7 +437,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         copiedActivity.setActualPoms(0);
                         copiedActivity.setOverestimatedPoms(0);
                         addActivity(copiedActivity, new Date(), new Date(0));
+                        copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                         insertRow(copiedActivity);
+                        // Set the blinking cursor and the ability to type in right away
+                        table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
+                        table.setSurrendersFocusOnKeystroke(true); // focus
+                        table.getEditorComponent().requestFocus(); 
+                        controlPane.setSelectedIndex(2); // open edit tab
+                        
                     } catch (CloneNotSupportedException ignored) {
                     }
                 }
@@ -441,7 +453,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         am.put("Duplicate", new duplicate());
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -939,7 +951,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);            
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);

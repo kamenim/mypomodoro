@@ -25,7 +25,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -208,8 +207,8 @@ public class CommentPanel extends JPanel {
         });
 
         // Override SHIFT + '>' and SHIFT + '<' to prevent conflicts with list SHIFT + '>' and SHIFT + '<' shortcuts  
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "donothing");
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "donothing");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "donothing");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "donothing");
         class doNothing extends AbstractAction {
 
             @Override
@@ -220,7 +219,7 @@ public class CommentPanel extends JPanel {
         informationArea.getActionMap().put("donothing", new doNothing());
 
         // Override Control + V and SHIFT + INSERT shortcut to get rid of all formatting       
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK), "Shift Insert");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.SHIFT_MASK), "Shift Insert");
         informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK), "Control V");
         class paste extends AbstractAction {
 
@@ -249,8 +248,8 @@ public class CommentPanel extends JPanel {
         informationArea.getActionMap().put("Control V", new paste());
 
         // Ordered and unordered lists
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK), "Create List");
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK), "Create Ordered List");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK), "Create List");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "Create Ordered List");
         class createList extends AbstractAction {
 
             private String type = HTML.Tag.UL.toString(); // unordered
@@ -269,6 +268,7 @@ public class CommentPanel extends JPanel {
                 try {
                     int start = informationArea.getSelectionStart();
                     String list = "<" + type + "><li></li></" + type + ">";
+                    list += "<p style=\"margin-top: 0\"></p>"; // make sure we have a placeholder under the list to keep writing
                     informationArea.insertText(start, list, 1, tag);
                     informationArea.setCaretPosition(start + 1);
                     displaySaveCancelButton();
@@ -284,7 +284,7 @@ public class CommentPanel extends JPanel {
         informationArea.getActionMap().put("Create List", new createList());
         informationArea.getActionMap().put("Create Ordered List", new createList(HTML.Tag.OL));
 
-        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), "Remove List item");
+        informationArea.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Remove List item");
         class removeList extends AbstractAction {
 
             public removeList() {

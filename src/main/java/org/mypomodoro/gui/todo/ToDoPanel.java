@@ -25,7 +25,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -75,6 +74,7 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.IListPanel;
+import static org.mypomodoro.gui.MainPanel.resize;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -229,6 +229,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
+        table.setBackground(ColorUtil.WHITE);
+        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        table.setForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);
+        
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
@@ -359,7 +364,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = table.getActionMap();
         // Activate Shift + '>'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.SHIFT_MASK), "Complete");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Complete");
         class completeAction extends AbstractAction {
 
             final ToDoPanel panel;
@@ -376,7 +381,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
         am.put("Complete", new completeAction(this));
         // Activate Shift + '<'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "Move Back To Activity List");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Move Back To Activity List");
         class moveBackAction extends AbstractAction {
 
             final ToDoPanel panel;
@@ -393,7 +398,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
         am.put("Move Back To Activity List", new moveBackAction(this));
         // Activate Control A        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), "Control A");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 
             @Override
@@ -420,12 +425,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         for (int i = 1; i <= 8; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
 
         // Activate Control U (quick unplanned task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK), "Control U");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Control U");
         class createUnplanned extends AbstractAction {
 
             @Override
@@ -435,13 +440,19 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 unplanned.setIsUnplanned(true);
                 unplanned.setName(Labels.getString("Common.Unplanned"));
                 addActivity(unplanned);
+                unplanned.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                 insertRow(unplanned);
+                // Set the blinking cursor and the ability to type in right away
+                table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+                table.setSurrendersFocusOnKeystroke(true); // focus
+                table.getEditorComponent().requestFocus(); 
+                controlPane.setSelectedIndex(2); // open edit tab
             }
         }
         am.put("Control U", new createUnplanned());
 
         // Activate Control I (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK), "Control I");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Control I");
         class createInternal extends AbstractAction {
 
             @Override
@@ -456,14 +467,20 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     interruption.setIsUnplanned(true);
                     interruption.setName(Labels.getString("ToDoListPanel.Internal"));
                     addActivity(interruption);
+                    interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                     insertRow(interruption);
+                    // Set the blinking cursor and the ability to type in right away
+                    table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+                    table.setSurrendersFocusOnKeystroke(true); // focus
+                    table.getEditorComponent().requestFocus(); 
+                    controlPane.setSelectedIndex(2); // open edit tab
                 }
             }
         }
         am.put("Control I", new createInternal());
 
         // Activate Control E (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK), "Control E");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Control E");
         class createExternal extends AbstractAction {
 
             @Override
@@ -478,14 +495,20 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     interruption.setIsUnplanned(true);
                     interruption.setName(Labels.getString("ToDoListPanel.External"));
                     addActivity(interruption);
+                    interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                     insertRow(interruption);
+                    // Set the blinking cursor and the ability to type in right away
+                    table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+                    table.setSurrendersFocusOnKeystroke(true); // focus
+                    table.getEditorComponent().requestFocus(); 
+                    controlPane.setSelectedIndex(2); // open edit tab
                 }
             }
         }
         am.put("Control E", new createExternal());
 
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), "Duplicate");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -515,7 +538,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         am.put("Duplicate", new duplicate());
 
         // Activate Control G (scroll back to the current running/selected task
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -857,7 +880,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
+                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
