@@ -24,7 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -203,6 +203,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
+        table.setBackground(ColorUtil.WHITE);
+        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        table.setForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);
+        
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 9] = Labels.getString("Common.Unplanned");
@@ -337,7 +342,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         }
         am.put("Delete", new deleteAction(this));
         // Activate Shift + '<'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.SHIFT_MASK), "Reopen");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Reopen");
         class reopenAction extends AbstractAction {
 
             final IListPanel panel;
@@ -354,7 +359,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         }
         am.put("Reopen", new reopenAction(this));
         // Activate Control A
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), "Control A");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
 
             @Override
@@ -381,12 +386,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         }
         for (int i = 1; i <= 5; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), InputEvent.CTRL_DOWN_MASK), "Tab" + i);
+            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
 
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), "Duplicate");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
         class duplicate extends AbstractAction {
 
             @Override
@@ -416,7 +421,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         am.put("Duplicate", new duplicate());
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
         class scrollBackToTask extends AbstractAction {
 
             @Override
