@@ -162,14 +162,6 @@ public class MergingPanel extends CreatePanel {
                         MainPanel.progressBar.setVisible(true);
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                        // Indicate reordoring by priority in progress bar
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
-                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-                            }
-                        });
                         // only now we can remove the merged tasks
                         int[] rows = panel.getTable().getSelectedRows();
                         int increment = 0;
@@ -185,8 +177,24 @@ public class MergingPanel extends CreatePanel {
                                 panel.delete(selectedToDo);
                                 panel.removeRow(row);
                                 increment++;
+                                final int progressValue = increment;
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                    
+                                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                    }
+                                });
                             }
                         }
+                        // Indicate reordoring by priority in progress bar
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                            }
+                        });
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                         panel.reorderByPriority();
@@ -201,10 +209,11 @@ public class MergingPanel extends CreatePanel {
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                         }
                         // Close progress bar
+                        final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {
