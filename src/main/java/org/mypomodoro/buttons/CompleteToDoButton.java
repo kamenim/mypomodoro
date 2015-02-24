@@ -69,30 +69,32 @@ public class CompleteToDoButton extends TabPanelButton {
                                     int increment = 0;
                                     int[] rows = panel.getTable().getSelectedRows();
                                     for (int row : rows) {
-                                        // removing a row requires decreasing the row index number
-                                        row = row - increment;
-                                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                        Activity selectedActivity = panel.getActivityById(id);
-                                        // excluding current running task
-                                        if (panel.getPomodoro().inPomodoro() && selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                            if (rows.length > 1) {
-                                                continue;
-                                            } else {
-                                                break;
+                                        if (!MainPanel.progressBar.isStopped()) {
+                                            // removing a row requires decreasing the row index number
+                                            row = row - increment;
+                                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                            Activity selectedActivity = panel.getActivityById(id);
+                                            // excluding current running task
+                                            if (panel.getPomodoro().inPomodoro() && selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                                if (rows.length > 1) {
+                                                    continue;
+                                                } else {
+                                                    break;
+                                                }
                                             }
+                                            panel.complete(selectedActivity);
+                                            panel.removeRow(row);
+                                            Main.gui.getReportListPanel().insertRow(selectedActivity);
+                                            increment++;
+                                            final int progressValue = increment;
+                                            SwingUtilities.invokeLater(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
+                                                }
+                                            });
                                         }
-                                        panel.complete(selectedActivity);
-                                        panel.removeRow(row);
-                                        Main.gui.getReportListPanel().insertRow(selectedActivity);
-                                        increment++;
-                                        final int progressValue = increment;
-                                        SwingUtilities.invokeLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
-                                                MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + (panel.getPomodoro().inPomodoro() ? Integer.toString(selectedRowCount - 1) : Integer.toString(selectedRowCount))); // task
-                                            }
-                                        });
                                     }
                                     //}
                                     // Indicate reordoring by priority in progress bar
@@ -122,6 +124,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                                     // hide progress bar
                                                     MainPanel.progressBar.getBar().setString(null);
                                                     MainPanel.progressBar.setVisible(false);
+                                                    MainPanel.progressBar.setStopped(false);
                                                 }
                                             }.start();
                                         }

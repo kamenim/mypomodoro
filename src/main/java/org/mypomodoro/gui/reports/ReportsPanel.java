@@ -140,7 +140,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                } else {
+                } else {                    
+                    if (row % 2 == 0) { // odd
+                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                    } else { // even
+                        ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
+                    }
                     ((JComponent) c).setBorder(null);
                 }
                 return c;

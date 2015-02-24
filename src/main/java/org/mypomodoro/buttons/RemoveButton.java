@@ -63,21 +63,23 @@ public class RemoveButton extends TabPanelButton {
                         int increment = 0;
                         int[] rows = panel.getTable().getSelectedRows();
                         for (int row : rows) {
-                            // removing a row requires decreasing the row index number
-                            row = row - increment;
-                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                            Activity selectedActivity = panel.getActivityById(id);
-                            ChartList.getList().remove(selectedActivity);
-                            panel.removeRow(row);
-                            increment++;
-                            final int progressValue = increment;
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
-                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
-                                }
-                            });
+                            if (!MainPanel.progressBar.isStopped()) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedActivity = panel.getActivityById(id);
+                                ChartList.getList().remove(selectedActivity);
+                                panel.removeRow(row);
+                                increment++;
+                                final int progressValue = increment;
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                    }
+                                });
+                            }
                         }
                         // Close progress bar
                         final int progressCount = increment;
@@ -96,6 +98,7 @@ public class RemoveButton extends TabPanelButton {
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
                                         MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
                             }

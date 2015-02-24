@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.MainPanel;
@@ -38,7 +39,11 @@ public class DeleteButton extends TabPanelButton {
 
     public DeleteButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
-        setToolTipText("DEL");
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+            setToolTipText("BACKSPACE");
+        } else {
+            setToolTipText("DEL");
+        }
         addActionListener(new ActionListener() {
 
             @Override
@@ -63,21 +68,23 @@ public class DeleteButton extends TabPanelButton {
                                 int increment = 0;
                                 int[] rows = panel.getTable().getSelectedRows();
                                 for (int row : rows) {
-                                    // removing a row requires decreasing  the row index number
-                                    row = row - increment;
-                                    Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                    Activity selectedActivity = panel.getActivityById(id);
-                                    panel.delete(selectedActivity);
-                                    panel.removeRow(row);
-                                    increment++;
-                                    final int progressValue = increment;
-                                    SwingUtilities.invokeLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
-                                            MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
-                                        }
-                                    });
+                                    if (!MainPanel.progressBar.isStopped()) {
+                                        // removing a row requires decreasing  the row index number
+                                        row = row - increment;
+                                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                        Activity selectedActivity = panel.getActivityById(id);
+                                        panel.delete(selectedActivity);
+                                        panel.removeRow(row);
+                                        increment++;
+                                        final int progressValue = increment;
+                                        SwingUtilities.invokeLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress
+                                                MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                            }
+                                        });
+                                    }
                                 }
                                 //}
                                 // Close progress bar
@@ -97,6 +104,7 @@ public class DeleteButton extends TabPanelButton {
                                                 // hide progress bar
                                                 MainPanel.progressBar.getBar().setString(null);
                                                 MainPanel.progressBar.setVisible(false);
+                                                MainPanel.progressBar.setStopped(false);
                                             }
                                         }.start();
                                     }

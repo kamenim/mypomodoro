@@ -140,14 +140,14 @@ public class Main {
                 gui.pack();
                 gui.setLocationRelativeTo(null); // center the component onscreen
                 gui.setVisible(true);
-                if (Main.preferences.getAlwaysOnTop()) {
+                if (preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
                 Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
                 Dimension mindGUI = new Dimension(780, 580);
                 gui.setPreferredSize(mindGUI);
                 gui.setSize(dGUI);
-                /* this may prevent the gui to be resizable
+                /* this prevents the gui from being resizable
                  gui.addComponentListener(new ComponentAdapter() {
                  @Override
                  public void componentResized(ComponentEvent event) {
