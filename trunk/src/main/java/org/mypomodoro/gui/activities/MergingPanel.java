@@ -171,15 +171,24 @@ public class MergingPanel extends CreatePanel {
                                 panel.delete(selectedActivity);
                                 panel.removeRow(row);
                                 increment++;
+                                final int progressValue = increment;
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                    
+                                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
+                                    }
+                                });
                             }
                         }
                         ActivityList.getList().add(newActivity);
                         Main.gui.getActivityListPanel().insertRow(newActivity);
                         // Close progress bar
+                        final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressCount + ")");
                                 new Thread() {
                                     @Override
                                     public void run() {

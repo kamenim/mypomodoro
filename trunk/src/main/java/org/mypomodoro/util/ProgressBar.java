@@ -53,7 +53,7 @@ public class ProgressBar extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         c.weightx = 0.1;
-        JButton stop = new JButton("stop");
+        JButton stop = new JButton(Labels.getString("ToDoListPanel.Stop"));
         stop.addActionListener(new ActionListener() {
 
             @Override
