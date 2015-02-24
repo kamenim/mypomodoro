@@ -174,16 +174,18 @@ public class MergingPanel extends CreatePanel {
                         int[] rows = panel.getTable().getSelectedRows();
                         int increment = 0;
                         for (int row : rows) {
-                            // removing a row requires decreasing the row index number
-                            row = row - increment;
-                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                            Activity selectedToDo = panel.getActivityById(id);
-                            if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
-                                continue;
+                            if (!MainPanel.progressBar.isStopped()) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedToDo = panel.getActivityById(id);
+                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                    continue;
+                                }
+                                panel.delete(selectedToDo);
+                                panel.removeRow(row);
+                                increment++;
                             }
-                            panel.delete(selectedToDo);
-                            panel.removeRow(row);
-                            increment++;
                         }
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
@@ -214,6 +216,7 @@ public class MergingPanel extends CreatePanel {
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
                                         MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
                             }

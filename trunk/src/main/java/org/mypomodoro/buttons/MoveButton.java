@@ -75,51 +75,53 @@ public class MoveButton extends TabPanelButton {
                         int increment = 0;
                         int[] rows = panel.getTable().getSelectedRows();
                         for (int row : rows) {
-                            // removing a row requires decreasing the row index number
-                            row = row - increment;
-                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                            Activity selectedActivity = panel.getActivityById(id);
-                            if (panel instanceof ActivitiesPanel && !Main.preferences.getAgileMode()) {
-                                String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
-                                if (selectedActivity.isDateInFuture()) {
-                                    String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
-                                    String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
-                                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                    if (reply == JOptionPane.NO_OPTION) {
-                                        continue; // go to the next one
-                                    } else if (reply == JOptionPane.CLOSED_OPTION) {
-                                        break;
+                            if (!MainPanel.progressBar.isStopped()) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedActivity = panel.getActivityById(id);
+                                if (panel instanceof ActivitiesPanel && !Main.preferences.getAgileMode()) {
+                                    String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
+                                    if (selectedActivity.isDateInFuture()) {
+                                        String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
+                                        String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
+                                        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                        if (reply == JOptionPane.NO_OPTION) {
+                                            continue; // go to the next one
+                                        } else if (reply == JOptionPane.CLOSED_OPTION) {
+                                            break;
+                                        }
+                                    }
+                                    if (isMaxNbTotalEstimatedPomReached(selectedActivity)) {
+                                        String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
+                                        String message = Labels.getString(
+                                                "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
+                                                Main.preferences.getMaxNbPomPerDay());
+                                        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
+                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                        if (reply != JOptionPane.YES_OPTION) {
+                                            break; // get out of the loop
+                                        }
                                     }
                                 }
-                                if (isMaxNbTotalEstimatedPomReached(selectedActivity)) {
-                                    String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
-                                    String message = Labels.getString(
-                                            "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
-                                            Main.preferences.getMaxNbPomPerDay());
-                                    int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                            title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                                    if (reply != JOptionPane.YES_OPTION) {
-                                        break; // get out of the loop
+                                panel.move(selectedActivity);
+                                panel.removeRow(row);
+                                if (panel instanceof ActivitiesPanel) {
+                                    Main.gui.getToDoPanel().insertRow(selectedActivity);
+                                } else if (panel instanceof ReportsPanel) { // reopen tasks
+                                    Main.gui.getActivityListPanel().insertRow(selectedActivity);
+                                }
+                                increment++;
+                                final int progressValue = increment;
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                    
+                                        MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
                                     }
-                                }
+                                });
                             }
-                            panel.move(selectedActivity);
-                            panel.removeRow(row);
-                            if (panel instanceof ActivitiesPanel) {
-                                Main.gui.getToDoPanel().insertRow(selectedActivity);
-                            } else if (panel instanceof ReportsPanel) { // reopen tasks
-                                Main.gui.getActivityListPanel().insertRow(selectedActivity);
-                            }
-                            increment++;
-                            final int progressValue = increment;
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                    
-                                    MainPanel.progressBar.getBar().setString(Integer.toString(progressValue) + " / " + Integer.toString(selectedRowCount)); // task
-                                }
-                            });
                         }
                         //}
                         // Close progress bar
@@ -139,6 +141,7 @@ public class MoveButton extends TabPanelButton {
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
                                         MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
                             }

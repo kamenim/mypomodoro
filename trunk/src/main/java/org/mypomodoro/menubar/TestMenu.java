@@ -91,90 +91,92 @@ public class TestMenu extends JMenu {
                         int reportListValue = 0;
                         final StringBuilder progressText = new StringBuilder();
                         for (int i = 0; i < nbTask; i++) {
-                            int iteration = Main.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
-                            if (iteration == -1 && Main.preferences.getAgileMode()) {
-                                iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1                               
-                            }
-                            final Activity a = new Activity(
-                                    "Place" + " " + (rand.nextInt(10) + 1),
-                                    "Author" + " " + (rand.nextInt(10) + 1),
-                                    tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
-                                    "",
-                                    (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
-                                    rand.nextInt(Main.preferences.getMaxNbPomPerActivity()) + 1,
-                                    Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
-                                    iteration,
-                                    (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
-                            a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
-                            a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
-                            int actual = rand.nextInt(a.getEstimatedPoms());
-                            if (a.getOverestimatedPoms() > 0) {
-                                actual = a.getEstimatedPoms() + rand.nextInt(a.getOverestimatedPoms());
-                            } else {
-                                actual += rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual); // give some weigth to actual so there are more real pomodoros for completed tasks
-                            }
-                            a.setActualPoms(actual);
-                            if (a.getIteration() == -1) {
-                                a.setStoryPoints(0);
-                            }
-                            if (a.isCompleted()) { // Tasks for the Report list                           
-                                actual = actual == 0 ? 1 : actual;
-                                if (rand.nextBoolean()) { // once in a while set finished
-                                    actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                            if (!MainPanel.progressBar.isStopped()) {
+                                int iteration = Main.preferences.getAgileMode() ? iterations[rand.nextInt(iterations.length)] : -1;
+                                if (iteration == -1 && Main.preferences.getAgileMode()) {
+                                    iteration = iterations[rand.nextInt(iterations.length)]; // reduce the occurence of iteration = -1                               
+                                }
+                                final Activity a = new Activity(
+                                        "Place" + " " + (rand.nextInt(10) + 1),
+                                        "Author" + " " + (rand.nextInt(10) + 1),
+                                        tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
+                                        "",
+                                        (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
+                                        rand.nextInt(Main.preferences.getMaxNbPomPerActivity()) + 1,
+                                        Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
+                                        iteration,
+                                        (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
+                                a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
+                                a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
+                                int actual = rand.nextInt(a.getEstimatedPoms());
+                                if (a.getOverestimatedPoms() > 0) {
+                                    actual = a.getEstimatedPoms() + rand.nextInt(a.getOverestimatedPoms());
+                                } else {
+                                    actual += rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual); // give some weigth to actual so there are more real pomodoros for completed tasks
                                 }
                                 a.setActualPoms(actual);
-                                // Dates
-                                // Date Added must be older than Date Completed
-                                // Date Completed of iteration N must be older than Date completed of iteration N+1
-                                Date dateCompleted;
-                                if (iteration == -1) {
-                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate(); // up to 35 days older than today
-                                } else {
-                                    dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
+                                if (a.getIteration() == -1) {
+                                    a.setStoryPoints(0);
                                 }
-                                Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
-                                ReportList.getList().add(a, dateAdded, dateCompleted);
-                                Main.gui.getReportListPanel().insertRow(a);
-                                reportListValue++;
-                            } else { // Tasks for the Activity and ToDo list
-                                if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
-                                    if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while set finished
+                                if (a.isCompleted()) { // Tasks for the Report list                           
+                                    actual = actual == 0 ? 1 : actual;
+                                    if (rand.nextBoolean()) { // once in a while set finished
                                         actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
-                                        a.setActualPoms(actual);
                                     }
-                                    if (a.getIteration() >= 0) {
-                                        a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
+                                    a.setActualPoms(actual);
+                                // Dates
+                                    // Date Added must be older than Date Completed
+                                    // Date Completed of iteration N must be older than Date completed of iteration N+1
+                                    Date dateCompleted;
+                                    if (iteration == -1) {
+                                        dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate(); // up to 35 days older than today
+                                    } else {
+                                        dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
                                     }
-                                    ToDoList.getList().add(a);
-                                    Main.gui.getToDoPanel().insertRow(a);
-                                    todoListValue++;
-                                } else { // Tasks for the Activity list
-                                    iteration = Main.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
-                                    a.setIteration(iteration);
-                                    a.setOverestimatedPoms(0);
-                                    a.setActualPoms(0);
-                                    ActivityList.getList().add(a, a.getDate());
-                                    Main.gui.getActivityListPanel().insertRow(a);
-                                    activityListValue++;
+                                    Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
+                                    ReportList.getList().add(a, dateAdded, dateCompleted);
+                                    Main.gui.getReportListPanel().insertRow(a);
+                                    reportListValue++;
+                                } else { // Tasks for the Activity and ToDo list
+                                    if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
+                                        if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while set finished
+                                            actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                                            a.setActualPoms(actual);
+                                        }
+                                        if (a.getIteration() >= 0) {
+                                            a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
+                                        }
+                                        ToDoList.getList().add(a);
+                                        Main.gui.getToDoPanel().insertRow(a);
+                                        todoListValue++;
+                                    } else { // Tasks for the Activity list
+                                        iteration = Main.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
+                                        a.setIteration(iteration);
+                                        a.setOverestimatedPoms(0);
+                                        a.setActualPoms(0);
+                                        ActivityList.getList().add(a, a.getDate());
+                                        Main.gui.getActivityListPanel().insertRow(a);
+                                        activityListValue++;
+                                    }
                                 }
+                                final int progressValue = i + 1;
+                                progressText.setLength(0); // reset string builder
+                                progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
+                                progressText.append(Integer.toString(activityListValue));
+                                progressText.append(" | ");
+                                progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
+                                progressText.append(Integer.toString(todoListValue));
+                                progressText.append(" | ");
+                                progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
+                                progressText.append(Integer.toString(reportListValue));
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
+                                        MainPanel.progressBar.getBar().setString(progressText.toString()); // task
+                                    }
+                                });
                             }
-                            final int progressValue = i + 1;
-                            progressText.setLength(0); // reset string builder
-                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
-                            progressText.append(Integer.toString(activityListValue));
-                            progressText.append(" | ");
-                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
-                            progressText.append(Integer.toString(todoListValue));
-                            progressText.append(" | ");
-                            progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
-                            progressText.append(Integer.toString(reportListValue));
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
-                                    MainPanel.progressBar.getBar().setString(progressText.toString()); // task
-                                }
-                            });
                         }
                         // Close progress bar
                         SwingUtilities.invokeLater(new Runnable() {
@@ -192,6 +194,7 @@ public class TestMenu extends JMenu {
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
                                         MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
 

@@ -163,13 +163,15 @@ public class MergingPanel extends CreatePanel {
                         int[] rows = panel.getTable().getSelectedRows();
                         int increment = 0;
                         for (int row : rows) {
-                            // removing a row requires decreasing the row index number
-                            row = row - increment;
-                            Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                            Activity selectedActivity = panel.getActivityById(id);
-                            panel.delete(selectedActivity);
-                            panel.removeRow(row);
-                            increment++;
+                            if (!MainPanel.progressBar.isStopped()) {
+                                // removing a row requires decreasing the row index number
+                                row = row - increment;
+                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                                Activity selectedActivity = panel.getActivityById(id);
+                                panel.delete(selectedActivity);
+                                panel.removeRow(row);
+                                increment++;
+                            }
                         }
                         ActivityList.getList().add(newActivity);
                         Main.gui.getActivityListPanel().insertRow(newActivity);
@@ -189,6 +191,7 @@ public class MergingPanel extends CreatePanel {
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
                                         MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
                             }

@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -143,6 +144,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
+                    if (row % 2 == 0) { // odd
+                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                    } else { // even
+                        ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
+                    }
                     ((JComponent) c).setBorder(null);
                 }
                 return c;

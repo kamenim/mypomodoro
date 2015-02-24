@@ -21,6 +21,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -31,6 +34,7 @@ import javax.swing.JProgressBar;
 public class ProgressBar extends JPanel {
 
     private final JProgressBar bar = new JProgressBar();
+    private boolean stopped = false;
 
     public ProgressBar() {
         setVisible(false);
@@ -42,10 +46,33 @@ public class ProgressBar extends JPanel {
         //bar.setOpaque(true); // required (?) for custom colors to be displayed
         bar.setStringPainted(true); // required for custom colors to be displayed
         bar.setFont(getFont().deriveFont(Font.BOLD));
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.9;
         add(bar, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weightx = 0.1;
+        JButton stop = new JButton("stop");
+        stop.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopped = true;
+            }
+        });
+        add(stop, c);
     }
 
     public JProgressBar getBar() {
         return bar;
+    }
+    
+    public boolean isStopped() {
+        return stopped;
+    }
+    
+    public void setStopped(boolean aFlag) {
+        stopped = aFlag;
     }
 }
