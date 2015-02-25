@@ -56,15 +56,16 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
         });
     }
 
+    // Do no set the foreground - let themes default font color take care of this (eg JTatoo Noire theme)
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         setBackground(table.getSelectionBackground());
-        setForeground(ColorUtil.BLACK);
+        //setForeground(ColorUtil.BLACK);
         comboBox.setFont(getFont().deriveFont(Font.BOLD));
-        comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.BLACK); // editable combo box
-        comboBox.setForeground(ColorUtil.BLACK);
+        //comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.BLACK); // editable combo box
+        //comboBox.setForeground(ColorUtil.BLACK);
         label.setFont(getFont().deriveFont(Font.BOLD));
-        label.setForeground(ColorUtil.BLACK);
+        //label.setForeground(ColorUtil.BLACK);
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {

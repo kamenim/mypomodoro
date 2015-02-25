@@ -277,9 +277,20 @@ public class PreferencesInputForm extends JPanel {
         // Substance: new SubstanceCremeLookAndFeel() (enable dependency in pom.xml)                        
         // Tonic: "com.digitprop.tonic.TonicLookAndFeel" (enable dependency in pom.xml)
         // WebLaf: "com.alee.laf.WebLookAndFeel" (enable dependency in pom.xml)
-        // JTatoo: "com.jtattoo.plaf.smart.SmartLookAndFeel" (enable dependency in pom.xml)
         // Pgs: "com.pagosoft.plaf.PgsLookAndFeel" (enable dependency in pom.xml)
         // Seaglass: "com.seaglasslookandfeel.SeaGlassLookAndFeel" (enable dependency in pom.xml)
+        // JTatoo: "com.jtattoo.plaf.smart.SmartLookAndFeel" (enable dependency in pom.xml)
+        // JTatoo: "com.jtattoo.plaf.noire.NoireLookAndFeel" (http://www.jtattoo.net/PredefinedThemes.html)
+        // JTatoo: "com.jtattoo.plaf.mcwin.McWinLookAndFeel"
+        // JTatoo: com.jtattoo.plaf.acryl.AcrylLookAndFeel
+        // JTatoo: "com.jtattoo.plaf.aero.AeroLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.aluminium.AluminiumLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.bernstein.BernsteinLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.fast.FastLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.graphite.GraphiteLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.hifi.HiFiLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.luna.LunaLookAndFeel"
+        // JTatoo: "com.jtattoo.plaf.mint.MintLookAndFeel"
         ArrayList<String> themes = new ArrayList<String>();
         if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
             themes.add(UIManager.getSystemLookAndFeelClassName()); // Windows / GTK / Motif
@@ -303,6 +314,9 @@ public class PreferencesInputForm extends JPanel {
         themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies  
         themes.add("com.pagosoft.plaf.PgsLookAndFeel"); // Pgs
         themes.add("com.seaglasslookandfeel.SeaGlassLookAndFeel"); // Seaglass
+        themes.add("com.jtattoo.plaf.noire.NoireLookAndFeel"); // JTatoo
+        themes.add("com.jtattoo.plaf.acryl.AcrylLookAndFeel"); // JTatoo
+        themes.add("com.jtattoo.plaf.mcwin.McWinLookAndFeel"); // JTatoo
         // Quaqua
         // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
         //if (SystemUtils.IS_OS_MAC_OSX) {

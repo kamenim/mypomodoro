@@ -420,7 +420,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // Set the blinking cursor and the ability to type in right away
                 table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
                 table.setSurrendersFocusOnKeystroke(true); // focus
-                table.getEditorComponent().requestFocus(); 
+                table.getEditorComponent().requestFocus();
                 controlPane.setSelectedIndex(2); // open edit tab               
             }
         }
@@ -448,9 +448,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         // Set the blinking cursor and the ability to type in right away
                         table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
                         table.setSurrendersFocusOnKeystroke(true); // focus
-                        table.getEditorComponent().requestFocus(); 
+                        table.getEditorComponent().requestFocus();
                         controlPane.setSelectedIndex(2); // open edit tab
-                        
+
                     } catch (CloneNotSupportedException ignored) {
                     }
                 }
@@ -957,7 +957,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);            
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);

@@ -519,7 +519,7 @@ public class Activity implements Cloneable {
     }
 
     public boolean isFinished() {
-        return actualPoms == estimatedPoms + overestimatedPoms && estimatedPoms + overestimatedPoms != 0;
+        return actualPoms > 0 && actualPoms == estimatedPoms + overestimatedPoms;
     }
 
     public boolean isStory() {

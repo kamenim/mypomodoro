@@ -124,7 +124,7 @@ public class TestMenu extends JMenu {
                                         actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
                                     }
                                     a.setActualPoms(actual);
-                                // Dates
+                                    // Dates
                                     // Date Added must be older than Date Completed
                                     // Date Completed of iteration N must be older than Date completed of iteration N+1
                                     Date dateCompleted;
