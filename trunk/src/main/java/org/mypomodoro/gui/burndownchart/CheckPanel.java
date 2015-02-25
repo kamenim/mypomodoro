@@ -134,7 +134,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                } else {                    
+                } else {
                     if (row % 2 == 0) { // odd
                         ((JComponent) c).setBackground(ColorUtil.WHITE);
                     } else { // even
@@ -205,7 +205,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
-        
+
         // Add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 7] = Labels.getString("Common.Unplanned");

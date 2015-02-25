@@ -45,7 +45,8 @@ public class ToDoIconLabel {
         if (showName) {
             iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
         }
-        iconLabel.setForeground(color);
+        // Do no set the foreground - let themes default font color take care of this (eg JTatoo Noire theme)
+        //iconLabel.setForeground(color);
         iconLabel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
         int estimatedPoms = activity.getEstimatedPoms();
         int realPoms = activity.getActualPoms();

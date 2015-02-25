@@ -138,7 +138,7 @@
       <version>1.1</version>
     </dependency>
     <!-- PGS look and feel -->
-    <!-- Apache Software License 2: http://www.pagosoft.com/projects/pgslookandfeel/ --> 
+    <!-- Apache License 2.0: http://www.pagosoft.com/projects/pgslookandfeel/ --> 
     <dependency>
       <groupId>com.github.arnabk</groupId>
       <artifactId>pgslookandfeel</artifactId>
@@ -151,6 +151,13 @@
       <artifactId>seaglasslookandfeel</artifactId>
       <version>0.2</version>
     </dependency>
+    <!-- JTatoo look and feel -->
+    <!-- GPL3: http://www.jtattoo.net/License.html -->
+    <dependency>
+      <groupId>com.jtattoo</groupId>
+      <artifactId>JTattoo</artifactId>
+      <version>1.6.11</version>
+    </dependency>
     <!-- Substance look and feel -->
     <!--dependency>
       <groupId>org.java.net.substance</groupId>
@@ -162,13 +169,6 @@
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
       <artifactId>napkinlaf</artifactId>
       <version>1.2</version>
-    </dependency-->
-    <!-- JTatoo look and feel -->
-    <!-- GPL3: http://www.jtattoo.net/License.html -->
-    <!--dependency>
-      <groupId>com.jtattoo</groupId>
-      <artifactId>JTattoo</artifactId>
-      <version>1.6.11</version>
     </dependency-->
     <!-- Tinylaf look and feel -->
     <!--dependency>

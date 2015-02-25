@@ -17,7 +17,6 @@
 package org.mypomodoro.buttons;
 
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 
 /**
  * Tab panel button On for tab panels such as Details, Edit....
@@ -27,11 +26,6 @@ public class TabPanelButton extends AbstractButton {
 
     public TabPanelButton(String label) {
         super(label);
-        // Trying to get rid of ellipses (truncated label with trailing ...)
-        FontMetrics fm = getFontMetrics(getFont());
-        int labelLength = fm.stringWidth(label);
-        setMinimumSize(new Dimension(labelLength > 50 ? labelLength : 50, 50));
-        setPreferredSize(new Dimension(labelLength > 50 ? labelLength : 50, 50));
     }
 
     @Override

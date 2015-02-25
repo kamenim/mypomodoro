@@ -67,11 +67,11 @@ public class ProgressBar extends JPanel {
     public JProgressBar getBar() {
         return bar;
     }
-    
+
     public boolean isStopped() {
         return stopped;
     }
-    
+
     public void setStopped(boolean aFlag) {
         stopped = aFlag;
     }

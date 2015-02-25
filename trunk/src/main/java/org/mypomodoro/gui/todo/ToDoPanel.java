@@ -156,7 +156,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
-                } else {                    
+                } else {
                     if (row % 2 == 0) { // odd
                         ((JComponent) c).setBackground(ColorUtil.WHITE);
                     } else { // even
@@ -238,7 +238,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
-        
+
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Unplanned");
@@ -450,7 +450,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 // Set the blinking cursor and the ability to type in right away
                 table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
                 table.setSurrendersFocusOnKeystroke(true); // focus
-                table.getEditorComponent().requestFocus(); 
+                table.getEditorComponent().requestFocus();
                 controlPane.setSelectedIndex(2); // open edit tab
             }
         }
@@ -477,7 +477,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     // Set the blinking cursor and the ability to type in right away
                     table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
                     table.setSurrendersFocusOnKeystroke(true); // focus
-                    table.getEditorComponent().requestFocus(); 
+                    table.getEditorComponent().requestFocus();
                     controlPane.setSelectedIndex(2); // open edit tab
                 }
             }
@@ -505,7 +505,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     // Set the blinking cursor and the ability to type in right away
                     table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
                     table.setSurrendersFocusOnKeystroke(true); // focus
-                    table.getEditorComponent().requestFocus(); 
+                    table.getEditorComponent().requestFocus();
                     controlPane.setSelectedIndex(2); // open edit tab
                 }
             }
