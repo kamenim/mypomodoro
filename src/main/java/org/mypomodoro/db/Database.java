@@ -57,7 +57,7 @@ public class Database {
      */
 
     public Database() {
-        if (MySQLConfigLoader.isValid()) {
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             driverClassName = "com.mysql.jdbc.Driver";
             connectionStatement = "jdbc:mysql://" + MySQLConfigLoader.getHost() + "/" + MySQLConfigLoader.getDatabase() + "?"
                     + "user=" + MySQLConfigLoader.getUser() + "&password=" + MySQLConfigLoader.getPassword();

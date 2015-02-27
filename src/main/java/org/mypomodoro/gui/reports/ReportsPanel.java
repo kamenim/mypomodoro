@@ -21,10 +21,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,7 +39,6 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -52,7 +51,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -65,6 +63,7 @@ import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
@@ -78,11 +77,11 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
+import org.mypomodoro.util.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -97,7 +96,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
-    private final JScrollPane scrollPane;
+    private final JPanel scrollPane = new JPanel();
     private static final String[] columnNames = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
@@ -116,10 +115,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final JTabbedPane controlPane = new JTabbedPane();
     private InputMap im = null;
     private int mouseHoverRow = 0;
-    // Border
-    private final JButton titledButton = new JButton();
-    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    // Title  
+    private final JPanel titlePanel = new JPanel();
+    private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final TransparentButton refresh = new TransparentButton(refreshIcon);
+    private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
 
@@ -152,47 +153,19 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         };
 
-        // Set up table listeners once anf for all
+        // Set up table listeners once and for all
         setUpTable();
-
+        // Scroll pane
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.setLayout(new GridBagLayout());
+        addTitlePanel();
+        addTable();
+        // Bottom pane
         // Init control pane before the table so we can set the default tab at start up time
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
         addTabPane();
-
-        // Init table (data model and rendering)
-        initTable();
-
-        // Set border
-        titledButton.setIcon(refreshIcon);
-        titledButton.setBorder(null);
-        titledButton.setContentAreaFilled(false);
-        titledButton.setOpaque(true);
-        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
-        titledButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                titledButton.setEnabled(false);
-                // Refresh from database
-                refresh(true);
-                titledButton.setEnabled(true);
-            }
-        });
-        setBorder(titledborder);
-
-        // Top pane
-        scrollPane = new JScrollPane(table);
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-
         // Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
         splitPane.setOneTouchExpandable(true);
@@ -203,8 +176,18 @@ public class ReportsPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        // Splitted view
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
-    }
+
+        // Init table (data model and rendering)
+        initTable();
+    }   
 
     // add all listener once and for all
     private void setUpTable() {
@@ -603,7 +586,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -624,13 +607,60 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             }
         }
-        // Update titled border          
-        titledButton.setText("<html>" + titleActivitiesList + "</html>");
-        //titledButton.setText("<html>this is something I want people to <span color=\"#00FF00\">NOTICE</span></html>");
-        titledborder.repaint();
+        // Update title       
+        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
+    }
+    
+    private void addTitlePanel() {
+        titlePanel.setLayout(new GridBagLayout());
+        GridBagConstraints cTitle = new GridBagConstraints();
+        cTitle.insets = new Insets(0, 1, 0, 4);
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            cTitle.gridx = 0;
+            cTitle.gridy = 0;
+            refresh.setVisible(true); // this is a TransparentButton       
+            refresh.setMargin(new Insets(1, 1, 1, 1));
+            refresh.setFocusPainted(false); // removes borders around text
+            refresh.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    refresh.setEnabled(false);
+                    // Refresh from database
+                    refresh(true);
+                    refresh.setEnabled(true);
+                }
+            });
+            titlePanel.add(refresh, cTitle);
+        }
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            cTitle.gridx = 1;
+        } else {
+            cTitle.gridx = 0;
+        }
+        cTitle.gridy = 0;
+        cTitle.weightx = 1.0;
+        cTitle.fill = GridBagConstraints.HORIZONTAL;
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel, cTitle);
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 0;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
+        scrollPane.add(titlePanel, cScrollPane);
+    }
+        
+    public void addTable() {
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 1;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        JScrollPane tableScrollPane = new JScrollPane(table);
+        scrollPane.add(tableScrollPane, cScrollPane);
     }
 
     private void addTabPane() {

@@ -23,9 +23,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import org.mypomodoro.buttons.AbstractButton;
 
 /**
  * Progress bar
@@ -53,7 +53,7 @@ public class ProgressBar extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         c.weightx = 0.1;
-        JButton stop = new JButton(Labels.getString("ToDoListPanel.Stop"));
+        AbstractButton stop = new AbstractButton(Labels.getString("ToDoListPanel.Stop"));
         stop.addActionListener(new ActionListener() {
 
             @Override

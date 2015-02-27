@@ -53,7 +53,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -70,11 +69,11 @@ import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.IListPanel;
-import static org.mypomodoro.gui.MainPanel.resize;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -82,10 +81,10 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
+import org.mypomodoro.util.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -100,7 +99,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
-    private static final Dimension LISTPANE_DIMENSION = new Dimension(300, 200);
+    private static final Dimension LISTPANE_DIMENSION = new Dimension(360, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
     private AbstractActivitiesTableModel activitiesTableModel;
     private final JXTable table;
@@ -125,17 +124,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
-    private JScrollPane todoScrollPane;
+    private JScrollPane tableScrollPane;
     //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
-    // Border
-    private final JButton titledButton = new JButton();
-    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    // Title
+    private final JPanel titlePanel = new JPanel();
+    private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final TransparentButton refresh = new TransparentButton(refreshIcon);
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
-    private GridBagConstraints c = new GridBagConstraints();
+    private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
     // Selected row
     private int currentSelectedRow = 0;
 
@@ -168,18 +168,25 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         };
 
-        // Set up table listeners once anf for all
+        // Set up table listeners once and for all
         setUpTable();
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-
+        
+        // Scroll pane
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.setLayout(new GridBagLayout());        
+        addTitlePanel();
+        addTable();
+        addTimerPanel();
+        //addRemainingPomodoroPanel(c);
+        //addToDoIconPanel(c);
+        // Bottom pane
+        // Init before init the table so we can set the default tab at start up time               
+        controlPane.setMinimumSize(TABPANE_DIMENSION);
+        controlPane.setPreferredSize(TABPANE_DIMENSION);
+        addTabPane();
         // Split pane
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, scrollPane, controlPane); // continuous layout = true: important for resizing
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, scrollPane, controlPane); // continuous layout = true: important for resizing (see Resize class)
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
@@ -188,48 +195,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        // Splitted view
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;       
         add(splitPane, gbc);
-
-        // Init control pane before the table so we can set the default tab at start up time               
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
-        addTabPane();
-
+        
         // Init table (data model and rendering)
-        initTable();
-
-        // Set border
-        titledButton.setIcon(refreshIcon);
-        titledButton.setBorder(null);
-        titledButton.setContentAreaFilled(false);
-        titledButton.setOpaque(true);
-        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon        
-        titledButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                titledButton.setEnabled(false);
-                // Refresh from database
-                refresh(true);
-                titledButton.setEnabled(true);
-            }
-        });
-        setBorder(titledborder);
-
-        // Top pane
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.setLayout(new GridBagLayout());
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.fill = GridBagConstraints.BOTH;
-        addToDoTable();
-        addTimerPanel();
-        //addRemainingPomodoroPanel(c);
-        //addToDoIconPanel(c);
+        initTable();        
     }
 
     // add all listener once and for all
@@ -714,7 +690,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -734,33 +710,73 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             }
         }
-        // Update titled border          
-        titledButton.setText("<html>" + titleActivitiesList + "</html>");
-        titledborder.repaint();
+        // Update title        
+        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
     }
 
-    public void addToDoTable() {
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 0.7;
-        c.weighty = 0.7;
-        c.gridheight = 1;
-        c.fill = GridBagConstraints.BOTH;
-        todoScrollPane = new JScrollPane(table);
-        todoScrollPane.setMinimumSize(LISTPANE_DIMENSION);
-        todoScrollPane.setPreferredSize(LISTPANE_DIMENSION);
-        scrollPane.add(todoScrollPane, c);
+    public void addTitlePanel() {
+        titlePanel.setLayout(new GridBagLayout());
+        GridBagConstraints cTitle = new GridBagConstraints();
+        cTitle.insets = new Insets(0, 1, 0, 4);
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            cTitle.gridx = 0;
+            cTitle.gridy = 0;
+            refresh.setVisible(true); // this is a TransparentButton       
+            refresh.setMargin(new Insets(1, 1, 1, 1));
+            refresh.setFocusPainted(false); // removes borders around text
+            refresh.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    refresh.setEnabled(false);
+                    // Refresh from database
+                    refresh(true);
+                    refresh.setEnabled(true);
+                }
+            });
+            titlePanel.add(refresh, cTitle);
+        }
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            cTitle.gridx = 1;
+        } else {
+            cTitle.gridx = 0;
+        }
+        cTitle.gridy = 0;
+        cTitle.weightx = 1.0;
+        cTitle.fill = GridBagConstraints.HORIZONTAL;
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel, cTitle);
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 0;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.weighty = 0.05; // this set only to properly handle the resizing (see Resize class)
+        cScrollPane.gridwidth = 2;
+        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
+        scrollPane.add(titlePanel, cScrollPane);        
+    }
+
+    public void addTable() {
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 1;
+        cScrollPane.weightx = 0.7;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.gridwidth = 1;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        tableScrollPane = new JScrollPane(table);
+        tableScrollPane.setMinimumSize(LISTPANE_DIMENSION);
+        tableScrollPane.setPreferredSize(LISTPANE_DIMENSION);
+        scrollPane.add(tableScrollPane, cScrollPane);
     }
 
     public void addTimerPanel() {
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weightx = 0.3;
-        c.weighty = 0.6;
-        c.gridheight = 1;
+        cScrollPane.gridx = 1;
+        cScrollPane.gridy = 1;
+        cScrollPane.weightx = 0.3;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.gridwidth = 1;
         final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(
                 timerPanel,
@@ -775,7 +791,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
          timerPanel.switchPomodoroCompliance();
          }
          });*/
-        scrollPane.add(wrap, c);
+        scrollPane.add(wrap, cScrollPane);
         pomodoro.setTimerPanel(timerPanel);
     }
 
@@ -799,6 +815,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
      iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
      scrollPane.add(iconLabel, gbc);
      }*/
+    
     public void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
@@ -1262,8 +1279,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoroButton.setPreferredSize(new Dimension(247, 239));
         pomodoroButton.setMinimumSize(new Dimension(247, 239));
 
-        pomodoroButton.setVerticalAlignment(verticalAlignment);
-        pomodoroButton.setHorizontalAlignment(horizontalAlignment);
+        //pomodoroButton.setVerticalAlignment(verticalAlignment);
+        //pomodoroButton.setHorizontalAlignment(horizontalAlignment);
         backgroundPanel.add(pomodoroButton, gbc);
 
         return backgroundPanel;
@@ -1356,8 +1373,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
-    public JScrollPane getTodoScrollPane() {
-        return todoScrollPane;
+    public JScrollPane getTableScrollPane() {
+        return tableScrollPane;
     }
 
     public JTabbedPane getControlPane() {
@@ -1367,9 +1384,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void addControlPane() {
         splitPane.setRightComponent(controlPane); // bottom
     }
-
-    public void setTitledBorder() {
-        setBorder(titledborder);
+    
+    public JPanel getTitlePanel() {
+        return titlePanel;
     }
 
     public void hideDiscontinuousButton() {
