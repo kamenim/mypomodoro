@@ -21,10 +21,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -50,7 +50,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -71,7 +70,6 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -104,13 +102,14 @@ public class CheckPanel extends JPanel implements IListPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
-    private InputMap im = null;
-    private int mouseHoverRow = 0;
-    // Border
-    private final JButton titledButton = new JButton();
-    private final ComponentTitledBorder titledborder = new ComponentTitledBorder(titledButton, this, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     private final JTabbedPane tabbedPane;
     private final CreateChart chart;
+    private InputMap im = null;
+    private int mouseHoverRow = 0;
+    // Title   
+    private final JPanel titlePanel = new JPanel();
+    private final JLabel titleLabel = new JLabel();
+    private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
 
@@ -146,43 +145,21 @@ public class CheckPanel extends JPanel implements IListPanel {
             }
         };
 
-        // Set up table listeners once anf for all
+        // Set up table listeners once and for all
         setUpTable();
 
+        // Scroll pane
+        scrollPane.setMinimumSize(PANE_DIMENSION);
+        scrollPane.setPreferredSize(PANE_DIMENSION);
+        scrollPane.setLayout(new GridBagLayout());
+        addTitlePanel();
+        addTable();
+        addCreateButton();
+        // Bottom pane
         // Init control pane before the table so we can set the default tab at start up time
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
         addTabPane();
-
-        // Init table (data model and rendering)
-        initTable();
-
-        // Set border
-        titledButton.setBorder(null);
-        titledButton.setContentAreaFilled(false);
-        titledButton.setOpaque(true);
-        titledButton.setHorizontalTextPosition(SwingConstants.LEFT); // text of the left of the icon                
-        setBorder(titledborder);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-
-        // Top pane
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.setLayout(new GridBagLayout());
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.fill = GridBagConstraints.BOTH;
-
         // Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
         splitPane.setOneTouchExpandable(true);
@@ -193,10 +170,17 @@ public class CheckPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        // Splitted view
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
 
-        addChartTable(c);
-        addCreateButton(c);
+        // Init table (data model and rendering)
+        initTable();
     }
 
     // add all listener once and for all
@@ -513,7 +497,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             } else {
                 titleActivitiesList += " (" + ChartList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -534,30 +518,48 @@ public class CheckPanel extends JPanel implements IListPanel {
                 } else {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
-                titledborder.setToolTipText(toolTipText);
+                titleLabel.setToolTipText(toolTipText);
             }
         }
-        // Update titled border          
-        titledButton.setText("<html>" + titleActivitiesList + "</html>");
-        titledborder.repaint();
+        // Update title   
+        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
     }
 
-    private void addChartTable(GridBagConstraints gbc) {
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.5;
-        gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane pane = new JScrollPane(table);
-        pane.setMinimumSize(PANE_DIMENSION);
-        pane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.add(pane, gbc);
+    private void addTitlePanel() {
+        titlePanel.setLayout(new GridBagLayout());
+        GridBagConstraints cTitle = new GridBagConstraints();
+        cTitle.insets = new Insets(0, 1, 0, 4);
+        cTitle.gridx = 0;
+        cTitle.gridy = 0;
+        cTitle.weightx = 1.0;
+        cTitle.fill = GridBagConstraints.HORIZONTAL;
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel, cTitle);
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 0;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.gridwidth = 2;
+        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
+        scrollPane.add(titlePanel, cScrollPane);
     }
 
-    private void addCreateButton(GridBagConstraints gbc) {
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0.1;
+    private void addTable() {
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 1;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.gridwidth = 1;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        JScrollPane tableScrollPane = new JScrollPane(table);
+        scrollPane.add(tableScrollPane, cScrollPane);
+    }
+
+    private void addCreateButton() {
+        cScrollPane.gridx = 1;
+        cScrollPane.gridy = 1;
+        cScrollPane.weightx = 0.1;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.gridwidth = 1;
         JButton checkButton = new AbstractButton(
                 Labels.getString("BurndownChartPanel.Create"));
         checkButton.addActionListener(new ActionListener() {
@@ -573,7 +575,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 }
             }
         });
-        scrollPane.add(checkButton, gbc);
+        scrollPane.add(checkButton, cScrollPane);
     }
 
     private void addTabPane() {

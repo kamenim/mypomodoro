@@ -51,7 +51,7 @@ public class Resize {
                 JPanel tempPanel = new JPanel();
                 if (viewCount == 1) { // timer only                    
                     // timer fix size
-                    size = new Dimension(300, 350);
+                    size = new Dimension(300, 360);
                     // record location after the location of the upper right corner
                     // whatever the original size, the reference point is now the upper right corner
                     Dimension screenSize = gui.getToolkit().getScreenSize();
@@ -64,12 +64,12 @@ public class Resize {
                     Main.gui.getJMenuBar().setVisible(false);
                     Main.gui.getIconBar().setVisible(false);
                     // add component to temp panel so it is removed from ToDoPanel
-                    tempPanel.add(Main.gui.getToDoPanel().getTodoScrollPane());
+                    tempPanel.add(Main.gui.getToDoPanel().getTableScrollPane());
                     tempPanel.add(Main.gui.getToDoPanel().getControlPane());
                     //test.add(Main.gui.getMenuBar()); // this may replace setVisible(false)
                     //test.add(Main.gui.getIconBar()); // this may replace setVisible(false)
-                    // remove border
-                    Main.gui.getToDoPanel().setBorder(null);
+                    // remove title panel
+                    tempPanel.add(Main.gui.getToDoPanel().getTitlePanel());                    
                     // hide divider
                     Main.gui.getToDoPanel().hideSplitPaneDivider();
                     // we migth have lost focus when previously editing, overstimating... tasks 
@@ -79,15 +79,14 @@ public class Resize {
                     //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                     viewCount = 2;
                 } else if (viewCount == 2) { // timer + list
-                    // fix size; on Win 7 aero graphical/theme, 350 is slightly to short
                     size = new Dimension(780, 360);
                     // get location : the timer window may have been moved around
                     guiRecordedLocation = Main.gui.getLocation();
                     double timerWidth = 300; // ignoring any resize of timer
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 780, guiRecordedLocation.getY());
                     // put components back in place
-                    Main.gui.getToDoPanel().addToDoTable();
-                    Main.gui.getToDoPanel().setTitledBorder();
+                    Main.gui.getToDoPanel().addTable();
+                    Main.gui.getToDoPanel().addTitlePanel();
                     // MAC OSX Java transparency effect : 1.0f = opaque
                     //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
                     viewCount = 3;
