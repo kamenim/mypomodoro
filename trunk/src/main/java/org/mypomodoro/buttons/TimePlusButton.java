@@ -21,7 +21,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.Pomodoro;
-import org.mypomodoro.util.TransparentButton;
 
 /**
  * Time plus button

@@ -54,9 +54,10 @@ public class CreatePanel extends JPanel {
     public CreatePanel() {
         setLayout(new GridBagLayout());
 
-        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), Labels.getString("FileMenu.New Activity"));
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("FileMenu.New Activity") + " ");
+        titledborder.setTitleJustification(TitledBorder.LEFT);
         titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
-        titledborder.setTitleColor(ColorUtil.BLACK);
+        titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
 
         addToDoIconPanel();

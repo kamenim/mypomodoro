@@ -18,6 +18,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -53,6 +54,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -84,7 +86,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
-import org.mypomodoro.util.TransparentButton;
+import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -170,11 +172,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
         // Set up table listeners once and for all
         setUpTable();
-        
+
         // Scroll pane
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.setLayout(new GridBagLayout());        
+        scrollPane.setLayout(new GridBagLayout());
         addTitlePanel();
         addTable();
         addTimerPanel();
@@ -201,11 +203,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;       
+        gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
-        
+
         // Init table (data model and rendering)
-        initTable();        
+        initTable();
     }
 
     // add all listener once and for all
@@ -718,14 +720,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void addTitlePanel() {
-        titlePanel.setLayout(new GridBagLayout());
-        GridBagConstraints cTitle = new GridBagConstraints();
-        cTitle.insets = new Insets(0, 1, 0, 4);
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            cTitle.gridx = 0;
-            cTitle.gridy = 0;
-            refresh.setVisible(true); // this is a TransparentButton       
-            refresh.setMargin(new Insets(1, 1, 1, 1));
+            refresh.setVisible(true); // this is a TransparentButton        
+            refresh.setMargin(new Insets(0, 15, 0, 15));
             refresh.setFocusPainted(false); // removes borders around text
             refresh.addActionListener(new ActionListener() {
 
@@ -737,25 +737,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     refresh.setEnabled(true);
                 }
             });
-            titlePanel.add(refresh, cTitle);
+            titlePanel.add(refresh);
         }
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            cTitle.gridx = 1;
-        } else {
-            cTitle.gridx = 0;
-        }
-        cTitle.gridy = 0;
-        cTitle.weightx = 1.0;
-        cTitle.fill = GridBagConstraints.HORIZONTAL;
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel, cTitle);
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
         cScrollPane.weighty = 0.05; // this set only to properly handle the resizing (see Resize class)
         cScrollPane.gridwidth = 2;
-        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
-        scrollPane.add(titlePanel, cScrollPane);        
+        cScrollPane.anchor = GridBagConstraints.WEST;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        scrollPane.add(titlePanel, cScrollPane);
     }
 
     public void addTable() {
@@ -815,7 +807,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
      iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
      scrollPane.add(iconLabel, gbc);
      }*/
-    
     public void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
@@ -1384,7 +1375,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void addControlPane() {
         splitPane.setRightComponent(controlPane); // bottom
     }
-    
+
     public JPanel getTitlePanel() {
         return titlePanel;
     }

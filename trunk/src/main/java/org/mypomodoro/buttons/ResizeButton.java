@@ -21,7 +21,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import org.mypomodoro.Main;
 import static org.mypomodoro.gui.MainPanel.resize;
-import org.mypomodoro.util.TransparentButton;
 
 /**
  * Up / Downsize the app

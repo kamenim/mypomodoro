@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import org.mypomodoro.Main;
-import org.mypomodoro.util.TransparentButton;
 
 /**
  * Pin/unpin = set mAP on top of other app

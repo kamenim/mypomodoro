@@ -69,7 +69,7 @@ public class Resize {
                     //test.add(Main.gui.getMenuBar()); // this may replace setVisible(false)
                     //test.add(Main.gui.getIconBar()); // this may replace setVisible(false)
                     // remove title panel
-                    tempPanel.add(Main.gui.getToDoPanel().getTitlePanel());                    
+                    tempPanel.add(Main.gui.getToDoPanel().getTitlePanel());
                     // hide divider
                     Main.gui.getToDoPanel().hideSplitPaneDivider();
                     // we migth have lost focus when previously editing, overstimating... tasks 

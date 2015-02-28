@@ -36,7 +36,7 @@ import org.mypomodoro.buttons.TimePlusButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.TransparentButton;
+import org.mypomodoro.buttons.TransparentButton;
 
 public class TimerPanel extends JPanel {
 
