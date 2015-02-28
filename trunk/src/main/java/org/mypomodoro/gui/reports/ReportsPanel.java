@@ -121,7 +121,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
     private final TransparentButton refresh = new TransparentButton(refreshIcon);
+    private final TransparentButton duplicate = new TransparentButton(duplicateIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -386,26 +388,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRowCount() == 1) {
-                    int row = table.getSelectedRow();
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);
-                    try {
-                        Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
-                        copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName("(D) " + copiedActivity.getName());
-                        copiedActivity.setActualPoms(0);
-                        copiedActivity.setOverestimatedPoms(0);
-                        copiedActivity.setIteration(-1);
-                        // Insert the duplicate into the activity list
-                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
-                        Main.gui.getActivityListPanel().insertRow(copiedActivity);
-                        String title = Labels.getString("Common.Add Duplicated task");
-                        String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
-                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    } catch (CloneNotSupportedException ignored) {
-                    }
-                }
+                duplicateTask();
             }
         }
         am.put("Duplicate", new duplicate());
@@ -620,6 +603,18 @@ public class ReportsPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
+        duplicate.setVisible(true); // this is a TransparentButton        
+        duplicate.setMargin(new Insets(0, 15, 0, 15));
+        duplicate.setFocusPainted(false); // removes borders around text
+        duplicate.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicate.setToolTipText("CTRL + D");
+        titlePanel.add(duplicate);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             refresh.setVisible(true); // this is a TransparentButton        
             refresh.setMargin(new Insets(0, 15, 0, 15));
@@ -1060,5 +1055,28 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+    }
+
+    private void duplicateTask() {
+        if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+            Activity originalCopiedActivity = getActivityById(id);
+            try {
+                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                copiedActivity.setId(-1); // new activity
+                copiedActivity.setName("(D) " + copiedActivity.getName());
+                copiedActivity.setActualPoms(0);
+                copiedActivity.setOverestimatedPoms(0);
+                copiedActivity.setIteration(-1);
+                // Insert the duplicate into the activity list
+                ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                Main.gui.getActivityListPanel().insertRow(copiedActivity);
+                String title = Labels.getString("Common.Add Duplicated task");
+                String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            } catch (CloneNotSupportedException ignored) {
+            }
+        }
     }
 }

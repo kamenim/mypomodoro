@@ -125,8 +125,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
-    private final TransparentButton create = new TransparentButton(createIcon);
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
     private final TransparentButton refresh = new TransparentButton(refreshIcon);
+    private final TransparentButton create = new TransparentButton(createIcon);
+    private final TransparentButton duplicate = new TransparentButton(duplicateIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -410,28 +412,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRowCount() == 1) {
-                    int row = table.getSelectedRow();
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);
-                    try {
-                        Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
-                        copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName("(D) " + copiedActivity.getName());
-                        copiedActivity.setActualPoms(0);
-                        copiedActivity.setOverestimatedPoms(0);
-                        addActivity(copiedActivity, new Date(), new Date(0));
-                        copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-                        insertRow(copiedActivity);
-                        // Set the blinking cursor and the ability to type in right away
-                        table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
-                        table.setSurrendersFocusOnKeystroke(true); // focus
-                        table.getEditorComponent().requestFocus();
-                        controlPane.setSelectedIndex(2); // open edit tab
-
-                    } catch (CloneNotSupportedException ignored) {
-                    }
-                }
+                duplicateTask();
             }
         }
         am.put("Duplicate", new duplicate());
@@ -661,6 +642,18 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         });
         create.setToolTipText("CTRL + T");
         titlePanel.add(create);
+        duplicate.setVisible(true); // this is a TransparentButton        
+        duplicate.setMargin(new Insets(0, 15, 0, 15));
+        duplicate.setFocusPainted(false); // removes borders around text
+        duplicate.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicate.setToolTipText("CTRL + D");
+        titlePanel.add(duplicate);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             refresh.setVisible(true); // this is a TransparentButton        
             refresh.setMargin(new Insets(0, 15, 0, 15));
@@ -1090,5 +1083,30 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         table.setSurrendersFocusOnKeystroke(true); // focus
         table.getEditorComponent().requestFocus();
         controlPane.setSelectedIndex(2); // open edit tab
+    }
+
+    private void duplicateTask() {
+        if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+            Activity originalCopiedActivity = getActivityById(id);
+            try {
+                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                copiedActivity.setId(-1); // new activity
+                copiedActivity.setName("(D) " + copiedActivity.getName());
+                copiedActivity.setActualPoms(0);
+                copiedActivity.setOverestimatedPoms(0);
+                addActivity(copiedActivity, new Date(), new Date(0));
+                copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+                insertRow(copiedActivity);
+                // Set the blinking cursor and the ability to type in right away
+                table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
+                table.setSurrendersFocusOnKeystroke(true); // focus
+                table.getEditorComponent().requestFocus();
+                controlPane.setSelectedIndex(2); // open edit tab
+
+            } catch (CloneNotSupportedException ignored) {
+            }
+        }
     }
 }

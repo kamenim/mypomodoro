@@ -134,7 +134,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
+    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
+    private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
+    private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
     private final TransparentButton refresh = new TransparentButton(refreshIcon);
+    private final TransparentButton duplicate = new TransparentButton(duplicateIcon);
+    private final TransparentButton unplanned = new TransparentButton(unplannedIcon);
+    private final TransparentButton internal = new TransparentButton(internalIcon);
+    private final TransparentButton external = new TransparentButton(externalIcon);
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
@@ -418,18 +426,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Activity unplanned = new Activity();
-                unplanned.setEstimatedPoms(0);
-                unplanned.setIsUnplanned(true);
-                unplanned.setName(Labels.getString("Common.Unplanned"));
-                addActivity(unplanned);
-                unplanned.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-                insertRow(unplanned);
-                // Set the blinking cursor and the ability to type in right away
-                table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
-                table.setSurrendersFocusOnKeystroke(true); // focus
-                table.getEditorComponent().requestFocus();
-                controlPane.setSelectedIndex(2); // open edit tab
+                createUnplannedTask();
             }
         }
         am.put("Control U", new createUnplanned());
@@ -440,24 +437,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Interruptions : update current/running pomodoro
-                Activity currentToDo = getPomodoro().getCurrentToDo();
-                if (currentToDo != null && getPomodoro().inPomodoro()) {
-                    currentToDo.incrementInternalInter();
-                    currentToDo.databaseUpdate();
-                    Activity interruption = new Activity();
-                    interruption.setEstimatedPoms(0);
-                    interruption.setIsUnplanned(true);
-                    interruption.setName(Labels.getString("ToDoListPanel.Internal"));
-                    addActivity(interruption);
-                    interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-                    insertRow(interruption);
-                    // Set the blinking cursor and the ability to type in right away
-                    table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
-                    table.setSurrendersFocusOnKeystroke(true); // focus
-                    table.getEditorComponent().requestFocus();
-                    controlPane.setSelectedIndex(2); // open edit tab
-                }
+                createInternalInterruption();
             }
         }
         am.put("Control I", new createInternal());
@@ -468,24 +448,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Interruptions : update current/running pomodoro
-                Activity currentToDo = getPomodoro().getCurrentToDo();
-                if (currentToDo != null && getPomodoro().inPomodoro()) {
-                    currentToDo.incrementInter();
-                    currentToDo.databaseUpdate();
-                    Activity interruption = new Activity();
-                    interruption.setEstimatedPoms(0);
-                    interruption.setIsUnplanned(true);
-                    interruption.setName(Labels.getString("ToDoListPanel.External"));
-                    addActivity(interruption);
-                    interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-                    insertRow(interruption);
-                    // Set the blinking cursor and the ability to type in right away
-                    table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
-                    table.setSurrendersFocusOnKeystroke(true); // focus
-                    table.getEditorComponent().requestFocus();
-                    controlPane.setSelectedIndex(2); // open edit tab
-                }
+                createExternalInterruption();
             }
         }
         am.put("Control E", new createExternal());
@@ -496,26 +459,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table.getSelectedRowCount() == 1) {
-                    int row = table.getSelectedRow();
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-                    Activity originalCopiedActivity = getActivityById(id);
-                    try {
-                        Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
-                        copiedActivity.setId(-1); // new activity
-                        copiedActivity.setName("(D) " + copiedActivity.getName());
-                        copiedActivity.setActualPoms(0);
-                        copiedActivity.setOverestimatedPoms(0);
-                        copiedActivity.setIteration(-1);
-                        // Insert the duplicate into the activity list
-                        ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
-                        Main.gui.getActivityListPanel().insertRow(copiedActivity);
-                        String title = Labels.getString("Common.Add Duplicated task");
-                        String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
-                        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    } catch (CloneNotSupportedException ignored) {
-                    }
-                }
+                duplicateTask();
             }
         }
         am.put("Duplicate", new duplicate());
@@ -723,6 +667,54 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
+        duplicate.setVisible(true); // this is a TransparentButton        
+        duplicate.setMargin(new Insets(0, 15, 0, 15));
+        duplicate.setFocusPainted(false); // removes borders around text
+        duplicate.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicate.setToolTipText("CTRL + D");
+        titlePanel.add(duplicate);
+        unplanned.setVisible(true); // this is a TransparentButton        
+        unplanned.setMargin(new Insets(0, 15, 0, 15));
+        unplanned.setFocusPainted(false); // removes borders around text
+        unplanned.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createUnplannedTask();
+            }
+        });
+        unplanned.setToolTipText("CTRL + U");
+        titlePanel.add(unplanned);
+        external.setVisible(true); // this is a TransparentButton        
+        external.setMargin(new Insets(0, 15, 0, 15));
+        external.setFocusPainted(false); // removes borders around text
+        external.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createExternalInterruption();
+            }
+        });
+        external.setToolTipText("CTRL + E");
+        titlePanel.add(external);
+        internal.setVisible(true); // this is a TransparentButton        
+        internal.setMargin(new Insets(0, 15, 0, 15));
+        internal.setFocusPainted(false); // removes borders around text
+        internal.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createInternalInterruption();
+            }
+        });
+        internal.setToolTipText("CTRL + I");
+        titlePanel.add(internal);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             refresh.setVisible(true); // this is a TransparentButton        
             refresh.setMargin(new Insets(0, 15, 0, 15));
@@ -1403,5 +1395,85 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public static ResizeButton getResizeButton() {
         return resizeButton;
+    }
+
+    private void duplicateTask() {
+        if (table.getSelectedRowCount() == 1) {
+            int row = table.getSelectedRow();
+            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+            Activity originalCopiedActivity = getActivityById(id);
+            try {
+                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                copiedActivity.setId(-1); // new activity
+                copiedActivity.setName("(D) " + copiedActivity.getName());
+                copiedActivity.setActualPoms(0);
+                copiedActivity.setOverestimatedPoms(0);
+                copiedActivity.setIteration(-1);
+                // Insert the duplicate into the activity list
+                ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
+                Main.gui.getActivityListPanel().insertRow(copiedActivity);
+                String title = Labels.getString("Common.Add Duplicated task");
+                String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
+                JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            } catch (CloneNotSupportedException ignored) {
+            }
+        }
+    }
+
+    private void createUnplannedTask() {
+        Activity unplannedToDo = new Activity();
+        unplannedToDo.setEstimatedPoms(0);
+        unplannedToDo.setIsUnplanned(true);
+        unplannedToDo.setName(Labels.getString("Common.Unplanned"));
+        addActivity(unplannedToDo);
+        unplannedToDo.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+        insertRow(unplannedToDo);
+        // Set the blinking cursor and the ability to type in right away
+        table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+        table.setSurrendersFocusOnKeystroke(true); // focus
+        table.getEditorComponent().requestFocus();
+        controlPane.setSelectedIndex(2); // open edit tab
+    }
+
+    private void createExternalInterruption() {
+        // Interruptions : update current/running pomodoro
+        Activity currentToDo = getPomodoro().getCurrentToDo();
+        if (currentToDo != null && getPomodoro().inPomodoro()) {
+            currentToDo.incrementInter();
+            currentToDo.databaseUpdate();
+            Activity interruption = new Activity();
+            interruption.setEstimatedPoms(0);
+            interruption.setIsUnplanned(true);
+            interruption.setName(Labels.getString("ToDoListPanel.External"));
+            addActivity(interruption);
+            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+            insertRow(interruption);
+            // Set the blinking cursor and the ability to type in right away
+            table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+            table.setSurrendersFocusOnKeystroke(true); // focus
+            table.getEditorComponent().requestFocus();
+            controlPane.setSelectedIndex(2); // open edit tab
+        }
+    }
+
+    private void createInternalInterruption() {
+        // Interruptions : update current/running pomodoro
+        Activity currentToDo = getPomodoro().getCurrentToDo();
+        if (currentToDo != null && getPomodoro().inPomodoro()) {
+            currentToDo.incrementInternalInter();
+            currentToDo.databaseUpdate();
+            Activity interruption = new Activity();
+            interruption.setEstimatedPoms(0);
+            interruption.setIsUnplanned(true);
+            interruption.setName(Labels.getString("ToDoListPanel.Internal"));
+            addActivity(interruption);
+            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+            insertRow(interruption);
+            // Set the blinking cursor and the ability to type in right away
+            table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
+            table.setSurrendersFocusOnKeystroke(true); // focus
+            table.getEditorComponent().requestFocus();
+            controlPane.setSelectedIndex(2); // open edit tab
+        }
     }
 }
