@@ -126,9 +126,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
     private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
-    private final TransparentButton refresh = new TransparentButton(refreshIcon);
-    private final TransparentButton create = new TransparentButton(createIcon);
-    private final TransparentButton duplicate = new TransparentButton(duplicateIcon);
+    private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
+    private final TransparentButton createButton = new TransparentButton(createIcon);
+    private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -630,46 +630,46 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
-        create.setVisible(true); // this is a TransparentButton        
-        create.setMargin(new Insets(0, 15, 0, 15));
-        create.setFocusPainted(false); // removes borders around text
-        create.addActionListener(new ActionListener() {
+        createButton.setVisible(true); // this is a TransparentButton        
+        createButton.setMargin(new Insets(0, 15, 0, 15));
+        createButton.setFocusPainted(false); // removes borders around text
+        createButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 createNewTask();
             }
         });
-        create.setToolTipText("CTRL + T");
-        titlePanel.add(create);
-        duplicate.setVisible(true); // this is a TransparentButton        
-        duplicate.setMargin(new Insets(0, 15, 0, 15));
-        duplicate.setFocusPainted(false); // removes borders around text
-        duplicate.addActionListener(new ActionListener() {
+        createButton.setToolTipText("CTRL + T");
+        titlePanel.add(createButton);
+        duplicateButton.setVisible(true); // this is a TransparentButton        
+        duplicateButton.setMargin(new Insets(0, 15, 0, 15));
+        duplicateButton.setFocusPainted(false); // removes borders around text
+        duplicateButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 duplicateTask();
             }
         });
-        duplicate.setToolTipText("CTRL + D");
-        titlePanel.add(duplicate);
+        duplicateButton.setToolTipText("CTRL + D");
+        titlePanel.add(duplicateButton);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            refresh.setVisible(true); // this is a TransparentButton        
-            refresh.setMargin(new Insets(0, 15, 0, 15));
-            refresh.setMargin(new Insets(1, 1, 1, 1));
-            refresh.setFocusPainted(false); // removes borders around text
-            refresh.addActionListener(new ActionListener() {
+            refreshButton.setVisible(true); // this is a TransparentButton        
+            refreshButton.setMargin(new Insets(0, 15, 0, 15));
+            refreshButton.setMargin(new Insets(1, 1, 1, 1));
+            refreshButton.setFocusPainted(false); // removes borders around text
+            refreshButton.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    refresh.setEnabled(false);
+                    refreshButton.setEnabled(false);
                     // Refresh from database
                     refresh(true);
-                    refresh.setEnabled(true);
+                    refreshButton.setEnabled(true);
                 }
             });
-            titlePanel.add(refresh);
+            titlePanel.add(refreshButton);
         }
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
