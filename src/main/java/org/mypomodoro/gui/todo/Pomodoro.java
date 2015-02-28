@@ -109,8 +109,10 @@ public class Pomodoro {
         inpomodoro = true;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
         Main.gui.getIconBar().getIcon(2).highlight();
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(true);
         panel.setIconLabels();
+        // Show quick interruption button and items in combo box
+        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+        panel.showQuickInterruptionButtons();
         panel.getTable().repaint(); // trigger row renderers      
     }
 
@@ -130,8 +132,10 @@ public class Pomodoro {
         inpomodoro = false;
         Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
         Main.gui.getIconBar().getIcon(2).highlight();
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
         panel.setIconLabels();
+        // Hide quick interruption button and items in combo box
+        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
+        panel.hideQuickInterruptionButtons();
         panel.getTable().repaint(); // trigger row renderers
     }
 
@@ -145,6 +149,9 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Paused"));
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
+        // Hide quick interruption button and items in combo box
+        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
+        panel.hideQuickInterruptionButtons();
     }
 
     public void resume() {
@@ -158,6 +165,11 @@ public class Pomodoro {
             }
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Resumed"));
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+        }
+        // Show quick interruption button and items in combo box
+        if (inPomodoro()) {
+            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+            panel.showQuickInterruptionButtons();
         }
     }
 
@@ -223,10 +235,12 @@ public class Pomodoro {
                         }
                     }
                     timerPanel.setBreakEnv();
-                    ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(false);
                     inpomodoro = false;
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).highlight();
+                    // Hide quick interruption button and items in combo box 
+                    ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
+                    panel.hideQuickInterruptionButtons();
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
@@ -249,6 +263,7 @@ public class Pomodoro {
                             }
                             MainPanel.trayIcon.setToolTip(message);
                             timerPanel.setToolTipText(null);
+                            panel.hideQuickInterruptionButtons();
                         }
                     } else {
                         if (Main.preferences.getTicking() && !isMute) {
@@ -266,6 +281,9 @@ public class Pomodoro {
                         }
                         goInPomodoro();
                         timerPanel.setToolTipText(getCurrentToDo().getName());
+                        // Show quick interruption button and items in combo box 
+                        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+                        panel.showQuickInterruptionButtons();
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)
@@ -278,7 +296,6 @@ public class Pomodoro {
                 // update details panel
                 detailsPanel.selectInfo(getCurrentToDo());
                 detailsPanel.showInfo();
-                ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).refreshInterruptionComboBox(true);
                 panel.setIconLabels();
                 //panel.setPanelRemaining();
                 panel.setPanelBorder();

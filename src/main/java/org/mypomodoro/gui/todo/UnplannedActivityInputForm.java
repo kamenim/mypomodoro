@@ -65,16 +65,18 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         interruptionsComboBox.setSelectedIndex(index);
     }
 
-    public void refreshInterruptionComboBox(boolean inPomodoro) {
+    public void hideInterruptionComboBox() {
         interruptionsComboBox.removeAllItems();
-        if (MainPanel.toDoPanel.getPomodoro().inPomodoro()) {
-            interruptionsComboBox.addItem(unplanned);
-            interruptionsComboBox.addItem(internal);
-            interruptionsComboBox.addItem(external);
-            interruptionsComboBox.setSelectedItem(internal);
-        } else {
-            interruptionsComboBox.addItem(unplanned);
-        }
+        interruptionsComboBox.addItem(unplanned);
+        interruptionsComboBox.repaint();
+    }
+
+    public void showInterruptionComboBox() {
+        interruptionsComboBox.removeAllItems();
+        interruptionsComboBox.addItem(unplanned);
+        interruptionsComboBox.addItem(internal);
+        interruptionsComboBox.addItem(external);
+        interruptionsComboBox.setSelectedItem(internal);
         interruptionsComboBox.repaint();
     }
 }
