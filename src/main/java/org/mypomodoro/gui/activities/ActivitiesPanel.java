@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -53,6 +54,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -82,7 +84,7 @@ import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
-import org.mypomodoro.util.TransparentButton;
+import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -190,7 +192,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
-        
+
         // Init table (data model and rendering)
         initTable();
     }
@@ -642,15 +644,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Update title
         titleLabel.setText("<html>" + titleActivitiesList + "</html>");
     }
-    
+
     private void addTitlePanel() {
-        titlePanel.setLayout(new GridBagLayout());
-        GridBagConstraints cTitle = new GridBagConstraints();
-        cTitle.insets = new Insets(0, 1, 0, 4);
-        cTitle.gridx = 0;
-        cTitle.gridy = 0;
-        create.setVisible(true); // this is a TransparentButton       
-        create.setMargin(new Insets(1, 1, 1, 1));
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
+        create.setVisible(true); // this is a TransparentButton        
+        create.setMargin(new Insets(0, 15, 0, 15));
         create.setFocusPainted(false); // removes borders around text
         create.addActionListener(new ActionListener() {
 
@@ -660,11 +660,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         });
         create.setToolTipText("CTRL + T");
-        titlePanel.add(create, cTitle);
+        titlePanel.add(create);
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            cTitle.gridx = 1;
-            cTitle.gridy = 0;
-            refresh.setVisible(true); // this is a TransparentButton       
+            refresh.setVisible(true); // this is a TransparentButton        
+            refresh.setMargin(new Insets(0, 15, 0, 15));
             refresh.setMargin(new Insets(1, 1, 1, 1));
             refresh.setFocusPainted(false); // removes borders around text
             refresh.addActionListener(new ActionListener() {
@@ -677,22 +676,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     refresh.setEnabled(true);
                 }
             });
-            titlePanel.add(refresh, cTitle);
+            titlePanel.add(refresh);
         }
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            cTitle.gridx = 2;
-        } else {
-            cTitle.gridx = 1;
-        }
-        cTitle.gridy = 0;
-        cTitle.weightx = 1.0;
-        cTitle.fill = GridBagConstraints.HORIZONTAL;
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel, cTitle);
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
-        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
+        cScrollPane.anchor = GridBagConstraints.WEST;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         scrollPane.add(titlePanel, cScrollPane);
     }
 

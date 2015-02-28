@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.util;
+package org.mypomodoro.buttons;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
@@ -23,6 +23,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import org.mypomodoro.Main;
+import org.mypomodoro.util.CheckWindowsClassicTheme;
 
 /**
  * Transparent button (including text and icon)

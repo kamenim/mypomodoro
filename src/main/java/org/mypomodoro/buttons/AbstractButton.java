@@ -32,7 +32,7 @@ public class AbstractButton extends JButton {
         setRolloverEnabled(true);
         setFont(getFont().deriveFont(Font.BOLD));
     }
-    
+
     public AbstractButton(ImageIcon icon) {
         super(icon);
         setFocusPainted(false); // removes borders around text

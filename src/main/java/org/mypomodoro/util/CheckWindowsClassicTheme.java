@@ -26,9 +26,8 @@ import javax.swing.UIManager;
 public class CheckWindowsClassicTheme {
 
     public static boolean isWindowsClassicLAF() {
-        return isWindowsLAF()
-                && !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty(
-                        "win.xpstyle.themeActive");
+        Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
+        return isWindowsLAF() && prop != null;
     }
 
     private static boolean isWindowsLAF() {

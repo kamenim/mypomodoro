@@ -18,10 +18,10 @@ package org.mypomodoro.gui.burndownchart;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +50,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -526,20 +527,16 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     private void addTitlePanel() {
-        titlePanel.setLayout(new GridBagLayout());
-        GridBagConstraints cTitle = new GridBagConstraints();
-        cTitle.insets = new Insets(0, 1, 0, 4);
-        cTitle.gridx = 0;
-        cTitle.gridy = 0;
-        cTitle.weightx = 1.0;
-        cTitle.fill = GridBagConstraints.HORIZONTAL;
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel, cTitle);
+        titlePanel.add(titleLabel);
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
         cScrollPane.gridwidth = 2;
-        cScrollPane.fill = GridBagConstraints.HORIZONTAL;
+        cScrollPane.anchor = GridBagConstraints.WEST;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         scrollPane.add(titlePanel, cScrollPane);
     }
 
