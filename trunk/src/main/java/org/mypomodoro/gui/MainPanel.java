@@ -30,6 +30,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -186,6 +187,11 @@ public final class MainPanel extends JFrame {
 
     public IconBar getIconBar() {
         return iconBar;
+    }
+    
+    @Override
+    public JMenuBar getJMenuBar() { 
+        return menuBar; 
     }
 
     public static void exit() {

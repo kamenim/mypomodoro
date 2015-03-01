@@ -624,6 +624,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         }
         // Update title
         titleLabel.setText("<html>" + titleActivitiesList + "</html>");
+        titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
     private void addTitlePanel() {

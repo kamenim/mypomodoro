@@ -23,7 +23,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CompoundIcon;
 
 /**
@@ -31,10 +30,6 @@ import org.mypomodoro.util.CompoundIcon;
  *
  */
 public class ToDoIconLabel {
-
-    static public void showIconLabel(JLabel iconLabel, Activity activity) {
-        showIconLabel(iconLabel, activity, ColorUtil.BLACK);
-    }
 
     static public void showIconLabel(JLabel iconLabel, Activity activity, Color color) {
         showIconLabel(iconLabel, activity, color, true);
@@ -45,8 +40,7 @@ public class ToDoIconLabel {
         if (showName) {
             iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName());
         }
-        // Do no set the foreground - let themes default font color take care of this (eg JTatoo Noire theme)
-        //iconLabel.setForeground(color);
+        iconLabel.setForeground(color);
         iconLabel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
         int estimatedPoms = activity.getEstimatedPoms();
         int realPoms = activity.getActualPoms();
