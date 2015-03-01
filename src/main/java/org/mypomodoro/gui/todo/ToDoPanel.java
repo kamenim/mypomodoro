@@ -139,11 +139,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
+    private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));    
     private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
     private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
     private final TransparentButton unplannedButton = new TransparentButton(unplannedIcon);
     private final TransparentButton internalButton = new TransparentButton(internalIcon);
     private final TransparentButton externalButton = new TransparentButton(externalIcon);
+    private final TransparentButton overestimateButton = new TransparentButton(overestimateIcon);
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
@@ -661,14 +663,25 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         // Update title        
-        titleLabel.setText("<html>" + titleActivitiesList + "</html>");        
+        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
         titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
     public void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);        
+        titlePanel.add(titleLabel);
+        overestimateButton.setVisible(true); // this is a TransparentButton        
+        overestimateButton.setMargin(new Insets(0, 15, 0, 15));
+        overestimateButton.setFocusPainted(false); // removes borders around text
+        overestimateButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                overestimationPanel.overestimateTask(1);
+            }
+        });
+        titlePanel.add(overestimateButton);
         duplicateButton.setVisible(true); // this is a TransparentButton        
         duplicateButton.setMargin(new Insets(0, 15, 0, 15));
         duplicateButton.setFocusPainted(false); // removes borders around text
@@ -1485,7 +1498,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void showQuickInterruptionButtons() {
         internalButton.setVisible(true);
-        externalButton.setVisible(true);        
+        externalButton.setVisible(true);
     }
 
     public void hideQuickInterruptionButtons() {

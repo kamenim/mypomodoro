@@ -93,14 +93,19 @@ public class OverestimationPanel extends JPanel {
         //gbc.gridheight = GridBagConstraints.REMAINDER;
         add(overestimationInputFormPanel, gbc);
     }
-
+    
     public void saveOverestimation() {
         int overestimatedPomodoros = overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1;
+        overestimateTask(overestimatedPomodoros);
+        overestimationInputFormPanel.reset();        
+    }
+       
+    public void overestimateTask(int pomodoros) {
         int row = panel.getTable().getSelectedRow();
         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         Activity selectedToDo = panel.getActivityById(id);
         // Overestimation
-        selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPomodoros);
+        selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + pomodoros);
         ToDoList.getList().update(selectedToDo);
         selectedToDo.databaseUpdate();
         panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm index = 3 (the renderer will do the rest)
@@ -109,7 +114,7 @@ public class OverestimationPanel extends JPanel {
         detailsPanel.showInfo();
         //panel.setPanelRemaining();
         panel.setIconLabels();
-        overestimationInputFormPanel.reset();
+
     }
 
     public JLabel getIconLabel() {
