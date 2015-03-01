@@ -61,13 +61,12 @@ public class Resize {
                     // set timer location as new recorded location
                     guiRecordedLocation.setLocation(timerXLocation, guiRecordedLocation.getY());
                     // hide menu and icon bar
-                    Main.gui.getJMenuBar().setVisible(false);
+                    //Main.gui.getJMenuBar().setVisible(false);
+                    Main.gui.setJMenuBar(null); // better than setVisible(false) to false with some themes (JTatoo)
                     Main.gui.getIconBar().setVisible(false);
                     // add component to temp panel so it is removed from ToDoPanel
                     tempPanel.add(Main.gui.getToDoPanel().getTableScrollPane());
                     tempPanel.add(Main.gui.getToDoPanel().getControlPane());
-                    //test.add(Main.gui.getMenuBar()); // this may replace setVisible(false)
-                    //test.add(Main.gui.getIconBar()); // this may replace setVisible(false)
                     // remove title panel
                     tempPanel.add(Main.gui.getToDoPanel().getTitlePanel());
                     // hide divider
@@ -97,12 +96,11 @@ public class Resize {
                     guiRecordedLocation = Main.gui.getLocation();
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 780 - size.getWidth(), guiRecordedLocation.getY());
                     // show menu and icon bar
-                    Main.gui.getJMenuBar().setVisible(true);
+                    //Main.gui.getJMenuBar().setVisible(true);
+                    Main.gui.setJMenuBar(Main.gui.getJMenuBar()); // better than setVisible(true) to false with some themes (JTatoo)
                     Main.gui.getIconBar().setVisible(true);
                     // put component back in place
                     Main.gui.getToDoPanel().addControlPane();
-                    //setJMenuBar(Main.gui.getMenuBar()); // this may replace setVisible(true)
-                    //windowPanel.add(Main.gui.getIconBar(), BorderLayout.NORTH); // this may replace setVisible(true)
                     // show divider
                     Main.gui.getToDoPanel().showSplitPaneDivider();
                     viewCount = 0;

@@ -16,12 +16,10 @@
  */
 package org.mypomodoro;
 
-import com.jtattoo.plaf.smart.SmartLookAndFeel;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.Enumeration;
-import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

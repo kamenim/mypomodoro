@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -660,13 +661,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         }
         // Update title        
-        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
+        titleLabel.setText("<html>" + titleActivitiesList + "</html>");        
+        titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
     public void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
+        titlePanel.add(titleLabel);        
         duplicateButton.setVisible(true); // this is a TransparentButton        
         duplicateButton.setMargin(new Insets(0, 15, 0, 15));
         duplicateButton.setFocusPainted(false); // removes borders around text
@@ -691,7 +693,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         });
         unplannedButton.setToolTipText("CTRL + U");
         titlePanel.add(unplannedButton);
-        externalButton.setVisible(false); // this is a TransparentButton        
+        if (!pomodoro.inPomodoro() && pomodoro.getTimer().isRunning()) { // this is important when resizing and adding titlePanel back to the component (see Resize)
+            externalButton.setVisible(false); // this is a TransparentButton        
+        }
         externalButton.setMargin(new Insets(0, 15, 0, 15));
         externalButton.setFocusPainted(false); // removes borders around text
         externalButton.addActionListener(new ActionListener() {
@@ -703,7 +707,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         });
         externalButton.setToolTipText("CTRL + E");
         titlePanel.add(externalButton);
-        internalButton.setVisible(false); // this is a TransparentButton        
+        if (!pomodoro.inPomodoro() && pomodoro.getTimer().isRunning()) { // this is important when resizing and adding titlePanel back to the component (see Resize)           
+            internalButton.setVisible(false); // this is a TransparentButton        
+        }
         internalButton.setMargin(new Insets(0, 15, 0, 15));
         internalButton.setFocusPainted(false); // removes borders around text
         internalButton.addActionListener(new ActionListener() {
@@ -1296,6 +1302,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void setIconLabels(int row) {
         if (ToDoList.getListSize() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
+            Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
             if (pomodoro.inPomodoro()) {
                 ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED, false);
                 ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.RED);
@@ -1309,18 +1316,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
-                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
-                    ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK, false);
-                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
-                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : ColorUtil.BLACK);
+                    ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
+                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection
@@ -1478,7 +1485,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void showQuickInterruptionButtons() {
         internalButton.setVisible(true);
-        externalButton.setVisible(true);
+        externalButton.setVisible(true);        
     }
 
     public void hideQuickInterruptionButtons() {
