@@ -125,10 +125,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
-    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));   
+    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
     private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
     private final TransparentButton createButton = new TransparentButton(createIcon);
     private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
+    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -293,7 +295,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)                                    
+                                    // Hide buttons of the quick bar
+                                    titlePanel.remove(selectedButton);
+                                    titlePanel.remove(duplicateButton);
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -311,6 +316,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                                    // Show buttons of the quick bar
+                                    titlePanel.add(selectedButton, 1);
+                                    titlePanel.add(duplicateButton, 3);
                                 }
                                 setPanelBorder();
                             }
@@ -630,7 +638,19 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
+        titlePanel.add(titleLabel);        
+        selectedButton.setVisible(true); // this is a TransparentButton        
+        selectedButton.setMargin(new Insets(0, 15, 0, 15));
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        titlePanel.add(selectedButton);                
         createButton.setVisible(true); // this is a TransparentButton        
         createButton.setMargin(new Insets(0, 15, 0, 15));
         createButton.setFocusPainted(false); // removes borders around text
@@ -655,7 +675,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         });
         duplicateButton.setToolTipText("CTRL + D");
         titlePanel.add(duplicateButton);
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+        //if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+        if (true) {
             refreshButton.setVisible(true); // this is a TransparentButton        
             refreshButton.setMargin(new Insets(0, 15, 0, 15));
             refreshButton.setMargin(new Insets(1, 1, 1, 1));

@@ -139,13 +139,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
-    private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));    
+    private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
+    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
     private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
     private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
     private final TransparentButton unplannedButton = new TransparentButton(unplannedIcon);
     private final TransparentButton internalButton = new TransparentButton(internalIcon);
     private final TransparentButton externalButton = new TransparentButton(externalIcon);
     private final TransparentButton overestimateButton = new TransparentButton(overestimateIcon);
+    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
@@ -320,7 +322,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                     if (!pomodoro.getTimer().isRunning()) {
                                         pomodoro.setCurrentToDoId(-1); // this will disable the start button
                                     }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always select the first selected row (otherwise removeRow will fail)
+                                    // Hide buttons of the quick bar
+                                    titlePanel.remove(selectedButton);
+                                    titlePanel.remove(overestimateButton);
+                                    titlePanel.remove(duplicateButton);
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -336,12 +342,26 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                     if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                                         controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
                                     }
+                                    int row = table.getSelectedRow();
+                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                                    Activity selectedActivity = getActivityById(id);
                                     if (!pomodoro.inPomodoro()) {
-                                        int row = table.getSelectedRow();
-                                        pomodoro.setCurrentToDoId((Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY));
+                                        pomodoro.setCurrentToDoId(id);
                                     }
                                     currentSelectedRow = table.getSelectedRow();
-                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row 
+                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                                    // Show buttons of the quick bar
+                                    // Hide overestimation options when estimated == 0 or real < estimated
+                                    titlePanel.add(selectedButton, 1);
+                                    if (selectedActivity.getEstimatedPoms() != 0
+                                    && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
+                                        controlPane.setEnabledAt(3, true); // overestimation tab
+                                        titlePanel.add(overestimateButton, 2);
+                                    } else {
+                                        controlPane.setEnabledAt(3, false); // overestimation tab
+                                        titlePanel.remove(overestimateButton);
+                                    }
+                                    titlePanel.add(duplicateButton, 3);
                                 }
                                 setIconLabels();
                                 //setPanelRemaining();
@@ -473,16 +493,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (pomodoro.inPomodoro()) {
-                    for (int row = 0; row < table.getRowCount(); row++) {
-                        Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                        if (pomodoro.getCurrentToDo().getId() == id) {
-                            currentSelectedRow = row;
-                        }
-                    }
-                    table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
-                }
-                showCurrentSelectedRow();
+                scrollToCurrentTask();
             }
         }
         am.put("Scroll", new scrollBackToTask());
@@ -615,7 +626,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 int real = 0;
                 float storypoints = 0;
                 for (int row : rows) {
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
+                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                     Activity selectedActivity = getActivityById(id);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
@@ -671,6 +682,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
+        selectedButton.setVisible(true); // this is a TransparentButton        
+        selectedButton.setMargin(new Insets(0, 15, 0, 15));
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scrollToCurrentTask();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        titlePanel.add(selectedButton);
         overestimateButton.setVisible(true); // this is a TransparentButton        
         overestimateButton.setMargin(new Insets(0, 15, 0, 15));
         overestimateButton.setFocusPainted(false); // removes borders around text
@@ -706,34 +729,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         });
         unplannedButton.setToolTipText("CTRL + U");
         titlePanel.add(unplannedButton);
-        if (!pomodoro.inPomodoro() && pomodoro.getTimer().isRunning()) { // this is important when resizing and adding titlePanel back to the component (see Resize)
-            externalButton.setVisible(false); // this is a TransparentButton        
-        }
-        externalButton.setMargin(new Insets(0, 15, 0, 15));
-        externalButton.setFocusPainted(false); // removes borders around text
-        externalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createExternalInterruption();
-            }
-        });
-        externalButton.setToolTipText("CTRL + E");
-        titlePanel.add(externalButton);
-        if (!pomodoro.inPomodoro() && pomodoro.getTimer().isRunning()) { // this is important when resizing and adding titlePanel back to the component (see Resize)           
-            internalButton.setVisible(false); // this is a TransparentButton        
-        }
-        internalButton.setMargin(new Insets(0, 15, 0, 15));
-        internalButton.setFocusPainted(false); // removes borders around text
-        internalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createInternalInterruption();
-            }
-        });
-        internalButton.setToolTipText("CTRL + I");
-        titlePanel.add(internalButton);
+        // Note: internal and external buttons are set by method showQuickInterruptionButtons
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             refreshButton.setVisible(true); // this is a TransparentButton        
             refreshButton.setMargin(new Insets(0, 15, 0, 15));
@@ -1496,13 +1492,57 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
+    private void scrollToCurrentTask() {
+        if (pomodoro.inPomodoro()) {
+            for (int row = 0; row < table.getRowCount(); row++) {
+                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                if (pomodoro.getCurrentToDo().getId() == id) {
+                    currentSelectedRow = row;
+                }
+            }
+            table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
+        }
+        showCurrentSelectedRow();
+    }
+
     public void showQuickInterruptionButtons() {
-        internalButton.setVisible(true);
-        externalButton.setVisible(true);
+        externalButton.setMargin(new Insets(0, 15, 0, 15));
+        externalButton.setFocusPainted(false); // removes borders around text
+        externalButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createExternalInterruption();
+            }
+        });
+        externalButton.setToolTipText("CTRL + E");
+        externalButton.setVisible(true); // transparent button
+        titlePanel.add(externalButton); // end of the line
+        internalButton.setMargin(new Insets(0, 15, 0, 15));
+        internalButton.setFocusPainted(false); // removes borders around text
+        internalButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createInternalInterruption();
+            }
+        });
+        internalButton.setToolTipText("CTRL + I");
+        internalButton.setVisible(true); // transparent button
+        titlePanel.add(internalButton); // end of the line
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            // set the refresh button back at the end of the line
+            titlePanel.remove(refreshButton);
+            titlePanel.add(refreshButton);
+        }
+        setPanelBorder();
     }
 
     public void hideQuickInterruptionButtons() {
-        internalButton.setVisible(false);
-        externalButton.setVisible(false);
+        externalButton.setVisible(false); // transparent button
+        internalButton.setVisible(false); // transparent button
+        titlePanel.remove(externalButton);
+        titlePanel.remove(internalButton);
+        setPanelBorder();
     }
 }

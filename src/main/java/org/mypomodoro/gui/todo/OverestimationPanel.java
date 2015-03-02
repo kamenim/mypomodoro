@@ -100,21 +100,23 @@ public class OverestimationPanel extends JPanel {
         overestimationInputFormPanel.reset();        
     }
        
+    // Overestimation only when estimated != 0 and real >= estimated
     public void overestimateTask(int pomodoros) {
         int row = panel.getTable().getSelectedRow();
         Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
         Activity selectedToDo = panel.getActivityById(id);
-        // Overestimation
-        selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + pomodoros);
-        ToDoList.getList().update(selectedToDo);
-        selectedToDo.databaseUpdate();
-        panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm index = 3 (the renderer will do the rest)
-        // update details panel
-        detailsPanel.selectInfo(selectedToDo);
-        detailsPanel.showInfo();
-        //panel.setPanelRemaining();
-        panel.setIconLabels();
-
+        if (selectedToDo.getEstimatedPoms() != 0 && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()) {
+            // Overestimation
+            selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + pomodoros);
+            ToDoList.getList().update(selectedToDo);
+            selectedToDo.databaseUpdate();
+            panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm index = 3 (the renderer will do the rest)
+            // update details panel
+            detailsPanel.selectInfo(selectedToDo);
+            detailsPanel.showInfo();
+            //panel.setPanelRemaining();
+            panel.setIconLabels();
+        }
     }
 
     public JLabel getIconLabel() {

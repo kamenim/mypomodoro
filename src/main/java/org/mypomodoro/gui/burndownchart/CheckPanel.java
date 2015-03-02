@@ -22,6 +22,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -61,6 +63,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -109,7 +112,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     private int mouseHoverRow = 0;
     // Title   
     private final JPanel titlePanel = new JPanel();
-    private final JLabel titleLabel = new JLabel();
+    private final JLabel titleLabel = new JLabel();   
+    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
+    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -279,6 +284,8 @@ public class CheckPanel extends JPanel implements IListPanel {
                                     if (controlPane.getSelectedIndex() == 1) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
+                                    // Hide buttons of the quick bar 
+                                    titlePanel.remove(selectedButton);
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -289,6 +296,8 @@ public class CheckPanel extends JPanel implements IListPanel {
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                                    // Show buttons of the quick bar                                    
+                                    titlePanel.add(selectedButton, 1);
                                 }
                                 setPanelBorder();
                             }
@@ -530,7 +539,19 @@ public class CheckPanel extends JPanel implements IListPanel {
     private void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
+        titlePanel.add(titleLabel);        
+        selectedButton.setVisible(true); // this is a TransparentButton        
+        selectedButton.setMargin(new Insets(0, 15, 0, 15));
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        titlePanel.add(selectedButton);
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
