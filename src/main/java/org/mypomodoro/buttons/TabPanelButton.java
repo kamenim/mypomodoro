@@ -22,7 +22,7 @@ import java.awt.Dimension;
  * Tab panel button On for tab panels such as Details, Edit....
  *
  */
-public class TabPanelButton extends AbstractButton {
+public class TabPanelButton extends DefaultButton {
 
     public TabPanelButton(String label) {
         super(label);

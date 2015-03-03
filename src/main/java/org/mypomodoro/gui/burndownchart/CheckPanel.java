@@ -62,8 +62,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractButton;
-import org.mypomodoro.buttons.TransparentButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
@@ -114,7 +113,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();   
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
-    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
+    private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -539,10 +538,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     private void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);        
-        selectedButton.setVisible(true); // this is a TransparentButton        
-        selectedButton.setMargin(new Insets(0, 15, 0, 15));
-        selectedButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(titleLabel);
+        Insets buttonInsets = new Insets(0, 10, 0, 10);                
+        selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -579,7 +577,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         cScrollPane.weightx = 0.1;
         cScrollPane.weighty = 1.0;
         cScrollPane.gridwidth = 1;
-        JButton checkButton = new AbstractButton(
+        JButton checkButton = new DefaultButton(
                 Labels.getString("BurndownChartPanel.Create"));
         checkButton.addActionListener(new ActionListener() {
 

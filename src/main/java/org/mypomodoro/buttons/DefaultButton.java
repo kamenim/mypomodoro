@@ -24,18 +24,31 @@ import javax.swing.JButton;
  * Template button
  *
  */
-public class AbstractButton extends JButton {
-
-    public AbstractButton(String label) {
-        super(label);
+public class DefaultButton extends JButton {
+    
+    public DefaultButton() {        
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
         setFont(getFont().deriveFont(Font.BOLD));
     }
 
-    public AbstractButton(ImageIcon icon) {
+    public DefaultButton(String text) {
+        super(text);
+        setFocusPainted(false); // removes borders around text
+        setRolloverEnabled(true);
+        setFont(getFont().deriveFont(Font.BOLD));
+    }
+    
+    public DefaultButton(ImageIcon icon) {
+        this(icon, false);
+    }
+
+    public DefaultButton(ImageIcon icon, Boolean removeBorder) {
         super(icon);
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
+        if (removeBorder) {
+            setBorder(null);
+        }
     }
 }

@@ -78,11 +78,11 @@ public class Resize {
                     //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                     viewCount = 2;
                 } else if (viewCount == 2) { // timer + list
-                    size = new Dimension(780, 360);
+                    size = new Dimension(800, 360);
                     // get location : the timer window may have been moved around
                     guiRecordedLocation = Main.gui.getLocation();
                     double timerWidth = 300; // ignoring any resize of timer
-                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 780, guiRecordedLocation.getY());
+                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 800, guiRecordedLocation.getY());
                     // put components back in place
                     Main.gui.getToDoPanel().addTable();
                     Main.gui.getToDoPanel().addTitlePanel();
@@ -94,7 +94,7 @@ public class Resize {
                     size = guiRecordedSize;
                     // get location : the timer + list window may have been moved around
                     guiRecordedLocation = Main.gui.getLocation();
-                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 780 - size.getWidth(), guiRecordedLocation.getY());
+                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 800 - size.getWidth(), guiRecordedLocation.getY());
                     // show menu and icon bar
                     //Main.gui.getJMenuBar().setVisible(true);
                     Main.gui.setJMenuBar(Main.gui.getJMenuBar()); // better than setVisible(true) to false with some themes (JTatoo)
@@ -114,7 +114,7 @@ public class Resize {
             }
             // set up size icon for resize button
             ToDoPanel.getResizeButton().setUpSizeIcon();
-            Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
+            Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
             Main.gui.setPreferredSize(dGUI);
             Main.gui.setSize(size);
             Main.gui.setLocation(guiRecordedLocation);

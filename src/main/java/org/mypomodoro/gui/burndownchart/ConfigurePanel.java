@@ -28,7 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -71,7 +71,7 @@ public class ConfigurePanel extends JPanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 0.1;
-        JButton createButton = new AbstractButton(
+        JButton createButton = new DefaultButton(
                 Labels.getString("BurndownChartPanel.Check"));
         createButton.addActionListener(new ActionListener() {
 

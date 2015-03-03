@@ -113,6 +113,8 @@ public class Pomodoro {
         // Show quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
         panel.showQuickInterruptionButtons();
+        // Show running button in quick toolbar
+        panel.showRunningButton();
         panel.getTable().repaint(); // trigger row renderers      
     }
 
@@ -135,7 +137,9 @@ public class Pomodoro {
         panel.setIconLabels();
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        panel.hideQuickInterruptionButtons();
+        panel.hideQuickInterruptionButtons();        
+        // Show selected button in quick toolbar
+        panel.showSelectedButton();
         panel.getTable().repaint(); // trigger row renderers
     }
 
@@ -170,6 +174,8 @@ public class Pomodoro {
         if (inPomodoro()) {
             ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
             panel.showQuickInterruptionButtons();
+            // Show running button in quick toolbar
+            panel.showRunningButton();
         }
     }
 
@@ -240,7 +246,9 @@ public class Pomodoro {
                     Main.gui.getIconBar().getIcon(2).highlight();
                     // Hide quick interruption button and items in combo box 
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-                    panel.hideQuickInterruptionButtons();
+                    panel.hideQuickInterruptionButtons();        
+                    // Show selected button in quick toolbar
+                    panel.showSelectedButton();
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
@@ -262,9 +270,11 @@ public class Pomodoro {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
                             MainPanel.trayIcon.setToolTip(message);
-                            timerPanel.setToolTipText(null);
-                            panel.hideQuickInterruptionButtons();
                         }
+                        timerPanel.setToolTipText(null);
+                        panel.hideQuickInterruptionButtons();        
+                        // Show selected button in quick toolbar
+                        panel.showSelectedButton();
                     } else {
                         if (Main.preferences.getTicking() && !isMute) {
                             tick();
@@ -284,6 +294,8 @@ public class Pomodoro {
                         // Show quick interruption button and items in combo box 
                         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
                         panel.showQuickInterruptionButtons();
+                        // Show running button in quick toolbar
+                        panel.showRunningButton();
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)

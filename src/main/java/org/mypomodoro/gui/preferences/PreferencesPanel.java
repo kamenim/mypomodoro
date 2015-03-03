@@ -34,7 +34,7 @@ import javax.swing.KeyStroke;
 import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.preferences;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.model.Preferences;
@@ -59,9 +59,9 @@ public class PreferencesPanel extends JPanel {
                 Main.preferences.getLocale().getCountry(), Main.preferences.getLocale().getVariant());
         labels = new Labels(locale);
         dateUtil = new DateUtil(locale);
-        saveButton = new AbstractButton(Labels.getString("Common.Save"));
+        saveButton = new DefaultButton(Labels.getString("Common.Save"));
         preferencesInputFormPanel = new PreferencesInputForm(this);
-        resetButton = new AbstractButton(
+        resetButton = new DefaultButton(
                 Labels.getString("Common.Reset"));
         restartButton = new RestartButton();
         restartButton.setVisible(false);

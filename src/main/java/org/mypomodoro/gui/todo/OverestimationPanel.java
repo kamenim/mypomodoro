@@ -21,7 +21,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.TabPanelButton;
@@ -37,7 +36,7 @@ import org.mypomodoro.util.Labels;
 public class OverestimationPanel extends JPanel {
 
     protected final OverestimationInputForm overestimationInputFormPanel = new OverestimationInputForm();
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    private final JPanel iconPanel = new JPanel();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final ToDoPanel panel;
     private final IActivityInformation detailsPanel;
@@ -79,8 +78,8 @@ public class OverestimationPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridheight = 1;
-        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        add(iconLabel, gbc);
+        iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        add(iconPanel, gbc);
     }
 
     private void addOverestimationInputFormPanel() {
@@ -119,7 +118,7 @@ public class OverestimationPanel extends JPanel {
         }
     }
 
-    public JLabel getIconLabel() {
-        return iconLabel;
+    public JPanel getIconPanel() {
+        return iconPanel;
     }
 }

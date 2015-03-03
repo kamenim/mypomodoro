@@ -66,6 +66,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MoveToDoButton;
@@ -123,7 +124,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
-    private final JLabel iconLabel = new JLabel("", JLabel.CENTER);
+    private final JPanel iconPanel = new JPanel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -141,13 +142,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
     private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
-    private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
-    private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
-    private final TransparentButton unplannedButton = new TransparentButton(unplannedIcon);
-    private final TransparentButton internalButton = new TransparentButton(internalIcon);
-    private final TransparentButton externalButton = new TransparentButton(externalIcon);
-    private final TransparentButton overestimateButton = new TransparentButton(overestimateIcon);
-    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
+    private final ImageIcon runningIcon = new ImageIcon(Main.class.getResource("/images/running.png"));
+    private final DefaultButton refreshButton = new DefaultButton(refreshIcon);
+    private final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
+    private final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
+    private final DefaultButton internalButton = new DefaultButton(internalIcon);
+    private final DefaultButton externalButton = new DefaultButton(externalIcon);
+    private final DefaultButton overestimateButton = new DefaultButton(overestimateIcon);
+    private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
@@ -682,9 +684,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
-        selectedButton.setVisible(true); // this is a TransparentButton        
-        selectedButton.setMargin(new Insets(0, 15, 0, 15));
-        selectedButton.setFocusPainted(false); // removes borders around text
+        Insets buttonInsets = new Insets(0, 10, 0, 10);        
+        selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -693,10 +694,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
-        overestimateButton.setVisible(true); // this is a TransparentButton        
-        overestimateButton.setMargin(new Insets(0, 15, 0, 15));
-        overestimateButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(selectedButton);      
+        overestimateButton.setMargin(buttonInsets);
         overestimateButton.addActionListener(new ActionListener() {
 
             @Override
@@ -704,10 +703,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 overestimationPanel.overestimateTask(1);
             }
         });
-        titlePanel.add(overestimateButton);
-        duplicateButton.setVisible(true); // this is a TransparentButton        
-        duplicateButton.setMargin(new Insets(0, 15, 0, 15));
-        duplicateButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(overestimateButton);        
+        duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
 
             @Override
@@ -716,10 +713,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         });
         duplicateButton.setToolTipText("CTRL + D");
-        titlePanel.add(duplicateButton);
-        unplannedButton.setVisible(true); // this is a TransparentButton        
-        unplannedButton.setMargin(new Insets(0, 15, 0, 15));
-        unplannedButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(duplicateButton);      
+        unplannedButton.setMargin(buttonInsets);
         unplannedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -730,10 +725,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         unplannedButton.setToolTipText("CTRL + U");
         titlePanel.add(unplannedButton);
         // Note: internal and external buttons are set by method showQuickInterruptionButtons
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            refreshButton.setVisible(true); // this is a TransparentButton        
-            refreshButton.setMargin(new Insets(0, 15, 0, 15));
-            refreshButton.setFocusPainted(false); // removes borders around text
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
+            refreshButton.setMargin(buttonInsets);
             refreshButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -1313,50 +1306,50 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity currentToDo = pomodoro.getCurrentToDo();
             Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
             if (pomodoro.inPomodoro()) {
-                ToDoIconLabel.showIconLabel(iconLabel, currentToDo, ColorUtil.RED, false);
-                ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), currentToDo, ColorUtil.RED);
-                ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), currentToDo, ColorUtil.RED);
-                ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), currentToDo, ColorUtil.RED);
-                ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), currentToDo, ColorUtil.RED);
-                ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), currentToDo, ColorUtil.RED);
+                ToDoIconPanel.showIconPanel(iconPanel, currentToDo, ColorUtil.RED, false);
+                ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), currentToDo, ColorUtil.RED);
+                ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), currentToDo, ColorUtil.RED);
+                ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), currentToDo, ColorUtil.RED);
+                ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), currentToDo, ColorUtil.RED);
+                ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), currentToDo, ColorUtil.RED);
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
                 Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
-                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
-                    ToDoIconLabel.showIconLabel(iconLabel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
-                    ToDoIconLabel.showIconLabel(unplannedPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(detailsPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(commentPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(overestimationPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconLabel.showIconLabel(editPanel.getIconLabel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
+                    ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection
                 if (!pomodoro.inPomodoro()) {
-                    ToDoIconLabel.clearIconLabel(iconLabel);
-                    ToDoIconLabel.clearIconLabel(unplannedPanel.getIconLabel());
+                    ToDoIconPanel.clearIconPanel(iconPanel);
+                    ToDoIconPanel.clearIconPanel(unplannedPanel.getIconPanel());
                 }
-                ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
-                ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
-                ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
-                ToDoIconLabel.clearIconLabel(editPanel.getIconLabel());
+                ToDoIconPanel.clearIconPanel(detailsPanel.getIconPanel());
+                ToDoIconPanel.clearIconPanel(commentPanel.getIconPanel());
+                ToDoIconPanel.clearIconPanel(overestimationPanel.getIconPanel());
+                ToDoIconPanel.clearIconPanel(editPanel.getIconPanel());
                 detailsPanel.enableButtons();
             }
         } else { // empty list
-            ToDoIconLabel.clearIconLabel(iconLabel);
-            ToDoIconLabel.clearIconLabel(unplannedPanel.getIconLabel());
-            ToDoIconLabel.clearIconLabel(detailsPanel.getIconLabel());
-            ToDoIconLabel.clearIconLabel(commentPanel.getIconLabel());
-            ToDoIconLabel.clearIconLabel(overestimationPanel.getIconLabel());
-            ToDoIconLabel.clearIconLabel(editPanel.getIconLabel());
+            ToDoIconPanel.clearIconPanel(iconPanel);
+            ToDoIconPanel.clearIconPanel(unplannedPanel.getIconPanel());
+            ToDoIconPanel.clearIconPanel(detailsPanel.getIconPanel());
+            ToDoIconPanel.clearIconPanel(commentPanel.getIconPanel());
+            ToDoIconPanel.clearIconPanel(overestimationPanel.getIconPanel());
+            ToDoIconPanel.clearIconPanel(editPanel.getIconPanel());
             detailsPanel.enableButtons();
         }
     }
@@ -1506,19 +1499,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void showQuickInterruptionButtons() {
-        externalButton.setMargin(new Insets(0, 15, 0, 15));
-        externalButton.setFocusPainted(false); // removes borders around text
-        externalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createExternalInterruption();
-            }
-        });
-        externalButton.setToolTipText("CTRL + E");
-        externalButton.setVisible(true); // transparent button
-        titlePanel.add(externalButton); // end of the line
-        internalButton.setMargin(new Insets(0, 15, 0, 15));
+        Insets buttonInsets = new Insets(0, 10, 0, 10); 
+        internalButton.setMargin(buttonInsets);
         internalButton.setFocusPainted(false); // removes borders around text
         internalButton.addActionListener(new ActionListener() {
 
@@ -1530,6 +1512,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
         internalButton.setToolTipText("CTRL + I");
         internalButton.setVisible(true); // transparent button
         titlePanel.add(internalButton); // end of the line
+        externalButton.setMargin(buttonInsets);
+        externalButton.setFocusPainted(false); // removes borders around text
+        externalButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createExternalInterruption();
+            }
+        });
+        externalButton.setToolTipText("CTRL + E");
+        externalButton.setVisible(true); // transparent button
+        titlePanel.add(externalButton); // end of the line
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             // set the refresh button back at the end of the line
             titlePanel.remove(refreshButton);
@@ -1539,10 +1533,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void hideQuickInterruptionButtons() {
-        externalButton.setVisible(false); // transparent button
         internalButton.setVisible(false); // transparent button
-        titlePanel.remove(externalButton);
+        externalButton.setVisible(false); // transparent button
         titlePanel.remove(internalButton);
+        titlePanel.remove(externalButton);
         setPanelBorder();
+    }
+    
+    public void showSelectedButton() {
+        selectedButton.setIcon(selectedIcon);        
+    }
+    
+    public void showRunningButton() {
+        selectedButton.setIcon(runningIcon);        
     }
 }

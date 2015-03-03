@@ -20,7 +20,7 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import org.mypomodoro.Main;
 import org.mypomodoro.util.CheckWindowsClassicTheme;
@@ -29,7 +29,7 @@ import org.mypomodoro.util.CheckWindowsClassicTheme;
  * Transparent button (including text and icon)
  *
  */
-public class TransparentButton extends JButton {
+public class TransparentButton extends DefaultButton {
 
     private float alpha = 0.0f; // completely transparent
     private boolean fireRepaint = true;
@@ -45,7 +45,7 @@ public class TransparentButton extends JButton {
         setEnabled(false);
     }
 
-    public TransparentButton(Icon icon) {
+    public TransparentButton(ImageIcon icon) {
         super(icon);
         setOpaque(false);
         setEnabled(false);

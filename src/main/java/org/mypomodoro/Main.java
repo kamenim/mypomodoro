@@ -143,17 +143,17 @@ public class Main {
                 if (preferences.getAlwaysOnTop()) {
                     gui.setAlwaysOnTop(true);
                 }
-                Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()), Math.max(580, gui.getHeight()));
-                Dimension mindGUI = new Dimension(780, 580);
+                Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
+                Dimension mindGUI = new Dimension(800, 600);
                 gui.setPreferredSize(mindGUI);
                 gui.setSize(dGUI);
                 /* this prevents the gui from being resizable
                  gui.addComponentListener(new ComponentAdapter() {
                  @Override
                  public void componentResized(ComponentEvent event) {
-                 Dimension dGUI = new Dimension(Math.max(780, gui.getWidth()),
-                 Math.max(580, gui.getHeight()));
-                 Dimension mindGUI = new Dimension(780, 580);                        
+                 Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()),
+                 Math.max(600, gui.getHeight()));
+                 Dimension mindGUI = new Dimension(800, 600);                        
                  //gui.setPreferredSize(mindGUI);
                  gui.setSize(dGUI);
                  }

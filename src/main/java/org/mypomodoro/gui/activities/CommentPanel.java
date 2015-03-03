@@ -58,7 +58,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
@@ -73,20 +73,20 @@ public class CommentPanel extends JPanel {
 
     //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    private final JPanel iconPanel = new JPanel();
     private final IListPanel panel;
-    private final JButton saveButton = new AbstractButton(Labels.getString("Common.Save"));
-    private final JButton cancelButton = new AbstractButton(Labels.getString("Common.Cancel"));
-    private final JButton previewButton = new AbstractButton(Labels.getString("Common.Preview"));
-    private final JButton foldButton = new AbstractButton(">");
-    private final JButton htmlButton = new AbstractButton("HTML");
-    private final JButton boldButton = new AbstractButton("B");
-    private final JButton italicButton = new AbstractButton("I");
-    private final JButton underlineButton = new AbstractButton("U");
-    private final JButton backgroundColorButton = new AbstractButton("ab");
-    private final JButton foregroundColorButton = new AbstractButton("A");
+    private final JButton saveButton = new DefaultButton(Labels.getString("Common.Save"));
+    private final JButton cancelButton = new DefaultButton(Labels.getString("Common.Cancel"));
+    private final JButton previewButton = new DefaultButton(Labels.getString("Common.Preview"));
+    private final JButton foldButton = new DefaultButton(">");
+    private final JButton htmlButton = new DefaultButton("HTML");
+    private final JButton boldButton = new DefaultButton("B");
+    private final JButton italicButton = new DefaultButton("I");
+    private final JButton underlineButton = new DefaultButton("U");
+    private final JButton backgroundColorButton = new DefaultButton("ab");
+    private final JButton foregroundColorButton = new DefaultButton("A");
     private final JTextField linkTextField = new JTextField();
-    private final JButton linkButton = new AbstractButton(">>");
+    private final JButton linkButton = new DefaultButton(">>");
     private final HtmlEditor informationArea = new HtmlEditor();
     private final JScrollPane scrollPaneInformationArea;
     private boolean showIconLabel = false;
@@ -703,8 +703,8 @@ public class CommentPanel extends JPanel {
             commentgbc.fill = GridBagConstraints.BOTH;
             commentgbc.weightx = 1.0;
             commentgbc.weighty = 0.1;
-            iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-            commentArea.add(iconLabel, commentgbc);
+            iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+            commentArea.add(iconPanel, commentgbc);
         }
         // add the comment area
         commentgbc.gridx = 0;
@@ -885,8 +885,8 @@ public class CommentPanel extends JPanel {
         }
     }
 
-    public JLabel getIconLabel() {
-        return iconLabel;
+    public JPanel getIconPanel() {
+        return iconPanel;
     }
 
     private void displayHTMLMode() {
