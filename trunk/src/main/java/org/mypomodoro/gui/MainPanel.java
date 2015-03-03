@@ -188,10 +188,10 @@ public final class MainPanel extends JFrame {
     public IconBar getIconBar() {
         return iconBar;
     }
-    
+
     @Override
-    public JMenuBar getJMenuBar() { 
-        return menuBar; 
+    public JMenuBar getJMenuBar() {
+        return menuBar;
     }
 
     public static void exit() {

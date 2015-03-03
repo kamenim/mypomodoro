@@ -111,7 +111,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     private int mouseHoverRow = 0;
     // Title   
     private final JPanel titlePanel = new JPanel();
-    private final JLabel titleLabel = new JLabel();   
+    private final JLabel titleLabel = new JLabel();
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
     private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
@@ -283,8 +283,6 @@ public class CheckPanel extends JPanel implements IListPanel {
                                     if (controlPane.getSelectedIndex() == 1) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                    // Hide buttons of the quick bar 
-                                    titlePanel.remove(selectedButton);
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -295,8 +293,6 @@ public class CheckPanel extends JPanel implements IListPanel {
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                                    // Show buttons of the quick bar                                    
-                                    titlePanel.add(selectedButton, 1);
                                 }
                                 setPanelBorder();
                             }
@@ -507,7 +503,9 @@ public class CheckPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
-            } else {
+                // Hide buttons of the quick bar 
+                titlePanel.remove(selectedButton);
+            } else if (table.getSelectedRowCount() == 1) {
                 titleActivitiesList += " (" + ChartList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ChartList.getList().getNbRealPom();
@@ -528,7 +526,11 @@ public class CheckPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
+                // Show buttons of the quick bar                                    
+                titlePanel.add(selectedButton); // end of the line
             }
+        } else {
+            titlePanel.remove(selectedButton);
         }
         // Update title   
         titleLabel.setText("<html>" + titleActivitiesList + "</html>");
@@ -539,7 +541,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);                
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 

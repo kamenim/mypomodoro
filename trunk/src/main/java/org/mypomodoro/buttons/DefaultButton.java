@@ -25,8 +25,8 @@ import javax.swing.JButton;
  *
  */
 public class DefaultButton extends JButton {
-    
-    public DefaultButton() {        
+
+    public DefaultButton() {
         setFocusPainted(false); // removes borders around text
         setRolloverEnabled(true);
         setFont(getFont().deriveFont(Font.BOLD));
@@ -38,7 +38,7 @@ public class DefaultButton extends JButton {
         setRolloverEnabled(true);
         setFont(getFont().deriveFont(Font.BOLD));
     }
-    
+
     public DefaultButton(ImageIcon icon) {
         this(icon, false);
     }

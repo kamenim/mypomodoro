@@ -73,12 +73,7 @@ public class TransparentButton extends DefaultButton {
         if (aFlag) {
             alpha = 1.0f;
             // must be setOpaque(true) to make the button opaque with some look adn feel and Win XP classic theme            
-            if (!Main.preferences.getTheme().equalsIgnoreCase("com.alee.laf.WebLookAndFeel")
-                    && !Main.preferences.getTheme().equalsIgnoreCase("com.seaglasslookandfeel.SeaGlassLookAndFeel")
-                    && !Main.preferences.getTheme().equalsIgnoreCase("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
-                    && !Main.preferences.getTheme().equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel")
-                    && (CheckWindowsClassicTheme.isWindowsClassicLAF()
-                    || !UIManager.getLookAndFeel().getClass().getName().equals(UIManager.getSystemLookAndFeelClassName()))) {
+            if (CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {
                 setOpaque(false); // nice rounded button on Win7 aero

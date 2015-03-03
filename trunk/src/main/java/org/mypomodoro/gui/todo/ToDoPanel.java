@@ -39,10 +39,8 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -88,7 +86,6 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
-import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -131,7 +128,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private JScrollPane tableScrollPane;
     //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
     private int mouseHoverRow = 0;
-    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/myPomodoroIconNoTime250.png"));
+    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
     // Title
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();
@@ -325,10 +322,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                         pomodoro.setCurrentToDoId(-1); // this will disable the start button
                                     }
                                     currentSelectedRow = table.getSelectedRows()[0]; // always select the first selected row (otherwise removeRow will fail)
-                                    // Hide buttons of the quick bar
-                                    titlePanel.remove(selectedButton);
-                                    titlePanel.remove(overestimateButton);
-                                    titlePanel.remove(duplicateButton);
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -345,25 +338,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                         controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
                                     }
                                     int row = table.getSelectedRow();
-                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                                    Activity selectedActivity = getActivityById(id);
+                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);                                    
                                     if (!pomodoro.inPomodoro()) {
                                         pomodoro.setCurrentToDoId(id);
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                                    // Show buttons of the quick bar
-                                    // Hide overestimation options when estimated == 0 or real < estimated
-                                    titlePanel.add(selectedButton, 1);
-                                    if (selectedActivity.getEstimatedPoms() != 0
-                                    && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
-                                        controlPane.setEnabledAt(3, true); // overestimation tab
-                                        titlePanel.add(overestimateButton, 2);
-                                    } else {
-                                        controlPane.setEnabledAt(3, false); // overestimation tab
-                                        titlePanel.remove(overestimateButton);
-                                    }
-                                    titlePanel.add(duplicateButton, 3);
                                 }
                                 setIconLabels();
                                 //setPanelRemaining();
@@ -653,7 +633,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
-            } else {
+                // Hide buttons of the quick bar
+                titlePanel.remove(selectedButton);
+                titlePanel.remove(overestimateButton);
+                titlePanel.remove(duplicateButton);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            } else if (table.getSelectedRowCount() == 1) {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ToDoList.getList().getNbRealPom();
@@ -673,6 +660,31 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
+                // Show buttons of the quick bar
+                // Hide overestimation options when estimated == 0 or real < estimated
+                titlePanel.add(selectedButton, 1);
+                int row = table.getSelectedRow();
+                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                Activity selectedActivity = getActivityById(id);
+                if (selectedActivity.getEstimatedPoms() != 0
+                        && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
+                    controlPane.setEnabledAt(3, true); // overestimation tab
+                    titlePanel.add(overestimateButton, 2);
+                } else {
+                    controlPane.setEnabledAt(3, false); // overestimation tab
+                    titlePanel.remove(overestimateButton);
+                }
+                titlePanel.add(duplicateButton, 3);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            }
+        } else {
+            titlePanel.remove(selectedButton);
+            titlePanel.remove(overestimateButton);
+            titlePanel.remove(duplicateButton);
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.remove(refreshButton);
             }
         }
         // Update title        
@@ -684,7 +696,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);        
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
@@ -694,7 +706,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);      
+        titlePanel.add(selectedButton);
         overestimateButton.setMargin(buttonInsets);
         overestimateButton.addActionListener(new ActionListener() {
 
@@ -703,7 +715,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 overestimationPanel.overestimateTask(1);
             }
         });
-        titlePanel.add(overestimateButton);        
+        titlePanel.add(overestimateButton);
         duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
 
@@ -713,7 +725,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         });
         duplicateButton.setToolTipText("CTRL + D");
-        titlePanel.add(duplicateButton);      
+        titlePanel.add(duplicateButton);
         unplannedButton.setMargin(buttonInsets);
         unplannedButton.addActionListener(new ActionListener() {
 
@@ -770,10 +782,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.weighty = 1.0;
         cScrollPane.gridwidth = 1;
         final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-        JPanel wrap = wrapInBackgroundImage(
-                timerPanel,
-                pomodoroIcon,
-                JLabel.TOP, JLabel.LEADING);
+        JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
 
@@ -782,7 +791,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
          public void mouseClicked(MouseEvent e) {
          timerPanel.switchPomodoroCompliance();
          }
-         });*/
+         });*/        
         scrollPane.add(wrap, cScrollPane);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1205,17 +1214,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, Icon backgroundIcon,
-            int verticalAlignment, int horizontalAlignment) {
-        // transparent
-        timerPanel.setOpaque(false);
-
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {        
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
+        backgroundPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // center the toolbar
+        // Toolbar
         JPanel toolBar = new JPanel(new GridBagLayout());
         GridBagConstraints wc = new GridBagConstraints();
         discontinuousButton.setVisible(true); // this is a TransparentButton       
@@ -1249,13 +1256,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.anchor = GridBagConstraints.CENTER; // this is very important to center the component (otherwise won't work with some themes such as Metal)        
         backgroundPanel.add(timerPanel, gbc);
         // Set background image (tomato) in a button to be able to add an action to it
-        final JButton pomodoroButton = new JButton();
-        pomodoroButton.setEnabled(true);
-        pomodoroButton.setIcon(backgroundIcon);
-        pomodoroButton.setBorder(null);
+        final DefaultButton pomodoroButton = new DefaultButton(pomodoroIcon, true);        
         pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
         pomodoroButton.setOpaque(false);
-        pomodoroButton.setFocusPainted(false); // hide border when action is performed (because setOpaque is set to false)
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*pomodoroButton.addMouseListener(new MouseAdapter() {
 
@@ -1265,15 +1268,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
          timerPanel.switchPomodoroCompliance();
          }
          });*/
-        // set minimum and preferred sizes so that the size of the image
-        // does not affect the layout size
-        pomodoroButton.setPreferredSize(new Dimension(247, 239));
-        pomodoroButton.setMinimumSize(new Dimension(247, 239));
-
-        //pomodoroButton.setVerticalAlignment(verticalAlignment);
-        //pomodoroButton.setHorizontalAlignment(horizontalAlignment);
         backgroundPanel.add(pomodoroButton, gbc);
-
         return backgroundPanel;
     }
 
@@ -1499,7 +1494,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void showQuickInterruptionButtons() {
-        Insets buttonInsets = new Insets(0, 10, 0, 10); 
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
         internalButton.setMargin(buttonInsets);
         internalButton.setFocusPainted(false); // removes borders around text
         internalButton.addActionListener(new ActionListener() {
@@ -1539,12 +1534,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.remove(externalButton);
         setPanelBorder();
     }
-    
+
     public void showSelectedButton() {
-        selectedButton.setIcon(selectedIcon);        
+        selectedButton.setIcon(selectedIcon);
     }
-    
+
     public void showRunningButton() {
-        selectedButton.setIcon(runningIcon);        
+        selectedButton.setIcon(runningIcon);
     }
 }

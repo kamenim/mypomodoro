@@ -137,7 +137,7 @@ public class Pomodoro {
         panel.setIconLabels();
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        panel.hideQuickInterruptionButtons();        
+        panel.hideQuickInterruptionButtons();
         // Show selected button in quick toolbar
         panel.showSelectedButton();
         panel.getTable().repaint(); // trigger row renderers
@@ -246,7 +246,7 @@ public class Pomodoro {
                     Main.gui.getIconBar().getIcon(2).highlight();
                     // Hide quick interruption button and items in combo box 
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-                    panel.hideQuickInterruptionButtons();        
+                    panel.hideQuickInterruptionButtons();
                     // Show selected button in quick toolbar
                     panel.showSelectedButton();
                 } else { // pomodoro time
@@ -272,7 +272,7 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(message);
                         }
                         timerPanel.setToolTipText(null);
-                        panel.hideQuickInterruptionButtons();        
+                        panel.hideQuickInterruptionButtons();
                         // Show selected button in quick toolbar
                         panel.showSelectedButton();
                     } else {

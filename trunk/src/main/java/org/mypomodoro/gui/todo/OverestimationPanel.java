@@ -92,13 +92,13 @@ public class OverestimationPanel extends JPanel {
         //gbc.gridheight = GridBagConstraints.REMAINDER;
         add(overestimationInputFormPanel, gbc);
     }
-    
+
     public void saveOverestimation() {
         int overestimatedPomodoros = overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1;
         overestimateTask(overestimatedPomodoros);
-        overestimationInputFormPanel.reset();        
+        overestimationInputFormPanel.reset();
     }
-       
+
     // Overestimation only when estimated != 0 and real >= estimated
     public void overestimateTask(int pomodoros) {
         int row = panel.getTable().getSelectedRow();
