@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.todo;
 
 import javax.swing.JComboBox;
-import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.FormLabel;

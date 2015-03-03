@@ -46,11 +46,11 @@ public class PreferencesPanel extends JPanel {
 
     public static Labels labels;
     public static DateUtil dateUtil;
-    public JButton saveButton;
-    public JButton resetButton;
+    public DefaultButton saveButton;
+    public DefaultButton resetButton;
     protected JLabel validation = new JLabel();
     protected JPanel validPanel = new JPanel();
-    public JButton restartButton;
+    public DefaultButton restartButton;
     protected GridBagConstraints gbc = new GridBagConstraints();
     protected final PreferencesInputForm preferencesInputFormPanel;
 
@@ -194,7 +194,6 @@ public class PreferencesPanel extends JPanel {
 
     public void disableSaveButton() {
         saveButton.setEnabled(false);
-        saveButton.setOpaque(false);
         saveButton.setForeground(Color.GRAY);
     }
 

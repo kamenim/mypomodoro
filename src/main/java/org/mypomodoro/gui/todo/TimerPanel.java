@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TimeMinusButton;
 import org.mypomodoro.buttons.TimePlusButton;
@@ -42,7 +43,7 @@ public class TimerPanel extends JPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension PREFERED_SIZE = new Dimension(250, 175);
+    private static final Dimension PREFERED_SIZE = new Dimension(230, 220);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final ImageIcon startIcon = new ImageIcon(Main.class.getResource("/images/start.png"));
     private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource("/images/stop.png"));
@@ -62,7 +63,7 @@ public class TimerPanel extends JPanel {
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
-        this.panel = panel;
+        this.panel = panel;        
         // Timer font
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
@@ -75,6 +76,8 @@ public class TimerPanel extends JPanel {
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
         }
         pomodoroTime.setForeground(Color.DARK_GRAY);
+        // transparent
+        setOpaque(false);
         setPreferredSize(PREFERED_SIZE);
         setLayout(new GridBagLayout());
 

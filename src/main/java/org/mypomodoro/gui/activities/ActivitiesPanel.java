@@ -295,10 +295,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)                                    
-                                    // Hide buttons of the quick bar
-                                    titlePanel.remove(selectedButton);
-                                    titlePanel.remove(duplicateButton);
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)                                                                        
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -316,9 +313,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                                    // Show buttons of the quick bar
-                                    titlePanel.add(selectedButton, 1);
-                                    titlePanel.add(duplicateButton, 3);
                                 }
                                 setPanelBorder();
                             }
@@ -608,7 +602,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
-            } else {
+                // Hide buttons of the quick bar
+                titlePanel.remove(selectedButton);
+                titlePanel.remove(duplicateButton);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            } else if (table.getSelectedRowCount() == 1) {
                 titleActivitiesList += " (" + ActivityList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ActivityList.getList().getNbRealPom();
@@ -628,6 +628,18 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
+                // Show buttons of the quick bar
+                titlePanel.add(selectedButton, 1);
+                titlePanel.add(duplicateButton, 3);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            }
+        } else {
+            titlePanel.remove(selectedButton);
+            titlePanel.remove(duplicateButton);
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.remove(refreshButton);
             }
         }
         // Update title
@@ -639,7 +651,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);      
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
@@ -649,7 +661,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);      
+        titlePanel.add(selectedButton);
         createButton.setMargin(buttonInsets);
         createButton.addActionListener(new ActionListener() {
 
@@ -659,7 +671,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         });
         createButton.setToolTipText("CTRL + T");
-        titlePanel.add(createButton);       
+        titlePanel.add(createButton);
         duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
 

@@ -73,9 +73,9 @@ public class ToDoIconPanel {
                 // We could disable the button but it won't look nice on JTatoo Noire themes
                 //squareCrossButton.setEnabled(false);
                 //squareCrossButton.setDisabledIcon(squareCrossIcon); // icon used when button is disable                                
-                iconPanel.add(new DefaultButton(squareCrossIcon, true));                
+                iconPanel.add(new DefaultButton(squareCrossIcon, true));
             } else {
-                iconPanel.add(new DefaultButton(squareIcon, true));                
+                iconPanel.add(new DefaultButton(squareIcon, true));
             }
         }
         // Overestimated pomodoros
@@ -94,7 +94,7 @@ public class ToDoIconPanel {
         // Internal interruption
         for (int i = 0; i < numInternalInterruptions; i++) {
             DefaultButton quoteButton = new DefaultButton(quoteIcon, true);
-            iconPanel.add(quoteButton);            
+            iconPanel.add(quoteButton);
         }
         // External interruption        
         for (int i = 0; i < numExternalInterruptions; i++) {

@@ -84,7 +84,6 @@ import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
-import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -122,7 +121,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));   
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
     private final DefaultButton refreshButton = new DefaultButton(refreshIcon);
     private final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
@@ -289,10 +288,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                                     || controlPane.getSelectedIndex() == 2) {
                                         controlPane.setSelectedIndex(0); // switch to details panel
                                     }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)                                    
-                                    // Hide buttons of the quick bar 
-                                    titlePanel.remove(selectedButton);
-                                    titlePanel.remove(duplicateButton);
+                                    currentSelectedRow = table.getSelectedRows()[0]; // always selecting the first selected row (oterwise removeRow will fail)
                                 } else if (table.getSelectedRowCount() == 1) {
                                     // activate all panels
                                     for (int index = 0; index < controlPane.getTabCount(); index++) {
@@ -303,9 +299,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
                                     }
                                     currentSelectedRow = table.getSelectedRow();
                                     showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                                    // Show buttons of the quick bar                                    
-                                    titlePanel.add(selectedButton, 1);
-                                    titlePanel.add(duplicateButton, 2);
                                 }
                                 setPanelBorder();
                             }
@@ -581,7 +574,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
-            } else {
+                // Hide buttons of the quick bar 
+                titlePanel.remove(selectedButton);
+                titlePanel.remove(duplicateButton);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            } else if (table.getSelectedRowCount() == 1) {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ReportList.getList().getNbRealPom();
@@ -602,6 +601,18 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
+                // Show buttons of the quick bar                                    
+                titlePanel.add(selectedButton, 1);
+                titlePanel.add(duplicateButton, 2);
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                    titlePanel.add(refreshButton); // end of the line
+                }
+            }
+        } else {
+            titlePanel.remove(selectedButton);
+            titlePanel.remove(duplicateButton);
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.remove(refreshButton);
             }
         }
         // Update title       
@@ -612,8 +623,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel); 
-        Insets buttonInsets = new Insets(0, 10, 0, 10);       
+        titlePanel.add(titleLabel);
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
@@ -623,7 +634,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);       
+        titlePanel.add(selectedButton);
         duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
 
