@@ -54,8 +54,8 @@ public final class MainPanel extends JFrame {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public static final int FRAME_WIDTH = 780;
-    public static final int FRAME_HEIGHT = 580;
+    public static final int FRAME_WIDTH = 800;
+    public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "3.4.0";
     public static Resize resize = new Resize();

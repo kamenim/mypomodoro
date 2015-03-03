@@ -32,7 +32,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -46,7 +46,7 @@ import org.mypomodoro.util.Labels;
 public class CreatePanel extends JPanel {
 
     protected final ActivityInputForm inputFormPanel = new ActivityInputForm();
-    protected final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    protected final JPanel iconPanel = new JPanel();
     protected final JLabel validation = new JLabel("");
     protected final SaveButton saveButton = new SaveButton(this);
     protected GridBagConstraints gbc = new GridBagConstraints();
@@ -113,7 +113,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void addClearButton() {
-        JButton clearButton = new AbstractButton(Labels.getString("Common.Reset"));
+        JButton clearButton = new DefaultButton(Labels.getString("Common.Reset"));
         clearButton.addActionListener(new ActionListener() {
 
             @Override

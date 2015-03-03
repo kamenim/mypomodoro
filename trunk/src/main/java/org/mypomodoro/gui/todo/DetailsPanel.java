@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
@@ -39,7 +38,7 @@ import org.mypomodoro.util.Labels;
  */
 public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
-    private final JLabel iconLabel = new JLabel("", JLabel.LEFT);
+    private final JPanel iconPanel = new JPanel();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private MoveToDoButton moveButton;
     private CompleteToDoButton completeButton;
@@ -94,8 +93,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.weightx = 1.0;
         igbc.weighty = 0.1;
         igbc.gridheight = 1;
-        iconLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        infoPanel.add(iconLabel, igbc);
+        iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        infoPanel.add(iconPanel, igbc);
     }
 
     private void addInformationArea(JPanel infoPanel, GridBagConstraints igbc) {
@@ -131,8 +130,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         textMap.remove("date_completed");
     }
 
-    public JLabel getIconLabel() {
-        return iconLabel;
+    public JPanel getIconPanel() {
+        return iconPanel;
     }
 
     public void disableButtons() {

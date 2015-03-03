@@ -63,6 +63,7 @@ import javax.swing.table.TableCellRenderer;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
@@ -123,9 +124,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));   
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
-    private final TransparentButton refreshButton = new TransparentButton(refreshIcon);
-    private final TransparentButton duplicateButton = new TransparentButton(duplicateIcon);
-    private final TransparentButton selectedButton = new TransparentButton(selectedIcon);
+    private final DefaultButton refreshButton = new DefaultButton(refreshIcon);
+    private final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
+    private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
     private int currentSelectedRow = 0;
@@ -611,10 +612,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private void addTitlePanel() {
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);        
-        selectedButton.setVisible(true); // this is a TransparentButton        
-        selectedButton.setMargin(new Insets(0, 15, 0, 15));
-        selectedButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(titleLabel); 
+        Insets buttonInsets = new Insets(0, 10, 0, 10);       
+        selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -623,10 +623,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
-        duplicateButton.setVisible(true); // this is a TransparentButton        
-        duplicateButton.setMargin(new Insets(0, 15, 0, 15));
-        duplicateButton.setFocusPainted(false); // removes borders around text
+        titlePanel.add(selectedButton);       
+        duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
 
             @Override
@@ -636,10 +634,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         });
         duplicateButton.setToolTipText("CTRL + D");
         titlePanel.add(duplicateButton);
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            refreshButton.setVisible(true); // this is a TransparentButton        
-            refreshButton.setMargin(new Insets(0, 15, 0, 15));
-            refreshButton.setFocusPainted(false); // removes borders around text
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
+            refreshButton.setMargin(buttonInsets);
             refreshButton.addActionListener(new ActionListener() {
 
                 @Override

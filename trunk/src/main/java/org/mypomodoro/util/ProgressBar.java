@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import org.mypomodoro.buttons.AbstractButton;
+import org.mypomodoro.buttons.DefaultButton;
 
 /**
  * Progress bar
@@ -53,7 +53,7 @@ public class ProgressBar extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         c.weightx = 0.1;
-        AbstractButton stop = new AbstractButton(Labels.getString("ToDoListPanel.Stop"));
+        DefaultButton stop = new DefaultButton(Labels.getString("ToDoListPanel.Stop"));
         stop.addActionListener(new ActionListener() {
 
             @Override

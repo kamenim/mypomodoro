@@ -25,7 +25,7 @@ import org.mypomodoro.util.Restart;
  * Restart button
  *
  */
-public class RestartButton extends AbstractButton {
+public class RestartButton extends DefaultButton {
 
     public RestartButton() {
         super(Labels.getString("Common.Restart"));
