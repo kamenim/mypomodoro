@@ -77,7 +77,7 @@ public class AboutPanel extends JDialog {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         JLabel backgroundImage = new JLabel(new ImageIcon(
-                Main.class.getResource("/images/pomodoroTechniqueAbout.png")));
+                Main.class.getResource("/images/mAPAbout.png")));
         JPanel panel = new JPanel();
         panel.add(backgroundImage);
         panel.setBackground(ColorUtil.WHITE);
