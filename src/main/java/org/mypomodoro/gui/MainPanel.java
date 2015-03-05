@@ -57,7 +57,7 @@ public final class MainPanel extends JFrame {
     public static final int FRAME_WIDTH = 800;
     public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
-    public static final String MYPOMODORO_VERSION = "3.4.0";
+    public static final String MYPOMODORO_VERSION = "3.5.0";
     public static Resize resize = new Resize();
     public static PreferencesPanel preferencesPanel = new PreferencesPanel();
     public static SplashScreen splashScreen = new SplashScreen();
@@ -179,9 +179,6 @@ public final class MainPanel extends JFrame {
     }
 
     public final void setWindow(JPanel e) {
-        /*if (e instanceof IListPanel) { // this excludes the burndown chart panel which does not implement AbstractActivitiesPanel
-         ((IListPanel) e).refresh();
-         }*/
         windowPanel.showPanel(e.getClass().getName());
     }
 

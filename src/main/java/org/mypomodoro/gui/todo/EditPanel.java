@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,8 +42,7 @@ public class EditPanel extends CreatePanel {
 
     public EditPanel(IActivityInformation information) {
         this.information = information;
-
-        setBorder(null);
+        setBorder(null); // remove create panel border
     }
 
     @Override
@@ -53,7 +51,6 @@ public class EditPanel extends CreatePanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
         gbc.gridheight = 1;
         iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         add(iconPanel, gbc);
@@ -66,7 +63,6 @@ public class EditPanel extends CreatePanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = GridBagConstraints.REMAINDER;
         editInputForm = new EditInputForm();
         editInputForm.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 

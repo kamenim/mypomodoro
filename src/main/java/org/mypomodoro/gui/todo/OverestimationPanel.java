@@ -76,7 +76,6 @@ public class OverestimationPanel extends JPanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
         gbc.gridheight = 1;
         iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         add(iconPanel, gbc);
@@ -87,9 +86,7 @@ public class OverestimationPanel extends JPanel {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.9;
-        gbc.gridheight = 1;
-        //gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.weighty = 1.0;
         add(overestimationInputFormPanel, gbc);
     }
 

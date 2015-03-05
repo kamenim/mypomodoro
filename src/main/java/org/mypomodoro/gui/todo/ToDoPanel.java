@@ -74,7 +74,6 @@ import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
-import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -339,7 +338,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                         controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
                                     }
                                     int row = table.getSelectedRow();
-                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);                                    
+                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
                                     if (!pomodoro.inPomodoro()) {
                                         pomodoro.setCurrentToDoId(id);
                                     }
@@ -757,7 +756,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
-        cScrollPane.weighty = 0.05; // this set only to properly handle the resizing (see Resize class)
+        cScrollPane.weighty = 0; // this is set only to prevent the resizing (Resize class) to enlarge the panel
         cScrollPane.gridwidth = 2;
         cScrollPane.anchor = GridBagConstraints.WEST;
         cScrollPane.fill = GridBagConstraints.BOTH;
@@ -771,6 +770,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.weightx = 0.7;
         cScrollPane.weighty = 1.0;
         cScrollPane.gridwidth = 1;
+        cScrollPane.gridheight = 1;
         cScrollPane.fill = GridBagConstraints.BOTH;
         tableScrollPane = new JScrollPane(table);
         tableScrollPane.setMinimumSize(LISTPANE_DIMENSION);
@@ -784,6 +784,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.weightx = 0.3;
         cScrollPane.weighty = 1.0;
         cScrollPane.gridwidth = 1;
+        cScrollPane.gridheight = 1;
         TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
@@ -794,7 +795,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
          public void mouseClicked(MouseEvent e) {
          timerPanel.switchPomodoroCompliance();
          }
-         });*/        
+         });*/
         scrollPane.add(wrap, cScrollPane);
         pomodoro.setTimerPanel(timerPanel);
     }
@@ -1069,8 +1070,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemEdit(EditPanel editPane) {
         /*table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ToDoList.getList(), table,
-                        editPane, ID_KEY));*/
+         new ActivityEditTableListener(ToDoList.getList(), table,
+         editPane, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
@@ -1217,7 +1218,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {        
+    private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         backgroundPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -1259,7 +1260,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbc.anchor = GridBagConstraints.CENTER; // this is very important to center the component (otherwise won't work with some themes such as Metal)        
         backgroundPanel.add(timerPanel, gbc);
         // Set background image (tomato) in a button to be able to add an action to it
-        final DefaultButton pomodoroButton = new DefaultButton(pomodoroIcon, true);        
+        final DefaultButton pomodoroButton = new DefaultButton(pomodoroIcon, true);
         pomodoroButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
         pomodoroButton.setOpaque(false);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        

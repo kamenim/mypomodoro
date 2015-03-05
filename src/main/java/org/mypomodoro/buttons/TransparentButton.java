@@ -75,7 +75,7 @@ public class TransparentButton extends DefaultButton {
             if (Main.preferences.getTheme().equalsIgnoreCase("com.nilo.plaf.nimrod.NimRODLookAndFeel")
                     || Main.preferences.getTheme().equalsIgnoreCase("com.jgoodies.looks.plastic.Plastic3DLookAndFeel")
                     || Main.preferences.getTheme().equalsIgnoreCase("com.pagosoft.plaf.PgsLookAndFeel")
-                    || CheckWindowsClassicTheme.isWindowsClassicLAF()) {                
+                    || CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {
                 setOpaque(false); // nice rounded button on Win7 aero

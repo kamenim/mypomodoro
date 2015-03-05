@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -62,8 +63,9 @@ public class Resize {
                     guiRecordedLocation.setLocation(timerXLocation, guiRecordedLocation.getY());
                     // hide menu and icon bar
                     //Main.gui.getJMenuBar().setVisible(false);
-                    Main.gui.setJMenuBar(null); // better than setVisible(false) to false with some themes (JTatoo)
+                    Main.gui.setJMenuBar(null); // better than setVisible(false) to false with some themes (JTattoo)
                     Main.gui.getIconBar().setVisible(false);
+                    //tempPanel.add(Main.gui.getIconBar());
                     // add component to temp panel so it is removed from ToDoPanel
                     tempPanel.add(Main.gui.getToDoPanel().getTableScrollPane());
                     tempPanel.add(Main.gui.getToDoPanel().getControlPane());
@@ -97,8 +99,9 @@ public class Resize {
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 800 - size.getWidth(), guiRecordedLocation.getY());
                     // show menu and icon bar
                     //Main.gui.getJMenuBar().setVisible(true);
-                    Main.gui.setJMenuBar(Main.gui.getJMenuBar()); // better than setVisible(true) to false with some themes (JTatoo)
+                    Main.gui.setJMenuBar(Main.gui.getJMenuBar()); // better than setVisible(true) to false with some themes (JTattoo)                    
                     Main.gui.getIconBar().setVisible(true);
+                    //Main.gui.windowPanel.add(Main.gui.getIconBar(), BorderLayout.NORTH);
                     // put component back in place
                     Main.gui.getToDoPanel().addControlPane();
                     // show divider

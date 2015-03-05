@@ -43,7 +43,6 @@ public class UnplannedPanel extends CreatePanel {
     public UnplannedPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
         setBorder(null); // remove create panel border
-        addToDoIconPanel();
     }
 
     @Override
@@ -52,7 +51,6 @@ public class UnplannedPanel extends CreatePanel {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.1;
         gbc.gridheight = 1;
         iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         add(iconPanel, gbc);
@@ -65,7 +63,6 @@ public class UnplannedPanel extends CreatePanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = GridBagConstraints.REMAINDER;
         unplannedInputFormPanel = new UnplannedActivityInputForm();
         unplannedInputFormPanel.setEstimatedPomodoro(0);
         unplannedInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {

@@ -71,7 +71,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
-import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.create.list.TypeList;
@@ -961,9 +960,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
-        table.getSelectionModel().addListSelectionListener(
+        /*table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ActivityList.getList(), table,
-                        editPane, ID_KEY));
+                        editPane, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {

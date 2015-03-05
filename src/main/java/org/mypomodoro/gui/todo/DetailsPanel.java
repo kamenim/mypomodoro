@@ -91,7 +91,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.gridy = 0;
         igbc.fill = GridBagConstraints.BOTH;
         igbc.weightx = 1.0;
-        igbc.weighty = 0.1;
         igbc.gridheight = 1;
         iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         infoPanel.add(iconPanel, igbc);
@@ -104,7 +103,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         igbc.fill = GridBagConstraints.BOTH;
         igbc.weightx = 1.0;
         igbc.weighty = 1.0;
-        igbc.gridheight = GridBagConstraints.REMAINDER;
         informationArea.setEditable(false);
         infoPanel.add(new JScrollPane(informationArea), igbc);
     }
