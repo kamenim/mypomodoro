@@ -41,7 +41,7 @@ public class ImageIcons {
         MAIN_ICON_87_5,
         MAIN_ICON
     };
-    public static final ImageIcon SPLASH_ICON = getIcon("/images/pomodoroTechnique128.png");
+    public static final ImageIcon SPLASH_ICON = getIcon("/images/splash_mAP.png");
 
     private static ImageIcon getIcon(String resourcePath) {
         return new ImageIcon(Main.class.getResource(resourcePath));

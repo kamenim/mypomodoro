@@ -328,13 +328,13 @@
                   <headerType>gui</headerType>
                   <outfile>target/${project.artifactId}-${project.version}.exe</outfile>
                   <jar>target/${project.artifactId}-${project.version}.jar</jar>
-                  <icon>${basedir}/src/main/resources/icons/myPomodoroIcon.ico</icon>
+                  <icon>${basedir}/src/main/resources/icons/mAPIcon.ico</icon>
                   <errTitle>myAgilePomodoro</errTitle>
                   <jre>
                     <minVersion>1.6.0</minVersion>
                   </jre>
                   <splash>
-                    <file>${basedir}/src/main/resources/images/splash_pomodoroTechnique128_EXE.bmp</file>
+                    <file>${basedir}/src/main/resources/images/splash_mAP_exe.bmp</file>
                     <waitForWindow>true</waitForWindow>
                     <timeout>60</timeout>
                     <timeoutErr>false</timeoutErr>
@@ -364,7 +364,7 @@
             <version>1.0-alpha-2</version>
             <configuration>
               <mainClass>org.mypomodoro.Main</mainClass>
-              <iconFile>${basedir}/src/main/resources/icons/myPomodoroIcon.icns</iconFile>
+              <iconFile>${basedir}/src/main/resources/icons/mAPIcon.icns</iconFile>
               <jvmVersion>1.6+</jvmVersion>
               <dictionaryFile>${basedir}/src/main/resources/org/osxappbundle/properties/Info.plist.xml</dictionaryFile>
             </configuration>
