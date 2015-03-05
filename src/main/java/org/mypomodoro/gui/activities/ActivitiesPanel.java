@@ -250,6 +250,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
+                        editPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -268,6 +269,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
+                        editPanel.showInfo(activity);
                     }
                 }
                 mouseHoverRow = -1;
@@ -608,7 +610,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     titlePanel.add(refreshButton); // end of the line
                 }
-            } else if (table.getSelectedRowCount() == 1) {
+            } else {
                 titleActivitiesList += " (" + ActivityList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ActivityList.getList().getNbRealPom();

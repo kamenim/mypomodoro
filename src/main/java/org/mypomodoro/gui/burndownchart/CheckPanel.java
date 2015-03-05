@@ -505,7 +505,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar 
                 titlePanel.remove(selectedButton);
-            } else if (table.getSelectedRowCount() == 1) {
+            } else {
                 titleActivitiesList += " (" + ChartList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ChartList.getList().getNbRealPom();
