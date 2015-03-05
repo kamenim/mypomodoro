@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -135,7 +136,8 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    public void fillOutInputForm(Activity activity) {
+    public void showInfo(Activity activity) {
+        clearForm();
         editInputForm.setTypeField(activity.getType());
         editInputForm.setAuthorField(activity.getAuthor());
         editInputForm.setPlaceField(activity.getPlace());

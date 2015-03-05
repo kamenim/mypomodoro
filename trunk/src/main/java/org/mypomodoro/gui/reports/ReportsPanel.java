@@ -69,7 +69,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
-import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
@@ -112,6 +111,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     //Labels.getString("ReportListPanel.Time")
     public static int ID_KEY = 9;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
+    private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -244,6 +244,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
+                        editPanel.showInfo(activity);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -262,6 +263,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
+                        editPanel.showInfo(activity);
                     }
                 }
                 mouseHoverRow = -1;
@@ -580,7 +582,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     titlePanel.add(refreshButton); // end of the line
                 }
-            } else if (table.getSelectedRowCount() == 1) {
+            } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ReportList.getList().getNbRealPom();
@@ -681,8 +683,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        EditPanel editPanel = new EditPanel(detailsPanel);
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -906,16 +907,16 @@ public class ReportsPanel extends JPanel implements IListPanel {
         ReportList.getList().add(activity, date, dateCompleted);
     }
 
-    private void showSelectedItemDetails(DetailsPanel informationPanel) {
+    private void showSelectedItemDetails(DetailsPanel detailPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityInformationTableListener(ReportList.getList(),
-                        table, informationPanel, ID_KEY));
+                        table, detailPanel, ID_KEY));
     }
 
     private void showSelectedItemEdit(EditPanel editPanel) {
-        table.getSelectionModel().addListSelectionListener(
+        /*table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ReportList.getList(), table,
-                        editPanel, ID_KEY));
+                        editPanel, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {

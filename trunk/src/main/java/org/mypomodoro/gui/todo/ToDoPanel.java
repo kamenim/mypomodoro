@@ -121,7 +121,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
-    private final JPanel iconPanel = new JPanel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel);
     private final JSplitPane splitPane;
     private final JTabbedPane controlPane = new JTabbedPane();
@@ -266,7 +265,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
-                        setIconLabels(table.convertRowIndexToModel(rowIndex));
+                        editPanel.showInfo(activity);
+                        setIconLabels(rowIndex);
                     }
                     mouseHoverRow = rowIndex;
                 }
@@ -286,6 +286,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
+                        editPanel.showInfo(activity);
                     }
                     setIconLabels();
                 }
@@ -640,7 +641,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     titlePanel.add(refreshButton); // end of the line
                 }
-            } else if (table.getSelectedRowCount() == 1) {
+            } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
                 titleActivitiesList += ToDoList.getList().getNbRealPom();
@@ -660,21 +661,23 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
                 }
                 titleLabel.setToolTipText(toolTipText);
-                // Show buttons of the quick bar
-                // Hide overestimation options when estimated == 0 or real < estimated
-                titlePanel.add(selectedButton, 1);
-                int row = table.getSelectedRow();
-                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                Activity selectedActivity = getActivityById(id);
-                if (selectedActivity.getEstimatedPoms() != 0
-                        && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
-                    controlPane.setEnabledAt(3, true); // overestimation tab
-                    titlePanel.add(overestimateButton, 2);
-                } else {
-                    controlPane.setEnabledAt(3, false); // overestimation tab
-                    titlePanel.remove(overestimateButton);
+                if (table.getSelectedRowCount() == 1) {
+                    // Show buttons of the quick bar
+                    // Hide overestimation options when estimated == 0 or real < estimated
+                    titlePanel.add(selectedButton, 1);
+                    int row = table.getSelectedRow();
+                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                    Activity selectedActivity = getActivityById(id);
+                    if (selectedActivity.getEstimatedPoms() != 0
+                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
+                        controlPane.setEnabledAt(3, true); // overestimation tab
+                        titlePanel.add(overestimateButton, 2);
+                    } else {
+                        controlPane.setEnabledAt(3, false); // overestimation tab
+                        titlePanel.remove(overestimateButton);
+                    }
+                    titlePanel.add(duplicateButton, 3);
                 }
-                titlePanel.add(duplicateButton, 3);
                 if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     titlePanel.add(refreshButton); // end of the line
                 }
@@ -781,7 +784,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.weightx = 0.3;
         cScrollPane.weighty = 1.0;
         cScrollPane.gridwidth = 1;
-        final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
@@ -1065,9 +1068,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     private void showSelectedItemEdit(EditPanel editPane) {
-        table.getSelectionModel().addListSelectionListener(
+        /*table.getSelectionModel().addListSelectionListener(
                 new ActivityEditTableListener(ToDoList.getList(), table,
-                        editPane, ID_KEY));
+                        editPane, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
@@ -1301,7 +1304,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity currentToDo = pomodoro.getCurrentToDo();
             Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
             if (pomodoro.inPomodoro()) {
-                ToDoIconPanel.showIconPanel(iconPanel, currentToDo, ColorUtil.RED, false);
+                //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, ColorUtil.RED, false);
                 ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), currentToDo, ColorUtil.RED);
                 ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), currentToDo, ColorUtil.RED);
                 ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), currentToDo, ColorUtil.RED);
@@ -1319,7 +1322,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
-                    ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
+                    //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
                     ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
@@ -1329,7 +1332,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection
                 if (!pomodoro.inPomodoro()) {
-                    ToDoIconPanel.clearIconPanel(iconPanel);
+                    //ToDoIconPanel.clearIconPanel(iconPanel);
                     ToDoIconPanel.clearIconPanel(unplannedPanel.getIconPanel());
                 }
                 ToDoIconPanel.clearIconPanel(detailsPanel.getIconPanel());
@@ -1339,7 +1342,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 detailsPanel.enableButtons();
             }
         } else { // empty list
-            ToDoIconPanel.clearIconPanel(iconPanel);
+            //ToDoIconPanel.clearIconPanel(iconPanel);
             ToDoIconPanel.clearIconPanel(unplannedPanel.getIconPanel());
             ToDoIconPanel.clearIconPanel(detailsPanel.getIconPanel());
             ToDoIconPanel.clearIconPanel(commentPanel.getIconPanel());
@@ -1436,6 +1439,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.setSurrendersFocusOnKeystroke(true); // focus
         table.getEditorComponent().requestFocus();
         controlPane.setSelectedIndex(2); // open edit tab
+        editPanel.showInfo(unplannedToDo); // set the id of the new task on the edit form
     }
 
     private void createExternalInterruption() {
@@ -1455,7 +1459,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
             table.setSurrendersFocusOnKeystroke(true); // focus
             table.getEditorComponent().requestFocus();
-            controlPane.setSelectedIndex(2); // open edit tab
+            controlPane.setSelectedIndex(2); // open edit tab            
+            editPanel.showInfo(interruption); // set the id of the new task on the edit form
         }
     }
 
@@ -1476,7 +1481,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
             table.setSurrendersFocusOnKeystroke(true); // focus
             table.getEditorComponent().requestFocus();
-            controlPane.setSelectedIndex(2); // open edit tab
+            controlPane.setSelectedIndex(2); // open edit tab            
+            editPanel.showInfo(interruption); // set the id of the new task on the edit form
         }
     }
 

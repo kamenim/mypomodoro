@@ -124,7 +124,8 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    public void fillOutInputForm(Activity activity) {
+    public void showInfo(Activity activity) {
+        clearForm();
         editInputForm.setDate(activity.getDate());
         editInputForm.setAuthorField(activity.getAuthor());
         editInputForm.setPlaceField(activity.getPlace());

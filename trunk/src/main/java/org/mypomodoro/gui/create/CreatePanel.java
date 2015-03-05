@@ -197,7 +197,7 @@ public class CreatePanel extends JPanel {
         clearValidation();
     }
 
-    public void fillOutInputForm(Activity activity) {
+    public void showInfo(Activity activity) {
     }
 
     private void clearValidation() {

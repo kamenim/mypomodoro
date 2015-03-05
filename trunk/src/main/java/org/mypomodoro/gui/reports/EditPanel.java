@@ -102,8 +102,7 @@ public class EditPanel extends CreatePanel {
         information.showInfo();
         String title = Labels.getString("ReportListPanel.Edit report");
         String message = Labels.getString("ReportListPanel.Report updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
@@ -122,7 +121,8 @@ public class EditPanel extends CreatePanel {
     }
 
     @Override
-    public void fillOutInputForm(Activity report) {
+    public void showInfo(Activity report) {
+        clearForm();
         reportInputForm.setAuthorField(report.getAuthor());
         reportInputForm.setPlaceField(report.getPlace());
         reportInputForm.setDescriptionField(report.getDescription());

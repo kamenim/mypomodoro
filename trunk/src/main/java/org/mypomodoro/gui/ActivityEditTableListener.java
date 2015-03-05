@@ -19,6 +19,7 @@ package org.mypomodoro.gui;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.mypomodoro.gui.activities.EditPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -35,7 +36,7 @@ public class ActivityEditTableListener implements ListSelectionListener {
     private final AbstractActivities activities;
 
     public ActivityEditTableListener(AbstractActivities activities,
-            JTable table, CreatePanel panel, int idKey) {
+            JTable table, EditPanel panel, int idKey) {
         this.activities = activities;
         this.table = table;
         this.panel = panel;
@@ -49,7 +50,7 @@ public class ActivityEditTableListener implements ListSelectionListener {
                 int row = table.getSelectedRow();
                 Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), idKey);
                 Activity activity = activities.getById(id);
-                panel.fillOutInputForm(activity);
+                panel.showInfo(activity);
             }
         } else {
             panel.clearForm();

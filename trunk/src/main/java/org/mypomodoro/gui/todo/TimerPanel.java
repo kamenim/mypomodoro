@@ -30,14 +30,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TimeMinusButton;
 import org.mypomodoro.buttons.TimePlusButton;
+import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.buttons.TransparentButton;
 
 public class TimerPanel extends JPanel {
 
@@ -64,6 +63,10 @@ public class TimerPanel extends JPanel {
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
         this.panel = panel;        
+        setLayout(new GridBagLayout());
+        setPreferredSize(PREFERED_SIZE);
+        // Transparent !
+        setOpaque(false);
         // Timer font
         try {
             pomodoroTime.setFont(Font.createFont(Font.TRUETYPE_FONT,
@@ -75,12 +78,7 @@ public class TimerPanel extends JPanel {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
         }
-        pomodoroTime.setForeground(Color.DARK_GRAY);
-        // transparent
-        setOpaque(false);
-        setPreferredSize(PREFERED_SIZE);
-        setLayout(new GridBagLayout());
-
+        pomodoroTime.setForeground(Color.DARK_GRAY);      
         timeMinus = new TimeMinusButton(pomodoro);
         addTimeMinusButton();
         addPomodoroTimerLabel();
