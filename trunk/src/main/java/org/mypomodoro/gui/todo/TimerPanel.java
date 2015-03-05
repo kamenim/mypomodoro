@@ -62,7 +62,7 @@ public class TimerPanel extends JPanel {
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
-        this.panel = panel;        
+        this.panel = panel;
         setLayout(new GridBagLayout());
         setPreferredSize(PREFERED_SIZE);
         // Transparent !
@@ -78,7 +78,7 @@ public class TimerPanel extends JPanel {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
         }
-        pomodoroTime.setForeground(Color.DARK_GRAY);      
+        pomodoroTime.setForeground(Color.DARK_GRAY);
         timeMinus = new TimeMinusButton(pomodoro);
         addTimeMinusButton();
         addPomodoroTimerLabel();

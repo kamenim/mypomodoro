@@ -27,7 +27,7 @@ public class CheckWindowsClassicTheme {
 
     public static boolean isWindowsClassicLAF() {
         Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
-        return isWindowsLAF() && prop != null && !(Boolean)prop;
+        return isWindowsLAF() && prop != null && !(Boolean) prop;
     }
 
     private static boolean isWindowsLAF() {

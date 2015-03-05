@@ -70,7 +70,7 @@ public class ToDoIconPanel {
         // Estimated pomodoros
         for (int i = 0; i < estimatedPoms; i++) {
             if (realPoms >= i + 1) {
-                // We can disable the button but it won't look nice on JTatoo Noire themes
+                // We can disable the button but it won't look nice on JTattoo Noire themes
                 //squareCrossButton.setEnabled(false);
                 //squareCrossButton.setDisabledIcon(squareCrossIcon); // icon used when button is disable                                
                 iconPanel.add(new DefaultButton(squareCrossIcon, true));

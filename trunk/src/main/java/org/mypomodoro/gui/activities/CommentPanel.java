@@ -701,7 +701,6 @@ public class CommentPanel extends JPanel {
             commentgbc.gridy = 0;
             commentgbc.fill = GridBagConstraints.BOTH;
             commentgbc.weightx = 1.0;
-            commentgbc.weighty = 0.1;
             iconPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
             commentArea.add(iconPanel, commentgbc);
         }

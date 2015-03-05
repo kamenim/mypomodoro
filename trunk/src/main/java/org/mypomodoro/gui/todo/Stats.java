@@ -22,7 +22,7 @@ package org.mypomodoro.gui.todo;
  */
 public class Stats {
 
-    private static int real = 0;
+    /*private static int real = 0;
     private static int storyPoints = 0;
     private static int done = 0;
     private static int added = 0;
@@ -39,5 +39,5 @@ public class Stats {
     private static int lenghtIncreased = 0;
     private static int paused = 0;
     private static int overwholeTimeSpentWorking = 0;
-    private static int workflowInterrupted = 0;
+    private static int workflowInterrupted = 0;*/
 }
