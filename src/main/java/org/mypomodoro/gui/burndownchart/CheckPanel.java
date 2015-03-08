@@ -171,7 +171,8 @@ public class CheckPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        splitPane.setDividerSize(10);
+        //splitPane.setDividerSize(10);
+        splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));

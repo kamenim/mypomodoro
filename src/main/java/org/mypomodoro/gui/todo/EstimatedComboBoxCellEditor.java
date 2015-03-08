@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.todo;
 
 import java.awt.Component;
 import javax.swing.JTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ToDoList;
 
 /**
  *
  *
  */
-class EstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor {
+class EstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
 
     public <E> EstimatedComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
@@ -38,23 +38,25 @@ class EstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
-        Activity activity = ActivityList.getList().getById(id);
+        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
+        Activity activity = ToDoList.getList().getById(id);
         if (activity != null) {
-            comboBox.removeAllItems();
-            if (activity.getActualPoms() > 0) {
-                for (int i = (activity.getActualPoms() - activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getOverestimatedPoms() : 0); i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
-                    comboBox.addItem(i);
-                }
-            } else {
+            if (activity.getEstimatedPoms() == 0) {
+                comboBox.removeAllItems();
                 for (int i = 0; i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
                 }
+                comboBox.setSelectedItem(0);
+                if (!comboBox.isShowing()) {
+                    add(comboBox);
+                }
+                remove(label);
+            } else {
+                remove(comboBox);
+                if (!label.isShowing()) {
+                    add(label);
+                }              
             }
-            comboBox.setSelectedItem(activity.getEstimatedPoms());
-            // don't show the overestimated pom so we have more space for edition
-            //int overestimatedpoms = activity.getOverestimatedPoms();
-            //label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }

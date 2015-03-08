@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,15 +26,12 @@ import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
-import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * Combo Box Cell Editor
  *
  */
-class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEditor {
+public class ComboBoxCellEditor extends ComboBoxPanel implements TableCellEditor {
 
     public <E> ComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
@@ -58,21 +54,6 @@ class ComboBoxCellEditor extends ActivitiesComboBoxPanel implements TableCellEdi
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        setBackground(table.getSelectionBackground());
-        comboBox.setFont(getFont().deriveFont(Font.BOLD));
-        label.setFont(getFont().deriveFont(Font.BOLD));
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
-        Activity activity = ActivityList.getList().getById(id);
-        if (activity != null && activity.isFinished()) {
-            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
-            comboBox.setForeground(ColorUtil.GREEN);
-            label.setForeground(ColorUtil.GREEN);
-        } else { // reset foreground (depends on the theme)
-            comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
-            comboBox.setForeground(getForeground());
-            label.setForeground(getForeground());
-        }
-        comboBox.setSelectedItem(value);
         return this;
     }
 

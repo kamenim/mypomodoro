@@ -34,13 +34,13 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  *
  *
  */
-class ActivitiesComboBoxPanel extends JPanel {
+class ComboBoxPanel extends JPanel {
 
     protected JComboBox comboBox;
     protected JLabel label = new JLabel();
 
     // Generic constructor
-    public <E> ActivitiesComboBoxPanel(E[] data, boolean editable) {
+    public <E> ComboBoxPanel(E[] data, boolean editable) {
         setLayout(new GridBagLayout());
         comboBox = new JComboBox();
         for (E d : data) { // jdk 7 : simply use comboBox = new JComboBox<E>(data);
@@ -49,7 +49,7 @@ class ActivitiesComboBoxPanel extends JPanel {
         setOpaque(true);
         comboBox.setEditable(editable);
         if (data instanceof String[]) { // combo of strings
-            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 3, 2, 3), 0, 0));
+            add(comboBox, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 3, 2, 3), 0, 0));
         } else { // combo of numbers            
             // Hide combo arrow
             comboBox.setUI(new BasicComboBoxUI() {
@@ -65,7 +65,7 @@ class ActivitiesComboBoxPanel extends JPanel {
                     };
                 }
             });
-            add(comboBox, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 5, 2, 5), 0, 0));
+            add(comboBox, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 5, 2, 5), 0, 0));
         }
         add(label);
     }
@@ -99,7 +99,7 @@ class ActivitiesComboBoxPanel extends JPanel {
         }
     }
 
-    class ComboBoxEstimatedLengthRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxEstimatedLengthRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

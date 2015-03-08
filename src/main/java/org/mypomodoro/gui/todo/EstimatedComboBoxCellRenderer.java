@@ -14,38 +14,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.todo;
 
 import java.awt.Component;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ToDoList;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  *
  *
  */
-class EstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
+class EstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
 
     public <E> EstimatedComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
-        
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
-        Activity activity = ActivityList.getList().getById(id);
+        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
+        Activity activity = ToDoList.getList().getById(id);
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
-            comboBox.removeAllItems();
-            comboBox.addItem(estimatedpoms);
-            label.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms + " " : "");
-            setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));            
+            if (activity.getEstimatedPoms() == 0) { // newly create unplanned task or interruption or any task with no estimation
+                comboBox.removeAllItems();
+                comboBox.addItem(0);
+                if (!comboBox.isShowing()) {
+                    add(comboBox);
+                }
+                remove(label);
+            } else {
+                remove(comboBox);
+                if (!label.isShowing()) {
+                    add(label);
+                }
+                label.setText(realpoms + " / " + estimatedpoms +  (overestimatedpoms > 0 ? " + " + overestimatedpoms: ""));
+            }
+            setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms): ""));            
         }
         return this;
     }
