@@ -293,6 +293,7 @@ public class PreferencesInputForm extends JPanel {
         // JTattoo: "com.jtattoo.plaf.luna.LunaLookAndFeel"
         // JTattoo: "com.jtattoo.plaf.mint.MintLookAndFeel"
         ArrayList<String> themes = new ArrayList<String>();
+        themes.add("org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel");
         if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
             themes.add(UIManager.getSystemLookAndFeelClassName()); // Windows / GTK / Motif
         }

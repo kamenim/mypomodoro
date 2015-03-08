@@ -203,7 +203,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        splitPane.setDividerSize(10);
+        //splitPane.setDividerSize(10);
+        splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
@@ -524,8 +525,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // set custom render for title
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new CustomTableRenderer()); // priority
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new TitleRenderer()); // title                
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated                
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new TitleRenderer()); // title           
+        // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(new Integer[0], false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new EstimatedComboBoxCellEditor(new Integer[0], false));
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
@@ -671,11 +674,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
                         controlPane.setEnabledAt(3, true); // overestimation tab
                         titlePanel.add(overestimateButton, 2);
+                        titlePanel.add(duplicateButton, 3);
                     } else {
                         controlPane.setEnabledAt(3, false); // overestimation tab
                         titlePanel.remove(overestimateButton);
+                        titlePanel.add(duplicateButton, 2);
                     }
-                    titlePanel.add(duplicateButton, 3);
                 }
                 if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     titlePanel.add(refreshButton); // end of the line
@@ -876,7 +880,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 4;
+                return columnIndex == ID_KEY - 4 || columnIndex == ID_KEY - 3;
             }
 
             // this is mandatory to get columns with integers properly sorted
@@ -906,7 +910,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    //System.err.println("e.getType ToDO" + e.getType());
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
@@ -921,12 +926,21 @@ public class ToDoPanel extends JPanel implements IListPanel {
                             } else {
                                 act.setName(data.toString());
                                 act.databaseUpdate();
-                                ToDoList.getList().update(act);
-                                setIconLabels();
-                                detailsPanel.selectInfo(act);
-                                detailsPanel.showInfo();
+                            }
+                        } else if (column == ID_KEY - 3) { // Estimated                            
+                            int estimated = (Integer) data;
+                            if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                act.setEstimatedPoms(estimated);
+                                act.databaseUpdate();
                             }
                         }
+                        ToDoList.getList().update(act);
+                        setIconLabels();
+                        // Refresh panel border after updating the list
+                        setPanelBorder();
+                        // update info
+                        detailsPanel.selectInfo(act);
+                        detailsPanel.showInfo();
                     }
                 }
                 // diactivate/gray out all tabs (except import)
@@ -1201,23 +1215,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    class EstimatedCellRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity toDo = ToDoList.getList().getById(id);
-            if (toDo != null) {
-                String text = toDo.getActualPoms() + " / " + toDo.getEstimatedPoms();
-                Integer overestimatedpoms = toDo.getOverestimatedPoms();
-                text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
-                renderer.setText(text);
-            }
-            return renderer;
-        }
-    }
-
     private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
@@ -1393,7 +1390,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void showSplitPaneDivider() {
-        splitPane.setDividerSize(10);
+        //splitPane.setDividerSize(10);
+        splitPane.setDividerSize(0); // remove divider by hiding it
     }
 
     public void hideSplitPaneDivider() {

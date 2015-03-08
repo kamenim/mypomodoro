@@ -83,6 +83,7 @@ import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
+import static org.mypomodoro.util.TimeConverter.getLength;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -178,7 +179,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        splitPane.setDividerSize(10);
+        //splitPane.setDividerSize(10);
+        splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
@@ -773,7 +775,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
+                if (e.getType() == TableModelEvent.UPDATE) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
@@ -1045,10 +1047,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ReportList.getList().getById(id);
             if (activity != null) {
-                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms();
-                Integer overestimatedpoms = activity.getOverestimatedPoms();
-                text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
+                int realpoms = activity.getActualPoms();
+                int estimatedpoms = activity.getEstimatedPoms();
+                int overestimatedpoms = activity.getOverestimatedPoms();
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");                
                 renderer.setText(text);
+                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms): ""));
             }
             return renderer;
         }

@@ -183,7 +183,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        splitPane.setDividerSize(10);
+        //splitPane.setDividerSize(10);
+        splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
@@ -473,8 +474,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new TitleRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
         // Estimated combo box
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(new Integer[0], false));
@@ -799,7 +800,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    //System.err.println("e.getType Activities" + e.getType());
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
@@ -826,8 +828,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         }
                         // refresh the combo boxes of all rows to display the new type (if any)
                         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ComboBoxCellRenderer(types, true));
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ComboBoxCellEditor(types, true));
+                        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
+                        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
                     } else if (column == ID_KEY - 3) { // Estimated
                         int estimated = (Integer) data;
                         if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
