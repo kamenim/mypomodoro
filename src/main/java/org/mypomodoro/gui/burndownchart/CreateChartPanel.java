@@ -19,7 +19,6 @@ package org.mypomodoro.gui.burndownchart;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
-import javax.swing.border.EtchedBorder;
 
 /**
  * Panel that displays the charts
@@ -31,7 +30,7 @@ public class CreateChartPanel extends JPanel {
 
     public CreateChartPanel(CreateChart chart) {
         setLayout(new GridBagLayout());
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
         addChart(chart);
     }

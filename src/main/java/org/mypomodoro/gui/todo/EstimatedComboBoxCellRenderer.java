@@ -53,9 +53,9 @@ class EstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                 if (!label.isShowing()) {
                     add(label);
                 }
-                label.setText(realpoms + " / " + estimatedpoms +  (overestimatedpoms > 0 ? " + " + overestimatedpoms: ""));
+                label.setText(realpoms + " / " + estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
             }
-            setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms): ""));            
+            setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
         }
         return this;
     }

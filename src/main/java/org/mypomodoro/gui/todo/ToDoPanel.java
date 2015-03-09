@@ -163,10 +163,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    Component[] comps = ((JComponent) c).getComponents();
+                    for (Component comp : comps) { // sub-components (combo boxes)
+                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                    }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
@@ -187,6 +191,85 @@ public class ToDoPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
+        
+        // Init label title and buttons        
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel); 
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
+        selectedButton.setMargin(buttonInsets);
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scrollToCurrentTask();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        overestimateButton.setMargin(buttonInsets);
+        overestimateButton.setFocusPainted(false); // removes borders around text
+        overestimateButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                overestimationPanel.overestimateTask(1);
+            }
+        });
+        duplicateButton.setMargin(buttonInsets);
+        duplicateButton.setFocusPainted(false); // removes borders around text
+        duplicateButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicateButton.setToolTipText("CTRL + D");
+        unplannedButton.setMargin(buttonInsets);
+        unplannedButton.setFocusPainted(false); // removes borders around text
+        unplannedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createUnplannedTask();
+            }
+        });
+        unplannedButton.setToolTipText("CTRL + U");        
+        internalButton.setMargin(buttonInsets);
+        internalButton.setFocusPainted(false); // removes borders around text
+        internalButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createInternalInterruption();
+            }
+        });
+        internalButton.setToolTipText("CTRL + I");
+        externalButton.setMargin(buttonInsets);
+        externalButton.setFocusPainted(false); // removes borders around text
+        externalButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createExternalInterruption();
+            }
+        });
+        externalButton.setToolTipText("CTRL + E");       
+        refreshButton.setMargin(buttonInsets);
+        refreshButton.setFocusPainted(false); // removes borders around text
+        refreshButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshButton.setEnabled(false);
+                // Refresh from database
+                refresh(true);
+                refreshButton.setEnabled(true);
+            }
+        });        
+        
+        // Add components
         addTitlePanel();
         addTable();
         addTimerPanel();
@@ -640,9 +723,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 titlePanel.remove(selectedButton);
                 titlePanel.remove(overestimateButton);
                 titlePanel.remove(duplicateButton);
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
             } else {
                 titleActivitiesList += " (" + ToDoList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -681,14 +761,17 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         titlePanel.add(duplicateButton, 2);
                     }
                 }
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
+            }
+            titlePanel.add(unplannedButton);                 
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.add(refreshButton); // end of the line
             }
         } else {
             titlePanel.remove(selectedButton);
             titlePanel.remove(overestimateButton);
             titlePanel.remove(duplicateButton);
+            titlePanel.remove(internalButton);
+            titlePanel.remove(externalButton);
             if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                 titlePanel.remove(refreshButton);
             }
@@ -698,65 +781,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
-    public void addTitlePanel() {
-        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        selectedButton.setMargin(buttonInsets);
-        selectedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                scrollToCurrentTask();
-            }
-        });
-        selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
-        overestimateButton.setMargin(buttonInsets);
-        overestimateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                overestimationPanel.overestimateTask(1);
-            }
-        });
-        titlePanel.add(overestimateButton);
-        duplicateButton.setMargin(buttonInsets);
-        duplicateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        });
-        duplicateButton.setToolTipText("CTRL + D");
-        titlePanel.add(duplicateButton);
-        unplannedButton.setMargin(buttonInsets);
-        unplannedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createUnplannedTask();
-            }
-        });
-        unplannedButton.setToolTipText("CTRL + U");
-        titlePanel.add(unplannedButton);
-        // Note: internal and external buttons are set by method showQuickInterruptionButtons
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
-            refreshButton.setMargin(buttonInsets);
-            refreshButton.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    refreshButton.setEnabled(false);
-                    // Refresh from database
-                    refresh(true);
-                    refreshButton.setEnabled(true);
-                }
-            });
-            titlePanel.add(refreshButton);
-        }
+    public void addTitlePanel() {       
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
@@ -766,6 +791,18 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.fill = GridBagConstraints.BOTH;
         titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         scrollPane.add(titlePanel, cScrollPane);
+    }        
+
+    public void showQuickInterruptionButtons() {
+        titlePanel.add(internalButton);
+        titlePanel.add(externalButton);
+        setPanelBorder();
+    }
+
+    public void hideQuickInterruptionButtons() {
+        titlePanel.remove(internalButton);
+        titlePanel.remove(externalButton);
+        setPanelBorder();
     }
 
     public void addTable() {
@@ -927,7 +964,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                 act.setName(data.toString());
                                 act.databaseUpdate();
                             }
-                        } else if (column == ID_KEY - 3) { // Estimated                            
+                        } else if (column == ID_KEY - 3 && data != null) { // Estimated                            
                             int estimated = (Integer) data;
                             if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
                                 act.setEstimatedPoms(estimated);
@@ -1361,20 +1398,20 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
-    public JScrollPane getTableScrollPane() {
-        return tableScrollPane;
+    public void removeScrollPane() {
+        scrollPane.remove(tableScrollPane);
     }
 
-    public JTabbedPane getControlPane() {
-        return controlPane;
+    public void removeControlPane() {
+        splitPane.remove(controlPane);
+    }
+
+    public void removeTitlePanel() {
+        scrollPane.remove(titlePanel);
     }
 
     public void addControlPane() {
         splitPane.setRightComponent(controlPane); // bottom
-    }
-
-    public JPanel getTitlePanel() {
-        return titlePanel;
     }
 
     public void hideDiscontinuousButton() {
@@ -1496,48 +1533,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
         }
         showCurrentSelectedRow();
-    }
-
-    public void showQuickInterruptionButtons() {
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        internalButton.setMargin(buttonInsets);
-        internalButton.setFocusPainted(false); // removes borders around text
-        internalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createInternalInterruption();
-            }
-        });
-        internalButton.setToolTipText("CTRL + I");
-        internalButton.setVisible(true); // transparent button
-        titlePanel.add(internalButton); // end of the line
-        externalButton.setMargin(buttonInsets);
-        externalButton.setFocusPainted(false); // removes borders around text
-        externalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createExternalInterruption();
-            }
-        });
-        externalButton.setToolTipText("CTRL + E");
-        externalButton.setVisible(true); // transparent button
-        titlePanel.add(externalButton); // end of the line
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            // set the refresh button back at the end of the line
-            titlePanel.remove(refreshButton);
-            titlePanel.add(refreshButton);
-        }
-        setPanelBorder();
-    }
-
-    public void hideQuickInterruptionButtons() {
-        internalButton.setVisible(false); // transparent button
-        externalButton.setVisible(false); // transparent button
-        titlePanel.remove(internalButton);
-        titlePanel.remove(externalButton);
-        setPanelBorder();
     }
 
     public void showSelectedButton() {

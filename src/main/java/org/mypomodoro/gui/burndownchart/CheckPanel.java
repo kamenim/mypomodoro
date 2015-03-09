@@ -137,6 +137,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    Component[] comps = ((JComponent) c).getComponents();
+                    for (Component comp : comps) { // sub-components (combo boxes)
+                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                    }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
@@ -157,6 +161,24 @@ public class CheckPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
+        
+        // Init label title and buttons
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
+        selectedButton.setMargin(buttonInsets);
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        
+        // Add components
         addTitlePanel();
         addTable();
         addCreateButton();
@@ -538,21 +560,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
-    private void addTitlePanel() {
-        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        selectedButton.setMargin(buttonInsets);
-        selectedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showCurrentSelectedRow();
-            }
-        });
-        selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
+    private void addTitlePanel() {        
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;

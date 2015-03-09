@@ -147,6 +147,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    Component[] comps = ((JComponent) c).getComponents();
+                    for (Component comp : comps) { // sub-components (combo boxes)
+                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                    }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
@@ -166,6 +170,48 @@ public class ReportsPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
+        
+        // Init label title and buttons
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
+        selectedButton.setMargin(buttonInsets);
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        duplicateButton.setMargin(buttonInsets);
+        duplicateButton.setFocusPainted(false); // removes borders around text
+        duplicateButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicateButton.setToolTipText("CTRL + D");
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
+            refreshButton.setMargin(buttonInsets);
+            refreshButton.setFocusPainted(false); // removes borders around text
+            refreshButton.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    refreshButton.setEnabled(false);
+                    // Refresh from database
+                    refresh(true);
+                    refreshButton.setEnabled(true);
+                }
+            });
+        }
+        
+        // Add components        
         addTitlePanel();
         addTable();
         // Bottom pane
@@ -581,9 +627,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 // Hide buttons of the quick bar 
                 titlePanel.remove(selectedButton);
                 titlePanel.remove(duplicateButton);
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
             } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -606,11 +649,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar                                    
-                titlePanel.add(selectedButton, 1);
-                titlePanel.add(duplicateButton, 2);
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
+                titlePanel.add(selectedButton);
+                titlePanel.add(duplicateButton);
+            }
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.add(refreshButton); // end of the line
             }
         } else {
             titlePanel.remove(selectedButton);
@@ -625,44 +668,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     private void addTitlePanel() {
-        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        selectedButton.setMargin(buttonInsets);
-        selectedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showCurrentSelectedRow();
-            }
-        });
-        selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
-        duplicateButton.setMargin(buttonInsets);
-        duplicateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        });
-        duplicateButton.setToolTipText("CTRL + D");
-        titlePanel.add(duplicateButton);
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
-            refreshButton.setMargin(buttonInsets);
-            refreshButton.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    refreshButton.setEnabled(false);
-                    // Refresh from database
-                    refresh(true);
-                    refreshButton.setEnabled(true);
-                }
-            });
-            titlePanel.add(refreshButton);
-        }
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
@@ -685,7 +690,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private void addTabPane() {
         controlPane.setFocusable(false); // removes borders around tab text
         controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);        
+        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         controlPane.add(Labels.getString("Common.Edit"), editPanel);
         ImportPanel importPanel = new ImportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -917,8 +922,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemEdit(EditPanel editPanel) {
         /*table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ReportList.getList(), table,
-                        editPanel, ID_KEY));*/
+         new ActivityEditTableListener(ReportList.getList(), table,
+         editPanel, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
@@ -1050,9 +1055,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 int realpoms = activity.getActualPoms();
                 int estimatedpoms = activity.getEstimatedPoms();
                 int overestimatedpoms = activity.getOverestimatedPoms();
-                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");                
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
                 renderer.setText(text);
-                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms): ""));
+                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
             }
             return renderer;
         }

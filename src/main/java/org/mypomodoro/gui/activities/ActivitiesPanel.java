@@ -150,6 +150,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    Component[] comps = ((JComponent) c).getComponents();
+                    for (Component comp : comps) { // sub-components (combo boxes)
+                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                    }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
@@ -170,8 +174,62 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
+
+        // Init label title and buttons
+        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
+        Insets buttonInsets = new Insets(0, 10, 0, 10);
+        selectedButton.setMargin(buttonInsets);
+        selectedButton.setFocusPainted(false); // removes borders around text
+        selectedButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        });
+        selectedButton.setToolTipText("CTRL + G");
+        createButton.setMargin(buttonInsets);
+        createButton.setFocusPainted(false); // removes borders around text
+        createButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewTask();
+            }
+        });
+        createButton.setToolTipText("CTRL + T");
+        duplicateButton.setMargin(buttonInsets);
+        duplicateButton.setFocusPainted(false); // removes borders around text
+        duplicateButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        });
+        duplicateButton.setToolTipText("CTRL + D");
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)        
+            refreshButton.setMargin(buttonInsets);
+            refreshButton.setFocusPainted(false); // removes borders around text
+            refreshButton.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    refreshButton.setEnabled(false);
+                    // Refresh from database
+                    refresh(true);
+                    refreshButton.setEnabled(true);
+                }
+            });
+        }
+
+        // Add components        
         addTitlePanel();
         addTable();
+
+        addSubTable();
         // Bottom pane
         // Init control pane before the table so we can set the default tab at start up time
         controlPane.setMinimumSize(TABPANE_DIMENSION);
@@ -607,9 +665,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // Hide buttons of the quick bar
                 titlePanel.remove(selectedButton);
                 titlePanel.remove(duplicateButton);
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
             } else {
                 titleActivitiesList += " (" + ActivityList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -631,11 +686,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar
-                titlePanel.add(selectedButton, 1);
-                titlePanel.add(duplicateButton, 3);
-                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                    titlePanel.add(refreshButton); // end of the line
-                }
+                titlePanel.add(selectedButton);
+                titlePanel.add(duplicateButton);
+            }
+            titlePanel.add(createButton);
+            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+                titlePanel.add(refreshButton); // end of the line
             }
         } else {
             titlePanel.remove(selectedButton);
@@ -650,54 +706,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     private void addTitlePanel() {
-        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        selectedButton.setMargin(buttonInsets);
-        selectedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showCurrentSelectedRow();
-            }
-        });
-        selectedButton.setToolTipText("CTRL + G");
-        titlePanel.add(selectedButton);
-        createButton.setMargin(buttonInsets);
-        createButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createNewTask();
-            }
-        });
-        createButton.setToolTipText("CTRL + T");
-        titlePanel.add(createButton);
-        duplicateButton.setMargin(buttonInsets);
-        duplicateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        });
-        duplicateButton.setToolTipText("CTRL + D");
-        titlePanel.add(duplicateButton);
-        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)        
-            refreshButton.setMargin(buttonInsets);
-            refreshButton.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    refreshButton.setEnabled(false);
-                    // Refresh from database
-                    refresh(true);
-                    refreshButton.setEnabled(true);
-                }
-            });
-            titlePanel.add(refreshButton);
-        }
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
@@ -715,6 +723,46 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         cScrollPane.fill = GridBagConstraints.BOTH;
         JScrollPane tableScrollPane = new JScrollPane(table);
         scrollPane.add(tableScrollPane, cScrollPane);
+    }
+
+    public void addSubTable() {
+        JPanel subTaskPanel = new JPanel();
+        subTaskPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        subTaskPanel.setFont(getFont().deriveFont(Font.BOLD));
+        subTaskPanel.add(new JLabel("6 sub-tasks"));
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 2;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.weighty = 0;
+        cScrollPane.anchor = GridBagConstraints.WEST;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        subTaskPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        scrollPane.add(subTaskPanel, cScrollPane);
+        // sub-table
+        cScrollPane.gridx = 0;
+        cScrollPane.gridy = 3;
+        cScrollPane.weightx = 1.0;
+        cScrollPane.weighty = 1.0;
+        cScrollPane.fill = GridBagConstraints.BOTH;
+        JXTable subTable = new JXTable(activitiesTableModel);
+        subTable.setTableHeader(null);
+        final JScrollPane tableScrollPane = new JScrollPane(subTable);
+        subTaskPanel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    if (tableScrollPane.isShowing()) {
+                        scrollPane.remove(tableScrollPane);
+                    } else {
+                        scrollPane.add(tableScrollPane, cScrollPane);
+                        showCurrentSelectedRow(); // does not work here
+                    }
+                    scrollPane.revalidate();
+                    scrollPane.repaint();
+                }
+            }
+        });
     }
 
     private void addTabPane() {
@@ -963,8 +1011,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     private void showSelectedItemEdit(EditPanel editPane) {
         /*table.getSelectionModel().addListSelectionListener(
-                new ActivityEditTableListener(ActivityList.getList(), table,
-                        editPane, ID_KEY));*/
+         new ActivityEditTableListener(ActivityList.getList(), table,
+         editPane, ID_KEY));*/
     }
 
     private void showSelectedItemComment(CommentPanel commentPanel) {

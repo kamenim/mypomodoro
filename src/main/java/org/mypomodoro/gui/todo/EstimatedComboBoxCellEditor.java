@@ -55,7 +55,7 @@ class EstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
                 remove(comboBox);
                 if (!label.isShowing()) {
                     add(label);
-                }              
+                }
             }
         }
         return this;

@@ -22,7 +22,6 @@ import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
-import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  * Combo Box Cell Renderer
