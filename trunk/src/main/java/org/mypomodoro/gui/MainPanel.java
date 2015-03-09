@@ -17,6 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -217,5 +218,18 @@ public final class MainPanel extends JFrame {
                 reportListPanel.refresh();
             }
         });
+    }
+
+    public void removeMenuBar() {
+        //getRootPane().remove(menuBar); // this doesn't work
+        setJMenuBar(null);
+    }
+
+    public void removeIconBar() {
+        remove(iconBar);
+    }
+    
+    public void addIconBar() {
+        windowPanel.add(Main.gui.getIconBar(), BorderLayout.NORTH);
     }
 }

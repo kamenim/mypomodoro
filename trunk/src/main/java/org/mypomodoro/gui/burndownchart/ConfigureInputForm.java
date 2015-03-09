@@ -76,8 +76,8 @@ public class ConfigureInputForm extends JPanel {
     private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
     // Dimension
     private final JPanel dimensionInputFormPanel = new JPanel();
-    private final JTextField chartWidth = new JTextField("680");
-    private final JTextField chartHeight = new JTextField("420");
+    private final JTextField chartWidth = new JTextField("770");
+    private final JTextField chartHeight = new JTextField("410");
 
     public ConfigureInputForm() {
         setLayout(new GridBagLayout());
@@ -139,7 +139,7 @@ public class ConfigureInputForm extends JPanel {
         c.gridy = 2;
         TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
         borderDimension.setTitleFont(getFont().deriveFont(Font.BOLD));
-        borderDimension.setTitle(Labels.getString("BurndownChartPanel.Image"));
+        borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());
         addDimensionFields();

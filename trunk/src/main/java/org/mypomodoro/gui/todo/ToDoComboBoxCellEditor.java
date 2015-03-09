@@ -47,7 +47,8 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
             comboBox.setForeground(ColorUtil.GREEN);
             label.setForeground(ColorUtil.GREEN);
-        } else if (id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId() 
+        } else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.RED); // editable combo box
             comboBox.setForeground(ColorUtil.RED);
@@ -61,5 +62,5 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.setSelectedItem(value);
         }
         return this;
-    }    
+    }
 }

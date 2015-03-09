@@ -21,22 +21,21 @@ import java.util.Properties;
 
 /**
  * MAP look and Feel
- * 
- * Based on JTattoo's Acryl Look And Feel
- * http://www.jtattoo.net/ThemeProps.html
- * 
+ *
+ * Based on JTattoo's Acryl Look And Feel http://www.jtattoo.net/ThemeProps.html
+ *
  */
 public class MAPLookAndFeel extends AcrylLookAndFeel {
 
     public MAPLookAndFeel() {
         Properties props = new Properties();
         props.put("logoString", "");
-                
+
         //props.put("selectionBackgroundColor", "180 240 197");
         props.put("selectionBackgroundColor", "216 54 54");
         //props.put("menuSelectionBackgroundColor", "180 240 197");
         props.put("menuSelectionBackgroundColor", "216 54 54");
-        
+
         props.put("controlColor", "218 254 230");
         props.put("controlColorLight", "218 254 230");
         //props.put("controlColorDark", "180 240 197");

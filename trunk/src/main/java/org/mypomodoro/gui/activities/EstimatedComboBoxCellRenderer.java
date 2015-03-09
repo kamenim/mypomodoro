@@ -30,7 +30,7 @@ class EstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
 
     public <E> EstimatedComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
-        
+
     }
 
     @Override
@@ -45,7 +45,7 @@ class EstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
             comboBox.removeAllItems();
             comboBox.addItem(estimatedpoms);
             label.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms + " " : "");
-            setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));            
+            setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
         }
         return this;
     }

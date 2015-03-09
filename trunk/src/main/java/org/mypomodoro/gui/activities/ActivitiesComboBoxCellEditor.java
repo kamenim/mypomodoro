@@ -54,5 +54,5 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.setSelectedItem(value);
         }
         return this;
-    }    
+    }
 }

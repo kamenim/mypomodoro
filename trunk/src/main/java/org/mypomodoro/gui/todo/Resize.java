@@ -21,7 +21,6 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
 
@@ -48,8 +47,7 @@ public class Resize {
         } else { // back to the original location
             Dimension size;
             Main.gui.pack();
-            if (Main.gui.getToDoPanel().isVisible()) { // only when the ToDo panel is visible
-                JPanel tempPanel = new JPanel();
+            if (Main.gui.getToDoPanel().isVisible()) { // only when the ToDo panel is visible                
                 if (viewCount == 1) { // timer only                    
                     // timer fix size
                     size = new Dimension(300, 360);
@@ -61,18 +59,15 @@ public class Resize {
                     timerXLocation = timerXLocation > screenSize.getWidth() ? screenSize.getWidth() : timerXLocation;
                     // set timer location as new recorded location
                     guiRecordedLocation.setLocation(timerXLocation, guiRecordedLocation.getY());
-                    // hide menu and icon bar
-                    //Main.gui.getJMenuBar().setVisible(false);
-                    Main.gui.setJMenuBar(null); // better than setVisible(false) to false with some themes (JTattoo)
-                    Main.gui.getIconBar().setVisible(false);
-                    //tempPanel.add(Main.gui.getIconBar());
-                    // add component to temp panel so it is removed from ToDoPanel
-                    tempPanel.add(Main.gui.getToDoPanel().getTableScrollPane());
-                    tempPanel.add(Main.gui.getToDoPanel().getControlPane());
-                    // remove title panel
-                    tempPanel.add(Main.gui.getToDoPanel().getTitlePanel());
+                    // remove menu and icon bar
+                    Main.gui.removeMenuBar();
+                    Main.gui.removeIconBar();
+                    // Remove components from ToDoPanel
+                    Main.gui.getToDoPanel().removeTitlePanel();
+                    Main.gui.getToDoPanel().removeScrollPane();
+                    Main.gui.getToDoPanel().removeControlPane();
                     // hide divider
-                    Main.gui.getToDoPanel().hideSplitPaneDivider();
+                    //Main.gui.getToDoPanel().hideSplitPaneDivider();
                     // we migth have lost focus when previously editing, overstimating... tasks 
                     // and therefore ESC and ALT+M sortcuts in MainPanel might not work
                     Main.gui.getRootPane().requestFocus();
@@ -86,8 +81,9 @@ public class Resize {
                     double timerWidth = 300; // ignoring any resize of timer
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 800, guiRecordedLocation.getY());
                     // put components back in place
-                    Main.gui.getToDoPanel().addTable();
                     Main.gui.getToDoPanel().addTitlePanel();
+                    Main.gui.getToDoPanel().setPanelBorder();
+                    Main.gui.getToDoPanel().addTable();
                     // MAC OSX Java transparency effect : 1.0f = opaque
                     //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
                     viewCount = 3;
@@ -98,18 +94,14 @@ public class Resize {
                     guiRecordedLocation = Main.gui.getLocation();
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + 800 - size.getWidth(), guiRecordedLocation.getY());
                     // show menu and icon bar
-                    //Main.gui.getJMenuBar().setVisible(true);
-                    Main.gui.setJMenuBar(Main.gui.getJMenuBar()); // better than setVisible(true) to false with some themes (JTattoo)                    
-                    Main.gui.getIconBar().setVisible(true);
-                    //Main.gui.windowPanel.add(Main.gui.getIconBar(), BorderLayout.NORTH);
+                    Main.gui.setJMenuBar(Main.gui.getJMenuBar());
+                    Main.gui.addIconBar();
                     // put component back in place
                     Main.gui.getToDoPanel().addControlPane();
                     // show divider
-                    Main.gui.getToDoPanel().showSplitPaneDivider();
+                    //Main.gui.getToDoPanel().showSplitPaneDivider();
                     viewCount = 0;
                 }
-                // garbage collect tempPanel quicker
-                tempPanel = null;
                 Main.gui.setSize(size);
             } else { // create, activities... panels
                 size = guiRecordedSize;
@@ -121,6 +113,8 @@ public class Resize {
             Main.gui.setPreferredSize(dGUI);
             Main.gui.setSize(size);
             Main.gui.setLocation(guiRecordedLocation);
+            Main.gui.validate();
+            Main.gui.repaint();
         }
         // we make sure the selected task appears on screen despite the resizing
         Main.gui.getActivityListPanel().showCurrentSelectedRow();
