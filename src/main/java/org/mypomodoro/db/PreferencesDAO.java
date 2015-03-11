@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.UIManager;
 import org.mypomodoro.Main;
 
 public class PreferencesDAO {
@@ -76,10 +75,11 @@ public class PreferencesDAO {
                     Main.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
-                logger.error("Fixing following issue... Done", ex);
-                // Here we migrate db version 3.0, 3.1, 3.2 to 3.3
-                database.update("ALTER TABLE preferences ADD bring_to_front BOOLEAN DEFAULT 0;");
-                database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + UIManager.getSystemLookAndFeelClassName() + "';");
+                logger.error("", ex);
+                // Upgrade from version 3.0, 3.1, 3.2 to 3.3 or 3.4
+                // logger.error("Fixing following issue... Done", ex);                
+                // database.update("ALTER TABLE preferences ADD bring_to_front BOOLEAN DEFAULT 0;");
+                // database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + UIManager.getSystemLookAndFeelClassName() + "';");
             } finally {
                 try {
                     rs.close();

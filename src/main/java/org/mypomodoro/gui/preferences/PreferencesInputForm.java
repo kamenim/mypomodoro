@@ -37,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -293,7 +294,7 @@ public class PreferencesInputForm extends JPanel {
         // JTattoo: "com.jtattoo.plaf.luna.LunaLookAndFeel"
         // JTattoo: "com.jtattoo.plaf.mint.MintLookAndFeel"
         ArrayList<String> themes = new ArrayList<String>();
-        themes.add("org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel");
+        themes.add(MAPLookAndFeel.class.getPackage().getName() + ".MAPLookAndFeel"); // mAP laf        
         if (!UIManager.getSystemLookAndFeelClassName().equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
             themes.add(UIManager.getSystemLookAndFeelClassName()); // Windows / GTK / Motif
         }

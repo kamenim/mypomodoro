@@ -507,16 +507,16 @@ public class CheckPanel extends JPanel implements IListPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " (" + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ChartList.getListSize() + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ChartList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
-                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
+                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span bgcolor=\"" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = TimeConverter.getLength(estimated + overestimated);
