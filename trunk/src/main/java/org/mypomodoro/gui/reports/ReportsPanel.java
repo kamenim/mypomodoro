@@ -143,10 +143,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
                         comp.setFont(getFont().deriveFont(Font.BOLD));
@@ -170,10 +170,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        
+
         // Init label title and buttons
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
         Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
@@ -210,7 +210,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
             });
         }
-        
+
         // Add components        
         addTitlePanel();
         addTable();
@@ -776,33 +776,39 @@ public class ReportsPanel extends JPanel implements IListPanel {
         };
 
         // listener on editable cells
+        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
+        // To avoid update overhead, we compare old value with new value
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener 
         tableModel.addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
+                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
                     int row = e.getFirstRow();
                     int column = e.getColumn();
-                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
-                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                    Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 7) { // Title
-                        if (data.toString().trim().length() == 0) {
-                            // reset the original value. Title can't be empty.
-                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 7);
-                        } else {
-                            act.setName(data.toString());
-                            act.databaseUpdate();
-                            // The customer resizer may resize the title column to fit the length of the new text
-                            ColumnResizer.adjustColumnPreferredWidths(table);
-                            table.revalidate();
+                    Object data = model.getValueAt(row, column);
+                    if (data != null) {
+                        Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                        Activity act = Activity.getActivity(ID.intValue());
+                        if (column == ID_KEY - 7) { // Title (can't be empty)
+                            String name = data.toString().trim();
+                            if (name.length() == 0) {
+                                // reset the original value. Title can't be empty.
+                                model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 7);
+                            } else {
+                                act.setName(name);
+                                act.databaseUpdate();
+                                // The customer resizer may resize the title column to fit the length of the new text
+                                ColumnResizer.adjustColumnPreferredWidths(table);
+                                table.revalidate();
+                            }
                         }
+                        ReportList.getList().update(act);
+                        // update info
+                        detailsPanel.selectInfo(act);
+                        detailsPanel.showInfo();
                     }
-                    ReportList.getList().update(act);
-                    // update info
-                    detailsPanel.selectInfo(act);
-                    detailsPanel.showInfo();
                 }
                 // diactivate/gray out all tabs (except import)
                 if (table.getRowCount() == 0) {

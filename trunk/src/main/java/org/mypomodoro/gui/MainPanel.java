@@ -228,7 +228,7 @@ public final class MainPanel extends JFrame {
     public void removeIconBar() {
         remove(iconBar);
     }
-    
+
     public void addIconBar() {
         windowPanel.add(Main.gui.getIconBar(), BorderLayout.NORTH);
     }

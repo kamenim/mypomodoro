@@ -191,11 +191,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        
+
         // Init label title and buttons        
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel); 
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+        titlePanel.add(titleLabel);
         Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
         selectedButton.setFocusPainted(false); // removes borders around text
@@ -235,7 +235,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 createUnplannedTask();
             }
         });
-        unplannedButton.setToolTipText("CTRL + U");        
+        unplannedButton.setToolTipText("CTRL + U");
         internalButton.setMargin(buttonInsets);
         internalButton.setFocusPainted(false); // removes borders around text
         internalButton.addActionListener(new ActionListener() {
@@ -255,7 +255,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 createExternalInterruption();
             }
         });
-        externalButton.setToolTipText("CTRL + E");       
+        externalButton.setToolTipText("CTRL + E");
         refreshButton.setMargin(buttonInsets);
         refreshButton.setFocusPainted(false); // removes borders around text
         refreshButton.addActionListener(new ActionListener() {
@@ -267,8 +267,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 refresh(true);
                 refreshButton.setEnabled(true);
             }
-        });        
-        
+        });
+
         // Add components
         addTitlePanel();
         addTable();
@@ -762,7 +762,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     }
                 }
             }
-            titlePanel.add(unplannedButton);                 
+            titlePanel.add(unplannedButton);
             if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                 titlePanel.add(refreshButton); // end of the line
             }
@@ -781,7 +781,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
-    public void addTitlePanel() {       
+    public void addTitlePanel() {
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
@@ -791,7 +791,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         cScrollPane.fill = GridBagConstraints.BOTH;
         titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         scrollPane.add(titlePanel, cScrollPane);
-    }        
+    }
 
     public void showQuickInterruptionButtons() {
         titlePanel.add(internalButton);
@@ -943,41 +943,49 @@ public class ToDoPanel extends JPanel implements IListPanel {
         };
 
         // listener on editable cells
+        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
+        // To avoid update overhead, we compare old value with new value
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener 
         tableModel.addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
-                    //System.err.println("e.getType ToDO" + e.getType());
+                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
                     int row = e.getFirstRow();
                     int column = e.getColumn();
-                    if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1
-                        AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                        Object data = model.getValueAt(row, column); // no need for convertRowIndexToModel
-                        Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                        Activity act = Activity.getActivity(ID.intValue());
-                        if (column == ID_KEY - 4) { // Title (can't be empty)
-                            if (data.toString().trim().length() == 0) {
-                                // reset the original value. Title can't be empty.
-                                model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
-                            } else {
-                                act.setName(data.toString());
-                                act.databaseUpdate();
+                    Object data = model.getValueAt(row, column);
+                    if (data != null) {
+                        if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1                        
+                            Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                            Activity act = Activity.getActivity(ID.intValue());
+                            if (column == ID_KEY - 4) { // Title (can't be empty)
+                                String name = data.toString().trim();
+                                if (!name.equals(act.getName())) {
+                                    if (name.length() == 0) {
+                                        // reset the original value. Title can't be empty.
+                                        model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
+                                    } else {
+                                        act.setName(name);
+                                        act.databaseUpdate();
+                                    }
+                                }
+                            } else if (column == ID_KEY - 3) { // Estimated                            
+                                int estimated = (Integer) data;
+                                if (estimated != act.getEstimatedPoms()
+                                        && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                    act.setEstimatedPoms(estimated);
+                                    act.databaseUpdate();
+                                }
                             }
-                        } else if (column == ID_KEY - 3 && data != null) { // Estimated                            
-                            int estimated = (Integer) data;
-                            if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
-                                act.setEstimatedPoms(estimated);
-                                act.databaseUpdate();
-                            }
+                            ToDoList.getList().update(act);
+                            setIconLabels();
+                            // Refresh panel border after updating the list
+                            setPanelBorder();
+                            // update info
+                            detailsPanel.selectInfo(act);
+                            detailsPanel.showInfo();
                         }
-                        ToDoList.getList().update(act);
-                        setIconLabels();
-                        // Refresh panel border after updating the list
-                        setPanelBorder();
-                        // update info
-                        detailsPanel.selectInfo(act);
-                        detailsPanel.showInfo();
                     }
                 }
                 // diactivate/gray out all tabs (except import)
@@ -1177,13 +1185,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
             } else if (toDo != null && toDo.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
-            /* Strikethrough task with no estimation
-             if (toDo != null && toDo.getEstimatedPoms() == 0) {
-             // underline url
-             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-             renderer.setFont(getFont().deriveFont(map));
-             }*/
             return renderer;
         }
     }

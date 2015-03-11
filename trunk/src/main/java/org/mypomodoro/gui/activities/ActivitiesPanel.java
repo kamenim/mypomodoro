@@ -146,10 +146,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
                         comp.setFont(getFont().deriveFont(Font.BOLD));
@@ -177,7 +177,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
         // Init label title and buttons
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
         Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
@@ -729,7 +729,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         JPanel subTaskPanel = new JPanel();
         subTaskPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         subTaskPanel.setFont(getFont().deriveFont(Font.BOLD));
-        subTaskPanel.add(new JLabel("6 sub-tasks"));
+        JLabel l = new JLabel("6 sub-tasks");
+        l.setFont(l.getFont().deriveFont(Font.BOLD));
+        subTaskPanel.add(l);
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 2;
         cScrollPane.weightx = 1.0;
@@ -843,60 +845,77 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             }
         };
 
-        // listener on editable cells
+        // Listener on editable cells
+        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
+        // To avoid update overhead, we compare old value with new value
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener        
         tableModel.addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
-                    //System.err.println("e.getType Activities" + e.getType());
                     int row = e.getFirstRow();
                     int column = e.getColumn();
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
                     Object data = model.getValueAt(row, column);
-                    Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                    Activity act = Activity.getActivity(ID.intValue());
-                    if (column == ID_KEY - 5) {
-                        if (data.toString().trim().length() == 0) {
-                            // reset the original value. Title can't be empty.
-                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 5);
-                        } else {
-                            act.setName(data.toString());
-                            act.databaseUpdate();
-                            // The customer resizer may resize the title column to fit the length of the new text
-                            ColumnResizer.adjustColumnPreferredWidths(table);
-                            table.revalidate();
+                    if (data != null) {
+                        Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                        Activity act = Activity.getActivity(ID.intValue());
+                        if (column == ID_KEY - 5) { // Title (can't be empty)
+                            String name = data.toString().trim();
+                            if (!name.equals(act.getName())) {
+                                if (name.length() == 0) {
+                                    // reset the original value. Title can't be empty.
+                                    model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 5);
+                                } else {
+                                    act.setName(name);
+                                    act.databaseUpdate();
+                                    // The customer resizer may resize the title column to fit the length of the new text
+                                    ColumnResizer.adjustColumnPreferredWidths(table);
+                                    table.revalidate();
+                                }
+                            }
+                        } else if (column == ID_KEY - 4) { // Type
+                            String type = data.toString().trim();
+                            if (!type.equals(act.getType())) {
+                                act.setType(type);
+                                act.databaseUpdate();
+                                // load template for user stories
+                                if (Main.preferences.getAgileMode()) {
+                                    commentPanel.showInfo(act);
+                                }
+                                // refresh the combo boxes of all rows to display the new type (if any)
+                                String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
+                                table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
+                                table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
+                            }
+                        } else if (column == ID_KEY - 3) { // Estimated
+                            int estimated = (Integer) data;
+                            if (estimated != act.getEstimatedPoms()
+                                    && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                act.setEstimatedPoms(estimated);
+                                act.databaseUpdate();
+                            }
+                        } else if (column == ID_KEY - 2) { // Story Points
+                            Float storypoints = (Float) data;
+                            if (storypoints != act.getStoryPoints()) {
+                                act.setStoryPoints(storypoints);
+                                act.databaseUpdate();
+                            }
+                        } else if (column == ID_KEY - 1) { // Iteration 
+                            int iteration = Integer.parseInt(data.toString());
+                            if (iteration != act.getIteration()) {
+                                act.setIteration(iteration);
+                                act.databaseUpdate();
+                            }
                         }
-                    } else if (column == ID_KEY - 4) { // Type
-                        act.setType(data.toString());
-                        act.databaseUpdate();
-                        // load template for user stories
-                        if (Main.preferences.getAgileMode()) {
-                            commentPanel.showInfo(act);
-                        }
-                        // refresh the combo boxes of all rows to display the new type (if any)
-                        String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
-                        table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
-                    } else if (column == ID_KEY - 3) { // Estimated
-                        int estimated = (Integer) data;
-                        if (estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
-                            act.setEstimatedPoms(estimated);
-                            act.databaseUpdate();
-                        }
-                    } else if (column == ID_KEY - 2) { // Story Points
-                        act.setStoryPoints((Float) data);
-                        act.databaseUpdate();
-                    } else if (column == ID_KEY - 1) { // Iteration                        
-                        act.setIteration(Integer.parseInt(data.toString()));
-                        act.databaseUpdate();
+                        ActivityList.getList().update(act);
+                        // Refresh panel border after updating the list
+                        setPanelBorder();
+                        // update info
+                        detailsPanel.selectInfo(act);
+                        detailsPanel.showInfo();
                     }
-                    ActivityList.getList().update(act);
-                    // Refresh panel border after updating the list
-                    setPanelBorder();
-                    // update info
-                    detailsPanel.selectInfo(act);
-                    detailsPanel.showInfo();
                 }
                 // diactivate/gray out all tabs (except import)
                 if (table.getRowCount() == 0) {

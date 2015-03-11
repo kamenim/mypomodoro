@@ -43,6 +43,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -132,7 +133,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
-        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
+        Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.setIconLabels();
         // Hide quick interruption button and items in combo box

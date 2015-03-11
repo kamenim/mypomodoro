@@ -67,14 +67,14 @@ public class IconBar extends JPanel {
     public void highlightIcon(MyIcon icon) {
         unHighlightIcon();
         icon.highlight();
-        icon.setFont(getFont().deriveFont(Font.BOLD));
+        icon.setFont(icon.getFont().deriveFont(Font.BOLD));
         highlightedIcon = icon;
     }
 
     public void unHighlightIcon() {
         if (highlightedIcon != null) {
             highlightedIcon.unhighlight();
-            highlightedIcon.setFont(getFont().deriveFont(Font.PLAIN));
+            highlightedIcon.setFont(highlightedIcon.getFont().deriveFont(Font.PLAIN));
         }
     }
 

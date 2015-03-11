@@ -64,7 +64,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField primaryYAxisColor = new JTextField();
     private final Color defaultPrimaryYAxisColor = ColorUtil.YELLOW_CHART;
     final JCheckBox burndownChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burndown Chart"), true);
-    private final ComponentTitledBorder borderBurndownChart = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final ComponentTitledBorder borderBurndownChart = new ComponentTitledBorder(burndownChartCheckBox, burndownChartInputFormPanel, new EtchedBorder(), burndownChartCheckBox.getFont().deriveFont(Font.BOLD));
     private final JComboBox chartTypesBurndownComboBox = new JComboBox();
     private final JCheckBox burndownChartPercentageCheckBox = new JCheckBox("%");
     // Burndown Target Line form
@@ -74,7 +74,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField targetColor = new JTextField();
     private final Color defaultTargetColor = ColorUtil.BLACK;
     private final JCheckBox targetCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Target"), true);
-    ComponentTitledBorder borderTarget = new ComponentTitledBorder(targetCheckBox, targetInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    ComponentTitledBorder borderTarget = new ComponentTitledBorder(targetCheckBox, targetInputFormPanel, new EtchedBorder(), targetCheckBox.getFont().deriveFont(Font.BOLD));
     // Burn-up Chart form
     private final JPanel burnupChartInputFormPanel = new JPanel();
     private final JPanel burnupChartTypeLegendInputFormPanel = new JPanel();
@@ -85,7 +85,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField secondaryYAxisColor = new JTextField();
     private final Color defaultSecondaryYAxisColor = ColorUtil.RED_CHART;
     final JCheckBox burnupChartCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Burn-up Chart"), true);
-    private final ComponentTitledBorder borderBurnupChart = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final ComponentTitledBorder borderBurnupChart = new ComponentTitledBorder(burnupChartCheckBox, burnupChartInputFormPanel, new EtchedBorder(), burnupChartCheckBox.getFont().deriveFont(Font.BOLD));
     private final JComboBox chartTypesBurnupComboBox = new JComboBox();
     private final JCheckBox burnupChartPercentageCheckBox = new JCheckBox("%");
     // Burn-up Guide Line form
@@ -95,7 +95,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField burnupGuideColor = new JTextField();
     private final Color defaultBurnupGuideColor = ColorUtil.BLACK;
     private final JCheckBox burnupGuideCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Guide"), true);
-    ComponentTitledBorder borderGuide = new ComponentTitledBorder(burnupGuideCheckBox, burnupGuideInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    ComponentTitledBorder borderGuide = new ComponentTitledBorder(burnupGuideCheckBox, burnupGuideInputFormPanel, new EtchedBorder(), burnupGuideCheckBox.getFont().deriveFont(Font.BOLD));
     // Burn-up Scope Line form
     private final JPanel scopeInputFormPanel = new JPanel();
     private JTextField scopeLegend = new JTextField();
@@ -103,7 +103,7 @@ public class ChooseInputForm extends JPanel {
     private JTextField scopeColor = new JTextField();
     private final Color defaultScopeColor = ColorUtil.BLACK;
     private final JCheckBox scopeCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Scope"), true);
-    private final ComponentTitledBorder borderScope = new ComponentTitledBorder(scopeCheckBox, scopeInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final ComponentTitledBorder borderScope = new ComponentTitledBorder(scopeCheckBox, scopeInputFormPanel, new EtchedBorder(), scopeCheckBox.getFont().deriveFont(Font.BOLD));
 
     public ChooseInputForm() {
         setLayout(new GridBagLayout());

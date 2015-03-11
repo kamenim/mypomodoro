@@ -39,24 +39,24 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
         setBackground(table.getSelectionBackground());
-        comboBox.setFont(getFont().deriveFont(Font.BOLD));
-        label.setFont(getFont().deriveFont(Font.BOLD));
+        comboBox.setFont(comboBox.getFont().deriveFont(Font.BOLD));
+        //label.setFont(label.getFont().deriveFont(Font.BOLD));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
             comboBox.setForeground(ColorUtil.GREEN);
-            label.setForeground(ColorUtil.GREEN);
+            //label.setForeground(ColorUtil.GREEN);
         } else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.RED); // editable combo box
             comboBox.setForeground(ColorUtil.RED);
-            label.setForeground(ColorUtil.RED);
+            //label.setForeground(ColorUtil.RED);
         } else { // reset foreground (depends on the theme)
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
-            label.setForeground(getForeground());
+            //label.setForeground(getForeground());
         }
         if (value != null) {
             comboBox.setSelectedItem(value);

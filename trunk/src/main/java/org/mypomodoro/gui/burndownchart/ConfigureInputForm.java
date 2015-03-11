@@ -67,13 +67,13 @@ public class ConfigureInputForm extends JPanel {
     private final DatePicker excludeDatePicker = new DatePicker(Labels.getLocale());
     private final ArrayList<Date> excludedDates = new ArrayList<Date>();
     final JCheckBox datesCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Dates"), true);
-    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    final ComponentTitledBorder borderDates = new ComponentTitledBorder(datesCheckBox, datesInputFormPanel, new EtchedBorder(), datesCheckBox.getFont().deriveFont(Font.BOLD));
     // Iterations form
     private final JPanel iterationsInputFormPanel = new JPanel();
     private final JComboBox startIteration = new JComboBox();
     private final JComboBox endIteration = new JComboBox();
     final JCheckBox iterationsCheckBox = new JCheckBox(Labels.getString("BurndownChartPanel.Iterations"), true);
-    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, new EtchedBorder(), getFont().deriveFont(Font.BOLD));
+    private final ComponentTitledBorder borderIterations = new ComponentTitledBorder(iterationsCheckBox, iterationsInputFormPanel, new EtchedBorder(), iterationsCheckBox.getFont().deriveFont(Font.BOLD));
     // Dimension
     private final JPanel dimensionInputFormPanel = new JPanel();
     private final JTextField chartWidth = new JTextField("770");
@@ -138,7 +138,7 @@ public class ConfigureInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
-        borderDimension.setTitleFont(getFont().deriveFont(Font.BOLD));
+        borderDimension.setTitleFont(borderDimension.getTitleFont().deriveFont(Font.BOLD));
         borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());

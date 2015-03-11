@@ -68,7 +68,7 @@ public class PreferencesInputForm extends JPanel {
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("PreferencesPanel.Preferences") + " ");
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
+        titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
 
