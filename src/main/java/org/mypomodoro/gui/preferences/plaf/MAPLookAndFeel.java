@@ -18,6 +18,7 @@ package org.mypomodoro.gui.preferences.plaf;
 
 import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
 import java.util.Properties;
+import org.mypomodoro.util.ColorUtil;
 
 /**
  * MAP look and Feel
@@ -32,14 +33,14 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("logoString", "");
 
         //props.put("selectionBackgroundColor", "180 240 197");
-        props.put("selectionBackgroundColor", "216 54 54");
+        props.put("selectionBackgroundColor", ColorUtil.toProperty(ColorUtil.RED));
         //props.put("menuSelectionBackgroundColor", "180 240 197");
-        props.put("menuSelectionBackgroundColor", "216 54 54");
+        props.put("menuSelectionBackgroundColor", ColorUtil.toProperty(ColorUtil.RED));
 
         props.put("controlColor", "218 254 230");
         props.put("controlColorLight", "218 254 230");
         //props.put("controlColorDark", "180 240 197");
-        props.put("controlColorDark", "216 54 54");
+        props.put("controlColorDark", ColorUtil.toProperty(ColorUtil.RED));
 
         props.put("buttonColor", "218 230 254");
         props.put("buttonColorLight", "255 255 255");
@@ -48,14 +49,14 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("rolloverColor", "218 254 230");
         props.put("rolloverColorLight", "218 254 230");
         //props.put("rolloverColorDark", "180 240 197");
-        props.put("rolloverColorDark", "216 54 54");
+        props.put("rolloverColorDark", ColorUtil.toProperty(ColorUtil.RED));
 
         props.put("windowTitleForegroundColor", "0 0 0");
         //props.put("windowTitleBackgroundColor", "180 240 197");
-        props.put("windowTitleBackgroundColor", "216 54 54");
+        props.put("windowTitleBackgroundColor", ColorUtil.toProperty(ColorUtil.RED));
         props.put("windowTitleColorLight", "218 254 230");
         //props.put("windowTitleColorDark", "180 240 197");
-        props.put("windowTitleColorDark", "216 54 54");
+        props.put("windowTitleColorDark", ColorUtil.toProperty(ColorUtil.RED));
         props.put("windowBorderColor", "218 254 230");
         setCurrentTheme(props);
     }

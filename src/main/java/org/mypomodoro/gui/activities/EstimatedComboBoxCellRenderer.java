@@ -30,7 +30,6 @@ class EstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
 
     public <E> EstimatedComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
-
     }
 
     @Override

@@ -50,6 +50,10 @@ public class ColorUtil {
         return "#" + toBrowserHexValue(color.getRed()) + toBrowserHexValue(color.getGreen()) + toBrowserHexValue(color.getBlue());
     }
 
+    public static String toProperty(Color color) {
+        return color.getRed() + " " + color.getGreen() + " " + color.getBlue();
+    }
+
     private static String toBrowserHexValue(int number) {
         StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
         while (builder.length() < 2) {

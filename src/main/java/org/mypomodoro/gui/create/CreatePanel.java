@@ -56,7 +56,7 @@ public class CreatePanel extends JPanel {
 
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("FileMenu.New Activity") + " ");
         titledborder.setTitleJustification(TitledBorder.LEFT);
-        titledborder.setTitleFont(getFont().deriveFont(Font.BOLD));
+        titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
 

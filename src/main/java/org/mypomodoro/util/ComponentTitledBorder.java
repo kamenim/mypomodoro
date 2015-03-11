@@ -40,7 +40,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     private boolean mouseEntered = false;
 
     public ComponentTitledBorder(Component comp, JComponent container, Border border) {
-        this(comp, container, border, container.getFont());
+        this(comp, container, border, comp.getFont());
     }
 
     public ComponentTitledBorder(Component comp, JComponent container, Border border, Font f) {
@@ -85,7 +85,6 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     private void dispatchEvent(MouseEvent me, int id) {
         Point pt = me.getPoint();
         pt.translate(-offset, 0);
-
         comp.setSize(rect.width, rect.height);
         comp.dispatchEvent(new MouseEvent(comp, id, me.getWhen(),
                 me.getModifiers(), pt.x, pt.y, me.getClickCount(),

@@ -133,10 +133,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
                         comp.setFont(getFont().deriveFont(Font.BOLD));
@@ -161,10 +161,10 @@ public class CheckPanel extends JPanel implements IListPanel {
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        
+
         // Init label title and buttons
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(getFont().deriveFont(Font.BOLD));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titlePanel.add(titleLabel);
         Insets buttonInsets = new Insets(0, 10, 0, 10);
         selectedButton.setMargin(buttonInsets);
@@ -177,7 +177,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        
+
         // Add components
         addTitlePanel();
         addTable();
@@ -560,7 +560,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         titlePanel.repaint(); // this is necessary to force stretching of panel
     }
 
-    private void addTitlePanel() {        
+    private void addTitlePanel() {
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
