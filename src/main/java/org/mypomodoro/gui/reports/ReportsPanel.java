@@ -811,12 +811,14 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 // diactivate/gray out all tabs (except import)
                 if (table.getRowCount() == 0) {
                     for (int index = 0; index < controlPane.getTabCount(); index++) {
-                        if (index == 3) { // import panel
+                        if (index == 3) { // select Import panel
                             controlPane.setSelectedIndex(index);
                             continue;
                         }
                         controlPane.setEnabledAt(index, false);
                     }
+                } else { // select Details tab
+                    controlPane.setSelectedIndex(0);
                 }
             }
         });

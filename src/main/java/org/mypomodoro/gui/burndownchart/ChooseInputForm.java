@@ -141,7 +141,7 @@ public class ChooseInputForm extends JPanel {
         addBurndownChartFields(cChart);
         // Target
         targetCheckBox.setFocusPainted(false);
-        targetCheckBox.setSelected(true);        
+        targetCheckBox.setSelected(true);
         targetInputFormPanel.setBorder(borderTarget);
         targetInputFormPanel.setLayout(new GridBagLayout());
         addTargetFields(cChart);
@@ -254,7 +254,7 @@ public class ChooseInputForm extends JPanel {
         });
         burndownChartTypeLegendInputFormPanel.add(burndownChartPercentageCheckBox, gbc);
         // Name
-        gbc.insets = new Insets(0, 0, 0, 0);      
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridheight = 1;

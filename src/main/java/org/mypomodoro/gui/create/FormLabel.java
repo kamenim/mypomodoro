@@ -25,7 +25,7 @@ public class FormLabel extends JLabel {
 
     public FormLabel(String str) {
         super(str);
-        Border paddingBorder = BorderFactory.createEmptyBorder(0,0,0,10);
+        Border paddingBorder = BorderFactory.createEmptyBorder(0, 0, 0, 10);
         setBorder(paddingBorder);
     }
 }

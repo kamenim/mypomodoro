@@ -40,7 +40,7 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
         comboBox.setFont(isSelected ? comboBox.getFont().deriveFont(Font.BOLD) : comboBox.getFont().deriveFont(Font.PLAIN));
-        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));        
+        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {

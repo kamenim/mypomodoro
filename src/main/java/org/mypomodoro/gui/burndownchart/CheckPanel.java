@@ -677,8 +677,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 new TableModelListener() {
 
                     @Override
-                    public void tableChanged(TableModelEvent e
-                    ) {
+                    public void tableChanged(TableModelEvent e) {
                         // diactivate/gray out all tabs
                         if (table.getRowCount() == 0) {
                             for (int index = 0; index < controlPane.getTabCount(); index++) {
