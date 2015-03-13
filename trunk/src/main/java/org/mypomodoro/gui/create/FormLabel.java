@@ -16,17 +16,16 @@
  */
 package org.mypomodoro.gui.create;
 
-import java.awt.Dimension;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 
+// JLable with padding at the end of the text
 public class FormLabel extends JLabel {
 
     public FormLabel(String str) {
         super(str);
-        Dimension labelDimension = new Dimension(150, 25);
-        setPreferredSize(labelDimension);
-        setMinimumSize(labelDimension);
-        setMaximumSize(labelDimension);
-        setAlignmentX(LEFT_ALIGNMENT);
+        Border paddingBorder = BorderFactory.createEmptyBorder(0,0,0,10);
+        setBorder(paddingBorder);
     }
 }

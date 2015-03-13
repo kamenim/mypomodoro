@@ -43,7 +43,6 @@ import static org.mypomodoro.util.TimeConverter.calculatePlainMinutes;
 public class OverestimationInputForm extends JPanel {
 
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 50);
-    private static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(60, 25);
     protected JComboBox overestimatedPomodoros = new JComboBox();
     protected final GridBagConstraints c = new GridBagConstraints();
@@ -56,7 +55,6 @@ public class OverestimationInputForm extends JPanel {
         setLayout(new GridBagLayout());
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTH;
 
         addOverestimatedPoms();
     }
@@ -66,14 +64,14 @@ public class OverestimationInputForm extends JPanel {
         // Overestimated Poms
         c.gridx = 0;
         c.gridy = 0;
+        c.weighty = 0.5;
         FormLabel label = new FormLabel(
                 Labels.getString("ToDoListPanel.Overestimated pomodoros")
                 + "*: ");
-        label.setMinimumSize(LABEL_DIMENSION);
-        label.setPreferredSize(LABEL_DIMENSION);
         add(label, c);
         c.gridx = 1;
         c.gridy = 0;
+        c.weighty = 0.5;
         // In Agile mode you should be able to overestimate your task by half day or even one day
         String items[] = Main.preferences.getAgileMode() ? new String[10] : new String[5];
         for (int i = 0; i < items.length; i++) {

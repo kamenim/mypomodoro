@@ -77,7 +77,7 @@ public class PreferencesInputForm extends JPanel {
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         int unitMinute = 0;
         int unitPomodoro = 1;
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45,

@@ -72,7 +72,6 @@ public class ActivityInputForm extends JPanel {
     public ActivityInputForm(int gridy) {
         setLayout(new GridBagLayout());
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTH;
 
         addForm(gridy);
     }

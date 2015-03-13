@@ -49,7 +49,6 @@ import org.mypomodoro.util.Labels;
  */
 public class ExportInputForm extends JPanel {
 
-    protected static final Dimension LABEL_DIMENSION = new Dimension(170, 25);
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private JCheckBox headerCheckBox = new JCheckBox();
     protected JTextField fileName = new JTextField();
@@ -88,10 +87,10 @@ public class ExportInputForm extends JPanel {
 
     public ExportInputForm() {
         setLayout(new GridBagLayout());
-        // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
+        
         addExportForm();
         addAuthorisationForm();
         authorisationFormPanel.setVisible(false);
@@ -106,14 +105,12 @@ public class ExportInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0.5;
+        c.anchor = GridBagConstraints.WEST;
         FormLabel headerlabel = new FormLabel(Labels.getString("ReportListPanel.Header") + ": ");
-        headerlabel.setMinimumSize(LABEL_DIMENSION);
-        headerlabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(headerlabel, c);
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 0.5;
-        c.anchor = GridBagConstraints.WEST;
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
         exportFormPanel.add(headerCheckBox, c);
@@ -124,8 +121,6 @@ public class ExportInputForm extends JPanel {
         c.gridy = 2;
         c.weighty = 0.5;
         FormLabel fileFormatLabel = new FormLabel(Labels.getString("ReportListPanel.File format") + "*: ");
-        fileFormatLabel.setMinimumSize(LABEL_DIMENSION);
-        fileFormatLabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(fileFormatLabel, c);
         c.gridx = 1;
         c.gridy = 2;
@@ -172,8 +167,6 @@ public class ExportInputForm extends JPanel {
         c.weighty = 0.5;
         datePatternLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Date pattern") + "*: ");
-        datePatternLabel.setMinimumSize(LABEL_DIMENSION);
-        datePatternLabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(datePatternLabel, c);
         c.gridx = 1;
         c.gridy = 3;
@@ -187,8 +180,6 @@ public class ExportInputForm extends JPanel {
         c.weighty = 0.5;
         separatorLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Separator") + "*: ");
-        fileFormatLabel.setMinimumSize(LABEL_DIMENSION);
-        fileFormatLabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(separatorLabel, c);
         c.gridx = 1;
         c.gridy = 4;
@@ -299,8 +290,6 @@ public class ExportInputForm extends JPanel {
         c.gridwidth = 1;
         FormLabel authorisationCodeLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Authorisation code") + "*: ");
-        authorisationCodeLabel.setMinimumSize(LABEL_DIMENSION);
-        authorisationCodeLabel.setPreferredSize(LABEL_DIMENSION);
         authorisationFormPanel.add(authorisationCodeLabel, c);
         c.gridx = 1;
         c.gridy = 2;
@@ -356,49 +345,43 @@ public class ExportInputForm extends JPanel {
      }*/
     private void addPaternsComboBox(GridBagConstraints c) {
         patternsPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTH;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        patternsPanel.add(patterns.getDatePatternsComboBox1(), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        patternsPanel.add(new JLabel("  "), gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        patternsPanel.add(patterns.getDateSeparatorComboBox1(), gbc);
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        patternsPanel.add(new JLabel("  "), gbc);
-        gbc.gridx = 4;
-        gbc.gridy = 0;
-        patternsPanel.add(patterns.getDatePatternsComboBox2(), gbc);
-        gbc.gridx = 5;
-        gbc.gridy = 0;
-        patternsPanel.add(new JLabel("  "), gbc);
-        gbc.gridx = 6;
-        gbc.gridy = 0;
-        patternsPanel.add(patterns.getDateSeparatorComboBox2(), gbc);
-        gbc.gridx = 7;
-        gbc.gridy = 0;
-        patternsPanel.add(new JLabel("  "), gbc);
-        gbc.gridx = 8;
-        gbc.gridy = 0;
-        patternsPanel.add(patterns.getDatePatternsComboBox3(), gbc);
+        GridBagConstraints gbcPaterns = new GridBagConstraints();
+        gbcPaterns.gridx = 0;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(patterns.getDatePatternsComboBox1(), gbcPaterns);
+        gbcPaterns.gridx = 1;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbcPaterns);
+        gbcPaterns.gridx = 2;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(patterns.getDateSeparatorComboBox1(), gbcPaterns);
+        gbcPaterns.gridx = 3;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbcPaterns);
+        gbcPaterns.gridx = 4;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(patterns.getDatePatternsComboBox2(), gbcPaterns);
+        gbcPaterns.gridx = 5;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbcPaterns);
+        gbcPaterns.gridx = 6;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(patterns.getDateSeparatorComboBox2(), gbcPaterns);
+        gbcPaterns.gridx = 7;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(new JLabel("  "), gbcPaterns);
+        gbcPaterns.gridx = 8;
+        gbcPaterns.gridy = 0;
+        patternsPanel.add(patterns.getDatePatternsComboBox3(), gbcPaterns);
         exportFormPanel.add(patternsPanel, c);
     }
 
     private void addExcelPaternsComboBox(GridBagConstraints c) {
         excelPatternsPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTH;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        excelPatternsPanel.add(new JLabel(excelPatterns), gbc);
+        GridBagConstraints gbcExcelPaterns = new GridBagConstraints();
+        gbcExcelPaterns.gridx = 0;
+        gbcExcelPaterns.gridy = 0;
+        excelPatternsPanel.add(new JLabel(excelPatterns), gbcExcelPaterns);
         excelPatternsPanel.setBackground(ColorUtil.WHITE);
         exportFormPanel.add(excelPatternsPanel, c);
     }
@@ -611,8 +594,6 @@ public class ExportInputForm extends JPanel {
         c.weighty = 0.5;
         FormLabel fileNamelabel = new FormLabel(
                 Labels.getString("ReportListPanel.File name") + "*: ");
-        fileNamelabel.setMinimumSize(LABEL_DIMENSION);
-        fileNamelabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
         c.gridy = 1;
