@@ -90,7 +90,7 @@ public class ExportInputForm extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        
+
         addExportForm();
         addAuthorisationForm();
         authorisationFormPanel.setVisible(false);
