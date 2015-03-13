@@ -17,10 +17,11 @@
 package org.mypomodoro.gui.export;
 
 import java.awt.Button;
+import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDialog;
@@ -37,6 +38,7 @@ import org.mypomodoro.util.Labels;
 public class ImportInputForm extends ExportInputForm {
 
     private FileDialog fileDialog;
+    private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(215, 25);
 
     public ImportInputForm() {
         defaultFileName = "";
@@ -49,29 +51,18 @@ public class ImportInputForm extends ExportInputForm {
         c.weighty = 0.5;
         FormLabel fileNamelabel = new FormLabel(
                 Labels.getString("ReportListPanel.File") + "*: ");
-        fileNamelabel.setMinimumSize(LABEL_DIMENSION);
-        fileNamelabel.setPreferredSize(LABEL_DIMENSION);
         exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
         c.gridy = 1;
         c.weighty = 0.5;
         JPanel fileChooserPanel = new JPanel();
-        GridBagConstraints gbcf = new GridBagConstraints();
-        gbcf.gridx = 0;
-        gbcf.gridy = 0;
-        gbcf.fill = GridBagConstraints.NONE;
-        fileName.setMinimumSize(LABEL_DIMENSION);
-        fileName.setPreferredSize(LABEL_DIMENSION);
+        fileChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         fileName.setEditable(false);
         fileName.setBackground(ColorUtil.WHITE);
-        fileChooserPanel.add(fileName, gbcf);
-        gbcf.gridx = 1;
-        gbcf.gridy = 0;
-        gbcf.fill = GridBagConstraints.NONE;
-        fileChooserPanel.add(new JLabel(" "), gbcf);
-        gbcf.gridx = 2;
-        gbcf.gridy = 0;
-        gbcf.fill = GridBagConstraints.NONE;
+        fileName.setMinimumSize(TEXT_FIELD_DIMENSION);
+        fileName.setPreferredSize(TEXT_FIELD_DIMENSION);
+        fileChooserPanel.add(fileName);
+        fileChooserPanel.add(new JLabel(" ")); // space
         JDialog d = new JDialog();
         d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // garbage collection
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
@@ -89,8 +80,7 @@ public class ImportInputForm extends ExportInputForm {
                 }
             }
         });
-        fileChooserPanel.add(browseButton, gbcf);
-        fileChooserPanel.setLayout(new GridBagLayout());
+        fileChooserPanel.add(browseButton);
         exportFormPanel.add(fileChooserPanel, c);
     }
 

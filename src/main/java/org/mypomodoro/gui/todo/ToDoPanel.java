@@ -712,12 +712,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
-                String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (Main.preferences.getPlainHours()) {
-                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
-                } else {
-                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
-                }
+                String toolTipText = Labels.getString("Common.Done") + ": ";
+                toolTipText += TimeConverter.getLength(real) + " / ";
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 titlePanel.remove(selectedButton);
@@ -736,12 +733,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ToDoList.getList().getStoryPoints());
                 }
                 // Tool tip
-                String toolTipText = TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
-                if (Main.preferences.getPlainHours()) {
-                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
-                } else {
-                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
-                }
+                String toolTipText = Labels.getString("Common.Done") + ": ";
+                toolTipText += TimeConverter.getLength(ToDoList.getList().getNbRealPom()) + " / ";
+                toolTipText += TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
                 titleLabel.setToolTipText(toolTipText);
                 if (table.getSelectedRowCount() == 1) {
                     // Show buttons of the quick bar

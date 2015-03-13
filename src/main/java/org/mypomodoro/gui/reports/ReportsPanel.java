@@ -618,12 +618,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
-                String toolTipText = TimeConverter.getLength(estimated + overestimated);
-                if (Main.preferences.getPlainHours()) {
-                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
-                } else {
-                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
-                }
+                String toolTipText = Labels.getString("Common.Done") + ": ";
+                toolTipText += TimeConverter.getLength(real) + " / ";
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar 
@@ -644,12 +641,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
                 }
                 // Tool tip
-                String toolTipText = TimeConverter.getLength(ReportList.getList().getNbEstimatedPom() + ReportList.getList().getNbOverestimatedPom());
-                if (Main.preferences.getPlainHours()) {
-                    toolTipText += " (" + Labels.getString("Common.Plain hours") + ")";
-                } else {
-                    toolTipText += " (" + Labels.getString("Common.Effective hours") + ")";
-                }
+                String toolTipText = Labels.getString("Common.Done") + ": ";
+                toolTipText += TimeConverter.getLength(ReportList.getList().getNbRealPom()) + " / ";
+                toolTipText += TimeConverter.getLength(ReportList.getList().getNbEstimatedPom() + ReportList.getList().getNbOverestimatedPom());
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar                                    
