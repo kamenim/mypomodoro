@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;

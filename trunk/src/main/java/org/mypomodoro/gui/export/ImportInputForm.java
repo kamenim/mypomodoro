@@ -28,7 +28,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**

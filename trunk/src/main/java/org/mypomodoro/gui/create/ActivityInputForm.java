@@ -16,10 +16,8 @@
  */
 package org.mypomodoro.gui.create;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,7 +38,6 @@ import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
 import org.mypomodoro.gui.create.list.TypeComboBox;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;

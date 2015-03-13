@@ -134,7 +134,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                     // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                    // using ((JComponent) c).getFont() to preserve current font (eg strike through)
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
@@ -825,7 +825,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setToolTipText((String)value);
+            renderer.setToolTipText((String) value);
             return renderer;
         }
     }
@@ -855,7 +855,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (!DateUtil.isSameDay((Date) value, new Date(0))) {
                 renderer.setText(DateUtil.getShortFormatedDate((Date) value));
-                renderer.setToolTipText(DateUtil.getFormatedDate((Date)value, "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime((Date)value));
+                renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime((Date) value));
             } else {
                 renderer.setText(null);
                 renderer.setToolTipText(null);

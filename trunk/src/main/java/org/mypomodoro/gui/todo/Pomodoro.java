@@ -43,7 +43,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.MyIcon;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;

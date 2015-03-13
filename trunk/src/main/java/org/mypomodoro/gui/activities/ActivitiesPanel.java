@@ -262,7 +262,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE) ;// This stays White despite the background or the current theme
+        table.setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
@@ -1101,7 +1101,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             return renderer;
         }
     }
-    
+
     class DateRenderer extends CustomTableRenderer {
 
         @Override

@@ -341,7 +341,6 @@ public class CreateChart extends JPanel {
 
         // Color
         //chart.setBackgroundPaint(ColorUtil.WHITE);
-
         // Legend
         LegendTitle legend = chart.getLegend();
         legend.setItemFont(getFont().deriveFont(Font.BOLD));

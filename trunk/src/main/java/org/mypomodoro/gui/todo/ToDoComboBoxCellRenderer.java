@@ -18,7 +18,6 @@ package org.mypomodoro.gui.todo;
 
 import org.mypomodoro.gui.activities.*;
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.JTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
