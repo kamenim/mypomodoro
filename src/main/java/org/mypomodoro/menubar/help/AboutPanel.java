@@ -80,7 +80,7 @@ public class AboutPanel extends JDialog {
                 Main.class.getResource("/images/mAPAbout.png")));
         JPanel panel = new JPanel();
         panel.add(backgroundImage);
-        panel.setBackground(ColorUtil.WHITE);
+        panel.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         add(panel, gbc);
     }
 
@@ -94,7 +94,7 @@ public class AboutPanel extends JDialog {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS); // left
         // alignment
         panel.setLayout(layout);
-        panel.setBackground(ColorUtil.WHITE);
+        panel.setBackground(ColorUtil.WHITE);  // This stays White despite the background or the current theme
 
         GridBagConstraints gbcpanel = new GridBagConstraints();
         gbcpanel.gridx = 0;

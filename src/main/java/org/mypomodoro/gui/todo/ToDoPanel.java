@@ -74,6 +74,7 @@ import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
+import org.mypomodoro.gui.ActivityEditTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
@@ -163,18 +164,19 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
-                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
                     } else { // even
                         ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
                     }
@@ -306,7 +308,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE);
+        table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
@@ -326,16 +328,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (rowIndex != -1) {
-                    if (columnIndex == ID_KEY - 4) { // title
-                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
-                        value = value.length() > 0 ? value : null;
-                        table.setToolTipText(value);
-                    } else {
-                        table.setToolTipText(null); // this way tooltip won't stick
-                    }
-                }
                 // Change of row
                 if (mouseHoverRow != rowIndex) {
                     if (table.getSelectedRowCount() == 1) {
@@ -610,8 +602,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new TitleRenderer()); // title           
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(new Integer[0], false));
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new EstimatedComboBoxCellEditor(new Integer[0], false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new ToDoEstimatedComboBoxCellRenderer(new Integer[0], false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new ToDoEstimatedComboBoxCellEditor(new Integer[0], false));
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // Story Point
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
@@ -714,7 +706,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                toolTipText += TimeConverter.getLength(estimated);
+                if (overestimated > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(overestimated);
+                }
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 titlePanel.remove(selectedButton);
@@ -735,7 +730,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(ToDoList.getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom() + ToDoList.getList().getNbOverestimatedPom());
+                toolTipText += TimeConverter.getLength(ToDoList.getList().getNbEstimatedPom());
+                if (ToDoList.getList().getNbOverestimatedPom() > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(ToDoList.getList().getNbOverestimatedPom());
+                }
                 titleLabel.setToolTipText(toolTipText);
                 if (table.getSelectedRowCount() == 1) {
                     // Show buttons of the quick bar
@@ -884,8 +882,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
             }
         });
         showSelectedItemDetails(detailsPanel);
+        //showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
-        showSelectedItemEdit(editPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
@@ -948,38 +946,42 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
                     int row = e.getFirstRow();
                     int column = e.getColumn();
-                    Object data = model.getValueAt(row, column);
-                    if (data != null) {
-                        if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1                        
-                            Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
-                            Activity act = Activity.getActivity(ID.intValue());
-                            if (column == ID_KEY - 4) { // Title (can't be empty)
-                                String name = data.toString().trim();
-                                if (!name.equals(act.getName())) {
-                                    if (name.length() == 0) {
-                                        // reset the original value. Title can't be empty.
-                                        model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
-                                    } else {
-                                        act.setName(name);
+                    try { // catching error : dragging rows around (priorization) throws UPDATE events
+                        Object data = model.getValueAt(row, column);
+                        if (data != null) {
+                            if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1                        
+                                Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                                Activity act = Activity.getActivity(ID.intValue());
+                                if (column == ID_KEY - 4) { // Title (can't be empty)
+                                    String name = data.toString().trim();
+                                    if (!name.equals(act.getName())) {
+                                        if (name.length() == 0) {
+                                            // reset the original value. Title can't be empty.
+                                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 4);
+                                        } else {
+                                            act.setName(name);
+                                            act.databaseUpdate();
+                                        }
+                                    }
+                                } else if (column == ID_KEY - 3) { // Estimated                            
+                                    int estimated = (Integer) data;
+                                    if (estimated != act.getEstimatedPoms()
+                                            && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                        act.setEstimatedPoms(estimated);
                                         act.databaseUpdate();
                                     }
                                 }
-                            } else if (column == ID_KEY - 3) { // Estimated                            
-                                int estimated = (Integer) data;
-                                if (estimated != act.getEstimatedPoms()
-                                        && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
-                                    act.setEstimatedPoms(estimated);
-                                    act.databaseUpdate();
-                                }
+                                ToDoList.getList().update(act);
+                                setIconLabels();
+                                // Refresh panel border after updating the list
+                                setPanelBorder();
+                                // update info
+                                detailsPanel.selectInfo(act);
+                                detailsPanel.showInfo();
                             }
-                            ToDoList.getList().update(act);
-                            setIconLabels();
-                            // Refresh panel border after updating the list
-                            setPanelBorder();
-                            // update info
-                            detailsPanel.selectInfo(act);
-                            detailsPanel.showInfo();
                         }
+                    } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
+                        // error due to priorization
                     }
                 }
                 // diactivate/gray out all tabs (except import)
@@ -1123,12 +1125,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
                         table, detailsPanel, ID_KEY, pomodoro));
     }
 
-    private void showSelectedItemEdit(EditPanel editPane) {
-        /*table.getSelectionModel().addListSelectionListener(
-         new ActivityEditTableListener(ToDoList.getList(), table,
-         editPane, ID_KEY));*/
-    }
-
+    /*private void showSelectedItemEdit(EditPanel editPane) {
+     table.getSelectionModel().addListSelectionListener(
+     new ActivityEditTableListener(ToDoList.getList(), table,
+     editPane, ID_KEY));
+     }*/
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityCommentTableListener(ToDoList.getList(),
@@ -1190,13 +1191,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            /*if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-             Activity toDo = ToDoList.getList().getById(id);
-             if (toDo != null && toDo.isOverdue()) {
-                    
-             }
-             }*/
+            renderer.setToolTipText((String) value);
             return renderer;
         }
     }
@@ -1470,7 +1465,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Set the blinking cursor and the ability to type in right away
         table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
         table.setSurrendersFocusOnKeystroke(true); // focus
-        table.getEditorComponent().requestFocus();
+        if (table.getEditorComponent() != null) {
+            table.getEditorComponent().requestFocus();
+        }
         controlPane.setSelectedIndex(2); // open edit tab
         editPanel.showInfo(unplannedToDo); // set the id of the new task on the edit form
     }
@@ -1491,7 +1488,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             // Set the blinking cursor and the ability to type in right away
             table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
             table.setSurrendersFocusOnKeystroke(true); // focus
-            table.getEditorComponent().requestFocus();
+            if (table.getEditorComponent() != null) {
+                table.getEditorComponent().requestFocus();
+            }
             controlPane.setSelectedIndex(2); // open edit tab            
             editPanel.showInfo(interruption); // set the id of the new task on the edit form
         }
@@ -1513,7 +1512,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             // Set the blinking cursor and the ability to type in right away
             table.editCellAt(table.getSelectedRow(), ID_KEY - 4); // edit cell
             table.setSurrendersFocusOnKeystroke(true); // focus
-            table.getEditorComponent().requestFocus();
+            if (table.getEditorComponent() != null) {
+                table.getEditorComponent().requestFocus();
+            }
             controlPane.setSelectedIndex(2); // open edit tab            
             editPanel.showInfo(interruption); // set the id of the new task on the edit form
         }

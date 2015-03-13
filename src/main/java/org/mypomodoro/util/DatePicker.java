@@ -19,6 +19,7 @@ package org.mypomodoro.util;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import javax.swing.JTextField;
 import org.jdesktop.swingx.JXDatePicker;
 
 /**
@@ -32,7 +33,7 @@ public final class DatePicker extends JXDatePicker {
     public DatePicker(Locale locale) {
         super(new Date(), locale);
         getEditor().setEditable(false);
-        getEditor().setBackground(ColorUtil.WHITE);
+        getEditor().setBackground(new JTextField().getBackground()); // set the background of the current theme
     }
 
     // Workaround to prevent from having empty text field when selecting a date outside of boundaries 

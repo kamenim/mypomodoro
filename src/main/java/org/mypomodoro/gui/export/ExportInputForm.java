@@ -158,7 +158,6 @@ public class ExportInputForm extends JPanel {
         });
         fileFormatComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         fileFormatComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
-        fileFormatComboBox.setBackground(ColorUtil.WHITE);
         fileFormatComboBox.setRenderer(new AbstractComboBoxRenderer());
         exportFormPanel.add(fileFormatComboBox, c);
         // Date patterns
@@ -218,7 +217,6 @@ public class ExportInputForm extends JPanel {
         });
         separatorComboBox.setMinimumSize(COMBO_BOX_DIMENSION);
         separatorComboBox.setPreferredSize(COMBO_BOX_DIMENSION);
-        separatorComboBox.setBackground(ColorUtil.WHITE);
         separatorComboBox.setRenderer(new AbstractComboBoxRenderer());
         exportFormPanel.add(separatorComboBox, c);
         // Columns
@@ -382,7 +380,6 @@ public class ExportInputForm extends JPanel {
         gbcExcelPaterns.gridx = 0;
         gbcExcelPaterns.gridy = 0;
         excelPatternsPanel.add(new JLabel(excelPatterns), gbcExcelPaterns);
-        excelPatternsPanel.setBackground(ColorUtil.WHITE);
         exportFormPanel.add(excelPatternsPanel, c);
     }
 
@@ -551,12 +548,6 @@ public class ExportInputForm extends JPanel {
             datePatternsComboBox2.setRenderer(new AbstractComboBoxRenderer());
             dateSeparatorComboBox2.setRenderer(new AbstractComboBoxRenderer());
             datePatternsComboBox3.setRenderer(new AbstractComboBoxRenderer());
-            // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
-            datePatternsComboBox1.setBackground(ColorUtil.WHITE);
-            dateSeparatorComboBox1.setBackground(ColorUtil.WHITE);
-            datePatternsComboBox2.setBackground(ColorUtil.WHITE);
-            dateSeparatorComboBox2.setBackground(ColorUtil.WHITE);
-            datePatternsComboBox3.setBackground(ColorUtil.WHITE);
         }
 
         public JComboBox getDatePatternsComboBox1() {
@@ -662,7 +653,6 @@ public class ExportInputForm extends JPanel {
      columns[i] = new Column(i, headerEntries[i]);
      }
      columnsComboBox = new JComboBox(columns);
-     columnsComboBox.setBackground(ColorUtil.WHITE);
      columnsComboBox.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 2));
      }
 

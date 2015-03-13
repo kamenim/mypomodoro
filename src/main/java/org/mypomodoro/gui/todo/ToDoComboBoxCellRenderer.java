@@ -38,9 +38,6 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-        comboBox.setFont(isSelected ? comboBox.getFont().deriveFont(Font.BOLD) : comboBox.getFont().deriveFont(Font.PLAIN));
-        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
@@ -57,9 +54,6 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
             label.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
-        }
-        if (value != null) {
-            comboBox.setSelectedItem(value);
         }
         return this;
     }

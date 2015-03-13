@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
@@ -34,7 +35,16 @@ public class ComboBoxCellRenderer extends ComboBoxPanel implements TableCellRend
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {        
+        setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+        comboBox.setFont(isSelected ? comboBox.getFont().deriveFont(Font.BOLD) : comboBox.getFont().deriveFont(Font.PLAIN));
+        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
+        if (value != null) {
+            comboBox.setSelectedItem(value);
+            if (value instanceof String) { // eg Type combo box
+                setToolTipText((String)value);                
+            }
+        }
         return this;
     }
 }

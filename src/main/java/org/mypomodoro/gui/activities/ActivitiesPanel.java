@@ -146,18 +146,19 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
-                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
                     } else { // even
                         ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
                     }
@@ -261,7 +262,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE);
+        table.setBackground(ColorUtil.WHITE) ;// This stays White despite the background or the current theme
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
@@ -281,21 +282,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (rowIndex != -1) {
-                    if (columnIndex == ID_KEY - 5 || columnIndex == ID_KEY - 4) {
-                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
-                        value = value.length() > 0 ? value : null;
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 6) { // date
-                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
-                        Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy");
-                        table.setToolTipText(value);
-                    } else {
-                        table.setToolTipText(null); // this way tooltip won't stick
-                    }
-                }
                 // Change of row
                 if (mouseHoverRow != rowIndex) {
                     if (table.getSelectedRowCount() == 1) {
@@ -536,8 +522,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
         // Estimated combo box
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedComboBoxCellRenderer(new Integer[0], false));
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new EstimatedComboBoxCellEditor(new Integer[0], false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new ActivitiesEstimatedComboBoxCellRenderer(new Integer[0], false));
+        table.getColumnModel().getColumn(ID_KEY - 3).setCellEditor(new ActivitiesEstimatedComboBoxCellEditor(new Integer[0], false));
         // Story Point combo box
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
@@ -657,7 +643,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                toolTipText += TimeConverter.getLength(estimated);
+                if (overestimated > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(overestimated);
+                }
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 titlePanel.remove(selectedButton);
@@ -677,7 +666,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(ActivityList.getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(ActivityList.getList().getNbEstimatedPom() + ActivityList.getList().getNbOverestimatedPom());
+                toolTipText += TimeConverter.getLength(ActivityList.getList().getNbEstimatedPom());
+                if (ActivityList.getList().getNbOverestimatedPom() > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(ActivityList.getList().getNbOverestimatedPom());
+                }
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar
                 titlePanel.add(selectedButton);
@@ -787,9 +779,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
             }
         });
-        showSelectedItemDetails(detailsPanel);
-        showSelectedItemComment(commentPanel);
-        showSelectedItemEdit(editPanel);
+        //showSelectedItemDetails(detailsPanel);
+        //showSelectedItemComment(commentPanel);
+        //showSelectedItemEdit(editPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
@@ -1024,12 +1016,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         table, detailsPane, ID_KEY));
     }
 
-    private void showSelectedItemEdit(EditPanel editPane) {
-        /*table.getSelectionModel().addListSelectionListener(
-         new ActivityEditTableListener(ActivityList.getList(), table,
-         editPane, ID_KEY));*/
-    }
-
+    /*private void showSelectedItemEdit(EditPanel editPane) {
+     table.getSelectionModel().addListSelectionListener(
+     new ActivityEditTableListener(ActivityList.getList(), table,
+     editPane, ID_KEY));
+     }*/
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
                 new ActivityCommentTableListener(ActivityList.getList(),
@@ -1088,17 +1079,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            /*if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-             Activity activity = ActivityList.getList().getById(id);
-             if (activity != null && activity.isOverdue()) {
-             if (!getFont().canDisplay('\u226b')) { // unicode tick
-             renderer.setText(">> " + (String) value);
-             } else {
-             renderer.setText("\u226b " + (String) value);
-             }
-             }
-             }*/
+            renderer.setToolTipText((String) value);
             return renderer;
         }
     }
@@ -1120,23 +1101,27 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             return renderer;
         }
     }
-
+    
     class DateRenderer extends CustomTableRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
-            // Strikethrough date when task overdue
-            if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-                Activity activity = ActivityList.getList().getById(id);
-                if (activity != null && activity.isOverdue()) {
-                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    //map.put(TextAttribute.FOREGROUND, ColorUtil.RED);
-                    renderer.setFont(getFont().deriveFont(map));
+            if (!DateUtil.isSameDay((Date) value, new Date(0))) {
+                renderer.setText(DateUtil.getShortFormatedDate((Date) value));
+                renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
+                if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
+                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
+                    Activity activity = ActivityList.getList().getById(id);
+                    if (activity != null && activity.isOverdue()) {
+                        Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+                        map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                        renderer.setFont(getFont().deriveFont(map));
+                    }
                 }
+            } else {
+                renderer.setText(null);
+                renderer.setToolTipText(null);
             }
             return renderer;
         }
@@ -1172,7 +1157,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Set the blinking cursor and the ability to type in right away
         table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
         table.setSurrendersFocusOnKeystroke(true); // focus
-        table.getEditorComponent().requestFocus();
+        if (table.getEditorComponent() != null) {
+            table.getEditorComponent().requestFocus();
+        }
         controlPane.setSelectedIndex(2); // open edit tab
     }
 
@@ -1193,7 +1180,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 // Set the blinking cursor and the ability to type in right away
                 table.editCellAt(table.getSelectedRow(), ID_KEY - 5); // edit cell
                 table.setSurrendersFocusOnKeystroke(true); // focus
-                table.getEditorComponent().requestFocus();
+                if (table.getEditorComponent() != null) {
+                    table.getEditorComponent().requestFocus();
+                }
                 controlPane.setSelectedIndex(2); // open edit tab
 
             } catch (CloneNotSupportedException ignored) {

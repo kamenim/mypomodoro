@@ -320,7 +320,6 @@ public class ConfigureInputForm extends JPanel {
         iterationsgbc.gridy = 0;
         iterationsgbc.weightx = 1.0;
         iterationsgbc.weighty = 0.5;
-        startIteration.setBackground(ColorUtil.WHITE);
         for (int i = 0; i <= 100; i++) {
             startIteration.addItem(new Integer(i));
         }
@@ -344,7 +343,6 @@ public class ConfigureInputForm extends JPanel {
         iterationsgbc.gridy = 0;
         iterationsgbc.weightx = 1.0;
         iterationsgbc.weighty = 0.5;
-        endIteration.setBackground(ColorUtil.WHITE);
         for (int i = 0; i <= 100; i++) {
             endIteration.addItem(new Integer(i));
         }
@@ -420,7 +418,6 @@ public class ConfigureInputForm extends JPanel {
         dimensionsgbc.gridy = 0;
         dimensionsgbc.weightx = 1.0;
         dimensionsgbc.weighty = 0.5;
-        chartWidth.setBackground(ColorUtil.WHITE);
         chartWidth.setPreferredSize(new Dimension(40, 25));
         chartWidth.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartWidth.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
@@ -434,7 +431,6 @@ public class ConfigureInputForm extends JPanel {
         dimensionsgbc.gridy = 0;
         dimensionsgbc.weightx = 1.0;
         dimensionsgbc.weighty = 0.5;
-        chartHeight.setBackground(ColorUtil.WHITE);
         chartHeight.setPreferredSize(new Dimension(40, 25));
         chartHeight.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartHeight.getDocument()).setDocumentFilter(new IntegerDocumentFilter());

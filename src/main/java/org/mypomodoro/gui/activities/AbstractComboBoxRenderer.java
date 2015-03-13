@@ -35,10 +35,12 @@ public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (isSelected) {
             setBackground(ColorUtil.BLUE_ROW);
+            setForeground(ColorUtil.BLACK);
         } else {
-            setBackground(ColorUtil.WHITE);
+            setBackground(getBackground()); // reset the background of the current theme
+            setForeground(getForeground()); // reset the foreground of the current theme
         }
-        setForeground(ColorUtil.BLACK);
+        setForeground(getForeground()); // set the foreground of the current theme
         setBorder(new EmptyBorder(0, 3, 0, 0));
         return this;
     }

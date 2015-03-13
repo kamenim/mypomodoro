@@ -58,7 +58,6 @@ public class ImportInputForm extends ExportInputForm {
         JPanel fileChooserPanel = new JPanel();
         fileChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         fileName.setEditable(false);
-        fileName.setBackground(ColorUtil.WHITE);
         fileName.setMinimumSize(TEXT_FIELD_DIMENSION);
         fileName.setPreferredSize(TEXT_FIELD_DIMENSION);
         fileChooserPanel.add(fileName);

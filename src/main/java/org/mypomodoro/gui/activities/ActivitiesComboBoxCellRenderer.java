@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -36,9 +35,6 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-        comboBox.setFont(isSelected ? comboBox.getFont().deriveFont(Font.BOLD) : comboBox.getFont().deriveFont(Font.PLAIN));
-        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
@@ -49,9 +45,6 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
             label.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
-        }
-        if (value != null) {
-            comboBox.setSelectedItem(value);
         }
         return this;
     }

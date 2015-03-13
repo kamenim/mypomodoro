@@ -231,8 +231,6 @@ public class ChooseInputForm extends JPanel {
                 borderScope.repaint();
             }
         });
-        // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
-        chartTypesBurndownComboBox.setBackground(ColorUtil.WHITE);
         burndownChartTypeLegendInputFormPanel.add(chartTypesBurndownComboBox, gbc);
         // Percentage
         gbc.gridx = 1;
@@ -355,8 +353,6 @@ public class ChooseInputForm extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 3;
-        // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
-        chartTypesBurnupComboBox.setBackground(ColorUtil.WHITE);
         burnupChartTypeLegendInputFormPanel.add(chartTypesBurnupComboBox, gbc);
         // Percentage        
         gbc.gridx = 1;

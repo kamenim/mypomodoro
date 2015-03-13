@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.create;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -131,11 +132,9 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        types.setBackground(ColorUtil.WHITE);
         types.setMinimumSize(COMBO_BOX_DIMENSION);
         types.setPreferredSize(COMBO_BOX_DIMENSION);
         types.setEditable(true);
-        types.setFont(getFont().deriveFont(Font.PLAIN));
         // Autocompletion
         AutoCompleteDecorator.decorate(types);
         add(types, c);
@@ -159,7 +158,6 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        estimatedPomodoros.setBackground(ColorUtil.WHITE);
         estimatedPomodoros.setMinimumSize(new Dimension(40, 25));
         estimatedPomodoros.setMaximumSize(new Dimension(40, 25));
         estimatedPomodoros.setPreferredSize(new Dimension(40, 25));
@@ -201,7 +199,6 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        storyPoints.setBackground(ColorUtil.WHITE);
         add(storyPoints, c);
     }
 
@@ -221,7 +218,6 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        iterations.setBackground(ColorUtil.WHITE);
         add(iterations, c);
     }
 
@@ -275,11 +271,9 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        authors.setBackground(ColorUtil.WHITE);
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
         authors.setEditable(true);
-        authors.setFont(getFont().deriveFont(Font.PLAIN));
         // Autocompletion
         AutoCompleteDecorator.decorate(authors);
         add(authors, c);
@@ -295,11 +289,9 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;
-        places.setBackground(ColorUtil.WHITE);
         places.setMinimumSize(COMBO_BOX_DIMENSION);
         places.setPreferredSize(COMBO_BOX_DIMENSION);
         places.setEditable(true);
-        places.setFont(getFont().deriveFont(Font.PLAIN));
         // Autocompletion
         AutoCompleteDecorator.decorate(places);
         add(places, c);

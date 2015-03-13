@@ -78,7 +78,6 @@ public class OverestimationInputForm extends JPanel {
             items[i] = "+ " + (i + 1);
         }
         overestimatedPomodoros = new JComboBox(items);
-        overestimatedPomodoros.setBackground(ColorUtil.WHITE);
         overestimatedPomodoros.setMinimumSize(COMBO_BOX_DIMENSION);
         overestimatedPomodoros.setMaximumSize(COMBO_BOX_DIMENSION);
         overestimatedPomodoros.setPreferredSize(COMBO_BOX_DIMENSION);

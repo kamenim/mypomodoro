@@ -77,6 +77,7 @@ import org.mypomodoro.util.CustomTableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
+import static org.mypomodoro.util.TimeConverter.getLength;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -133,18 +134,19 @@ public class CheckPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                     // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
-                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
                     } else { // even
                         ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
                     }
@@ -213,7 +215,7 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE);
+        table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
@@ -415,8 +417,8 @@ public class CheckPanel extends JPanel implements IListPanel {
         // set custom render for dates
         table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new TitleRenderer()); // title
+        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(new TitleRenderer()); // type
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new EstimatedCellRenderer()); // estimated
         table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
         table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
@@ -521,7 +523,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                toolTipText += TimeConverter.getLength(estimated);
+                if (overestimated > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(overestimated);
+                }
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar 
                 titlePanel.remove(selectedButton);
@@ -541,7 +546,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(ChartList.getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(ChartList.getList().getNbEstimatedPom() + ChartList.getList().getNbOverestimatedPom());
+                toolTipText += TimeConverter.getLength(ChartList.getList().getNbEstimatedPom());
+                if (ChartList.getList().getNbOverestimatedPom() > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(ChartList.getList().getNbOverestimatedPom());
+                }
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar                                    
                 titlePanel.add(selectedButton); // end of the line
@@ -808,13 +816,16 @@ public class CheckPanel extends JPanel implements IListPanel {
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
-            /* Strikethrough task with no estimation
-             if (activity != null && activity.getEstimatedPoms() == 0) {
-             // underline url
-             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-             renderer.setFont(getFont().deriveFont(map));
-             }*/
+            return renderer;
+        }
+    }
+
+    class TitleRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setToolTipText((String)value);
             return renderer;
         }
     }
@@ -842,7 +853,13 @@ public class CheckPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
+            if (!DateUtil.isSameDay((Date) value, new Date(0))) {
+                renderer.setText(DateUtil.getShortFormatedDate((Date) value));
+                renderer.setToolTipText(DateUtil.getFormatedDate((Date)value, "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime((Date)value));
+            } else {
+                renderer.setText(null);
+                renderer.setToolTipText(null);
+            }
             return renderer;
         }
     }
@@ -885,10 +902,12 @@ public class CheckPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
             Activity activity = ChartList.getList().getById(id);
             if (activity != null) {
-                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms();
-                Integer overestimatedpoms = activity.getOverestimatedPoms();
-                text += overestimatedpoms > 0 ? " + " + overestimatedpoms : "";
+                int realpoms = activity.getActualPoms();
+                int estimatedpoms = activity.getEstimatedPoms();
+                int overestimatedpoms = activity.getOverestimatedPoms();
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
                 renderer.setText(text);
+                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
             }
             return renderer;
         }
