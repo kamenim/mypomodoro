@@ -143,18 +143,19 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
                     ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                     // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
                     ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
-                    ((JComponent) c).setFont(getFont().deriveFont(Font.BOLD));
+                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
-                        comp.setFont(getFont().deriveFont(Font.BOLD));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
                     ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE);
+                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
                     } else { // even
                         ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
                     }
@@ -245,7 +246,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE);
+        table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         table.setSelectionBackground(ColorUtil.BLUE_ROW);
         table.setForeground(ColorUtil.BLACK);
         table.setSelectionForeground(ColorUtil.BLACK);
@@ -265,21 +266,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
                 int rowIndex = table.rowAtPoint(p);
-                int columnIndex = table.columnAtPoint(p);
-                if (rowIndex != -1) {
-                    if (columnIndex == ID_KEY - 7 || columnIndex == ID_KEY - 6) {
-                        String value = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), columnIndex));
-                        value = value.length() > 0 ? value : null;
-                        table.setToolTipText(value);
-                    } else if (columnIndex == ID_KEY - 8) { // date
-                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), getIdKey());
-                        Activity activity = getActivityById(id);
-                        String value = DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted());
-                        table.setToolTipText(value);
-                    } else {
-                        table.setToolTipText(null); // this way tooltip won't stick
-                    }
-                }
                 // Change of row
                 if (mouseHoverRow != rowIndex) {
                     if (table.getSelectedRowCount() == 1) {
@@ -498,8 +484,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
         //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // title
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(dtcr); // type
+        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new TitleRenderer()); // title
+        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new TitleRenderer()); // type
         table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new EstimatedCellRenderer()); // estimated        
         table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // Diff I
         table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new Diff2CellRenderer()); // Diff II
@@ -620,7 +606,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                toolTipText += TimeConverter.getLength(estimated);
+                if (overestimated > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(overestimated);
+                }
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar 
@@ -643,7 +632,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(ReportList.getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(ReportList.getList().getNbEstimatedPom() + ReportList.getList().getNbOverestimatedPom());
+                toolTipText += TimeConverter.getLength(ReportList.getList().getNbEstimatedPom());
+                if (ReportList.getList().getNbOverestimatedPom() > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(ReportList.getList().getNbOverestimatedPom());
+                }
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar                                    
@@ -711,8 +703,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         });
         showSelectedItemDetails(detailsPanel);
+        //showSelectedItemEdit(editPanel);
         showSelectedItemComment(commentPanel);
-        showSelectedItemEdit(editPanel);
     }
 
     private AbstractActivitiesTableModel getTableModel() {
@@ -926,11 +918,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
                         table, detailPanel, ID_KEY));
     }
 
-    private void showSelectedItemEdit(EditPanel editPanel) {
-        /*table.getSelectionModel().addListSelectionListener(
+    /*private void showSelectedItemEdit(EditPanel editPanel) {
+        table.getSelectionModel().addListSelectionListener(
          new ActivityEditTableListener(ReportList.getList(), table,
-         editPanel, ID_KEY));*/
-    }
+         editPanel, ID_KEY));
+    }*/
 
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
@@ -981,13 +973,16 @@ public class ReportsPanel extends JPanel implements IListPanel {
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
-            /* Strikethrough task with no estimation
-             if (activity != null && activity.getEstimatedPoms() == 0) {
-             // underline url
-             Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-             map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-             renderer.setFont(getFont().deriveFont(map));
-             }*/
+            return renderer;
+        }
+    }
+
+    class TitleRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setToolTipText((String)value);
             return renderer;
         }
     }
@@ -1015,7 +1010,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setText((value == null || DateUtil.isSameDay((Date) value, new Date(0))) ? "" : DateUtil.getShortFormatedDate((Date) value));
+            if (!DateUtil.isSameDay((Date) value, new Date(0))) {
+                renderer.setText(DateUtil.getShortFormatedDate((Date) value));
+                renderer.setToolTipText(DateUtil.getFormatedDate((Date)value, "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime((Date)value));
+            } else {
+                renderer.setText(null);
+                renderer.setToolTipText(null);
+            }
             return renderer;
         }
     }

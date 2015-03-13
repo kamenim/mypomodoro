@@ -77,8 +77,11 @@ class ComboBoxPanel extends JPanel {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (isSelected) {
                 setBackground(ColorUtil.BLUE_ROW);
+                setForeground(ColorUtil.BLACK);
+            } else {
+                setBackground(getBackground()); // reset the background of the current theme
+                setForeground(getForeground()); // reset the foreground of the current theme
             }
-            setForeground(comboBox.getForeground());
             return this;
         }
     }

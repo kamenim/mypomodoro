@@ -26,9 +26,9 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  *
  *
  */
-class EstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
+class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
 
-    public <E> EstimatedComboBoxCellRenderer(E[] data, boolean editable) {
+    public <E> ActivitiesEstimatedComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
     }
 

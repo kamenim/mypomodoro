@@ -25,7 +25,7 @@ import org.mypomodoro.util.ColorUtil;
 public class SplashScreen extends JPanel {
 
     public SplashScreen() {
-        setBackground(ColorUtil.WHITE);
+        setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         JLabel title = new JLabel("");

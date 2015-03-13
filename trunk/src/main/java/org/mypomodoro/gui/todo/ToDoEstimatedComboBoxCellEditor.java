@@ -26,9 +26,9 @@ import org.mypomodoro.model.ToDoList;
  *
  *
  */
-class EstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
+class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
 
-    public <E> EstimatedComboBoxCellEditor(E[] data, boolean editable) {
+    public <E> ToDoEstimatedComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
 
         // Custom display hovered item value

@@ -340,7 +340,7 @@ public class CreateChart extends JPanel {
         );
 
         // Color
-        chart.setBackgroundPaint(ColorUtil.WHITE);
+        //chart.setBackgroundPaint(ColorUtil.WHITE);
 
         // Legend
         LegendTitle legend = chart.getLegend();
@@ -348,7 +348,7 @@ public class CreateChart extends JPanel {
 
         // Customise the plot
         CategoryPlot plot = (CategoryPlot) chart.getCategoryPlot();
-        plot.setBackgroundPaint(ColorUtil.WHITE);
+        plot.setBackgroundPaint(ColorUtil.WHITE); // This stays White despite the background or the current theme
 
         //////////////////// X-AXIS //////////////////////////
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();

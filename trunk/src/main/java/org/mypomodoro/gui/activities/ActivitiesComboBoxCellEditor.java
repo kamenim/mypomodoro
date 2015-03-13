@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -36,9 +35,6 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        setBackground(table.getSelectionBackground());
-        comboBox.setFont(comboBox.getFont().deriveFont(Font.BOLD));
-        //label.setFont(label.getFont().deriveFont(Font.BOLD));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesPanel.ID_KEY);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
@@ -49,9 +45,6 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
             //label.setForeground(getForeground());
-        }
-        if (value != null) {
-            comboBox.setSelectedItem(value);
         }
         return this;
     }

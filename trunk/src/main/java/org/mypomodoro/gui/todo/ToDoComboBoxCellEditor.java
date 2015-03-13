@@ -38,9 +38,6 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        setBackground(table.getSelectionBackground());
-        comboBox.setFont(comboBox.getFont().deriveFont(Font.BOLD));
-        //label.setFont(label.getFont().deriveFont(Font.BOLD));
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ToDoPanel.ID_KEY);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
@@ -57,9 +54,6 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
             //label.setForeground(getForeground());
-        }
-        if (value != null) {
-            comboBox.setSelectedItem(value);
         }
         return this;
     }

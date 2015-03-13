@@ -26,9 +26,9 @@ import org.mypomodoro.model.ActivityList;
  *
  *
  */
-class EstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor {
+class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor {
 
-    public <E> EstimatedComboBoxCellEditor(E[] data, boolean editable) {
+    public <E> ActivitiesEstimatedComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
 
         // Custom display hovered item value

@@ -141,7 +141,6 @@ public class PreferencesInputForm extends JPanel {
             }
         }
         // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
-        localesComboBox.setBackground(ColorUtil.WHITE);
         localesComboBox.addActionListener(new ActionListener() {
 
             @Override
@@ -332,7 +331,6 @@ public class PreferencesInputForm extends JPanel {
             }
         }
         // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
-        themesComboBox.setBackground(ColorUtil.WHITE);
         themesComboBox.addActionListener(new ActionListener() {
 
             @Override
