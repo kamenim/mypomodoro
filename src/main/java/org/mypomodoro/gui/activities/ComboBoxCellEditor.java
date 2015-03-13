@@ -61,7 +61,7 @@ public class ComboBoxCellEditor extends ComboBoxPanel implements TableCellEditor
         if (value != null) {
             comboBox.setSelectedItem(value);
             if (value instanceof String) { // eg Type combo box
-                setToolTipText((String)value);                
+                setToolTipText((String) value);
             }
         }
         return this;

@@ -38,7 +38,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**

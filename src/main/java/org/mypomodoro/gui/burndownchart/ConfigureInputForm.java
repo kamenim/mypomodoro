@@ -43,7 +43,6 @@ import javax.swing.text.DocumentFilter.FilterBypass;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;

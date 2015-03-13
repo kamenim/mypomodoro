@@ -30,7 +30,6 @@ import javax.swing.border.TitledBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 import static org.mypomodoro.util.TimeConverter.calculateEffectiveMinutes;
