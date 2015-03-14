@@ -95,6 +95,8 @@ public class Main {
          // set the name of the application menu item
          System.setProperty("com.apple.mrj.application.apple.menu.about.name", "myAgilePomodoro");
          }*/
+        // Load combo boxes data (type, author...) before main panel is instanciated in new thread
+        updateComboBoxLists();
         // Display GUI
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -127,8 +129,6 @@ public class Main {
                 UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); // colour of precentage counter on progress bar
                 // init the gui, and all its components, AFTER setting the UIManager and font                      
                 gui = new MainPanel();
-                // Load combo boxes data (type, author...)
-                updateComboBoxLists();
                 /*
                  * Old fashion way to center the component onscreen
                  * Dimension screenSize
