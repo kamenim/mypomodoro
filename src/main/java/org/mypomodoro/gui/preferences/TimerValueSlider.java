@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -40,7 +41,7 @@ public final class TimerValueSlider extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        add(new JLabel(name));
+        add(new FormLabel(name));
         c.gridx = 1;
         slider = new JSlider(min, max, val);
         setSliderColor(recommendedMin, recommendedMax);

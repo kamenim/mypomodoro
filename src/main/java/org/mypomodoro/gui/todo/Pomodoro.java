@@ -85,12 +85,12 @@ public class Pomodoro {
     private boolean isMute = false;
     private boolean isDiscontinuous = false;
 
-    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel) {
+    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel, JLabel pomodoroTime) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
         this.unplannedPanel = unplannedPanel;
-
-        pomodoroTime = panel.getPomodoroTime();
+        this.pomodoroTime = pomodoroTime;
+        
         pomodoroTime.setText(sdf.format(pomodoroLength));
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
     }

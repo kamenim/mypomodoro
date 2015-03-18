@@ -345,7 +345,6 @@ public class PreferencesInputForm extends JPanel {
                  UIManager.setLookAndFeel((String)themesComboBox.getSelectedItem());
                  SwingUtilities.updateComponentTreeUI(Main.gui);
                  Main.gui.pack();
-                 // try also: PlafOptions.setAsLookAndFeel(); PlafOptions.updateAllUIs();
                  */
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();

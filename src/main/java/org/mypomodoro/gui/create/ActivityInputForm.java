@@ -56,9 +56,9 @@ public class ActivityInputForm extends JPanel {
     protected JComboBox estimatedPomodoros = new JComboBox();
     protected JComboBox storyPoints = new JComboBox();
     protected JComboBox iterations = new JComboBox();
-    protected JComboBox types = new TypeComboBox();
-    protected JComboBox authors = new AuthorComboBox();
-    protected JComboBox places = new PlaceComboBox();
+    protected TypeComboBox types = new TypeComboBox();
+    protected AuthorComboBox authors = new AuthorComboBox();
+    protected PlaceComboBox places = new PlaceComboBox();
     protected final DatePicker datePicker = new DatePicker(Labels.getLocale());
     protected int activityId = -1;
     protected final JLabel estimatedLengthLabel = new JLabel("", JLabel.LEFT);
