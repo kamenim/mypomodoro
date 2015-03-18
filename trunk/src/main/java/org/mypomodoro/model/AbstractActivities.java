@@ -173,4 +173,14 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         int accuracy = Math.round(((float) real / (float) estover) * 100);
         return accuracy;
     }
+
+    /*public int getSubList(int parentId) {
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            Activity a = it.next();
+            if (a.getParentId() != parentId) {
+                it.remove(); // NOTE: Iterator's remove method, not ArrayList's, is used.
+            }
+        }
+        return it;
+    }*/
 }

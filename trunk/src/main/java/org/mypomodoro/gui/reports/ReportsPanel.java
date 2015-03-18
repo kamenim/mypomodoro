@@ -110,7 +110,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
     //Labels.getString("ReportListPanel.Time")
-    public static int ID_KEY = 9;
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final CommentPanel commentPanel = new CommentPanel(this);
@@ -253,9 +252,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[ID_KEY - 9] = Labels.getString("Common.Unplanned");
-        cloneColumnNames[ID_KEY - 8] = Labels.getString("Common.Date completed");
-        cloneColumnNames[ID_KEY - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
+        cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 9] = Labels.getString("Common.Unplanned");
+        cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 8] = Labels.getString("Common.Date completed");
+        cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
@@ -273,8 +272,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
                             rowIndex = table.getSelectedRow();
                             table.setToolTipText(null); // this way tooltip won't stick
                         }
-                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), ID_KEY);
-                        Activity activity = ReportList.getList().getById(id);
+                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), activitiesTableModel.getColumnCount() - 1);
+                        Activity activity = getList().getById(id);
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
                         commentPanel.showInfo(activity);
@@ -291,8 +290,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
                 if (table.getSelectedRowCount() == 1) {
-                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
-                    Activity activity = ReportList.getList().getById(id);
+                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), activitiesTableModel.getColumnCount() - 1);
+                    Activity activity = getList().getById(id);
                     if (activity != null) {
                         detailsPanel.selectInfo(activity);
                         detailsPanel.showInfo();
@@ -481,32 +480,32 @@ public class ReportsPanel extends JPanel implements IListPanel {
         // Centre columns
         CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
-        table.getColumnModel().getColumn(ID_KEY - 9).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        table.getColumnModel().getColumn(ID_KEY - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        //table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(dtcr); // time
-        table.getColumnModel().getColumn(ID_KEY - 7).setCellRenderer(new TitleRenderer()); // title
-        table.getColumnModel().getColumn(ID_KEY - 6).setCellRenderer(new TitleRenderer()); // type
-        table.getColumnModel().getColumn(ID_KEY - 5).setCellRenderer(new EstimatedCellRenderer()); // estimated        
-        table.getColumnModel().getColumn(ID_KEY - 4).setCellRenderer(dtcr); // Diff I
-        table.getColumnModel().getColumn(ID_KEY - 3).setCellRenderer(new Diff2CellRenderer()); // Diff II
-        table.getColumnModel().getColumn(ID_KEY - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
-        table.getColumnModel().getColumn(ID_KEY - 1).setCellRenderer(new IterationCellRenderer()); // iteration
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 9).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 8).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        //table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 7).setCellRenderer(dtcr); // time
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 7).setCellRenderer(new TitleRenderer()); // title
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 6).setCellRenderer(new TitleRenderer()); // type
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setCellRenderer(new EstimatedCellRenderer()); // estimated        
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 4).setCellRenderer(dtcr); // Diff I
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setCellRenderer(new Diff2CellRenderer()); // Diff II
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setCellRenderer(new StoryPointsCellRenderer()); // story points
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new IterationCellRenderer()); // iteration
         // hide story points and iteration in 'classic' mode
         if (!Main.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(0);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMinWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setPreferredWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(0);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(0);
         } else {
             // Set width of columns story points, iteration
-            table.getColumnModel().getColumn(ID_KEY - 2).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 2).setPreferredWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMaxWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setMinWidth(40);
-            table.getColumnModel().getColumn(ID_KEY - 1).setPreferredWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMinWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setPreferredWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(40);
         }
         // hide unplanned in Agile mode
         if (Main.preferences.getAgileMode()) {
@@ -520,29 +519,29 @@ public class ReportsPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
         // Set width of column Date
-        table.getColumnModel().getColumn(ID_KEY - 8).setMaxWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 8).setMinWidth(90);
-        table.getColumnModel().getColumn(ID_KEY - 8).setPreferredWidth(90);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 8).setMaxWidth(90);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 8).setMinWidth(90);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 8).setPreferredWidth(90);
         // Set width of estimated, diff I/II
-        table.getColumnModel().getColumn(ID_KEY - 5).setMaxWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 5).setMinWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 5).setPreferredWidth(80);
-        table.getColumnModel().getColumn(ID_KEY - 4).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 4).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 4).setPreferredWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMaxWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setMinWidth(40);
-        table.getColumnModel().getColumn(ID_KEY - 3).setPreferredWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMaxWidth(80);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMinWidth(80);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setPreferredWidth(80);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 4).setMaxWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 4).setMinWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 4).setPreferredWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setMaxWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setMinWidth(40);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setPreferredWidth(40);
         // Set width of column Time
         /*table.getColumnModel().getColumn(2).setMaxWidth(60);
          table.getColumnModel().getColumn(2).setMinWidth(60);
          table.getColumnModel().getColumn(2).setPreferredWidth(60);*/
         // Set min width of type column
-        table.getColumnModel().getColumn(ID_KEY - 6).setMinWidth(100);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 6).setMinWidth(100);
         // hide ID column
-        table.getColumnModel().getColumn(ID_KEY).setMaxWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setMinWidth(0);
-        table.getColumnModel().getColumn(ID_KEY).setPreferredWidth(0);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setMaxWidth(0);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setMinWidth(0);
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setPreferredWidth(0);
         // enable sorting
         if (table.getModel().getRowCount() > 0) {
             table.setAutoCreateRowSorter(true);
@@ -557,10 +556,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {
-            int currentRow = table.convertRowIndexToView(currentSelectedRow);
-            table.setRowSelectionInterval(currentRow, currentRow);
-            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+        } else {            
+            // select first activity
+            table.setRowSelectionInterval(0, 0);
+            table.scrollRectToVisible(table.getCellRect(0, 0, true)); 
             // detail tab
             controlPane.setSelectedIndex(0);
         }
@@ -618,23 +617,23 @@ public class ReportsPanel extends JPanel implements IListPanel {
             } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
-                titleActivitiesList += ReportList.getList().getNbRealPom();
-                titleActivitiesList += " / " + ReportList.getList().getNbEstimatedPom();
-                if (ReportList.getList().getNbOverestimatedPom() > 0) {
-                    titleActivitiesList += " + " + ReportList.getList().getNbOverestimatedPom();
+                titleActivitiesList += getList().getNbRealPom();
+                titleActivitiesList += " / " + getList().getNbEstimatedPom();
+                if (getList().getNbOverestimatedPom() > 0) {
+                    titleActivitiesList += " + " + getList().getNbOverestimatedPom();
                 }
-                int accuracy = ReportList.getList().getAccuracy();
+                int accuracy = getList().getAccuracy();
                 titleActivitiesList += " (" + accuracy + "%)";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(ReportList.getList().getStoryPoints());
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(getList().getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
-                toolTipText += TimeConverter.getLength(ReportList.getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(ReportList.getList().getNbEstimatedPom());
-                if (ReportList.getList().getNbOverestimatedPom() > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(ReportList.getList().getNbOverestimatedPom());
+                toolTipText += TimeConverter.getLength(getList().getNbRealPom()) + " / ";
+                toolTipText += TimeConverter.getLength(getList().getNbEstimatedPom());
+                if (getList().getNbOverestimatedPom() > 0) {
+                    toolTipText += " + " + TimeConverter.getLength(getList().getNbOverestimatedPom());
                 }
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 titleLabel.setToolTipText(toolTipText);
@@ -708,11 +707,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     private AbstractActivitiesTableModel getTableModel() {
-        int rowIndex = ReportList.getList().size();
+        int rowIndex = getList().size();
         int colIndex = columnNames.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = ReportList.getList().iterator();
-        for (int i = 0; i < ReportList.getList().size() && iterator.hasNext(); i++) {
+        Iterator<Activity> iterator = getList().iterator();
+        for (int i = 0; i < getList().size() && iterator.hasNext(); i++) {
             Activity a = iterator.next();
             tableData[i][0] = a.isUnplanned();
             tableData[i][1] = a.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
@@ -738,7 +737,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == ID_KEY - 7;
+                return columnIndex == activitiesTableModel.getColumnCount() - 1 - 7;
             }
 
             // this is mandatory to get columns with integers properly sorted
@@ -779,13 +778,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     int column = e.getColumn();
                     Object data = model.getValueAt(row, column);
                     if (data != null) {
-                        Integer ID = (Integer) model.getValueAt(row, ID_KEY); // ID
+                        Integer ID = (Integer) model.getValueAt(row, activitiesTableModel.getColumnCount() - 1); // ID
                         Activity act = Activity.getActivity(ID.intValue());
-                        if (column == ID_KEY - 7) { // Title (can't be empty)
+                        if (column == activitiesTableModel.getColumnCount() - 1 - 7) { // Title (can't be empty)
                             String name = data.toString().trim();
                             if (name.length() == 0) {
                                 // reset the original value. Title can't be empty.
-                                model.setValueAt(act.getName(), table.convertRowIndexToModel(row), ID_KEY - 7);
+                                model.setValueAt(act.getName(), table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1 - 7);
                             } else {
                                 act.setName(name);
                                 act.databaseUpdate();
@@ -794,7 +793,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                                 table.revalidate();
                             }
                         }
-                        ReportList.getList().update(act);
+                        getList().update(act);
                         // update info
                         detailsPanel.selectInfo(act);
                         detailsPanel.showInfo();
@@ -824,7 +823,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     @Override
     public int getIdKey() {
-        return ID_KEY;
+        return activitiesTableModel.getColumnCount() - 1;
     }
 
     @Override
@@ -869,27 +868,27 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     @Override
     public void move(Activity activity) {
-        ReportList.getList().reopen(activity);
+        getList().reopen(activity);
     }
 
     @Override
     public void moveAll() {
-        ReportList.getList().reopenAll();
+        getList().reopenAll();
     }
 
     @Override
     public Activity getActivityById(int id) {
-        return ReportList.getList().getById(id);
+        return getList().getById(id);
     }
 
     @Override
     public void delete(Activity activity) {
-        ReportList.getList().delete(activity);
+        getList().delete(activity);
     }
 
     @Override
     public void deleteAll() {
-        ReportList.getList().deleteAll();
+        getList().deleteAll();
     }
 
     @Override
@@ -904,29 +903,29 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     @Override
     public void addActivity(Activity activity) {
-        ReportList.getList().add(activity);
+        getList().add(activity);
     }
 
     @Override
     public void addActivity(Activity activity, Date date, Date dateCompleted) {
-        ReportList.getList().add(activity, date, dateCompleted);
+        getList().add(activity, date, dateCompleted);
     }
 
     private void showSelectedItemDetails(DetailsPanel detailPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityInformationTableListener(ReportList.getList(),
-                        table, detailPanel, ID_KEY));
+                new ActivityInformationTableListener(getList(),
+                        table, detailPanel, activitiesTableModel.getColumnCount() - 1));
     }
 
     /*private void showSelectedItemEdit(EditPanel editPanel) {
      table.getSelectionModel().addListSelectionListener(
-     new ActivityEditTableListener(ReportList.getList(), table,
-     editPanel, ID_KEY));
+     new ActivityEditTableListener(getList(), table,
+     editPanel, activitiesTableModel.getColumnCount() - 1));
      }*/
     private void showSelectedItemComment(CommentPanel commentPanel) {
         table.getSelectionModel().addListSelectionListener(
-                new ActivityCommentTableListener(ReportList.getList(),
-                        table, commentPanel, ID_KEY));
+                new ActivityCommentTableListener(getList(),
+                        table, commentPanel, activitiesTableModel.getColumnCount() - 1));
     }
 
     @Override
@@ -943,7 +942,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     currentSelectedRow = 0;
                 }
                 if (fromDatabase) {
-                    ReportList.getList().refresh();
+                    getList().refresh();
                 }
                 activitiesTableModel = getTableModel();
                 table.setModel(activitiesTableModel);
@@ -967,8 +966,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ReportList.getList().getById(id);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
+            Activity activity = getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
             }
@@ -1055,8 +1054,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ReportList.getList().getById(id);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
+            Activity activity = getList().getById(id);
             if (activity != null) {
                 int realpoms = activity.getActualPoms();
                 int estimatedpoms = activity.getEstimatedPoms();
@@ -1074,8 +1073,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ID_KEY);
-            Activity activity = ReportList.getList().getById(id);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
+            Activity activity = getList().getById(id);
             String text = value.toString();
             if (activity != null && activity.getOverestimatedPoms() == 0) {
                 text = "";
@@ -1088,8 +1087,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
     @Override
     public void saveComment(String comment) {
         if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ID_KEY);
-            Activity selectedReport = ReportList.getList().getById(id);
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), activitiesTableModel.getColumnCount() - 1);
+            Activity selectedReport = getList().getById(id);
             if (selectedReport != null) {
                 selectedReport.setNotes(comment);
                 selectedReport.databaseUpdateComment();
@@ -1122,5 +1121,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
             } catch (CloneNotSupportedException ignored) {
             }
         }
+    }
+    
+    protected ReportList getList() {
+        return ReportList.getList();
     }
 }

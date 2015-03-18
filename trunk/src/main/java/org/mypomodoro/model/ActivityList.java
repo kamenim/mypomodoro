@@ -17,6 +17,9 @@
 package org.mypomodoro.model;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -41,6 +44,24 @@ public final class ActivityList extends AbstractActivities {
 
     public static ActivityList getList() {
         return list;
+    }
+
+    // The bigger the list the heavier this will be
+    // Next time we'll use Guava
+    // https://github.com/google/guava
+    public static ActivityList getSubList(int parentId) {
+        ActivityList subList = null;
+        try {
+            subList = (ActivityList) list.clone();
+            for (Iterator<Activity> it = subList.iterator(); it.hasNext();) {
+                Activity a = it.next();
+                if (a.getParentId() != parentId) {
+                    it.remove(); // NOTE: Iterator's remove method, not ArrayList's, is used.
+                }
+            }
+        } catch (CloneNotSupportedException ignored) {
+        }
+        return subList;
     }
 
     public static int getListSize() {
