@@ -19,22 +19,35 @@ package org.mypomodoro.gui;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
+import java.awt.font.TextAttribute;
+import java.util.Date;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesTableModel;
+import org.mypomodoro.gui.activities.ActivitiesTableTitlePanel;
+import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.DateUtil;
 
 /**
  *
  *
  */
-public class AbstractActivitiesTable extends JXTable {
+public abstract class AbstractActivitiesTable extends JXTable {
 
     protected int mouseHoverRow = 0;
     protected int currentSelectedRow = 0;
@@ -53,7 +66,7 @@ public class AbstractActivitiesTable extends JXTable {
         // Make table allowing multiple selections
         setRowSelectionAllowed(true);
         setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        
+
         // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
 
@@ -71,7 +84,7 @@ public class AbstractActivitiesTable extends JXTable {
     protected int getActivityIdFromSelectedRow() {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), getModel().getColumnCount() - 1);
     }
-    
+
     protected int getActivityIdFromRowIndex(int rowIndex) {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), getModel().getColumnCount() - 1);
     }
@@ -103,21 +116,108 @@ public class AbstractActivitiesTable extends JXTable {
     }
 
     /*protected int getMouseHoverRow() {
-        return mouseHoverRow;
-    }
+     return mouseHoverRow;
+     }
 
-    protected void setMouseHoverRow(int mouseHoverRow) {
-        this.mouseHoverRow = mouseHoverRow;
-    }
+     protected void setMouseHoverRow(int mouseHoverRow) {
+     this.mouseHoverRow = mouseHoverRow;
+     }
 
-    protected void showInfo(int activityId) {
-    }
-    
+     protected void showInfo(int activityId) {
+     }*/
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row;
-    }*/
+    }
 
     public void showCurrentSelectedRow() {
         scrollRectToVisible(getCellRect(currentSelectedRow, 0, true));
     }
+
+    // selected row BOLD
+    protected class CustomTableRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setForeground(ColorUtil.BLACK);
+            renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
+            Activity activity = getList().getById(id);
+            if (activity != null && activity.isFinished()) {
+                renderer.setForeground(ColorUtil.GREEN);
+            }
+            return renderer;
+        }
+    }
+
+    public class UnplannedRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if ((Boolean) value) {
+                if (!getFont().canDisplay('\u2714')) { // unicode tick
+                    renderer.setText("U");
+                } else {
+                    renderer.setText("\u2714");
+                }
+            } else {
+                renderer.setText("");
+            }
+            return renderer;
+        }
+    }
+
+    public class DateRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (!DateUtil.isSameDay((Date) value, new Date(0))) {
+                renderer.setText(DateUtil.getShortFormatedDate((Date) value));
+                renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
+                if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
+                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
+                    Activity activity = getList().getById(id);
+                    if (activity != null && activity.isOverdue()) {
+                        Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+                        map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                        renderer.setFont(getFont().deriveFont(map));
+                    }
+                }
+            } else {
+                renderer.setText(null);
+                renderer.setToolTipText(null);
+            }
+            return renderer;
+        }
+    }
+
+    public class TitleRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderer.setToolTipText((String) value);
+            return renderer;
+        }
+    }
+    
+    protected abstract void showInfo(int activityId);
+    
+    protected abstract void setPanelBorder();
+
+    protected abstract void setTableHeader();
+    
+    protected abstract ActivityList getList();
+    
+    protected abstract ActivityList getTableList();
+    
+    protected abstract ActivitiesTableTitlePanel getTitlePanel();
+    
+    protected abstract void removeRow(int rowIndex);
+    
+    protected abstract void insertRow(Activity activity);
 }

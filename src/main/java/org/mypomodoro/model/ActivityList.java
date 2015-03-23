@@ -17,9 +17,6 @@
 package org.mypomodoro.model;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -29,7 +26,7 @@ import org.mypomodoro.db.ActivitiesDAO;
 public final class ActivityList extends AbstractActivities {
 
     private static final ActivityList list = new ActivityList();
-
+    
     private ActivityList() {
         refresh();
     }
@@ -42,26 +39,39 @@ public final class ActivityList extends AbstractActivities {
         }
     }
 
+    // List of all tasks
     public static ActivityList getList() {
         return list;
     }
+    
+    // List of main tasks
+    public static ActivityList getTableList() {
+        ActivityList tableList = new ActivityList();
+        for (Activity a : list) {
+            if (a.getParentId() != -1) {
+                tableList.removeById(a.getId());
+            }
+        }
+        return tableList;
+    }
 
+    // List of sub tasks
     // The bigger the list the heavier this will be
     // Next time we'll use Guava
     // https://github.com/google/guava
-    public static ActivityList getSubList(int parentId) {
-        ActivityList subList = null;
-        try {
-            subList = (ActivityList) list.clone();
-            for (Iterator<Activity> it = subList.iterator(); it.hasNext();) {
-                Activity a = it.next();
-                if (a.getParentId() != parentId) {
-                    it.remove(); // NOTE: Iterator's remove method, not ArrayList's, is used.
-                }
+    // OR get the list for the database
+    public static ActivityList getSubTableList(int parentId) {
+        ActivityList subTableList = new ActivityList();
+        //System.err.println("subTableList = " + subTableList.size()); 
+        //System.err.println("parentId = " + parentId);  
+        for (Activity a : list) {
+            //System.err.println("a.getParentId()=" + a.getParentId());
+            if (a.getParentId() != parentId) {
+                subTableList.removeById(a.getId());
             }
-        } catch (CloneNotSupportedException ignored) {
         }
-        return subList;
+        //System.err.println("subTableList = " + subTableList.size());
+        return subTableList;
     }
 
     public static int getListSize() {

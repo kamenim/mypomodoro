@@ -134,11 +134,12 @@ public class ActivitiesDAO {
         }
     }
 
+    // Delete task and subtasks
     public void delete(Activity activity) {
         try {
             database.lock();
             database.update("begin;");
-            database.update("DELETE FROM activities WHERE id=" + activity.getId() + ";");
+            database.update("DELETE FROM activities WHERE id=" + activity.getId() + " OR parent_id=" + activity.getId() + ";");
         } finally {
             database.update("Commit;");
             database.unlock();
@@ -536,12 +537,12 @@ public class ActivitiesDAO {
     }
 
     // Activities, TODOs and Reports
-    public Activity getActivity(int ID) {
+    public Activity getActivity(int id) {
         Activity activity = null;
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE id = " + ID + ";");
+                    + "WHERE id = " + id + ";");
             try {
                 while (rs.next()) {
                     activity = new Activity(rs);

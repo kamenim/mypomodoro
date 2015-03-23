@@ -33,6 +33,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.list.TypeList;
+import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
@@ -46,9 +47,9 @@ public class TestMenu extends JMenu {
 
     public TestMenu() {
         super(Labels.getString("MenuBar.Data"));
-        add(new TestDataItem(100));
-        add(new TestDataItem(500));
-        add(new TestDataItem(1000));
+        add(new TestDataMenu(100));
+        add(new TestDataMenu(500));
+        add(new TestDataMenu(1000));
         add(new JSeparator());
         add(new ResetDataItem());
         addFocusListener(new FocusListener() {
@@ -64,10 +65,30 @@ public class TestMenu extends JMenu {
         });
     }
 
+    class TestDataMenu extends JMenu {
+
+        public TestDataMenu(final int nbTask) {
+            super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
+            add(new TestDataItem(nbTask, true));
+            add(new TestDataItem(nbTask, false));
+        }
+    }
+
     // create test data
     class TestDataItem extends JMenuItem {
 
-        private void createTestData(final int nbTask) {
+        public TestDataItem(final int nbTask, final boolean withSubTask) {
+            super(Labels.getString(withSubTask ? "DataMenu.with subtask" : "DataMenu.without subtask"));            
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    createTestData(nbTask, withSubTask);
+                }
+            });
+        }
+
+        private void createTestData(final int nbTask, final boolean withSubtask) {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
@@ -135,6 +156,10 @@ public class TestMenu extends JMenu {
                                     }
                                     Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
                                     ReportList.getList().add(a, dateAdded, dateCompleted);
+                                    if (withSubtask) {
+                                        // Adding subtasks
+                                        addSubTasks(a, ReportList.getList());
+                                    }
                                     Main.gui.getReportListPanel().insertRow(a);
                                     reportListValue++;
                                 } else { // Tasks for the Activity and ToDo list
@@ -147,6 +172,10 @@ public class TestMenu extends JMenu {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                         }
                                         ToDoList.getList().add(a);
+                                        if (withSubtask) {
+                                            // Adding subtasks
+                                            addSubTasks(a, ToDoList.getList());
+                                        }
                                         Main.gui.getToDoPanel().insertRow(a);
                                         todoListValue++;
                                     } else { // Tasks for the Activity list
@@ -155,7 +184,11 @@ public class TestMenu extends JMenu {
                                         a.setOverestimatedPoms(0);
                                         a.setActualPoms(0);
                                         ActivityList.getList().add(a, a.getDate());
-                                        Main.gui.getActivityListPanel().insertRow(a);
+                                        if (withSubtask) {
+                                            // Adding subtasks
+                                            addSubTasks(a, ActivityList.getList());
+                                        }
+                                        Main.gui.getActivityListPanel().getTable().insertRow(a);
                                         activityListValue++;
                                     }
                                 }
@@ -204,23 +237,44 @@ public class TestMenu extends JMenu {
                         setEnabled(true);
                         // Stop wait cursor
                         WaitCursor.stopWaitCursor();
-                        // Updating views at once (updating individual view in the loop is likely to create ConcurrentModificationException exceptions)
-                        // we could also refresh() the lists ActivityList, ToDoList and ReportList to get the tasks sorted in order of dates
-                        //Main.updateViews(); // this has to be done inside the current thread
                     }
                 }
             }.start();
         }
 
-        public TestDataItem(final int nbTask) {
-            super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
-            addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    createTestData(nbTask);
+        private void addSubTasks(Activity a, AbstractActivities list) {
+            Random rand = new Random();
+            int subTaskActual = 0;
+            int subTaskEstimated = 0;
+            int subTaskOverestimated = 0;
+            int nbSubTask = rand.nextInt(6); // 0 to 5 subtasks
+            try {
+                for (int j = 1; j <= nbSubTask; j++) {
+                    Activity aClone = a.clone();
+                    aClone.setName(a.getName() + "." + j);
+                    int actualPom = a.getActualPoms() > 0 ? rand.nextInt(a.getActualPoms() + 1) : 0;
+                    subTaskActual += actualPom;
+                    aClone.setActualPoms(subTaskActual > a.getActualPoms() ? 0 : actualPom);
+                    int estimated = a.getEstimatedPoms() > 0 ? rand.nextInt(a.getEstimatedPoms() + 1) : 0;
+                    subTaskEstimated += estimated;
+                    aClone.setEstimatedPoms(subTaskEstimated > a.getEstimatedPoms() ? 0 : estimated);
+                    int overestimated = a.getOverestimatedPoms() > 0 ? rand.nextInt(a.getOverestimatedPoms() + 1) : 0;
+                    subTaskOverestimated += overestimated;
+                    aClone.setOverestimatedPoms(subTaskOverestimated > a.getOverestimatedPoms() ? 0 : overestimated);
+                    aClone.setStoryPoints(0);
+                    aClone.setIteration(-1);
+                    aClone.setType(Labels.getString("Common.Subtasks"));
+                    aClone.setParentId(a.getId());
+                    if (list instanceof ToDoList) {
+                        ToDoList.getList().add(aClone);
+                    } else if (list instanceof ActivityList) {
+                        ActivityList.getList().add(aClone, a.getDate());
+                    } else if (list instanceof ReportList) {
+                        ReportList.getList().add(aClone, a.getDate(), a.getDateCompleted());
+                    }
                 }
-            });
+            } catch (CloneNotSupportedException ignored) {
+            }
         }
     }
 

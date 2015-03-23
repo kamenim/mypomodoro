@@ -23,9 +23,15 @@ package org.mypomodoro.gui.activities;
 public class ActivitiesSubTableModel extends ActivitiesTableModel {
 
     public ActivitiesSubTableModel() {
+        // Empty model
         int rowIndex = 0;
         int colIndex = columnNames.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
-        setDataVector(tableData, columnNames);       
+        setDataVector(tableData, columnNames);
+    }
+    
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == getColumnCount() - 1 - 5 || columnIndex == getColumnCount() - 1 - 4 || columnIndex == getColumnCount() - 1 - 3;
     }
 }
