@@ -39,7 +39,7 @@ public class ActivitiesTableModel extends DefaultTableModel {
         "ID"};
 
     public ActivitiesTableModel() {
-        setDataVector(ActivityList.getList());
+        setDataVector(ActivityList.getTableList());
     }
 
     protected void setDataVector(final ActivityList list) {
@@ -64,7 +64,7 @@ public class ActivitiesTableModel extends DefaultTableModel {
         setDataVector(tableData, columnNames);
     }
 
-    public String[] getColumnNames() {
+    protected String[] getColumnNames() {
         return columnNames;
     }
 

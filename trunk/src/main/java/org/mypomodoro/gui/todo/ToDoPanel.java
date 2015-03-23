@@ -1432,8 +1432,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
             Activity originalCopiedActivity = getActivityById(id);
             try {
-                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
-                copiedActivity.setId(-1); // new activity
+                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
                 copiedActivity.setName("(D) " + copiedActivity.getName());
                 copiedActivity.setActualPoms(0);
                 copiedActivity.setOverestimatedPoms(0);

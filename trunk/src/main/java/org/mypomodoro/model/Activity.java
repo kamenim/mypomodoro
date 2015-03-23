@@ -36,7 +36,9 @@ public class Activity implements Cloneable {
 
     @Override
     public Activity clone() throws CloneNotSupportedException {
-        return (Activity) super.clone();
+        Activity aClone = (Activity) super.clone();
+        aClone.setId(-1);
+        return aClone;
     }
 
     // ATTRIBUTES
