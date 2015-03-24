@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -30,7 +32,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     private final ActivitiesSubTableModel subTableModel;
     private final ActivitiesPanel activitiesPanel;
-    
+
     private int parentId = -1;
 
     public ActivitiesSubTable(ActivitiesSubTableModel subTableModel, final ActivitiesPanel activitiesPanel) {
@@ -38,8 +40,24 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
         this.subTableModel = subTableModel;
         this.activitiesPanel = activitiesPanel;
+        
+        // This is to address the case/event when the mouse exit the table
+        // REplacing listener of the ActivtiesTable class constructor
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (getSelectedRowCount() == 1) {
+                    showInfoForSelectedRow();
+                } else if (getSelectedRowCount() == 0) { // selected row on the main table
+                    showInfo(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+                }
+                mouseHoverRow = -1;
+            }
+        });
     }
-    
+
     public void setParentId(int parentId) {
         this.parentId = parentId;
     }
@@ -47,7 +65,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     // no story points and no refresh button for subtasks
     @Override
     protected void setPanelBorder() {
-        String titleActivitiesList = Labels.getString("Common.Subtasks");        
+        String titleActivitiesList = Labels.getString("Common.Subtasks");
         int rowCount = getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -113,6 +131,18 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
+    protected void init() {
+        super.init();
+        // hide Story Points and Iteration columns
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setMaxWidth(0);
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setMinWidth(0);
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setPreferredWidth(0);
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setMaxWidth(0);
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setMinWidth(0);
+        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setPreferredWidth(0);
+    }
+
+    @Override
     protected void enableTabs() {
         // Do nothing so this doesn't conflict with the main table
     }
@@ -129,7 +159,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected ActivityList getTableList() {        
+    protected ActivityList getTableList() {
         return ActivityList.getSubTableList(parentId);
     }
 

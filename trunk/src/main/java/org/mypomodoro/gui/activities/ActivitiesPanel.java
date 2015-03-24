@@ -16,32 +16,26 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.font.TextAttribute;
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
@@ -51,8 +45,6 @@ import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -91,17 +83,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     public ActivitiesPanel() {
         setLayout(new GridBagLayout());
-        
+
         // Top pane
         scrollPane.setMinimumSize(PANE_DIMENSION);
         scrollPane.setPreferredSize(PANE_DIMENSION);
         scrollPane.setLayout(new GridBagLayout());
-        
+
         // Bottom pane
         controlPane.setMinimumSize(TABPANE_DIMENSION);
         controlPane.setPreferredSize(TABPANE_DIMENSION);
         addTabPane();
-        
+
         // Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
         splitPane.setOneTouchExpandable(true);
@@ -113,7 +105,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
         //divider.setBackground(ColorUtil.YELLOW_ROW);
         //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
-        
+
         // Splitted view
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -122,13 +114,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
-        
+
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
         tableModel = new ActivitiesTableModel();
         subTable = new ActivitiesSubTable(subTableModel, this); // instance this before table
         table = new ActivitiesTable(tableModel, this);
-        
+
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (table.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
@@ -273,14 +265,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TOP PANE
     ////////////////////////////////////////////////
-    
     // TITLE + TABLE
     private void addTableTitlePanel() {
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 0;
         cScrollPane.weightx = 1.0;
         cScrollPane.anchor = GridBagConstraints.WEST;
-        cScrollPane.fill = GridBagConstraints.BOTH;        
+        cScrollPane.fill = GridBagConstraints.BOTH;
         scrollPane.add(tableTitlePanel, cScrollPane);
     }
 
@@ -317,7 +308,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
+                if (e.getClickCount() == 1) { // single click
                     if (tableScrollPane.isShowing()) {
                         scrollPane.remove(tableScrollPane);
                     } else if (table.getSelectedRowCount() == 1) {
@@ -345,19 +336,43 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        // Implement one-click action on selected tabs
+        // Tab already selected = one click to expand
+        // Tab not selected = double click to expand
+        class CustomChangeListener implements ChangeListener {
+            private boolean stateChanged = false;
+            
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                stateChanged = true;
+            }
+            
+            public boolean getStateChanged() {                
+                return stateChanged;
+            }
+            
+            public void setStateChanged(boolean stateChanged) {
+                this.stateChanged = stateChanged;
+            }
+        }
+        final CustomChangeListener customChangeListener = new CustomChangeListener();
+        controlPane.addChangeListener(customChangeListener);        
         controlPane.addMouseListener(new MouseAdapter() {
             private int dividerLocation;
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
+                if (e.getClickCount() > 1
+                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
                     // Expand
-                    if (splitPane.getDividerLocation() != 0) { // double left click
+                    if (splitPane.getDividerLocation() != 0) {
                         dividerLocation = splitPane.getDividerLocation();
                         splitPane.setDividerLocation(0.0);
                     } else { // back to original position
                         splitPane.setDividerLocation(dividerLocation);
                     }
+                } else {
+                    customChangeListener.setStateChanged(false);
                 }
             }
         });
@@ -367,7 +382,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public ActivitiesTable getTable() {
         return table;
     }
-    
+
     public ActivitiesSubTable getSubTable() {
         return subTable;
     }
@@ -380,36 +395,36 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     @Override
     public void removeRow(int rowIndex) {
         /*table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-        tableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
-        if (table.getRowCount() > 0) {
-            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
-            table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-        }*/
+         tableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
+         if (table.getRowCount() > 0) {
+         int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
+         table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+         table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
+         }*/
     }
 
     @Override
     public void insertRow(Activity activity) {
         /*table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-        Object[] rowData = new Object[8];
-        rowData[0] = activity.isUnplanned();
-        rowData[1] = activity.getDate();
-        rowData[2] = activity.getName();
-        rowData[3] = activity.getType();
-        Integer poms = new Integer(activity.getEstimatedPoms());
-        rowData[4] = poms;
-        Float points = new Float(activity.getStoryPoints());
-        rowData[5] = points;
-        Integer iteration = new Integer(activity.getIteration());
-        rowData[6] = iteration;
-        rowData[7] = activity.getId();
-        // By default, the row is added at the bottom of the list
-        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-        tableModel.addRow(rowData); // we add in the Model...        
-        //tableModel.insertRow(table.getRowCount(), rowData); // we add in the Model... 
-        int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
-        table.setRowSelectionInterval(currentRow, currentRow);
-        table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));*/
+         Object[] rowData = new Object[8];
+         rowData[0] = activity.isUnplanned();
+         rowData[1] = activity.getDate();
+         rowData[2] = activity.getName();
+         rowData[3] = activity.getType();
+         Integer poms = new Integer(activity.getEstimatedPoms());
+         rowData[4] = poms;
+         Float points = new Float(activity.getStoryPoints());
+         rowData[5] = points;
+         Integer iteration = new Integer(activity.getIteration());
+         rowData[6] = iteration;
+         rowData[7] = activity.getId();
+         // By default, the row is added at the bottom of the list
+         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+         tableModel.addRow(rowData); // we add in the Model...        
+         //tableModel.insertRow(table.getRowCount(), rowData); // we add in the Model... 
+         int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
+         table.setRowSelectionInterval(currentRow, currentRow);
+         table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));*/
     }
 
     @Override
@@ -576,7 +591,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return subTableTitlePanel;
     }
 
-    public void populateSubTable(int parentId) {        
+    public void populateSubTable(int parentId) {
         subTableModel.setDataVector(ActivityList.getSubTableList(parentId));
         subTable.setParentId(parentId);
         subTable.init();

@@ -69,7 +69,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRowCount = getSelectedRowCount();
-                if (selectedRowCount > 0) {                    
+                if (selectedRowCount > 0) {
                     if (!e.getValueIsAdjusting()) { // ignoring the deselection event                                
                         // See above for reason to set WHEN_FOCUSED here
                         setInputMap(JTable.WHEN_FOCUSED, getInputMap());
@@ -84,15 +84,8 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                                 activitiesPanel.getControlPane().setSelectedIndex(0); // switch to details panel
                             }
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
-                            // Display info (list of selected tasks)
-                            String info = "";
-                            int[] rows = getSelectedRows();
-                            for (int row : rows) {
-                                Integer id = (Integer) tableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
-                                Activity selectedActivity = activitiesPanel.getActivityById(id);
-                                info += selectedActivity.getName() + "<br>";
-                            }
-                            activitiesPanel.getDetailsPanel().showInfo(info);
+                            // Display info (list of selected tasks)                            
+                            showInfoForSelectedRows();
                         } else if (selectedRowCount == 1) {
                             // activate all panels
                             for (int index = 0; index < activitiesPanel.getControlPane().getTabCount(); index++) {
@@ -111,15 +104,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             currentSelectedRow = getSelectedRow();
                             showCurrentSelectedRow(); // when sorting columns, focus on selected row
                             // Display details                           
-                            int row = getSelectedRow();
-                            Integer id = (Integer) tableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
-                            Activity selectedActivity = activitiesPanel.getActivityById(id);
-                            activitiesPanel.getDetailsPanel().selectInfo(selectedActivity);
-                            activitiesPanel.getDetailsPanel().showInfo();
-                            // Display comment
-                            activitiesPanel.getCommentPanel().showInfo(selectedActivity);
-                            // Display edit details
-                            activitiesPanel.getEditPanel().showInfo(selectedActivity);
+                            showInfoForSelectedRow();
                             // populate subtable
                             populateSubTable();
                         }
@@ -131,39 +116,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             }
         });
 
-        // Manage mouse hovering
-        addMouseMotionListener(new MouseMotionAdapter() {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Point p = e.getPoint();
-                int rowIndex = rowAtPoint(p);
-                // Change of row
-                if (mouseHoverRow != rowIndex) {
-                    if (getSelectedRowCount() == 1) {
-                        if (rowIndex == -1) {
-                            rowIndex = getSelectedRow();
-                            setToolTipText(null); // this way tooltip won't stick
-                        }
-                        showInfo(getActivityIdFromRowIndex(rowIndex));
-                    }
-                    mouseHoverRow = rowIndex;
-                }
-            }
-        });
-        // This is to address the case/event when the mouse exit the table
-        addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Reset to currently selected task
-                if (getSelectedRowCount() == 1) {
-                    showInfo(getActivityIdFromSelectedRow());
-                }
-                mouseHoverRow = -1;
-            }
-        });
-        
         init();
 
         // Listener on editable cells
@@ -177,7 +129,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {                    
+                        && e.getType() == TableModelEvent.UPDATE) {
                     ActivitiesTableModel model = (ActivitiesTableModel) e.getSource();
                     Object data = model.getValueAt(row, column);
                     if (data != null) {
@@ -244,9 +196,9 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         });
     }
 
-    //@Override
+    @Override
     protected void init() {
-       // set custom render for dates
+        // set custom render for dates
         getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 5).setCellRenderer(new TitleRenderer()); // title
@@ -321,7 +273,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         }
 
         enableTabs();
-  
+
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
@@ -337,7 +289,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 activitiesPanel.getControlPane().setEnabledAt(index, false);
             }
         } else {
-            for (int index = 0; index < activitiesPanel.getControlPane().getTabCount(); index++) {                
+            for (int index = 0; index < activitiesPanel.getControlPane().getTabCount(); index++) {
                 activitiesPanel.getControlPane().setEnabledAt(index, index != 3); // merge tab : index == 3                                   
             }
             activitiesPanel.getControlPane().setSelectedIndex(0);
@@ -347,22 +299,41 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     protected void showInfo(int activityId) {
         Activity activity = getList().getById(activityId);
-        if (activity != null) {
-            activitiesPanel.getDetailsPanel().selectInfo(activity);
-            activitiesPanel.getDetailsPanel().showInfo();
-            activitiesPanel.getCommentPanel().showInfo(activity);
-            activitiesPanel.getEditPanel().showInfo(activity);
+        activitiesPanel.getDetailsPanel().selectInfo(activity);
+        activitiesPanel.getDetailsPanel().showInfo();
+        activitiesPanel.getCommentPanel().showInfo(activity);
+        activitiesPanel.getEditPanel().showInfo(activity);
+    }
+
+    @Override
+    protected void showInfoForSelectedRow() {
+        showInfo(getActivityIdFromSelectedRow());
+    }
+    
+    @Override
+    protected void showInfoForRowIndex(int rowIndex) {
+        showInfo(getActivityIdFromRowIndex(rowIndex));
+    }
+
+    @Override
+    protected void showInfoForSelectedRows() {
+        String info = "";
+        int[] rows = getSelectedRows();
+        for (int row : rows) {
+            Integer id = getActivityIdFromRowIndex(row);
+            info += getList().getById(id).getName() + "<br>";
         }
+        activitiesPanel.getDetailsPanel().showInfo(info);
     }
 
     @Override
     protected ActivityList getList() {
         return ActivityList.getList();
     }
-    
+
     @Override
     protected ActivityList getTableList() {
-         return ActivityList.getTableList();
+        return ActivityList.getTableList();
     }
 
     @Override
@@ -377,7 +348,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     protected void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");        
+        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
         int rowCount = getRowCount();
         if (rowCount > 0) {
             ActivityList tableList = getTableList();
@@ -458,15 +429,15 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getTitlePanel().repaint();
     }
 
-    protected void populateSubTable() {        
-        activitiesPanel.populateSubTable(getActivityIdFromSelectedRow());        
+    protected void populateSubTable() {
+        activitiesPanel.populateSubTable(getActivityIdFromSelectedRow());
     }
-    
+
     @Override
     protected ActivitiesTableTitlePanel getTitlePanel() {
-        return activitiesPanel.getTableTitlePanel(); 
+        return activitiesPanel.getTableTitlePanel();
     }
-    
+
     @Override
     public void removeRow(int rowIndex) {
         clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
@@ -477,7 +448,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             scrollRectToVisible(getCellRect(currentRow, 0, true));
         }
     }
-    
+
     @Override
     public void insertRow(Activity activity) {
         clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
@@ -501,7 +472,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
-        
+
     // selected row BOLD
     protected class CustomTableRenderer extends DefaultTableCellRenderer {
 

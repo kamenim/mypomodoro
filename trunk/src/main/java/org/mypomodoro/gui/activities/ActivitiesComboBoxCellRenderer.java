@@ -46,10 +46,11 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
             comboBox.setForeground(getForeground());
             label.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
         }
-        if (!table.getModel().isCellEditable(row, column)) {
+        // Hide combobox and label when cell not editable 
+        /*if (!table.getModel().isCellEditable(row, column)) {
             comboBox.setVisible(false);
-            label.setText("");
-        }
+            label.setVisible(false);
+        }*/
         return this;
     }
 }
