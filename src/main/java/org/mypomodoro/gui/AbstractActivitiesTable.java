@@ -18,7 +18,11 @@ package org.mypomodoro.gui;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.font.TextAttribute;
 import java.util.Date;
 import java.util.EventObject;
@@ -79,9 +83,40 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
         };
         setDefaultEditor(Object.class, editor);
+
+        // Manage mouse hovering
+        addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                if (rowIndex != -1) {
+                    if (getSelectedRowCount() <= 1
+                            && mouseHoverRow != rowIndex) { // no multiple selection
+                        showInfoForRowIndex(rowIndex);
+                        mouseHoverRow = rowIndex;
+                    }
+                } else {
+                    setToolTipText(null); // this way tooltip won't stick
+                }
+            }
+        });
+        // This is to address the case/event when the mouse exit the table
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Reset to currently selected task
+                if (getSelectedRowCount() == 1) {
+                    showInfoForSelectedRow();
+                }
+                mouseHoverRow = -1;
+            }
+        });
     }
 
-    protected int getActivityIdFromSelectedRow() {
+    public int getActivityIdFromSelectedRow() {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), getModel().getColumnCount() - 1);
     }
 
@@ -205,7 +240,15 @@ public abstract class AbstractActivitiesTable extends JXTable {
         }
     }
     
+    protected abstract void init();
+    
     protected abstract void showInfo(int activityId);
+    
+    protected abstract void showInfoForSelectedRow();
+    
+    protected abstract void showInfoForSelectedRows();
+    
+    protected abstract void showInfoForRowIndex(int rowIndex);
     
     protected abstract void setPanelBorder();
 

@@ -54,6 +54,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -685,19 +687,43 @@ public class ReportsPanel extends JPanel implements IListPanel {
         controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        // Implement one-click action on selected tabs
+        // Tab already selected = one click to expand
+        // Tab not selected = double click to expand
+        class CustomChangeListener implements ChangeListener {
+            private boolean stateChanged = false;
+            
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                stateChanged = true;
+            }
+            
+            public boolean getStateChanged() {                
+                return stateChanged;
+            }
+            
+            public void setStateChanged(boolean stateChanged) {
+                this.stateChanged = stateChanged;
+            }
+        }
+        final CustomChangeListener customChangeListener = new CustomChangeListener();
+        controlPane.addChangeListener(customChangeListener);        
         controlPane.addMouseListener(new MouseAdapter() {
             private int dividerLocation;
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
+                if (e.getClickCount() > 1
+                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
                     // Expand
-                    if (splitPane.getDividerLocation() != 0) { // double left click
+                    if (splitPane.getDividerLocation() != 0) {
                         dividerLocation = splitPane.getDividerLocation();
                         splitPane.setDividerLocation(0.0);
                     } else { // back to original position
                         splitPane.setDividerLocation(dividerLocation);
                     }
+                } else {
+                    customChangeListener.setStateChanged(false);
                 }
             }
         });
