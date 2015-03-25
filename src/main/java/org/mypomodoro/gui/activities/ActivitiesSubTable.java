@@ -30,15 +30,15 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    private final ActivitiesSubTableModel subTableModel;
+    private final ActivitiesSubTableModel tableModel;
     private final ActivitiesPanel activitiesPanel;
 
     private int parentId = -1;
 
-    public ActivitiesSubTable(ActivitiesSubTableModel subTableModel, final ActivitiesPanel activitiesPanel) {
-        super(subTableModel, activitiesPanel);
+    public ActivitiesSubTable(ActivitiesSubTableModel tableModel, final ActivitiesPanel activitiesPanel) {
+        super(tableModel, activitiesPanel);
 
-        this.subTableModel = subTableModel;
+        this.tableModel = tableModel;
         this.activitiesPanel = activitiesPanel;
         
         // This is to address the case/event when the mouse exit the table
@@ -76,7 +76,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 int overestimated = 0;
                 int real = 0;
                 for (int row : rows) {
-                    Integer id = (Integer) subTableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
+                    Integer id = (Integer) tableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
                     Activity selectedActivity = activitiesPanel.getActivityById(id);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
@@ -118,12 +118,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Show buttons of the quick bar
                 getTitlePanel().showSelectedButton();
                 getTitlePanel().showDuplicateButton();
-            }
-            getTitlePanel().showCreateButton();
+            }            
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
+        getTitlePanel().showCreateButton();
         // Update title
         getTitlePanel().setText("<html>" + titleActivitiesList + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
@@ -166,5 +166,24 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     protected ActivitiesTableTitlePanel getTitlePanel() {
         return activitiesPanel.getSubTableTitlePanel();
+    }
+    
+    @Override
+    public void createNewTask() {
+        Activity newActivity = new Activity();
+        newActivity.setEstimatedPoms(0);
+        newActivity.setName(Labels.getString("Common.Subtask"));
+        // Set parent id
+        newActivity.setParentId(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+        getList().add(newActivity); // save activity in database
+        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field        
+        insertRow(newActivity);
+        // Set the blinking cursor and the ability to type in right away
+        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+        setSurrendersFocusOnKeystroke(true); // focus
+        if (getEditorComponent() != null) {
+            getEditorComponent().requestFocus();
+        }
+        activitiesPanel.getControlPane().setSelectedIndex(2); // open edit tab
     }
 }

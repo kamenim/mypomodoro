@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,18 +29,16 @@ import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.DeleteButton;
-import org.mypomodoro.buttons.MoveButton;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -68,10 +67,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     private final JSplitPane splitPane;
-    private InputMap im = null;
     // Title    
-    private final ActivitiesTableTitlePanel tableTitlePanel = new ActivitiesTableTitlePanel(this);
-    private final ActivitiesTableTitlePanel subTableTitlePanel = new ActivitiesTableTitlePanel(this);
+    private final ActivitiesTableTitlePanel tableTitlePanel;
+    private final ActivitiesTableTitlePanel subTableTitlePanel;
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Tables
     private final ActivitiesTableModel tableModel;
@@ -120,6 +118,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tableModel = new ActivitiesTableModel();
         subTable = new ActivitiesSubTable(subTableModel, this); // instance this before table
         table = new ActivitiesTable(tableModel, this);
+        // Init title and sub title
+        tableTitlePanel = new ActivitiesTableTitlePanel(this, table);
+        subTableTitlePanel = new ActivitiesTableTitlePanel(this, subTable);
 
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (table.getRowCount() > 0) {
@@ -131,62 +132,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         addTable();
         addSubTableTitlePanel();
         addSubTable();
-    }
-
-    private void setUpTable() {
-        // Activate Delete key stroke
-        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
-        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
-        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = table.getActionMap();
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
-        } else {
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
-        }
-        class deleteAction extends AbstractAction {
-
-            final IListPanel panel;
-
-            public deleteAction(IListPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
-                b.doClick();
-            }
-        }
-        am.put("Delete", new deleteAction(this));
-        // Activate Shift + '>'                
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
-        class moveAction extends AbstractAction {
-
-            final IListPanel panel;
-
-            public moveAction(IListPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MoveButton moveButton = new MoveButton("", panel);
-                moveButton.doClick();
-            }
-        }
-        am.put("Add To ToDo List", new moveAction(this));
-        // Activate Control A
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
-        class selectAllAction extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                table.selectAll();
-            }
-        }
-        am.put("Control A", new selectAllAction());
 
         // Keystroke for tab
         class tabAction extends AbstractAction {
@@ -204,43 +149,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
             }
         }
+        InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getActionMap();
         for (int i = 1; i <= 6; i++) {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-
-        // Activate Control T (create new task)        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK), "Control T");
-        class create extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createNewTask();
-            }
-        }
-        am.put("Control T", new create());
-
-        // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
-        class duplicate extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        }
-        am.put("Duplicate", new duplicate());
-
-        // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
-        class scrollBackToTask extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showCurrentSelectedRow();
-            }
-        }
-        am.put("Scroll", new scrollBackToTask());
     }
 
     // Retrieve key event with name
@@ -303,24 +217,37 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         cScrollPane.weightx = 1.0;
         cScrollPane.weighty = 1.0;
         cScrollPane.fill = GridBagConstraints.BOTH;
-        final JScrollPane tableScrollPane = new JScrollPane(subTable);
-        subTableTitlePanel.addMouseListener(new MouseAdapter() {
+        final JScrollPane subTableScrollPane = new JScrollPane(subTable);
+        // One click actions
+        class CustomMouseAdapter extends MouseAdapter {
+
+            private Component comp;
+            
+            public CustomMouseAdapter(Component comp) {
+                this.comp = comp;
+            }
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) { // single click
-                    if (tableScrollPane.isShowing()) {
-                        scrollPane.remove(tableScrollPane);
-                    } else if (table.getSelectedRowCount() == 1) {
-                        scrollPane.add(tableScrollPane, cScrollPane);
-                        showCurrentSelectedRow(); // does not work here
-                        subTable.setPanelBorder();
+                    if (subTableScrollPane.isShowing() && !(comp instanceof DefaultButton)) { // fold: excluding buttons
+                        scrollPane.remove(subTableScrollPane);
+                    } else if (table.getSelectedRowCount() == 1) { // expand
+                        scrollPane.add(subTableScrollPane, cScrollPane);
                     }
                     scrollPane.revalidate();
                     scrollPane.repaint();
+                    if (table.getSelectedRowCount() == 1) {
+                        table.showCurrentSelectedRow();
+                    }
                 }
             }
-        });
+        }
+        subTableTitlePanel.addMouseListener(new CustomMouseAdapter(subTableTitlePanel));
+        Component[] comps = subTableTitlePanel.getComponents();
+        for (final Component comp : comps) {
+            comp.addMouseListener(new CustomMouseAdapter(comp));
+        }
     }
 
     ////////////////////////////////////////////////
@@ -340,23 +267,24 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Tab already selected = one click to expand
         // Tab not selected = double click to expand
         class CustomChangeListener implements ChangeListener {
+
             private boolean stateChanged = false;
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 stateChanged = true;
             }
-            
-            public boolean getStateChanged() {                
+
+            public boolean getStateChanged() {
                 return stateChanged;
             }
-            
+
             public void setStateChanged(boolean stateChanged) {
                 this.stateChanged = stateChanged;
             }
         }
         final CustomChangeListener customChangeListener = new CustomChangeListener();
-        controlPane.addChangeListener(customChangeListener);        
+        controlPane.addChangeListener(customChangeListener);
         controlPane.addMouseListener(new MouseAdapter() {
             private int dividerLocation;
 
@@ -394,37 +322,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public void removeRow(int rowIndex) {
-        /*table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-         tableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
-         if (table.getRowCount() > 0) {
-         int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
-         table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-         table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-         }*/
     }
 
     @Override
     public void insertRow(Activity activity) {
-        /*table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-         Object[] rowData = new Object[8];
-         rowData[0] = activity.isUnplanned();
-         rowData[1] = activity.getDate();
-         rowData[2] = activity.getName();
-         rowData[3] = activity.getType();
-         Integer poms = new Integer(activity.getEstimatedPoms());
-         rowData[4] = poms;
-         Float points = new Float(activity.getStoryPoints());
-         rowData[5] = points;
-         Integer iteration = new Integer(activity.getIteration());
-         rowData[6] = iteration;
-         rowData[7] = activity.getId();
-         // By default, the row is added at the bottom of the list
-         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-         tableModel.addRow(rowData); // we add in the Model...        
-         //tableModel.insertRow(table.getRowCount(), rowData); // we add in the Model... 
-         int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
-         table.setRowSelectionInterval(currentRow, currentRow);
-         table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));*/
     }
 
     @Override
@@ -519,47 +420,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
-    }
-
-    public void createNewTask() {
-        Activity newActivity = new Activity();
-        newActivity.setEstimatedPoms(0);
-        newActivity.setName(Labels.getString("Common.Task"));
-        addActivity(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-        insertRow(newActivity);
-        // Set the blinking cursor and the ability to type in right away
-        table.editCellAt(table.getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
-        table.setSurrendersFocusOnKeystroke(true); // focus
-        if (table.getEditorComponent() != null) {
-            table.getEditorComponent().requestFocus();
-        }
-        controlPane.setSelectedIndex(2); // open edit tab
-    }
-
-    public void duplicateTask() {
-        if (table.getSelectedRowCount() == 1) {
-            int row = table.getSelectedRow();
-            Integer id = (Integer) tableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-            Activity originalCopiedActivity = getActivityById(id);
-            try {
-                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
-                copiedActivity.setName("(D) " + copiedActivity.getName());
-                copiedActivity.setActualPoms(0);
-                copiedActivity.setOverestimatedPoms(0);
-                addActivity(copiedActivity, new Date(), new Date(0));
-                copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-                insertRow(copiedActivity);
-                // Set the blinking cursor and the ability to type in right away
-                table.editCellAt(table.getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
-                table.setSurrendersFocusOnKeystroke(true); // focus
-                if (table.getEditorComponent() != null) {
-                    table.getEditorComponent().requestFocus();
-                }
-                controlPane.setSelectedIndex(2); // open edit tab
-            } catch (CloneNotSupportedException ignored) {
-            }
-        }
     }
 
     public ActivityList getList() {

@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.activities;
 
+import org.mypomodoro.gui.AbstractActivitiesTable;
+
 /**
  *
  *
@@ -23,25 +25,27 @@ package org.mypomodoro.gui.activities;
 public class ActivitiesTableTitlePanel extends AbstractTableTitlePanel {
 
     private final ActivitiesPanel activitiesPanel;
+    private final AbstractActivitiesTable table;    
 
-    public ActivitiesTableTitlePanel(ActivitiesPanel activitiesPanel) {
+    public ActivitiesTableTitlePanel(ActivitiesPanel activitiesPanel, AbstractActivitiesTable table) {
         super();
         this.activitiesPanel = activitiesPanel;
+        this.table = table;
     }
 
     @Override
     protected void showCurrentSelectedRow() {
-         activitiesPanel.showCurrentSelectedRow();
+         table.showCurrentSelectedRow();
     }
 
     @Override
     protected void createNewTask() {
-        activitiesPanel.createNewTask();
+        table.createNewTask();
     }
 
     @Override
     protected void duplicateTask() {
-        activitiesPanel.duplicateTask();
+        table.duplicateTask();
     }
 
     @Override

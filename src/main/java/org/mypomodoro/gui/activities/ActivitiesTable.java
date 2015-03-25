@@ -18,10 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.font.TextAttribute;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -71,8 +67,8 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     if (!e.getValueIsAdjusting()) { // ignoring the deselection event                                
-                        // See above for reason to set WHEN_FOCUSED here
-                        setInputMap(JTable.WHEN_FOCUSED, getInputMap());
+                        // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
+                        setInputMap(JTable.WHEN_FOCUSED, im);
 
                         if (selectedRowCount > 1) { // multiple selection
                             // diactivate/gray out unused tabs
@@ -412,17 +408,14 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 getTitlePanel().showSelectedButton();
                 getTitlePanel().showDuplicateButton();
             }
-            getTitlePanel().showCreateButton();
-            //if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            getTitlePanel().showRefreshButton(); // end of the line
-            //}
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
-            //if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-            getTitlePanel().hideRefreshButton();
-            //}
         }
+        getTitlePanel().showCreateButton();
+        //if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+        getTitlePanel().showRefreshButton(); // end of the line
+        //}
         // Update title
         getTitlePanel().setText("<html>" + titleActivitiesList + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
@@ -542,6 +535,47 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 renderer.setToolTipText(null);
             }
             return renderer;
+        }
+    }
+    
+    @Override
+    public void createNewTask() {
+        Activity newActivity = new Activity();
+        newActivity.setEstimatedPoms(0);
+        newActivity.setName(Labels.getString("Common.Task"));
+        getList().add(newActivity); // save activity in database
+        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+        insertRow(newActivity);
+        // Set the blinking cursor and the ability to type in right away
+        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+        setSurrendersFocusOnKeystroke(true); // focus
+        if (getEditorComponent() != null) {
+            getEditorComponent().requestFocus();
+        }
+        activitiesPanel.getControlPane().setSelectedIndex(2); // open edit tab
+    }
+
+    @Override
+    public void duplicateTask() {
+        if (getSelectedRowCount() == 1) {
+            Activity originalCopiedActivity = activitiesPanel.getActivityById(getActivityIdFromSelectedRow());
+            try {
+                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
+                copiedActivity.setName("(D) " + copiedActivity.getName());
+                copiedActivity.setActualPoms(0);
+                copiedActivity.setOverestimatedPoms(0);
+                getList().add(copiedActivity, new Date(), new Date(0));
+                copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+                insertRow(copiedActivity);
+                // Set the blinking cursor and the ability to type in right away
+                editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+                setSurrendersFocusOnKeystroke(true); // focus
+                if (getEditorComponent() != null) {
+                    getEditorComponent().requestFocus();
+                }
+                activitiesPanel.getControlPane().setSelectedIndex(2); // open edit tab                
+            } catch (CloneNotSupportedException ignored) {
+            }
         }
     }
 }
