@@ -19,6 +19,7 @@ package org.mypomodoro.gui;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,24 +29,32 @@ import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.DefaultCellEditor;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.activities.ActivitiesTableModel;
 import org.mypomodoro.gui.activities.ActivitiesTableTitlePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
+import org.mypomodoro.util.Labels;
 
 /**
  *
@@ -55,6 +64,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     protected int mouseHoverRow = 0;
     protected int currentSelectedRow = 0;
+    protected InputMap im;
 
     public AbstractActivitiesTable(ActivitiesTableModel model) {
         super(model);
@@ -114,6 +124,95 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 mouseHoverRow = -1;
             }
         });
+        
+        // Activate Delete key stroke
+        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
+        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
+        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
+        im = getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getActionMap();
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Delete"); // for MAC
+        } else {
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete");
+        }
+        class deleteAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public deleteAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
+                b.doClick();
+            }
+        }
+        //am.put("Delete", new deleteAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        // Activate Shift + '>'                
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
+        class moveAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public moveAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MoveButton moveButton = new MoveButton("", panel);
+                moveButton.doClick();
+            }
+        }
+        //am.put("Add To ToDo List", new moveAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        // Activate Control A
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
+        class selectAllAction extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectAll();
+            }
+        }
+        am.put("Control A", new selectAllAction());
+
+        // Activate Control T (create new task)        
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK), "Control T");
+        class create extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewTask();
+            }
+        }
+        am.put("Control T", new create());
+
+        // Activate Control D (duplicate task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
+        class duplicate extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateTask();
+            }
+        }
+        am.put("Duplicate", new duplicate());
+
+        // Activate Control R (scroll back to the selected task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
+        class scrollBackToTask extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showCurrentSelectedRow();
+            }
+        }
+        am.put("Scroll", new scrollBackToTask());
     }
 
     public int getActivityIdFromSelectedRow() {
@@ -149,17 +248,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
         }
         return c;
     }
-
-    /*protected int getMouseHoverRow() {
-     return mouseHoverRow;
-     }
-
-     protected void setMouseHoverRow(int mouseHoverRow) {
-     this.mouseHoverRow = mouseHoverRow;
-     }
-
-     protected void showInfo(int activityId) {
-     }*/
+    
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row;
     }
@@ -239,6 +328,10 @@ public abstract class AbstractActivitiesTable extends JXTable {
             return renderer;
         }
     }
+    
+    public abstract void createNewTask();
+    
+    public abstract void duplicateTask();
     
     protected abstract void init();
     
