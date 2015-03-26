@@ -63,10 +63,10 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(ListSelectionEvent e) {                
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
-                    if (!e.getValueIsAdjusting()) { // ignoring the deselection event                                
+                    if (!e.getValueIsAdjusting()) { // ignoring the deselection event
                         // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
                         setInputMap(JTable.WHEN_FOCUSED, im);
 
@@ -81,8 +81,9 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             }
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                             // Display info (list of selected tasks)                            
-                            showInfoForSelectedRows();
+                            showDetailsForSelectedRows();
                         } else if (selectedRowCount == 1) {
+                            System.err.println("test");
                             // activate all panels
                             for (int index = 0; index < activitiesPanel.getControlPane().getTabCount(); index++) {
                                 if (index == 3) {
@@ -107,6 +108,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         setPanelBorder();
                     }
                 } else {
+                    System.err.println("toto");
                     setPanelBorder();
                 }
             }
@@ -182,9 +184,10 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         getList().update(act);
                         // Refresh panel border after updating the list
                         setPanelBorder();
-                        // update info
+                        // Updating details only
                         activitiesPanel.getDetailsPanel().selectInfo(act);
                         activitiesPanel.getDetailsPanel().showInfo();
+                        //activitiesPanel.getDetailsPanel().showInfo(this);
                     }
                 }
                 enableTabs();
@@ -227,12 +230,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setPreferredWidth(0);
         } else {
             // Set width of columns story points, iteration
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMaxWidth(80);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMinWidth(80);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setPreferredWidth(80);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMaxWidth(80);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMinWidth(80);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setPreferredWidth(80);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMaxWidth(60);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMinWidth(60);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setPreferredWidth(60);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMaxWidth(60);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMinWidth(60);
+            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setPreferredWidth(60);
         }
         // hide unplanned and date in Agile mode
         if (Main.preferences.getAgileMode()) {
@@ -294,11 +297,16 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     protected void showInfo(int activityId) {
-        Activity activity = getList().getById(activityId);
+        Activity activity = getActivityById(activityId);
         activitiesPanel.getDetailsPanel().selectInfo(activity);
         activitiesPanel.getDetailsPanel().showInfo();
+        //activitiesPanel.getDetailsPanel().showInfo(this);
         activitiesPanel.getCommentPanel().showInfo(activity);
+        //activitiesPanel.getEditPanel().showInfo(activity, this);
         activitiesPanel.getEditPanel().showInfo(activity);
+        // set table for merge, export panels
+        //activitiesPanel.getMergePanel().setTable(this);
+        //activitiesPanel.getExportPanel().setTable(this);
     }
 
     @Override
@@ -312,7 +320,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     }
 
     @Override
-    protected void showInfoForSelectedRows() {
+    protected void showDetailsForSelectedRows() {
         String info = "";
         int[] rows = getSelectedRows();
         for (int row : rows) {
@@ -320,6 +328,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             info += getList().getById(id).getName() + "<br>";
         }
         activitiesPanel.getDetailsPanel().showInfo(info);
+        //activitiesPanel.getDetailsPanel().showInfo(info, this);
     }
 
     @Override
@@ -347,8 +356,8 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
         int rowCount = getRowCount();
         if (rowCount > 0) {
-            ActivityList tableList = getTableList();
             int selectedRowCount = getSelectedRowCount();
+            ActivityList tableList = getTableList();
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -356,8 +365,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int real = 0;
                 float storypoints = 0;
                 for (int row : rows) {
-                    Integer id = (Integer) tableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
-                    Activity selectedActivity = activitiesPanel.getActivityById(id);
+                    Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
@@ -460,7 +468,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
         tableModel.addRow(rowData); // we add in the Model...        
-        //tableModel.insertRow(table.getRowCount(), rowData); // we add in the Model... 
         int currentRow = convertRowIndexToView(getRowCount() - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
@@ -547,7 +554,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5, null); // edit cell
         setSurrendersFocusOnKeystroke(true); // focus
         if (getEditorComponent() != null) {
             getEditorComponent().requestFocus();
@@ -558,7 +565,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     public void duplicateTask() {
         if (getSelectedRowCount() == 1) {
-            Activity originalCopiedActivity = activitiesPanel.getActivityById(getActivityIdFromSelectedRow());
+            Activity originalCopiedActivity = getActivityFromSelectedRow();
             try {
                 Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
                 copiedActivity.setName("(D) " + copiedActivity.getName());
