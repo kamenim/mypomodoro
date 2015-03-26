@@ -133,6 +133,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         addSubTableTitlePanel();
         addSubTable();
 
+        table.setPanelBorder();
+        
         // Keystroke for tab
         class tabAction extends AbstractAction {
 

@@ -218,9 +218,21 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public int getActivityIdFromSelectedRow() {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), getModel().getColumnCount() - 1);
     }
+    
+    protected Activity getActivityFromSelectedRow() {
+        return getList().getById(getActivityIdFromSelectedRow());
+    }
 
     protected int getActivityIdFromRowIndex(int rowIndex) {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), getModel().getColumnCount() - 1);
+    }
+    
+    protected Activity getActivityFromRowIndex(int rowIndex) {
+        return getList().getById(getActivityIdFromRowIndex(rowIndex));
+    }
+    
+    protected Activity getActivityById(int id) {
+        return getList().getById(id);
     }
 
     @Override
@@ -339,7 +351,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     
     protected abstract void showInfoForSelectedRow();
     
-    protected abstract void showInfoForSelectedRows();
+    protected abstract void showDetailsForSelectedRows();
     
     protected abstract void showInfoForRowIndex(int rowIndex);
     

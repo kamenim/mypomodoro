@@ -20,7 +20,7 @@ package org.mypomodoro.gui.activities;
  *
  *
  */
-class StoryPointsComboBoxCellEditor extends ComboBoxCellEditor {
+public class StoryPointsComboBoxCellEditor extends ComboBoxCellEditor {
 
     public <E> StoryPointsComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
