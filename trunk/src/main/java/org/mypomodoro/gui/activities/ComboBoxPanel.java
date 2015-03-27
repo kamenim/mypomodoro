@@ -34,7 +34,7 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  *
  *
  */
-class ComboBoxPanel extends JPanel {
+public class ComboBoxPanel extends JPanel {
 
     protected JComboBox comboBox;
     protected JLabel label = new JLabel();
@@ -86,7 +86,7 @@ class ComboBoxPanel extends JPanel {
         }
     }
 
-    class ComboBoxFloatRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxFloatRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
