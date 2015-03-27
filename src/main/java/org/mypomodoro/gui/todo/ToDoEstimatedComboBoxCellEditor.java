@@ -41,22 +41,21 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null) {
-            if (activity.getEstimatedPoms() == 0) {
+            int realpoms = activity.getActualPoms();
+            int estimatedpoms = activity.getEstimatedPoms();
+            if (realpoms == 0) {
                 comboBox.removeAllItems();
-                for (int i = 0; i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
+                for (int i = 0; i <= (estimatedpoms >= Main.preferences.getMaxNbPomPerActivity() ? estimatedpoms + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
-                }
-                comboBox.setSelectedItem(0);
-                if (!comboBox.isShowing()) {
-                    add(comboBox);
-                }
-                remove(label);
+                }            
+                comboBox.setSelectedItem(estimatedpoms);
+                add(comboBox);
             } else {
                 remove(comboBox);
-                if (!label.isShowing()) {
-                    add(label);
-                }
             }
+            // don't show the overestimated pom so we have more space for edition
+            //int overestimatedpoms = activity.getOverestimatedPoms();
+            //label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }

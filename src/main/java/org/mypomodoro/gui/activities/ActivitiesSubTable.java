@@ -76,8 +76,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 int overestimated = 0;
                 int real = 0;
                 for (int row : rows) {
-                    Integer id = (Integer) tableModel.getValueAt(convertRowIndexToModel(row), getColumnCount() - 1);
-                    Activity selectedActivity = activitiesPanel.getActivityById(id);
+                    Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     real += selectedActivity.getActualPoms();

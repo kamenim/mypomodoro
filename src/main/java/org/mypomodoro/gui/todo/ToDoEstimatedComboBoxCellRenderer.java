@@ -41,18 +41,13 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
-            if (activity.getEstimatedPoms() == 0) { // newly create unplanned task or interruption or any task with no estimation
+            if (realpoms == 0) {
                 comboBox.removeAllItems();
-                comboBox.addItem(0);
-                if (!comboBox.isShowing()) {
-                    add(comboBox);
-                }
-                remove(label);
-            } else {
-                remove(comboBox);
-                if (!label.isShowing()) {
-                    add(label);
-                }
+                comboBox.addItem(estimatedpoms);                
+                add(comboBox); // set the component at the end of the container (after the label)                
+                label.setText(realpoms + " / ");  
+            } else {                
+                remove(comboBox);                                
                 label.setText(realpoms + " / " + estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
             }
             setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));

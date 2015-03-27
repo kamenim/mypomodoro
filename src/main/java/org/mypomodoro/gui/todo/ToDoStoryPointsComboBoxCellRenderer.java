@@ -14,18 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.todo;
+
+import org.mypomodoro.gui.activities.ComboBoxPanel;
 
 /**
  *
  *
  */
-class StoryPointsComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
+class ToDoStoryPointsComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
 
-    public <E> StoryPointsComboBoxCellRenderer(E[] data, boolean editable) {
+    public <E> ToDoStoryPointsComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
 
         // Custom display selected item value        
-        comboBox.setRenderer(new ComboBoxFloatRenderer());
+        comboBox.setRenderer(new ComboBoxPanel.ComboBoxFloatRenderer());
     }
 }
