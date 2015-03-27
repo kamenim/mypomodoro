@@ -113,7 +113,7 @@ public class ComboBoxPanel extends JPanel {
         }
     }
 
-    class ComboBoxIterationRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxIterationRenderer extends DefaultComboBoxRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
