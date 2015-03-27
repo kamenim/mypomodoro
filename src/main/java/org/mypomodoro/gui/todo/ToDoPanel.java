@@ -609,7 +609,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
         table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setCellRenderer(new ToDoStoryPointsComboBoxCellRenderer(points, false));
         table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setCellEditor(new ToDoStoryPointsComboBoxCellEditor(points, false));
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new IterationCellRenderer()); // iteration
+        //table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new IterationCellRenderer()); // iteration
+        // Iteration combo box
+        Integer[] iterations = new Integer[102];
+        for (int i = 0; i <= 101; i++) {
+            iterations[i] = i - 1;
+        }
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new ToDoIterationComboBoxCellRenderer(iterations, false));
+        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellEditor(new ToDoIterationComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
         if (!Main.preferences.getAgileMode()) {
             table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(0);
@@ -623,9 +630,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(60);
             table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMinWidth(60);
             table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setPreferredWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(40);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(40);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(40);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(60);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(60);
+            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(60);
         }
         // hide unplanned in Agile mode
         if (Main.preferences.getAgileMode()) {
@@ -937,7 +944,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == activitiesTableModel.getColumnCount() - 1 - 4 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 3 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 2;
+                return columnIndex == activitiesTableModel.getColumnCount() - 1 - 4 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 3 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 2 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 1;
             }
 
             // this is mandatory to get columns with integers properly sorted
