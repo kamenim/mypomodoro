@@ -48,10 +48,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
-                if (getSelectedRowCount() == 1) {
-                    showInfoForSelectedRow();
-                } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                    showInfo(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+                if (activitiesPanel.getTable().getSelectedRowCount() == 1) {
+                    if (getSelectedRowCount() == 1) {
+                        showInfoForSelectedRow();
+                    } else if (getSelectedRowCount() == 0) { // selected row on the main table
+                        showInfo(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+                    }
                 }
                 mouseHoverRow = -1;
             }
@@ -122,7 +124,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        getTitlePanel().showCreateButton();
+        if (activitiesPanel.getTable().getRowCount() == 0 
+                || activitiesPanel.getTable().getSelectedRowCount() > 1) {            
+            getTitlePanel().hideCreateButton();
+        } else {
+            getTitlePanel().showCreateButton();
+        }
         // Update title
         getTitlePanel().setText("<html>" + titleActivitiesList + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
@@ -133,12 +140,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     protected void init() {
         super.init();
         // hide Story Points and Iteration columns
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setMaxWidth(0);
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setMinWidth(0);
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 2).setPreferredWidth(0);
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setMaxWidth(0);
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setMinWidth(0);
-        getColumnModel().getColumn(getModel().getColumnCount() - 1 - 1).setPreferredWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
     }
 
     @Override
@@ -178,7 +185,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field        
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+        editCellAt(getSelectedRow(), ActivitiesTableModel.TITLE_COLUMN_INDEX); // edit cell
         setSurrendersFocusOnKeystroke(true); // focus
         if (getEditorComponent() != null) {
             getEditorComponent().requestFocus();

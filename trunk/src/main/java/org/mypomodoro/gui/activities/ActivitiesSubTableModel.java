@@ -25,13 +25,13 @@ public class ActivitiesSubTableModel extends ActivitiesTableModel {
     public ActivitiesSubTableModel() {
         // Empty model
         int rowIndex = 0;
-        int colIndex = columnNames.length;
+        int colIndex = COLUMN_NAMES.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
-        setDataVector(tableData, columnNames);
+        setDataVector(tableData, COLUMN_NAMES);
     }
     
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == getColumnCount() - 1 - 5 || columnIndex == getColumnCount() - 1 - 4 || columnIndex == getColumnCount() - 1 - 3;
+        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX;
     }
 }
