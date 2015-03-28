@@ -930,8 +930,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity a = iterator.next();
             tableData[i][0] = a.getPriority();
             tableData[i][1] = a.isUnplanned();
-            tableData[i][2] = a.getName();
-            Integer poms = new Integer(a.getActualPoms()); // sorting done on real pom
+            tableData[i][2] = a.getName();            
+            Integer poms = new Integer(a.getEstimatedPoms()); // sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
+            //Integer poms = new Integer(a.getActualPoms()); // can't do that cause tableChanged would replace estimation with real
             tableData[i][3] = poms;
             Float points = new Float(a.getStoryPoints());
             tableData[i][4] = points;
@@ -998,7 +999,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                                             act.databaseUpdate();
                                         }
                                     }
-                                } else if (column == activitiesTableModel.getColumnCount() - 1 - 3) { // Estimated                            
+                                } else if (column == activitiesTableModel.getColumnCount() - 1 - 3) { // Estimated                        
                                     int estimated = (Integer) data;
                                     if (estimated != act.getEstimatedPoms()
                                             && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {

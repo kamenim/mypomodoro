@@ -455,7 +455,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     public void populateSubTable(int parentId) {
-        subTableModel.setDataVector(ActivityList.getSubTableList(parentId));
+        subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
         subTable.setParentId(parentId);
         subTable.init();
         subTable.setPanelBorder();

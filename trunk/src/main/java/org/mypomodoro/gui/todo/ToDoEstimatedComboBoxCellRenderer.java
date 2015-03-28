@@ -47,7 +47,7 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                 add(comboBox); // set the component at the end of the container (after the label)                
                 label.setText(realpoms + " / ");  
             } else {                
-                remove(comboBox);                                
+                remove(comboBox);              
                 label.setText(realpoms + " / " + estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
             }
             setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));

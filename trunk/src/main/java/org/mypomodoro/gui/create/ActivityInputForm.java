@@ -36,7 +36,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.list.AuthorComboBox;
 import org.mypomodoro.gui.create.list.PlaceComboBox;
-import org.mypomodoro.gui.create.list.TypeComboBox;
+import org.mypomodoro.gui.create.list.TaskTypeComboBox;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;
@@ -56,7 +56,7 @@ public class ActivityInputForm extends JPanel {
     protected JComboBox estimatedPomodoros = new JComboBox();
     protected JComboBox storyPoints = new JComboBox();
     protected JComboBox iterations = new JComboBox();
-    protected TypeComboBox types = new TypeComboBox();
+    protected TaskTypeComboBox types = new TaskTypeComboBox();
     protected AuthorComboBox authors = new AuthorComboBox();
     protected PlaceComboBox places = new PlaceComboBox();
     protected final DatePicker datePicker = new DatePicker(Labels.getLocale());

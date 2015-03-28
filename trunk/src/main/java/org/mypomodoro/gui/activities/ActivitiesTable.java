@@ -32,8 +32,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTable;
-import org.mypomodoro.gui.create.list.TypeList;
+import org.mypomodoro.gui.create.list.SubTaskTypeList;
+import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -139,8 +141,10 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
                                 if (name.length() == 0) {
+                                    //model.removeTableModelListener(this);
                                     // reset the original value. Title can't be empty.
                                     model.setValueAt(act.getName(), convertRowIndexToModel(row), ActivitiesTableModel.TITLE_COLUMN_INDEX);
+                                    //model.addTableModelListener(this);
                                 } else {
                                     act.setName(name);
                                     act.databaseUpdate();
@@ -159,9 +163,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                                     activitiesPanel.getCommentPanel().showInfo(act);
                                 }
                                 // refresh the combo boxes of all rows to display the new type (if any)
-                                String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
-                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
+                                String[] types = (String[]) TaskTypeList.getTypes().toArray(new String[0]);
+                                if (act.isSubTask()) {
+                                    types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
+                                }
+                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
                             }
                         } else if (column == ActivitiesTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
@@ -204,24 +211,24 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(ActivitiesTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
         // type combo box
-        String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
+        String[] types = (String[]) TaskTypeList.getTypes().toArray(new String[0]);
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
         // Estimated combo box
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
         getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new ActivitiesEstimatedComboBoxCellRenderer(new Integer[0], false));
         getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setCellEditor(new ActivitiesEstimatedComboBoxCellEditor(new Integer[0], false));
         // Story Point combo box
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
-        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
-        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellEditor(new StoryPointsComboBoxCellEditor(points, false));
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new ActivitiesStoryPointsComboBoxCellRenderer(points, false));
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellEditor(new ActivitiesStoryPointsComboBoxCellEditor(points, false));
         // Iteration combo box
         Integer[] iterations = new Integer[102];
         for (int i = 0; i <= 101; i++) {
             iterations[i] = i - 1;
         }
-        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationComboBoxCellRenderer(iterations, false));
-        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellEditor(new IterationComboBoxCellEditor(iterations, false));
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new ActivitiesIterationComboBoxCellRenderer(iterations, false));
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellEditor(new ActivitiesIterationComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
         if (!Main.preferences.getAgileMode()) {
             getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
@@ -340,7 +347,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     protected ActivityList getTableList() {
-        return ActivityList.getTableList();
+        return ActivityList.getTaskList();
     }
 
     @Override
@@ -423,9 +430,9 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             getTitlePanel().hideDuplicateButton();
         }
         getTitlePanel().showCreateButton();
-        //if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-        getTitlePanel().showRefreshButton(); // end of the line
-        //}
+        if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
+            getTitlePanel().showRefreshButton(); // end of the line
+        }
         // Update title
         getTitlePanel().setText("<html>" + titleActivitiesList + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel

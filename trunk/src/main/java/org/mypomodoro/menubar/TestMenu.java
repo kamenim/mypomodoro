@@ -32,7 +32,7 @@ import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.create.list.TypeList;
+import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -122,7 +122,7 @@ public class TestMenu extends JMenu {
                                         "Author" + " " + (rand.nextInt(10) + 1),
                                         tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
                                         "",
-                                        (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TypeList.getTypes().get(rand.nextInt(TypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
+                                        (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TaskTypeList.getTypes().get(rand.nextInt(TaskTypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
                                         rand.nextInt(Main.preferences.getMaxNbPomPerActivity()) + 1,
                                         Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                         iteration,

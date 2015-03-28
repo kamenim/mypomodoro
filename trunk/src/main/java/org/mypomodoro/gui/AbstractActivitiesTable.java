@@ -236,7 +236,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     }
 
     @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {        
         Component c = super.prepareRenderer(renderer, row, column);
         if (isRowSelected(row)) {
             ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
