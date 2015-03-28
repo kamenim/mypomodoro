@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -139,6 +140,10 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     protected void init() {
         super.init();
+        // sub types
+        String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
@@ -166,7 +171,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     @Override
     protected ActivityList getTableList() {
-        return ActivityList.getSubTableList(parentId);
+        return ActivityList.getSubTaskList(parentId);
     }
 
     @Override

@@ -99,7 +99,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
-        Labels.getString("Common.Estimated"),
+        Labels.getString("Common.Real"),
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};

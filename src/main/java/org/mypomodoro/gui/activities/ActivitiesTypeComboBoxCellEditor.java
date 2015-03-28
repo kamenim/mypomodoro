@@ -20,12 +20,12 @@ package org.mypomodoro.gui.activities;
  *
  *
  */
-class StoryPointsComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
+class ActivitiesTypeComboBoxCellEditor extends ActivitiesComboBoxCellEditor {
 
-    public <E> StoryPointsComboBoxCellRenderer(E[] data, boolean editable) {
+    public <E> ActivitiesTypeComboBoxCellEditor(E[] data, boolean editable) {
         super(data, editable);
 
-        // Custom display selected item value        
-        comboBox.setRenderer(new ComboBoxFloatRenderer());
+        // Custom display hovered item value
+        comboBox.setRenderer(new ComboBoxStringRenderer());
     }
 }

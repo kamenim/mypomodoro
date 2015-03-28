@@ -113,6 +113,20 @@ public class ComboBoxPanel extends JPanel {
         }
     }
 
+    public class ComboBoxStringRenderer extends DefaultComboBoxRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (!((String) value).trim().isEmpty()) {
+                setToolTipText((String) value);
+            } else {
+                setToolTipText(null);
+            }
+            return this;
+        }
+    }
+
     public class ComboBoxIterationRenderer extends DefaultComboBoxRenderer {
 
         @Override

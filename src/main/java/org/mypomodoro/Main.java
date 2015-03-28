@@ -29,7 +29,8 @@ import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
-import org.mypomodoro.gui.create.list.TypeList;
+import org.mypomodoro.gui.create.list.SubTaskTypeList;
+import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.Preferences;
@@ -191,7 +192,8 @@ public class Main {
 
             @Override
             public void run() {
-                TypeList.refresh();
+                TaskTypeList.refresh();
+                SubTaskTypeList.refresh();
                 AuthorList.refresh();
                 PlaceList.refresh();
             }

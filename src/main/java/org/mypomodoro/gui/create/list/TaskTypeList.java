@@ -27,12 +27,12 @@ import org.mypomodoro.db.ActivitiesDAO;
  * List of types of activities and reports
  *
  */
-public class TypeList extends AbstractList {
+public class TaskTypeList extends AbstractList {
 
     private static ArrayList<String> types = new ArrayList<String>();
 
     public static void refresh() {
-        types = ActivitiesDAO.getInstance().getTypes();
+        types = ActivitiesDAO.getInstance().getTaskTypes();
         if (Main.preferences.getAgileMode()) {
             types.add("User Story");
             types.add("Epic");

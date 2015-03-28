@@ -48,7 +48,7 @@ public class ActivitiesTableModel extends DefaultTableModel {
     public static final int ACTIVITYID_COLUMN_INDEX = 7;
     
     public ActivitiesTableModel() {
-        setDataVector(ActivityList.getTableList());
+        setDataVector(ActivityList.getTaskList());
     }
 
     protected void setDataVector(final ActivityList list) {

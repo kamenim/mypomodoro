@@ -24,9 +24,9 @@ import javax.swing.event.PopupMenuListener;
  * Combo box of types
  *
  */
-public class TypeComboBox extends AbstractComboBox {
+public class TaskTypeComboBox extends AbstractComboBox {
 
-    public TypeComboBox() {
+    public TaskTypeComboBox() {
 
         addPopupMenuListener(new PopupMenuListener() {
 
@@ -34,10 +34,10 @@ public class TypeComboBox extends AbstractComboBox {
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 Object selectedItem = getEditor().getItem(); // the combo box is editable
                 removeAllItems();
-                for (String type : TypeList.getTypes()) {
+                for (String type : TaskTypeList.getTypes()) {
                     addItem(type);
                 }
-                tooltipRenderer.setTooltips((ArrayList) TypeList.getTypes());
+                tooltipRenderer.setTooltips((ArrayList) TaskTypeList.getTypes());
                 setSelectedItem(selectedItem);
             }
 

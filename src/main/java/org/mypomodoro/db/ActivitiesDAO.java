@@ -610,11 +610,38 @@ public class ActivitiesDAO {
         }
     }
 
-    public ArrayList<String> getTypes() {
+    public ArrayList<String> getTaskTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities ORDER BY type ASC");
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id = -1 ORDER BY type ASC");
+            try {
+                while (rs.next()) {
+                    String type = rs.getString("type");
+                    if (type != null) {
+                        types.add(type);
+                    }
+                }
+            } catch (SQLException ex) {
+                logger.error("", ex);
+            } finally {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    logger.error("", ex);
+                }
+            }
+        } finally {
+            database.unlock();
+        }
+        return types;
+    }
+    
+    public ArrayList<String> getSubTaskTypes() {
+        ArrayList<String> types = new ArrayList<String>();
+        try {
+            database.lock();
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id != -1 ORDER BY type ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("type");

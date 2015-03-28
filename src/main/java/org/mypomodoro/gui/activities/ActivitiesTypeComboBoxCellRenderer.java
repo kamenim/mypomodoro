@@ -16,16 +16,27 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.Component;
+import javax.swing.JTable;
+
 /**
  *
  *
  */
-class IterationComboBoxCellEditor extends ComboBoxCellEditor {
+class ActivitiesTypeComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer {
 
-    public <E> IterationComboBoxCellEditor(E[] data, boolean editable) {
+    public <E> ActivitiesTypeComboBoxCellRenderer(E[] data, boolean editable) {
         super(data, editable);
+    }
 
-        // Custom display items value
-        comboBox.setRenderer(new ComboBoxIterationRenderer());
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        if (!((String) value).trim().isEmpty()) {
+            setToolTipText((String) value);
+        } else {
+            setToolTipText(null);
+        }
+        return this;
     }
 }

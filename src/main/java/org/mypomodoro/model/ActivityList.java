@@ -45,10 +45,10 @@ public final class ActivityList extends AbstractActivities {
     }
     
     // List of main tasks
-    public static ActivityList getTableList() {
+    public static ActivityList getTaskList() {
         ActivityList tableList = new ActivityList();
         for (Activity a : list) {
-            if (a.getParentId() != -1) {
+            if (a.isSubTask()) {
                 tableList.removeById(a.getId());
             }
         }
@@ -60,7 +60,7 @@ public final class ActivityList extends AbstractActivities {
     // Next time we'll use Guava
     // https://github.com/google/guava
     // OR get the list for the database
-    public static ActivityList getSubTableList(int parentId) {
+    public static ActivityList getSubTaskList(int parentId) {
         ActivityList subTableList = new ActivityList();
         for (Activity a : list) {
             if (a.getParentId() != parentId) {

@@ -60,9 +60,6 @@ public class ComboBoxCellEditor extends ComboBoxPanel implements TableCellEditor
         //label.setFont(label.getFont().deriveFont(Font.BOLD));
         if (value != null) {
             comboBox.setSelectedItem(value);
-            if (value instanceof String) { // eg Type combo box
-                setToolTipText((String) value);
-            }
         }
         return this;
     }

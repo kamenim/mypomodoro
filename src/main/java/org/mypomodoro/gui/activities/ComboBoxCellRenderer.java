@@ -41,9 +41,6 @@ public class ComboBoxCellRenderer extends ComboBoxPanel implements TableCellRend
         label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
         if (value != null) {
             comboBox.setSelectedItem(value);
-            if (value instanceof String) { // eg Type combo box
-                setToolTipText((String) value);
-            }
         }
         return this;
     }
