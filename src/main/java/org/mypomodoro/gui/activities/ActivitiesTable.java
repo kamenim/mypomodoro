@@ -82,6 +82,8 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                             // Display info (list of selected tasks)                            
                             showDetailsForSelectedRows();
+                            // populate subtable
+                            emptySubTable();
                         } else if (selectedRowCount == 1) {
                             System.err.println("test");
                             // activate all panels
@@ -131,14 +133,14 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                     ActivitiesTableModel model = (ActivitiesTableModel) e.getSource();
                     Object data = model.getValueAt(row, column);
                     if (data != null) {
-                        Integer ID = (Integer) model.getValueAt(row, getColumnCount() - 1); // ID
+                        Integer ID = (Integer) model.getValueAt(row, ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX);
                         Activity act = Activity.getActivity(ID.intValue());
-                        if (column == getColumnCount() - 1 - 5) { // Title (can't be empty)
+                        if (column == ActivitiesTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
                                 if (name.length() == 0) {
                                     // reset the original value. Title can't be empty.
-                                    model.setValueAt(act.getName(), convertRowIndexToModel(row), getColumnCount() - 1 - 5);
+                                    model.setValueAt(act.getName(), convertRowIndexToModel(row), ActivitiesTableModel.TITLE_COLUMN_INDEX);
                                 } else {
                                     act.setName(name);
                                     act.databaseUpdate();
@@ -147,7 +149,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                                     revalidate();
                                 }
                             }
-                        } else if (column == getColumnCount() - 1 - 4) { // Type
+                        } else if (column == ActivitiesTableModel.TYPE_COLUMN_INDEX) { // Type
                             String type = data.toString().trim();
                             if (!type.equals(act.getType())) {
                                 act.setType(type);
@@ -158,23 +160,23 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                                 }
                                 // refresh the combo boxes of all rows to display the new type (if any)
                                 String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-                                getColumnModel().getColumn(getColumnCount() - 1 - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
-                                getColumnModel().getColumn(getColumnCount() - 1 - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
+                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
+                                getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
                             }
-                        } else if (column == getColumnCount() - 1 - 3) { // Estimated
+                        } else if (column == ActivitiesTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
                             if (estimated != act.getEstimatedPoms()
                                     && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
                                 act.setEstimatedPoms(estimated);
                                 act.databaseUpdate();
                             }
-                        } else if (column == getColumnCount() - 1 - 2) { // Story Points
+                        } else if (column == ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
                             Float storypoints = (Float) data;
                             if (storypoints != act.getStoryPoints()) {
                                 act.setStoryPoints(storypoints);
                                 act.databaseUpdate();
                             }
-                        } else if (column == getColumnCount() - 1 - 1) { // Iteration 
+                        } else if (column == ActivitiesTableModel.ITERATION_COLUMN_INDEX) { // Iteration 
                             int iteration = Integer.parseInt(data.toString());
                             if (iteration != act.getIteration()) {
                                 act.setIteration(iteration);
@@ -198,74 +200,74 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     protected void init() {
         // set custom render for dates
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 5).setCellRenderer(new TitleRenderer()); // title
+        getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
+        getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        getColumnModel().getColumn(ActivitiesTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
         // type combo box
         String[] types = (String[]) TypeList.getTypes().toArray(new String[0]);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 4).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 4).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesComboBoxCellRenderer(types, true));
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesComboBoxCellEditor(types, true));
         // Estimated combo box
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 3).setCellRenderer(new ActivitiesEstimatedComboBoxCellRenderer(new Integer[0], false));
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 3).setCellEditor(new ActivitiesEstimatedComboBoxCellEditor(new Integer[0], false));
+        getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new ActivitiesEstimatedComboBoxCellRenderer(new Integer[0], false));
+        getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setCellEditor(new ActivitiesEstimatedComboBoxCellEditor(new Integer[0], false));
         // Story Point combo box
         Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setCellEditor(new StoryPointsComboBoxCellEditor(points, false));
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsComboBoxCellRenderer(points, false));
+        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setCellEditor(new StoryPointsComboBoxCellEditor(points, false));
         // Iteration combo box
         Integer[] iterations = new Integer[102];
         for (int i = 0; i <= 101; i++) {
             iterations[i] = i - 1;
         }
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setCellRenderer(new IterationComboBoxCellRenderer(iterations, false));
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setCellEditor(new IterationComboBoxCellEditor(iterations, false));
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationComboBoxCellRenderer(iterations, false));
+        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setCellEditor(new IterationComboBoxCellEditor(iterations, false));
         // hide story points and iteration in 'classic' mode
         if (!Main.preferences.getAgileMode()) {
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMaxWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMinWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setPreferredWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMaxWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMinWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setPreferredWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
         } else {
             // Set width of columns story points, iteration
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMaxWidth(60);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setMinWidth(60);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 2).setPreferredWidth(60);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMaxWidth(60);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setMinWidth(60);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 1).setPreferredWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMinWidth(60);
+            getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(60);
         }
         // hide unplanned and date in Agile mode
         if (Main.preferences.getAgileMode()) {
-            getColumnModel().getColumn(0).setMaxWidth(0);
-            getColumnModel().getColumn(0).setMinWidth(0);
-            getColumnModel().getColumn(0).setPreferredWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setMaxWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setMinWidth(0);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setPreferredWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setMaxWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setMinWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setPreferredWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setMaxWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setMinWidth(0);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setPreferredWidth(0);
         } else {
             // Set width of columns Unplanned and date
-            getColumnModel().getColumn(0).setMaxWidth(30);
-            getColumnModel().getColumn(0).setMinWidth(30);
-            getColumnModel().getColumn(0).setPreferredWidth(30);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setMaxWidth(90);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setMinWidth(90);
-            getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 6).setPreferredWidth(90);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setMaxWidth(30);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setMinWidth(30);
+            getColumnModel().getColumn(ActivitiesTableModel.UNPLANNED_COLUMN_INDEX).setPreferredWidth(30);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setMaxWidth(90);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setMinWidth(90);
+            getColumnModel().getColumn(ActivitiesTableModel.DATE_COLUMN_INDEX).setPreferredWidth(90);
         }
         // Set width of column estimated
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 3).setMaxWidth(80);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 3).setMinWidth(80);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 3).setPreferredWidth(80);
+        getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setMaxWidth(80);
+        getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setMinWidth(80);
+        getColumnModel().getColumn(ActivitiesTableModel.ESTIMATED_COLUMN_INDEX).setPreferredWidth(80);
         // Set width of column type
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 4).setMaxWidth(200);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 4).setMinWidth(200);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1 - 4).setPreferredWidth(200);
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setMaxWidth(200);
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setMinWidth(200);
+        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setPreferredWidth(200);
         // hide ID column
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1).setMaxWidth(0);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1).setMinWidth(0);
-        getColumnModel().getColumn(tableModel.getColumnCount() - 1).setPreferredWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX).setPreferredWidth(0);
         // enable sorting
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
@@ -343,11 +345,11 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     protected void setTableHeader() {
-        String[] cloneColumnNames = tableModel.getColumnNames().clone();
-        cloneColumnNames[tableModel.getColumnCount() - 1 - 7] = Labels.getString("Common.Unplanned");
-        cloneColumnNames[tableModel.getColumnCount() - 1 - 6] = Labels.getString("Common.Date scheduled");
-        cloneColumnNames[tableModel.getColumnCount() - 1 - 3] = Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(this, cloneColumnNames);
+        String[] columnToolTips = ActivitiesTableModel.COLUMN_NAMES.clone();
+        columnToolTips[0] = Labels.getString("Common.Unplanned");
+        columnToolTips[1] = Labels.getString("Common.Date scheduled");
+        columnToolTips[4] = Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
+        CustomTableHeader customTableHeader = new CustomTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
 
@@ -433,6 +435,10 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     protected void populateSubTable() {
         activitiesPanel.populateSubTable(getActivityIdFromSelectedRow());
     }
+    
+    protected void emptySubTable() {
+        activitiesPanel.emptySubTable();
+    }
 
     @Override
     protected ActivitiesTableTitlePanel getTitlePanel() {
@@ -483,7 +489,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), tableModel.getColumnCount() - 1);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX);
             Activity activity = getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
@@ -529,7 +535,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 renderer.setText(DateUtil.getShortFormatedDate((Date) value));
                 renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
                 if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), tableModel.getColumnCount() - 1);
+                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX);
                     Activity activity = getList().getById(id);
                     if (activity != null && activity.isOverdue()) {
                         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
@@ -554,7 +560,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5, null); // edit cell
+        editCellAt(getSelectedRow(), ActivitiesTableModel.TYPE_COLUMN_INDEX, null); // edit cell
         setSurrendersFocusOnKeystroke(true); // focus
         if (getEditorComponent() != null) {
             getEditorComponent().requestFocus();
@@ -575,7 +581,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
                 insertRow(copiedActivity);
                 // Set the blinking cursor and the ability to type in right away
-                editCellAt(getSelectedRow(), tableModel.getColumnCount() - 1 - 5); // edit cell
+                editCellAt(getSelectedRow(), ActivitiesTableModel.TYPE_COLUMN_INDEX); // edit cell
                 setSurrendersFocusOnKeystroke(true); // focus
                 if (getEditorComponent() != null) {
                     getEditorComponent().requestFocus();

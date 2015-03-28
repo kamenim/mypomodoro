@@ -29,7 +29,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ActivitiesTableModel extends DefaultTableModel {
 
-    protected final String[] columnNames = {"U",
+    public static final String[] COLUMN_NAMES = {"U",
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
@@ -37,14 +37,23 @@ public class ActivitiesTableModel extends DefaultTableModel {
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         "ID"};
-
+    
+    public static final int UNPLANNED_COLUMN_INDEX = 0;
+    public static final int DATE_COLUMN_INDEX = 1;
+    public static final int TITLE_COLUMN_INDEX = 2;
+    public static final int TYPE_COLUMN_INDEX = 3;
+    public static final int ESTIMATED_COLUMN_INDEX = 4;
+    public static final int STORYPOINTS_COLUMN_INDEX = 5;
+    public static final int ITERATION_COLUMN_INDEX = 6;
+    public static final int ACTIVITYID_COLUMN_INDEX = 7;
+    
     public ActivitiesTableModel() {
         setDataVector(ActivityList.getTableList());
     }
 
     protected void setDataVector(final ActivityList list) {
         int rowIndex = list.size();
-        int colIndex = columnNames.length;
+        int colIndex = COLUMN_NAMES.length;        
         Object[][] tableData = new Object[rowIndex][colIndex];
         Iterator<Activity> iterator = list.iterator();
         for (int i = 0; iterator.hasNext(); i++) {
@@ -61,31 +70,27 @@ public class ActivitiesTableModel extends DefaultTableModel {
             tableData[i][6] = iteration;
             tableData[i][7] = a.getId();
         }
-        setDataVector(tableData, columnNames);
-    }
-
-    protected String[] getColumnNames() {
-        return columnNames;
+        setDataVector(tableData, COLUMN_NAMES);
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == getColumnCount() - 1 - 5 || columnIndex == getColumnCount() - 1 - 4 || columnIndex == getColumnCount() - 1 - 3 || columnIndex == getColumnCount() - 1 - 2 || columnIndex == getColumnCount() - 1 - 1;
+        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
     }
 
     // this is mandatory to get columns with integers properly sorted
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case 0:
+            case UNPLANNED_COLUMN_INDEX:
                 return Boolean.class;
-            case 1:
+            case DATE_COLUMN_INDEX:
                 return Date.class;
-            case 4:
+            case ESTIMATED_COLUMN_INDEX:
                 return Integer.class;
-            case 5:
+            case STORYPOINTS_COLUMN_INDEX:
                 return Float.class;
-            case 6:
+            case ITERATION_COLUMN_INDEX:
                 return Integer.class;
             default:
                 return String.class;

@@ -31,16 +31,14 @@ import javax.swing.table.JTableHeader;
 public class CustomTableHeader extends JTableHeader {
 
     private final String[] toolTips;
-    private final JTable customTable;
 
     public CustomTableHeader(JTable table, String[] toolTips) {
-        this.customTable = table; // setTable(table) / getTable() won't do any good
+        this.table = table; // setTable(table) / getTable() won't do any good
         this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
         setBorder(border);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
-
         /* This code sets a black border around each cell of the header but the rendering is not that nice
          final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
          setDefaultRenderer(new TableCellRenderer() {
@@ -61,7 +59,7 @@ public class CustomTableHeader extends JTableHeader {
     public String getToolTipText(MouseEvent e) {
         Point p = e.getPoint();
         int viewColumnIndex = columnAtPoint(p);
-        int modelColumnIndex = customTable.convertColumnIndexToModel(viewColumnIndex);
+        int modelColumnIndex = table.convertColumnIndexToModel(viewColumnIndex);
         if (toolTips[modelColumnIndex].length() == 0) {
             return super.getToolTipText(e);
         } else {

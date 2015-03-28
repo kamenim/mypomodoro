@@ -319,7 +319,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public int getIdKey() {
-        return tableModel.getColumnCount() - 1;
+        return ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX;
     }
 
     @Override
@@ -389,11 +389,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     getList().refresh();
                 }
                 tableModel.setDataVector(getList());
-                table.init();
-                table.setCurrentSelectedRow(0);
-                subTable.setCurrentSelectedRow(0);
-                if (table.getRowCount() != 0) {
+                table.init();              
+                if (table.getRowCount() > 0) {
+                    table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
+                } else {
+                    emptySubTable();
                 }
             } catch (Exception ex) {
                 logger.error("", ex);
@@ -407,7 +408,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     @Override
     public void saveComment(String comment) {
         if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), tableModel.getColumnCount() - 1);
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX);
             Activity selectedActivity = getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
@@ -456,6 +457,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public void populateSubTable(int parentId) {
         subTableModel.setDataVector(ActivityList.getSubTableList(parentId));
         subTable.setParentId(parentId);
+        subTable.init();
+        subTable.setPanelBorder();
+    }
+    
+    public void emptySubTable() {
+        subTableModel.setRowCount(0);
+        subTable.setParentId(-1);
         subTable.init();
         subTable.setPanelBorder();
     }

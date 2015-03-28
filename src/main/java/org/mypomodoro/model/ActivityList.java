@@ -62,15 +62,11 @@ public final class ActivityList extends AbstractActivities {
     // OR get the list for the database
     public static ActivityList getSubTableList(int parentId) {
         ActivityList subTableList = new ActivityList();
-        //System.err.println("subTableList = " + subTableList.size()); 
-        //System.err.println("parentId = " + parentId);  
         for (Activity a : list) {
-            //System.err.println("a.getParentId()=" + a.getParentId());
             if (a.getParentId() != parentId) {
                 subTableList.removeById(a.getId());
             }
         }
-        //System.err.println("subTableList = " + subTableList.size());
         return subTableList;
     }
 
