@@ -219,28 +219,42 @@ public class Pomodoro {
                         getCurrentToDo().setEstimatedPoms(1);
                     }
                     getCurrentToDo().incrementPoms();
-                    getCurrentToDo().databaseUpdate();
-                    pomSetNumber++;
-                    // break time
-                    if (pomSetNumber == Main.preferences.getNbPomPerSet()) {
-                        goInLongBreak();
-                        pomSetNumber = 0;
+                    getCurrentToDo().databaseUpdate();                    
+                    if (isDiscontinuous) { // stop timer
+                        pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
+                        stop();
+                        timerPanel.setStartEnv();
                         if (isSystemTray()) {
+                            String message = Labels.getString("ToDoListPanel.Stopped");                            
                             if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                                MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
+                            MainPanel.trayIcon.setToolTip(message);
                         }
-                    } else {
-                        goInShortBreak();
-                        if (isSystemTray()) {
-                            if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                        timerPanel.setToolTipText(null);
+                        timerPanel.setStartEnv();
+                    } else { // break time
+                        pomSetNumber++;                        
+                        if (pomSetNumber == Main.preferences.getNbPomPerSet()) {
+                            goInLongBreak();
+                            pomSetNumber = 0;
+                            if (isSystemTray()) {
+                                if (isSystemTrayMessage()) {
+                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Long break"), TrayIcon.MessageType.NONE);
+                                }
+                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Long break"));
                             }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
+                        } else {
+                            goInShortBreak();
+                            if (isSystemTray()) {
+                                if (isSystemTrayMessage()) {
+                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Short break"), TrayIcon.MessageType.NONE);
+                                }
+                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Short break"));
+                            }
                         }
-                    }
-                    timerPanel.setBreakEnv();
+                        timerPanel.setBreakEnv();
+                    }                    
                     inpomodoro = false;
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).highlight();
@@ -256,16 +270,12 @@ public class Pomodoro {
                     }
                     // update the current ToDo from the database (in case someone's changed it)
                     ToDoList.getList().refreshById(currentToDoId);
-                    // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)
-                    // or unlinked: stop after break
-                    if (getCurrentToDo().isFinished() || isDiscontinuous) {
+                    // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)                    
+                    if (getCurrentToDo().isFinished()) {
                         stop();
                         timerPanel.setStartEnv();
                         if (isSystemTray()) {
-                            String message = Labels.getString("ToDoListPanel.Stopped");
-                            if (getCurrentToDo().isFinished()) {
-                                message = Labels.getString("ToDoListPanel.Finished");
-                            }
+                            String message = Labels.getString("ToDoListPanel.Finished");                            
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
