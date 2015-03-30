@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -60,17 +61,23 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
-    private final JPanel scrollPane = new JPanel();
-    private final JTabbedPane controlPane = new JTabbedPane();
+    // List pane: title + table + sub-title + sub-table
+    private final JPanel listPane = new JPanel();
+    // Split pane: list pane + tabbed pane
+    private final JSplitPane splitPane;
+    // Title panes: title and sub-title    
+    private final ActivitiesTableTitlePanel tableTitlePanel;
+    private final ActivitiesTableTitlePanel subTableTitlePanel;
+    // Table panes: table and sub-table
+    private final JScrollPane tableScrollPane;
+    private final JScrollPane subTableScrollPane;
+    // Tabbed pane: details + ...
+    private final JTabbedPane tabbedPane = new JTabbedPane();
+    // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
-    private final MergingPanel mergingPanel = new MergingPanel(this);
-    private final JSplitPane splitPane;
-    // Title    
-    private final ActivitiesTableTitlePanel tableTitlePanel;
-    private final ActivitiesTableTitlePanel subTableTitlePanel;
-    private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
+    private final MergingPanel mergingPanel = new MergingPanel(this);    
     // Tables
     private final ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
@@ -80,60 +87,109 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private int currentSelectedRow = 0;
 
     public ActivitiesPanel() {
-        setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Top pane
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.setLayout(new GridBagLayout());
+        // Init List pane
+        listPane.setMinimumSize(PANE_DIMENSION);
+        listPane.setPreferredSize(PANE_DIMENSION);
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));        
 
-        // Bottom pane
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
-        addTabPane();
+        // Init Tabbed pane
+        tabbedPane.setMinimumSize(TABPANE_DIMENSION);
+        tabbedPane.setPreferredSize(TABPANE_DIMENSION);
+        initTabbedPane();
 
-        // Split pane
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, controlPane);
+        // Init Split pane
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPane, tabbedPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        //splitPane.setDividerSize(10);
-        splitPane.setDividerSize(0); // remove divider by hiding it
-        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        //divider.setBackground(ColorUtil.YELLOW_ROW);
-        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
-
-        // Splitted view
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(splitPane, gbc);
+        splitPane.setDividerSize(0); // remove divider by hiding it        
 
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
         tableModel = new ActivitiesTableModel();
         subTable = new ActivitiesSubTable(subTableModel, this); // instance this before table
         table = new ActivitiesTable(tableModel, this);
+        // Init scroll panes
+        subTableScrollPane = new JScrollPane(subTable);
+        tableScrollPane = new JScrollPane(table);
         // Init title and sub title
         tableTitlePanel = new ActivitiesTableTitlePanel(this, table);
         subTableTitlePanel = new ActivitiesTableTitlePanel(this, subTable);
-
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (table.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
-
-        // Add components        
+                
+        // Add panes of List pane
         addTableTitlePanel();
         addTable();
         addSubTableTitlePanel();
         addSubTable();
 
+        // Set title
         table.setPanelBorder();
+        
+        // Add Split pane
+        add(splitPane);
+    }
+
+    ////////////////////////////////////////////////
+    // TABBED PANE
+    ////////////////////////////////////////////////
+    private void initTabbedPane() {
+        tabbedPane.setFocusable(false); // removes borders around tab text
+        tabbedPane.add(Labels.getString("Common.Details"), detailsPanel);
+        tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        tabbedPane.add(Labels.getString("Common.Edit"), editPanel);
+        tabbedPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
+        ImportPanel importPanel = new ImportPanel(this);
+        tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
+        ExportPanel exportPanel = new ExportPanel(this);
+        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+        // Implement one-click action on selected tabs
+        // Tab already selected = one click to expand
+        // Tab not selected = double click to expand
+        class CustomChangeListener implements ChangeListener {
+
+            private boolean stateChanged = false;
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                stateChanged = true;
+            }
+
+            public boolean getStateChanged() {
+                return stateChanged;
+            }
+
+            public void setStateChanged(boolean stateChanged) {
+                this.stateChanged = stateChanged;
+            }
+        }
+        final CustomChangeListener customChangeListener = new CustomChangeListener();
+        tabbedPane.addChangeListener(customChangeListener);
+        tabbedPane.addMouseListener(new MouseAdapter() {
+            private int dividerLocation;
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1
+                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
+                    // Expand
+                    if (splitPane.getDividerLocation() != 0) {
+                        dividerLocation = splitPane.getDividerLocation();
+                        splitPane.setDividerLocation(0.0);
+                    } else { // back to original position
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                } else {
+                    customChangeListener.setStateChanged(false);
+                }
+            }
+        });
         
         // Keystroke for tab
         class tabAction extends AbstractAction {
@@ -146,8 +202,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (controlPane.isEnabledAt(index)) {
-                    controlPane.setSelectedIndex(index);
+                if (tabbedPane.isEnabledAt(index)) {
+                    tabbedPane.setSelectedIndex(index);
                 }
             }
         }
@@ -174,56 +230,36 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return key;
     }
 
-    @Override
-    public void setPanelBorder() {
-    }
-
     ////////////////////////////////////////////////
-    // TOP PANE
+    // TITLE
     ////////////////////////////////////////////////
-    // TITLE + TABLE
     private void addTableTitlePanel() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 0;
-        cScrollPane.weightx = 1.0;
-        cScrollPane.anchor = GridBagConstraints.WEST;
-        cScrollPane.fill = GridBagConstraints.BOTH;
-        scrollPane.add(tableTitlePanel, cScrollPane);
+        listPane.add(tableTitlePanel);
     }
 
+    ////////////////////////////////////////////////
+    // TABLE
+    ////////////////////////////////////////////////
     public void addTable() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 1;
-        cScrollPane.weightx = 1.0;
-        cScrollPane.weighty = 1.0;
-        cScrollPane.fill = GridBagConstraints.BOTH;
-        JScrollPane tableScrollPane = new JScrollPane(table);
-        scrollPane.add(tableScrollPane, cScrollPane);
+        listPane.add(tableScrollPane);
     }
 
-    // TITLE + SUBTABLE
+    ////////////////////////////////////////////////
+    // SUB TITLE
+    ////////////////////////////////////////////////
     private void addSubTableTitlePanel() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 2;
-        cScrollPane.weightx = 1.0;
-        cScrollPane.weighty = 0;
-        cScrollPane.anchor = GridBagConstraints.WEST;
-        cScrollPane.fill = GridBagConstraints.BOTH;
         subTable.setPanelBorder();
-        scrollPane.add(subTableTitlePanel, cScrollPane);
+        listPane.add(subTableTitlePanel);
     }
 
+    ////////////////////////////////////////////////
+    // SUB TABLE
+    ////////////////////////////////////////////////
     public void addSubTable() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 3;
-        cScrollPane.weightx = 1.0;
-        cScrollPane.weighty = 1.0;
-        cScrollPane.fill = GridBagConstraints.BOTH;
-        final JScrollPane subTableScrollPane = new JScrollPane(subTable);
         // One click actions
         class CustomMouseAdapter extends MouseAdapter {
-
             private Component comp;
+            private int viewCount = 0;
             
             public CustomMouseAdapter(Component comp) {
                 this.comp = comp;
@@ -232,13 +268,23 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) { // single click
-                    if (subTableScrollPane.isShowing() && !(comp instanceof DefaultButton)) { // fold: excluding buttons
-                        scrollPane.remove(subTableScrollPane);
-                    } else if (table.getSelectedRowCount() == 1) { // expand
-                        scrollPane.add(subTableScrollPane, cScrollPane);
+                    if (viewCount == 2 
+                            && !(comp instanceof DefaultButton)) { // fold: excluding buttons
+                        listPane.remove(subTableScrollPane);
+                        addTableTitlePanel();
+                        addTable();
+                        addSubTableTitlePanel(); // put the sub title back at the bottom
+                        viewCount = 0;
+                    } else if (viewCount == 0 && table.getSelectedRowCount() == 1) { // expand half way: including buttons
+                        listPane.add(subTableScrollPane);
+                        viewCount = 1;                        
+                    } else if (viewCount == 1 && table.getSelectedRowCount() == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
+                        listPane.remove(tableScrollPane);
+                        listPane.remove(tableTitlePanel);
+                        viewCount = 2;                        
                     }
-                    scrollPane.revalidate();
-                    scrollPane.repaint();
+                    listPane.revalidate();
+                    listPane.repaint();
                     if (table.getSelectedRowCount() == 1) {
                         table.showCurrentSelectedRow();
                     }
@@ -250,62 +296,68 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         for (final Component comp : comps) {
             comp.addMouseListener(new CustomMouseAdapter(comp));
         }
+    }    
+    
+    ////////////////////////////////////////////////
+    // REFRESH
+    ////////////////////////////////////////////////
+    @Override
+    public void refresh() {
+        refresh(false);
     }
 
-    ////////////////////////////////////////////////
-    // BOTTOM PANE
-    ////////////////////////////////////////////////
-    private void addTabPane() {
-        controlPane.setFocusable(false); // removes borders around tab text
-        controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
-        ImportPanel importPanel = new ImportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
-        ExportPanel exportPanel = new ExportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        // Implement one-click action on selected tabs
-        // Tab already selected = one click to expand
-        // Tab not selected = double click to expand
-        class CustomChangeListener implements ChangeListener {
-
-            private boolean stateChanged = false;
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                stateChanged = true;
-            }
-
-            public boolean getStateChanged() {
-                return stateChanged;
-            }
-
-            public void setStateChanged(boolean stateChanged) {
-                this.stateChanged = stateChanged;
+    public void refresh(boolean fromDatabase) {
+        if (!WaitCursor.isStarted()) {
+            // Start wait cursor
+            WaitCursor.startWaitCursor();
+            try {
+                if (fromDatabase) {
+                    getList().refresh();
+                }
+                tableModel.setDataVector(getList());
+                table.init();              
+                if (table.getRowCount() > 0) {
+                    table.setCurrentSelectedRow(0);
+                    table.setRowSelectionInterval(0, 0);
+                } else {
+                    emptySubTable();
+                }
+            } catch (Exception ex) {
+                logger.error("", ex);
+            } finally {
+                // Stop wait cursor
+                WaitCursor.stopWaitCursor();
             }
         }
-        final CustomChangeListener customChangeListener = new CustomChangeListener();
-        controlPane.addChangeListener(customChangeListener);
-        controlPane.addMouseListener(new MouseAdapter() {
-            private int dividerLocation;
+    }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1
-                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
-                    // Expand
-                    if (splitPane.getDividerLocation() != 0) {
-                        dividerLocation = splitPane.getDividerLocation();
-                        splitPane.setDividerLocation(0.0);
-                    } else { // back to original position
-                        splitPane.setDividerLocation(dividerLocation);
-                    }
-                } else {
-                    customChangeListener.setStateChanged(false);
-                }
-            }
-        });
+    public ActivityList getList() {
+        return ActivityList.getList();
+    }
+    
+    public void emptySubTable() {
+        subTableModel.setRowCount(0);
+        subTable.setParentId(-1);
+        subTable.init();
+        subTable.setPanelBorder();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    @Override
+    public void setPanelBorder() {
     }
 
     @Override
@@ -375,35 +427,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         getList().add(activity, date, dateCompleted);
     }
 
-    @Override
-    public void refresh() {
-        refresh(false);
-    }
-
-    public void refresh(boolean fromDatabase) {
-        if (!WaitCursor.isStarted()) {
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
-            try {
-                if (fromDatabase) {
-                    getList().refresh();
-                }
-                tableModel.setDataVector(getList());
-                table.init();              
-                if (table.getRowCount() > 0) {
-                    table.setCurrentSelectedRow(0);
-                    table.setRowSelectionInterval(0, 0);
-                } else {
-                    emptySubTable();
-                }
-            } catch (Exception ex) {
-                logger.error("", ex);
-            } finally {
-                // Stop wait cursor
-                WaitCursor.stopWaitCursor();
-            }
-        }
-    }
+    
 
     @Override
     public void saveComment(String comment) {
@@ -425,10 +449,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
-    public ActivityList getList() {
-        return ActivityList.getList();
-    }
-
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
@@ -443,7 +463,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     public JTabbedPane getControlPane() {
-        return controlPane;
+        return tabbedPane;
     }
 
     public ActivitiesTableTitlePanel getTableTitlePanel() {
@@ -461,10 +481,5 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTable.setPanelBorder();
     }
     
-    public void emptySubTable() {
-        subTableModel.setRowCount(0);
-        subTable.setParentId(-1);
-        subTable.init();
-        subTable.setPanelBorder();
-    }
+    
 }
