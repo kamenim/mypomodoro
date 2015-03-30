@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -46,6 +47,7 @@ import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -84,6 +86,7 @@ public class Pomodoro {
     private Clip clip;
     private boolean isMute = false;
     private boolean isDiscontinuous = false;
+    private int pomSetNumber = 0;
 
     public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel, JLabel pomodoroTime) {
         this.panel = panel;
@@ -96,6 +99,24 @@ public class Pomodoro {
     }
 
     public void start() {
+        // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
+        if (pomSetNumber > 0) {
+            String title = Labels.getString("ToDoListPanel.New Set");
+            int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;  
+            int shortBreaksNumberRemaining = pomSetNumberRemaining - 1;
+            Date dateLongBreakStart = DateUtil.addMinutesToDate(new Date(), pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreaksNumberRemaining * Main.preferences.getShortBreakLength());            
+            //String message = pomSetNumberRemaining + " pomodoros to finish the current Set (long break at " + DateUtil.getFormatedTime(dateLongBreakStart) + ").";
+            String message = Labels.getString("ToDoListPanel.pomodoros to finish the current Set", pomSetNumberRemaining, DateUtil.getFormatedTime(dateLongBreakStart));
+            int pomNewSetNumberRemaining = Main.preferences.getNbPomPerSet();
+            int newSetShortBreaksNumber = pomNewSetNumberRemaining - 1;
+            Date dateNewSetLongBreakStart = DateUtil.addMinutesToDate(new Date(), pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
+            message += System.getProperty("line.separator");
+            message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (reply == JOptionPane.YES_OPTION) {
+                pomSetNumber = 0;
+            }
+        }        
         pomodoroTimer.start();
         if (Main.preferences.getTicking() && !isMute) {
             tick();
@@ -192,10 +213,10 @@ public class Pomodoro {
         }
         return !inpomodoro;
     }
-
+    
     class UpdateAction implements ActionListener {
 
-        int pomSetNumber = 0;
+        
 
         @Override
         public void actionPerformed(ActionEvent e) {

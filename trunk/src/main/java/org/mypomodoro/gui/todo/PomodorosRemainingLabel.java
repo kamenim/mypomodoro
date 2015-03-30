@@ -35,7 +35,7 @@ public class PomodorosRemainingLabel {
             for (Activity toDo : ToDoList.getList()) {
                 remainingPomodoros += toDo.getEstimatedPoms() + toDo.getOverestimatedPoms() - toDo.getActualPoms();
             }
-            label += Labels.getString("ToDoListPanel.{0} pomodoros remaining ({1})",
+            label += Labels.getString("ToDoListPanel.pomodoros remaining",
                     remainingPomodoros, TimeConverter.getLength(remainingPomodoros));
         }
         remainPomodorosLabel.setText(label);

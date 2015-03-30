@@ -19,6 +19,7 @@ package org.mypomodoro.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import org.joda.time.DateTime;
@@ -245,5 +246,11 @@ public class DateUtil {
      */
     public static Date getDateAtMidnight(Date date) {
         return new DateTime(date).plusDays(1).withTimeAtStartOfDay().toDate();
+    }
+    
+    public static Date addMinutesToDate(Date date, int minutes) {
+        Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
+        calendar.add(Calendar.MINUTE, minutes);
+        return calendar.getTime();
     }
 }
