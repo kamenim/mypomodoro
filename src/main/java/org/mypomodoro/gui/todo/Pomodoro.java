@@ -94,31 +94,35 @@ public class Pomodoro {
         this.detailsPanel = detailsPanel;
         this.unplannedPanel = unplannedPanel;
         this.pomodoroTime = pomodoroTime;
-        
+
         pomodoroTime.setText(sdf.format(pomodoroLength));
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
     }
 
     public void start() {
         // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
-        if (!strictPomodoro 
+        if (!strictPomodoro
                 && pomSetNumber > 0) {
             String title = Labels.getString("ToDoListPanel.New Set");
-            int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;  
-            int shortBreaksNumberRemaining = pomSetNumberRemaining - 1;
-            Date dateLongBreakStart = DateUtil.addMinutesToDate(new Date(), pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreaksNumberRemaining * Main.preferences.getShortBreakLength());            
+            int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
+            int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
+            Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
             String message = Labels.getString("ToDoListPanel.pomodoros to finish the current Set", pomSetNumberRemaining, DateUtil.getFormatedTime(dateLongBreakStart));
             int pomNewSetNumberRemaining = Main.preferences.getNbPomPerSet();
             int newSetShortBreaksNumber = pomNewSetNumberRemaining - 1;
-            Date dateNewSetLongBreakStart = DateUtil.addMinutesToDate(new Date(), pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
+            Date dateNewSetLongBreakStart = DateUtil.addMinutesToNow(pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
             message += System.getProperty("line.separator");
             message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (reply == JOptionPane.YES_OPTION) {
                 pomSetNumber = 0;
             }
-        }        
+        }
+        // Start timer
         pomodoroTimer.start();
+        // Tooltip                        
+        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+        setTooltipOnImage();
         if (Main.preferences.getTicking() && !isMute) {
             tick();
         }
@@ -142,6 +146,8 @@ public class Pomodoro {
 
     public void stop() {
         pomodoroTimer.stop();
+        // Remove tooltip 
+        timerPanel.setToolTipText(null);
         time = pomodoroLength;
         tmpPomodoroLength = pomodoroLength;
         pomodoroTime.setText(sdf.format(pomodoroLength));
@@ -167,6 +173,8 @@ public class Pomodoro {
 
     public void pause() {
         pomodoroTimer.stop();
+        // Tooltip : name only
+        timerPanel.setToolTipText(getCurrentToDo().getName());
         stopSound();
         if (inPomodoro() && isSystemTray()) {
             if (isSystemTrayMessage()) {
@@ -182,6 +190,9 @@ public class Pomodoro {
 
     public void resume() {
         pomodoroTimer.start();
+        // Tooltip                        
+        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+        setTooltipOnImage();
         if (inPomodoro() && Main.preferences.getTicking() && !isMute) {
             tick();
         }
@@ -214,10 +225,8 @@ public class Pomodoro {
         }
         return !inpomodoro;
     }
-    
-    class UpdateAction implements ActionListener {
 
-        
+    class UpdateAction implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -241,22 +250,21 @@ public class Pomodoro {
                         getCurrentToDo().setEstimatedPoms(1);
                     }
                     getCurrentToDo().incrementPoms();
-                    getCurrentToDo().databaseUpdate();                    
+                    getCurrentToDo().databaseUpdate();
                     if (isDiscontinuous) { // stop timer
                         pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
                         stop();
                         timerPanel.setStartEnv();
                         if (isSystemTray()) {
-                            String message = Labels.getString("ToDoListPanel.Stopped");                            
+                            String message = Labels.getString("ToDoListPanel.Stopped");
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
                             MainPanel.trayIcon.setToolTip(message);
                         }
-                        timerPanel.setToolTipText(null);
                         timerPanel.setStartEnv();
                     } else { // break time
-                        pomSetNumber++;                        
+                        pomSetNumber++;
                         if (pomSetNumber == Main.preferences.getNbPomPerSet()) {
                             goInLongBreak();
                             pomSetNumber = 0;
@@ -276,7 +284,8 @@ public class Pomodoro {
                             }
                         }
                         timerPanel.setBreakEnv();
-                    }                    
+                    }
+                    timerPanel.setToolTipText(null);
                     inpomodoro = false;
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).highlight();
@@ -297,7 +306,7 @@ public class Pomodoro {
                         stop();
                         timerPanel.setStartEnv();
                         if (isSystemTray()) {
-                            String message = Labels.getString("ToDoListPanel.Finished");                            
+                            String message = Labels.getString("ToDoListPanel.Finished");
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
@@ -322,9 +331,9 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
-                        // Name is set once as tooltip at the beginning of the pomodoro 
-                        // If it is modified during the pomodoro, it won't be updated, which is acceptable
-                        timerPanel.setToolTipText(getCurrentToDo().getName());
+                        // Tooltip                        
+                        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+                        setTooltipOnImage();
                         // Show quick interruption button and items in combo box 
                         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
                         panel.showQuickInterruptionButtons();
@@ -361,6 +370,22 @@ public class Pomodoro {
         private void goInLongBreak() {
             time = longBreakLength;
         }
+    }
+
+    // multi-lines tooltip
+    private void setTooltipOnImage() {
+        String tooltip = "<html>";
+        tooltip += getCurrentToDo().getName();
+        tooltip += "<br>";
+        Date dateShortBreakStart = DateUtil.addMinutesToNow(Main.preferences.getPomodoroLength());
+        tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateShortBreakStart));
+        tooltip += "<br>";
+        int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
+        int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
+        Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
+        tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateLongBreakStart));
+        tooltip += "</html>";
+        timerPanel.setToolTipText(tooltip);
     }
 
     public void setLongBreak(long longBreakLength) {

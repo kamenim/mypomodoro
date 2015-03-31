@@ -196,8 +196,7 @@ public class TimerPanel extends JPanel {
                             if (currentToDo.isFinished()) {
                                 String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
                                 message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                                JOptionPane.showMessageDialog(Main.gui, message);
-                                setToolTipText(null);
+                                JOptionPane.showMessageDialog(Main.gui, message);                                
                             } else {
                                 if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
                                     pomodoro.start();
@@ -212,7 +211,6 @@ public class TimerPanel extends JPanel {
                                     if (!strictPomodoro) {
                                         pauseButton.setVisible(true);
                                     }
-                                    setToolTipText(currentToDo.getName());
                                 }
                             }
                         }
