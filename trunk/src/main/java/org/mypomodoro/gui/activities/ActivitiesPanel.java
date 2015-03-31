@@ -18,8 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -128,9 +126,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         addTable();
         addSubTableTitlePanel();
         addSubTable();
-
-        // Set title
-        table.setPanelBorder();
         
         // Add Split pane
         add(splitPane);
@@ -234,6 +229,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // TITLE
     ////////////////////////////////////////////////
     private void addTableTitlePanel() {
+        table.setPanelBorder();
         listPane.add(tableTitlePanel);
     }
 

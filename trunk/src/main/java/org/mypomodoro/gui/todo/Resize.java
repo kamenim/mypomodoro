@@ -16,10 +16,15 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.awt.AWTException;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
 
@@ -32,9 +37,17 @@ public class Resize {
     private Dimension guiRecordedSize;
     private Point guiRecordedLocation;
     private static int viewCount = 0;
+    private Robot robot = null; // used to move the cursor
+            
+    public Resize() {
+        try {
+            robot = new Robot();
+        } catch (AWTException ignored) {
+        }
+    }
 
     public void resize() {
-        if ((!Main.gui.getToDoPanel().isVisible() || viewCount == 0) && Main.gui.getExtendedState() != (Main.gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui
+        if ((!Main.gui.getToDoPanel().isShowing() || viewCount == 0) && Main.gui.getExtendedState() != (Main.gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui            
             guiRecordedLocation = Main.gui.getLocation(); // record location of the previous window
             guiRecordedSize = Main.gui.getSize(); // record size of the previous window
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -111,9 +124,18 @@ public class Resize {
             Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
             Main.gui.setPreferredSize(dGUI);
             Main.gui.setSize(size);
-            Main.gui.setLocation(guiRecordedLocation);
-            Main.gui.validate();
-            Main.gui.repaint();
+            Main.gui.setLocation(guiRecordedLocation);            
+        }
+        // The two following lines are required for:
+        // Maximize size: move the cursor correctly
+        // Other sizes: repaint after resizing and move the cursor correctly
+        Main.gui.validate();
+        Main.gui.repaint();            
+        // Center cursor on resize button
+        if (robot != null) {               
+            Point p = ToDoPanel.getResizeButton().getLocationOnScreen(); // location on screen
+            robot.mouseMove((int) p.getX() + ToDoPanel.getResizeButton().getWidth()/2, (int) p.getY()+ ToDoPanel.getResizeButton().getHeight()/2);
+
         }
         // we make sure the selected task appears on screen despite the resizing
         Main.gui.getActivityListPanel().showCurrentSelectedRow();
