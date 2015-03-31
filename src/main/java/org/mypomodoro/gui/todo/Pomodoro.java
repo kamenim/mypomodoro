@@ -44,6 +44,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
+import static org.mypomodoro.gui.todo.TimerPanel.strictPomodoro;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
@@ -100,12 +101,12 @@ public class Pomodoro {
 
     public void start() {
         // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
-        if (pomSetNumber > 0) {
+        if (!strictPomodoro 
+                && pomSetNumber > 0) {
             String title = Labels.getString("ToDoListPanel.New Set");
             int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;  
             int shortBreaksNumberRemaining = pomSetNumberRemaining - 1;
             Date dateLongBreakStart = DateUtil.addMinutesToDate(new Date(), pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreaksNumberRemaining * Main.preferences.getShortBreakLength());            
-            //String message = pomSetNumberRemaining + " pomodoros to finish the current Set (long break at " + DateUtil.getFormatedTime(dateLongBreakStart) + ").";
             String message = Labels.getString("ToDoListPanel.pomodoros to finish the current Set", pomSetNumberRemaining, DateUtil.getFormatedTime(dateLongBreakStart));
             int pomNewSetNumberRemaining = Main.preferences.getNbPomPerSet();
             int newSetShortBreaksNumber = pomNewSetNumberRemaining - 1;
@@ -321,6 +322,8 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
+                        // Name is set once as tooltip at the beginning of the pomodoro 
+                        // If it is modified during the pomodoro, it won't be updated, which is acceptable
                         timerPanel.setToolTipText(getCurrentToDo().getName());
                         // Show quick interruption button and items in combo box 
                         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
