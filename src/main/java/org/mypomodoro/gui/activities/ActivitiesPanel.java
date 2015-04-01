@@ -16,8 +16,11 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -41,6 +44,7 @@ import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -57,15 +61,15 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
-    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
+    private static final Dimension PANE_DIMENSION = new Dimension(800, 200);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
     // List pane: title + table + sub-title + sub-table
     private final JPanel listPane = new JPanel();
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
     private final ActivitiesTableTitlePanel tableTitlePanel;
-    private final ActivitiesTableTitlePanel subTableTitlePanel;
+    private final ActivitiesSubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
     private final JScrollPane subTableScrollPane;
@@ -115,7 +119,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tableScrollPane = new JScrollPane(table);
         // Init title and sub title
         tableTitlePanel = new ActivitiesTableTitlePanel(this, table);
-        subTableTitlePanel = new ActivitiesTableTitlePanel(this, subTable);
+        subTableTitlePanel = new ActivitiesSubTableTitlePanel(this, subTable);
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (table.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
@@ -244,7 +248,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // SUB TITLE
     ////////////////////////////////////////////////
     private void addSubTableTitlePanel() {
-        subTable.setPanelBorder();
+        subTable.setPanelBorder();        
         listPane.add(subTableTitlePanel);
     }
 
@@ -256,9 +260,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         class CustomMouseAdapter extends MouseAdapter {
             private Component comp;
             private int viewCount = 0;
+            private Robot robot = null; // used to move the cursor
             
             public CustomMouseAdapter(Component comp) {
-                this.comp = comp;
+                this.comp = comp;                
+                try {
+                    robot = new Robot();
+                } catch (AWTException ignored) {
+                }
             }
 
             @Override
@@ -270,17 +279,30 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                         addTableTitlePanel();
                         addTable();
                         addSubTableTitlePanel(); // put the sub title back at the bottom
-                        viewCount = 0;
+                        viewCount = 0;       
                     } else if (viewCount == 0 && table.getSelectedRowCount() == 1) { // expand half way: including buttons
                         listPane.add(subTableScrollPane);
                         viewCount = 1;                        
                     } else if (viewCount == 1 && table.getSelectedRowCount() == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
                         listPane.remove(tableScrollPane);
-                        listPane.remove(tableTitlePanel);
+                        listPane.remove(tableTitlePanel); 
                         viewCount = 2;                        
                     }
-                    listPane.revalidate();
+                    // The next two lines adress an issue found on NimRod theme with the resizing of titles                    
+                    if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
+                        subTableTitlePanel.setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
+                        tableTitlePanel.setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
+                    }
+                    // The two following lines are required to
+                    // repaint after resizing and move the cursor correctly
+                    listPane.validate();
                     listPane.repaint();
+                    // Center cursor on resize button
+                    if (robot != null) {
+                        Point p = subTableTitlePanel.getLocationOnScreen(); // location on screen
+                        // Center cursor in the middle of the component
+                        robot.mouseMove((int) p.getX() + subTableTitlePanel.getWidth()/2, (int) p.getY()+ subTableTitlePanel.getHeight()/2);                        
+                    }
                     if (table.getSelectedRowCount() == 1) {
                         table.showCurrentSelectedRow();
                     }

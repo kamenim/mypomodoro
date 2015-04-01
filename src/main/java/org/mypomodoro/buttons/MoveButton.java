@@ -110,7 +110,7 @@ public class MoveButton extends TabPanelButton {
                                 if (panel instanceof ActivitiesPanel) {
                                     Main.gui.getToDoPanel().insertRow(selectedActivity);
                                 } else if (panel instanceof ReportsPanel) { // reopen tasks
-                                    Main.gui.getActivityListPanel().insertRow(selectedActivity);
+                                    Main.gui.getActivityListPanel().getTable().insertRow(selectedActivity);
                                 }
                                 increment++;
                                 final int progressValue = increment;

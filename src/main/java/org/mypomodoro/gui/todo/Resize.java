@@ -17,14 +17,11 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.AWTException;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Robot;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
 
@@ -126,14 +123,16 @@ public class Resize {
             Main.gui.setSize(size);
             Main.gui.setLocation(guiRecordedLocation);            
         }
-        // The two following lines are required for:
+        // The two following lines are required to:
         // Maximize size: move the cursor correctly
         // Other sizes: repaint after resizing and move the cursor correctly
         Main.gui.validate();
         Main.gui.repaint();            
         // Center cursor on resize button
-        if (robot != null) {               
+        if (robot != null
+                && ToDoPanel.getResizeButton().isShowing()) {               
             Point p = ToDoPanel.getResizeButton().getLocationOnScreen(); // location on screen
+            // Center cursor in the middle of the button
             robot.mouseMove((int) p.getX() + ToDoPanel.getResizeButton().getWidth()/2, (int) p.getY()+ ToDoPanel.getResizeButton().getHeight()/2);
 
         }
