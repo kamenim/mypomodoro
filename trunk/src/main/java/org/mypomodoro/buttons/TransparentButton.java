@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 import org.mypomodoro.util.CheckWindowsClassicTheme;
 
 /**
@@ -72,9 +73,9 @@ public class TransparentButton extends DefaultButton {
         if (aFlag) {
             alpha = 1.0f;
             // must be setOpaque(true) to make the button opaque with some look adn feel and Win XP classic theme
-            if (Main.preferences.getTheme().equalsIgnoreCase("com.nilo.plaf.nimrod.NimRODLookAndFeel")
-                    || Main.preferences.getTheme().equalsIgnoreCase("com.jgoodies.looks.plastic.Plastic3DLookAndFeel")
-                    || Main.preferences.getTheme().equalsIgnoreCase("com.pagosoft.plaf.PgsLookAndFeel")
+            if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)
+                    || Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)
+                    || Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PGS_LAF)
                     || CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {

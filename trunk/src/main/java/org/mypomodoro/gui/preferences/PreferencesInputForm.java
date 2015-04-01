@@ -65,6 +65,13 @@ public class PreferencesInputForm extends JPanel {
     protected final JCheckBox plainHoursBox;
     protected final JCheckBox effectiveHoursBox;
     protected final JComboBox themesComboBox;
+    public static final String NIMROD_LAF = "com.nilo.plaf.nimrod.NimRODLookAndFeel"; // NimROD
+    public static final String PLASTIC3D_LAF = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel"; // JGoodies  
+    public static final String PGS_LAF = "com.pagosoft.plaf.PgsLookAndFeel"; // Pgs
+    private static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
+    private static final String NOIRE_LAF = "com.jtattoo.plaf.noire.NoireLookAndFeel"; // JTattoo
+    private static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
+    private static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("PreferencesPanel.Preferences") + " ");
@@ -311,13 +318,13 @@ public class PreferencesInputForm extends JPanel {
         } catch (Exception ignored) {
             // Nimbus not available
         }
-        themes.add("com.nilo.plaf.nimrod.NimRODLookAndFeel"); // NimROD
-        themes.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel"); // JGoodies  
-        themes.add("com.pagosoft.plaf.PgsLookAndFeel"); // Pgs
-        themes.add("com.seaglasslookandfeel.SeaGlassLookAndFeel"); // Seaglass
-        themes.add("com.jtattoo.plaf.noire.NoireLookAndFeel"); // JTattoo
-        themes.add("com.jtattoo.plaf.acryl.AcrylLookAndFeel"); // JTattoo
-        themes.add("com.jtattoo.plaf.mcwin.McWinLookAndFeel"); // JTattoo
+        themes.add(NIMROD_LAF); // NimROD
+        themes.add(PLASTIC3D_LAF); // JGoodies  
+        themes.add(PGS_LAF); // Pgs
+        themes.add(SEAGLASS_LAF); // Seaglass
+        themes.add(NOIRE_LAF); // JTattoo
+        themes.add(ACRYL_LAF); // JTattoo
+        themes.add(MCWIN_LAF); // JTattoo
         // Quaqua
         // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
         //if (SystemUtils.IS_OS_MAC_OSX) {
