@@ -41,7 +41,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
         this.tableModel = tableModel;
         this.activitiesPanel = activitiesPanel;
-        
+
         // This is to address the case/event when the mouse exit the table
         // REplacing listener of the ActivtiesTable class constructor
         addMouseListener(new MouseAdapter() {
@@ -120,13 +120,13 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Show buttons of the quick bar
                 getTitlePanel().showSelectedButton();
                 getTitlePanel().showDuplicateButton();
-            }            
+            }
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        if (activitiesPanel.getTable().getRowCount() == 0 
-                || activitiesPanel.getTable().getSelectedRowCount() > 1) {            
+        if (activitiesPanel.getTable().getRowCount() == 0
+                || activitiesPanel.getTable().getSelectedRowCount() > 1) {
             getTitlePanel().hideCreateButton();
         } else {
             getTitlePanel().showCreateButton();
@@ -178,7 +178,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     protected ActivitiesTableTitlePanel getTitlePanel() {
         return activitiesPanel.getSubTableTitlePanel();
     }
-    
+
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();

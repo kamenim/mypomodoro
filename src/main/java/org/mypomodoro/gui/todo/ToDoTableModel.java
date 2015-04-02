@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.todo;
 
 import java.util.Iterator;
 import org.mypomodoro.gui.TableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ToDoList;
 
 /**
- * Table model for activtiies
+ * Table model for ToDos
  *
  */
-public class ActivitiesTableModel extends TableModel {
+public class ToDoTableModel extends TableModel {
 
-    public ActivitiesTableModel() {
-        setDataVector(ActivityList.getTaskList());
+    public ToDoTableModel() {
+        setDataVector(ToDoList.getTaskList());
     }
 
     protected void setDataVector(final AbstractActivities list) {
@@ -39,11 +39,11 @@ public class ActivitiesTableModel extends TableModel {
         Iterator<Activity> iterator = list.iterator();
         for (int i = 0; iterator.hasNext(); i++) {
             Activity a = iterator.next();
+            tableData[i][PRIORITY_COLUMN_INDEX] = a.getPriority();
             tableData[i][UNPLANNED_COLUMN_INDEX] = a.isUnplanned();
-            tableData[i][DATE_COLUMN_INDEX] = a.getDate();
             tableData[i][TITLE_COLUMN_INDEX] = a.getName();
-            tableData[i][TYPE_COLUMN_INDEX] = a.getType();
-            Integer poms = new Integer(a.getEstimatedPoms());
+            Integer poms = new Integer(a.getEstimatedPoms());// sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
+            //Integer poms = new Integer(a.getActualPoms()); // can't do that cause tableChanged would replace estimation with real
             tableData[i][ESTIMATED_COLUMN_INDEX] = poms;
             Float points = new Float(a.getStoryPoints());
             tableData[i][STORYPOINTS_COLUMN_INDEX] = points;
@@ -56,6 +56,6 @@ public class ActivitiesTableModel extends TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
+        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
     }
 }

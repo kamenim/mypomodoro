@@ -43,6 +43,31 @@ public final class ToDoList extends AbstractActivities {
         return list;
     }
 
+    // List of main tasks
+    public static ToDoList getTaskList() {
+        ToDoList tableList = new ToDoList();
+        for (Activity a : list) {
+            if (a.isSubTask()) {
+                tableList.removeById(a.getId());
+            }
+        }
+        return tableList;
+    }
+
+    // List of sub tasks
+    // The bigger the list the heavier this will be
+    // May we use use Guava https://github.com/google/guava
+    // OR have a specific list for subtasks ?...
+    public static ToDoList getSubTaskList(int parentId) {
+        ToDoList subTableList = new ToDoList();
+        for (Activity a : list) {
+            if (a.getParentId() != parentId) {
+                subTableList.removeById(a.getId());
+            }
+        }
+        return subTableList;
+    }
+
     public static int getListSize() {
         return getList().size();
     }

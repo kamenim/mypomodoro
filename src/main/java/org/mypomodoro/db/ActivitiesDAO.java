@@ -636,7 +636,7 @@ public class ActivitiesDAO {
         }
         return types;
     }
-    
+
     public ArrayList<String> getSubTaskTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {

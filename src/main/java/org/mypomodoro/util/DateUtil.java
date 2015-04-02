@@ -247,7 +247,7 @@ public class DateUtil {
     public static Date getDateAtMidnight(Date date) {
         return new DateTime(date).plusDays(1).withTimeAtStartOfDay().toDate();
     }
-    
+
     public static Date addMinutesToNow(int minutes) {
         Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
         calendar.add(Calendar.MINUTE, minutes);

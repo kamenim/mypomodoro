@@ -16,11 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.awt.AWTException;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -40,11 +36,9 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.preferences.PreferencesInputForm;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
@@ -79,7 +73,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
-    private final MergingPanel mergingPanel = new MergingPanel(this);    
+    private final MergingPanel mergingPanel = new MergingPanel(this);
     // Tables
     private final ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
@@ -94,7 +88,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init List pane
         listPane.setMinimumSize(PANE_DIMENSION);
         listPane.setPreferredSize(PANE_DIMENSION);
-        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));        
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
 
         // Init Tabbed pane
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
@@ -124,13 +118,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         if (table.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
-                
+
         // Add panes of List pane
         addTableTitlePanel();
         addTable();
         addSubTableTitlePanel();
         addSubTable();
-        
+
         // Add Split pane
         add(splitPane);
     }
@@ -189,7 +183,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
             }
         });
-        
+
         // Keystroke for tab
         class tabAction extends AbstractAction {
 
@@ -232,7 +226,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TITLE
     ////////////////////////////////////////////////
-    private void addTableTitlePanel() {
+    public void addTableTitlePanel() {
         table.setPanelBorder();
         listPane.add(tableTitlePanel);
     }
@@ -247,8 +241,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // SUB TITLE
     ////////////////////////////////////////////////
-    private void addSubTableTitlePanel() {
-        subTable.setPanelBorder();        
+    public void addSubTableTitlePanel() {
+        subTable.setPanelBorder();
         listPane.add(subTableTitlePanel);
     }
 
@@ -256,66 +250,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // SUB TABLE
     ////////////////////////////////////////////////
     public void addSubTable() {
-        // One click actions
-        class CustomMouseAdapter extends MouseAdapter {
-            private Component comp;
-            private int viewCount = 0;
-            private Robot robot = null; // used to move the cursor
-            
-            public CustomMouseAdapter(Component comp) {
-                this.comp = comp;                
-                try {
-                    robot = new Robot();
-                } catch (AWTException ignored) {
-                }
-            }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) { // single click
-                    if (viewCount == 2 
-                            && !(comp instanceof DefaultButton)) { // fold: excluding buttons
-                        listPane.remove(subTableScrollPane);
-                        addTableTitlePanel();
-                        addTable();
-                        addSubTableTitlePanel(); // put the sub title back at the bottom
-                        viewCount = 0;       
-                    } else if (viewCount == 0 && table.getSelectedRowCount() == 1) { // expand half way: including buttons
-                        listPane.add(subTableScrollPane);
-                        viewCount = 1;                        
-                    } else if (viewCount == 1 && table.getSelectedRowCount() == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
-                        listPane.remove(tableScrollPane);
-                        listPane.remove(tableTitlePanel); 
-                        viewCount = 2;                        
-                    }
-                    // The next two lines adress an issue found on NimRod theme with the resizing of titles                    
-                    if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
-                        subTableTitlePanel.setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
-                        tableTitlePanel.setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
-                    }
-                    // The two following lines are required to
-                    // repaint after resizing and move the cursor correctly
-                    listPane.validate();
-                    listPane.repaint();
-                    // Center cursor on resize button
-                    if (robot != null) {
-                        Point p = subTableTitlePanel.getLocationOnScreen(); // location on screen
-                        // Center cursor in the middle of the component
-                        robot.mouseMove((int) p.getX() + subTableTitlePanel.getWidth()/2, (int) p.getY()+ subTableTitlePanel.getHeight()/2);                        
-                    }
-                    if (table.getSelectedRowCount() == 1) {
-                        table.showCurrentSelectedRow();
-                    }
-                }
-            }
-        }
-        subTableTitlePanel.addMouseListener(new CustomMouseAdapter(subTableTitlePanel));
-        Component[] comps = subTableTitlePanel.getComponents();
-        for (final Component comp : comps) {
-            comp.addMouseListener(new CustomMouseAdapter(comp));
-        }
-    }    
-    
+    }
+
     ////////////////////////////////////////////////
     // REFRESH
     ////////////////////////////////////////////////
@@ -333,7 +270,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                     getList().refresh();
                 }
                 tableModel.setDataVector(getList());
-                table.init();              
+                table.init();
                 if (table.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -352,27 +289,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public ActivityList getList() {
         return ActivityList.getList();
     }
-    
+
     public void emptySubTable() {
         subTableModel.setRowCount(0);
         subTable.setParentId(-1);
         subTable.init();
         subTable.setPanelBorder();
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     @Override
     public void setPanelBorder() {
@@ -445,8 +368,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         getList().add(activity, date, dateCompleted);
     }
 
-    
-
     @Override
     public void saveComment(String comment) {
         if (table.getSelectedRowCount() == 1) {
@@ -484,6 +405,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return tabbedPane;
     }
 
+    public JPanel getListPane() {
+        return listPane;
+    }
+
     public ActivitiesTableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
@@ -492,12 +417,18 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return subTableTitlePanel;
     }
 
+    public JScrollPane getTableScrollPane() {
+        return tableScrollPane;
+    }
+
+    public JScrollPane getSubTableScrollPane() {
+        return subTableScrollPane;
+    }
+
     public void populateSubTable(int parentId) {
         subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
         subTable.setParentId(parentId);
         subTable.init();
         subTable.setPanelBorder();
     }
-    
-    
 }

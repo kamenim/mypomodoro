@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.burndownchart;
 
 import java.util.Iterator;
 import org.mypomodoro.gui.TableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ChartList;
 
 /**
- * Table model for activtiies
+ * Table model for chart tasks
  *
  */
-public class ActivitiesTableModel extends TableModel {
+public class CheckTableModel extends TableModel {
 
-    public ActivitiesTableModel() {
-        setDataVector(ActivityList.getTaskList());
+    public CheckTableModel() {
+        setDataVector(ChartList.getTaskList());
     }
 
     protected void setDataVector(final AbstractActivities list) {
@@ -40,10 +40,10 @@ public class ActivitiesTableModel extends TableModel {
         for (int i = 0; iterator.hasNext(); i++) {
             Activity a = iterator.next();
             tableData[i][UNPLANNED_COLUMN_INDEX] = a.isUnplanned();
-            tableData[i][DATE_COLUMN_INDEX] = a.getDate();
+            tableData[i][DATE_COLUMN_INDEX] = a.getDateCompleted();
             tableData[i][TITLE_COLUMN_INDEX] = a.getName();
             tableData[i][TYPE_COLUMN_INDEX] = a.getType();
-            Integer poms = new Integer(a.getEstimatedPoms());
+            Integer poms = new Integer(a.getActualPoms());
             tableData[i][ESTIMATED_COLUMN_INDEX] = poms;
             Float points = new Float(a.getStoryPoints());
             tableData[i][STORYPOINTS_COLUMN_INDEX] = points;
@@ -52,10 +52,5 @@ public class ActivitiesTableModel extends TableModel {
             tableData[i][ACTIVITYID_COLUMN_INDEX] = a.getId();
         }
         setDataVector(tableData, COLUMN_NAMES);
-    }
-
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
     }
 }

@@ -558,10 +558,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 }
                 controlPane.setEnabledAt(index, false);
             }
-        } else {            
+        } else {
             // select first activity
             table.setRowSelectionInterval(0, 0);
-            table.scrollRectToVisible(table.getCellRect(0, 0, true)); 
+            table.scrollRectToVisible(table.getCellRect(0, 0, true));
             // detail tab
             controlPane.setSelectedIndex(0);
         }
@@ -691,23 +691,24 @@ public class ReportsPanel extends JPanel implements IListPanel {
         // Tab already selected = one click to expand
         // Tab not selected = double click to expand
         class CustomChangeListener implements ChangeListener {
+
             private boolean stateChanged = false;
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 stateChanged = true;
             }
-            
-            public boolean getStateChanged() {                
+
+            public boolean getStateChanged() {
                 return stateChanged;
             }
-            
+
             public void setStateChanged(boolean stateChanged) {
                 this.stateChanged = stateChanged;
             }
         }
         final CustomChangeListener customChangeListener = new CustomChangeListener();
-        controlPane.addChangeListener(customChangeListener);        
+        controlPane.addChangeListener(customChangeListener);
         controlPane.addMouseListener(new MouseAdapter() {
             private int dividerLocation;
 
@@ -1147,7 +1148,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         }
     }
-    
+
     protected ReportList getList() {
         return ReportList.getList();
     }
