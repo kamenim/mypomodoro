@@ -124,7 +124,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 mouseHoverRow = -1;
             }
         });
-        
+
         // Activate Delete key stroke
         // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
         // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
@@ -151,7 +151,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
         }
         //am.put("Delete", new deleteAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
+
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
         class moveAction extends AbstractAction {
@@ -169,7 +169,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
         }
         //am.put("Add To ToDo List", new moveAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
+
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
         class selectAllAction extends AbstractAction {
@@ -218,7 +218,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public int getActivityIdFromSelectedRow() {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), getModel().getColumnCount() - 1);
     }
-    
+
     protected Activity getActivityFromSelectedRow() {
         return getList().getById(getActivityIdFromSelectedRow());
     }
@@ -226,17 +226,17 @@ public abstract class AbstractActivitiesTable extends JXTable {
     protected int getActivityIdFromRowIndex(int rowIndex) {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), getModel().getColumnCount() - 1);
     }
-    
+
     protected Activity getActivityFromRowIndex(int rowIndex) {
         return getList().getById(getActivityIdFromRowIndex(rowIndex));
     }
-    
+
     protected Activity getActivityById(int id) {
         return getList().getById(id);
     }
 
     @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {        
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
         Component c = super.prepareRenderer(renderer, row, column);
         if (isRowSelected(row)) {
             ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
@@ -260,7 +260,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
         }
         return c;
     }
-    
+
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row;
     }
@@ -340,32 +340,32 @@ public abstract class AbstractActivitiesTable extends JXTable {
             return renderer;
         }
     }
-    
+
     public abstract void createNewTask();
-    
+
     public abstract void duplicateTask();
-    
+
     protected abstract void init();
-    
+
     protected abstract void showInfo(int activityId);
-    
+
     protected abstract void showInfoForSelectedRow();
-    
+
     protected abstract void showDetailsForSelectedRows();
-    
+
     protected abstract void showInfoForRowIndex(int rowIndex);
-    
+
     protected abstract void setPanelBorder();
 
     protected abstract void setTableHeader();
-    
+
     protected abstract ActivityList getList();
-    
+
     protected abstract ActivityList getTableList();
-    
+
     protected abstract ActivitiesTableTitlePanel getTitlePanel();
-    
+
     protected abstract void removeRow(int rowIndex);
-    
+
     protected abstract void insertRow(Activity activity);
 }

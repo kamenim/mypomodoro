@@ -78,7 +78,7 @@ public class TestMenu extends JMenu {
     class TestDataItem extends JMenuItem {
 
         public TestDataItem(final int nbTask, final boolean withSubTask) {
-            super(Labels.getString(withSubTask ? "DataMenu.with subtask" : "DataMenu.without subtask"));            
+            super(Labels.getString(withSubTask ? "DataMenu.with subtask" : "DataMenu.without subtask"));
             addActionListener(new ActionListener() {
 
                 @Override

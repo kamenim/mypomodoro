@@ -26,7 +26,7 @@ import org.mypomodoro.db.ActivitiesDAO;
 public final class ActivityList extends AbstractActivities {
 
     private static final ActivityList list = new ActivityList();
-    
+
     private ActivityList() {
         refresh();
     }
@@ -43,7 +43,7 @@ public final class ActivityList extends AbstractActivities {
     public static ActivityList getList() {
         return list;
     }
-    
+
     // List of main tasks
     public static ActivityList getTaskList() {
         ActivityList tableList = new ActivityList();
@@ -57,9 +57,8 @@ public final class ActivityList extends AbstractActivities {
 
     // List of sub tasks
     // The bigger the list the heavier this will be
-    // Next time we'll use Guava
-    // https://github.com/google/guava
-    // OR get the list for the database
+    // May we use use Guava https://github.com/google/guava
+    // OR have a specific list for subtasks ?...
     public static ActivityList getSubTaskList(int parentId) {
         ActivityList subTableList = new ActivityList();
         for (Activity a : list) {

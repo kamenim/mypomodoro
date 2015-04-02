@@ -35,7 +35,7 @@ public class Resize {
     private Point guiRecordedLocation;
     private static int viewCount = 0;
     private Robot robot = null; // used to move the cursor
-            
+
     public Resize() {
         try {
             robot = new Robot();
@@ -121,19 +121,19 @@ public class Resize {
             Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
             Main.gui.setPreferredSize(dGUI);
             Main.gui.setSize(size);
-            Main.gui.setLocation(guiRecordedLocation);            
+            Main.gui.setLocation(guiRecordedLocation);
         }
         // The two following lines are required to:
         // Maximize size: move the cursor correctly
         // Other sizes: repaint after resizing and move the cursor correctly
         Main.gui.validate();
-        Main.gui.repaint();            
+        Main.gui.repaint();
         // Center cursor on resize button
         if (robot != null
-                && ToDoPanel.getResizeButton().isShowing()) {               
+                && ToDoPanel.getResizeButton().isShowing()) {
             Point p = ToDoPanel.getResizeButton().getLocationOnScreen(); // location on screen
             // Center cursor in the middle of the button
-            robot.mouseMove((int) p.getX() + ToDoPanel.getResizeButton().getWidth()/2, (int) p.getY()+ ToDoPanel.getResizeButton().getHeight()/2);
+            robot.mouseMove((int) p.getX() + ToDoPanel.getResizeButton().getWidth() / 2, (int) p.getY() + ToDoPanel.getResizeButton().getHeight() / 2);
 
         }
         // we make sure the selected task appears on screen despite the resizing

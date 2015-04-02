@@ -47,7 +47,7 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
                 comboBox.removeAllItems();
                 for (int i = 0; i <= (estimatedpoms >= Main.preferences.getMaxNbPomPerActivity() ? estimatedpoms + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
                     comboBox.addItem(i);
-                }            
+                }
                 comboBox.setSelectedItem(estimatedpoms);
                 add(comboBox);
             } else {

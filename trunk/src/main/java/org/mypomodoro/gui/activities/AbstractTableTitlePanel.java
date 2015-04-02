@@ -35,7 +35,7 @@ import org.mypomodoro.buttons.DefaultButton;
  *
  */
 public abstract class AbstractTableTitlePanel extends JPanel {
-    
+
     protected final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
@@ -143,77 +143,75 @@ public abstract class AbstractTableTitlePanel extends JPanel {
             }
         });
     }
-    
+
     protected void showSelectedButton() {
         add(selectedButton);
     }
-    
+
     protected void showCreateButton() {
         add(createButton);
     }
-    
+
     protected void showDuplicateButton() {
         add(duplicateButton);
     }
-    
+
     protected void showUnplannedButton() {
         add(unplannedButton);
     }
-    
+
     protected void showInternalButton() {
         add(internalButton);
     }
-    
+
     protected void showExternalButton() {
         add(externalButton);
     }
-    
+
     protected void showRefreshButton() {
         add(refreshButton);
     }
-    
+
     protected void hideSelectedButton() {
         remove(selectedButton);
     }
-    
+
     protected void hideCreateButton() {
         remove(createButton);
     }
-    
+
     protected void hideDuplicateButton() {
         remove(duplicateButton);
     }
-    
+
     protected void hideUnplannedButton() {
         remove(unplannedButton);
     }
-    
+
     protected void hideInternalButton() {
         remove(internalButton);
     }
-    
+
     protected void hideExternalButton() {
         remove(externalButton);
     }
-    
+
     protected void hideRefreshButton() {
         remove(refreshButton);
     }
-    
-        
+
     @Override
     public void setToolTipText(String text) {
         titleLabel.setToolTipText(text);
     }
-    
+
     public void setText(String text) {
         titleLabel.setText(text);
     }
-    
-    /*public void repaintLabel() {
-        titleLabel.repaint();        
-    }*/
 
+    /*public void repaintLabel() {
+     titleLabel.repaint();        
+     }*/
     protected abstract void showCurrentSelectedRow();
 
     protected abstract void createNewTask();

@@ -14,20 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.todo;
+
+import org.mypomodoro.gui.activities.*;
 
 /**
- * Table model for sub-activtiies
+ * Table model for sub-ToDos
  *
  */
-public class ActivitiesSubTableModel extends ActivitiesTableModel {
+public class ToDoSubTableModel extends ActivitiesTableModel {
 
-    public ActivitiesSubTableModel() {
+    public ToDoSubTableModel() {
         emptyModel();
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX;
+        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX;
     }
 }

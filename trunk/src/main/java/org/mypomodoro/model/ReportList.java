@@ -43,6 +43,31 @@ public final class ReportList extends AbstractActivities {
         return list;
     }
 
+    // List of main tasks
+    public static ReportList getTaskList() {
+        ReportList tableList = new ReportList();
+        for (Activity a : list) {
+            if (a.isSubTask()) {
+                tableList.removeById(a.getId());
+            }
+        }
+        return tableList;
+    }
+
+    // List of sub tasks
+    // The bigger the list the heavier this will be
+    // May we use use Guava https://github.com/google/guava
+    // OR have a specific list for subtasks ?...
+    public static ReportList getSubTaskList(int parentId) {
+        ReportList subTableList = new ReportList();
+        for (Activity a : list) {
+            if (a.getParentId() != parentId) {
+                subTableList.removeById(a.getId());
+            }
+        }
+        return subTableList;
+    }
+
     public static int getListSize() {
         return getList().size();
     }

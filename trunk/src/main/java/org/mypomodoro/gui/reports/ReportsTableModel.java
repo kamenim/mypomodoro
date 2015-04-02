@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.reports;
 
 import java.util.Iterator;
 import org.mypomodoro.gui.TableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ReportList;
 
 /**
- * Table model for activtiies
+ * Table model for reports
  *
  */
-public class ActivitiesTableModel extends TableModel {
+public class ReportsTableModel extends TableModel {
 
-    public ActivitiesTableModel() {
-        setDataVector(ActivityList.getTaskList());
+    public ReportsTableModel() {
+        setDataVector(ReportList.getTaskList());
     }
 
     protected void setDataVector(final AbstractActivities list) {
@@ -40,11 +40,18 @@ public class ActivitiesTableModel extends TableModel {
         for (int i = 0; iterator.hasNext(); i++) {
             Activity a = iterator.next();
             tableData[i][UNPLANNED_COLUMN_INDEX] = a.isUnplanned();
-            tableData[i][DATE_COLUMN_INDEX] = a.getDate();
+            tableData[i][DATE_COLUMN_INDEX] = a.getDateCompleted(); // date completed formated via custom renderer (DateRenderer)
+            //tableData[i][2] = DateUtil.getFormatedTime(a.getDate());
             tableData[i][TITLE_COLUMN_INDEX] = a.getName();
             tableData[i][TYPE_COLUMN_INDEX] = a.getType();
-            Integer poms = new Integer(a.getEstimatedPoms());
+            Integer poms = new Integer(a.getActualPoms()); // sorting done on real pom
             tableData[i][ESTIMATED_COLUMN_INDEX] = poms;
+            Integer diffIPoms = new Integer(a.getActualPoms() - a.getEstimatedPoms());
+            tableData[i][DIFFI_COLUMN_INDEX] = diffIPoms; // Diff I
+            Integer diffIIPoms = new Integer(a.getActualPoms()
+                    - a.getEstimatedPoms()
+                    - a.getOverestimatedPoms());
+            tableData[i][DIFFII_COLUMN_INDEX] = diffIIPoms; // Diff II
             Float points = new Float(a.getStoryPoints());
             tableData[i][STORYPOINTS_COLUMN_INDEX] = points;
             Integer iteration = new Integer(a.getIteration());
@@ -56,6 +63,6 @@ public class ActivitiesTableModel extends TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == TITLE_COLUMN_INDEX || columnIndex == TYPE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
+        return columnIndex == TITLE_COLUMN_INDEX;
     }
 }

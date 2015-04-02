@@ -48,9 +48,9 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
         }
         // Hide combobox and label when cell not editable 
         /*if (!table.getModel().isCellEditable(row, column)) {
-            comboBox.setVisible(false);
-            label.setVisible(false);
-        }*/
+         comboBox.setVisible(false);
+         label.setVisible(false);
+         }*/
         return this;
     }
 }

@@ -25,7 +25,7 @@ import org.mypomodoro.gui.AbstractActivitiesTable;
 public class ActivitiesTableTitlePanel extends AbstractTableTitlePanel {
 
     private final ActivitiesPanel activitiesPanel;
-    private final AbstractActivitiesTable table;    
+    private final AbstractActivitiesTable table;
 
     public ActivitiesTableTitlePanel(ActivitiesPanel activitiesPanel, AbstractActivitiesTable table) {
         super();
@@ -35,7 +35,7 @@ public class ActivitiesTableTitlePanel extends AbstractTableTitlePanel {
 
     @Override
     protected void showCurrentSelectedRow() {
-         table.showCurrentSelectedRow();
+        table.showCurrentSelectedRow();
     }
 
     @Override

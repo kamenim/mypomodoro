@@ -65,7 +65,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {                
+            public void valueChanged(ListSelectionEvent e) {
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     if (!e.getValueIsAdjusting()) { // ignoring the deselection event
@@ -271,6 +271,16 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setMaxWidth(200);
         getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setMinWidth(200);
         getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setPreferredWidth(200);
+        // hide priority, DiffI and DiffII
+        getColumnModel().getColumn(ActivitiesTableModel.PRIORITY_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.PRIORITY_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.PRIORITY_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFI_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFI_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFI_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFII_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFII_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(ActivitiesTableModel.DIFFII_COLUMN_INDEX).setPreferredWidth(0);
         // hide ID column
         getColumnModel().getColumn(ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX).setMinWidth(0);
@@ -322,7 +332,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     protected void showInfoForSelectedRow() {
         showInfo(getActivityIdFromSelectedRow());
     }
-    
+
     @Override
     protected void showInfoForRowIndex(int rowIndex) {
         showInfo(getActivityIdFromRowIndex(rowIndex));
@@ -442,7 +452,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     protected void populateSubTable() {
         activitiesPanel.populateSubTable(getActivityIdFromSelectedRow());
     }
-    
+
     protected void emptySubTable() {
         activitiesPanel.emptySubTable();
     }
@@ -557,7 +567,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             return renderer;
         }
     }
-    
+
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();

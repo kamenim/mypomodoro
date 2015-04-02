@@ -566,8 +566,8 @@ public class Activity implements Cloneable {
                 && a.getStoryPoints() == getStoryPoints()
                 && a.getIteration() == getIteration();
     }
-    
+
     public boolean isSubTask() {
         return parentId != -1;
-    }        
+    }
 }
