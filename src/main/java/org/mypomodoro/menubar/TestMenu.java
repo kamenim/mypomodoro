@@ -263,7 +263,7 @@ public class TestMenu extends JMenu {
                     aClone.setOverestimatedPoms(subTaskOverestimated > a.getOverestimatedPoms() ? 0 : overestimated);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
-                    aClone.setType(Labels.getString("Common.Subtasks"));
+                    aClone.setType(Labels.getString("Common.Subtask"));
                     aClone.setParentId(a.getId());
                     if (list instanceof ToDoList) {
                         ToDoList.getList().add(aClone);

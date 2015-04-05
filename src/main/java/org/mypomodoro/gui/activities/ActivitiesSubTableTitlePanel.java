@@ -60,7 +60,7 @@ public class ActivitiesSubTableTitlePanel extends SubTableTitlePanel {
             }
         }
         if (!isCustomMouseAdapter) {
-            comp.addMouseListener(new CustomMouseAdapter(this));
+            comp.addMouseListener(new CustomMouseAdapter(comp));
         }
         return super.add(comp);
     }
@@ -104,8 +104,8 @@ public class ActivitiesSubTableTitlePanel extends SubTableTitlePanel {
                 // repaint after resizing and move the cursor correctly
                 panel.getListPane().validate();
                 panel.getListPane().repaint();
-                // Center cursor on resize button
-                if (robot != null) {
+                // Center cursor on panel
+                if (robot != null && !(comp instanceof DefaultButton)) {
                     Point p = getLocationOnScreen(); // location on screen
                     // Center cursor in the middle of the component
                     robot.mouseMove((int) p.getX() + getWidth() / 2, (int) p.getY() + getHeight() / 2);

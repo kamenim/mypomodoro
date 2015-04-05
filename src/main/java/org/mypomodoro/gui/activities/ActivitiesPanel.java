@@ -18,27 +18,16 @@ package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.lang.reflect.Field;
 import java.util.Date;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
@@ -70,7 +59,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final JScrollPane tableScrollPane;
     private final JScrollPane subTableScrollPane;
     // Tabbed pane: details + ...
-    private final JTabbedPane tabbedPane = new JTabbedPane();
+    private final TabbedPane tabbedPane;
     // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
@@ -90,12 +79,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init List pane
         listPane.setMinimumSize(PANE_DIMENSION);
         listPane.setPreferredSize(PANE_DIMENSION);
-        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS)); 
 
-        // Init Tabbed pane
+        // Init Tabbed pane        
+        tabbedPane = new TabbedPane();
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
         tabbedPane.setPreferredSize(TABPANE_DIMENSION);
-        initTabbedPane();
+        initTabbedPane(); 
 
         // Init Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPane, tabbedPane);
@@ -103,7 +93,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        splitPane.setDividerSize(0); // remove divider by hiding it        
+        splitPane.setDividerSize(0); // remove divider by hiding it
+        tabbedPane.setSplitPane(splitPane);
 
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
@@ -135,7 +126,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // TABBED PANE
     ////////////////////////////////////////////////
     private void initTabbedPane() {
-        tabbedPane.setFocusable(false); // removes borders around tab text
         tabbedPane.add(Labels.getString("Common.Details"), detailsPanel);
         tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         tabbedPane.add(Labels.getString("Common.Edit"), editPanel);
@@ -143,87 +133,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         ImportPanel importPanel = new ImportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
-        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        // Implement one-click action on selected tabs
-        // Tab already selected = one click to expand
-        // Tab not selected = double click to expand
-        // Note: if a tab is selected programatically, only double click will work on that tab
-        class CustomChangeListener implements ChangeListener {
-
-            private boolean stateChanged = false;
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                stateChanged = true;
-            }
-
-            public boolean getStateChanged() {
-                return stateChanged;
-            }
-
-            public void setStateChanged(boolean stateChanged) {
-                this.stateChanged = stateChanged;
-            }
-        }
-        final CustomChangeListener customChangeListener = new CustomChangeListener();
-        tabbedPane.addChangeListener(customChangeListener);
-        tabbedPane.addMouseListener(new MouseAdapter() {
-            private int dividerLocation;
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1
-                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
-                    // Expand
-                    if (splitPane.getDividerLocation() != 0) {
-                        dividerLocation = splitPane.getDividerLocation();
-                        splitPane.setDividerLocation(0.0);
-                    } else { // back to original position
-                        splitPane.setDividerLocation(dividerLocation);
-                    }
-                } else {
-                    customChangeListener.setStateChanged(false);
-                }
-            }
-        });
-
-        // Keystroke for tab
-        class tabAction extends AbstractAction {
-
-            final int index;
-
-            public tabAction(int index) {
-                this.index = index;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (tabbedPane.isEnabledAt(index)) {
-                    tabbedPane.setSelectedIndex(index);
-                }
-            }
-        }
-        InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = getActionMap();
-        for (int i = 1; i <= 6; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
-            am.put("Tab" + i, new tabAction(i - 1));
-        }
-    }
-
-    // Retrieve key event with name
-    public int getKeyEvent(int index) {
-        int key = 0;
-        try {
-            Field f = KeyEvent.class.getField("VK_" + index);
-            f.setAccessible(true);
-            key = (Integer) f.get(null);
-        } catch (IllegalAccessException ignored) {
-        } catch (IllegalArgumentException ignored) {
-        } catch (NoSuchFieldException ignored) {
-        } catch (SecurityException ignored) {
-        }
-        return key;
+        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);               
     }
 
     ////////////////////////////////////////////////
