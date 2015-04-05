@@ -17,7 +17,7 @@
 package org.mypomodoro.gui.burndownchart;
 
 import java.util.Iterator;
-import org.mypomodoro.gui.TableModel;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -26,31 +26,40 @@ import org.mypomodoro.model.ChartList;
  * Table model for chart tasks
  *
  */
-public class CheckTableModel extends TableModel {
+public class CheckTableModel extends AbstractTableModel {
 
     public CheckTableModel() {
         setDataVector(ChartList.getTaskList());
     }
 
+    @Override
     protected void setDataVector(final AbstractActivities list) {
         int rowIndex = list.size();
         int colIndex = COLUMN_NAMES.length;
         Object[][] tableData = new Object[rowIndex][colIndex];
         Iterator<Activity> iterator = list.iterator();
         for (int i = 0; iterator.hasNext(); i++) {
-            Activity a = iterator.next();
-            tableData[i][UNPLANNED_COLUMN_INDEX] = a.isUnplanned();
-            tableData[i][DATE_COLUMN_INDEX] = a.getDateCompleted();
-            tableData[i][TITLE_COLUMN_INDEX] = a.getName();
-            tableData[i][TYPE_COLUMN_INDEX] = a.getType();
-            Integer poms = new Integer(a.getActualPoms());
-            tableData[i][ESTIMATED_COLUMN_INDEX] = poms;
-            Float points = new Float(a.getStoryPoints());
-            tableData[i][STORYPOINTS_COLUMN_INDEX] = points;
-            Integer iteration = new Integer(a.getIteration());
-            tableData[i][ITERATION_COLUMN_INDEX] = iteration;
-            tableData[i][ACTIVITYID_COLUMN_INDEX] = a.getId();
+            Activity activity = iterator.next();
+            tableData[i] = getRow(activity);
         }
         setDataVector(tableData, COLUMN_NAMES);
+    }
+
+    @Override
+    protected Object[] getRow(Activity activity) {
+        int colIndex = COLUMN_NAMES.length;
+        Object[] rowData = new Object[colIndex];
+        rowData[UNPLANNED_COLUMN_INDEX] = activity.isUnplanned();
+        rowData[DATE_COLUMN_INDEX] = activity.getDateCompleted();
+        rowData[TITLE_COLUMN_INDEX] = activity.getName();
+        rowData[TYPE_COLUMN_INDEX] = activity.getType();
+        Integer poms = new Integer(activity.getActualPoms());
+        rowData[ESTIMATED_COLUMN_INDEX] = poms;
+        Float points = new Float(activity.getStoryPoints());
+        rowData[STORYPOINTS_COLUMN_INDEX] = points;
+        Integer iteration = new Integer(activity.getIteration());
+        rowData[ITERATION_COLUMN_INDEX] = iteration;
+        rowData[ACTIVITYID_COLUMN_INDEX] = activity.getId();
+        return rowData;
     }
 }

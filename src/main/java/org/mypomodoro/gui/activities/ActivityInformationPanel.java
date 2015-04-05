@@ -51,7 +51,8 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
         // Date reopened
-        textMap.put("date_reopened", "<span style=\"background-color:#FFFF66\"><b>" + Labels.getString("Common.Date reopened") + ":</b> "
+        // Foreground set to black in anycase (important for theme such as Noire which default color is white)
+        textMap.put("date_reopened", "<span style=\"color:black; background-color:#FFFF66\"><b>" + Labels.getString("Common.Date reopened") + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                 + (activity.isUnplanned() ? "]" : "") + "</span><br>");

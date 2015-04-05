@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -36,6 +37,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -62,7 +64,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
-    private final ActivitiesTableTitlePanel tableTitlePanel;
+    private final TableTitlePanel tableTitlePanel;
     private final ActivitiesSubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
@@ -112,7 +114,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTableScrollPane = new JScrollPane(subTable);
         tableScrollPane = new JScrollPane(table);
         // Init title and sub title
-        tableTitlePanel = new ActivitiesTableTitlePanel(this, table);
+        tableTitlePanel = new TableTitlePanel(this, table);
         subTableTitlePanel = new ActivitiesSubTableTitlePanel(this, subTable);
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (table.getRowCount() > 0) {
@@ -145,6 +147,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Implement one-click action on selected tabs
         // Tab already selected = one click to expand
         // Tab not selected = double click to expand
+        // Note: if a tab is selected programatically, only double click will work on that tab
         class CustomChangeListener implements ChangeListener {
 
             private boolean stateChanged = false;
@@ -227,7 +230,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // TITLE
     ////////////////////////////////////////////////
     public void addTableTitlePanel() {
-        table.setPanelBorder();
+        table.setTitle();
         listPane.add(tableTitlePanel);
     }
 
@@ -242,7 +245,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // SUB TITLE
     ////////////////////////////////////////////////
     public void addSubTableTitlePanel() {
-        subTable.setPanelBorder();
+        subTable.setTitle();
         listPane.add(subTableTitlePanel);
     }
 
@@ -261,6 +264,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         refresh(false);
     }
 
+    @Override
     public void refresh(boolean fromDatabase) {
         if (!WaitCursor.isStarted()) {
             // Start wait cursor
@@ -294,7 +298,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTableModel.setRowCount(0);
         subTable.setParentId(-1);
         subTable.init();
-        subTable.setPanelBorder();
+        subTable.setTitle();
     }
 
     @Override
@@ -312,7 +316,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public int getIdKey() {
-        return ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX;
+        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
     }
 
     @Override
@@ -371,7 +375,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     @Override
     public void saveComment(String comment) {
         if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), ActivitiesTableModel.ACTIVITYID_COLUMN_INDEX);
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
             Activity selectedActivity = getList().getById(id);
             if (selectedActivity != null) {
                 selectedActivity.setNotes(comment);
@@ -409,11 +413,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return listPane;
     }
 
-    public ActivitiesTableTitlePanel getTableTitlePanel() {
+    public TableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 
-    public ActivitiesTableTitlePanel getSubTableTitlePanel() {
+    public TableTitlePanel getSubTableTitlePanel() {
         return subTableTitlePanel;
     }
 
@@ -429,6 +433,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
         subTable.setParentId(parentId);
         subTable.init();
-        subTable.setPanelBorder();
+        subTable.setTitle();
     }
 }
