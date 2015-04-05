@@ -49,7 +49,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.activities.ActivitiesTableModel;
-import org.mypomodoro.gui.activities.ActivitiesTableTitlePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -216,7 +215,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     }
 
     public int getActivityIdFromSelectedRow() {
-        return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), getModel().getColumnCount() - 1);
+        return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
     }
 
     protected Activity getActivityFromSelectedRow() {
@@ -224,7 +223,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     }
 
     protected int getActivityIdFromRowIndex(int rowIndex) {
-        return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), getModel().getColumnCount() - 1);
+        return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
     }
 
     protected Activity getActivityFromRowIndex(int rowIndex) {
@@ -279,7 +278,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
             Activity activity = getList().getById(id);
             if (activity != null && activity.isFinished()) {
                 renderer.setForeground(ColorUtil.GREEN);
@@ -315,7 +314,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 renderer.setText(DateUtil.getShortFormatedDate((Date) value));
                 renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
                 if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
+                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
                     Activity activity = getList().getById(id);
                     if (activity != null && activity.isOverdue()) {
                         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
@@ -355,7 +354,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     protected abstract void showInfoForRowIndex(int rowIndex);
 
-    protected abstract void setPanelBorder();
+    protected abstract void setTitle();
 
     protected abstract void setTableHeader();
 
@@ -363,7 +362,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     protected abstract ActivityList getTableList();
 
-    protected abstract ActivitiesTableTitlePanel getTitlePanel();
+    protected abstract TableTitlePanel getTitlePanel();
 
     protected abstract void removeRow(int rowIndex);
 

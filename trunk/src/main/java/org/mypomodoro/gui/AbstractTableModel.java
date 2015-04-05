@@ -18,13 +18,15 @@ package org.mypomodoro.gui;
 
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
+import org.mypomodoro.model.AbstractActivities;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 
 /**
  * Table model for tasks and sub-tasks
  *
  */
-public class TableModel extends DefaultTableModel {
+public abstract class AbstractTableModel extends DefaultTableModel {
 
     public static final String[] COLUMN_NAMES = {
         Labels.getString("Common.Priority"),
@@ -71,6 +73,8 @@ public class TableModel extends DefaultTableModel {
                 return Float.class;
             case ITERATION_COLUMN_INDEX:
                 return Integer.class;
+            case ACTIVITYID_COLUMN_INDEX:
+                return Integer.class;
             default:
                 return String.class;
         }
@@ -82,4 +86,12 @@ public class TableModel extends DefaultTableModel {
         Object[][] tableData = new Object[rowIndex][colIndex];
         setDataVector(tableData, COLUMN_NAMES);
     }
+
+    public void addRow(Activity activity) {
+        addRow(getRow(activity));
+    }
+
+    protected abstract void setDataVector(final AbstractActivities list);
+
+    protected abstract Object[] getRow(Activity activity);
 }

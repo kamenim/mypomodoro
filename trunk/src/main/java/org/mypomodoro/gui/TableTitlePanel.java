@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui;
 
-import org.mypomodoro.gui.AbstractActivitiesTable;
+import org.mypomodoro.gui.activities.AbstractTableTitlePanel;
 
 /**
- *
+ * Title panel for tables
  *
  */
-public class ActivitiesTableTitlePanel extends AbstractTableTitlePanel {
+public class TableTitlePanel extends AbstractTableTitlePanel {
 
-    private final ActivitiesPanel activitiesPanel;
+    private final IListPanel panel;
     private final AbstractActivitiesTable table;
 
-    public ActivitiesTableTitlePanel(ActivitiesPanel activitiesPanel, AbstractActivitiesTable table) {
+    public TableTitlePanel(IListPanel panel, AbstractActivitiesTable table) {
         super();
-        this.activitiesPanel = activitiesPanel;
+        this.panel = panel;
         this.table = table;
     }
 
@@ -62,6 +62,6 @@ public class ActivitiesTableTitlePanel extends AbstractTableTitlePanel {
 
     @Override
     protected void refreshTable(boolean fromDatabase) {
-        activitiesPanel.refresh(fromDatabase);
+        panel.refresh(fromDatabase);
     }
 }

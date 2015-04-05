@@ -24,6 +24,8 @@ public interface IListPanel {
 
     void refresh();
 
+    void refresh(boolean fromDatabase);
+
     void move(Activity activity);
 
     void moveAll();

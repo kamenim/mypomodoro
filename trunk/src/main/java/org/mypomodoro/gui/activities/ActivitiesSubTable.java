@@ -16,8 +16,10 @@
  */
 package org.mypomodoro.gui.activities;
 
+import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -31,16 +33,16 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    private final ActivitiesSubTableModel tableModel;
-    private final ActivitiesPanel activitiesPanel;
+    //private final ActivitiesSubTableModel model;
+    private final ActivitiesPanel panel;
 
     private int parentId = -1;
 
-    public ActivitiesSubTable(ActivitiesSubTableModel tableModel, final ActivitiesPanel activitiesPanel) {
-        super(tableModel, activitiesPanel);
+    public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
+        super(model, panel);
 
-        this.tableModel = tableModel;
-        this.activitiesPanel = activitiesPanel;
+        //this.model = model;
+        this.panel = panel;
 
         // This is to address the case/event when the mouse exit the table
         // REplacing listener of the ActivtiesTable class constructor
@@ -49,11 +51,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
-                if (activitiesPanel.getTable().getSelectedRowCount() == 1) {
+                if (panel.getTable().getSelectedRowCount() == 1) {
                     if (getSelectedRowCount() == 1) {
                         showInfoForSelectedRow();
                     } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                        showInfo(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+                        showInfo(panel.getTable().getActivityIdFromSelectedRow());
                     }
                 }
                 mouseHoverRow = -1;
@@ -67,7 +69,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     // no story points and no refresh button for subtasks
     @Override
-    protected void setPanelBorder() {
+    protected void setTitle() {
         String titleActivitiesList = Labels.getString("Common.Subtasks");
         int rowCount = getRowCount();
         if (rowCount > 0) {
@@ -125,8 +127,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        if (activitiesPanel.getTable().getRowCount() == 0
-                || activitiesPanel.getTable().getSelectedRowCount() > 1) {
+        if (panel.getTable().getRowCount() == 0
+                || panel.getTable().getSelectedRowCount() > 1) {
             getTitlePanel().hideCreateButton();
         } else {
             getTitlePanel().showCreateButton();
@@ -142,15 +144,15 @@ public class ActivitiesSubTable extends ActivitiesTable {
         super.init();
         // sub types
         String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
-        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(ActivitiesTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
         // hide Story Points and Iteration columns
-        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
-        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
-        getColumnModel().getColumn(ActivitiesTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
-        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
-        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
-        getColumnModel().getColumn(ActivitiesTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
     }
 
     @Override
@@ -175,26 +177,26 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected ActivitiesTableTitlePanel getTitlePanel() {
-        return activitiesPanel.getSubTableTitlePanel();
+    protected TableTitlePanel getTitlePanel() {
+        return panel.getSubTableTitlePanel();
     }
 
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
         newActivity.setEstimatedPoms(0);
-        newActivity.setName(Labels.getString("Common.Subtask"));
+        newActivity.setName("(N) " + Labels.getString("Common.Subtask"));
         // Set parent id
-        newActivity.setParentId(activitiesPanel.getTable().getActivityIdFromSelectedRow());
+        newActivity.setParentId(panel.getTable().getActivityIdFromSelectedRow());
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field        
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), ActivitiesTableModel.TITLE_COLUMN_INDEX); // edit cell
+        editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX); // edit cell
         setSurrendersFocusOnKeystroke(true); // focus
         if (getEditorComponent() != null) {
             getEditorComponent().requestFocus();
         }
-        activitiesPanel.getControlPane().setSelectedIndex(2); // open edit tab
+        panel.getControlPane().setSelectedIndex(2); // open edit tab
     }
 }

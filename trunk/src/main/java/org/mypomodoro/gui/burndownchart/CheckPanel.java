@@ -395,7 +395,6 @@ public class CheckPanel extends JPanel implements IListPanel {
         table.setDefaultEditor(Object.class, editor);
 
         // Centre columns
-        CustomTableRenderer dtcr = new CustomTableRenderer();
         // set custom render for dates
         table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 7).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 6).setCellRenderer(new DateRenderer()); // date (custom renderer)        
@@ -805,6 +804,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 WaitCursor.stopWaitCursor();
             }
         }
+    }
+
+    @Override
+    public void refresh(boolean fromDatabase) {
     }
 
     // selected row BOLD
