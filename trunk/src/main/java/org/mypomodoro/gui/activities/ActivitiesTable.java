@@ -558,13 +558,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         }
     }
 
+    // no default name
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
         newActivity.setEstimatedPoms(0);
-        newActivity.setName(Labels.getString("Common.Task"));
         getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
         editCellAt(getSelectedRow(), AbstractTableModel.TYPE_COLUMN_INDEX, null); // edit cell

@@ -181,15 +181,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
         return panel.getSubTableTitlePanel();
     }
 
+    // no default name
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
         newActivity.setEstimatedPoms(0);
-        newActivity.setName("(N) " + Labels.getString("Common.Subtask"));
         // Set parent id
         newActivity.setParentId(panel.getTable().getActivityIdFromSelectedRow());
-        getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field        
+        getList().add(newActivity); // save activity in database      
         insertRow(newActivity);
         // Set the blinking cursor and the ability to type in right away
         editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX); // edit cell
