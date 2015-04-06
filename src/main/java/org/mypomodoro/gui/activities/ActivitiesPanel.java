@@ -315,7 +315,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return editPanel;
     }
 
-    public JTabbedPane getControlPane() {
+    public JTabbedPane getTabbedPane() {
         return tabbedPane;
     }
 

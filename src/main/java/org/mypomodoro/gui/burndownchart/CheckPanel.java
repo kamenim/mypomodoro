@@ -71,7 +71,7 @@ import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
-import org.mypomodoro.gui.reports.ReportsCustomTableHeader;
+import org.mypomodoro.gui.reports.ReportsTableHeader;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
@@ -226,7 +226,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 7] = Labels.getString("Common.Unplanned");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 6] = Labels.getString("Common.Date completed");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 3] = Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        ReportsCustomTableHeader customTableHeader = new ReportsCustomTableHeader(table, cloneColumnNames);
+        ReportsTableHeader customTableHeader = new ReportsTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 

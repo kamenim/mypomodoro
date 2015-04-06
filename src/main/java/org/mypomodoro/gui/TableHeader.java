@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.util;
+package org.mypomodoro.gui;
 
 import java.awt.Font;
 import java.awt.Point;
@@ -23,22 +23,29 @@ import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
+import org.mypomodoro.util.ColorUtil;
 
 /**
  * Custom header
  *
  */
-public class CustomTableHeader extends JTableHeader {
+public class TableHeader extends JTableHeader {
 
     private final String[] toolTips;
 
-    public CustomTableHeader(JTable table, String[] toolTips) {
+    public TableHeader(JTable table, String[] toolTips) {
         this.table = table; // setTable(table) / getTable() won't do any good
         this.toolTips = toolTips;
         setColumnModel(table.getColumnModel());
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
         setBorder(border);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+        /*
+        table.getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
+        table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
+        table.getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
+        table.getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
+        table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("Iter");*/
         /* This code sets a black border around each cell of the header but the rendering is not that nice
          final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
          setDefaultRenderer(new TableCellRenderer() {
