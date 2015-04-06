@@ -19,16 +19,16 @@ package org.mypomodoro.gui.reports;
 
 import javax.swing.JTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.util.CustomTableHeader;
+import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.util.Labels;
 
 /**
  *
  * Changing estimated colum name to 'real'
  */
-public class ReportsCustomTableHeader extends CustomTableHeader {
+public class ReportsTableHeader extends TableHeader {
     
-    public ReportsCustomTableHeader(JTable table, String[] toolTips) {
+    public ReportsTableHeader(JTable table, String[] toolTips) {
         super(table, toolTips);
         table.getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setHeaderValue(Labels.getString("Common.Real"));
     }    

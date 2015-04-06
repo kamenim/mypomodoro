@@ -42,7 +42,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.util.CustomTableHeader;
+import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
@@ -77,12 +77,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
                         if (selectedRowCount > 1) { // multiple selection
                             // diactivate/gray out unused tabs
-                            panel.getControlPane().setEnabledAt(1, false); // comment
-                            panel.getControlPane().setEnabledAt(2, false); // edit                                    
-                            panel.getControlPane().setEnabledAt(3, true); // merging                                    
-                            if (panel.getControlPane().getSelectedIndex() == 1
-                                    || panel.getControlPane().getSelectedIndex() == 2) {
-                                panel.getControlPane().setSelectedIndex(0); // switch to details panel
+                            panel.getTabbedPane().setEnabledAt(1, false); // comment
+                            panel.getTabbedPane().setEnabledAt(2, false); // edit                                    
+                            panel.getTabbedPane().setEnabledAt(3, true); // merging                                    
+                            if (panel.getTabbedPane().getSelectedIndex() == 1
+                                    || panel.getTabbedPane().getSelectedIndex() == 2) {
+                                panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                             }
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                             // Display info (list of selected tasks)                            
@@ -91,18 +91,18 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             emptySubTable();
                         } else if (selectedRowCount == 1) {
                             // activate all panels
-                            for (int index = 0; index < panel.getControlPane().getTabCount(); index++) {
+                            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
                                 if (index == 3) {
-                                    panel.getControlPane().setEnabledAt(3, false); // merging
-                                    if (panel.getControlPane().getSelectedIndex() == 3) {
-                                        panel.getControlPane().setSelectedIndex(0); // switch to details panel
+                                    panel.getTabbedPane().setEnabledAt(3, false); // merging
+                                    if (panel.getTabbedPane().getSelectedIndex() == 3) {
+                                        panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                                     }
                                 } else {
-                                    panel.getControlPane().setEnabledAt(index, true);
+                                    panel.getTabbedPane().setEnabledAt(index, true);
                                 }
                             }
-                            if (panel.getControlPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                panel.getControlPane().setSelectedIndex(panel.getControlPane().getSelectedIndex()); // switch to selected panel
+                            if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                                panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
                             }
                             currentSelectedRow = getSelectedRow();
                             showCurrentSelectedRow(); // when sorting columns, focus on selected row
@@ -301,18 +301,18 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     protected void initTabs() {
         if (getRowCount() == 0) {
-            for (int index = 0; index < panel.getControlPane().getTabCount(); index++) {
+            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
                 if (index == 4) { // import tab
-                    panel.getControlPane().setSelectedIndex(index);
+                    panel.getTabbedPane().setSelectedIndex(index);
                     continue;
                 }
-                panel.getControlPane().setEnabledAt(index, false);
+                panel.getTabbedPane().setEnabledAt(index, false);
             }
         } else {
-            for (int index = 0; index < panel.getControlPane().getTabCount(); index++) {
-                panel.getControlPane().setEnabledAt(index, index != 3); // merge tab : index == 3                                   
+            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
+                panel.getTabbedPane().setEnabledAt(index, index != 3); // merge tab : index == 3                                   
             }
-            panel.getControlPane().setSelectedIndex(0);
+            panel.getTabbedPane().setSelectedIndex(0);
         }
     }
 
@@ -368,7 +368,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         columnToolTips[0] = Labels.getString("Common.Unplanned");
         columnToolTips[1] = Labels.getString("Common.Date scheduled");
         columnToolTips[4] = Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(this, columnToolTips);
+        TableHeader customTableHeader = new TableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
 
@@ -596,6 +596,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         if (getEditorComponent() != null) { // set blinking cursor
             getEditorComponent().requestFocus();
         }
-        panel.getControlPane().setSelectedIndex(2); // open edit tab
+        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
     }
 }

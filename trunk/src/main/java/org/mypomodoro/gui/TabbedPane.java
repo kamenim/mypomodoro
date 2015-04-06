@@ -16,6 +16,9 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.AWTException;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -28,8 +31,6 @@ import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -43,9 +44,7 @@ public class TabbedPane extends JTabbedPane {
         this.panel = panel;
         setFocusable(false); // removes borders around tab text
         // One click action (expand / fold)
-        CustomChangeListener customChangeListener = new CustomChangeListener();
-        addChangeListener(customChangeListener);
-        addMouseListener(new CustomMouseAdapter(customChangeListener));
+        addMouseListener(new CustomMouseAdapter());
         // Keystroke
         InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
@@ -58,60 +57,46 @@ public class TabbedPane extends JTabbedPane {
     // Implement one-click action on selected tabs
     // Tab already selected = one click to expand
     // Tab not selected = double click to expand
-    // Note: if a tab is selected programatically, only double click will work on that tab
-    class CustomChangeListener implements ChangeListener {
-
-        private boolean stateChanged = false;
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            stateChanged = true;
-        }
-
-        public boolean getStateChanged() {
-            return stateChanged;
-        }
-
-        public void setStateChanged(boolean stateChanged) {
-            this.stateChanged = stateChanged;
-        }
-    }
-
     class CustomMouseAdapter extends MouseAdapter {
 
-        private final CustomChangeListener customChangeListener;
         private int dividerLocation;
+        //private int selectedIndex = 0;
         //private Robot robot = null; // used to move the cursor
 
-        public CustomMouseAdapter(CustomChangeListener customChangeListener) {
-            this.customChangeListener = customChangeListener;
+        public CustomMouseAdapter() {
             /*try {
-             robot = new Robot();
-             } catch (AWTException ignored) {
-             }*/
+                robot = new Robot();
+            } catch (AWTException ignored) {
+            }*/
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            JSplitPane splitPane = panel.getSplitPane();
-            if (e.getClickCount() > 1
-                    || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
-                // Expand
-                if (splitPane.getDividerLocation() != 0) {
-                    dividerLocation = splitPane.getDividerLocation();
-                    splitPane.setDividerLocation(0.0);
-                } else { // back to original position
-                    splitPane.setDividerLocation(dividerLocation);
-                }
-                // Center cursor on selected tab
-                // This doesn't work
-                    /*if (robot != null) {
-                 Point p = tabbedPane.getLocationOnScreen(); // location on screen                        
-                 robot.mouseMove((int) p.getX(), (int) p.getY());
-                 }*/
+            // make sure the double click action is served first            
+            if (e.getClickCount() > 1) {
+                move();
+            } /*else if (e.getClickCount() == 1 && selectedIndex == getSelectedIndex()) {
+                move();
             } else {
-                customChangeListener.setStateChanged(false);
+                selectedIndex = getSelectedIndex();
+            }*/
+        }
+
+        private void move() {
+            JSplitPane splitPane = panel.getSplitPane();
+            // Expand
+            if (splitPane.getDividerLocation() != 0) {
+                dividerLocation = splitPane.getDividerLocation();
+                splitPane.setDividerLocation(0.0);
+            } else { // back to original position
+                splitPane.setDividerLocation(dividerLocation);
             }
+            // Set cursor on splitpane
+            // This doesn't work properly
+            /*if (robot != null) {
+                Point p = splitPane.getLocationOnScreen();
+                robot.mouseMove((int) p.getX(), (int) p.getY());
+            }*/
         }
     }
 

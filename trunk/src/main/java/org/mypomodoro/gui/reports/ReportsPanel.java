@@ -81,7 +81,7 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.util.CustomTableHeader;
+import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
@@ -257,7 +257,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 9] = Labels.getString("Common.Unplanned");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 8] = Labels.getString("Common.Date completed");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        ReportsCustomTableHeader customTableHeader = new ReportsCustomTableHeader(table, cloneColumnNames);
+        ReportsTableHeader customTableHeader = new ReportsTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 

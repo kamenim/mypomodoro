@@ -84,7 +84,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.util.CustomTableHeader;
+import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
@@ -318,7 +318,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         String[] cloneColumnNames = columnNames.clone();
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 5] = Labels.getString("Common.Unplanned");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
+        TableHeader customTableHeader = new TableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip and drag and drop
