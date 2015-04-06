@@ -257,7 +257,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 9] = Labels.getString("Common.Unplanned");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 8] = Labels.getString("Common.Date completed");
         cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 5] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        CustomTableHeader customTableHeader = new CustomTableHeader(table, cloneColumnNames);
+        ReportsCustomTableHeader customTableHeader = new ReportsCustomTableHeader(table, cloneColumnNames);
         table.setTableHeader(customTableHeader);
 
         // Add tooltip for Title and Type colums 

@@ -34,7 +34,7 @@ public abstract class AbstractTableModel extends DefaultTableModel {
         Labels.getString("Common.Date"),
         Labels.getString("Common.Title"),
         Labels.getString("Common.Type"),
-        Labels.getString("Common.Real"),
+        Labels.getString("Common.Estimated"),
         Labels.getString("ReportListPanel.Diff I"),
         Labels.getString("ReportListPanel.Diff II"),
         Labels.getString("Agile.Common.Story Points"),
