@@ -71,6 +71,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     if (!e.getValueIsAdjusting()) { // ignoring the deselection event
+                            System.err.println("selectedRowCount > 0 => " + Thread.currentThread().getStackTrace()[1].getMethodName());
                         // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
                         setInputMap(JTable.WHEN_FOCUSED, im);
 
@@ -89,7 +90,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             // populate subtable
                             emptySubTable();
                         } else if (selectedRowCount == 1) {
-                            System.err.println("test");
                             // activate all panels
                             for (int index = 0; index < panel.getControlPane().getTabCount(); index++) {
                                 if (index == 3) {
@@ -114,7 +114,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         setTitle();
                     }
                 } else {
-                    System.err.println("toto");
+                            System.err.println("selectedRowCount == 0 => " + Thread.currentThread().getStackTrace()[1].getMethodName());
                     setTitle();
                 }
             }
@@ -134,6 +134,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int column = e.getColumn();
                 if (row != -1
                         && e.getType() == TableModelEvent.UPDATE) {
+                    System.err.println("tableChanged => " + Thread.currentThread().getStackTrace()[1].getMethodName());
                     ActivitiesTableModel model = (ActivitiesTableModel) e.getSource();
                     Object data = model.getValueAt(row, column);
                     if (data != null) {
@@ -201,7 +202,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         //activitiesPanel.getDetailsPanel().showInfo(this);
                     }
                 }
-                enableTabs();
             }
         });
     }
@@ -292,14 +292,14 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             setAutoCreateRowSorter(true);
         }
 
-        enableTabs();
+        initTabs();
 
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
     }
 
-    protected void enableTabs() {
+    protected void initTabs() {
         if (getRowCount() == 0) {
             for (int index = 0; index < panel.getControlPane().getTabCount(); index++) {
                 if (index == 4) { // import tab
@@ -466,7 +466,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     public void removeRow(int rowIndex) {
-        clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         model.removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (getRowCount() > 0) {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
@@ -477,10 +477,13 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     @Override
     public void insertRow(Activity activity) {
-        clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
+        //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-        model.addRow(activity); // we add in the Model...        
+        model.addRow(activity); // we add in the Model...
+        if (getRowCount() == 1) { // refresh tabs as the very first row has just been added to the table
+            initTabs();
+        }
         int currentRow = convertRowIndexToView(getRowCount() - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
@@ -562,16 +565,11 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
-        newActivity.setEstimatedPoms(0);
+        newActivity.setName(Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
+        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
-        // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), AbstractTableModel.TYPE_COLUMN_INDEX, null); // edit cell
-        setSurrendersFocusOnKeystroke(true); // focus
-        if (getEditorComponent() != null) {
-            getEditorComponent().requestFocus();
-        }
-        panel.getControlPane().setSelectedIndex(2); // open edit tab
+        editCellNewTask();
     }
 
     @Override
@@ -583,18 +581,21 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 copiedActivity.setName("(D) " + copiedActivity.getName());
                 copiedActivity.setActualPoms(0);
                 copiedActivity.setOverestimatedPoms(0);
-                getList().add(copiedActivity, new Date(), new Date(0));
-                //copiedActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+                getList().add(copiedActivity, new Date(), new Date(0)); // save activity in database
                 insertRow(copiedActivity);
-                // Set the blinking cursor and the ability to type in right away
-                editCellAt(getSelectedRow(), AbstractTableModel.TYPE_COLUMN_INDEX); // edit cell
-                setSurrendersFocusOnKeystroke(true); // focus
-                if (getEditorComponent() != null) {
-                    getEditorComponent().requestFocus();
-                }
-                panel.getControlPane().setSelectedIndex(2); // open edit tab                
+                editCellNewTask();
             } catch (CloneNotSupportedException ignored) {
             }
         }
+    }
+
+    // Set the blinking cursor and the ability to type in right away
+    protected void editCellNewTask() {
+        editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell
+        setSurrendersFocusOnKeystroke(true); // focus
+        if (getEditorComponent() != null) { // set blinking cursor
+            getEditorComponent().requestFocus();
+        }
+        panel.getControlPane().setSelectedIndex(2); // open edit tab
     }
 }

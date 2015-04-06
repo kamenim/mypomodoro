@@ -1152,4 +1152,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     protected ReportList getList() {
         return ReportList.getList();
     }
+    
+    @Override
+    public JSplitPane getSplitPane() {
+        return splitPane;
+    }
 }

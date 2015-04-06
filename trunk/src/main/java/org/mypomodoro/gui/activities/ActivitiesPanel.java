@@ -27,6 +27,7 @@ import javax.swing.JTabbedPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -82,7 +83,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS)); 
 
         // Init Tabbed pane        
-        tabbedPane = new TabbedPane();
+        tabbedPane = new TabbedPane(this);
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
         tabbedPane.setPreferredSize(TABPANE_DIMENSION);
         initTabbedPane(); 
@@ -94,7 +95,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
         splitPane.setDividerSize(0); // remove divider by hiding it
-        tabbedPane.setSplitPane(splitPane);
 
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
@@ -322,12 +322,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public JPanel getListPane() {
         return listPane;
     }
+    
+    @Override
+    public JSplitPane getSplitPane() {
+        return splitPane;
+    }    
 
     public TableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 
-    public TableTitlePanel getSubTableTitlePanel() {
+    public SubTableTitlePanel getSubTableTitlePanel() {
         return subTableTitlePanel;
     }
 

@@ -156,7 +156,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected void enableTabs() {
+    protected void initTabs() {
         // Do nothing so this doesn't conflict with the main table
     }
 
@@ -185,17 +185,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
-        newActivity.setEstimatedPoms(0);
+        newActivity.setName(Labels.getString("Common.New subtask"));
         // Set parent id
         newActivity.setParentId(panel.getTable().getActivityIdFromSelectedRow());
-        getList().add(newActivity); // save activity in database      
+        getList().add(newActivity); // save activity in database
+        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
-        // Set the blinking cursor and the ability to type in right away
-        editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX); // edit cell
-        setSurrendersFocusOnKeystroke(true); // focus
-        if (getEditorComponent() != null) {
-            getEditorComponent().requestFocus();
-        }
-        panel.getControlPane().setSelectedIndex(2); // open edit tab
-    }
+        editCellNewTask();
+    }    
 }

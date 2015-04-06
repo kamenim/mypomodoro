@@ -17,6 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.util.Date;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
 
@@ -55,4 +56,6 @@ public interface IListPanel {
     void addActivity(Activity activity, Date date, Date dateCompleted);
 
     void saveComment(String comment);
+    
+    JSplitPane getSplitPane();
 }
