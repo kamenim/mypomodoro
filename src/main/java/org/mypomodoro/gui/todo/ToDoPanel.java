@@ -1576,4 +1576,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     protected ToDoList getList() {
         return ToDoList.getList();
     }
+    
+    @Override
+    public JSplitPane getSplitPane() {
+        return splitPane;
+    }
 }

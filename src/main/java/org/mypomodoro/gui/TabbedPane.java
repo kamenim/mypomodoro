@@ -37,9 +37,10 @@ import javax.swing.event.ChangeListener;
  */
 public class TabbedPane extends JTabbedPane {
 
-    private JSplitPane splitPane;
+    private final IListPanel panel;
 
-    public TabbedPane() {
+    public TabbedPane(IListPanel panel) {
+        this.panel = panel;
         setFocusable(false); // removes borders around tab text
         // One click action (expand / fold)
         CustomChangeListener customChangeListener = new CustomChangeListener();
@@ -52,10 +53,6 @@ public class TabbedPane extends JTabbedPane {
             im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
             am.put("Tab" + i, new tabAction(i - 1));
         }
-    }
-    
-    public void setSplitPane(JSplitPane splitPane) {
-        this.splitPane = splitPane;
     }
 
     // Implement one-click action on selected tabs
@@ -96,6 +93,7 @@ public class TabbedPane extends JTabbedPane {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            JSplitPane splitPane = panel.getSplitPane();
             if (e.getClickCount() > 1
                     || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
                 // Expand

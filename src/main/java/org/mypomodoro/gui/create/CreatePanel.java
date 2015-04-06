@@ -146,7 +146,7 @@ public class CreatePanel extends JPanel {
         ActivityList.getList().add(newActivity);
         Main.gui.getActivityListPanel().insertRow(newActivity);
         clearForm();
-        validation.setForeground(ColorUtil.BLACK);
+        validation.setForeground(getForeground());
         validation.setFont(getFont().deriveFont(Font.BOLD));
         validation.setText(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "CreatePanel.Activity added to Activity List"));
     }

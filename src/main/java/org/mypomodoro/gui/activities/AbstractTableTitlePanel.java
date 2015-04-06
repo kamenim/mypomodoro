@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
@@ -206,6 +207,16 @@ public abstract class AbstractTableTitlePanel extends JPanel {
 
     public void setText(String text) {
         titleLabel.setText(text);
+    }
+                
+    public void clear() {
+        titleLabel.setText(null);
+        Component[] comps = getComponents();
+        for (Component comp : comps) {
+            if (comp instanceof DefaultButton) {
+                remove(comp);
+            }
+        }
     }
 
     /*public void repaintLabel() {

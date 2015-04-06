@@ -941,4 +941,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     protected ChartList getList() {
         return ChartList.getList();
     }
+    
+    @Override
+    public JSplitPane getSplitPane() {
+        return splitPane;
+    }
 }
