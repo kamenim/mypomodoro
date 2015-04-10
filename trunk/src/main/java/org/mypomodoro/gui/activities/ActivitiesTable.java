@@ -490,16 +490,19 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     }
 
     // no default name
+    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
         newActivity.setName(Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
-        editCellNewTask();
+        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
     }
 
+    // default name: (D) + name
+    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void duplicateTask() {
         if (getSelectedRowCount() == 1) {
@@ -510,20 +513,11 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 copiedActivity.setActualPoms(0);
                 copiedActivity.setOverestimatedPoms(0);
                 getList().add(copiedActivity, new Date(), new Date(0)); // save activity in database
+                //copiedActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
                 insertRow(copiedActivity);
-                editCellNewTask();
+                panel.getTabbedPane().setSelectedIndex(2); // open edit tab
             } catch (CloneNotSupportedException ignored) {
             }
         }
-    }
-
-    // Set the blinking cursor and the ability to type in right away
-    protected void editCellNewTask() {
-        editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell
-        setSurrendersFocusOnKeystroke(true); // focus
-        if (getEditorComponent() != null) { // set blinking cursor
-            getEditorComponent().requestFocus();
-        }
-        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
     }
 }
