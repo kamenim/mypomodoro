@@ -95,6 +95,13 @@ public final class ReportList extends AbstractActivities {
     }
 
     public void delete(Activity activity) {
+        if (!activity.isSubTask()) {
+            ReportList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                remove(subActivity);
+                subActivity.databaseDelete();
+            }
+        }
         remove(activity);
         activity.databaseDelete();
     }
@@ -104,20 +111,30 @@ public final class ReportList extends AbstractActivities {
         removeAll();
     }
 
-    // move from Report list to Activity list
+    // Reopen a task and its subtasks to ActivityList
+    // Reopen a subtask only will make it a task
     public void reopen(Activity activity) {
         activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)
         activity.setIteration(-1); // reset iteration
+        if (activity.isSubTask()) {
+            activity.setParentId(-1); // make sure sub-task become task
+        } else {
+            ReportList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                ActivityList.getList().add(subActivity);
+                remove(subActivity);
+            }
+        }
         ActivityList.getList().add(activity);
         remove(activity);
     }
 
-    public void reopenAll() {
+    /*public void reopenAll() {
         for (Activity activity : activities) {
             activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)            
             ActivityList.getList().add(activity);
         }
         ActivitiesDAO.getInstance().reopenAllReports();
         removeAll();
-    }
+    }*/
 }

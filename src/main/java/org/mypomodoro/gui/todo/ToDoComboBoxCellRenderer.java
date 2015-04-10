@@ -40,19 +40,22 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
+            labelBefore.setForeground(ColorUtil.GREEN);
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
             comboBox.setForeground(ColorUtil.GREEN);
-            label.setForeground(ColorUtil.GREEN);
+            labelAfter.setForeground(ColorUtil.GREEN);
         } else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
+            labelBefore.setForeground(ColorUtil.RED);
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.RED); // editable combo box
             comboBox.setForeground(ColorUtil.RED);
-            label.setForeground(ColorUtil.RED);
+            labelAfter.setForeground(ColorUtil.RED);
         } else { // reset foreground (depends on the theme)
+            labelBefore.setForeground(ColorUtil.BLACK);
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
-            label.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
+            labelAfter.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
         }
         return this;
     }

@@ -105,9 +105,13 @@ public abstract class AbstractActivitiesTable extends JXTable {
                             && mouseHoverRow != rowIndex) { // no multiple selection
                         showInfoForRowIndex(rowIndex);
                         mouseHoverRow = rowIndex;
+                    } else if (getSelectedRowCount() > 1) { // multiple selection
+                        // Display info (list of selected tasks)                            
+                        showDetailsForSelectedRows();
                     }
                 } else {
                     setToolTipText(null); // this way tooltip won't stick
+                    mouseHoverRow = -1;
                 }
             }
         });
@@ -236,7 +240,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component c = super.prepareRenderer(renderer, row, column);
+        Component c = super.prepareRenderer(renderer, row, column);        
         if (isRowSelected(row)) {
             ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
             // using ((JComponent) c).getFont() to preserve current font (eg strike through)
@@ -334,8 +338,13 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setToolTipText((String) value);
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
+            String text = (String) value;
+            if (!text.isEmpty()) {
+                renderer.setToolTipText(text);
+            } else {
+                renderer.setToolTipText(null);
+            }
             return renderer;
         }
     }

@@ -43,19 +43,30 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            if (realpoms == 0) {
+            int minimum = 0;
+            int maximum = estimatedpoms;
+            if (realpoms == 0
+                    && (activity.isSubTask() || !ToDoList.hasSubTasks(activity.getId()))) { // estimated combo box only
+                if (activity.isSubTask()) { // subtask - sum of estimated of subtasks can't be more than estimate of parent task 
+                    ToDoList subList = ToDoList.getSubTaskList(activity.getParentId());
+                    int subEstimated = 0;
+                    for (Activity subActivity : subList) {
+                        subEstimated += subActivity.getEstimatedPoms();
+                    }
+                    Activity parentActivity = ToDoList.getList().getById(activity.getParentId());
+                    maximum += parentActivity.getEstimatedPoms() - subEstimated;
+                } else {                    
+                    maximum += Main.preferences.getMaxNbPomPerActivity();
+                }
+                comboBox.setVisible(true);
                 comboBox.removeAllItems();
-                for (int i = 0; i <= (estimatedpoms >= Main.preferences.getMaxNbPomPerActivity() ? estimatedpoms + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
+                for (int i = minimum; i <= maximum; i++) {
                     comboBox.addItem(i);
                 }
-                comboBox.setSelectedItem(estimatedpoms);
-                add(comboBox);
-            } else {
-                remove(comboBox);
+                comboBox.setSelectedItem(activity.getEstimatedPoms());                
+            } else { // no change to the label set by the cell renderer
+                comboBox.setVisible(false);
             }
-            // don't show the overestimated pom so we have more space for edition
-            //int overestimatedpoms = activity.getOverestimatedPoms();
-            //label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }

@@ -36,12 +36,14 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  */
 public class ComboBoxPanel extends JPanel {
 
+    protected JLabel labelBefore = new JLabel();
     protected JComboBox comboBox;
-    protected JLabel label = new JLabel();
+    protected JLabel labelAfter = new JLabel();
 
     // Generic constructor
     public <E> ComboBoxPanel(E[] data, boolean editable) {
         setLayout(new GridBagLayout());
+        add(labelBefore);
         comboBox = new JComboBox();
         for (E d : data) { // jdk 7 : simply use comboBox = new JComboBox<E>(data);
             comboBox.addItem(d);
@@ -67,7 +69,7 @@ public class ComboBoxPanel extends JPanel {
             });
             add(comboBox, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 5, 2, 5), 0, 0));
         }
-        add(label);
+        add(labelAfter);
     }
 
     class DefaultComboBoxRenderer extends DefaultListCellRenderer {

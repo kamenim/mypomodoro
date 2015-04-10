@@ -67,6 +67,17 @@ public final class ToDoList extends AbstractActivities {
         }
         return subTableList;
     }
+    
+    public static boolean hasSubTasks(int activityId) {
+        boolean hasSubTasks = false;
+        for (Activity a : list) {            
+            if (a.getParentId() == activityId) {
+                hasSubTasks = true;
+                break;
+            }
+        }
+        return hasSubTasks;
+    }
 
     public static int getListSize() {
         return getList().size();
@@ -94,36 +105,53 @@ public final class ToDoList extends AbstractActivities {
         super.add(act); // add to the list
     }
 
-    public void delete(Activity activity) {
+    // Move a task and its subtasks to ActivityList
+    // Move a subtask only will make it a task
+    public void move(Activity activity) {
+        if (activity.isSubTask()) {
+            activity.setParentId(-1); // make sure sub-task become task
+        } else {
+            ToDoList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                ActivityList.getList().add(subActivity);
+                remove(subActivity);
+            }
+        }
+        ActivityList.getList().add(activity); // set the priority and update the database
         remove(activity);
-        activity.databaseDelete();
     }
 
-    public void move(Activity act) {
-        ActivityList.getList().add(act); // set the priority and update the database
-        remove(act);
-    }
-
-    public void moveAll() {
+    /*public void moveAll() {
         for (Activity activity : activities) {
             ActivityList.getList().add(activity);
         }
         ActivitiesDAO.getInstance().moveAllTODOs();
         removeAll();
+    }*/
+
+    // Complete a task and its subtasks to ReportList
+    // Complete a subtask only will make it a task
+    public void complete(Activity activity) {
+        if (activity.isSubTask()) {
+            activity.setParentId(-1); // make sure sub-task become task
+        } else {
+            ToDoList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                ActivityList.getList().add(subActivity);
+                remove(subActivity);
+            }            
+        }        
+        ReportList.getList().add(activity);
+        remove(activity);
     }
 
-    public void complete(Activity a) {
-        ReportList.getList().add(a);
-        remove(a);
-    }
-
-    public void completeAll() {
+    /*public void completeAll() {
         for (Activity activity : activities) {
             ReportList.getList().add(activity);
         }
         ActivitiesDAO.getInstance().completeAllTODOs();
         removeAll();
-    }
+    }*/
 
     // set new priorities
     public void reorderByPriority() {
@@ -147,7 +175,6 @@ public final class ToDoList extends AbstractActivities {
          removeAll();
          for (Activity activity : alist) {            
          add(activity);
-         System.err.println(activity.getPriority());
          }*/
     }
 }

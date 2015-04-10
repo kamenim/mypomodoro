@@ -37,8 +37,9 @@ public class ComboBoxCellRenderer extends ComboBoxPanel implements TableCellRend
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+        labelBefore.setFont(isSelected ? labelBefore.getFont().deriveFont(Font.BOLD) : labelBefore.getFont().deriveFont(Font.PLAIN));
         comboBox.setFont(isSelected ? comboBox.getFont().deriveFont(Font.BOLD) : comboBox.getFont().deriveFont(Font.PLAIN));
-        label.setFont(isSelected ? label.getFont().deriveFont(Font.BOLD) : label.getFont().deriveFont(Font.PLAIN));
+        labelAfter.setFont(isSelected ? labelAfter.getFont().deriveFont(Font.BOLD) : labelAfter.getFont().deriveFont(Font.PLAIN));
         if (value != null) {
             comboBox.setSelectedItem(value);
         }

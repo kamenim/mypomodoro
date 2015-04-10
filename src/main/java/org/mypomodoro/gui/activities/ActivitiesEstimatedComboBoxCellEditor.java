@@ -41,20 +41,33 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null) {
-            comboBox.removeAllItems();
-            if (activity.getActualPoms() > 0) {
-                for (int i = (activity.getActualPoms() - activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getOverestimatedPoms() : 0); i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
+            int realpoms = activity.getActualPoms();
+            int estimatedpoms = activity.getEstimatedPoms();
+            int minimum = 0;
+            int maximum = estimatedpoms;
+            if (realpoms == 0
+                    && (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId()))) { // estimated combo box only
+                if (activity.isSubTask()) { // subtask - sum of estimated of subtasks can't be more than estimate of parent task 
+                    ActivityList subList = ActivityList.getSubTaskList(activity.getParentId());
+                    int subEstimated = 0;
+                    for (Activity subActivity : subList) {
+                        subEstimated += subActivity.getEstimatedPoms();
+                    }
+                    Activity parentActivity = ActivityList.getList().getById(activity.getParentId());
+                    maximum += parentActivity.getEstimatedPoms() - subEstimated;
+                } else {                    
+                    maximum += Main.preferences.getMaxNbPomPerActivity();
+                }
+                comboBox.setVisible(true);
+                comboBox.removeAllItems();
+                for (int i = minimum; i <= maximum; i++) {
                     comboBox.addItem(i);
                 }
-            } else {
-                for (int i = 0; i <= (activity.getEstimatedPoms() >= Main.preferences.getMaxNbPomPerActivity() ? activity.getEstimatedPoms() + Main.preferences.getMaxNbPomPerActivity() : Main.preferences.getMaxNbPomPerActivity()); i++) {
-                    comboBox.addItem(i);
-                }
+                comboBox.setSelectedItem(activity.getEstimatedPoms());                                
+                
+            } else { // no change to the label set by the cell renderer
+                comboBox.setVisible(false);
             }
-            comboBox.setSelectedItem(activity.getEstimatedPoms());
-            // don't show the overestimated pom so we have more space for edition
-            //int overestimatedpoms = activity.getOverestimatedPoms();
-            //label.setText(overestimatedpoms > 0 ? "+" + overestimatedpoms + " " : "");
         }
         return this;
     }

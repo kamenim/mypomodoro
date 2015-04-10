@@ -36,14 +36,23 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
-        Activity activity = ActivityList.getList().getById(id);
-        if (activity != null) {
+        Activity activity = ActivityList.getList().getById(id);        
+         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
-            comboBox.removeAllItems();
-            comboBox.addItem(estimatedpoms);
-            label.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms + " " : "");
+            // no real poms & no subtask --> estimated may be changed
+            if (realpoms == 0
+                    && (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId()))) {
+                comboBox.setVisible(true);
+                comboBox.removeAllItems();                
+                comboBox.addItem(estimatedpoms);
+                labelAfter.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+                
+            } else { // real poms or has subtasks --> estimated may not be changed
+                comboBox.setVisible(false);
+                labelAfter.setText((realpoms > 0 ? realpoms + " / " : "") + estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
+            }
             setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
         }
         return this;
