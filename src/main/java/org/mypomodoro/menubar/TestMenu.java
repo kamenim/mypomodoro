@@ -101,7 +101,6 @@ public class TestMenu extends JMenu {
                         MainPanel.progressBar.setVisible(true);
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(nbTask);
-
                         String[] tasks = new String[]{"Task", "Tâche", "任务", "задача", "कार्य"}; // English, French, Hindi, Russian, Chinese simplified                        
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f};
                         Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
@@ -123,28 +122,29 @@ public class TestMenu extends JMenu {
                                         tasks[rand.nextInt(tasks.length)] + " " + (i + 1),
                                         "",
                                         (Main.preferences.getAgileMode() ? (iteration == -1 ? "Other" : TaskTypeList.getTypes().get(rand.nextInt(TaskTypeList.getTypes().size()))) : "Type" + " " + (rand.nextInt(10) + 1)),
-                                        rand.nextInt(Main.preferences.getMaxNbPomPerActivity()) + 1,
+                                        rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1),
                                         Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                         iteration,
                                         (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
                                 a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
-                                a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
-                                int actual = rand.nextInt(a.getEstimatedPoms());
-                                if (a.getOverestimatedPoms() > 0) {
-                                    actual = a.getEstimatedPoms() + rand.nextInt(a.getOverestimatedPoms());
-                                } else {
-                                    actual += rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - actual); // give some weigth to actual so there are more real pomodoros for completed tasks
+                                if (a.getEstimatedPoms() > 0) { // overestimation with no initial estimation doesn't make sense
+                                    a.setOverestimatedPoms(rand.nextBoolean() && rand.nextBoolean() ? rand.nextInt(5) : 0);
                                 }
-                                a.setActualPoms(actual);
+                                int real = rand.nextInt(a.getEstimatedPoms() + 1);
+                                if (a.getOverestimatedPoms() > 0) {
+                                    real = a.getEstimatedPoms() + rand.nextInt(a.getOverestimatedPoms() + 1);
+                                } else {
+                                    real += rand.nextInt(a.getEstimatedPoms() + a.getOverestimatedPoms() - real + 1); // give some weigth to actual so there are more real pomodoros for completed tasks
+                                }
                                 if (a.getIteration() == -1) {
                                     a.setStoryPoints(0);
                                 }
                                 if (a.isCompleted()) { // Tasks for the Report list                           
-                                    actual = actual == 0 ? 1 : actual;
+                                    real = real == 0 ? 1 : real;
                                     if (rand.nextBoolean()) { // once in a while set finished
-                                        actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                                        real = a.getEstimatedPoms() + a.getOverestimatedPoms();
                                     }
-                                    a.setActualPoms(actual);
+                                    a.setActualPoms(real);
                                     // Dates
                                     // Date Added must be older than Date Completed
                                     // Date Completed of iteration N must be older than Date completed of iteration N+1
@@ -163,10 +163,10 @@ public class TestMenu extends JMenu {
                                     Main.gui.getReportListPanel().insertRow(a);
                                     reportListValue++;
                                 } else { // Tasks for the Activity and ToDo list
-                                    if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List
+                                    if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                        
                                         if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while set finished
-                                            actual = a.getEstimatedPoms() + a.getOverestimatedPoms();
-                                            a.setActualPoms(actual);
+                                            real = a.getEstimatedPoms() + a.getOverestimatedPoms();
+                                            a.setActualPoms(real);
                                         }
                                         if (a.getIteration() >= 0) {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
@@ -244,23 +244,37 @@ public class TestMenu extends JMenu {
 
         private void addSubTasks(Activity a, AbstractActivities list) {
             Random rand = new Random();
-            int subTaskActual = 0;
-            int subTaskEstimated = 0;
-            int subTaskOverestimated = 0;
+            int subTaskReal = a.getActualPoms();
+            int subTaskOverestimated = a.getOverestimatedPoms();
+            int subTaskEstimated = a.getEstimatedPoms();
             int nbSubTask = rand.nextInt(6); // 0 to 5 subtasks
             try {
-                for (int j = 1; j <= nbSubTask; j++) {
+                for (int j = 0; j < nbSubTask; j++) {
                     Activity aClone = a.clone();
                     aClone.setName(a.getName() + "." + j);
-                    int estimated = a.getEstimatedPoms() > 0 ? rand.nextInt(a.getEstimatedPoms() + 1) : 0;
-                    subTaskEstimated += estimated;
-                    aClone.setEstimatedPoms(subTaskEstimated > a.getEstimatedPoms() ? 0 : estimated);
-                    int overestimated = a.getOverestimatedPoms() > 0 ? rand.nextInt(a.getOverestimatedPoms() + 1) : 0;
-                    subTaskOverestimated += overestimated;
-                    aClone.setOverestimatedPoms(subTaskOverestimated > a.getOverestimatedPoms() ? 0 : overestimated);
-                    int actualPom = a.getActualPoms() > 0 ? rand.nextInt(a.getActualPoms() + 1) : 0;
-                    subTaskActual += actualPom;
-                    aClone.setActualPoms(subTaskActual > a.getActualPoms() ? 0 : actualPom);
+                    // all poms must be distributed amongs the subtasks                    
+                    int real = subTaskReal > 0 ? rand.nextInt(subTaskReal + 1) : 0; // 0 to real
+                    int estimated = subTaskEstimated > 0 ? rand.nextInt(subTaskEstimated + 1) : 0; // 0 to estimated
+                    int overestimated = subTaskOverestimated > 0 ? rand.nextInt(subTaskOverestimated + 1) : 0; // 0 to overestimated
+                    if (estimated == 0) { // overestimation with no initial estimation doesn't make sense
+                        overestimated = 0;
+                    }                    
+                    // last subtask
+                    if (j == nbSubTask - 1) {
+                        real = subTaskReal;
+                        overestimated = subTaskOverestimated;
+                        estimated = subTaskEstimated;
+                    } else {
+                        while(real > estimated + overestimated) {
+                            --real;
+                        }
+                    }
+                    subTaskReal = subTaskReal - real;                     
+                    subTaskOverestimated = subTaskOverestimated - overestimated;
+                    subTaskEstimated = subTaskEstimated - estimated; 
+                    aClone.setActualPoms(real);
+                    aClone.setOverestimatedPoms(overestimated);
+                    aClone.setEstimatedPoms(estimated);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));

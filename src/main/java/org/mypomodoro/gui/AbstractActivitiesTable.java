@@ -343,6 +343,12 @@ public abstract class AbstractActivitiesTable extends JXTable {
             if (!text.isEmpty()) {
                 renderer.setToolTipText(text);
             } else {
+                // Set the blinking cursor and the ability to type in right away
+                table.editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell
+                table.setSurrendersFocusOnKeystroke(true); // focus
+                if (table.getEditorComponent() != null) { // set blinking cursor
+                    table.getEditorComponent().requestFocus();
+                }                
                 renderer.setToolTipText(null);
             }
             return renderer;

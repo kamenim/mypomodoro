@@ -171,6 +171,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         // no sub table to populate
     }
 
+    @Override
     protected void emptySubTable() {
         // no sub table to empty
     }
@@ -186,6 +187,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     // no default name
+    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
@@ -193,8 +195,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
         // Set parent id
         newActivity.setParentId(panel.getTable().getActivityIdFromSelectedRow());
         getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
-        editCellNewTask();
+        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
     }
 }
