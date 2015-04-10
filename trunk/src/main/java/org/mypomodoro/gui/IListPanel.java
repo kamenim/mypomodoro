@@ -29,7 +29,7 @@ public interface IListPanel {
 
     void move(Activity activity);
 
-    void moveAll();
+    //void moveAll();
 
     void removeRow(int row);
 
@@ -49,7 +49,7 @@ public interface IListPanel {
 
     void complete(Activity activity);
 
-    void completeAll();
+    //void completeAll();
 
     void addActivity(Activity activity);
 

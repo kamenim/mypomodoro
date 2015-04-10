@@ -38,13 +38,15 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
+            labelBefore.setForeground(ColorUtil.GREEN);
             comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
             comboBox.setForeground(ColorUtil.GREEN);
-            label.setForeground(ColorUtil.GREEN);
+            labelAfter.setForeground(ColorUtil.GREEN);
         } else { // reset foreground (depends on the theme)
+            labelBefore.setForeground(ColorUtil.BLACK);
             comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
             comboBox.setForeground(getForeground());
-            label.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
+            labelAfter.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
         }
         // Hide combobox and label when cell not editable 
         /*if (!table.getModel().isCellEditable(row, column)) {

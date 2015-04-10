@@ -252,15 +252,15 @@ public class TestMenu extends JMenu {
                 for (int j = 1; j <= nbSubTask; j++) {
                     Activity aClone = a.clone();
                     aClone.setName(a.getName() + "." + j);
-                    int actualPom = a.getActualPoms() > 0 ? rand.nextInt(a.getActualPoms() + 1) : 0;
-                    subTaskActual += actualPom;
-                    aClone.setActualPoms(subTaskActual > a.getActualPoms() ? 0 : actualPom);
                     int estimated = a.getEstimatedPoms() > 0 ? rand.nextInt(a.getEstimatedPoms() + 1) : 0;
                     subTaskEstimated += estimated;
                     aClone.setEstimatedPoms(subTaskEstimated > a.getEstimatedPoms() ? 0 : estimated);
                     int overestimated = a.getOverestimatedPoms() > 0 ? rand.nextInt(a.getOverestimatedPoms() + 1) : 0;
                     subTaskOverestimated += overestimated;
                     aClone.setOverestimatedPoms(subTaskOverestimated > a.getOverestimatedPoms() ? 0 : overestimated);
+                    int actualPom = a.getActualPoms() > 0 ? rand.nextInt(a.getActualPoms() + 1) : 0;
+                    subTaskActual += actualPom;
+                    aClone.setActualPoms(subTaskActual > a.getActualPoms() ? 0 : actualPom);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));

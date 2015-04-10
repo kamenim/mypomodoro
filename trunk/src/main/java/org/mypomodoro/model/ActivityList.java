@@ -68,6 +68,17 @@ public final class ActivityList extends AbstractActivities {
         }
         return subTableList;
     }
+    
+    public static boolean hasSubTasks(int activityId) {
+        boolean hasSubTasks = false;
+        for (Activity a : list) {            
+            if (a.getParentId() == activityId) {
+                hasSubTasks = true;
+                break;
+            }
+        }
+        return hasSubTasks;
+    }
 
     public static int getListSize() {
         return getList().size();
@@ -96,6 +107,13 @@ public final class ActivityList extends AbstractActivities {
     }
 
     public void delete(Activity activity) {
+        if (!activity.isSubTask()) {
+            ActivityList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                remove(subActivity);
+                subActivity.databaseDelete();
+            }
+        }
         remove(activity);
         activity.databaseDelete();
     }
@@ -105,13 +123,19 @@ public final class ActivityList extends AbstractActivities {
         removeAll();
     }
 
-    // move from Activity list to ToDo list
+    // Move a task and its subtasks to ToDoList
+    // Move a subtask only will make it a task
     public void move(Activity activity) {
+        if (activity.isSubTask()) {
+            activity.setParentId(-1); // make sure sub-task become task
+        } else {
+            ActivityList subList = getSubTaskList(activity.getId());
+            for (Activity subActivity : subList) {
+                ActivityList.getList().add(subActivity);
+                remove(subActivity);
+            }
+        }
         ToDoList.getList().add(activity); // this sets the priority and update the database
         remove(activity);
-    }
-
-    public void moveAll() {
-        // no use
     }
 }

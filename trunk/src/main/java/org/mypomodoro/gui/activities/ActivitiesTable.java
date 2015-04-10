@@ -365,9 +365,9 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     protected void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
-        columnToolTips[0] = Labels.getString("Common.Unplanned");
-        columnToolTips[1] = Labels.getString("Common.Date scheduled");
-        columnToolTips[4] = Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
+        columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date scheduled");
+        columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] =  "(" + Labels.getString("Common.Real") + " / ) " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         TableHeader customTableHeader = new TableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
@@ -487,78 +487,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         int currentRow = convertRowIndexToView(getRowCount() - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
-    }
-
-    // selected row BOLD
-    protected class CustomTableRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setForeground(ColorUtil.BLACK);
-            renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-            Activity activity = getList().getById(id);
-            if (activity != null && activity.isFinished()) {
-                renderer.setForeground(ColorUtil.GREEN);
-            }
-            return renderer;
-        }
-    }
-
-    protected class TitleRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setToolTipText((String) value);
-            return renderer;
-        }
-    }
-
-    protected class UnplannedRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if ((Boolean) value) {
-                if (!getFont().canDisplay('\u2714')) { // unicode tick
-                    renderer.setText("U");
-                } else {
-                    renderer.setText("\u2714");
-                }
-            } else {
-                renderer.setText("");
-            }
-            return renderer;
-        }
-    }
-
-    protected class DateRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (!DateUtil.isSameDay((Date) value, new Date(0))) {
-                renderer.setText(DateUtil.getShortFormatedDate((Date) value));
-                renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
-                if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                    Activity activity = getList().getById(id);
-                    if (activity != null && activity.isOverdue()) {
-                        Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                        map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                        renderer.setFont(getFont().deriveFont(map));
-                    }
-                }
-            } else {
-                renderer.setText(null);
-                renderer.setToolTipText(null);
-            }
-            return renderer;
-        }
     }
 
     // no default name

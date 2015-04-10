@@ -1089,7 +1089,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     @Override
     public void delete(Activity activity) {
-        getList().delete(activity);
+        // not used
     }
 
     @Override
@@ -1108,14 +1108,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     // moveAll is used only if no pomodoro is running (see MoveToDoButton)
-    @Override
+    /*@Override
     public void moveAll() {
         getList().moveAll();
         if (pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
             pomodoro.getTimerPanel().setStartEnv();
         }
-    }
+    }*/
 
     @Override
     public void complete(Activity activity) {
@@ -1128,14 +1128,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     // comleteAll is used only if no pomodoro is running (see CompleteToDoButton)
-    @Override
+    /*@Override
     public void completeAll() {
         getList().completeAll();
         if (pomodoro.getTimer().isRunning()) { // break running
             pomodoro.stop();
             pomodoro.getTimerPanel().setStartEnv();
         }
-    }
+    }*/
 
     @Override
     public void addActivity(Activity activity) {

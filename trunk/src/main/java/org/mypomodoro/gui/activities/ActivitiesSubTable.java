@@ -33,7 +33,7 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    //private final ActivitiesSubTableModel model;
+    private final ActivitiesSubTableModel model;
     private final ActivitiesPanel panel;
 
     private int parentId = -1;
@@ -41,7 +41,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
 
-        //this.model = model;
+        this.model = model;
         this.panel = panel;
 
         // This is to address the case/event when the mouse exit the table
@@ -168,7 +168,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     @Override
     protected void populateSubTable() {
-        // no sub table
+        // no sub table to populate
+    }
+
+    protected void emptySubTable() {
+        // no sub table to empty
     }
 
     @Override
@@ -192,5 +196,5 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(newActivity);
         editCellNewTask();
-    }    
+    }
 }

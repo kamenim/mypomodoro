@@ -898,10 +898,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
         getList().reopen(activity);
     }
 
-    @Override
+    /*@Override
     public void moveAll() {
         getList().reopenAll();
-    }
+    }*/
 
     @Override
     public Activity getActivityById(int id) {
@@ -923,10 +923,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
         // no use
     }
 
-    @Override
+    /*@Override
     public void completeAll() {
         // no use
-    }
+    }*/
 
     @Override
     public void addActivity(Activity activity) {

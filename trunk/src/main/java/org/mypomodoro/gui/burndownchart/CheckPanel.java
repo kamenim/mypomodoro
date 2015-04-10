@@ -733,10 +733,10 @@ public class CheckPanel extends JPanel implements IListPanel {
         // no use
     }
 
-    @Override
+    /*@Override
     public void moveAll() {
         // no use
-    }
+    }*/
 
     @Override
     public Activity getActivityById(int id) {
@@ -758,10 +758,10 @@ public class CheckPanel extends JPanel implements IListPanel {
         // no use
     }
 
-    @Override
+    /*@Override
     public void completeAll() {
         // no use
-    }
+    }*/
 
     @Override
     public void addActivity(Activity activity) {
