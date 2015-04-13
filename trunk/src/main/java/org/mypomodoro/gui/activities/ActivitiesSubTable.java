@@ -19,6 +19,7 @@ package org.mypomodoro.gui.activities;
 import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Date;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.Activity;
@@ -33,15 +34,13 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    private final ActivitiesSubTableModel model;
     private final ActivitiesPanel panel;
 
     private int parentId = -1;
 
     public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
-
-        this.model = model;
+        
         this.panel = panel;
 
         // This is to address the case/event when the mouse exit the table
@@ -193,7 +192,13 @@ public class ActivitiesSubTable extends ActivitiesTable {
         Activity newActivity = new Activity();
         newActivity.setName(Labels.getString("Common.New subtask"));
         // Set parent id
-        newActivity.setParentId(panel.getTable().getActivityIdFromSelectedRow());
+        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        if (getRowCount() == 0) { // first sub-task
+            newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
+            newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
+            newActivity.setActualPoms(parentActivity.getActualPoms());
+        }
+        newActivity.setParentId(parentActivity.getId());
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
