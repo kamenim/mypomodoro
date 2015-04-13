@@ -43,28 +43,16 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            int minimum = 0;
-            int maximum = estimatedpoms;
-            if (realpoms == 0
-                    && (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId()))) { // estimated combo box only
-                if (activity.isSubTask()) { // subtask - sum of estimated of subtasks can't be more than estimate of parent task 
-                    ActivityList subList = ActivityList.getSubTaskList(activity.getParentId());
-                    int subEstimated = 0;
-                    for (Activity subActivity : subList) {
-                        subEstimated += subActivity.getEstimatedPoms();
-                    }
-                    Activity parentActivity = ActivityList.getList().getById(activity.getParentId());
-                    maximum += parentActivity.getEstimatedPoms() - subEstimated;
-                } else {                    
-                    maximum += Main.preferences.getMaxNbPomPerActivity();
-                }
+            // no subtask --> estimated may be changed
+            if (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId())) { // estimated combo box only 
+                int minimum = realpoms; // no matter overestimation
+                int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();                                    
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
                 for (int i = minimum; i <= maximum; i++) {
                     comboBox.addItem(i);
                 }
-                comboBox.setSelectedItem(activity.getEstimatedPoms());                                
-                
+                comboBox.setSelectedItem(activity.getEstimatedPoms());                
             } else { // no change to the label set by the cell renderer
                 comboBox.setVisible(false);
             }
@@ -72,28 +60,3 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
         return this;
     }
 }
-
-/*
-int realpoms = activity.getActualPoms();
-            int estimatedpoms = activity.getEstimatedPoms();
-            if (realpoms == 0
-                    && (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId()))) { // estimated combo box only
-                int minimum = 0;
-                if (activity.isSubTask()) { // subtask - sum of estimated of subtasks can't be more than estimate of parent task 
-                    ActivityList subList = ActivityList.getSubTaskList(activity.getParentId());
-                    int subEstimated = 0;
-                    for (Activity subActivity : subList) {
-                        subEstimated += subActivity.getEstimatedPoms();
-                    }
-                    Activity parentActivity = ActivityList.getList().getById(activity.getParentId());
-                    minimum = estimatedpoms - parentActivity.getEstimatedPoms() + subEstimated;
-                    minimum = minimum > 0 ? minimum : 0; 
-                }
-                int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();                
-                comboBox.setVisible(true);
-                comboBox.removeAllItems();
-                for (int i = minimum; i <= maximum; i++) {
-                    comboBox.addItem(i);
-                }
-                comboBox.setSelectedItem(activity.getEstimatedPoms());                                
-*/

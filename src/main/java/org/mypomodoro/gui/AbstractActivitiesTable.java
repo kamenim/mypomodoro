@@ -222,7 +222,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
     }
 
-    protected Activity getActivityFromSelectedRow() {
+    public Activity getActivityFromSelectedRow() {
         return getList().getById(getActivityIdFromSelectedRow());
     }
 
@@ -353,6 +353,12 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
             return renderer;
         }
+    }
+    
+    
+    @Override
+    public ActivitiesTableModel getModel() {
+        return (ActivitiesTableModel)super.getModel();
     }
 
     public abstract void createNewTask();

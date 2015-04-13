@@ -17,21 +17,13 @@
 package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TableTitlePanel;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.font.TextAttribute;
 import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractActivitiesTable;
@@ -43,7 +35,6 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.gui.TableHeader;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -53,13 +44,11 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesTable extends AbstractActivitiesTable {
 
-    private final ActivitiesTableModel model;
     private final ActivitiesPanel panel;
 
     public ActivitiesTable(final ActivitiesTableModel model, final ActivitiesPanel panel) {
         super(model);
-
-        this.model = model;
+        
         this.panel = panel;
 
         setTableHeader();
@@ -135,19 +124,17 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 if (row != -1
                         && e.getType() == TableModelEvent.UPDATE) {
                     System.err.println("tableChanged => " + Thread.currentThread().getStackTrace()[1].getMethodName());
-                    ActivitiesTableModel model = (ActivitiesTableModel) e.getSource();
-                    Object data = model.getValueAt(row, column);
+                    ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
+                    Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
-                        Integer ID = (Integer) model.getValueAt(row, AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+                        Integer ID = (Integer) sourceModel.getValueAt(row, AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
                         Activity act = Activity.getActivity(ID.intValue());
                         if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
                                 if (name.length() == 0) {
-                                    //model.removeTableModelListener(this);
                                     // reset the original value. Title can't be empty.
-                                    model.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
-                                    //model.addTableModelListener(this);
+                                    sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
                                 } else {
                                     act.setName(name);
                                     act.databaseUpdate();
@@ -177,8 +164,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             int estimated = (Integer) data;
                             if (estimated != act.getEstimatedPoms()
                                     && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                int diffEstimated = estimated - act.getEstimatedPoms();
                                 act.setEstimatedPoms(estimated);
                                 act.databaseUpdate();
+                                if (act.isSubTask()) { // update parent activity
+                                    updateParentEstimatedPoms(diffEstimated);
+                                }
                             }
                         } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
                             Float storypoints = (Float) data;
@@ -467,7 +458,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     @Override
     public void removeRow(int rowIndex) {
         //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-        model.removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
+        getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (getRowCount() > 0) {
             int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
             setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
@@ -480,7 +471,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-        model.addRow(activity); // we add in the Model...
+        getModel().addRow(activity); // we add in the Model...
         if (getRowCount() == 1) { // refresh tabs as the very first row has just been added to the table
             initTabs();
         }
@@ -493,7 +484,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
-        Activity newActivity = new Activity();
+        Activity newActivity = new Activity();        
         newActivity.setName(Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
@@ -515,9 +506,21 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 getList().add(copiedActivity, new Date(), new Date(0)); // save activity in database
                 //copiedActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
                 insertRow(copiedActivity);
+                if (copiedActivity.isSubTask()) {
+                    updateParentEstimatedPoms(copiedActivity.getEstimatedPoms());
+                }
                 panel.getTabbedPane().setSelectedIndex(2); // open edit tab
             } catch (CloneNotSupportedException ignored) {
             }
         }
+    }
+    
+    private void updateParentEstimatedPoms(int diffEstimated) {
+        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);
+        parentActivity.databaseUpdate();
+        getList().update(parentActivity);
+        // getSelectedRow must not be converted (convertRowIndexToModel)
+        panel.getTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

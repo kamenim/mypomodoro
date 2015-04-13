@@ -48,9 +48,8 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();                
                 comboBox.addItem(estimatedpoms);
-                labelAfter.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
-                
-            } else { // real poms or has subtasks --> estimated may not be changed
+                labelAfter.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");                
+            } else { // real poms > 0 or has subtasks --> estimated cannot be changed
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
