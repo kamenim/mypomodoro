@@ -114,18 +114,20 @@ public final class ReportList extends AbstractActivities {
     // Reopen a task and its subtasks to ActivityList
     // Reopen a subtask only will make it a task
     public void reopen(Activity activity) {
-        activity.setName("(R) " + activity.getName());
         activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)
-        activity.setIteration(-1); // reset iteration
-        if (activity.isSubTask()) {
-            activity.setParentId(-1); // make sure sub-task become task
-        } else {
+        activity.setIteration(-1); // reset iteration        
+        if (!activity.isSubTask()) {
+            activity.setName("(R) " + activity.getName());
             ReportList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {
+                subTask.setDateCompleted(new Date());
                 ActivityList.getList().add(subTask);
                 remove(subTask);
-            }
-        }
+            }            
+        } else {
+            activity.setName("(R) " + activity.getName());
+            activity.setParentId(-1); // sub-task becomes task
+        } 
         ActivityList.getList().add(activity);
         remove(activity);
     }
