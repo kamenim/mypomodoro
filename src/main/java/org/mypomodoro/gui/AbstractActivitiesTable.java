@@ -153,7 +153,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 b.doClick();
             }
         }
-        //am.put("Delete", new deleteAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //am.put("Delete", new deleteAction(this)); TODO
 
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
@@ -171,7 +171,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 moveButton.doClick();
             }
         }
-        //am.put("Add To ToDo List", new moveAction(this)); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //am.put("Add To ToDo List", new moveAction(this)); TODO
 
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
@@ -364,8 +364,12 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public abstract void createNewTask();
 
     public abstract void duplicateTask();
+    
+    public abstract void deleteTask(int rowIndex);
 
     protected abstract void init();
+    
+    protected abstract void initTabs();    
 
     protected abstract void showInfo(int activityId);
 

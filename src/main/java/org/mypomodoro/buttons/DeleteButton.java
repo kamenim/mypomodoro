@@ -25,7 +25,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -71,10 +70,7 @@ public class DeleteButton extends TabPanelButton {
                                     if (!MainPanel.progressBar.isStopped()) {
                                         // removing a row requires decreasing  the row index number
                                         row = row - increment;
-                                        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                        Activity selectedActivity = panel.getActivityById(id);
-                                        panel.delete(selectedActivity);
-                                        panel.removeRow(row);
+                                        //panel.getTable().deleteTask(row); TODO                                        
                                         increment++;
                                         final int progressValue = increment;
                                         SwingUtilities.invokeLater(new Runnable() {

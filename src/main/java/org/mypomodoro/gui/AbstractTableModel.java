@@ -17,6 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.util.Date;
+import java.util.Iterator;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -79,6 +80,18 @@ public abstract class AbstractTableModel extends DefaultTableModel {
                 return String.class;
         }
     }
+    
+    public void setDataVector(final AbstractActivities list) {
+        int rowIndex = list.size();
+        int colIndex = COLUMN_NAMES.length;
+        Object[][] tableData = new Object[rowIndex][colIndex];
+        Iterator<Activity> iterator = list.iterator();
+        for (int i = 0; iterator.hasNext(); i++) {
+            Activity activity = iterator.next();
+            tableData[i] = getRow(activity);
+        }
+        setDataVector(tableData, COLUMN_NAMES);
+    }
 
     protected void emptyModel() {
         int rowIndex = 0;
@@ -90,8 +103,6 @@ public abstract class AbstractTableModel extends DefaultTableModel {
     public void addRow(Activity activity) {
         addRow(getRow(activity));
     }
-
-    protected abstract void setDataVector(final AbstractActivities list);
 
     protected abstract Object[] getRow(Activity activity);
 }

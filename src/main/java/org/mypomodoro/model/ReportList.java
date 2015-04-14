@@ -97,9 +97,9 @@ public final class ReportList extends AbstractActivities {
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
             ReportList subList = getSubTaskList(activity.getId());
-            for (Activity subActivity : subList) {
-                remove(subActivity);
-                subActivity.databaseDelete();
+            for (Activity subTask : subList) {
+                remove(subTask);
+                subTask.databaseDelete();
             }
         }
         remove(activity);
@@ -114,15 +114,16 @@ public final class ReportList extends AbstractActivities {
     // Reopen a task and its subtasks to ActivityList
     // Reopen a subtask only will make it a task
     public void reopen(Activity activity) {
+        activity.setName("(R) " + activity.getName());
         activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)
         activity.setIteration(-1); // reset iteration
         if (activity.isSubTask()) {
             activity.setParentId(-1); // make sure sub-task become task
         } else {
             ReportList subList = getSubTaskList(activity.getId());
-            for (Activity subActivity : subList) {
-                ActivityList.getList().add(subActivity);
-                remove(subActivity);
+            for (Activity subTask : subList) {
+                ActivityList.getList().add(subTask);
+                remove(subTask);
             }
         }
         ActivityList.getList().add(activity);

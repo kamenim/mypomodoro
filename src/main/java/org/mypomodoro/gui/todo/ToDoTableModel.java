@@ -16,9 +16,7 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.util.Iterator;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 
@@ -33,27 +31,14 @@ public class ToDoTableModel extends AbstractTableModel {
     }
 
     @Override
-    protected void setDataVector(final AbstractActivities list) {
-        int rowIndex = list.size();
-        int colIndex = COLUMN_NAMES.length;
-        Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = list.iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            Activity activity = iterator.next();
-            tableData[i] = getRow(activity);
-        }
-        setDataVector(tableData, COLUMN_NAMES);
-    }
-
-    @Override
     protected Object[] getRow(Activity activity) {
         int colIndex = COLUMN_NAMES.length;
         Object[] rowData = new Object[colIndex];
         rowData[PRIORITY_COLUMN_INDEX] = activity.getPriority();
         rowData[UNPLANNED_COLUMN_INDEX] = activity.isUnplanned();
         rowData[TITLE_COLUMN_INDEX] = activity.getName();
-        Integer poms = new Integer(activity.getEstimatedPoms());// sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
-        //Integer poms = new Integer(a.getActualPoms()); // can't do that cause tableChanged would replace estimation with real
+        // sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
+        Integer poms = new Integer(activity.getEstimatedPoms()); // Estimated poms !        
         rowData[ESTIMATED_COLUMN_INDEX] = poms;
         Float points = new Float(activity.getStoryPoints());
         rowData[STORYPOINTS_COLUMN_INDEX] = points;

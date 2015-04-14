@@ -202,6 +202,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
-        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
+        panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 }

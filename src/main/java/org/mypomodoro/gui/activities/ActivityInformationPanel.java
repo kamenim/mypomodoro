@@ -81,9 +81,13 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
             String key = keySetIterator.next();
             text += textMap.get(key);
         }
-        informationArea.setText(text);
-        // disable auto scrolling
-        informationArea.setCaretPosition(0);
+        try {
+            informationArea.setText(text);
+            // disable auto scrolling
+            informationArea.setCaretPosition(0);
+        } catch (IndexOutOfBoundsException ignored) {
+            // this may happen some time and must be ignored
+        }
     }
 
     @Override

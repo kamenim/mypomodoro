@@ -123,10 +123,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final JPanel titlePanel = new JPanel();
     private final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
     private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
     private final DefaultButton refreshButton = new DefaultButton(refreshIcon);
-    private final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table
     // Selected row
@@ -188,16 +186,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
             }
         });
         selectedButton.setToolTipText("CTRL + G");
-        duplicateButton.setMargin(buttonInsets);
-        duplicateButton.setFocusPainted(false); // removes borders around text
-        duplicateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        });
-        duplicateButton.setToolTipText("CTRL + D");
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)     
             refreshButton.setMargin(buttonInsets);
             refreshButton.setFocusPainted(false); // removes borders around text
@@ -615,7 +603,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 titleLabel.setToolTipText(toolTipText);
                 // Hide buttons of the quick bar 
                 titlePanel.remove(selectedButton);
-                titlePanel.remove(duplicateButton);
             } else {
                 titleActivitiesList += " (" + ReportList.getListSize() + ")";
                 titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
@@ -641,14 +628,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 titleLabel.setToolTipText(toolTipText);
                 // Show buttons of the quick bar                                    
                 titlePanel.add(selectedButton);
-                titlePanel.add(duplicateButton);
             }
             if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                 titlePanel.add(refreshButton); // end of the line
             }
         } else {
             titlePanel.remove(selectedButton);
-            titlePanel.remove(duplicateButton);
             if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                 titlePanel.remove(refreshButton);
             }
