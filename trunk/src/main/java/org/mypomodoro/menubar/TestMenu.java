@@ -22,6 +22,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Date;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -159,32 +161,54 @@ public class TestMenu extends JMenu {
                                         // Adding subtasks
                                         addSubTasks(a, ReportList.getList());
                                     }
-                                    Main.gui.getReportListPanel().insertRow(a);
-                                    reportListValue++;
+                                    if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
+                                        ReportList.getList().reopen(a);
+                                        Main.gui.getActivityListPanel().getTable().insertRow(a);
+                                        activityListValue++;
+                                    } else {
+                                        Main.gui.getReportListPanel().insertRow(a);
+                                        reportListValue++;
+                                    }
                                 } else { // Tasks for the Activity and ToDo list
                                     if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
                                         if (a.getIteration() >= 0) {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                         }
                                         ToDoList.getList().add(a);
-                                        if (withSubtask) {
-                                            // Adding subtasks
+                                        if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ToDoList.getList());
                                         }
                                         Main.gui.getToDoPanel().insertRow(a);
                                         todoListValue++;
+                                        if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
+                                            try {
+                                                // once in a while duplicate a task
+                                                Activity duplicatedActivity = ToDoList.getList().duplicate(a);
+                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity);
+                                                todoListValue++;
+                                            } catch (CloneNotSupportedException ignored) {
+                                            }                                        
+                                        }                                        
                                     } else { // Tasks for the Activity list
                                         iteration = Main.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
                                         a.setIteration(iteration);
                                         a.setOverestimatedPoms(0);
                                         a.setActualPoms(0);
                                         ActivityList.getList().add(a, a.getDate());
-                                        if (withSubtask) {
-                                            // Adding subtasks
+                                        if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ActivityList.getList());
                                         }
                                         Main.gui.getActivityListPanel().getTable().insertRow(a);
                                         activityListValue++;
+                                        if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
+                                            try {
+                                                // once in a while duplicate a task
+                                                Activity duplicatedActivity = ActivityList.getList().duplicate(a);                                                
+                                                Main.gui.getActivityListPanel().getTable().insertRow(duplicatedActivity);
+                                                activityListValue++;
+                                            } catch (CloneNotSupportedException ignored) {
+                                            }                                        
+                                        }
                                     }
                                 }
                                 final int progressValue = i + 1;

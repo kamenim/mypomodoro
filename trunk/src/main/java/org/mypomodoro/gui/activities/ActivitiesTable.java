@@ -18,7 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TableTitlePanel;
 import java.text.DecimalFormat;
-import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;

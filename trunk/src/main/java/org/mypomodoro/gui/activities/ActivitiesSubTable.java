@@ -19,7 +19,6 @@ package org.mypomodoro.gui.activities;
 import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Date;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.Activity;
