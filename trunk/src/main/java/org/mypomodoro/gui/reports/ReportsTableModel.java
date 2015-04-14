@@ -16,9 +16,7 @@
  */
 package org.mypomodoro.gui.reports;
 
-import java.util.Iterator;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 
@@ -33,19 +31,6 @@ public class ReportsTableModel extends AbstractTableModel {
     }
 
     @Override
-    protected void setDataVector(final AbstractActivities list) {
-        int rowIndex = list.size();
-        int colIndex = COLUMN_NAMES.length;
-        Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = list.iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            Activity activity = iterator.next();
-            tableData[i] = getRow(activity);
-        }
-        setDataVector(tableData, COLUMN_NAMES);
-    }
-
-    @Override
     protected Object[] getRow(Activity activity) {
         int colIndex = COLUMN_NAMES.length;
         Object[] rowData = new Object[colIndex];
@@ -53,7 +38,7 @@ public class ReportsTableModel extends AbstractTableModel {
         rowData[DATE_COLUMN_INDEX] = activity.getDateCompleted();
         rowData[TITLE_COLUMN_INDEX] = activity.getName();
         rowData[TYPE_COLUMN_INDEX] = activity.getType();
-        Integer poms = new Integer(activity.getActualPoms());
+        Integer poms = new Integer(activity.getActualPoms()); // Real poms !
         rowData[ESTIMATED_COLUMN_INDEX] = poms;
         Integer diffIPoms = new Integer(activity.getActualPoms() - activity.getEstimatedPoms());
         rowData[DIFFI_COLUMN_INDEX] = diffIPoms;

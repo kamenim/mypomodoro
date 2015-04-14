@@ -106,13 +106,35 @@ public final class ActivityList extends AbstractActivities {
         }
         super.add(act); // add to the list
     }
+    
+    public Activity duplicate(Activity activity) throws CloneNotSupportedException {
+        return duplicate(activity, activity.isSubTask() ? activity.getParentId() : -1);
+    }
+    
+    public Activity duplicate(Activity activity, int parentId) throws CloneNotSupportedException {
+        Activity clonedActivity = activity.clone(); // a clone is necessary to remove the reference/pointer to the original task        
+        clonedActivity.setActualPoms(0);
+        clonedActivity.setOverestimatedPoms(0);
+        if (!activity.isSubTask()) {
+            clonedActivity.setName("(D) " + clonedActivity.getName());
+            getList().add(clonedActivity, new Date(), new Date(0)); // add task here to get the new Id to be the parentId of the subtasks
+            ActivityList subList = getSubTaskList(activity.getId());
+            for (Activity subTask : subList) {
+                duplicate(subTask, clonedActivity.getId());
+            }
+        } else {
+            clonedActivity.setParentId(parentId);
+            getList().add(clonedActivity, new Date(), new Date(0));
+        }
+        return clonedActivity;
+    }
 
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
             ActivityList subList = getSubTaskList(activity.getId());
-            for (Activity subActivity : subList) {
-                remove(subActivity);
-                subActivity.databaseDelete();
+            for (Activity subTask : subList) {
+                remove(subTask);
+                subTask.databaseDelete();
             }
         }
         remove(activity);
@@ -131,9 +153,9 @@ public final class ActivityList extends AbstractActivities {
             activity.setParentId(-1); // make sure sub-task become task
         } else {
             ActivityList subList = getSubTaskList(activity.getId());
-            for (Activity subActivity : subList) {
-                ActivityList.getList().add(subActivity);
-                remove(subActivity);
+            for (Activity subTask : subList) {
+                ActivityList.getList().add(subTask);
+                remove(subTask);
             }
         }
         ToDoList.getList().add(activity); // this sets the priority and update the database

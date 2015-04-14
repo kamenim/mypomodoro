@@ -60,17 +60,17 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                            System.err.println("selectedRowCount > 0 => " + Thread.currentThread().getStackTrace()[1].getMethodName());
+                        //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());
                         // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
                         setInputMap(JTable.WHEN_FOCUSED, im);
 
                         if (selectedRowCount > 1) { // multiple selection
                             // diactivate/gray out unused tabs
-                            panel.getTabbedPane().setEnabledAt(1, false); // comment
-                            panel.getTabbedPane().setEnabledAt(2, false); // edit                                    
-                            panel.getTabbedPane().setEnabledAt(3, true); // merging                                    
-                            if (panel.getTabbedPane().getSelectedIndex() == 1
-                                    || panel.getTabbedPane().getSelectedIndex() == 2) {
+                            panel.getTabbedPane().disableCommentTab();
+                            panel.getTabbedPane().disableEditTab();
+                            panel.getTabbedPane().enableMergeTab();
+                            if (panel.getTabbedPane().getSelectedIndex() ==  panel.getTabbedPane().getCommentTabIndex()
+                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
                                 panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                             }
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
@@ -81,9 +81,9 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         } else if (selectedRowCount == 1) {
                             // activate all panels
                             for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                                if (index == 3) {
-                                    panel.getTabbedPane().setEnabledAt(3, false); // merging
-                                    if (panel.getTabbedPane().getSelectedIndex() == 3) {
+                                if (index == panel.getTabbedPane().getMergeTabIndex()) {
+                                    panel.getTabbedPane().disableMergeTab();
+                                    if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getMergeTabIndex()) {
                                         panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                                     }
                                 } else {
@@ -103,7 +103,6 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                         setTitle();
                     }
                 } else {
-                            System.err.println("selectedRowCount == 0 => " + Thread.currentThread().getStackTrace()[1].getMethodName());
                     setTitle();
                 }
             }
@@ -122,8 +121,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {
-                    System.err.println("tableChanged => " + Thread.currentThread().getStackTrace()[1].getMethodName());
+                        && e.getType() == TableModelEvent.UPDATE) {                    
                     ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
                     Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
@@ -170,6 +168,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                                 if (act.isSubTask()) { // update parent activity
                                     updateParentEstimatedPoms(diffEstimated);
                                 }
+                                System.err.println("update estim");
                             }
                         } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
                             Float storypoints = (Float) data;
@@ -282,7 +281,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
         }
-
+        
         initTabs();
 
         // Make sure column title will fit long titles
@@ -290,21 +289,10 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         revalidate();
     }
 
+    // This method is empty in sub class    
+    @Override
     protected void initTabs() {
-        if (getRowCount() == 0) {
-            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                if (index == 4) { // import tab
-                    panel.getTabbedPane().setSelectedIndex(index);
-                    continue;
-                }
-                panel.getTabbedPane().setEnabledAt(index, false);
-            }
-        } else {
-            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                panel.getTabbedPane().setEnabledAt(index, index != 3); // merge tab : index == 3                                   
-            }
-            panel.getTabbedPane().setSelectedIndex(0);
-        }
+        panel.getTabbedPane().initTabs(getRowCount());
     }
 
     @Override
@@ -317,8 +305,8 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         //panel.getEditPanel().showInfo(activity, this);
         panel.getEditPanel().showInfo(activity);
         // set table for merge, export panels
-        //panel.getMergePanel().setTable(this);
-        //panel.getExportPanel().setTable(this);
+        //panel.getMergePanel().setTable(this); TODO
+        //panel.getExportPanel().setTable(this); TODO
     }
 
     @Override
@@ -442,10 +430,12 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         getTitlePanel().repaint();
     }
 
+    // This method is empty in sub class
     protected void populateSubTable() {
         panel.populateSubTable(getActivityIdFromSelectedRow());
     }
 
+    // This method is empty in sub class
     protected void emptySubTable() {
         panel.emptySubTable();
     }
@@ -480,39 +470,41 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
 
-    // no default name
+    // default name (N) + New task
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();        
-        newActivity.setName(Labels.getString("Common.New task"));
+        newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
-        panel.getTabbedPane().setSelectedIndex(2); // open edit tab
+        panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
     // default name: (D) + name
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
+    // duplicate subtasks too
     @Override
     public void duplicateTask() {
         if (getSelectedRowCount() == 1) {
-            Activity originalCopiedActivity = getActivityFromSelectedRow();
+            Activity activity = getActivityFromSelectedRow();
             try {
-                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
-                copiedActivity.setName("(D) " + copiedActivity.getName());
-                copiedActivity.setActualPoms(0);
-                copiedActivity.setOverestimatedPoms(0);
-                getList().add(copiedActivity, new Date(), new Date(0)); // save activity in database
-                //copiedActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-                insertRow(copiedActivity);
-                if (copiedActivity.isSubTask()) {
-                    updateParentEstimatedPoms(copiedActivity.getEstimatedPoms());
-                }
-                panel.getTabbedPane().setSelectedIndex(2); // open edit tab
+                Activity duplicatedActivity = getList().duplicate(activity);
+                insertRow(duplicatedActivity);
+                if (duplicatedActivity.isSubTask()) {
+                    updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
+                }                
+                panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
             }
         }
+    }    
+    
+    @Override
+    public void deleteTask(int rowIndex) {
+        Activity activity = getActivityFromRowIndex(rowIndex);               
+        getList().delete(activity); // delete tasks and subtasks
+        removeRow(rowIndex);
     }
     
     private void updateParentEstimatedPoms(int diffEstimated) {

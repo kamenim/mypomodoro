@@ -126,6 +126,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // TABBED PANE
     ////////////////////////////////////////////////
     private void initTabbedPane() {
+        tabbedPane.setDetailsTabIndex(0);
+        tabbedPane.setCommentTabIndex(1);
+        tabbedPane.setEditTabIndex(2);
+        tabbedPane.setMergeTabIndex(3);
+        tabbedPane.setImportTabIndex(4);
+        tabbedPane.setExportTabIndex(5);
         tabbedPane.add(Labels.getString("Common.Details"), detailsPanel);
         tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         tabbedPane.add(Labels.getString("Common.Edit"), editPanel);
@@ -163,7 +169,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // SUB TABLE
     ////////////////////////////////////////////////
     public void addSubTable() {
-
     }
 
     ////////////////////////////////////////////////
@@ -316,7 +321,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return editPanel;
     }
 
-    public JTabbedPane getTabbedPane() {
+    public TabbedPane getTabbedPane() {
         return tabbedPane;
     }
 

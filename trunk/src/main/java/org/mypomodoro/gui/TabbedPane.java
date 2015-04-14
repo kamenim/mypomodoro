@@ -16,9 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.AWTException;
-import java.awt.Point;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -39,6 +36,16 @@ import javax.swing.KeyStroke;
 public class TabbedPane extends JTabbedPane {
 
     private final IListPanel panel;
+    
+    // Tab indices
+    private int detailsTabIndex = -1;
+    private int commentTabIndex = -1;
+    private int editTabIndex = -1;
+    private int overestimateTabIndex = -1;
+    private int unplannedTabIndex = -1;
+    private int mergeTabIndex = -1;
+    private int importTabIndex = -1;
+    private int exportTabIndex = -1;    
 
     public TabbedPane(IListPanel panel) {
         this.panel = panel;
@@ -99,6 +106,27 @@ public class TabbedPane extends JTabbedPane {
             }*/
         }
     }
+    
+    public void initTabs(int rowCount) {
+        if (rowCount == 0) {
+            for (int index = 0; index < getTabCount(); index++) {
+                if (index == importTabIndex) { // import tab
+                    setSelectedIndex(index);
+                    continue;
+                }
+                setEnabledAt(index, false);
+            }
+        } else {
+            for (int index = 0; index < getTabCount(); index++) {
+                setEnabledAt(index, index != mergeTabIndex); // merge tab                                  
+            }
+            setSelectedIndex(0);
+        }
+    }
+    
+    public void selectEditTab() {
+        setSelectedIndex(editTabIndex);
+    }
 
     // Keystroke for tab
     class tabAction extends AbstractAction {
@@ -130,5 +158,85 @@ public class TabbedPane extends JTabbedPane {
         } catch (SecurityException ignored) {
         }
         return key;
+    }
+    
+    public void enableMergeTab() {
+        setEnabledAt(mergeTabIndex, true);
+    }
+    
+    public void disableCommentTab() {       
+        setEnabledAt(commentTabIndex, false);
+    }
+    
+    public void disableEditTab() {
+        setEnabledAt(editTabIndex, false);        
+    }
+    
+    public void disableMergeTab() {
+        setEnabledAt(mergeTabIndex, false);
+    }
+
+    public int getDetailsTabIndex() {
+        return detailsTabIndex;
+    }
+
+    public void setDetailsTabIndex(int detailsTabIndex) {
+        this.detailsTabIndex = detailsTabIndex;
+    }
+
+    public int getCommentTabIndex() {
+        return commentTabIndex;
+    }
+
+    public void setCommentTabIndex(int commentTabIndex) {
+        this.commentTabIndex = commentTabIndex;
+    }
+
+    public int getEditTabIndex() {
+        return editTabIndex;
+    }
+
+    public void setEditTabIndex(int editTabIndex) {
+        this.editTabIndex = editTabIndex;
+    }
+
+    public int getOverestimateTabIndex() {
+        return overestimateTabIndex;
+    }
+
+    public void setOverestimateTabIndex(int overestimateTabIndex) {
+        this.overestimateTabIndex = overestimateTabIndex;
+    }
+
+    public int getUnplannedTabIndex() {
+        return unplannedTabIndex;
+    }
+
+    public void setUnplannedTabIndex(int unplannedTabIndex) {
+        this.unplannedTabIndex = unplannedTabIndex;
+    }
+
+    public int getMergeTabIndex() {
+        return mergeTabIndex;
+    }
+
+    public void setMergeTabIndex(int mergeTabIndex) {
+        this.mergeTabIndex = mergeTabIndex;
+    }
+
+    public int getImportTabIndex() {
+        return importTabIndex;
+    }
+
+    public void setImportTabIndex(int importTabIndex) {
+        this.importTabIndex = importTabIndex;
+    }
+
+    public int getExportTabIndex() {
+        return exportTabIndex;
+    }
+
+    public void setExportTabIndex(int exportTabIndex) {
+        this.exportTabIndex = exportTabIndex;
     }
 }

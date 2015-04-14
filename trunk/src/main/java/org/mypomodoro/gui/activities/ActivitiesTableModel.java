@@ -16,9 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
-import java.util.Iterator;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 
@@ -30,19 +28,6 @@ public class ActivitiesTableModel extends AbstractTableModel {
 
     public ActivitiesTableModel() {
         setDataVector(ActivityList.getTaskList());
-    }
-
-    @Override
-    protected void setDataVector(final AbstractActivities list) {
-        int rowIndex = list.size();
-        int colIndex = COLUMN_NAMES.length;
-        Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = list.iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            Activity activity = iterator.next();
-            tableData[i] = getRow(activity);
-        }
-        setDataVector(tableData, COLUMN_NAMES);
     }
 
     @Override
