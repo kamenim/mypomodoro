@@ -37,7 +37,6 @@ import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.model.Preferences;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -163,7 +162,6 @@ public class PreferencesPanel extends JPanel {
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.NONE;
-        validation.setForeground(ColorUtil.BLACK);
         validation.setFont(getFont().deriveFont(Font.BOLD));
         GridBagConstraints vgbc = new GridBagConstraints();
         vgbc.gridx = 0;
@@ -175,7 +173,6 @@ public class PreferencesPanel extends JPanel {
         vgbc.fill = GridBagConstraints.NONE;
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart button for Mac OS (does not work - see RestartMac class)
             JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
-            restartLabel.setForeground(ColorUtil.BLACK);
             restartLabel.setFont(getFont().deriveFont(Font.BOLD));
             validPanel.add(restartLabel, vgbc);
         } else {
@@ -198,7 +195,7 @@ public class PreferencesPanel extends JPanel {
 
     public void enableSaveButton() {
         saveButton.setEnabled(true);
-        saveButton.setForeground(ColorUtil.BLACK);
+        saveButton.setForeground(getForeground()); // reset the foreground of the current theme
     }
 
     public void clearValidation() {

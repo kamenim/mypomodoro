@@ -39,11 +39,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
-        
+
         this.panel = panel;
 
         // This is to address the case/event when the mouse exit the table
-        // REplacing listener of the ActivtiesTable class constructor
+        // Replacing listener of the ActivtiesTable class constructor
         addMouseListener(new MouseAdapter() {
 
             @Override
@@ -134,7 +134,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         // Update title
         getTitlePanel().setText("<html>" + titleActivitiesList + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
-        getTitlePanel().repaint();
+        getTitlePanel().repaint(); // this is necessary to force stretching of panel
     }
 
     @Override

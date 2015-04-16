@@ -36,7 +36,8 @@ public class ColorUtil {
     public static final Color YELLOW_ROW = new Color(255, 255, 204);
     public static final Color GRAY = new Color(238, 238, 238);
     public static final Color YELLOW_HIGHLIGHT = new Color(255, 255, 102);
-
+    public static final Color DARK_GRAY_TIMER = Color.DARK_GRAY;
+    
     /**
      * Returns a web browser-friendly HEX value representing the colour in the
      * default sRGB ColorModel.

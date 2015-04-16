@@ -145,9 +145,9 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void enableButtons() {
         moveButton.setEnabled(true);
         moveButton.setOpaque(true);
-        moveButton.setForeground(ColorUtil.BLACK);
+        moveButton.setForeground(getForeground()); // reset the foreground of the current theme
         completeButton.setEnabled(true);
         completeButton.setOpaque(true);
-        completeButton.setForeground(ColorUtil.BLACK);
+        completeButton.setForeground(getForeground()); // reset the foreground of the current theme
     }
 }

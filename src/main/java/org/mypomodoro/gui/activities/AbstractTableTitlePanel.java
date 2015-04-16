@@ -208,7 +208,7 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     public void setText(String text) {
         titleLabel.setText(text);
     }
-                
+
     public void clear() {
         titleLabel.setText(null);
         Component[] comps = getComponents();

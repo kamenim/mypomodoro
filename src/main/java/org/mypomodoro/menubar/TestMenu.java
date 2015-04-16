@@ -187,8 +187,8 @@ public class TestMenu extends JMenu {
                                                 Main.gui.getToDoPanel().insertRow(duplicatedActivity);
                                                 todoListValue++;
                                             } catch (CloneNotSupportedException ignored) {
-                                            }                                        
-                                        }                                        
+                                            }
+                                        }
                                     } else { // Tasks for the Activity list
                                         iteration = Main.preferences.getAgileMode() ? iterationsForActivities[rand.nextInt(iterationsForActivities.length)] : -1;
                                         a.setIteration(iteration);
@@ -203,11 +203,11 @@ public class TestMenu extends JMenu {
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {
                                                 // once in a while duplicate a task
-                                                Activity duplicatedActivity = ActivityList.getList().duplicate(a);                                                
+                                                Activity duplicatedActivity = ActivityList.getList().duplicate(a);
                                                 Main.gui.getActivityListPanel().getTable().insertRow(duplicatedActivity);
                                                 activityListValue++;
                                             } catch (CloneNotSupportedException ignored) {
-                                            }                                        
+                                            }
                                         }
                                     }
                                 }
@@ -270,7 +270,7 @@ public class TestMenu extends JMenu {
             try {
                 for (int j = 0; j < nbSubTask; j++) {
                     Activity aClone = a.clone();
-                    aClone.setParentId(a.getId());                    
+                    aClone.setParentId(a.getId());
                     aClone.setName(a.getName() + "." + j);
                     // all poms must be distributed amongs the subtasks                    
                     int real = subTaskReal > 0 ? rand.nextInt(subTaskReal + 1) : 0; // 0 to real

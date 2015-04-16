@@ -78,7 +78,8 @@ public class MyIcon extends JLabel {
 
     public MyIcon(final MainPanel view, String Text, ImageIcon on, ImageIcon onBusy,
             ImageIcon off, ImageIcon offBusy, JPanel p) {
-        super(Text, off, CENTER);
+        super(off, CENTER);
+        setToolTipText(Text);
         this.off = off;
         this.on = on;
         this.offBusy = offBusy;

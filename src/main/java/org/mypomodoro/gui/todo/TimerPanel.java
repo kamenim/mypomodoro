@@ -78,7 +78,7 @@ public class TimerPanel extends JPanel {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
             logger.error("Timer TTF file not found. Replaced with default System font.", ex);
         }
-        pomodoroTime.setForeground(Color.DARK_GRAY);
+        pomodoroTime.setForeground(ColorUtil.DARK_GRAY_TIMER);
         timeMinus = new TimeMinusButton(pomodoro);
         addTimeMinusButton();
         addPomodoroTimerLabel();

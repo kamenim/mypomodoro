@@ -47,7 +47,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
 
     public ActivitiesTable(final ActivitiesTableModel model, final ActivitiesPanel panel) {
         super(model);
-        
+
         this.panel = panel;
 
         setTableHeader();
@@ -68,7 +68,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                             panel.getTabbedPane().disableCommentTab();
                             panel.getTabbedPane().disableEditTab();
                             panel.getTabbedPane().enableMergeTab();
-                            if (panel.getTabbedPane().getSelectedIndex() ==  panel.getTabbedPane().getCommentTabIndex()
+                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
                                     || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
                                 panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                             }
@@ -120,7 +120,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {                    
+                        && e.getType() == TableModelEvent.UPDATE) {
                     ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
                     Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
@@ -280,7 +280,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
         }
-        
+
         initTabs();
 
         // Make sure column title will fit long titles
@@ -345,7 +345,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date scheduled");
-        columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] =  "(" + Labels.getString("Common.Real") + " / ) " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
+        columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = "(" + Labels.getString("Common.Real") + " / ) " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         TableHeader customTableHeader = new TableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
@@ -473,7 +473,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
-        Activity newActivity = new Activity();        
+        Activity newActivity = new Activity();
         newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
@@ -492,20 +492,20 @@ public class ActivitiesTable extends AbstractActivitiesTable {
                 insertRow(duplicatedActivity);
                 if (duplicatedActivity.isSubTask()) {
                     updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
-                }                
+                }
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
             }
         }
-    }    
-    
+    }
+
     @Override
     public void deleteTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);               
+        Activity activity = getActivityFromRowIndex(rowIndex);
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
     }
-    
+
     private void updateParentEstimatedPoms(int diffEstimated) {
         Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
         parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);

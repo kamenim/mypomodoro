@@ -884,10 +884,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void moveAll() {
-        getList().reopenAll();
-    }*/
-
+     public void moveAll() {
+     getList().reopenAll();
+     }*/
     @Override
     public Activity getActivityById(int id) {
         return getList().getById(id);
@@ -909,10 +908,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void completeAll() {
-        // no use
-    }*/
-
+     public void completeAll() {
+     // no use
+     }*/
     @Override
     public void addActivity(Activity activity) {
         getList().add(activity);
@@ -1137,7 +1135,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     protected ReportList getList() {
         return ReportList.getList();
     }
-    
+
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;

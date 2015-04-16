@@ -734,10 +734,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void moveAll() {
-        // no use
-    }*/
-
+     public void moveAll() {
+     // no use
+     }*/
     @Override
     public Activity getActivityById(int id) {
         return getList().getById(id);
@@ -759,10 +758,9 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void completeAll() {
-        // no use
-    }*/
-
+     public void completeAll() {
+     // no use
+     }*/
     @Override
     public void addActivity(Activity activity) {
         // no use
@@ -941,7 +939,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     protected ChartList getList() {
         return ChartList.getList();
     }
-    
+
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;

@@ -1109,14 +1109,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // moveAll is used only if no pomodoro is running (see MoveToDoButton)
     /*@Override
-    public void moveAll() {
-        getList().moveAll();
-        if (pomodoro.getTimer().isRunning()) { // break running
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStartEnv();
-        }
-    }*/
-
+     public void moveAll() {
+     getList().moveAll();
+     if (pomodoro.getTimer().isRunning()) { // break running
+     pomodoro.stop();
+     pomodoro.getTimerPanel().setStartEnv();
+     }
+     }*/
     @Override
     public void complete(Activity activity) {
         getList().complete(activity);
@@ -1129,14 +1128,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // comleteAll is used only if no pomodoro is running (see CompleteToDoButton)
     /*@Override
-    public void completeAll() {
-        getList().completeAll();
-        if (pomodoro.getTimer().isRunning()) { // break running
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStartEnv();
-        }
-    }*/
-
+     public void completeAll() {
+     getList().completeAll();
+     if (pomodoro.getTimer().isRunning()) { // break running
+     pomodoro.stop();
+     pomodoro.getTimerPanel().setStartEnv();
+     }
+     }*/
     @Override
     public void addActivity(Activity activity) {
         getList().add(activity);
@@ -1576,7 +1574,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     protected ToDoList getList() {
         return ToDoList.getList();
     }
-    
+
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;

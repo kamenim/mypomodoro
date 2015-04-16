@@ -36,8 +36,8 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
-        Activity activity = ActivityList.getList().getById(id);        
-         if (activity != null) {
+        Activity activity = ActivityList.getList().getById(id);
+        if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
@@ -45,9 +45,9 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
             if (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId())) {
                 labelBefore.setText(realpoms > 0 ? realpoms + " /" : "");
                 comboBox.setVisible(true);
-                comboBox.removeAllItems();                
+                comboBox.removeAllItems();
                 comboBox.addItem(estimatedpoms);
-                labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");                
+                labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");
             } else { // has subtasks --> estimated cannot be changed
                 labelBefore.setText(realpoms > 0 ? realpoms + " / " : "");
                 comboBox.setVisible(false);
