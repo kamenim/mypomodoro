@@ -68,10 +68,10 @@ public final class ActivityList extends AbstractActivities {
         }
         return subTableList;
     }
-    
+
     public static boolean hasSubTasks(int activityId) {
         boolean hasSubTasks = false;
-        for (Activity a : list) {            
+        for (Activity a : list) {
             if (a.getParentId() == activityId) {
                 hasSubTasks = true;
                 break;
@@ -106,11 +106,11 @@ public final class ActivityList extends AbstractActivities {
         }
         super.add(act); // add to the list
     }
-    
+
     public Activity duplicate(Activity activity) throws CloneNotSupportedException {
         return duplicate(activity, activity.isSubTask() ? activity.getParentId() : -1);
     }
-    
+
     public Activity duplicate(Activity activity, int parentId) throws CloneNotSupportedException {
         Activity clonedActivity = activity.clone(); // a clone is necessary to remove the reference/pointer to the original task        
         clonedActivity.setActualPoms(0);

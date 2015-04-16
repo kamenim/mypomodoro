@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
@@ -40,12 +41,13 @@ public class TableHeader extends JTableHeader {
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
         setBorder(border);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+        setForeground(new JPanel().getForeground()); // this is necessary for themes such as JTatoo Noire
         /*
-        table.getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
-        table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
-        table.getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
-        table.getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
-        table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("Iter");*/
+         table.getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
+         table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
+         table.getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
+         table.getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
+         table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("Iter");*/
         /* This code sets a black border around each cell of the header but the rendering is not that nice
          final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
          setDefaultRenderer(new TableCellRenderer() {

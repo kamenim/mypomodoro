@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -25,6 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
@@ -36,7 +38,7 @@ import javax.swing.KeyStroke;
 public class TabbedPane extends JTabbedPane {
 
     private final IListPanel panel;
-    
+
     // Tab indices
     private int detailsTabIndex = -1;
     private int commentTabIndex = -1;
@@ -45,11 +47,12 @@ public class TabbedPane extends JTabbedPane {
     private int unplannedTabIndex = -1;
     private int mergeTabIndex = -1;
     private int importTabIndex = -1;
-    private int exportTabIndex = -1;    
+    private int exportTabIndex = -1;
 
     public TabbedPane(IListPanel panel) {
         this.panel = panel;
         setFocusable(false); // removes borders around tab text
+        setForeground(new JPanel().getForeground()); // this is necessary for themes such as JTatoo Noire        
         // One click action (expand / fold)
         addMouseListener(new CustomMouseAdapter());
         // Keystroke
@@ -72,9 +75,9 @@ public class TabbedPane extends JTabbedPane {
 
         public CustomMouseAdapter() {
             /*try {
-                robot = new Robot();
-            } catch (AWTException ignored) {
-            }*/
+             robot = new Robot();
+             } catch (AWTException ignored) {
+             }*/
         }
 
         @Override
@@ -83,10 +86,11 @@ public class TabbedPane extends JTabbedPane {
             if (e.getClickCount() > 1) {
                 move();
             } /*else if (e.getClickCount() == 1 && selectedIndex == getSelectedIndex()) {
-                move();
-            } else {
-                selectedIndex = getSelectedIndex();
-            }*/
+             move();
+             } else {
+             selectedIndex = getSelectedIndex();
+             }*/
+
         }
 
         private void move() {
@@ -101,12 +105,12 @@ public class TabbedPane extends JTabbedPane {
             // Set cursor on splitpane
             // This doesn't work properly
             /*if (robot != null) {
-                Point p = splitPane.getLocationOnScreen();
-                robot.mouseMove((int) p.getX(), (int) p.getY());
-            }*/
+             Point p = splitPane.getLocationOnScreen();
+             robot.mouseMove((int) p.getX(), (int) p.getY());
+             }*/
         }
     }
-    
+
     public void initTabs(int rowCount) {
         if (rowCount == 0) {
             for (int index = 0; index < getTabCount(); index++) {
@@ -123,7 +127,7 @@ public class TabbedPane extends JTabbedPane {
             setSelectedIndex(0);
         }
     }
-    
+
     public void selectEditTab() {
         setSelectedIndex(editTabIndex);
     }
@@ -159,19 +163,19 @@ public class TabbedPane extends JTabbedPane {
         }
         return key;
     }
-    
+
     public void enableMergeTab() {
         setEnabledAt(mergeTabIndex, true);
     }
-    
-    public void disableCommentTab() {       
+
+    public void disableCommentTab() {
         setEnabledAt(commentTabIndex, false);
     }
-    
+
     public void disableEditTab() {
-        setEnabledAt(editTabIndex, false);        
+        setEnabledAt(editTabIndex, false);
     }
-    
+
     public void disableMergeTab() {
         setEnabledAt(mergeTabIndex, false);
     }

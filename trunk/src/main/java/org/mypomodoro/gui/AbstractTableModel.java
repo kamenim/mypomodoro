@@ -80,7 +80,7 @@ public abstract class AbstractTableModel extends DefaultTableModel {
                 return String.class;
         }
     }
-    
+
     public void setDataVector(final AbstractActivities list) {
         int rowIndex = list.size();
         int colIndex = COLUMN_NAMES.length;

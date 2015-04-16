@@ -94,14 +94,15 @@ public class AboutPanel extends JDialog {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS); // left
         // alignment
         panel.setLayout(layout);
+        panel.setForeground(ColorUtil.BLACK);  // This stays Black despite the foreground or the current theme
         panel.setBackground(ColorUtil.WHITE);  // This stays White despite the background or the current theme
-
         GridBagConstraints gbcpanel = new GridBagConstraints();
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 0;
         gbcpanel.fill = GridBagConstraints.BOTH;
         JLabel title = new JLabel("myAgilePomodoro");
         title.setFont(getFont().deriveFont(Font.BOLD, getFont().getSize() + 24));
+        title.setForeground(ColorUtil.BLACK); // This stays Black despite the foreground or the current theme
         panel.add(title, gbcpanel);
         /*gbcpanel.gridx = 0;
          gbcpanel.gridy = 1;
@@ -135,6 +136,8 @@ public class AboutPanel extends JDialog {
         aboutTextArea.setFont(getFont().deriveFont(Font.PLAIN));
         aboutTextArea.setOpaque(false);
         aboutTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
+        aboutTextArea.setForeground(ColorUtil.BLACK);  // This stays Black despite the foreground or the current theme
+        aboutTextArea.setBackground(ColorUtil.WHITE);  // This stays White despite the background or the current theme
         panel.add(aboutTextArea, gbcpanel);
         gbcpanel.gridx = 0;
         gbcpanel.gridy = 3;
@@ -148,6 +151,8 @@ public class AboutPanel extends JDialog {
         creditsTextArea.setFont(getFont().deriveFont(Font.PLAIN));
         creditsTextArea.setOpaque(false);
         creditsTextArea.setAlignmentX(LEFT_ALIGNMENT); // left alignment
+        creditsTextArea.setForeground(ColorUtil.BLACK);  // This stays Black despite the foreground or the current theme
+        creditsTextArea.setBackground(ColorUtil.WHITE);  // This stays White despite the background or the current theme
         panel.add(creditsTextArea, gbcpanel);
 
         add(panel, gbc);

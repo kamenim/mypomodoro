@@ -120,7 +120,9 @@ public class Resize {
             ToDoPanel.getResizeButton().setUpSizeIcon();
             Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
             Main.gui.setPreferredSize(dGUI);
-            Main.gui.setSize(size);
+            if (size != null) { // this may happen when the window is maximize using the maximize icon on the top right hand corner of the window
+                Main.gui.setSize(size);
+            }
             Main.gui.setLocation(guiRecordedLocation);
         }
         // The two following lines are required to:

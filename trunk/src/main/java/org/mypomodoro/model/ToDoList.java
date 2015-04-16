@@ -67,10 +67,10 @@ public final class ToDoList extends AbstractActivities {
         }
         return subTableList;
     }
-    
+
     public static boolean hasSubTasks(int activityId) {
         boolean hasSubTasks = false;
-        for (Activity a : list) {            
+        for (Activity a : list) {
             if (a.getParentId() == activityId) {
                 hasSubTasks = true;
                 break;
@@ -104,11 +104,11 @@ public final class ToDoList extends AbstractActivities {
         }
         super.add(act); // add to the list
     }
-    
+
     public Activity duplicate(Activity activity) throws CloneNotSupportedException {
         return duplicate(activity, activity.isSubTask() ? activity.getParentId() : -1);
     }
-    
+
     public Activity duplicate(Activity activity, int parentId) throws CloneNotSupportedException {
         Activity clonedActivity = activity.clone(); // a clone is necessary to remove the reference/pointer to the original task        
         clonedActivity.setActualPoms(0);
@@ -144,13 +144,12 @@ public final class ToDoList extends AbstractActivities {
     }
 
     /*public void moveAll() {
-        for (Activity activity : activities) {
-            ActivityList.getList().add(activity);
-        }
-        ActivitiesDAO.getInstance().moveAllTODOs();
-        removeAll();
-    }*/
-
+     for (Activity activity : activities) {
+     ActivityList.getList().add(activity);
+     }
+     ActivitiesDAO.getInstance().moveAllTODOs();
+     removeAll();
+     }*/
     // Complete a task and its subtasks to ReportList
     // Complete a subtask only will make it a task
     public void complete(Activity activity) {
@@ -161,20 +160,19 @@ public final class ToDoList extends AbstractActivities {
             for (Activity subTask : subList) {
                 ActivityList.getList().add(subTask);
                 remove(subTask);
-            }            
-        }        
+            }
+        }
         ReportList.getList().add(activity);
         remove(activity);
     }
 
     /*public void completeAll() {
-        for (Activity activity : activities) {
-            ReportList.getList().add(activity);
-        }
-        ActivitiesDAO.getInstance().completeAllTODOs();
-        removeAll();
-    }*/
-
+     for (Activity activity : activities) {
+     ReportList.getList().add(activity);
+     }
+     ActivitiesDAO.getInstance().completeAllTODOs();
+     removeAll();
+     }*/
     // set new priorities
     public void reorderByPriority() {
         sortByPriority(); // sort what is left of the ToDos (after delete, complete...)        

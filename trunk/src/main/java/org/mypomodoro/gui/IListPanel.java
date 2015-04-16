@@ -30,7 +30,6 @@ public interface IListPanel {
     void move(Activity activity);
 
     //void moveAll();
-
     void removeRow(int row);
 
     void insertRow(Activity activity);
@@ -50,12 +49,11 @@ public interface IListPanel {
     void complete(Activity activity);
 
     //void completeAll();
-
     void addActivity(Activity activity);
 
     void addActivity(Activity activity, Date date, Date dateCompleted);
 
     void saveComment(String comment);
-    
+
     JSplitPane getSplitPane();
 }

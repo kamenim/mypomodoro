@@ -79,13 +79,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init List pane
         listPane.setMinimumSize(PANE_DIMENSION);
         listPane.setPreferredSize(PANE_DIMENSION);
-        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS)); 
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
 
         // Init Tabbed pane        
         tabbedPane = new TabbedPane(this);
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
         tabbedPane.setPreferredSize(TABPANE_DIMENSION);
-        initTabbedPane(); 
+        initTabbedPane();
 
         // Init Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPane, tabbedPane);
@@ -138,7 +138,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         ImportPanel importPanel = new ImportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
-        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);               
+        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
     }
 
     ////////////////////////////////////////////////
@@ -248,10 +248,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void moveAll() {
-        // no use
-    }*/
-
+     public void moveAll() {
+     // no use
+     }*/
     @Override
     public Activity getActivityById(int id) {
         return getList().getById(id);
@@ -273,10 +272,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     /*@Override
-    public void completeAll() {
-        // no use
-    }*/
-
+     public void completeAll() {
+     // no use
+     }*/
     @Override
     public void addActivity(Activity activity) {
         getList().add(activity);
@@ -327,11 +325,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public JPanel getListPane() {
         return listPane;
     }
-    
+
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;
-    }    
+    }
 
     public TableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;

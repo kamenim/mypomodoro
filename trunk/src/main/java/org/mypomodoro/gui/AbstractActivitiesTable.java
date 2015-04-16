@@ -240,7 +240,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component c = super.prepareRenderer(renderer, row, column);        
+        Component c = super.prepareRenderer(renderer, row, column);
         if (isRowSelected(row)) {
             ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
             // using ((JComponent) c).getFont() to preserve current font (eg strike through)
@@ -338,7 +338,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = (String) value;
             if (!text.isEmpty()) {
                 renderer.setToolTipText(text);
@@ -348,28 +348,27 @@ public abstract class AbstractActivitiesTable extends JXTable {
                 table.setSurrendersFocusOnKeystroke(true); // focus
                 if (table.getEditorComponent() != null) { // set blinking cursor
                     table.getEditorComponent().requestFocus();
-                }                
+                }
                 renderer.setToolTipText(null);
             }
             return renderer;
         }
     }
-    
-    
+
     @Override
     public ActivitiesTableModel getModel() {
-        return (ActivitiesTableModel)super.getModel();
+        return (ActivitiesTableModel) super.getModel();
     }
 
     public abstract void createNewTask();
 
     public abstract void duplicateTask();
-    
+
     public abstract void deleteTask(int rowIndex);
 
     protected abstract void init();
-    
-    protected abstract void initTabs();    
+
+    protected abstract void initTabs();
 
     protected abstract void showInfo(int activityId);
 

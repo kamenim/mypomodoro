@@ -123,21 +123,21 @@ public final class ReportList extends AbstractActivities {
                 subTask.setDateCompleted(new Date());
                 ActivityList.getList().add(subTask);
                 remove(subTask);
-            }            
+            }
         } else {
             activity.setName("(R) " + activity.getName());
             activity.setParentId(-1); // sub-task becomes task
-        } 
+        }
         ActivityList.getList().add(activity);
         remove(activity);
     }
 
     /*public void reopenAll() {
-        for (Activity activity : activities) {
-            activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)            
-            ActivityList.getList().add(activity);
-        }
-        ActivitiesDAO.getInstance().reopenAllReports();
-        removeAll();
-    }*/
+     for (Activity activity : activities) {
+     activity.setDateCompleted(new Date()); // 'complete date' becomes 'reopen date' (see ActivityInformationPanel)            
+     ActivityList.getList().add(activity);
+     }
+     ActivitiesDAO.getInstance().reopenAllReports();
+     removeAll();
+     }*/
 }

@@ -43,17 +43,16 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            int overestimatedpoms = activity.getOverestimatedPoms();
             if (realpoms == 0
                     && (activity.isSubTask() || !ToDoList.hasSubTasks(activity.getId()))) { // estimated combo box only
                 int minimum = 0; // no matter overestimation
-                int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();                                    
+                int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
                 for (int i = minimum; i <= maximum; i++) {
                     comboBox.addItem(i);
                 }
-                comboBox.setSelectedItem(activity.getEstimatedPoms());                
+                comboBox.setSelectedItem(activity.getEstimatedPoms());
             } else { // no change to the label set by the cell renderer
                 comboBox.setVisible(false);
             }
