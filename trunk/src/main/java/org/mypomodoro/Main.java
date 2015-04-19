@@ -59,12 +59,13 @@ public class Main {
     private static Font font;
     // Table colors
     public static Color selectedRowColor = ColorUtil.BLUE_ROW;
-    public static Color selectedRowBorderColor = ColorUtil.BLUE_ROW_DARKER;
     public static Color oddRowColor = ColorUtil.WHITE;
     public static Color evenRowColor = ColorUtil.BLUE_ROW_LIGHT;
     public static Color hoverRowColor = ColorUtil.YELLOW_ROW;
+    public static Color rowBorderColor = ColorUtil.BLUE_ROW_DARKER;
     public static Color taskFinishedColor = ColorUtil.GREEN;
     public static Color taskRunningColor = ColorUtil.RED;
+    public static Color iconBackgroundColor; // mAP laf set this setting
 
     /**
      * Main

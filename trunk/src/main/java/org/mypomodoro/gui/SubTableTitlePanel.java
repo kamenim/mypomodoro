@@ -69,7 +69,7 @@ public class SubTableTitlePanel extends TableTitlePanel {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.selectedRowBorderColor));
+            setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.rowBorderColor));
             setBackground(Main.hoverRowColor);
             titleLabel.setForeground(ColorUtil.BLACK); // this is necessary for themes such as JTatoo Noire
         }

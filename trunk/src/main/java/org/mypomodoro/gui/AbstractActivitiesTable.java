@@ -246,6 +246,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             ((JComponent) c).setBackground(Main.selectedRowColor);
             // using ((JComponent) c).getFont() to preserve current font (eg strike through)
             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
         } else if (row == mouseHoverRow) {
             ((JComponent) c).setBackground(Main.hoverRowColor);
             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
@@ -253,7 +254,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             for (Component comp : comps) { // sub-components (combo boxes)
                 comp.setFont(comp.getFont().deriveFont(Font.BOLD));
             }
-            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.selectedRowColor));
+            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
         } else {
             if (row % 2 == 0) { // odd
                 ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
