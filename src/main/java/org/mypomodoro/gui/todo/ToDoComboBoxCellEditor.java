@@ -18,7 +18,9 @@ package org.mypomodoro.gui.todo;
 
 import org.mypomodoro.gui.activities.*;
 import java.awt.Component;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -40,18 +42,18 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ToDoList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
-            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
-            comboBox.setForeground(ColorUtil.GREEN);
-            //label.setForeground(ColorUtil.GREEN);
+            comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
+            comboBox.setForeground(Main.taskFinishedColor);
+            //label.setForeground(Main.taskFinishedColor);
         } else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
-            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.RED); // editable combo box
-            comboBox.setForeground(ColorUtil.RED);
-            //label.setForeground(ColorUtil.RED);
+            comboBox.getEditor().getEditorComponent().setForeground(Main.taskRunningColor); // editable combo box
+            comboBox.setForeground(Main.taskRunningColor);
+            //label.setForeground(Main.taskRunningColor);
         } else { // reset foreground (depends on the theme)
-            comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
-            comboBox.setForeground(getForeground());
+            comboBox.getEditor().getEditorComponent().setForeground(new JComboBox().getForeground()); // editable combo box
+            comboBox.setForeground(new JComboBox().getForeground());
             //label.setForeground(getForeground());
         }
         return this;

@@ -17,7 +17,9 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
@@ -38,14 +40,14 @@ public class ActivitiesComboBoxCellRenderer extends ComboBoxCellRenderer {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
-            labelBefore.setForeground(ColorUtil.GREEN);
-            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
-            comboBox.setForeground(ColorUtil.GREEN);
-            labelAfter.setForeground(ColorUtil.GREEN);
+            labelBefore.setForeground(Main.taskFinishedColor);
+            comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
+            comboBox.setForeground(Main.taskFinishedColor);
+            labelAfter.setForeground(Main.taskFinishedColor);
         } else { // reset foreground (depends on the theme)
             labelBefore.setForeground(ColorUtil.BLACK);
-            comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
-            comboBox.setForeground(getForeground());
+            comboBox.getEditor().getEditorComponent().setForeground(new JComboBox().getForeground()); // editable combo box
+            comboBox.setForeground(new JComboBox().getForeground());
             labelAfter.setForeground(ColorUtil.BLACK); // we force color to be black (especially for JTatto Noire theme)
         }
         // Hide combobox and label when cell not editable 

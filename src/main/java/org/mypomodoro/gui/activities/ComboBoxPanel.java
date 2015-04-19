@@ -27,7 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxUI;
-import org.mypomodoro.util.ColorUtil;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
@@ -72,23 +71,7 @@ public class ComboBoxPanel extends JPanel {
         add(labelAfter);
     }
 
-    class DefaultComboBoxRenderer extends DefaultListCellRenderer {
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (isSelected) {
-                setBackground(ColorUtil.BLUE_ROW);
-                setForeground(ColorUtil.BLACK);
-            } else {
-                setBackground(getBackground()); // reset the background of the current theme
-                setForeground(getForeground()); // reset the foreground of the current theme
-            }
-            return this;
-        }
-    }
-
-    public class ComboBoxFloatRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxFloatRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -104,7 +87,7 @@ public class ComboBoxPanel extends JPanel {
         }
     }
 
-    public class ComboBoxEstimatedLengthRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxEstimatedLengthRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -115,7 +98,7 @@ public class ComboBoxPanel extends JPanel {
         }
     }
 
-    public class ComboBoxStringRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxStringRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -129,7 +112,7 @@ public class ComboBoxPanel extends JPanel {
         }
     }
 
-    public class ComboBoxIterationRenderer extends DefaultComboBoxRenderer {
+    public class ComboBoxIterationRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

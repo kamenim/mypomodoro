@@ -24,8 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 public final class TimerValueSlider extends JPanel {
@@ -80,7 +80,7 @@ public final class TimerValueSlider extends JPanel {
                 || getSliderValue() > recommendedMax) {
             slider.setBackground(Color.orange);
         } else {
-            slider.setBackground(ColorUtil.GREEN);
+            slider.setBackground(Main.taskFinishedColor);
         }
     }
 

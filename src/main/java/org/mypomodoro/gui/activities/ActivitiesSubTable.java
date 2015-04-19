@@ -19,6 +19,7 @@ package org.mypomodoro.gui.activities;
 import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.Activity;
@@ -84,8 +85,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
                     overestimated += selectedActivity.getOverestimatedPoms();
                     real += selectedActivity.getActualPoms();
                 }
-                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }

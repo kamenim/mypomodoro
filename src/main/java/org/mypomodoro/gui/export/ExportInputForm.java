@@ -34,12 +34,12 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
@@ -254,7 +254,7 @@ public class ExportInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 2;
-        authorisationUrlTextField.setSelectionColor(ColorUtil.BLUE_ROW);
+        authorisationUrlTextField.setSelectionColor(Main.selectedRowColor);
         authorisationUrlTextField.setEnabled(true); // make it copiable
         authorisationUrlTextField.setEditable(false);
         authorisationUrlTextField.setMargin(new Insets(10, 10, 10, 10));

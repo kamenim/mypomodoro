@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -68,11 +69,11 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public AbstractActivitiesTable(ActivitiesTableModel model) {
         super(model);
 
-        setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
-        setSelectionBackground(ColorUtil.BLUE_ROW);
-        setForeground(ColorUtil.BLACK);
-        setSelectionForeground(ColorUtil.BLACK);
-
+        /*setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
+         setSelectionBackground(Main.selectedRowColor);
+         setForeground(ColorUtil.BLACK);
+         setSelectionForeground(ColorUtil.BLACK);*/
+        
         // Row height
         setRowHeight(30);
 
@@ -242,22 +243,22 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
         Component c = super.prepareRenderer(renderer, row, column);
         if (isRowSelected(row)) {
-            ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+            ((JComponent) c).setBackground(Main.selectedRowColor);
             // using ((JComponent) c).getFont() to preserve current font (eg strike through)
             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
         } else if (row == mouseHoverRow) {
-            ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
+            ((JComponent) c).setBackground(Main.hoverRowColor);
             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
             Component[] comps = ((JComponent) c).getComponents();
             for (Component comp : comps) { // sub-components (combo boxes)
                 comp.setFont(comp.getFont().deriveFont(Font.BOLD));
             }
-            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
+            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.selectedRowColor));
         } else {
             if (row % 2 == 0) { // odd
-                ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
+                ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
             } else { // even
-                ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
+                ((JComponent) c).setBackground(Main.evenRowColor);
             }
             ((JComponent) c).setBorder(null);
         }
@@ -285,7 +286,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
             Activity activity = getList().getById(id);
             if (activity != null && activity.isFinished()) {
-                renderer.setForeground(ColorUtil.GREEN);
+                renderer.setForeground(Main.taskFinishedColor);
             }
             return renderer;
         }

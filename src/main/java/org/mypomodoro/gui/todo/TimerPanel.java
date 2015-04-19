@@ -205,7 +205,7 @@ public class TimerPanel extends JPanel {
                                     if (strictPomodoro) {
                                         startButton.setVisible(false);
                                     }
-                                    pomodoroTime.setForeground(ColorUtil.RED);
+                                    pomodoroTime.setForeground(Main.taskRunningColor);
                                     timePlus.setTimePlusRedIcon(true); // turn time plus button red
                                     timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
                                     if (!strictPomodoro) {
@@ -264,7 +264,7 @@ public class TimerPanel extends JPanel {
         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
         timePlus.setTimePlusRedIcon(true);
         timeMinus.setTimeMinusRedIcon(true);
-        pomodoroTime.setForeground(ColorUtil.RED);
+        pomodoroTime.setForeground(Main.taskRunningColor);
     }
 
     public void switchPomodoroCompliance() {
