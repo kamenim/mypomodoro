@@ -23,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.ColorUtil;
 
 /**
@@ -68,8 +69,8 @@ public class SubTableTitlePanel extends TableTitlePanel {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            setBorder(new EtchedBorder(EtchedBorder.LOWERED, ColorUtil.BLUE_ROW, ColorUtil.BLUE_ROW_DARKER));
-            setBackground(ColorUtil.YELLOW_ROW);
+            setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.selectedRowBorderColor));
+            setBackground(Main.hoverRowColor);
             titleLabel.setForeground(ColorUtil.BLACK); // this is necessary for themes such as JTatoo Noire
         }
     }

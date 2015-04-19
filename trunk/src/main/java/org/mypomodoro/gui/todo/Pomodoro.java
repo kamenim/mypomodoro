@@ -133,7 +133,7 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
         inpomodoro = true;
-        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
+        Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.setIconLabels();
         // Show quick interruption button and items in combo box
@@ -322,7 +322,7 @@ public class Pomodoro {
                         }
                         timerPanel.setPomodoroEnv();
                         inpomodoro = true;
-                        Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.RED);
+                        Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
                         Main.gui.getIconBar().getIcon(2).highlight();
                         if (isSystemTray()) {
                             if (isSystemTrayMessage()) {

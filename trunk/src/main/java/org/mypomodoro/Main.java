@@ -16,6 +16,7 @@
  */
 package org.mypomodoro;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -56,6 +57,14 @@ public class Main {
     // GUI
     public static MainPanel gui;
     private static Font font;
+    // Table colors
+    public static Color selectedRowColor = ColorUtil.BLUE_ROW;
+    public static Color selectedRowBorderColor = ColorUtil.BLUE_ROW_DARKER;
+    public static Color oddRowColor = ColorUtil.WHITE;
+    public static Color evenRowColor = ColorUtil.BLUE_ROW_LIGHT;
+    public static Color hoverRowColor = ColorUtil.YELLOW_ROW;
+    public static Color taskFinishedColor = ColorUtil.GREEN;
+    public static Color taskRunningColor = ColorUtil.RED;
 
     /**
      * Main
@@ -124,10 +133,10 @@ public class Main {
                 }
                 setUIFont(new FontUIResource(font.getName(), font.getStyle(), font.getSize()));
                 // Set progress bar font (before intanstiating the progress bar)
-                UIManager.put("ProgressBar.background", ColorUtil.YELLOW_ROW); // colour of the background // this does not work
-                UIManager.put("ProgressBar.foreground", ColorUtil.BLUE_ROW); // colour of progress bar
-                UIManager.put("ProgressBar.selectionBackground", ColorUtil.BLACK); // colour of percentage counter on background
-                UIManager.put("ProgressBar.selectionForeground", ColorUtil.BLACK); // colour of precentage counter on progress bar
+                UIManager.put("ProgressBar.background", hoverRowColor); // colour of the background // this does not work
+                UIManager.put("ProgressBar.foreground", selectedRowColor); // colour of progress bar
+                UIManager.put("ProgressBar.selectionBackground", new JPanel().getBackground()); // colour of percentage counter on background
+                UIManager.put("ProgressBar.selectionForeground", new JPanel().getForeground()); // colour of precentage counter on progress bar
                 // init the gui, and all its components, AFTER setting the UIManager and font                      
                 gui = new MainPanel();
                 /*

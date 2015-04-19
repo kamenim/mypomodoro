@@ -20,7 +20,6 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * Combo box renderer for most of the combo boxes
@@ -33,14 +32,6 @@ public class AbstractComboBoxRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (isSelected) {
-            setBackground(ColorUtil.BLUE_ROW);
-            setForeground(ColorUtil.BLACK);
-        } else {
-            setBackground(getBackground()); // reset the background of the current theme
-            setForeground(getForeground()); // reset the foreground of the current theme
-        }
-        setForeground(getForeground()); // set the foreground of the current theme
         setBorder(new EmptyBorder(0, 3, 0, 0));
         return this;
     }

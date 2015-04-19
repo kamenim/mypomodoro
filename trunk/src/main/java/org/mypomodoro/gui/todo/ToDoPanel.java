@@ -163,22 +163,22 @@ public class ToDoPanel extends JPanel implements IListPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+                    ((JComponent) c).setBackground(Main.selectedRowColor);
                     // using ((JComponent) c).getFont() to preserve current font (eg strike through)
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
-                    ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
+                    ((JComponent) c).setBackground(Main.hoverRowColor);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
                         comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.selectedRowColor));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
+                        ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
                     } else { // even
-                        ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
+                        ((JComponent) c).setBackground(Main.evenRowColor);
                     }
                     ((JComponent) c).setBorder(null);
                 }
@@ -292,8 +292,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         //splitPane.setDividerSize(10);
         splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        //divider.setBackground(ColorUtil.YELLOW_ROW);
-        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        //divider.setBackground(Main.hoverRowColor);
+        //divider.setBorder(new MatteBorder(1, 1, 1, 1, Main.selectedRowColor));
         // Splitted view
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -309,10 +309,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
-        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        /*table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
+        table.setSelectionBackground(Main.selectedRowColor);
         table.setForeground(ColorUtil.BLACK);
-        table.setSelectionForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);*/
 
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
@@ -704,15 +704,15 @@ public class ToDoPanel extends JPanel implements IListPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ToDoList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
@@ -1213,9 +1213,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity toDo = getList().getById(id);
             Activity currentToDo = pomodoro.getCurrentToDo();
             if (toDo != null && pomodoro.inPomodoro() && toDo.getId() == currentToDo.getId()) {
-                renderer.setForeground(ColorUtil.RED);
+                renderer.setForeground(Main.taskRunningColor);
             } else if (toDo != null && toDo.isFinished()) {
-                renderer.setForeground(ColorUtil.GREEN);
+                renderer.setForeground(Main.taskFinishedColor);
             }
             return renderer;
         }
@@ -1362,30 +1362,30 @@ public class ToDoPanel extends JPanel implements IListPanel {
             Activity currentToDo = pomodoro.getCurrentToDo();
             Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
             if (pomodoro.inPomodoro()) {
-                //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, ColorUtil.RED, false);
-                ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), currentToDo, ColorUtil.RED);
-                ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), currentToDo, ColorUtil.RED);
-                ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), currentToDo, ColorUtil.RED);
-                ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), currentToDo, ColorUtil.RED);
-                ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), currentToDo, ColorUtil.RED);
+                //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, Main.taskRunningColor, false);
+                ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), currentToDo, Main.taskRunningColor);
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
                 Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
-                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 } else if (!pomodoro.inPomodoro()) {
-                    //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor, false);
-                    ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? ColorUtil.GREEN : defaultForegroundColor);
+                    //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
+                    ToDoIconPanel.showIconPanel(unplannedPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(overestimationPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(editPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     detailsPanel.enableButtons();
                 }
             } else if (table.getSelectedRowCount() > 1) { // multiple selection

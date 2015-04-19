@@ -17,10 +17,11 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * Combo Box Cell Editor
@@ -38,12 +39,12 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null && activity.isFinished()) {
-            comboBox.getEditor().getEditorComponent().setForeground(ColorUtil.GREEN); // editable combo box
-            comboBox.setForeground(ColorUtil.GREEN);
-            //label.setForeground(ColorUtil.GREEN);
+            comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
+            comboBox.setForeground(Main.taskFinishedColor);
+            //label.setForeground(Main.taskFinishedColor);
         } else { // reset foreground (depends on the theme)
-            comboBox.getEditor().getEditorComponent().setForeground(getForeground()); // editable combo box
-            comboBox.setForeground(getForeground());
+            comboBox.getEditor().getEditorComponent().setForeground(new JComboBox().getForeground()); // editable combo box
+            comboBox.setForeground(new JComboBox().getForeground());
             //label.setForeground(getForeground());
         }
         return this;

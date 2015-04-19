@@ -134,22 +134,22 @@ public class CheckPanel extends JPanel implements IListPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(ColorUtil.BLUE_ROW);
+                    ((JComponent) c).setBackground(Main.selectedRowColor);
                     // using ((JComponent) c).getFont() to preserve current font (eg strike through)
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                 } else if (row == mouseHoverRow) {
-                    ((JComponent) c).setBackground(ColorUtil.YELLOW_ROW);
+                    ((JComponent) c).setBackground(Main.hoverRowColor);
                     ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
                     Component[] comps = ((JComponent) c).getComponents();
                     for (Component comp : comps) { // sub-components (combo boxes)
                         comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                     }
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, ColorUtil.BLUE_ROW));
+                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.selectedRowColor));
                 } else {
                     if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
+                        ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
                     } else { // even
-                        ((JComponent) c).setBackground(ColorUtil.BLUE_ROW_LIGHT);
+                        ((JComponent) c).setBackground(Main.evenRowColor);
                     }
                     ((JComponent) c).setBorder(null);
                 }
@@ -199,8 +199,8 @@ public class CheckPanel extends JPanel implements IListPanel {
         //splitPane.setDividerSize(10);
         splitPane.setDividerSize(0); // remove divider by hiding it
         //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        //divider.setBackground(ColorUtil.YELLOW_ROW);
-        //divider.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.BLUE_ROW));
+        //divider.setBackground(Main.hoverRowColor);
+        //divider.setBorder(new MatteBorder(1, 1, 1, 1, Main.selectedRowColor));
         // Splitted view
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -216,10 +216,10 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
-        table.setSelectionBackground(ColorUtil.BLUE_ROW);
+        /*table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
+        table.setSelectionBackground(Main.selectedRowColor);
         table.setForeground(ColorUtil.BLACK);
-        table.setSelectionForeground(ColorUtil.BLACK);
+        table.setSelectionForeground(ColorUtil.BLACK);*/
 
         // Add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
@@ -489,16 +489,16 @@ public class CheckPanel extends JPanel implements IListPanel {
                     real += selectedActivity.getActualPoms();
                     storypoints += selectedActivity.getStoryPoints();
                 }
-                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ChartList.getListSize() + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + real + " / " + estimated;
+                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ChartList.getListSize() + ")";
+                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     titleActivitiesList += " + " + overestimated;
                 }
                 titleActivitiesList += "&nbsp;</span>";
-                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
+                titleActivitiesList += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + Math.round(((float) real / ((float) estimated + overestimated)) * 100) + "%" + "&nbsp;</span>" + ")";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(ColorUtil.BLUE_ROW) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    titleActivitiesList += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
@@ -821,7 +821,7 @@ public class CheckPanel extends JPanel implements IListPanel {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
             Activity activity = getList().getById(id);
             if (activity != null && activity.isFinished()) {
-                renderer.setForeground(ColorUtil.GREEN);
+                renderer.setForeground(Main.taskFinishedColor);
             }
             return renderer;
         }

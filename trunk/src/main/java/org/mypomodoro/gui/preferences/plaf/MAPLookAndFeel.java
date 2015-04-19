@@ -19,60 +19,63 @@ package org.mypomodoro.gui.preferences.plaf;
 import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
 import java.awt.Color;
 import java.util.Properties;
+import org.mypomodoro.Main;
 import org.mypomodoro.util.ColorUtil;
 
 /**
- * MAP look and Feel
- * RGB codes
+ * MAP look and Feel RGB codes
  *
  * Based on JTattoo's Acryl Look And Feel http://www.jtattoo.net/ThemeProps.html
  *
  */
 public class MAPLookAndFeel extends AcrylLookAndFeel {
-    
-    private final Color WHITE = Color.WHITE;
-    private final Color BLACK = Color.BLACK;
+
+    private final Color WHITE = ColorUtil.WHITE;
+    private final Color BLACK = ColorUtil.BLACK;
     private final Color DARK_RED = new Color(200, 42, 42);
     private final Color RED = new Color(216, 54, 54);
-    private final Color DARK_GRAY_TIMER = Color.DARK_GRAY;
-    private final Color LIGHT_GREEN = new Color(216, 255, 216);
+    private final Color GREEN_DARK = new Color(102, 204, 0);
 
     public MAPLookAndFeel() {
+        // Table colors
+        Main.selectedRowColor = new Color(255, 204, 0); // dark orange
+        Main.selectedRowBorderColor = ColorUtil.YELLOW_ROW;
+        Main.oddRowColor = ColorUtil.WHITE;
+        Main.evenRowColor = new Color(255, 255, 102); // yellow orange
+        Main.hoverRowColor = ColorUtil.YELLOW_ROW; // yellow pale
+        Main.taskFinishedColor = GREEN_DARK;
+        Main.taskRunningColor = new Color(205, 0, 205); // purple
+
+        // JTatoo theme settings
         Properties props = new Properties();
         props.put("logoString", "");
-                     
-        
-        
+
         // Main window decoration
         props.put("windowDecoration", "on"); // or macStyleWindowDecoration
         //props.put("macStyleWindowDecoration", "on");
         //props.put("dynamicLayout", "on");        
         //props.put("toolbarDecorated", "on");
-        
+
         // Scroll bar
         // props.put("macStyleScrollBar", "on");
         // props.put("linuxStyleScrollBar", "on");
-        
         // Title
         // props.put("centerWindowTitle", "on");
-        
         // Text
         //props.put("textAntiAliasing", "on");
         //props.put("textAntiAliasingMode", "gray");
-        
         // Main window Background and foreground colors
         //props.put("backgroundPattern", "on");
-        
         props.put("windowTitleForegroundColor", ColorUtil.toProperty(WHITE));
         props.put("windowTitleBackgroundColor", ColorUtil.toProperty(DARK_RED));
         props.put("windowTitleColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("windowTitleColorDark", ColorUtil.toProperty(DARK_RED));
         props.put("windowBorderColor", ColorUtil.toProperty(DARK_RED));
-        
+
         // Background and foreground colors
         props.put("backgroundColor", ColorUtil.toProperty(RED));
         props.put("foregroundColor", ColorUtil.toProperty(WHITE));
-        
+
         // Menu background colors
         props.put("menuColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("menuColorDark", ColorUtil.toProperty(RED));
@@ -87,15 +90,15 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("menuSelectionForegroundColor", ColorUtil.toProperty(WHITE));
 
         // Input/fields background and foreground colors
-        props.put("inputBackgroundColor", ColorUtil.toProperty(LIGHT_GREEN));
-        props.put("inputForegroundColor", ColorUtil.toProperty(BLACK));
+        props.put("inputBackgroundColor", ColorUtil.toProperty(DARK_RED));
+        props.put("inputForegroundColor", ColorUtil.toProperty(WHITE));
 
         // Selection background and foreground colors
-        props.put("selectionBackgroundColor", ColorUtil.toProperty(Color.GREEN));
-        props.put("selectionBackgroundColorLight", ColorUtil.toProperty(Color.GREEN));
-        props.put("selectionBackgroundColorDark", ColorUtil.toProperty(Color.GREEN));
+        props.put("selectionBackgroundColor", ColorUtil.toProperty(new Color(255, 204, 0)));
+        props.put("selectionBackgroundColorLight", ColorUtil.toProperty(new Color(255, 204, 0)));
+        props.put("selectionBackgroundColorDark", ColorUtil.toProperty(new Color(255, 204, 0)));
         props.put("selectionForegroundColor", ColorUtil.toProperty(BLACK));
-                
+
         // Buttons
         props.put("buttonBackgroundColor", ColorUtil.toProperty(RED));
         props.put("buttonForegroundColor", ColorUtil.toProperty(WHITE));
@@ -106,27 +109,21 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("tooltipBackgroundColor", ColorUtil.toProperty(RED));
         props.put("tooltipForegroundColor", ColorUtil.toProperty(WHITE));
         props.put("tooltipBorderSize", "0");
-        
-        
+
         props.put("controlBackgroundColor", ColorUtil.toProperty(RED));
-        props.put("controlForegroundColor", ColorUtil.toProperty(BLACK)); // same ad input fields
+        props.put("controlForegroundColor", ColorUtil.toProperty(WHITE)); // same as input fields
         props.put("controlColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("controlColorDark", ColorUtil.toProperty(DARK_RED));
         /*props.put("rolloverColor", ColorUtil.toProperty(DARK_RED));
-        props.put("rolloverColorLight", ColorUtil.toProperty(DARK_RED));
-        props.put("rolloverColorDark", ColorUtil.toProperty(DARK_RED));*/
-        
+         props.put("rolloverColorLight", ColorUtil.toProperty(DARK_RED));
+         props.put("rolloverColorDark", ColorUtil.toProperty(DARK_RED));*/
 
         //props.put("controlColor", "218 254 230");
         //props.put("controlColorLight", "218 254 230");
         //props.put("controlColorDark", ColorUtil.toProperty(ColorUtil.RED));
-
-        
         //props.put("rolloverColor", "218 254 230");
         //props.put("rolloverColorLight", "218 254 230");
         //props.put("rolloverColorDark", ColorUtil.toProperty(ColorUtil.RED));
-
-        
         setCurrentTheme(props);
     }
 }

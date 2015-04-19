@@ -28,10 +28,6 @@ public class SplashScreen extends JPanel {
         setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        JLabel title = new JLabel("");
-        title.setFont(getFont().deriveFont(48f));
-        title.setForeground(ColorUtil.RED);
-
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
