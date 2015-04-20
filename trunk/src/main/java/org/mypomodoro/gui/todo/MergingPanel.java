@@ -30,6 +30,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -206,7 +207,7 @@ public class MergingPanel extends CreatePanel {
                             Main.gui.getActivityListPanel().insertRow(newActivity);
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                         }
                         // Close progress bar
                         final int progressCount = increment;
@@ -243,7 +244,7 @@ public class MergingPanel extends CreatePanel {
     protected void invalidActivityAction() {
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
     }
 
     @Override

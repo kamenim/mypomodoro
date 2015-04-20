@@ -61,7 +61,7 @@ public class BareBonesBrowserLaunch {
                 }
             } catch (Exception e) {
                 logger.error("", ex);
-                //JOptionPane.showMessageDialog(null, errMsg + System.getProperty("line.separator") + e.toString());
+                //JOptionPane.showMessageDialog(null, errMsg + System.getProperty("line.separator") + e.toString(), ImageIcons.DIALOG_ICON);
             }
         }
     }

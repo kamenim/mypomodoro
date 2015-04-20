@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import org.joda.time.DateTime;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.model.AbstractActivities;
@@ -322,7 +323,7 @@ public class TestMenu extends JMenu {
                 public void actionPerformed(ActionEvent e) {
                     String title = Labels.getString("DataMenu.Clear All Data");
                     String message = Labels.getString("DataMenu.Are you sure to delete all data?");
-                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                     if (reply == JOptionPane.YES_OPTION) {
                         ActivitiesDAO.getInstance().deleteAll();
                         Main.updateLists();

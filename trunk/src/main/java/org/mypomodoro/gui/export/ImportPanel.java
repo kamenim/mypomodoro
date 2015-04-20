@@ -44,6 +44,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
 import org.mypomodoro.model.Activity;
@@ -125,7 +126,7 @@ public class ImportPanel extends JPanel {
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Import failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                         } finally {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override

@@ -30,7 +30,7 @@ public class ImageIcons {
     public static final ImageIcon MAIN_ICON_75 = getIcon("/images/pomodoro16-75.png");
     public static final ImageIcon MAIN_ICON_87_5 = getIcon("/images/pomodoro16-87.5.png");
     public static final ImageIcon MAIN_ICON = getIcon("/images/pomodoro16.png");
-    public static final ImageIcon MAIN_ICON_48 = getIcon("/images/pomodoro48.png");
+    public static final ImageIcon DIALOG_ICON = getIcon("/images/pomodoro48.png");
     public static final ImageIcon[] MAIN_ICON_PROGRESSIVE = new ImageIcon[]{
         MAIN_ICON_0,
         MAIN_ICON_12_5,

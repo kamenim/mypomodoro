@@ -60,8 +60,8 @@ public class MyIcon extends JLabel {
         ImageIcon onBusyIcon = getIcon(onBusyPath);
         ImageIcon offBusyIcon = getIcon(offBusyPath);
         MyIcon myIcon = new MyIcon(view, text, onIcon, onBusyIcon, offIcon, offBusyIcon, p);
-        if (Main.iconBackgroundColor != null) { // mAP laf set this setting
-            myIcon.setBackground(Main.iconBackgroundColor);
+        if (Main.myIconBackgroundColor != null) { // mAP laf set this setting
+            myIcon.setBackground(Main.myIconBackgroundColor);
         }
         return myIcon;
     }

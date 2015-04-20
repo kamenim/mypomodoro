@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
@@ -86,7 +87,7 @@ public class MoveButton extends TabPanelButton {
                                         String title = Labels.getString("ActivityListPanel.Add activity to ToDo List");
                                         String message = Labels.getString("ActivityListPanel.The date of activity {0} is not today. Proceed anyway?", activityName);
                                         int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                                         if (reply == JOptionPane.NO_OPTION) {
                                             continue; // go to the next one
                                         } else if (reply == JOptionPane.CLOSED_OPTION) {
@@ -99,7 +100,7 @@ public class MoveButton extends TabPanelButton {
                                                 "ActivityListPanel.Max nb of pomodoros per day reached ({0}). Proceed anyway?",
                                                 Main.preferences.getMaxNbPomPerDay());
                                         int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                                         if (reply != JOptionPane.YES_OPTION) {
                                             break; // get out of the loop
                                         }
