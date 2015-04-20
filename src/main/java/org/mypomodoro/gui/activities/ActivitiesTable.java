@@ -481,7 +481,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
-    // default name: (D) + name
+    // default name: (D) + name ('(D)' is added by ActivityList)
     // duplicate subtasks too
     @Override
     public void duplicateTask() {

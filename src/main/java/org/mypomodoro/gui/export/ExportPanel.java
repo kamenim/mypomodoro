@@ -56,6 +56,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
@@ -212,14 +213,14 @@ public class ExportPanel extends JPanel {
                                             "ReportListPanel.Data exported to Google Drive");
                                 }
                                 JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             }
                         } catch (IOException ex) {
                             logger.error("Export failed", ex);
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Export failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                         } finally {
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();

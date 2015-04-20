@@ -113,7 +113,7 @@ public class Pomodoro {
             Date dateNewSetLongBreakStart = DateUtil.addMinutesToNow(pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
             message += System.getProperty("line.separator");
             message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
             if (reply == JOptionPane.YES_OPTION) {
                 pomSetNumber = 0;
             }
@@ -216,7 +216,7 @@ public class Pomodoro {
         if (inpomodoro) { // in pomodoro only, not during breaks            
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
             if (reply == JOptionPane.YES_OPTION) {
                 stop();
             }

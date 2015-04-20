@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -52,7 +53,7 @@ public class DeleteButton extends TabPanelButton {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
                         public void run() {
-                            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                             if (reply == JOptionPane.YES_OPTION) {
                                 // Disable button
                                 setEnabled(false);

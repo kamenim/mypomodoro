@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
@@ -47,7 +48,7 @@ public class CompleteToDoButton extends TabPanelButton {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
                         public void run() {
-                            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                             if (reply == JOptionPane.YES_OPTION) {
                                 if (!WaitCursor.isStarted()) {
                                     // Start wait cursor
@@ -60,7 +61,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                     MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                                     /*if (!panel.getPomodoro().inPomodoro() && panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // complete all at once                       
-                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                                      if (reply == JOptionPane.YES_OPTION) {
                                      panel.completeAll();
                                      panel.refresh();

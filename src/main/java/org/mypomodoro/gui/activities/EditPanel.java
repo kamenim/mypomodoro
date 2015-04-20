@@ -22,7 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IActivityInformation;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -99,13 +101,13 @@ public class EditPanel extends CreatePanel {
         ActivityList.getList().update(activity);
         activity.databaseUpdate();
         int row = activitiesPanel.getTable().getSelectedRow();
-        activitiesPanel.getTable().getModel().setValueAt(activity.getDate(), activitiesPanel.getTable().convertRowIndexToModel(row), 1); // date column index = 1
+        activitiesPanel.getTable().getModel().setValueAt(activity.getDate(), activitiesPanel.getTable().convertRowIndexToModel(row), AbstractTableModel.DATE_COLUMN_INDEX);
         // update details panel
         information.selectInfo(activity);
         information.showInfo();
         String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
     }
 
     @Override

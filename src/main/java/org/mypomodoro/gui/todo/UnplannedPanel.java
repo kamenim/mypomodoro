@@ -25,6 +25,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
@@ -131,7 +132,7 @@ public class UnplannedPanel extends CreatePanel {
             super.validActivityAction(newActivity); // validation and clear form
             message = Labels.getString("ToDoListPanel.Task added to Activity List");
             JOptionPane.showConfirmDialog(Main.gui, message, title,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
         }
     }
 
@@ -139,7 +140,7 @@ public class UnplannedPanel extends CreatePanel {
     protected void invalidActivityAction() {
         String title = Labels.getString("Common.Error");
         String message = Labels.getString("Common.Title is mandatory");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
     }
 
     @Override

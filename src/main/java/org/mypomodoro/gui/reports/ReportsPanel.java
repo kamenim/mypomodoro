@@ -73,6 +73,7 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
@@ -1125,7 +1126,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 Main.gui.getActivityListPanel().insertRow(copiedActivity);
                 String title = Labels.getString("Common.Add Duplicated task");
                 String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
-                JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
             } catch (CloneNotSupportedException ignored) {
             }
         }

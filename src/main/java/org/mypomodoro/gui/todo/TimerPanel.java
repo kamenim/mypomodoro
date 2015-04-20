@@ -34,6 +34,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TimeMinusButton;
 import org.mypomodoro.buttons.TimePlusButton;
 import org.mypomodoro.buttons.TransparentButton;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
@@ -58,7 +59,6 @@ public class TimerPanel extends JPanel {
     private final TimePlusButton timePlus;
     private final TimeMinusButton timeMinus;
     public static boolean strictPomodoro = false;
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
 
     TimerPanel(Pomodoro pomodoro, JLabel pomodoroTime, ToDoPanel panel) {
         this.pomodoroTime = pomodoroTime;
@@ -191,12 +191,12 @@ public class TimerPanel extends JPanel {
                         if (currentToDo.hasChanged()) {
                             String title = Labels.getString("ToDoListPanel.ToDo changed");
                             String message = Labels.getString("ToDoListPanel.The ToDo has changed");
-                            JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, refreshIcon);
+                            JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                         } else {
                             if (currentToDo.isFinished()) {
                                 String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
                                 message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                                JOptionPane.showMessageDialog(Main.gui, message);
+                                JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             } else {
                                 if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
                                     pomodoro.start();

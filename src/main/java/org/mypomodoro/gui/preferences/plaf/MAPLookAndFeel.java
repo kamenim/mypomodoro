@@ -33,46 +33,39 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
     private final Color DARK_RED = new Color(200, 42, 42);
     private final Color RED = new Color(216, 54, 54);
     private final Color GREEN_DARK = new Color(102, 204, 0);
-    private final Color ORANGE_DARK = new Color(255, 204, 0);
+    private final Color ORANGE_DARK = new Color(255, 223, 0);
     private final Color ORANGE_YELLOW = new Color(255, 255, 102);
-    private final Color PURPLE = new Color(153, 0, 153);
+    private final Color PURPLE = new Color(255, 0, 255);
 
     public MAPLookAndFeel() {
         // Table colors
+        // Shades of orange and yellow: http://www.workwithcolor.com/yellow-color-hue-range-01.htm
         Main.selectedRowColor = ORANGE_DARK;
         Main.oddRowColor = ColorUtil.WHITE;
         Main.evenRowColor = ORANGE_YELLOW;
         Main.hoverRowColor = ColorUtil.YELLOW_ROW;
-        Main.rowBorderColor = DARK_RED;
+        Main.rowBorderColor = RED;
         Main.taskFinishedColor = GREEN_DARK;
         Main.taskRunningColor = PURPLE;
-        Main.iconBackgroundColor = DARK_RED;
+        Main.myIconBackgroundColor = DARK_RED;
 
         // JTatoo theme settings
         Properties props = new Properties();
-        props.put("logoString", "");
-
-        // Main window decoration
-        props.put("windowDecoration", "on"); // or macStyleWindowDecoration
-        //props.put("macStyleWindowDecoration", "on");
-        //props.put("dynamicLayout", "on");        
-        //props.put("toolbarDecorated", "on");
-
-        // Scroll bar
-        // props.put("macStyleScrollBar", "on");
-        // props.put("linuxStyleScrollBar", "on");
-        // Title
-        // props.put("centerWindowTitle", "on");
-        // Text
-        //props.put("textAntiAliasing", "on");
-        //props.put("textAntiAliasingMode", "gray");
-        // Main window Background and foreground colors
-        //props.put("backgroundPattern", "on");
+        props.put("logoString", "");       
+        
+        // Main window background and foreground colors
         props.put("windowTitleForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
         props.put("windowTitleBackgroundColor", ColorUtil.toProperty(DARK_RED));
         props.put("windowTitleColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("windowTitleColorDark", ColorUtil.toProperty(DARK_RED));
         props.put("windowBorderColor", ColorUtil.toProperty(DARK_RED));
+        
+        // (Inactive) Main window background and foreground colors (the window is inactive when opening a dialog message)
+        props.put("windowInactiveTitleForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
+        props.put("windowInactiveTitleBackgroundColor", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveTitleColorLight", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveTitleColorDark", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveBorderColor", ColorUtil.toProperty(DARK_RED));
 
         // Background and foreground colors
         props.put("backgroundColor", ColorUtil.toProperty(RED));
@@ -81,13 +74,16 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         // Menu background colors
         props.put("menuColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("menuColorDark", ColorUtil.toProperty(RED));
+        
         // Menu foreground colors
         props.put("menuForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
+        
         // Menu items background colors
         props.put("menuBackgroundColor", ColorUtil.toProperty(RED));
         props.put("menuSelectionBackgroundColor", ColorUtil.toProperty(DARK_RED));
         props.put("menuSelectionBackgroundColorLight", ColorUtil.toProperty(DARK_RED));
         props.put("menuSelectionBackgroundColorDark", ColorUtil.toProperty(DARK_RED));
+        
         // Menu items foreground colors
         props.put("menuSelectionForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
 

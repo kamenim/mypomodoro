@@ -27,6 +27,7 @@ import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -61,7 +62,7 @@ public class ToDoTransferHandler extends TransferHandler {
                     String title = Labels.getString("ToDoListPanel.Sort by priority");
                     String message = Labels.getString("ToDoListPanel.ToDos must first be sorted by priority. Sort now?");
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                     if (reply == JOptionPane.OK_OPTION) {
                         /*
                          // sort programatically the priority column
