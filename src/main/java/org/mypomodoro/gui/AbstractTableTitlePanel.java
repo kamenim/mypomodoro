@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -145,59 +145,59 @@ public abstract class AbstractTableTitlePanel extends JPanel {
         });
     }
 
-    protected void showSelectedButton() {
+    public void showSelectedButton() {
         add(selectedButton);
     }
 
-    protected void showCreateButton() {
+    public void showCreateButton() {
         add(createButton);
     }
 
-    protected void showDuplicateButton() {
+    public void showDuplicateButton() {
         add(duplicateButton);
     }
 
-    protected void showUnplannedButton() {
+    public void showUnplannedButton() {
         add(unplannedButton);
     }
 
-    protected void showInternalButton() {
+    public void showInternalButton() {
         add(internalButton);
     }
 
-    protected void showExternalButton() {
+    public void showExternalButton() {
         add(externalButton);
     }
 
-    protected void showRefreshButton() {
+    public void showRefreshButton() {
         add(refreshButton);
     }
 
-    protected void hideSelectedButton() {
+    public void hideSelectedButton() {
         remove(selectedButton);
     }
 
-    protected void hideCreateButton() {
+    public void hideCreateButton() {
         remove(createButton);
     }
 
-    protected void hideDuplicateButton() {
+    public void hideDuplicateButton() {
         remove(duplicateButton);
     }
 
-    protected void hideUnplannedButton() {
+    public void hideUnplannedButton() {
         remove(unplannedButton);
     }
 
-    protected void hideInternalButton() {
+    public void hideInternalButton() {
         remove(internalButton);
     }
 
-    protected void hideExternalButton() {
+    public void hideExternalButton() {
         remove(externalButton);
     }
 
-    protected void hideRefreshButton() {
+    public void hideRefreshButton() {
         remove(refreshButton);
     }
 

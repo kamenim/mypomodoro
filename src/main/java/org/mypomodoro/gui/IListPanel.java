@@ -17,8 +17,10 @@
 package org.mypomodoro.gui;
 
 import java.util.Date;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
+import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.model.Activity;
 
 public interface IListPanel {
@@ -36,7 +38,7 @@ public interface IListPanel {
 
     void setPanelBorder();
 
-    JTable getTable();
+    JXTable getTable();
 
     int getIdKey();
 
@@ -56,4 +58,18 @@ public interface IListPanel {
     void saveComment(String comment);
 
     JSplitPane getSplitPane();
+        
+    JPanel getListPane();
+    
+    JScrollPane getSubTableScrollPane();
+    
+    void addTableTitlePanel();
+    
+    void addTable();
+    
+    void addSubTableTitlePanel();
+    
+    JScrollPane getTableScrollPane();   
+    
+    TableTitlePanel getTableTitlePanel();
 }

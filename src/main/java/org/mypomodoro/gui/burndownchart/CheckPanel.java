@@ -69,6 +69,7 @@ import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.ActivityInformationTableListener;
 import org.mypomodoro.gui.IListPanel;
+import org.mypomodoro.gui.TableTitlePanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.reports.ReportsTableHeader;
@@ -553,7 +554,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         scrollPane.add(titlePanel, cScrollPane);
     }
 
-    private void addTable() {
+    public void addTable() {
         cScrollPane.gridx = 0;
         cScrollPane.gridy = 1;
         cScrollPane.weightx = 1.0;
@@ -704,7 +705,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public JTable getTable() {
+    public JXTable getTable() {
         return table;
     }
 
@@ -943,5 +944,29 @@ public class CheckPanel extends JPanel implements IListPanel {
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;
-    }
+    }   
+    
+    public JPanel getListPane() {
+        return null;
+    };
+    
+    public JScrollPane getSubTableScrollPane() {
+        return null;
+    };
+    
+    public void addTableTitlePanel() {
+     
+    };
+    
+    public void addSubTableTitlePanel() {
+        
+    };
+    
+    public JScrollPane getTableScrollPane() {
+        return null;
+    };
+    
+    public TableTitlePanel getTableTitlePanel() {
+        return null;
+    };
 }

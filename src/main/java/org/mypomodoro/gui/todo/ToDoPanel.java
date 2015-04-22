@@ -74,6 +74,7 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
+import org.mypomodoro.gui.AbstractActivitiesTable;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.IListPanel;
@@ -86,6 +87,7 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.gui.TableHeader;
+import org.mypomodoro.gui.TableTitlePanel;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
@@ -1041,7 +1043,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public JTable getTable() {
+    public JXTable getTable() {
         return table;
     }
 
@@ -1579,5 +1581,29 @@ public class ToDoPanel extends JPanel implements IListPanel {
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;
-    }
+    }    
+    
+    public JPanel getListPane() {
+        return null;
+    };
+    
+    public JScrollPane getSubTableScrollPane() {
+        return null;
+    };
+    
+    public void addTableTitlePanel() {
+     
+    };
+    
+    public void addSubTableTitlePanel() {
+        
+    };
+    
+    public JScrollPane getTableScrollPane() {
+        return null;
+    };
+    
+    public TableTitlePanel getTableTitlePanel() {
+        return null;
+    };
 }

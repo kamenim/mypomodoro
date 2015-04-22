@@ -54,7 +54,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
     private final TableTitlePanel tableTitlePanel;
-    private final ActivitiesSubTableTitlePanel subTableTitlePanel;
+    private final SubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
     private final JScrollPane subTableScrollPane;
@@ -100,17 +100,20 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tableModel = new ActivitiesTableModel();
         subTable = new ActivitiesSubTable(subTableModel, this); // instance this before table
         table = new ActivitiesTable(tableModel, this);
+        
         // Init scroll panes
         subTableScrollPane = new JScrollPane(subTable);
         tableScrollPane = new JScrollPane(table);
+        
         // Init title and sub title
         tableTitlePanel = new TableTitlePanel(this, table);
-        subTableTitlePanel = new ActivitiesSubTableTitlePanel(this, subTable);
+        subTableTitlePanel = new SubTableTitlePanel(this, subTable);
+        
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
-        if (table.getRowCount() > 0) {
+        if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
-
+        
         // Add panes of List pane
         addTableTitlePanel();
         addTable();
@@ -144,14 +147,16 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TITLE
     ////////////////////////////////////////////////
+    @Override
     public void addTableTitlePanel() {
-        table.setTitle();
+        table.setTitle(); // init title
         listPane.add(tableTitlePanel);
     }
 
     ////////////////////////////////////////////////
     // TABLE
     ////////////////////////////////////////////////
+    @Override
     public void addTable() {
         listPane.add(tableScrollPane);
     }
@@ -159,8 +164,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // SUB TITLE
     ////////////////////////////////////////////////
+    @Override
     public void addSubTableTitlePanel() {
-        subTable.setTitle();
+        subTable.setTitle(); // init title
         listPane.add(subTableTitlePanel);
     }
 
@@ -189,12 +195,14 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 }
                 tableModel.setDataVector(getList());
                 table.init();
-                if (table.getRowCount() > 0) {
+                if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
-                    table.setRowSelectionInterval(0, 0);
+                    table.setRowSelectionInterval(0, 0);                    
                 } else {
                     emptySubTable();
                 }
+                table.setTitle();
+                subTable.setTitle();
             } catch (Exception ex) {
                 logger.error("", ex);
             } finally {
@@ -322,6 +330,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return tabbedPane;
     }
 
+    @Override
     public JPanel getListPane() {
         return listPane;
     }
@@ -331,6 +340,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return splitPane;
     }
 
+    @Override
     public TableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
@@ -339,10 +349,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         return subTableTitlePanel;
     }
 
+    @Override
     public JScrollPane getTableScrollPane() {
         return tableScrollPane;
     }
 
+    @Override
     public JScrollPane getSubTableScrollPane() {
         return subTableScrollPane;
     }
