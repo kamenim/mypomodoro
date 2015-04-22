@@ -38,11 +38,11 @@ import org.mypomodoro.util.Labels;
 public class EditPanel extends CreatePanel {
 
     private EditInputForm editInputForm;
-    private final ActivitiesPanel activitiesPanel;
+    private final ActivitiesPanel panel;
     private final IActivityInformation information;
 
-    public EditPanel(ActivitiesPanel activitiesPanel, IActivityInformation information) {
-        this.activitiesPanel = activitiesPanel;
+    public EditPanel(ActivitiesPanel panel, IActivityInformation information) {
+        this.panel = panel;
         this.information = information;
 
         setBorder(null);
@@ -100,8 +100,8 @@ public class EditPanel extends CreatePanel {
     protected void validActivityAction(Activity activity) {
         ActivityList.getList().update(activity);
         activity.databaseUpdate();
-        int row = activitiesPanel.getTable().getSelectedRow();
-        activitiesPanel.getTable().getModel().setValueAt(activity.getDate(), activitiesPanel.getTable().convertRowIndexToModel(row), AbstractTableModel.DATE_COLUMN_INDEX);
+        int row = panel.getTable().getSelectedRow();
+        panel.getTable().getModel().setValueAt(activity.getDate(), panel.getTable().convertRowIndexToModel(row), AbstractTableModel.DATE_COLUMN_INDEX);
         // update details panel
         information.selectInfo(activity);
         information.showInfo();

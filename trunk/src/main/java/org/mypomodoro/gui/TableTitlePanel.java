@@ -16,8 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import org.mypomodoro.gui.activities.AbstractTableTitlePanel;
-
 /**
  * Title panel for tables
  *

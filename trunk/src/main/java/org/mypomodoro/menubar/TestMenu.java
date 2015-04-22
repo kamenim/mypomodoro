@@ -22,8 +22,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Date;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -167,7 +165,7 @@ public class TestMenu extends JMenu {
                                         Main.gui.getActivityListPanel().getTable().insertRow(a);
                                         activityListValue++;
                                     } else {
-                                        Main.gui.getReportListPanel().insertRow(a);
+                                        Main.gui.getReportListPanel().getTable().insertRow(a);
                                         reportListValue++;
                                     }
                                 } else { // Tasks for the Activity and ToDo list
@@ -179,13 +177,13 @@ public class TestMenu extends JMenu {
                                         if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ToDoList.getList());
                                         }
-                                        Main.gui.getToDoPanel().insertRow(a);
+                                        Main.gui.getToDoPanel().insertRow(a); // TODO add .getTable() before insertRow
                                         todoListValue++;
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {
                                                 // once in a while duplicate a task
                                                 Activity duplicatedActivity = ToDoList.getList().duplicate(a);
-                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity);
+                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity); // TODO add .getTable() before insertRow
                                                 todoListValue++;
                                             } catch (CloneNotSupportedException ignored) {
                                             }

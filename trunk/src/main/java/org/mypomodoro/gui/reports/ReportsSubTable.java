@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.activities;
+package org.mypomodoro.gui.reports;
 
 import org.mypomodoro.gui.TableTitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
@@ -33,13 +32,13 @@ import org.mypomodoro.util.TimeConverter;
  * Table for sub-activities
  *
  */
-public class ActivitiesSubTable extends ActivitiesTable {
+public class ReportsSubTable extends ReportsTable {
 
-    private final ActivitiesPanel panel;
+    private final ReportsPanel panel;
 
     private int parentId = -1;
 
-    public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
+    public ReportsSubTable(ReportsSubTableModel model, final ReportsPanel panel) {
         super(model, panel);
 
         this.panel = panel;
@@ -102,7 +101,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideSelectedButton();
-                getTitlePanel().hideDuplicateButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -121,17 +119,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar
                 getTitlePanel().showSelectedButton();
-                getTitlePanel().showDuplicateButton();
             }
         } else {
             getTitlePanel().hideSelectedButton();
-            getTitlePanel().hideDuplicateButton();
-        }
-        if (panel.getTable().getRowCount() == 0
-                || panel.getTable().getSelectedRowCount() > 1) {
-            getTitlePanel().hideCreateButton();
-        } else {
-            getTitlePanel().showCreateButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
@@ -142,10 +132,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     protected void init() {
         super.init();
-        // sub types
-        String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
@@ -177,32 +163,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected ActivityList getTableList() {
-        return ActivityList.getSubTaskList(parentId);
+    protected ReportList getTableList() {
+        return ReportList.getSubTaskList(parentId);
     }
 
     @Override
     protected TableTitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
-    }
-
-    // no default name
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
-    @Override
-    public void createNewTask() {
-        Activity newActivity = new Activity();
-        newActivity.setName(Labels.getString("Common.New subtask"));
-        // Set parent id
-        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
-        if (getRowCount() == 0) { // first sub-task
-            newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
-            newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
-            newActivity.setActualPoms(parentActivity.getActualPoms());
-        }
-        newActivity.setParentId(parentActivity.getId());
-        getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-        insertRow(newActivity);
-        panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 }

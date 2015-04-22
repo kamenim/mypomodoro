@@ -48,12 +48,12 @@ import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
-import org.mypomodoro.gui.activities.ActivitiesTableModel;
+import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
+import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
  *
@@ -65,7 +65,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     protected int currentSelectedRow = 0;
     protected InputMap im;
 
-    public AbstractActivitiesTable(ActivitiesTableModel model) {
+    public AbstractActivitiesTable(AbstractTableModel model) {
         super(model);
 
         /*setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
@@ -172,6 +172,24 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
         }
         //am.put("Add To ToDo List", new moveAction(this)); TODO
+        
+        // Activate Shift + '<'
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Reopen");
+        class reopenAction extends AbstractAction {
+
+            final IListPanel panel;
+
+            public reopenAction(IListPanel panel) {
+                this.panel = panel;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MoveButton moveButton = new MoveButton("", panel);
+                moveButton.doClick();
+            }
+        }
+        //am.put("Reopen", new reopenAction(this)); TODO
 
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
@@ -274,7 +292,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     }
 
     // selected row BOLD
-    protected class CustomTableRenderer extends DefaultTableCellRenderer {
+    public class CustomTableRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -356,15 +374,80 @@ public abstract class AbstractActivitiesTable extends JXTable {
         }
     }
 
+    public class EstimatedCellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity activity = getList().getById(id);
+            if (activity != null) {
+                int realpoms = activity.getActualPoms();
+                int estimatedpoms = activity.getEstimatedPoms();
+                int overestimatedpoms = activity.getOverestimatedPoms();
+                String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
+                renderer.setText(text);
+                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
+            }
+            return renderer;
+        }
+    }
+    
+    public class StoryPointsCellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            String text;
+            if (value.toString().equals("0.5")) {
+                text = "1/2";
+            } else {
+                text = Math.round((Float) value) + "";
+            }
+            renderer.setText(text);
+            return renderer;
+        }
+    }
+
+    public class IterationCellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            String text = value.toString();
+            if (value.toString().equals("-1")) {
+                text = "";
+            }
+            renderer.setText(text);
+            return renderer;
+        }
+    }
+
+    public class Diff2CellRenderer extends CustomTableRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity activity = getList().getById(id);
+            String text = value.toString();
+            if (activity != null && activity.getOverestimatedPoms() == 0) {
+                text = "";
+            }
+            renderer.setText(text);
+            return renderer;
+        }
+    }
+    
     @Override
-    public ActivitiesTableModel getModel() {
-        return (ActivitiesTableModel) super.getModel();
+    public AbstractTableModel getModel() {
+        return (AbstractTableModel) super.getModel();
     }
 
     public abstract void createNewTask();
 
     public abstract void duplicateTask();
-
+   
     public abstract void deleteTask(int rowIndex);
 
     protected abstract void init();
@@ -373,23 +456,48 @@ public abstract class AbstractActivitiesTable extends JXTable {
 
     protected abstract void showInfo(int activityId);
 
-    protected abstract void showInfoForSelectedRow();
-
     protected abstract void showDetailsForSelectedRows();
 
-    protected abstract void showInfoForRowIndex(int rowIndex);
+    protected void showInfoForSelectedRow() {
+        showInfo(getActivityIdFromSelectedRow());
+    }
+    
+    protected void showInfoForRowIndex(int rowIndex) {
+        showInfo(getActivityIdFromRowIndex(rowIndex));
+    }
 
     protected abstract void setTitle();
 
     protected abstract void setTableHeader();
 
-    protected abstract ActivityList getList();
+    protected abstract AbstractActivities getList();
 
-    protected abstract ActivityList getTableList();
+    protected abstract AbstractActivities getTableList();
 
     protected abstract TableTitlePanel getTitlePanel();
 
-    protected abstract void removeRow(int rowIndex);
-
-    protected abstract void insertRow(Activity activity);
+    public void removeRow(int rowIndex) {
+        //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
+        int rowCount = getRowCount(); // get row count on the view not the model !
+        if (rowCount > 0) {
+            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == rowCount ? currentSelectedRow - 1 : currentSelectedRow;
+            setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+            scrollRectToVisible(getCellRect(currentRow, 0, true));
+        }
+    }
+    
+    public void insertRow(Activity activity) {
+        //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
+        // By default, the row is added at the bottom of the list
+        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+        getModel().addRow(activity); // we add in the Model...
+        int rowCount = getRowCount(); // get row count on the view not the model !
+        if (rowCount == 1) { // refresh tabs as the very first row has just been added to the table
+            initTabs();
+        }
+        int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
+        setRowSelectionInterval(currentRow, currentRow);
+        scrollRectToVisible(getCellRect(currentRow, 0, true));
+    }
 }
