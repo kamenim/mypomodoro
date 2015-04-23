@@ -311,8 +311,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     // add all listener once and for all
     private void setUpTable() {
-        /*table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
-         table.setSelectionBackground(Main.selectedRowColor);
+        setBackground(Main.tableBackgroundColor);
+        /*table.setSelectionBackground(Main.selectedRowColor);
          table.setForeground(ColorUtil.BLACK);
          table.setSelectionForeground(ColorUtil.BLACK);*/
 

@@ -25,7 +25,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
@@ -51,7 +50,7 @@ public class TabbedPane extends JTabbedPane {
     public TabbedPane(IListPanel panel) {
         this.panel = panel;
         setFocusable(false); // removes borders around tab text
-        setForeground(new JPanel().getForeground()); // this is necessary for themes such as JTatoo Noire        
+        setForeground(new JTabbedPane().getForeground()); // this is necessary for themes such as JTatoo Noire        
         // One click action (expand / fold)
         addMouseListener(new CustomMouseAdapter());
         // Keystroke

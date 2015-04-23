@@ -32,8 +32,8 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
     private final Color DARK_RED = new Color(200, 42, 42);
     private final Color RED = new Color(216, 54, 54);
-    private final Color GREEN_LIGHT = new Color(216, 255, 216);
-    private final Color GREEN_DARK = new Color(145, 221, 145);
+    //private final Color GREEN_LIGHT = new Color(216, 255, 216);
+    //private final Color GREEN_DARK = new Color(145, 221, 145);
 
     public MAPLookAndFeel() {
         // Table colors
@@ -79,7 +79,7 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("menuSelectionForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
 
         // Input/fields background and foreground colors
-        props.put("inputBackgroundColor", ColorUtil.toProperty(GREEN_LIGHT));
+        props.put("inputBackgroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
         props.put("inputForegroundColor", ColorUtil.toProperty(ColorUtil.BLACK));
 
         // Selection background and foreground colors
@@ -101,15 +101,13 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
         // Tabbed panel
         props.put("controlBackgroundColor", ColorUtil.toProperty(DARK_RED)); // tabbed pane background
-        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
+        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.BLACK));
         props.put("controlColorLight", ColorUtil.toProperty(DARK_RED)); // this must be set for rollover prop to work
         props.put("controlColorDark", ColorUtil.toProperty(RED)); // this must be set for rollover prop to work
 
         // Roll over buttons, table headers, tabs, checkboxes
-        //props.put("rolloverColorLight", ColorUtil.toProperty(ORANGE_YELLOW));
-        //props.put("rolloverColorDark", ColorUtil.toProperty(ORANGE_DARK));
-        props.put("rolloverColorLight", ColorUtil.toProperty(GREEN_LIGHT));
-        props.put("rolloverColorDark", ColorUtil.toProperty(GREEN_DARK));
+        props.put("rolloverColorLight", ColorUtil.toProperty(ColorUtil.WHITE));
+        props.put("rolloverColorDark", ColorUtil.toProperty(ColorUtil.WHITE));
 
         setCurrentTheme(props);
     }
