@@ -68,10 +68,11 @@ public abstract class AbstractTable extends JXTable {
     public AbstractTable(AbstractTableModel model) {
         super(model);
 
-        /*setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
-         setSelectionBackground(Main.selectedRowColor);
-         setForeground(ColorUtil.BLACK);
-         setSelectionForeground(ColorUtil.BLACK);*/
+        setBackground(Main.tableBackgroundColor);
+        /*setSelectionBackground(Main.selectedRowColor);
+        setForeground(ColorUtil.BLACK);
+        setSelectionForeground(ColorUtil.BLACK);*/
+         
         // Row height
         setRowHeight(30);
 

@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import javax.swing.JEditorPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -92,6 +93,10 @@ public class HtmlEditor extends JTextPane {
          ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);*/
         // This line replaces the previous rule by instructing the editor to use the font of the UIManager        
         putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        
+        // Set colors according to input settings and themes
+        setBackground(new JTextField().getBackground());
+        setForeground(new JTextField().getForeground());
 
         // limit the number of characters to 1000 to avoid java head size issue
         // ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000)); // this will make mergind of tasks (comments) difficult

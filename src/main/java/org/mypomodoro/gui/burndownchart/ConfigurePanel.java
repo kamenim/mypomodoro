@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -38,7 +39,10 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ConfigurePanel extends JPanel {
-
+    
+    private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
+    private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
+    
     private final JTabbedPane tabbedPane;
     private final ConfigureInputForm configureInputForm;
     private final CheckPanel checkPanel;
@@ -60,19 +64,23 @@ public class ConfigurePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
         gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(new JScrollPane(configureInputForm), gbc);
+        JScrollPane configureScrollPane = new JScrollPane(configureInputForm);
+        configureScrollPane.setMinimumSize(PANE_DIMENSION);
+        configureScrollPane.setPreferredSize(PANE_DIMENSION);
+        add(configureScrollPane, gbc);
     }
 
     private void addCheckButton() {
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.weighty = 1.0;
         gbc.weightx = 0.1;
-        JButton createButton = new DefaultButton(
+        JButton checkButton = new DefaultButton(
                 Labels.getString("BurndownChartPanel.Check"));
-        createButton.addActionListener(new ActionListener() {
+        checkButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,6 +113,9 @@ public class ConfigurePanel extends JPanel {
                 }
             }
         });
-        add(createButton, gbc);
+        checkButton.setMinimumSize(CREATEBUTTON_DIMENSION);
+        checkButton.setMaximumSize(CREATEBUTTON_DIMENSION);
+        checkButton.setPreferredSize(CREATEBUTTON_DIMENSION);
+        add(checkButton, gbc);
     }
 }

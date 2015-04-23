@@ -32,24 +32,12 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
     private final Color DARK_RED = new Color(200, 42, 42);
     private final Color RED = new Color(216, 54, 54);
-    //private final Color YELLOW_HIGHLIGHT = new Color(255, 255, 102);
-    /*private final Color GREEN_DARK = new Color(102, 204, 0);
-     private final Color ORANGE_DARK = new Color(255, 223, 0);
-     private final Color ORANGE_YELLOW = new Color(255, 255, 102);
-     private final Color PURPLE = new Color(255, 0, 255);*/
     private final Color GREEN_LIGHT = new Color(216, 255, 216);
     private final Color GREEN_DARK = new Color(145, 221, 145);
 
     public MAPLookAndFeel() {
         // Table colors
-        // Shades of orange and yellow: http://www.workwithcolor.com/yellow-color-hue-range-01.htm
-        /*Main.selectedRowColor = ORANGE_DARK;
-         Main.oddRowColor = ColorUtil.WHITE;
-         Main.evenRowColor = ORANGE_YELLOW;
-         Main.hoverRowColor = ColorUtil.YELLOW_ROW;
-         Main.rowBorderColor = RED;
-         Main.taskFinishedColor = GREEN_DARK;
-         Main.taskRunningColor = PURPLE;*/
+        Main.tableBackgroundColor = RED;
         Main.myIconBackgroundColor = RED;
 
         // JTatoo theme settings
@@ -65,10 +53,10 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
         // (Inactive) Main window background and foreground colors (the window is inactive when opening a dialog message)
         props.put("windowInactiveTitleForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
-        props.put("windowInactiveTitleBackgroundColor", ColorUtil.toProperty(RED));
-        props.put("windowInactiveTitleColorLight", ColorUtil.toProperty(RED));
-        props.put("windowInactiveTitleColorDark", ColorUtil.toProperty(RED));
-        props.put("windowInactiveBorderColor", ColorUtil.toProperty(RED));
+        props.put("windowInactiveTitleBackgroundColor", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveTitleColorLight", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveTitleColorDark", ColorUtil.toProperty(DARK_RED));
+        props.put("windowInactiveBorderColor", ColorUtil.toProperty(DARK_RED));
 
         // Background and foreground colors
         props.put("backgroundColor", ColorUtil.toProperty(DARK_RED));
@@ -91,14 +79,14 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("menuSelectionForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
 
         // Input/fields background and foreground colors
-        props.put("inputBackgroundColor", ColorUtil.toProperty(RED));
-        props.put("inputForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
+        props.put("inputBackgroundColor", ColorUtil.toProperty(GREEN_LIGHT));
+        props.put("inputForegroundColor", ColorUtil.toProperty(ColorUtil.BLACK));
 
         // Selection background and foreground colors
-        props.put("selectionBackgroundColor", ColorUtil.toProperty(GREEN_LIGHT));
-        props.put("selectionBackgroundColorLight", ColorUtil.toProperty(GREEN_LIGHT));
-        props.put("selectionBackgroundColorDark", ColorUtil.toProperty(GREEN_LIGHT));
-        props.put("selectionForegroundColor", ColorUtil.toProperty(ColorUtil.BLACK));
+        props.put("selectionBackgroundColor", ColorUtil.toProperty(RED));
+        props.put("selectionBackgroundColorLight", ColorUtil.toProperty(RED));
+        props.put("selectionBackgroundColorDark", ColorUtil.toProperty(RED));
+        props.put("selectionForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
 
         // Buttons
         props.put("buttonBackgroundColor", ColorUtil.toProperty(DARK_RED));
@@ -113,7 +101,7 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
         // Tabbed panel
         props.put("controlBackgroundColor", ColorUtil.toProperty(DARK_RED)); // tabbed pane background
-        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE)); // tabs
+        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
         props.put("controlColorLight", ColorUtil.toProperty(DARK_RED)); // this must be set for rollover prop to work
         props.put("controlColorDark", ColorUtil.toProperty(RED)); // this must be set for rollover prop to work
 
