@@ -34,9 +34,11 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
     private final Color RED = new Color(216, 54, 54);
     //private final Color GREEN_LIGHT = new Color(216, 255, 216);
     //private final Color GREEN_DARK = new Color(145, 221, 145);
+    //private final Color GREEN = new Color(0, 204, 51);
 
     public MAPLookAndFeel() {
         // Table colors
+        //Main.taskFinishedColor = GREEN;
         Main.tableBackgroundColor = RED;
         Main.myIconBackgroundColor = RED;
 
@@ -101,8 +103,8 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
 
         // Tabbed panel
         props.put("controlBackgroundColor", ColorUtil.toProperty(DARK_RED)); // tabbed pane background
-        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.BLACK));
-        props.put("controlColorLight", ColorUtil.toProperty(DARK_RED)); // this must be set for rollover prop to work
+        props.put("controlForegroundColor", ColorUtil.toProperty(ColorUtil.WHITE)); // tab and dialog foreground
+        props.put("controlColorLight", ColorUtil.toProperty(RED)); // this must be set for rollover prop to work
         props.put("controlColorDark", ColorUtil.toProperty(RED)); // this must be set for rollover prop to work
 
         // Roll over buttons, table headers, tabs, checkboxes
