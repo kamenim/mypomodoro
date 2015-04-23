@@ -59,6 +59,7 @@ public class Main {
     public static MainPanel gui;
     private static Font font;
     // Table colors
+     public static Color tableBackgroundColor = ColorUtil.WHITE;
     public static Color selectedRowColor = ColorUtil.BLUE_ROW;
     public static Color oddRowColor = ColorUtil.WHITE;
     public static Color evenRowColor = ColorUtil.BLUE_ROW_LIGHT;

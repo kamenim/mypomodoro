@@ -49,8 +49,9 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension PANE_DIMENSION = new Dimension(800, 200);
-    private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
+    private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(700, 50);
+    private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
     // List pane: title + table + sub-title + sub-table
     private final JPanel listPane = new JPanel();
     // Split pane: list pane + tabbed pane
@@ -164,6 +165,18 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     private void addCreateButton() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        setLayout(new GridBagLayout());
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(splitPane, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.weightx = 0.1;
         JButton createButton = new DefaultButton(Labels.getString("BurndownChartPanel.Create"));
         createButton.addActionListener(new ActionListener() {
 
@@ -177,20 +190,11 @@ public class CheckPanel extends JPanel implements IListPanel {
                     }
                 }
             }
-        });
-        GridBagConstraints c = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.fill = GridBagConstraints.BOTH;
-        add(splitPane, c);
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weightx = 0.1;
-        c.weighty = 1.0;
-        add(createButton, c);
+        });      
+        createButton.setMinimumSize(CREATEBUTTON_DIMENSION);
+        createButton.setMaximumSize(CREATEBUTTON_DIMENSION);
+        createButton.setPreferredSize(CREATEBUTTON_DIMENSION);
+        add(createButton, gbc);
     }
 
     ////////////////////////////////////////////////

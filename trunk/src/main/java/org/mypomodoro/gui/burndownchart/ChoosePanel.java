@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.burndownchart;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -32,6 +33,9 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ChoosePanel extends JPanel {
+    
+    private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
+    private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 
     private final JTabbedPane tabbedPane;
     private final ChooseInputForm chooseInputForm;
@@ -52,19 +56,23 @@ public class ChoosePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
         gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        add(new JScrollPane(chooseInputForm), gbc);
+        JScrollPane chooseScrollPane = new JScrollPane(chooseInputForm);
+        chooseScrollPane.setMinimumSize(PANE_DIMENSION);
+        chooseScrollPane.setPreferredSize(PANE_DIMENSION);
+        add(chooseScrollPane, gbc);
     }
 
     private void addConfigureButton() {
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.weighty = 1.0;
         gbc.weightx = 0.1;
-        JButton createButton = new DefaultButton(
+        JButton configureButton = new DefaultButton(
                 Labels.getString("BurndownChartPanel.Configure"));
-        createButton.addActionListener(new ActionListener() {
+        configureButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,6 +80,9 @@ public class ChoosePanel extends JPanel {
                 tabbedPane.setSelectedIndex(1);
             }
         });
-        add(createButton, gbc);
+        configureButton.setMinimumSize(CREATEBUTTON_DIMENSION);
+        configureButton.setMaximumSize(CREATEBUTTON_DIMENSION);
+        configureButton.setPreferredSize(CREATEBUTTON_DIMENSION);
+        add(configureButton, gbc);
     }
 }
