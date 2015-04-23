@@ -216,6 +216,7 @@ public final class MainPanel extends JFrame {
                 activitiesPanel.refresh();
                 toDoPanel.refresh();
                 reportListPanel.refresh();
+                chartTabbedPanel.getCheckPanel().refresh();
             }
         });
     }

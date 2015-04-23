@@ -27,7 +27,7 @@ import org.mypomodoro.model.ChartList;
 public class CheckTableModel extends AbstractTableModel {
 
     public CheckTableModel() {
-        setDataVector(ChartList.getTaskList());
+        setDataVector(ChartList.getList());
     }
 
     @Override

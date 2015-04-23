@@ -37,20 +37,20 @@ import org.mypomodoro.util.ColorUtil;
  *
  */
 public class SubTableTitlePanel extends TableTitlePanel {
-    
+
     private final IListPanel panel;
     private int viewCount = 0;
 
-    public SubTableTitlePanel(IListPanel panel, AbstractActivitiesTable table) {
+    public SubTableTitlePanel(IListPanel panel, AbstractTable table) {
         super(panel, table);
-        
+
         this.panel = panel;
 
         // Manage mouse hovering
         addMouseMotionListener(new HoverMouseMotionAdapter());
         // This is to address the case/event when the mouse exit the title
         addMouseListener(new ExitMouseAdapter());
-        
+
         // On click action
         addMouseListener(new OneClickMouseAdapter(this));
     }
@@ -69,7 +69,7 @@ public class SubTableTitlePanel extends TableTitlePanel {
             }
             if (listener instanceof ExitMouseAdapter) {
                 isExitMouseAdapter = true;
-            }            
+            }
             if (listener instanceof OneClickMouseAdapter) {
                 isOneClickMouseAdapter = true;
             }
@@ -86,7 +86,6 @@ public class SubTableTitlePanel extends TableTitlePanel {
         return super.add(comp);
     }
 
-    
     // Hover
     class HoverMouseMotionAdapter extends MouseMotionAdapter {
 
@@ -109,7 +108,7 @@ public class SubTableTitlePanel extends TableTitlePanel {
             titleLabel.setForeground(p.getForeground()); // this is necessary for themes such as JTatoo Noire
         }
     }
-    
+
     // One click: expand / fold
     class OneClickMouseAdapter extends MouseAdapter {
 

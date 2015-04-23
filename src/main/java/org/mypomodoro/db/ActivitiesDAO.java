@@ -246,6 +246,9 @@ public class ActivitiesDAO {
         return activity;
     }
 
+    //////////////////////
+    /// CHARTS
+    //////////////////////
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         if (datesToBeIncluded.size() > 0) {
@@ -256,6 +259,7 @@ public class ActivitiesDAO {
                     query += "priority > -1 OR (";
                 }
                 query += "is_complete = 'true' ";
+                query += "AND parent_id = -1 "; // no subtasks
                 int increment = 1;
                 query += "AND (";
                 for (Date date : datesToBeIncluded) {
@@ -300,6 +304,7 @@ public class ActivitiesDAO {
                     + "WHERE iteration >= " + startIteration + " "
                     + "AND iteration <= " + endIteration + " "
                     + "AND (priority > -1 OR is_complete = 'true') "
+                    + "AND parent_id = -1 " // no subtasks
                     + "ORDER BY iteration ASC"); // from lowest to highest
             try {
                 while (rs.next()) {
@@ -328,7 +333,7 @@ public class ActivitiesDAO {
                 for (Date date : datesToBeIncluded) {
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
-                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                            + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
                             storyPoints.add((Float) rs.getFloat("sum"));
@@ -357,7 +362,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
                         + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                 try {
                     while (rs.next()) {
@@ -389,7 +394,7 @@ public class ActivitiesDAO {
                 for (Date date : datesToBeIncluded) {
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
-                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                            + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
                             storyPoints.add((Float) rs.getFloat("sum"));
@@ -418,7 +423,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
                         + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                 try {
                     while (rs.next()) {
@@ -450,7 +455,7 @@ public class ActivitiesDAO {
                 for (Date date : datesToBeIncluded) {
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
-                            + "WHERE date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                            + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
                             storyPoints.add((Float) rs.getFloat("sum"));
@@ -479,7 +484,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE is_complete = 'true' AND iteration = " + i + ") SubQuery "
+                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                 try {
                     while (rs.next()) {
@@ -562,54 +567,55 @@ public class ActivitiesDAO {
         return activity;
     }
 
-    // move all ToDos back to Activity list
-    public void moveAllTODOs() {
-        String updateSQL = "UPDATE activities SET "
-                + "priority = -1 "
-                + "WHERE priority > -1 AND is_complete = 'false';";
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update(updateSQL);
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }
+    /*
+     // move all ToDos back to Activity list
+     public void moveAllTODOs() {
+     String updateSQL = "UPDATE activities SET "
+     + "priority = -1 "
+     + "WHERE priority > -1 AND is_complete = 'false';";
+     try {
+     database.lock();
+     database.update("begin;");
+     database.update(updateSQL);
+     } finally {
+     database.update("Commit;");
+     database.unlock();
+     }
+     }
 
-    // move all ToDos to Report list
-    public void completeAllTODOs() {
-        String updateSQL = "UPDATE activities SET "
-                + "is_complete = 'true',"
-                + "priority = -1,"
-                + "date_completed = " + new Date().getTime()
-                + " WHERE priority > -1 AND is_complete = 'false';";
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update(updateSQL);
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }
+     // move all ToDos to Report list
+     public void completeAllTODOs() {
+     String updateSQL = "UPDATE activities SET "
+     + "is_complete = 'true',"
+     + "priority = -1,"
+     + "date_completed = " + new Date().getTime()
+     + " WHERE priority > -1 AND is_complete = 'false';";
+     try {
+     database.lock();
+     database.update("begin;");
+     database.update(updateSQL);
+     } finally {
+     database.update("Commit;");
+     database.unlock();
+     }
+     }
 
-    // move all Reports back to Activity list
-    public void reopenAllReports() {
-        String updateSQL = "UPDATE activities SET "
-                + "is_complete = 'false',"
-                + "date_completed = " + new Date().getTime()
-                + " WHERE priority = -1 AND is_complete = 'true';";
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update(updateSQL);
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }
-
+     // move all Reports back to Activity list
+     public void reopenAllReports() {
+     String updateSQL = "UPDATE activities SET "
+     + "is_complete = 'false',"
+     + "date_completed = " + new Date().getTime()
+     + " WHERE priority = -1 AND is_complete = 'true';";
+     try {
+     database.lock();
+     database.update("begin;");
+     database.update(updateSQL);
+     } finally {
+     database.update("Commit;");
+     database.unlock();
+     }
+     }
+     */
     public ArrayList<String> getTaskTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {

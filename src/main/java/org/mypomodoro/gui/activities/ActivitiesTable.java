@@ -25,7 +25,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
-import org.mypomodoro.gui.AbstractActivitiesTable;
+import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.gui.create.list.TaskTypeList;
@@ -42,7 +42,7 @@ import org.mypomodoro.util.TimeConverter;
  * Table for activities
  *
  */
-public class ActivitiesTable extends AbstractActivitiesTable {
+public class ActivitiesTable extends AbstractTable {
 
     private final ActivitiesPanel panel;
 
@@ -193,7 +193,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             }
         });
     }
-    
+
     @Override
     public ActivitiesTableModel getModel() {
         return (ActivitiesTableModel) super.getModel();
@@ -467,7 +467,7 @@ public class ActivitiesTable extends AbstractActivitiesTable {
             }
         }
     }
-    
+
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);

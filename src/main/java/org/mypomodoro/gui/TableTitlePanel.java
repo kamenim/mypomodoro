@@ -23,9 +23,9 @@ package org.mypomodoro.gui;
 public class TableTitlePanel extends AbstractTableTitlePanel {
 
     private final IListPanel panel;
-    private final AbstractActivitiesTable table;
+    private final AbstractTable table;
 
-    public TableTitlePanel(IListPanel panel, AbstractActivitiesTable table) {
+    public TableTitlePanel(IListPanel panel, AbstractTable table) {
         super();
         this.panel = panel;
         this.table = table;

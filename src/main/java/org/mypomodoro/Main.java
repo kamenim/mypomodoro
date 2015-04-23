@@ -34,6 +34,7 @@ import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ChartList;
 import org.mypomodoro.model.Preferences;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
@@ -193,6 +194,7 @@ public class Main {
                 ActivityList.getList().refresh();
                 ToDoList.getList().refresh();
                 ReportList.getList().refresh();
+                ChartList.getList().refresh();
             }
         });
     }

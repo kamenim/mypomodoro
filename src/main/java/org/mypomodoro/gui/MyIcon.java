@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.todo.ToDoPanel;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * MyIcon singleton for icon bar
@@ -46,7 +44,7 @@ public class MyIcon extends JLabel {
     }
 
     public static MyIcon getInstance(final MainPanel view, String text,
-            String fileName, JPanel p) {        
+            String fileName, JPanel p) {
         String onPath = "/images/" + fileName + "2.png";
         String offPath = "/images/" + fileName + ".png";
         String onBusyPath = onPath;

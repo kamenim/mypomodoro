@@ -74,7 +74,6 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
-import org.mypomodoro.gui.AbstractActivitiesTable;
 import org.mypomodoro.gui.AbstractActivitiesTableModel;
 import org.mypomodoro.gui.ActivityCommentTableListener;
 import org.mypomodoro.gui.IListPanel;
@@ -313,9 +312,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // add all listener once and for all
     private void setUpTable() {
         /*table.setBackground(ColorUtil.WHITE); // This stays White despite the background or the current theme
-        table.setSelectionBackground(Main.selectedRowColor);
-        table.setForeground(ColorUtil.BLACK);
-        table.setSelectionForeground(ColorUtil.BLACK);*/
+         table.setSelectionBackground(Main.selectedRowColor);
+         table.setForeground(ColorUtil.BLACK);
+         table.setSelectionForeground(ColorUtil.BLACK);*/
 
         // add tooltip to header columns
         String[] cloneColumnNames = columnNames.clone();
@@ -1581,29 +1580,40 @@ public class ToDoPanel extends JPanel implements IListPanel {
     @Override
     public JSplitPane getSplitPane() {
         return splitPane;
-    }    
-    
+    }
+
     public JPanel getListPane() {
         return null;
-    };
+    }
+
+    ;
     
     public JScrollPane getSubTableScrollPane() {
         return null;
-    };
+    }
+
+    ;
     
     public void addTableTitlePanel() {
-     
-    };
+
+    }
+
+    ;
     
     public void addSubTableTitlePanel() {
-        
-    };
+
+    }
+
+    ;
     
     public JScrollPane getTableScrollPane() {
         return null;
-    };
+    }
+
+    ;
     
     public TableTitlePanel getTableTitlePanel() {
         return null;
-    };
+    }
+;
 }

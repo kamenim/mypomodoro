@@ -20,11 +20,9 @@ import org.mypomodoro.gui.activities.*;
 import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  * Combo Box Cell Editor
