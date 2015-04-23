@@ -20,7 +20,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
@@ -41,7 +40,7 @@ public class TableHeader extends JTableHeader {
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
         setBorder(border);
         setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
-        setForeground(new JPanel().getForeground()); // this is necessary for themes such as JTatoo Noire
+        setForeground(new JTableHeader().getForeground()); // this is necessary for themes such as JTatoo Noire
         /*
          table.getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
          table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");

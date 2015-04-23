@@ -67,7 +67,7 @@ public class Main {
     public static Color rowBorderColor = ColorUtil.BLUE_ROW_DARKER;
     public static Color taskFinishedColor = ColorUtil.GREEN;
     public static Color taskRunningColor = ColorUtil.RED;
-    public static Color myIconBackgroundColor; // mAP laf set this setting
+    public static Color myIconBackgroundColor; // eg mAP laf uses this setting
 
     /**
      * Main

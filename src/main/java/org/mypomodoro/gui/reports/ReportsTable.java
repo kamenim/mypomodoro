@@ -155,7 +155,7 @@ public class ReportsTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // type
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated        
         getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // Diff I
         getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setCellRenderer(new Diff2CellRenderer()); // Diff II
