@@ -98,27 +98,26 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
         tableModel = new ActivitiesTableModel();
-        subTable = new ActivitiesSubTable(subTableModel, this); // instance this before table
+        subTable = new ActivitiesSubTable(subTableModel, this); // instanciate this before table
         table = new ActivitiesTable(tableModel, this);
-        
+
         // Init scroll panes
         subTableScrollPane = new JScrollPane(subTable);
         tableScrollPane = new JScrollPane(table);
-        
+
         // Init title and sub title
         tableTitlePanel = new TableTitlePanel(this, table);
         subTableTitlePanel = new SubTableTitlePanel(this, subTable);
-        
+
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
-        
+
         // Add panes of List pane
         addTableTitlePanel();
         addTable();
         addSubTableTitlePanel();
-        addSubTable();
 
         // Add Split pane
         add(splitPane);
@@ -171,12 +170,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     ////////////////////////////////////////////////
-    // SUB TABLE
-    ////////////////////////////////////////////////
-    public void addSubTable() {
-    }
-
-    ////////////////////////////////////////////////
     // REFRESH
     ////////////////////////////////////////////////
     @Override
@@ -197,7 +190,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 table.init();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
-                    table.setRowSelectionInterval(0, 0);                    
+                    table.setRowSelectionInterval(0, 0);
                 } else {
                     emptySubTable();
                 }

@@ -14,25 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.reports;
+package org.mypomodoro.gui.burndownchart;
 
-import org.mypomodoro.gui.TableTitlePanel;
 import java.text.DecimalFormat;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
+import org.mypomodoro.gui.TableHeader;
+import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.gui.TableHeader;
-import org.mypomodoro.model.AbstractActivities;
-import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -40,11 +38,11 @@ import org.mypomodoro.util.TimeConverter;
  * Table for activities
  *
  */
-public class ReportsTable extends AbstractTable {
+public class CheckTable extends AbstractTable {
 
-    private final ReportsPanel panel;
+    private final CheckPanel panel;
 
-    public ReportsTable(final ReportsTableModel model, final ReportsPanel panel) {
+    public CheckTable(final CheckTableModel model, final CheckPanel panel) {
         super(model);
 
         this.panel = panel;
@@ -65,9 +63,7 @@ public class ReportsTable extends AbstractTable {
                         if (selectedRowCount > 1) { // multiple selection
                             // diactivate/gray out unused tabs
                             panel.getTabbedPane().disableCommentTab();
-                            panel.getTabbedPane().disableEditTab();
-                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
-                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
+                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()) {
                                 panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                             }
                             currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
@@ -95,58 +91,11 @@ public class ReportsTable extends AbstractTable {
                 }
             }
         });
-
-        init();
-
-        // Listener on editable cells
-        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
-        // To avoid update overhead, we compare old value with new value
-        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener        
-        model.addTableModelListener(new TableModelListener() {
-
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());                                                    
-                int row = e.getFirstRow();
-                int column = e.getColumn();
-                if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {
-                    ReportsTableModel sourceModel = (ReportsTableModel) e.getSource();
-                    Object data = sourceModel.getValueAt(row, column);
-                    if (data != null) {
-                        Integer ID = (Integer) sourceModel.getValueAt(row, AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                        Activity act = Activity.getActivity(ID.intValue());
-                        if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
-                            String name = data.toString().trim();
-                            if (!name.equals(act.getName())) {
-                                if (name.length() == 0) {
-                                    // reset the original value. Title can't be empty.
-                                    sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
-                                } else {
-                                    act.setName(name);
-                                    act.databaseUpdate();
-                                    // The customer resizer may resize the title column to fit the length of the new text
-                                    //ColumnResizer.adjustColumnPreferredWidths(this);
-                                    revalidate();
-                                }
-                            }
-                        }
-                        getList().update(act);
-                        // Updating details only
-                        panel.getDetailsPanel().selectInfo(act);
-                        panel.getDetailsPanel().showInfo();
-                        //activitiesPanel.getDetailsPanel().showInfo(this);
-                    }
-                }
-                // Refresh title either there has been a change in the data (estimation, story points) or a change in the number of rows
-                //setTitle();
-            }
-        });
     }
 
     @Override
-    public ReportsTableModel getModel() {
-        return (ReportsTableModel) super.getModel();
+    public CheckTableModel getModel() {
+        return (CheckTableModel) super.getModel();
     }
 
     @Override
@@ -156,9 +105,7 @@ public class ReportsTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // type
-        getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated        
-        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // Diff I
-        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setCellRenderer(new Diff2CellRenderer()); // Diff II
+        getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
 
@@ -198,20 +145,20 @@ public class ReportsTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setMaxWidth(80);
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setMinWidth(80);
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setPreferredWidth(80);
-        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setMaxWidth(40);
-        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setMinWidth(40);
-        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setPreferredWidth(40);
-        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMaxWidth(40);
-        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMinWidth(40);
-        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setPreferredWidth(40);
         // Set min width of column type
         //getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMaxWidth(200);
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMinWidth(100);
         //getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setPreferredWidth(200);
-        // hide priority
+        // hide priority, DiffI and DiffII
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setMinWidth(0);
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setPreferredWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMaxWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMinWidth(0);
+        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setPreferredWidth(0);
         // hide ID column
         getColumnModel().getColumn(AbstractTableModel.ACTIVITYID_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.ACTIVITYID_COLUMN_INDEX).setMinWidth(0);
@@ -241,8 +188,6 @@ public class ReportsTable extends AbstractTable {
         panel.getDetailsPanel().showInfo();
         //panel.getDetailsPanel().showInfo(this);
         panel.getCommentPanel().showInfo(activity);
-        //panel.getEditPanel().showInfo(activity, this);
-        panel.getEditPanel().showInfo(activity);
         // set table for export panel
         //panel.getExportPanel().setTable(this); TODO
     }
@@ -260,13 +205,13 @@ public class ReportsTable extends AbstractTable {
     }
 
     @Override
-    protected ReportList getList() {
-        return ReportList.getList();
+    protected ChartList getList() {
+        return ChartList.getList();
     }
 
     @Override
-    protected ReportList getTableList() {
-        return ReportList.getTaskList();
+    protected ChartList getTableList() {
+        return getList();
     }
 
     @Override
@@ -275,15 +220,13 @@ public class ReportsTable extends AbstractTable {
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        columnToolTips[AbstractTableModel.DIFFI_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff I") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated");
-        columnToolTips[AbstractTableModel.DIFFII_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff II") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated") + " - " + Labels.getString("Common.Overestimated");
         TableHeader customTableHeader = new TableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
 
     @Override
     protected void setTitle() {
-        String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List");
+        String title = Labels.getString("BurndownChartPanel.Chart List");
         int rowCount = getModel().getRowCount(); // get row count on the model not the view !
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -363,12 +306,12 @@ public class ReportsTable extends AbstractTable {
 
     // This method is empty in sub class
     protected void populateSubTable() {
-        panel.populateSubTable(getActivityIdFromSelectedRow());
+        // not used
     }
 
     // This method is empty in sub class
     protected void emptySubTable() {
-        panel.emptySubTable();
+        // not used
     }
 
     @Override
@@ -387,9 +330,9 @@ public class ReportsTable extends AbstractTable {
     }
 
     @Override
-    public void deleteTask(int rowIndex) {
+    public void deleteTask(int rowIndex) { // remove !
         Activity activity = getActivityFromRowIndex(rowIndex);
-        getList().delete(activity); // delete tasks and subtasks
+        getList().remove(activity); // remove task
         removeRow(rowIndex);
     }
 }

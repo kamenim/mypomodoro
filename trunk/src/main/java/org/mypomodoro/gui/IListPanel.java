@@ -58,18 +58,18 @@ public interface IListPanel {
     void saveComment(String comment);
 
     JSplitPane getSplitPane();
-        
+
     JPanel getListPane();
-    
+
     JScrollPane getSubTableScrollPane();
-    
+
     void addTableTitlePanel();
-    
+
     void addTable();
-    
+
     void addSubTableTitlePanel();
-    
-    JScrollPane getTableScrollPane();   
-    
+
+    JScrollPane getTableScrollPane();
+
     TableTitlePanel getTableTitlePanel();
 }

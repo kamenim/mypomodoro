@@ -29,12 +29,12 @@ public final class ChartList extends AbstractActivities {
     private static final ChartList list = new ChartList();
 
     private ChartList() {
-        // no use
+        // not used
     }
 
     @Override
     public void refresh() {
-        //  no use
+        removeAll();
     }
 
     public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
@@ -53,31 +53,6 @@ public final class ChartList extends AbstractActivities {
 
     public static ChartList getList() {
         return list;
-    }
-
-    // List of main tasks
-    public static ChartList getTaskList() {
-        ChartList tableList = new ChartList();
-        for (Activity a : list) {
-            if (a.isSubTask()) {
-                tableList.removeById(a.getId());
-            }
-        }
-        return tableList;
-    }
-
-    // List of sub tasks
-    // The bigger the list the heavier this will be
-    // May we use use Guava https://github.com/google/guava
-    // OR have a specific list for subtasks ?...
-    public static ChartList getSubTaskList(int parentId) {
-        ChartList subTableList = new ChartList();
-        for (Activity a : list) {
-            if (a.getParentId() != parentId) {
-                subTableList.removeById(a.getId());
-            }
-        }
-        return subTableList;
     }
 
     public static int getListSize() {

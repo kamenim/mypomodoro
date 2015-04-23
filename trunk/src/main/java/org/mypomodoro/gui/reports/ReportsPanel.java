@@ -100,25 +100,24 @@ public class ReportsPanel extends JPanel implements IListPanel {
         tableModel = new ReportsTableModel();
         subTable = new ReportsSubTable(subTableModel, this); // instance this before table
         table = new ReportsTable(tableModel, this);
-        
+
         // Init scroll panes
         subTableScrollPane = new JScrollPane(subTable);
         tableScrollPane = new JScrollPane(table);
-        
+
         // Init title and sub title
         tableTitlePanel = new TableTitlePanel(this, table);
         subTableTitlePanel = new SubTableTitlePanel(this, subTable);
-        
+
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (tableModel.getRowCount() > 0) {
             table.setRowSelectionInterval(0, 0);
         }
-        
+
         // Add panes of List pane
         addTableTitlePanel();
         addTable();
         addSubTableTitlePanel();
-        addSubTable();
 
         // Add Split pane
         add(splitPane);
@@ -127,7 +126,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TABBED PANE
     ////////////////////////////////////////////////
-    private void initTabbedPane() {
+    protected void initTabbedPane() {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
         tabbedPane.setEditTabIndex(2);
@@ -169,12 +168,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     ////////////////////////////////////////////////
-    // SUB TABLE
-    ////////////////////////////////////////////////
-    public void addSubTable() {
-    }
-
-    ////////////////////////////////////////////////
     // REFRESH
     ////////////////////////////////////////////////
     @Override
@@ -195,7 +188,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 table.init();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
-                    table.setRowSelectionInterval(0, 0);                    
+                    table.setRowSelectionInterval(0, 0);
                 } else {
                     emptySubTable();
                 }
@@ -306,7 +299,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     public void setCurrentSelectedRow(int row) {
         currentSelectedRow = row;
     }
-    
+
     public void showCurrentSelectedRow() {
         table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }

@@ -72,4 +72,8 @@ public class TabbedPanel extends JPanel {
     public void showCurrentSelectedRow() {
         checkPanel.showCurrentSelectedRow();
     }
+
+    public CheckPanel getCheckPanel() {
+        return checkPanel;
+    }
 }

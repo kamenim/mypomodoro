@@ -78,7 +78,7 @@ public abstract class AbstractTableTitlePanel extends JPanel {
         // Create new task
         createButton.setMargin(buttonInsets);
         createButton.setFocusPainted(false); // removes borders around text
-        
+
         createButton.addActionListener(new ActionListener() {
 
             @Override

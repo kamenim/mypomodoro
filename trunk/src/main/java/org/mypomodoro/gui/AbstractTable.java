@@ -59,20 +59,19 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  *
  *
  */
-public abstract class AbstractActivitiesTable extends JXTable {
+public abstract class AbstractTable extends JXTable {
 
     protected int mouseHoverRow = 0;
     protected int currentSelectedRow = 0;
     protected InputMap im;
 
-    public AbstractActivitiesTable(AbstractTableModel model) {
+    public AbstractTable(AbstractTableModel model) {
         super(model);
 
         /*setBackground(ColorUtil.WHITE);// This stays White despite the background or the current theme
          setSelectionBackground(Main.selectedRowColor);
          setForeground(ColorUtil.BLACK);
          setSelectionForeground(ColorUtil.BLACK);*/
-        
         // Row height
         setRowHeight(30);
 
@@ -172,7 +171,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             }
         }
         //am.put("Add To ToDo List", new moveAction(this)); TODO
-        
+
         // Activate Shift + '<'
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Reopen");
         class reopenAction extends AbstractAction {
@@ -392,7 +391,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             return renderer;
         }
     }
-    
+
     public class StoryPointsCellRenderer extends CustomTableRenderer {
 
         @Override
@@ -438,7 +437,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             return renderer;
         }
     }
-    
+
     @Override
     public AbstractTableModel getModel() {
         return (AbstractTableModel) super.getModel();
@@ -447,7 +446,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     public abstract void createNewTask();
 
     public abstract void duplicateTask();
-   
+
     public abstract void deleteTask(int rowIndex);
 
     protected abstract void init();
@@ -461,7 +460,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
     protected void showInfoForSelectedRow() {
         showInfo(getActivityIdFromSelectedRow());
     }
-    
+
     protected void showInfoForRowIndex(int rowIndex) {
         showInfo(getActivityIdFromRowIndex(rowIndex));
     }
@@ -486,7 +485,7 @@ public abstract class AbstractActivitiesTable extends JXTable {
             scrollRectToVisible(getCellRect(currentRow, 0, true));
         }
     }
-    
+
     public void insertRow(Activity activity) {
         //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
         // By default, the row is added at the bottom of the list

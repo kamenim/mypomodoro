@@ -29,7 +29,6 @@ import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
 /**
