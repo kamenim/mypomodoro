@@ -48,14 +48,17 @@ public class TableTitlePanel extends AbstractTableTitlePanel {
 
     @Override
     protected void createUnplannedTask() {
+        table.createUnplannedTask();
     }
 
     @Override
     protected void createInternalInterruption() {
+        table.createInternalInterruption();
     }
 
     @Override
     protected void createExternalInterruption() {
+        table.createExternalInterruption();
     }
 
     @Override

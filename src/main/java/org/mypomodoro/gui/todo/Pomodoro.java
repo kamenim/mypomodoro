@@ -138,9 +138,9 @@ public class Pomodoro {
         panel.setIconLabels();
         // Show quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-        panel.showQuickInterruptionButtons();
+        //panel.showQuickInterruptionButtons(); // TODO
         // Show running button in quick toolbar
-        panel.showRunningButton();
+        //panel.showRunningButton(); TODO
         panel.getTable().repaint(); // trigger row renderers      
     }
 
@@ -165,9 +165,9 @@ public class Pomodoro {
         panel.setIconLabels();
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        panel.hideQuickInterruptionButtons();
+        //panel.hideQuickInterruptionButtons(); // TODO
         // Show selected button in quick toolbar
-        panel.showSelectedButton();
+        //panel.showSelectedButton(); // TODO
         panel.getTable().repaint(); // trigger row renderers
     }
 
@@ -185,7 +185,7 @@ public class Pomodoro {
         }
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        panel.hideQuickInterruptionButtons();
+        //panel.hideQuickInterruptionButtons(); // TODO
     }
 
     public void resume() {
@@ -206,9 +206,9 @@ public class Pomodoro {
         // Show quick interruption button and items in combo box
         if (inPomodoro()) {
             ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-            panel.showQuickInterruptionButtons();
+            //panel.showQuickInterruptionButtons(); // TODO
             // Show running button in quick toolbar
-            panel.showRunningButton();
+            //panel.showRunningButton(); // TODO
         }
     }
 
@@ -291,9 +291,9 @@ public class Pomodoro {
                     Main.gui.getIconBar().getIcon(2).highlight();
                     // Hide quick interruption button and items in combo box 
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-                    panel.hideQuickInterruptionButtons();
+                    //panel.hideQuickInterruptionButtons(); // TODO
                     // Show selected button in quick toolbar
-                    panel.showSelectedButton();
+                    //panel.showSelectedButton(); // TODO
                 } else { // pomodoro time
                     if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
                         int row = panel.getTable().getSelectedRow();
@@ -313,9 +313,9 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(message);
                         }
                         timerPanel.setToolTipText(null);
-                        panel.hideQuickInterruptionButtons();
+                        //panel.hideQuickInterruptionButtons(); // TODO
                         // Show selected button in quick toolbar
-                        panel.showSelectedButton();
+                        //panel.showSelectedButton(); // TODO
                     } else {
                         if (Main.preferences.getTicking() && !isMute) {
                             tick();
@@ -336,9 +336,9 @@ public class Pomodoro {
                         setTooltipOnImage();
                         // Show quick interruption button and items in combo box 
                         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-                        panel.showQuickInterruptionButtons();
+                        //panel.showQuickInterruptionButtons(); // TODO
                         // Show running button in quick toolbar
-                        panel.showRunningButton();
+                        //panel.showRunningButton(); // TODO
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)

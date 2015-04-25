@@ -234,6 +234,39 @@ public abstract class AbstractTable extends JXTable {
             }
         }
         am.put("Scroll", new scrollBackToTask());
+        
+        // Activate Control U (quick unplanned task)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Control U");
+        class createUnplanned extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createUnplannedTask();
+            }
+        }
+        am.put("Control U", new createUnplanned());
+
+        // Activate Control I (quick internal interruption)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Control I");
+        class createInternal extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createInternalInterruption();
+            }
+        }
+        am.put("Control I", new createInternal());
+
+        // Activate Control E (quick internal interruption)
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Control E");
+        class createExternal extends AbstractAction {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createExternalInterruption();
+            }
+        }
+        am.put("Control E", new createExternal());
     }
 
     public int getActivityIdFromSelectedRow() {
@@ -244,15 +277,15 @@ public abstract class AbstractTable extends JXTable {
         return getList().getById(getActivityIdFromSelectedRow());
     }
 
-    protected int getActivityIdFromRowIndex(int rowIndex) {
+    public int getActivityIdFromRowIndex(int rowIndex) {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
     }
 
-    protected Activity getActivityFromRowIndex(int rowIndex) {
+    public Activity getActivityFromRowIndex(int rowIndex) {
         return getList().getById(getActivityIdFromRowIndex(rowIndex));
     }
 
-    protected Activity getActivityById(int id) {
+    public Activity getActivityById(int id) {
         return getList().getById(id);
     }
 
@@ -449,6 +482,12 @@ public abstract class AbstractTable extends JXTable {
     public abstract void duplicateTask();
 
     public abstract void deleteTask(int rowIndex);
+    
+    public abstract void createUnplannedTask();
+            
+    public abstract void createInternalInterruption();
+    
+    public abstract void createExternalInterruption();
 
     protected abstract void init();
 
@@ -500,4 +539,8 @@ public abstract class AbstractTable extends JXTable {
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
+    
+    // This method does not need to be abstract as it's implemented by the TODO table and sub-tables
+    public void reorderByPriority() {        
+    }    
 }

@@ -30,6 +30,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.TabbedPane;
@@ -241,6 +242,16 @@ public class CheckPanel extends JPanel implements IListPanel {
     @Override
     public CheckTable getTable() {
         return table;
+    }
+    
+    @Override
+    public CheckTable getCurrentTable() {
+        return null; // not used - only one table
+    }
+    
+    @Override
+    public void setCurrentTable(AbstractTable table) {
+        // not used - onle one table
     }
 
     @Override

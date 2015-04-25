@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.jdesktop.swingx.JXTable;
+import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.Activity;
 
 public interface IListPanel {
@@ -72,4 +73,8 @@ public interface IListPanel {
     JScrollPane getTableScrollPane();
 
     TableTitlePanel getTableTitlePanel();
+    
+    void setCurrentTable(AbstractTable table);
+    
+    AbstractTable getCurrentTable(); // TODO to be removed or remove getTable()
 }

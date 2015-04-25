@@ -45,14 +45,15 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
             comboBox.setForeground(Main.taskFinishedColor);
             labelAfter.setForeground(Main.taskFinishedColor);
-        } else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+        } // TODO  Main.gui is null at startup time !!!!
+        /*else if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             labelBefore.setForeground(Main.taskRunningColor);
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskRunningColor); // editable combo box
             comboBox.setForeground(Main.taskRunningColor);
             labelAfter.setForeground(Main.taskRunningColor);
-        } else { // reset foreground (depends on the theme)
+        }*/ else { // reset foreground (depends on the theme)
             labelBefore.setForeground(ColorUtil.BLACK);
             comboBox.getEditor().getEditorComponent().setForeground(new JComboBox().getForeground()); // editable combo box
             comboBox.setForeground(new JComboBox().getForeground());

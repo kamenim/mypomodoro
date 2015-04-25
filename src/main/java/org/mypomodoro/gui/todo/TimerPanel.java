@@ -42,7 +42,6 @@ public class TimerPanel extends JPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private static final Dimension PREFERED_SIZE = new Dimension(230, 220);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final ImageIcon startIcon = new ImageIcon(Main.class.getResource("/images/start.png"));
     private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource("/images/stop.png"));
@@ -63,7 +62,6 @@ public class TimerPanel extends JPanel {
         this.pomodoroTime = pomodoroTime;
         this.panel = panel;
         setLayout(new GridBagLayout());
-        setPreferredSize(PREFERED_SIZE);
         // Transparent !
         setOpaque(false);
         // Timer font

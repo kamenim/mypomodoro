@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.SubTableTitlePanel;
@@ -66,6 +67,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     // Tables
+    private ActivitiesTable currentTable;
     private final ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
     private final ActivitiesSubTableModel subTableModel;
@@ -100,6 +102,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tableModel = new ActivitiesTableModel();
         subTable = new ActivitiesSubTable(subTableModel, this); // instanciate this before table
         table = new ActivitiesTable(tableModel, this);
+        currentTable = table;
 
         // Init scroll panes
         subTableScrollPane = new JScrollPane(subTable);
@@ -222,7 +225,17 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public ActivitiesTable getTable() {
-        return table;
+        return currentTable;
+    }
+    
+    @Override
+    public ActivitiesTable getCurrentTable() {
+        return currentTable;
+    }
+    
+    @Override
+    public void setCurrentTable(AbstractTable table) {
+        currentTable = (ActivitiesTable)table;
     }
 
     public ActivitiesSubTable getSubTable() {

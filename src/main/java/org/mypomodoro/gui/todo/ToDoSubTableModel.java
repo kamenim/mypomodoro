@@ -16,13 +16,11 @@
  */
 package org.mypomodoro.gui.todo;
 
-import org.mypomodoro.gui.activities.*;
-
 /**
  * Table model for sub-ToDos
  *
  */
-public class ToDoSubTableModel extends ActivitiesTableModel {
+public class ToDoSubTableModel extends ToDoTableModel {
 
     public ToDoSubTableModel() {
         emptyModel();
