@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.SubTableTitlePanel;
@@ -66,6 +67,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     // Tables
+    private ReportsTable currentTable;
     private final ReportsTableModel tableModel;
     private final ReportsTable table;
     private final ReportsSubTableModel subTableModel;
@@ -100,6 +102,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         tableModel = new ReportsTableModel();
         subTable = new ReportsSubTable(subTableModel, this); // instance this before table
         table = new ReportsTable(tableModel, this);
+        currentTable = table;
 
         // Init scroll panes
         subTableScrollPane = new JScrollPane(subTable);
@@ -220,7 +223,17 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     @Override
     public ReportsTable getTable() {
-        return table;
+        return currentTable;
+    }
+    
+    @Override
+    public ReportsTable getCurrentTable() {
+        return currentTable;
+    }
+    
+    @Override
+    public void setCurrentTable(AbstractTable table) {
+        currentTable = (ReportsTable)table;
     }
 
     public ReportsSubTable getSubTable() {

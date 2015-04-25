@@ -17,78 +17,37 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.EventObject;
-import java.util.Iterator;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DropMode;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
-import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DiscontinuousButton;
-import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
-import org.mypomodoro.db.mysql.MySQLConfigLoader;
-import org.mypomodoro.gui.AbstractActivitiesTableModel;
-import org.mypomodoro.gui.ActivityCommentTableListener;
+import org.mypomodoro.gui.AbstractTable;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
-import org.mypomodoro.gui.ImageIcons;
+import org.mypomodoro.gui.SubTableTitlePanel;
+import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.model.ToDoList;
-import org.mypomodoro.util.ColorUtil;
-import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.TimeConverter;
 import org.mypomodoro.util.WaitCursor;
 
 /**
@@ -101,737 +60,174 @@ import org.mypomodoro.util.WaitCursor;
 public class ToDoPanel extends JPanel implements IListPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
-    private static final Dimension PANE_DIMENSION = new Dimension(400, 200);
-    private static final Dimension LISTPANE_DIMENSION = new Dimension(360, 200);
-    private static final Dimension TABPANE_DIMENSION = new Dimension(400, 50);
-    private AbstractActivitiesTableModel activitiesTableModel;
-    private final JXTable table;
-    private final JPanel scrollPane = new JPanel();
-    private static final String[] columnNames = {Labels.getString("Common.Priority"),
-        "U",
-        Labels.getString("Common.Title"),
-        Labels.getString("Common.Estimated"),
-        Labels.getString("Agile.Common.Story Points"),
-        Labels.getString("Agile.Common.Iteration"),
-        "ID"};
+    
+    private static final Dimension LIST_TIMER_PANE_DIMENSION = new Dimension(800, 200);
+    private static final Dimension PANE_DIMENSION = new Dimension(500, 200);
+    private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
+    // List and Timer Pane : listPane + Timer
+    private final JPanel listPaneAndTimer = new JPanel();        
+    private final GridBagConstraints gbcListPaneAndTimer = new GridBagConstraints();
+    // List pane: title + table + sub-title + sub-table
+    private final JPanel listPane = new JPanel();
+    // Split pane: list pane + tabbed pane
+    private final JSplitPane splitPane;
+    // Title panes: title and sub-title    
+    private final TableTitlePanel tableTitlePanel;
+    private final SubTableTitlePanel subTableTitlePanel;
+    // Table panes: table and sub-table
+    private final JScrollPane tableScrollPane;
+    private final JScrollPane subTableScrollPane;
+    // Tabbed pane: details + ...
+    private final TabbedPane tabbedPane;
+    // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
-    private final CommentPanel commentPanel = new CommentPanel(this, true);
-    private InputMap im = null;
-    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
+    private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
+    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);    
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
+    // Pomodoro
     private final JLabel pomodoroTime = new JLabel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel, pomodoroTime);
-    private final JSplitPane splitPane;
-    private final JTabbedPane controlPane = new JTabbedPane();
-    private JScrollPane tableScrollPane;
-    //private final JLabel pomodorosRemainingLabel = new JLabel("", JLabel.LEFT);
-    private int mouseHoverRow = 0;
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
-    // Title
-    private final JPanel titlePanel = new JPanel();
-    private final JLabel titleLabel = new JLabel();
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
-    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
-    private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
-    private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
-    private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
-    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
-    private final ImageIcon runningIcon = new ImageIcon(Main.class.getResource("/images/running.png"));
-    private final DefaultButton refreshButton = new DefaultButton(refreshIcon);
-    private final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
-    private final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
-    private final DefaultButton internalButton = new DefaultButton(internalIcon);
-    private final DefaultButton externalButton = new DefaultButton(externalIcon);
-    private final DefaultButton overestimateButton = new DefaultButton(overestimateIcon);
-    private final DefaultButton selectedButton = new DefaultButton(selectedIcon);
-    private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
-    private static final ResizeButton resizeButton = new ResizeButton();
-    private final GridBagConstraints cScrollPane = new GridBagConstraints(); // title + table + timer    
+    // Tables
+    private ToDoTable currentTable;
+    private final ToDoTableModel tableModel;
+    private final ToDoTable table;
+    private final ToDoSubTableModel subTableModel;
+    private final ToDoSubTable subTable;
     // Selected row
     private int currentSelectedRow = 0;
+    // Discontinuous and Resize buttons
+    private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
+    private static final ResizeButton resizeButton = new ResizeButton();
 
     public ToDoPanel() {
-        setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        
+        // Init List and Timer Pane
+        listPaneAndTimer.setMinimumSize(LIST_TIMER_PANE_DIMENSION);
+        listPaneAndTimer.setPreferredSize(LIST_TIMER_PANE_DIMENSION);                
+        listPaneAndTimer.setLayout(new GridBagLayout());
+        gbcListPaneAndTimer.fill = GridBagConstraints.BOTH;
 
-        activitiesTableModel = getTableModel();
+        // Init List pane
+        listPane.setMinimumSize(PANE_DIMENSION);
+        listPane.setPreferredSize(PANE_DIMENSION);
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
 
-        table = new JXTable(activitiesTableModel) {
+        // Init Tabbed pane        
+        tabbedPane = new TabbedPane(this);
+        tabbedPane.setMinimumSize(TABPANE_DIMENSION);
+        tabbedPane.setPreferredSize(TABPANE_DIMENSION);
+        initTabbedPane();
 
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component c = super.prepareRenderer(renderer, row, column);
-                if (isRowSelected(row)) {
-                    ((JComponent) c).setBackground(Main.selectedRowColor);
-                    // using ((JComponent) c).getFont() to preserve current font (eg strike through)
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-                } else if (row == mouseHoverRow) {
-                    ((JComponent) c).setBackground(Main.hoverRowColor);
-                    ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-                    Component[] comps = ((JComponent) c).getComponents();
-                    for (Component comp : comps) { // sub-components (combo boxes)
-                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
-                    }
-                    ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.selectedRowColor));
-                } else {
-                    if (row % 2 == 0) { // odd
-                        ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
-                    } else { // even
-                        ((JComponent) c).setBackground(Main.evenRowColor);
-                    }
-                    ((JComponent) c).setBorder(null);
-                }
-                return c;
-            }
-        };
-
-        // Set up table listeners once and for all
-        setUpTable();
-
-        // Scroll pane
-        scrollPane.setMinimumSize(PANE_DIMENSION);
-        scrollPane.setPreferredSize(PANE_DIMENSION);
-        scrollPane.setLayout(new GridBagLayout());
-
-        // Init label title and buttons        
-        titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        titlePanel.add(titleLabel);
-        Insets buttonInsets = new Insets(0, 10, 0, 10);
-        selectedButton.setMargin(buttonInsets);
-        selectedButton.setFocusPainted(false); // removes borders around text
-        selectedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                scrollToCurrentTask();
-            }
-        });
-        selectedButton.setToolTipText("CTRL + G");
-        overestimateButton.setMargin(buttonInsets);
-        overestimateButton.setFocusPainted(false); // removes borders around text
-        overestimateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                overestimationPanel.overestimateTask(1);
-            }
-        });
-        duplicateButton.setMargin(buttonInsets);
-        duplicateButton.setFocusPainted(false); // removes borders around text
-        duplicateButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        });
-        duplicateButton.setToolTipText("CTRL + D");
-        unplannedButton.setMargin(buttonInsets);
-        unplannedButton.setFocusPainted(false); // removes borders around text
-        unplannedButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createUnplannedTask();
-            }
-        });
-        unplannedButton.setToolTipText("CTRL + U");
-        internalButton.setMargin(buttonInsets);
-        internalButton.setFocusPainted(false); // removes borders around text
-        internalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createInternalInterruption();
-            }
-        });
-        internalButton.setToolTipText("CTRL + I");
-        externalButton.setMargin(buttonInsets);
-        externalButton.setFocusPainted(false); // removes borders around text
-        externalButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createExternalInterruption();
-            }
-        });
-        externalButton.setToolTipText("CTRL + E");
-        refreshButton.setMargin(buttonInsets);
-        refreshButton.setFocusPainted(false); // removes borders around text
-        refreshButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refreshButton.setEnabled(false);
-                // Refresh from database
-                refresh(true);
-                refreshButton.setEnabled(true);
-            }
-        });
-
-        // Add components
-        addTitlePanel();
-        addTable();
-        addTimerPanel();
-        //addRemainingPomodoroPanel(c);
-        //addToDoIconPanel(c);
-
-        // Bottom pane
-        // Init before init the table so we can set the default tab at start up time               
-        controlPane.setMinimumSize(TABPANE_DIMENSION);
-        controlPane.setPreferredSize(TABPANE_DIMENSION);
-        addTabPane();
-        // Split pane
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, scrollPane, controlPane); // continuous layout = true: important for resizing (see Resize class)
+        // Init Split pane
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPaneAndTimer, tabbedPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(null);
-        //splitPane.setDividerSize(10);
         splitPane.setDividerSize(0); // remove divider by hiding it
-        //BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane.getComponent(2);
-        //divider.setBackground(Main.hoverRowColor);
-        //divider.setBorder(new MatteBorder(1, 1, 1, 1, Main.selectedRowColor));
-        // Splitted view
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(splitPane, gbc);
 
-        // Init table (data model and rendering)
-        initTable();
-    }
+        // Init table and sub table (data model and rendering)
+        subTableModel = new ToDoSubTableModel();
+        tableModel = new ToDoTableModel();
+        subTable = new ToDoSubTable(subTableModel, this); // instanciate this before table
+        table = new ToDoTable(tableModel, this);
+        currentTable = table;
 
-    // add all listener once and for all
-    private void setUpTable() {
-        setBackground(Main.tableBackgroundColor);
-        /*table.setSelectionBackground(Main.selectedRowColor);
-         table.setForeground(ColorUtil.BLACK);
-         table.setSelectionForeground(ColorUtil.BLACK);*/
-
-        // add tooltip to header columns
-        String[] cloneColumnNames = columnNames.clone();
-        cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 5] = Labels.getString("Common.Unplanned");
-        cloneColumnNames[activitiesTableModel.getColumnCount() - 1 - 3] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        TableHeader customTableHeader = new TableHeader(table, cloneColumnNames);
-        table.setTableHeader(customTableHeader);
-
-        // Add tooltip and drag and drop
-        // we had to implement our own MouseInputAdapter in order to manage the Mouse release event
-        class CustomInputAdapter extends MouseInputAdapter {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                Point p = e.getPoint();
-                int rowIndex = table.rowAtPoint(p);
-                // Change of row
-                if (mouseHoverRow != rowIndex) {
-                    if (table.getSelectedRowCount() == 1) {
-                        if (rowIndex == -1) {
-                            rowIndex = table.getSelectedRow();
-                            table.setToolTipText(null); // this way tooltip won't stick
-                        }
-                        Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(rowIndex), activitiesTableModel.getColumnCount() - 1);
-                        Activity activity = getList().getById(id);
-                        detailsPanel.selectInfo(activity);
-                        detailsPanel.showInfo();
-                        commentPanel.showInfo(activity);
-                        editPanel.showInfo(activity);
-                        setIconLabels(rowIndex);
-                    }
-                    mouseHoverRow = rowIndex;
-                }
-            }
-        }
-        table.addMouseMotionListener(new CustomInputAdapter());
-        // This is to address the case/event when the mouse exit the table
-        table.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Reset to currently selected task
-                if (table.getSelectedRowCount() == 1) {
-                    Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), activitiesTableModel.getColumnCount() - 1);
-                    Activity activity = getList().getById(id);
-                    if (activity != null) {
-                        detailsPanel.selectInfo(activity);
-                        detailsPanel.showInfo();
-                        commentPanel.showInfo(activity);
-                        editPanel.showInfo(activity);
-                    }
-                    setIconLabels();
-                }
-                mouseHoverRow = -1;
-            }
-        });
-
-        // Add listener to record selected row id and manage pomodoro timer
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        if (table.getSelectedRowCount() > 0) {
-                            //System.err.println(e);
-                            if (!e.getValueIsAdjusting()) { // ignoring the deselection event
-                                //System.err.println(table.getSelectedRowCount());
-                                if (table.getSelectedRowCount() > 1) { // multiple selection
-                                    // diactivate/gray out unused tabs
-                                    controlPane.setEnabledAt(1, false); // comment
-                                    controlPane.setEnabledAt(2, false); // edit
-                                    controlPane.setEnabledAt(3, false); // overestimation
-                                    controlPane.setEnabledAt(4, false); // unplanned
-                                    if ((pomodoro.inPomodoro() && table.getSelectedRowCount() > 2) || !pomodoro.inPomodoro()) {
-                                        controlPane.setEnabledAt(5, true); // merging
-                                    }
-                                    if (controlPane.getSelectedIndex() == 1
-                                    || controlPane.getSelectedIndex() == 2
-                                    || controlPane.getSelectedIndex() == 3
-                                    || controlPane.getSelectedIndex() == 4) {
-                                        controlPane.setSelectedIndex(0); // switch to details panel
-                                    }
-                                    if (!pomodoro.getTimer().isRunning()) {
-                                        pomodoro.setCurrentToDoId(-1); // this will disable the start button
-                                    }
-                                    currentSelectedRow = table.getSelectedRows()[0]; // always select the first selected row (otherwise removeRow will fail)
-                                } else if (table.getSelectedRowCount() == 1) {
-                                    // activate all panels
-                                    for (int index = 0; index < controlPane.getTabCount(); index++) {
-                                        if (index == 5) {
-                                            controlPane.setEnabledAt(5, false); // merging
-                                            if (controlPane.getSelectedIndex() == 5) {
-                                                controlPane.setSelectedIndex(0); // switch to details panel
-                                            }
-                                        } else {
-                                            controlPane.setEnabledAt(index, true);
-                                        }
-                                    }
-                                    if (controlPane.getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                        controlPane.setSelectedIndex(controlPane.getSelectedIndex()); // switch to selected panel
-                                    }
-                                    int row = table.getSelectedRow();
-                                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-                                    if (!pomodoro.inPomodoro()) {
-                                        pomodoro.setCurrentToDoId(id);
-                                    }
-                                    currentSelectedRow = table.getSelectedRow();
-                                    showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                                }
-                                setIconLabels();
-                                //setPanelRemaining();
-                                setPanelBorder();
-                            }
-                        } else {
-                            setIconLabels();
-                            //setPanelRemaining();
-                            setPanelBorder();
-                        }
-                    }
-                });
-
-        im = table.getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = table.getActionMap();
-        // Activate Shift + '>'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Complete");
-        class completeAction extends AbstractAction {
-
-            final ToDoPanel panel;
-
-            public completeAction(ToDoPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), panel);
-                completeToDoButton.doClick();
-            }
-        }
-        am.put("Complete", new completeAction(this));
-        // Activate Shift + '<'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Move Back To Activity List");
-        class moveBackAction extends AbstractAction {
-
-            final ToDoPanel panel;
-
-            public moveBackAction(ToDoPanel panel) {
-                this.panel = panel;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MoveToDoButton moveToDoButton = new MoveToDoButton("", panel);
-                moveToDoButton.doClick();
-            }
-        }
-        am.put("Move Back To Activity List", new moveBackAction(this));
-        // Activate Control A        
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");
-        class selectAllAction extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                table.selectAll();
-            }
-        }
-        am.put("Control A", new selectAllAction());
-
-        // Keystroke for tab
-        class tabAction extends AbstractAction {
-
-            final int index;
-
-            public tabAction(int index) {
-                this.index = index;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (controlPane.isEnabledAt(index)) {
-                    controlPane.setSelectedIndex(index);
-                }
-            }
-        }
-        for (int i = 1; i <= 8; i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
-            am.put("Tab" + i, new tabAction(i - 1));
-        }
-
-        // Activate Control U (quick unplanned task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Control U");
-        class createUnplanned extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createUnplannedTask();
-            }
-        }
-        am.put("Control U", new createUnplanned());
-
-        // Activate Control I (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK), "Control I");
-        class createInternal extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createInternalInterruption();
-            }
-        }
-        am.put("Control I", new createInternal());
-
-        // Activate Control E (quick internal interruption)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Control E");
-        class createExternal extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createExternalInterruption();
-            }
-        }
-        am.put("Control E", new createExternal());
-
-        // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
-        class duplicate extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                duplicateTask();
-            }
-        }
-        am.put("Duplicate", new duplicate());
-
-        // Activate Control G (scroll back to the current running/selected task
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
-        class scrollBackToTask extends AbstractAction {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                scrollToCurrentTask();
-            }
-        }
-        am.put("Scroll", new scrollBackToTask());
-    }
-
-    // Retrieve key event with name
-    public int getKeyEvent(int index) {
-        int key = 0;
-        try {
-            Field f = KeyEvent.class.getField("VK_" + index);
-            f.setAccessible(true);
-            key = (Integer) f.get(null);
-        } catch (IllegalAccessException ignored) {
-        } catch (IllegalArgumentException ignored) {
-        } catch (NoSuchFieldException ignored) {
-        } catch (SecurityException ignored) {
-        }
-        return key;
-    }
-
-    private void initTable() {
-        table.setRowHeight(30);
-
-        // Enable drag and drop
-        table.setDragEnabled(true);
-        table.setDropMode(DropMode.INSERT_ROWS);
-        table.setTransferHandler(new ToDoTransferHandler(this));
-
-        // Make table allowing multiple selections
-        table.setRowSelectionAllowed(true);
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
-        DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
-
-            @Override
-            public boolean isCellEditable(EventObject e) {
-                if (e instanceof KeyEvent) {
-                    return false;
-                }
-                return super.isCellEditable(e);
-            }
-        };
-        table.setDefaultEditor(Object.class, editor);
-
-        // set custom render for title
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 6).setCellRenderer(new CustomTableRenderer()); // priority
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 4).setCellRenderer(new TitleRenderer()); // title           
-        // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setCellRenderer(new ToDoEstimatedComboBoxCellRenderer(new Integer[0], false));
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setCellEditor(new ToDoEstimatedComboBoxCellEditor(new Integer[0], false));
-        // Story Point combo box
-        Float[] points = new Float[]{0f, 0.5f, 1f, 2f, 3f, 5f, 8f, 13f, 20f, 40f, 100f};
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setCellRenderer(new ToDoStoryPointsComboBoxCellRenderer(points, false));
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setCellEditor(new ToDoStoryPointsComboBoxCellEditor(points, false));
-        //table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new IterationCellRenderer()); // iteration
-        // Iteration combo box
-        Integer[] iterations = new Integer[102];
-        for (int i = 0; i <= 101; i++) {
-            iterations[i] = i - 1;
-        }
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellRenderer(new ToDoIterationComboBoxCellRenderer(iterations, false));
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setCellEditor(new ToDoIterationComboBoxCellEditor(iterations, false));
-        // hide story points and iteration in 'classic' mode
-        if (!Main.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMinWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setPreferredWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(0);
-        } else {
-            // Set width of columns story points, iteration
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMaxWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setMinWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 2).setPreferredWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMaxWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setMinWidth(60);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 1).setPreferredWidth(60);
-        }
-        // hide unplanned in Agile mode
-        if (Main.preferences.getAgileMode()) {
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMaxWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMinWidth(0);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setPreferredWidth(0);
-        } else {
-            // Set width of columns Unplanned
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMaxWidth(30);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setMinWidth(30);
-            table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 5).setPreferredWidth(30);
-        }
-        // Set width of column priority
-        table.getColumnModel().getColumn(0).setMaxWidth(40);
-        table.getColumnModel().getColumn(0).setMinWidth(40);
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        // Set width of column estimated
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setMaxWidth(80);
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setMinWidth(80);
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1 - 3).setPreferredWidth(80);
-        // hide ID column
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setMaxWidth(0);
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setMinWidth(0);
-        table.getColumnModel().getColumn(activitiesTableModel.getColumnCount() - 1).setPreferredWidth(0);
-        // enable sorting
-        if (table.getModel().getRowCount() > 0) {
-            table.setAutoCreateRowSorter(true);
-        }
-
-        // diactivate/gray out all tabs (except import)
-        if (table.getRowCount() == 0) {
-            for (int index = 0; index < controlPane.getTabCount(); index++) {
-                if (index == 6) { // import tab
-                    controlPane.setSelectedIndex(index);
-                    continue;
-                }
-                controlPane.setEnabledAt(index, false);
-            }
-        } else {
-            // select first activity
-            table.setRowSelectionInterval(0, 0);
-            table.scrollRectToVisible(table.getCellRect(0, 0, true));
-            // detail tab
-            controlPane.setSelectedIndex(0);
-        }
-
-        // Refresh panel border
-        setPanelBorder();
-
-        // Refresh remaining panel
-        //setPanelRemaining();
-    }
-
-    @Override
-    public void setPanelBorder() {
-        String titleActivitiesList = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
-        if (ToDoList.getListSize() > 0) {
-            if (table.getSelectedRowCount() > 1) {
-                int[] rows = table.getSelectedRows();
-                int estimated = 0;
-                int overestimated = 0;
-                int real = 0;
-                float storypoints = 0;
-                for (int row : rows) {
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-                    Activity selectedActivity = getActivityById(id);
-                    estimated += selectedActivity.getEstimatedPoms();
-                    overestimated += selectedActivity.getOverestimatedPoms();
-                    real += selectedActivity.getActualPoms();
-                    storypoints += selectedActivity.getStoryPoints();
-                }
-                titleActivitiesList += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + table.getSelectedRowCount() + "&nbsp;</span>" + "/" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
-                if (overestimated > 0) {
-                    titleActivitiesList += " + " + overestimated;
-                }
-                titleActivitiesList += "&nbsp;</span>";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
-                }
-                // Tool tip
-                String toolTipText = Labels.getString("Common.Done") + ": ";
-                toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated);
-                if (overestimated > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }
-                titleLabel.setToolTipText(toolTipText);
-                // Hide buttons of the quick bar
-                titlePanel.remove(selectedButton);
-                titlePanel.remove(overestimateButton);
-                titlePanel.remove(duplicateButton);
-            } else {
-                titleActivitiesList += " (" + ToDoList.getListSize() + ")";
-                titleActivitiesList += " > " + Labels.getString("Common.Done") + ": ";
-                titleActivitiesList += getList().getNbRealPom();
-                titleActivitiesList += " / " + getList().getNbEstimatedPom();
-                if (getList().getNbOverestimatedPom() > 0) {
-                    titleActivitiesList += " + " + getList().getNbOverestimatedPom();
-                }
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    titleActivitiesList += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(getList().getStoryPoints());
-                }
-                // Tool tip
-                String toolTipText = Labels.getString("Common.Done") + ": ";
-                toolTipText += TimeConverter.getLength(getList().getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(getList().getNbEstimatedPom());
-                if (getList().getNbOverestimatedPom() > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(getList().getNbOverestimatedPom());
-                }
-                titleLabel.setToolTipText(toolTipText);
-                if (table.getSelectedRowCount() == 1) {
-                    // Show buttons of the quick bar
-                    // Hide overestimation options when estimated == 0 or real < estimated
-                    titlePanel.add(selectedButton, 1);
-                    int row = table.getSelectedRow();
-                    Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-                    Activity selectedActivity = getActivityById(id);
-                    if (selectedActivity.getEstimatedPoms() != 0
-                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
-                        controlPane.setEnabledAt(3, true); // overestimation tab
-                        titlePanel.add(overestimateButton, 2);
-                        titlePanel.add(duplicateButton, 3);
-                    } else {
-                        controlPane.setEnabledAt(3, false); // overestimation tab
-                        titlePanel.remove(overestimateButton);
-                        titlePanel.add(duplicateButton, 2);
-                    }
-                }
-            }
-            titlePanel.add(unplannedButton);
-            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                titlePanel.add(refreshButton); // end of the line
-            }
-        } else {
-            titlePanel.remove(selectedButton);
-            titlePanel.remove(overestimateButton);
-            titlePanel.remove(duplicateButton);
-            titlePanel.remove(internalButton);
-            titlePanel.remove(externalButton);
-            if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
-                titlePanel.remove(refreshButton);
-            }
-        }
-        // Update title        
-        titleLabel.setText("<html>" + titleActivitiesList + "</html>");
-        titlePanel.repaint(); // this is necessary to force stretching of panel
-    }
-
-    public void addTitlePanel() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 0;
-        cScrollPane.weightx = 1.0;
-        cScrollPane.weighty = 0; // this is set only to prevent the resizing (Resize class) to enlarge the panel
-        cScrollPane.gridwidth = 2;
-        cScrollPane.anchor = GridBagConstraints.WEST;
-        cScrollPane.fill = GridBagConstraints.BOTH;
-        titlePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        scrollPane.add(titlePanel, cScrollPane);
-    }
-
-    public void showQuickInterruptionButtons() {
-        titlePanel.add(internalButton);
-        titlePanel.add(externalButton);
-        setPanelBorder();
-    }
-
-    public void hideQuickInterruptionButtons() {
-        titlePanel.remove(internalButton);
-        titlePanel.remove(externalButton);
-        setPanelBorder();
-    }
-
-    public void addTable() {
-        cScrollPane.gridx = 0;
-        cScrollPane.gridy = 1;
-        cScrollPane.weightx = 0.7;
-        cScrollPane.weighty = 1.0;
-        cScrollPane.gridwidth = 1;
-        cScrollPane.gridheight = 1;
-        cScrollPane.fill = GridBagConstraints.BOTH;
+        // Init scroll panes
+        subTableScrollPane = new JScrollPane(subTable);
         tableScrollPane = new JScrollPane(table);
-        tableScrollPane.setMinimumSize(LISTPANE_DIMENSION);
-        tableScrollPane.setPreferredSize(LISTPANE_DIMENSION);
-        scrollPane.add(tableScrollPane, cScrollPane);
+
+        // Init title and sub title
+        tableTitlePanel = new TableTitlePanel(this, table);
+        subTableTitlePanel = new SubTableTitlePanel(this, subTable);
+
+        // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
+        if (tableModel.getRowCount() > 0) {
+            table.setRowSelectionInterval(0, 0);
+        }
+
+        // Add panes of List pane
+        addTableTitlePanel();
+        addTable();
+        addSubTableTitlePanel();
+
+        // Add Split pane
+        add(splitPane);
+        
+        // Add list pane to ListAndTimerPane
+        addListPane();
+        // Add timer to ListAndTimerPane
+        addTimerPanel();
     }
 
-    public void addTimerPanel() {
-        cScrollPane.gridx = 1;
-        cScrollPane.gridy = 1;
-        cScrollPane.weightx = 0.3;
-        cScrollPane.weighty = 1.0;
-        cScrollPane.gridwidth = 1;
-        cScrollPane.gridheight = 1;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
+    ////////////////////////////////////////////////
+    // TABBED PANE
+    ////////////////////////////////////////////////
+    private void initTabbedPane() {
+        tabbedPane.setDetailsTabIndex(0);
+        tabbedPane.setCommentTabIndex(1);
+        tabbedPane.setEditTabIndex(2);        
+        tabbedPane.setOverestimateTabIndex(3);
+        tabbedPane.setUnplannedTabIndex(4);
+        tabbedPane.setMergeTabIndex(5);
+        tabbedPane.setImportTabIndex(6);
+        tabbedPane.setExportTabIndex(7);
+        tabbedPane.add(Labels.getString("Common.Details"), detailsPanel);
+        tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
+        tabbedPane.add(Labels.getString("Common.Edit"), editPanel);
+        tabbedPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
+        tabbedPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
+        tabbedPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
+        ImportPanel importPanel = new ImportPanel(this);
+        tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
+        ExportPanel exportPanel = new ExportPanel(this);
+        tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
+    }
+
+    ////////////////////////////////////////////////
+    // TITLE
+    ////////////////////////////////////////////////
+    @Override
+    public void addTableTitlePanel() {
+        table.setTitle(); // init title
+        listPane.add(tableTitlePanel);
+    }
+
+    ////////////////////////////////////////////////
+    // TABLE
+    ////////////////////////////////////////////////
+    @Override
+    public void addTable() {
+        listPane.add(tableScrollPane);
+    }
+
+    ////////////////////////////////////////////////
+    // SUB TITLE
+    ////////////////////////////////////////////////
+    @Override
+    public void addSubTableTitlePanel() {
+        subTable.setTitle(); // init title
+        listPane.add(subTableTitlePanel);
+    }
+    
+    public void addListPane() {
+        gbcListPaneAndTimer.gridx = 0;
+        gbcListPaneAndTimer.gridy = 0;
+        gbcListPaneAndTimer.weighty = 1.0;
+        gbcListPaneAndTimer.weightx = 1.0;        
+        listPaneAndTimer.add(listPane, gbcListPaneAndTimer);
+    }
+    
+    private void addTimerPanel() {
+        gbcListPaneAndTimer.gridx = 1;
+        gbcListPaneAndTimer.gridy = 0;
+        gbcListPaneAndTimer.weighty = 1.0;
+        gbcListPaneAndTimer.weightx = 1.0;
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
         JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
@@ -842,261 +238,93 @@ public class ToDoPanel extends JPanel implements IListPanel {
          timerPanel.switchPomodoroCompliance();
          }
          });*/
-        scrollPane.add(wrap, cScrollPane);
+        listPaneAndTimer.add(wrap, gbcListPaneAndTimer);
         pomodoro.setTimerPanel(timerPanel);
     }
 
-    /*private void addRemainingPomodoroPanel(GridBagConstraints gbc) {
-     gbc.gridx = 0;
-     gbc.gridy = 1;
-     gbc.weightx = 0.7;
-     gbc.weighty = 0.1;
-     gbc.gridheight = 1;
-     scrollPane.add(pomodorosRemainingLabel, gbc);
-     PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
-     }
-
-     private void addToDoIconPanel(GridBagConstraints gbc) {
-     gbc.gridx = 1;
-     gbc.gridy = 1;
-     gbc.weightx = 0.3;
-     gbc.weighty = 0.1;
-     gbc.gridheight = 1;
-     iconLabel.setMinimumSize(ICONLABEL_DIMENSION);
-     iconLabel.setPreferredSize(ICONLABEL_DIMENSION);
-     scrollPane.add(iconLabel, gbc);
-     }*/
-    public void addTabPane() {
-        controlPane.setFocusable(false); // removes borders around tab text
-        controlPane.add(Labels.getString("Common.Details"), detailsPanel);
-        controlPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
-        controlPane.add(Labels.getString("Common.Edit"), editPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
-        controlPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
-        controlPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
-        ImportPanel importPanel = new ImportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
-        ExportPanel exportPanel = new ExportPanel(this);
-        controlPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-        // Implement one-click action on selected tabs
-        // Tab already selected = one click to expand
-        // Tab not selected = double click to expand
-        class CustomChangeListener implements ChangeListener {
-
-            private boolean stateChanged = false;
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                stateChanged = true;
-            }
-
-            public boolean getStateChanged() {
-                return stateChanged;
-            }
-
-            public void setStateChanged(boolean stateChanged) {
-                this.stateChanged = stateChanged;
-            }
-        }
-        final CustomChangeListener customChangeListener = new CustomChangeListener();
-        controlPane.addChangeListener(customChangeListener);
-        controlPane.addMouseListener(new MouseAdapter() {
-            private int dividerLocation;
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1
-                        || (e.getClickCount() == 1 && !customChangeListener.getStateChanged())) {
-                    // Expand
-                    if (splitPane.getDividerLocation() != 0) {
-                        dividerLocation = splitPane.getDividerLocation();
-                        splitPane.setDividerLocation(0.0);
-                    } else { // back to original position
-                        splitPane.setDividerLocation(dividerLocation);
-                    }
-                } else {
-                    customChangeListener.setStateChanged(false);
-                }
-            }
-        });
-        showSelectedItemDetails(detailsPanel);
-        //showSelectedItemEdit(editPanel);
-        showSelectedItemComment(commentPanel);
-    }
-
-    private AbstractActivitiesTableModel getTableModel() {
-        int rowIndex = getList().size();
-        int colIndex = columnNames.length;
-        Object[][] tableData = new Object[rowIndex][colIndex];
-        Iterator<Activity> iterator = getList().iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            Activity a = iterator.next();
-            tableData[i][0] = a.getPriority();
-            tableData[i][1] = a.isUnplanned();
-            tableData[i][2] = a.getName();
-            Integer poms = new Integer(a.getEstimatedPoms()); // sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
-            //Integer poms = new Integer(a.getActualPoms()); // can't do that cause tableChanged would replace estimation with real
-            tableData[i][3] = poms;
-            Float points = new Float(a.getStoryPoints());
-            tableData[i][4] = points;
-            Integer iteration = new Integer(a.getIteration());
-            tableData[i][5] = iteration;
-            tableData[i][6] = a.getId();
-        }
-
-        AbstractActivitiesTableModel tableModel = new AbstractActivitiesTableModel(tableData, columnNames) {
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == activitiesTableModel.getColumnCount() - 1 - 4 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 3 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 2 || columnIndex == activitiesTableModel.getColumnCount() - 1 - 1;
-            }
-
-            // this is mandatory to get columns with integers properly sorted
-            @Override
-            public Class
-                    getColumnClass(int column) {
-                switch (column) {
-                    case 0:
-                        return Integer.class;
-                    case 1:
-                        return Boolean.class;
-                    case 3:
-                        return Integer.class;
-                    case 4:
-                        return Float.class;
-                    case 5:
-                        return Integer.class;
-                    default:
-                        return String.class;
-                }
-            }
-
-        };
-
-        // listener on editable cells
-        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
-        // To avoid update overhead, we compare old value with new value
-        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener 
-        tableModel.addTableModelListener(new TableModelListener() {
-
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) {
-                    AbstractActivitiesTableModel model = (AbstractActivitiesTableModel) e.getSource();
-                    int row = e.getFirstRow();
-                    int column = e.getColumn();
-                    try { // catching error : dragging rows around (priorization) throws UPDATE events
-                        Object data = model.getValueAt(row, column);
-                        if (data != null) {
-                            if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1                        
-                                Integer ID = (Integer) model.getValueAt(row, activitiesTableModel.getColumnCount() - 1); // ID
-                                Activity act = Activity.getActivity(ID.intValue());
-                                if (column == activitiesTableModel.getColumnCount() - 1 - 4) { // Title (can't be empty)
-                                    String name = data.toString().trim();
-                                    if (!name.equals(act.getName())) {
-                                        if (name.length() == 0) {
-                                            // reset the original value. Title can't be empty.
-                                            model.setValueAt(act.getName(), table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1 - 4);
-                                        } else {
-                                            act.setName(name);
-                                            act.databaseUpdate();
-                                        }
-                                    }
-                                } else if (column == activitiesTableModel.getColumnCount() - 1 - 3) { // Estimated                        
-                                    int estimated = (Integer) data;
-                                    if (estimated != act.getEstimatedPoms()
-                                            && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
-                                        act.setEstimatedPoms(estimated);
-                                        act.databaseUpdate();
-                                    }
-                                }
-                                getList().update(act);
-                                setIconLabels();
-                                // Refresh panel border after updating the list
-                                setPanelBorder();
-                                // update info
-                                detailsPanel.selectInfo(act);
-                                detailsPanel.showInfo();
-                            }
-                        }
-                    } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
-                        // error due to priorization
-                    }
-                }
-                // diactivate/gray out all tabs (except import)
-                if (table.getRowCount() == 0) {
-                    for (int index = 0; index < controlPane.getTabCount(); index++) {
-                        if (index == 6) { // select Import panel
-                            controlPane.setSelectedIndex(index);
-                            continue;
-                        }
-                        controlPane.setEnabledAt(index, false);
-                    }
-                } else { // select Details tab
-                    controlPane.setSelectedIndex(0);
-                }
-            }
-        }
-        );
-        return tableModel;
+    ////////////////////////////////////////////////
+    // REFRESH
+    ////////////////////////////////////////////////
+    @Override
+    public void refresh() {
+        refresh(false);
     }
 
     @Override
-    public JXTable getTable() {
-        return table;
+    public void refresh(boolean fromDatabase) {
+        if (!WaitCursor.isStarted()) {
+            // Start wait cursor
+            WaitCursor.startWaitCursor();
+            try {
+                if (fromDatabase) {
+                    getList().refresh();
+                }
+                tableModel.setDataVector(getList());
+                table.init();
+                if (tableModel.getRowCount() > 0) {
+                    table.setCurrentSelectedRow(0);
+                    table.setRowSelectionInterval(0, 0);
+                } else {
+                    emptySubTable();
+                }
+                table.setTitle();
+                subTable.setTitle();
+            } catch (Exception ex) {
+                logger.error("", ex);
+            } finally {
+                // Stop wait cursor
+                WaitCursor.stopWaitCursor();
+            }
+        }
+    }
+
+    public ToDoList getList() {
+        return ToDoList.getList();
+    }
+
+    public void emptySubTable() {
+        subTableModel.setRowCount(0);
+        subTable.setParentId(-1);
+        subTable.init();
+        subTable.setTitle();
+    }
+
+    @Override
+    public void setPanelBorder() {
+    }
+
+    //the current table (last selection)
+    @Override
+    public ToDoTable getTable() {
+        return currentTable;
+    }
+    
+    @Override
+    public ToDoTable getCurrentTable() {
+        return currentTable;
+    }
+    
+    @Override
+    public void setCurrentTable(AbstractTable table) {
+        currentTable = (ToDoTable)table;
+    }
+
+    public ToDoSubTable getSubTable() {
+        return subTable;
     }
 
     @Override
     public int getIdKey() {
-        return activitiesTableModel.getColumnCount() - 1;
+        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
     }
 
     @Override
     public void removeRow(int rowIndex) {
-        table.clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-        activitiesTableModel.removeRow(table.convertRowIndexToModel(rowIndex)); // we remove in the Model...
-        if (table.getRowCount() > 0) {
-            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == table.getRowCount() ? currentSelectedRow - 1 : currentSelectedRow;
-            table.setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-            table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-        }
+        getTable().removeRow(rowIndex);
     }
 
     @Override
     public void insertRow(Activity activity) {
-        table.clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
-        Object[] rowData = new Object[7];
-        rowData[0] = activity.getPriority();
-        rowData[1] = activity.isUnplanned();
-        rowData[2] = activity.getName();
-        Integer poms = new Integer(activity.getActualPoms());
-        rowData[3] = poms;
-        Float points = new Float(activity.getStoryPoints());
-        rowData[4] = points;
-        Integer iteration = new Integer(activity.getIteration());
-        rowData[5] = iteration;
-        rowData[6] = activity.getId();
-        // By default, the row is added at the bottom of the list
-        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-        activitiesTableModel.addRow(rowData); // we add in the Model...        
-        int currentRow = table.convertRowIndexToView(table.getRowCount() - 1); // ...while selecting in the View
-        table.setRowSelectionInterval(currentRow, currentRow);
-        table.scrollRectToVisible(table.getCellRect(currentRow, 0, true));
-    }
-
-    @Override
-    public Activity getActivityById(int id) {
-        return getList().getById(id);
-    }
-
-    @Override
-    public void delete(Activity activity) {
-        // not used
-    }
-
-    @Override
-    public void deleteAll() {
-        // no use
     }
 
     @Override
@@ -1109,15 +337,25 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    // moveAll is used only if no pomodoro is running (see MoveToDoButton)
     /*@Override
      public void moveAll() {
-     getList().moveAll();
-     if (pomodoro.getTimer().isRunning()) { // break running
-     pomodoro.stop();
-     pomodoro.getTimerPanel().setStartEnv();
-     }
+     // no use
      }*/
+    @Override
+    public Activity getActivityById(int id) {
+        return getList().getById(id);
+    }
+
+    @Override
+    public void delete(Activity activity) {
+        // not used
+    }
+
+    @Override
+    public void deleteAll() {
+        // not used
+    }
+    
     @Override
     public void complete(Activity activity) {
         getList().complete(activity);
@@ -1128,14 +366,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    // comleteAll is used only if no pomodoro is running (see CompleteToDoButton)
     /*@Override
      public void completeAll() {
-     getList().completeAll();
-     if (pomodoro.getTimer().isRunning()) { // break running
-     pomodoro.stop();
-     pomodoro.getTimerPanel().setStartEnv();
-     }
+     // no use
      }*/
     @Override
     public void addActivity(Activity activity) {
@@ -1147,140 +380,82 @@ public class ToDoPanel extends JPanel implements IListPanel {
         getList().add(activity, date, dateCompleted);
     }
 
-    public void reorderByPriority() {
-        getList().reorderByPriority();
-        for (int row = 0; row < table.getRowCount(); row++) {
-            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-            Activity activity = getActivityById(id);
-            activitiesTableModel.setValueAt(activity.getPriority(), table.convertRowIndexToModel(row), 0); // priority column index = 0            
+    @Override
+    public void saveComment(String comment) {
+        if (table.getSelectedRowCount() == 1) {
+            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity selectedActivity = getList().getById(id);
+            if (selectedActivity != null) {
+                selectedActivity.setNotes(comment);
+                selectedActivity.databaseUpdateComment();
+            }
         }
     }
 
-    private void showSelectedItemDetails(DetailsPanel detailsPanel) {
-        table.getSelectionModel().addListSelectionListener(
-                new ToDoInformationTableListener(getList(),
-                        table, detailsPanel, activitiesTableModel.getColumnCount() - 1, pomodoro));
+    public void setCurrentSelectedRow(int row) {
+        currentSelectedRow = row;
     }
 
-    /*private void showSelectedItemEdit(EditPanel editPane) {
-     table.getSelectionModel().addListSelectionListener(
-     new ActivityEditTableListener(getList(), table,
-     editPane, activitiesTableModel.getColumnCount() - 1));
-     }*/
-    private void showSelectedItemComment(CommentPanel commentPanel) {
-        table.getSelectionModel().addListSelectionListener(
-                new ActivityCommentTableListener(getList(),
-                        table, commentPanel, activitiesTableModel.getColumnCount() - 1));
+    public void showCurrentSelectedRow() {
+        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
+    }
+
+    /////////////////// NEW
+    public DetailsPanel getDetailsPanel() {
+        return detailsPanel;
+    }
+
+    public CommentPanel getCommentPanel() {
+        return commentPanel;
+    }
+
+    public EditPanel getEditPanel() {
+        return editPanel;
+    }
+
+    public TabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 
     @Override
-    public void refresh() {
-        refresh(false);
+    public JPanel getListPane() {
+        return listPane;
     }
 
-    public void refresh(boolean fromDatabase) {
-        if (!WaitCursor.isStarted()) {
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
-            try {
-                if (table.getRowCount() == 0) {
-                    currentSelectedRow = 0;
-                }
-                if (fromDatabase) {
-                    getList().refresh();
-                }
-                activitiesTableModel = getTableModel();
-                table.setModel(activitiesTableModel);
-                initTable();
-            } catch (Exception ex) {
-                logger.error("", ex);
-            } finally {
-                // Stop wait cursor
-                WaitCursor.stopWaitCursor();
-            }
-        }
+    @Override
+    public JSplitPane getSplitPane() {
+        return splitPane;
     }
 
-    // selected row BOLD
-    class CustomTableRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
-            JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setForeground(ColorUtil.BLACK);
-            renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
-            renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-            Activity toDo = getList().getById(id);
-            Activity currentToDo = pomodoro.getCurrentToDo();
-            if (toDo != null && pomodoro.inPomodoro() && toDo.getId() == currentToDo.getId()) {
-                renderer.setForeground(Main.taskRunningColor);
-            } else if (toDo != null && toDo.isFinished()) {
-                renderer.setForeground(Main.taskFinishedColor);
-            }
-            return renderer;
-        }
+    @Override
+    public TableTitlePanel getTableTitlePanel() {
+        return tableTitlePanel;
     }
 
-    class TitleRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            renderer.setToolTipText((String) value);
-            return renderer;
-        }
+    public SubTableTitlePanel getSubTableTitlePanel() {
+        return subTableTitlePanel;
     }
 
-    class UnplannedRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if ((Boolean) value) {
-                if (!getFont().canDisplay('\u2714')) { // unicode tick
-                    renderer.setText("U");
-                } else {
-                    renderer.setText("\u2714");
-                }
-            } else {
-                renderer.setText("");
-            }
-            return renderer;
-        }
+    @Override
+    public JScrollPane getTableScrollPane() {
+        return tableScrollPane;
     }
 
-    class StoryPointsCellRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text;
-            if (value.toString().equals("0.5")) {
-                text = "1/2";
-            } else {
-                text = Math.round((Float) value) + "";
-            }
-            renderer.setText(text);
-            return renderer;
-        }
+    @Override
+    public JScrollPane getSubTableScrollPane() {
+        return subTableScrollPane;
     }
 
-    class IterationCellRenderer extends CustomTableRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text = value.toString();
-            if (value.toString().equals("-1")) {
-                text = "";
-            }
-            renderer.setText(text);
-            return renderer;
-        }
+    public void populateSubTable(int parentId) {
+        subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
+        subTable.setParentId(parentId);
+        subTable.init();
+        subTable.setTitle();
     }
-
+    
+    ////////////////////////////
+    // ToDoPanel specific
+    ///////////////////////////
     private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
@@ -1339,26 +514,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return backgroundPanel;
     }
 
-    @Override
-    public void saveComment(String comment) {
-        if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), activitiesTableModel.getColumnCount() - 1);
-            Activity selectedActivity = getList().getById(id);
-            if (selectedActivity != null) {
-                selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdateComment();
-            }
-        }
-    }
-
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
-
+    
     public void setIconLabels() {
         setIconLabels(table.getSelectedRow());
     }
-
+    
     public void setIconLabels(int row) {
         if (ToDoList.getListSize() > 0) {
             Activity currentToDo = pomodoro.getCurrentToDo();
@@ -1373,7 +536,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
-                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
+                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
                 Activity selectedToDo = getActivityById(id);
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -1412,31 +575,28 @@ public class ToDoPanel extends JPanel implements IListPanel {
         }
     }
 
-    /*public void setPanelRemaining() {
-     PomodorosRemainingLabel.showRemainPomodoros(pomodorosRemainingLabel);
-     }*/
-    public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row;
+    public void removeTabbedPane() {
+        splitPane.remove(tabbedPane);
+    }
+    
+    public void removeListPane() {
+        listPaneAndTimer.remove(listPane);
     }
 
-    public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
-    }
-
-    public void removeScrollPane() {
-        scrollPane.remove(tableScrollPane);
-    }
-
-    public void removeControlPane() {
-        splitPane.remove(controlPane);
+    /*public void removeScrollPane() {
+        listPane.remove(tableScrollPane);
     }
 
     public void removeTitlePanel() {
-        scrollPane.remove(titlePanel);
+        listPane.remove(tableTitlePanel);
     }
+    
+    public void removeSubTitlePanel() {
+        listPane.remove(subTableTitlePanel);
+    }*/
 
-    public void addControlPane() {
-        splitPane.setRightComponent(controlPane); // bottom
+    public void addTabbedPane() {
+        splitPane.setRightComponent(tabbedPane); // bottom
     }
 
     public void hideDiscontinuousButton() {
@@ -1464,95 +624,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return resizeButton;
     }
 
-    private void duplicateTask() {
-        if (table.getSelectedRowCount() == 1) {
-            int row = table.getSelectedRow();
-            Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), getIdKey());
-            Activity originalCopiedActivity = getActivityById(id);
-            try {
-                Activity copiedActivity = originalCopiedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task                
-                copiedActivity.setName("(D) " + copiedActivity.getName());
-                copiedActivity.setActualPoms(0);
-                copiedActivity.setOverestimatedPoms(0);
-                copiedActivity.setIteration(-1);
-                // Insert the duplicate into the activity list
-                ActivityList.getList().add(copiedActivity, new Date(), new Date(0));
-                Main.gui.getActivityListPanel().insertRow(copiedActivity);
-                String title = Labels.getString("Common.Add Duplicated task");
-                String message = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Duplicated task added to Activity List");
-                JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
-            } catch (CloneNotSupportedException ignored) {
-            }
-        }
-    }
-
-    private void createUnplannedTask() {
-        Activity unplannedToDo = new Activity();
-        unplannedToDo.setEstimatedPoms(0);
-        unplannedToDo.setIsUnplanned(true);
-        unplannedToDo.setName(Labels.getString("Common.Unplanned"));
-        addActivity(unplannedToDo);
-        unplannedToDo.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-        insertRow(unplannedToDo);
-        // Set the blinking cursor and the ability to type in right away
-        table.editCellAt(table.getSelectedRow(), activitiesTableModel.getColumnCount() - 1 - 4); // edit cell
-        table.setSurrendersFocusOnKeystroke(true); // focus
-        if (table.getEditorComponent() != null) {
-            table.getEditorComponent().requestFocus();
-        }
-        controlPane.setSelectedIndex(2); // open edit tab
-        editPanel.showInfo(unplannedToDo); // set the id of the new task on the edit form
-    }
-
-    private void createExternalInterruption() {
-        // Interruptions : update current/running pomodoro
-        Activity currentToDo = getPomodoro().getCurrentToDo();
-        if (currentToDo != null && getPomodoro().inPomodoro()) {
-            currentToDo.incrementInter();
-            currentToDo.databaseUpdate();
-            Activity interruption = new Activity();
-            interruption.setEstimatedPoms(0);
-            interruption.setIsUnplanned(true);
-            interruption.setName(Labels.getString("ToDoListPanel.External"));
-            addActivity(interruption);
-            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(interruption);
-            // Set the blinking cursor and the ability to type in right away
-            table.editCellAt(table.getSelectedRow(), activitiesTableModel.getColumnCount() - 1 - 4); // edit cell
-            table.setSurrendersFocusOnKeystroke(true); // focus
-            if (table.getEditorComponent() != null) {
-                table.getEditorComponent().requestFocus();
-            }
-            controlPane.setSelectedIndex(2); // open edit tab            
-            editPanel.showInfo(interruption); // set the id of the new task on the edit form
-        }
-    }
-
-    private void createInternalInterruption() {
-        // Interruptions : update current/running pomodoro
-        Activity currentToDo = getPomodoro().getCurrentToDo();
-        if (currentToDo != null && getPomodoro().inPomodoro()) {
-            currentToDo.incrementInternalInter();
-            currentToDo.databaseUpdate();
-            Activity interruption = new Activity();
-            interruption.setEstimatedPoms(0);
-            interruption.setIsUnplanned(true);
-            interruption.setName(Labels.getString("ToDoListPanel.Internal"));
-            addActivity(interruption);
-            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(interruption);
-            // Set the blinking cursor and the ability to type in right away
-            table.editCellAt(table.getSelectedRow(), activitiesTableModel.getColumnCount() - 1 - 4); // edit cell
-            table.setSurrendersFocusOnKeystroke(true); // focus
-            if (table.getEditorComponent() != null) {
-                table.getEditorComponent().requestFocus();
-            }
-            controlPane.setSelectedIndex(2); // open edit tab            
-            editPanel.showInfo(interruption); // set the id of the new task on the edit form
-        }
-    }
-
-    private void scrollToCurrentTask() {
+    /*private void scrollToCurrentTask() {
         if (pomodoro.inPomodoro()) {
             for (int row = 0; row < table.getRowCount(); row++) {
                 Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
@@ -1563,57 +635,14 @@ public class ToDoPanel extends JPanel implements IListPanel {
             table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
         }
         showCurrentSelectedRow();
-    }
+    }*/
 
-    public void showSelectedButton() {
+    /*public void showSelectedButton() {
         selectedButton.setIcon(selectedIcon);
     }
 
     public void showRunningButton() {
         selectedButton.setIcon(runningIcon);
-    }
-
-    protected ToDoList getList() {
-        return ToDoList.getList();
-    }
-
-    @Override
-    public JSplitPane getSplitPane() {
-        return splitPane;
-    }
-
-    public JPanel getListPane() {
-        return null;
-    }
-
-    ;
-    
-    public JScrollPane getSubTableScrollPane() {
-        return null;
-    }
-
-    ;
-    
-    public void addTableTitlePanel() {
-
-    }
-
-    ;
-    
-    public void addSubTableTitlePanel() {
-
-    }
-
-    ;
-    
-    public JScrollPane getTableScrollPane() {
-        return null;
-    }
-
-    ;
-    
-    public TableTitlePanel getTableTitlePanel() {
-        return null;
-    }
-;
+    }*/
 }
+

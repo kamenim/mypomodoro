@@ -165,6 +165,10 @@ public class TabbedPane extends JTabbedPane {
     public void enableMergeTab() {
         setEnabledAt(mergeTabIndex, true);
     }
+    
+    public void enableOverestimationTab() {
+        setEnabledAt(overestimateTabIndex, true);
+    }
 
     public void disableCommentTab() {
         setEnabledAt(commentTabIndex, false);
@@ -176,6 +180,14 @@ public class TabbedPane extends JTabbedPane {
 
     public void disableMergeTab() {
         setEnabledAt(mergeTabIndex, false);
+    }
+    
+    public void disableOverestimationTab() {
+        setEnabledAt(overestimateTabIndex, false);
+    }
+    
+    public void disableUnplannedTab() {
+        setEnabledAt(unplannedTabIndex, false);
     }
 
     public int getDetailsTabIndex() {

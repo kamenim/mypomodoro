@@ -55,6 +55,7 @@ public class ReportsTable extends AbstractTable {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                panel.setCurrentTable(ReportsTable.this); // set current table
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
@@ -114,8 +115,7 @@ public class ReportsTable extends AbstractTable {
                     ReportsTableModel sourceModel = (ReportsTableModel) e.getSource();
                     Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
-                        Integer ID = (Integer) sourceModel.getValueAt(row, AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                        Activity act = Activity.getActivity(ID.intValue());
+                        Activity act = getActivityFromRowIndex(row);
                         if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
@@ -391,5 +391,20 @@ public class ReportsTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
+    }
+    
+    @Override
+    public void createUnplannedTask() {
+        // not used
+    }
+            
+    @Override
+    public void createInternalInterruption() {
+        // not used
+    }
+    
+    @Override
+    public void createExternalInterruption() {
+        // not used
     }
 }

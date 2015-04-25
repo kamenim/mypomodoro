@@ -44,12 +44,12 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
     private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
-    private final ImageIcon overestimateIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
+    private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
     protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource("/images/running.png"));
     protected final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
     protected final DefaultButton internalButton = new DefaultButton(internalIcon);
     protected final DefaultButton externalButton = new DefaultButton(externalIcon);
-    protected final DefaultButton overestimateButton = new DefaultButton(overestimateIcon);
+    protected final DefaultButton overestimationButton = new DefaultButton(overestimationIcon);
     protected final DefaultButton refreshButton = new DefaultButton(refreshIcon);
     protected final DefaultButton createButton = new DefaultButton(createIcon);
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
@@ -156,6 +156,10 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     public void showDuplicateButton() {
         add(duplicateButton);
     }
+    
+    public void showOverestimationButton() {
+        add(overestimationButton);
+    }
 
     public void showUnplannedButton() {
         add(unplannedButton);
@@ -183,6 +187,10 @@ public abstract class AbstractTableTitlePanel extends JPanel {
 
     public void hideDuplicateButton() {
         remove(duplicateButton);
+    }
+    
+    public void hideOverestimationButton() {
+        remove(overestimationButton);
     }
 
     public void hideUnplannedButton() {

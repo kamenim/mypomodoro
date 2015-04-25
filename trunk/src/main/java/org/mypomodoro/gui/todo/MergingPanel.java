@@ -113,8 +113,7 @@ public class MergingPanel extends CreatePanel {
             int[] rows = panel.getTable().getSelectedRows();
             comments.append("<html><head></head><body>");
             for (int row : rows) {
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity selectedToDo = panel.getActivityById(id);
+                Activity selectedToDo = panel.getTable().getActivityFromRowIndex(row);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                     continue;
                 }
@@ -169,9 +168,8 @@ public class MergingPanel extends CreatePanel {
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
-                                row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedToDo = panel.getActivityById(id);
+                                row = row - increment;                                
+                                Activity selectedToDo = panel.getTable().getActivityFromRowIndex(row);
                                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                                     continue;
                                 }
@@ -198,7 +196,7 @@ public class MergingPanel extends CreatePanel {
                         });
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
-                        panel.reorderByPriority();
+                        panel.getTable().reorderByPriority();
                         if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                
                             panel.addActivity(newActivity);
                             panel.insertRow(newActivity);

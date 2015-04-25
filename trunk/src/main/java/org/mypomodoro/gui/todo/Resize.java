@@ -72,9 +72,8 @@ public class Resize {
                     Main.gui.removeMenuBar();
                     Main.gui.removeIconBar();
                     // Remove components from ToDoPanel
-                    Main.gui.getToDoPanel().removeTitlePanel();
-                    Main.gui.getToDoPanel().removeScrollPane();
-                    Main.gui.getToDoPanel().removeControlPane();
+                    Main.gui.getToDoPanel().removeListPane();
+                    Main.gui.getToDoPanel().removeTabbedPane();
                     // hide divider
                     //Main.gui.getToDoPanel().hideSplitPaneDivider();
                     // we migth have lost focus when previously editing, overstimating... tasks 
@@ -90,9 +89,7 @@ public class Resize {
                     double timerWidth = 300; // ignoring any resize of timer
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 800, guiRecordedLocation.getY());
                     // put components back in place
-                    Main.gui.getToDoPanel().addTitlePanel();
-                    Main.gui.getToDoPanel().setPanelBorder();
-                    Main.gui.getToDoPanel().addTable();
+                    Main.gui.getToDoPanel().addListPane();
                     // MAC OSX Java transparency effect : 1.0f = opaque
                     //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
                     viewCount = 3;
@@ -106,7 +103,7 @@ public class Resize {
                     Main.gui.setJMenuBar(Main.gui.getJMenuBar());
                     Main.gui.addIconBar();
                     // put component back in place
-                    Main.gui.getToDoPanel().addControlPane();
+                    Main.gui.getToDoPanel().addTabbedPane();
                     // show divider
                     //Main.gui.getToDoPanel().showSplitPaneDivider();
                     viewCount = 0;
