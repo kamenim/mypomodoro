@@ -39,7 +39,7 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
     public MAPLookAndFeel() {
         // Table colors
         //Main.taskFinishedColor = GREEN;
-        Main.tableBackgroundColor = RED;
+        Main.tableBackgroundColor = ColorUtil.WHITE;
         Main.myIconBackgroundColor = RED;
 
         // JTatoo theme settings
@@ -112,7 +112,7 @@ public class MAPLookAndFeel extends AcrylLookAndFeel {
         props.put("rolloverColorLight", ColorUtil.toProperty(ColorUtil.RED));
         props.put("rolloverColorDark", ColorUtil.toProperty(DARK_RED));
         
-        // rollover foreground color = BLACK // TODO
+        // Missing property : rollover foreground color for buttons
 
         setCurrentTheme(props);
     }

@@ -131,6 +131,16 @@ public abstract class AbstractTableTitlePanel extends JPanel {
             }
         });
         externalButton.setToolTipText("CTRL + E");
+        // Overestimate by one pomodoro
+        overestimationButton.setMargin(buttonInsets);
+        overestimationButton.setFocusPainted(false); // removes borders around text
+        overestimationButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                overestimateTask(1);
+            }
+        });
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.setFocusPainted(false); // removes borders around text
@@ -242,6 +252,8 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     protected abstract void createInternalInterruption();
 
     protected abstract void createExternalInterruption();
+    
+    protected abstract void overestimateTask(int poms);
 
     protected abstract void refreshTable(boolean fromDatabase);
 }

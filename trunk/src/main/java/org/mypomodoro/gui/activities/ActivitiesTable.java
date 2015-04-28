@@ -498,4 +498,9 @@ public class ActivitiesTable extends AbstractTable {
     public void createExternalInterruption() {
         // not used
     }
+    
+    @Override
+    public void overestimateTask(int poms) {
+        // not used
+    }
 }

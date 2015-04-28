@@ -68,7 +68,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final MergingPanel mergingPanel = new MergingPanel(this);
     // Tables
     private ActivitiesTable currentTable;
-    private final ActivitiesTableModel tableModel;
+    private  ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
     private final ActivitiesSubTableModel subTableModel;
     private final ActivitiesSubTable subTable;
@@ -188,9 +188,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             try {
                 if (fromDatabase) {
                     getList().refresh();
-                }
-                tableModel.setDataVector(getList());
-                table.init();
+                }                
+                //tableModel.setDataVector(getList());
+                //tableModel.setRowCount(0);
+                tableModel = new ActivitiesTableModel();
+                table.setModel(tableModel);
+                table.setTableHeader();
+                //table.init();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -217,10 +221,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTable.setParentId(-1);
         subTable.init();
         subTable.setTitle();
-    }
-
-    @Override
-    public void setPanelBorder() {
     }
 
     @Override

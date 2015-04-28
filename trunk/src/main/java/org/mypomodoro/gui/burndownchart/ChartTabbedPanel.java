@@ -29,14 +29,15 @@ import org.mypomodoro.util.Labels;
  * Burndown tabbed Panel
  *
  */
-public class TabbedPanel extends JPanel {
+public class ChartTabbedPanel extends JPanel {
 
     private final ChooseInputForm chooseInputForm = new ChooseInputForm();
     private final ConfigureInputForm configureInputForm = new ConfigureInputForm();
     private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);
-    private final CheckPanel checkPanel;
+    private final JTabbedPane chartTabbedPane = new JTabbedPane();
+    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
 
-    public TabbedPanel() {
+    public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -44,8 +45,6 @@ public class TabbedPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        final JTabbedPane chartTabbedPane = new JTabbedPane();
-        checkPanel = new CheckPanel(chartTabbedPane, chart);
         ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, checkPanel);
         ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);

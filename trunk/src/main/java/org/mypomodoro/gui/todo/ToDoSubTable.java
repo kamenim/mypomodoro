@@ -200,4 +200,20 @@ public class ToDoSubTable extends ToDoTable {
         insertRow(newActivity);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
+
+    // default name: (D) + name ('(D)' is added by ActivityList)
+    // no duplicate for parent table
+    @Override
+    public void duplicateTask() {
+        if (getSelectedRowCount() == 1) {
+            Activity activity = getActivityFromSelectedRow();
+            try {
+                Activity duplicatedActivity = getList().duplicate(activity);
+                insertRow(duplicatedActivity);
+                updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
+                panel.getTabbedPane().selectEditTab(); // open edit tab
+            } catch (CloneNotSupportedException ignored) {
+            }
+        }
+    }
 }

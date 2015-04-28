@@ -60,6 +60,11 @@ public class TableTitlePanel extends AbstractTableTitlePanel {
     protected void createExternalInterruption() {
         table.createExternalInterruption();
     }
+    
+    @Override
+    protected void overestimateTask(int poms) {        
+        table.overestimateTask(poms);
+    }
 
     @Override
     protected void refreshTable(boolean fromDatabase) {

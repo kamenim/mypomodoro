@@ -38,7 +38,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.burndownchart.TabbedPanel;
+import org.mypomodoro.gui.burndownchart.ChartTabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.preferences.PreferencesPanel;
 import org.mypomodoro.gui.reports.ReportsPanel;
@@ -66,7 +66,7 @@ public final class MainPanel extends JFrame {
     public static ActivitiesPanel activitiesPanel = new ActivitiesPanel();
     public static ToDoPanel toDoPanel = new ToDoPanel();
     public static ReportsPanel reportListPanel = new ReportsPanel();
-    public static TabbedPanel chartTabbedPanel = new TabbedPanel();
+    public static ChartTabbedPanel chartTabbedPanel = new ChartTabbedPanel();
     private final MenuBar menuBar = new MenuBar(this);
     private final IconBar iconBar = new IconBar(this);
     private final WindowPanel windowPanel = new WindowPanel(iconBar, this);
@@ -96,7 +96,7 @@ public final class MainPanel extends JFrame {
         return reportListPanel;
     }
 
-    public TabbedPanel getChartTabbedPanel() {
+    public ChartTabbedPanel getChartTabbedPanel() {
         return chartTabbedPanel;
     }
 

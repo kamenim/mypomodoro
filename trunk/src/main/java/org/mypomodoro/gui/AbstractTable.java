@@ -488,6 +488,8 @@ public abstract class AbstractTable extends JXTable {
     public abstract void createInternalInterruption();
     
     public abstract void createExternalInterruption();
+    
+    public abstract void overestimateTask(int poms);
 
     protected abstract void init();
 

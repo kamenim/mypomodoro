@@ -177,7 +177,7 @@ public class TestMenu extends JMenu {
                                         if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ToDoList.getList());
                                         }
-                                        Main.gui.getToDoPanel().insertRow(a); // TODO add .getTable() before insertRow
+                                        Main.gui.getToDoPanel().getTable().insertRow(a); // TODO add .getTable() before insertRow
                                         todoListValue++;
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {

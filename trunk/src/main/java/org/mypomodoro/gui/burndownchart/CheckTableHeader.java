@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mypomodoro.gui.reports;
+package org.mypomodoro.gui.burndownchart;
 
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
@@ -25,9 +25,9 @@ import org.mypomodoro.util.Labels;
  *
  * Changing estimated colum name to 'real'
  */
-public class ReportsTableHeader extends TableHeader {
+public class CheckTableHeader extends TableHeader {
 
-    public ReportsTableHeader(AbstractTable table, String[] toolTips) {
+    public CheckTableHeader(AbstractTable table, String[] toolTips) {
         super(table, toolTips);
         table.getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setHeaderValue(Labels.getString("Common.Real"));
     }

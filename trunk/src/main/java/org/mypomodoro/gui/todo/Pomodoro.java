@@ -353,7 +353,7 @@ public class Pomodoro {
                 detailsPanel.showInfo();
                 panel.setIconLabels();
                 //panel.setPanelRemaining();
-                panel.setPanelBorder();
+                panel.getTable().setTitle();
                 panel.getTable().repaint(); // trigger row renderers
             }
         }
