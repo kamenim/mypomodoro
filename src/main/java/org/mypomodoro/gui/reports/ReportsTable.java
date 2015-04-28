@@ -30,7 +30,6 @@ import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
@@ -277,7 +276,7 @@ public class ReportsTable extends AbstractTable {
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         columnToolTips[AbstractTableModel.DIFFI_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff I") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated");
         columnToolTips[AbstractTableModel.DIFFII_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff II") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated") + " - " + Labels.getString("Common.Overestimated");
-        TableHeader customTableHeader = new TableHeader(this, columnToolTips);
+        ReportsTableHeader customTableHeader = new ReportsTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
 
@@ -405,6 +404,11 @@ public class ReportsTable extends AbstractTable {
     
     @Override
     public void createExternalInterruption() {
+        // not used
+    }
+    
+    @Override
+    public void overestimateTask(int poms) {
         // not used
     }
 }

@@ -126,6 +126,7 @@ public class SubTableTitlePanel extends TableTitlePanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) { // single click
+                Point pOriginal = e.getLocationOnScreen(); // original location on screen
                 if (viewCount == 2 && !(comp instanceof DefaultButton)) { // fold: excluding buttons
                     panel.getListPane().remove(panel.getSubTableScrollPane());
                     panel.addTableTitlePanel();
@@ -151,12 +152,12 @@ public class SubTableTitlePanel extends TableTitlePanel {
                 panel.getListPane().repaint();
                 // Center cursor on panel
                 if (robot != null && !(comp instanceof DefaultButton)) {
-                    Point p = getLocationOnScreen(); // location on screen
-                    // Center cursor in the middle of the component
-                    robot.mouseMove((int) p.getX() + getWidth() / 2, (int) p.getY() + getHeight() / 2);
+                    Point pFinal = getLocationOnScreen(); // final location on screen
+                    // Set cursor at the same original X position
+                    robot.mouseMove((int) pOriginal.getX(), (int) pFinal.getY() + getHeight() / 2);
                 }
                 if (panel.getTable().getSelectedRowCount() == 1) {
-                    //panel.getTable().showCurrentSelectedRow(); TODO replace JXTable in IListPanel with AbstractActivitiesTable
+                    panel.getTable().showCurrentSelectedRow();
                 }
             }
         }

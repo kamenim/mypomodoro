@@ -44,7 +44,6 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.gui.TableTitlePanel;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -289,10 +288,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         subTable.setTitle();
     }
 
-    @Override
-    public void setPanelBorder() {
-    }
-
     //the current table (last selection)
     @Override
     public ToDoTable getTable() {
@@ -447,7 +442,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     public void populateSubTable(int parentId) {
-        subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
+        subTableModel.setDataVector(ToDoList.getSubTaskList(parentId));
         subTable.setParentId(parentId);
         subTable.init();
         subTable.setTitle();
@@ -622,6 +617,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public static ResizeButton getResizeButton() {
         return resizeButton;
+    }
+    
+    public OverestimationPanel getOverestimationPanel() {
+        return overestimationPanel;
     }
 
     /*private void scrollToCurrentTask() {

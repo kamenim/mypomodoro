@@ -218,10 +218,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void setPanelBorder() {
-    }
-
-    @Override
     public ReportsTable getTable() {
         return currentTable;
     }

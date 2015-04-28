@@ -24,7 +24,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.gui.TableHeader;
 import org.mypomodoro.gui.TableTitlePanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -220,7 +219,7 @@ public class CheckTable extends AbstractTable {
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
-        TableHeader customTableHeader = new TableHeader(this, columnToolTips);
+        CheckTableHeader customTableHeader = new CheckTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
     }
 
@@ -348,6 +347,11 @@ public class CheckTable extends AbstractTable {
     
     @Override
     public void createExternalInterruption() {
+        // not used
+    }
+    
+    @Override
+    public void overestimateTask(int poms) {
         // not used
     }
 }

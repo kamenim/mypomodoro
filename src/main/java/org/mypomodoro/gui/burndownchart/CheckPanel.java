@@ -236,10 +236,6 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void setPanelBorder() {
-    }
-
-    @Override
     public CheckTable getTable() {
         return table;
     }

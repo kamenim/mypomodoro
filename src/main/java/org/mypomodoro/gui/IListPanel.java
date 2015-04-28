@@ -37,9 +37,7 @@ public interface IListPanel {
 
     void insertRow(Activity activity);
 
-    void setPanelBorder();
-
-    JXTable getTable();
+    AbstractTable getTable();
 
     int getIdKey();
 

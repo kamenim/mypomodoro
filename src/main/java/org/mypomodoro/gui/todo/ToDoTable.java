@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import org.mypomodoro.gui.activities.*;
 import org.mypomodoro.gui.TableTitlePanel;
 import java.text.DecimalFormat;
 import javax.swing.DropMode;
@@ -48,7 +47,7 @@ public class ToDoTable extends AbstractTable {
 
     public ToDoTable(final ToDoTableModel model, final ToDoPanel panel) {
         super(model);
-        
+
         // Drag and drop
         setDragEnabled(true);
         setDropMode(DropMode.INSERT_ROWS);
@@ -137,7 +136,7 @@ public class ToDoTable extends AbstractTable {
                 int column = e.getColumn();
                 if (row != -1
                         && e.getType() == TableModelEvent.UPDATE) {
-                    ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
+                    ToDoTableModel sourceModel = (ToDoTableModel) e.getSource();
                     Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
                         if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1 
@@ -151,7 +150,7 @@ public class ToDoTable extends AbstractTable {
                                     } else {
                                         act.setName(name);
                                         act.databaseUpdate();
-                                    // The customer resizer may resize the title column to fit the length of the new text
+                                        // The customer resizer may resize the title column to fit the length of the new text
                                         //ColumnResizer.adjustColumnPreferredWidths(this);
                                         revalidate();
                                     }
@@ -253,7 +252,7 @@ public class ToDoTable extends AbstractTable {
         // Set width of column estimated
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setMaxWidth(80);
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setMinWidth(80);
-        getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setPreferredWidth(80); 
+        getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setPreferredWidth(80);
         // hide date, type, diffI and diff II columns
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setMinWidth(0);
@@ -337,7 +336,7 @@ public class ToDoTable extends AbstractTable {
 
     @Override
     protected void setTitle() {
-        String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
+        String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
         int rowCount = getModel().getRowCount(); // get row count on the model not the view !
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -401,24 +400,25 @@ public class ToDoTable extends AbstractTable {
                 if (getSelectedRowCount() == 1) {
                     // Show buttons of the quick bar
                     // Hide overestimation options when estimated == 0 or real < estimated
-                    getTitlePanel().showSelectedButton();                    
+                    getTitlePanel().showSelectedButton();
                     Activity selectedActivity = getActivityFromSelectedRow();
                     if (selectedActivity.getEstimatedPoms() != 0
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
                         panel.getTabbedPane().enableOverestimationTab();
                         getTitlePanel().showOverestimationButton();
-                        getTitlePanel().showDuplicateButton();
                     } else {
                         panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
-                        getTitlePanel().showDuplicateButton();
                     }
+                    /*TODO remove these test lines
+                    getTitlePanel().showOverestimationButton();
+                    getTitlePanel().showExternalButton();
+                    getTitlePanel().showInternalButton();*/
                 }
             }
-            getTitlePanel().showUnplannedButton();            
+            getTitlePanel().showUnplannedButton();
         } else {
             getTitlePanel().hideSelectedButton();
-            getTitlePanel().hideDuplicateButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
@@ -447,42 +447,23 @@ public class ToDoTable extends AbstractTable {
         return panel.getTableTitlePanel();
     }
 
-    // default name (N) + New task
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
-        Activity newActivity = new Activity();
-        newActivity.setName("(N) " + Labels.getString("Common.New task"));
-        getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-        insertRow(newActivity);
-        panel.getTabbedPane().selectEditTab(); // open edit tab
+        // not used
     }
-
-    // default name: (D) + name ('(D)' is added by ActivityList)
-    // duplicate subtasks too
+    
     @Override
     public void duplicateTask() {
-        if (getSelectedRowCount() == 1) {
-            Activity activity = getActivityFromSelectedRow();
-            try {
-                Activity duplicatedActivity = getList().duplicate(activity);
-                insertRow(duplicatedActivity);
-                if (duplicatedActivity.isSubTask()) {
-                    updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
-                }
-                panel.getTabbedPane().selectEditTab(); // open edit tab
-            } catch (CloneNotSupportedException ignored) {
-            }
-        }
+        // nto used}
     }
-
+    
+    // To delete tasks from sub table, move them to Activity List then delete
     @Override
     public void deleteTask(int rowIndex) {
         // not used
     }
 
-    private void updateParentEstimatedPoms(int diffEstimated) {
+    protected void updateParentEstimatedPoms(int diffEstimated) {
         Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
         parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);
         parentActivity.databaseUpdate();
@@ -538,6 +519,22 @@ public class ToDoTable extends AbstractTable {
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
+    
+    @Override
+    public void overestimateTask(int poms) {
+        panel.getOverestimationPanel().overestimateTask(poms);
+        updateParentOverestimatedPoms(poms);
+    }
+    
+    protected void updateParentOverestimatedPoms(int diffEstimated) {
+        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        parentActivity.setEstimatedPoms(parentActivity.getOverestimatedPoms() + diffEstimated);
+        parentActivity.databaseUpdate();
+        getList().update(parentActivity);
+        // getSelectedRow must not be converted (convertRowIndexToModel)
+        panel.getTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+    }
+            
 
     @Override
     public void reorderByPriority() {
