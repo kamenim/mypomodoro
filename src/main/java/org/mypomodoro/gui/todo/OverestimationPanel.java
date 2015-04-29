@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.TabPanelButton;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -98,20 +99,19 @@ public class OverestimationPanel extends JPanel {
 
     // Overestimation only when estimated != 0 and real >= estimated
     public void overestimateTask(int pomodoros) {
-        int row = panel.getTable().getSelectedRow();
-        Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-        Activity selectedToDo = panel.getActivityById(id);
+        int row = panel.getCurrentTable().getSelectedRow();
+        Activity selectedToDo = panel.getCurrentTable().getActivityFromSelectedRow();
         if (selectedToDo.getEstimatedPoms() != 0 && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()) {
             // Overestimation
             selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + pomodoros);
             ToDoList.getList().update(selectedToDo);
             selectedToDo.databaseUpdate();
-            panel.getTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getTable().convertRowIndexToModel(row), panel.getIdKey() - 3); // update estimated colunm index = 3 (the renderer will do the rest)
+            panel.getCurrentTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getCurrentTable().convertRowIndexToModel(row), AbstractTableModel.ESTIMATED_COLUMN_INDEX); // update estimated colunm index = 3 (the renderer will do the rest)
             // update details panel
             detailsPanel.selectInfo(selectedToDo);
             detailsPanel.showInfo();
             //panel.setPanelRemaining();
-            panel.setIconLabels();
+            panel.setIconLabels(); // TODO
         }
     }
 

@@ -161,12 +161,11 @@ public class ExportPanel extends JPanel {
     }
 
     private void export() {
-        if (panel.getTable().getSelectedRowCount() > 0) {
+        if (panel.getCurrentTable().getSelectedRowCount() > 0) {
             final ArrayList<Activity> activities = new ArrayList<Activity>();
-            int[] rows = panel.getTable().getSelectedRows();
+            int[] rows = panel.getCurrentTable().getSelectedRows();
             for (int row : rows) {
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity selectedActivity = panel.getActivityById(id);
+                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                 // Extract raw content from HTML comment/story
                 HtmlEditor commentEditor = new HtmlEditor();
                 String comment = selectedActivity.getNotes();

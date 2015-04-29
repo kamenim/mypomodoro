@@ -378,6 +378,6 @@ public class ImportPanel extends JPanel {
             panel.addActivity(newActivity);
             //System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
         }
-        panel.insertRow(newActivity);
+        panel.getMainTable().insertRow(newActivity); // main table !
     }
 }

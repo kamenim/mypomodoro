@@ -303,13 +303,8 @@ public class ActivitiesTable extends AbstractTable {
         Activity activity = getActivityById(activityId);
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
-        //panel.getDetailsPanel().showInfo(this);
         panel.getCommentPanel().showInfo(activity);
-        //panel.getEditPanel().showInfo(activity, this);
         panel.getEditPanel().showInfo(activity);
-        // set table for merge, export panels
-        //panel.getMergePanel().setTable(this); TODO
-        //panel.getExportPanel().setTable(this); TODO
     }
 
     @Override
@@ -476,29 +471,29 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     private void updateParentEstimatedPoms(int diffEstimated) {
-        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
         // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
-    
+
     @Override
     public void createUnplannedTask() {
         // not used
     }
-            
+
     @Override
     public void createInternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void createExternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void overestimateTask(int poms) {
         // not used

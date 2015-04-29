@@ -45,7 +45,7 @@ public class TableHeader extends JTableHeader {
         table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
         table.getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
         table.getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
-        table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("IT");        
+        table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("IT");
         /* This code sets a black border around each cell of the header but the rendering is not that nice
          final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
          setDefaultRenderer(new TableCellRenderer() {

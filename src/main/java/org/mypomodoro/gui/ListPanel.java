@@ -14,19 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.gui;
 
 import javax.swing.JPanel;
 
 /**
  *
- * 
+ *
  */
 public class ListPanel extends JPanel {
 
     public ListPanel() {
-        
+
     }
-    
+
 }

@@ -166,7 +166,7 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     public void showDuplicateButton() {
         add(duplicateButton);
     }
-    
+
     public void showOverestimationButton() {
         add(overestimationButton);
     }
@@ -198,7 +198,7 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     public void hideDuplicateButton() {
         remove(duplicateButton);
     }
-    
+
     public void hideOverestimationButton() {
         remove(overestimationButton);
     }
@@ -252,7 +252,7 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     protected abstract void createInternalInterruption();
 
     protected abstract void createExternalInterruption();
-    
+
     protected abstract void overestimateTask(int poms);
 
     protected abstract void refreshTable(boolean fromDatabase);

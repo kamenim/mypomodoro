@@ -53,7 +53,7 @@ public class MoveButton extends TabPanelButton {
     }
 
     public void move(final IListPanel panel) {
-        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
@@ -68,19 +68,18 @@ public class MoveButton extends TabPanelButton {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
-                    /*if (selectedRowCount == panel.getTable().getRowCount()
+                    /*if (selectedRowCount == panel.getCurrentTable().getRowCount()
                          && panel instanceof ReportsPanel) { // reopen all at once                
                          panel.moveAll();
                          panel.refresh();
                          } else {*/
                         int increment = 0;
-                        int[] rows = panel.getTable().getSelectedRows();
+                        int[] rows = panel.getCurrentTable().getSelectedRows();
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedActivity = panel.getActivityById(id);
+                                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 if (panel instanceof ActivitiesPanel && !Main.preferences.getAgileMode()) {
                                     String activityName = selectedActivity.getName().length() > 25 ? selectedActivity.getName().substring(0, 25) + "..." : selectedActivity.getName();
                                     if (selectedActivity.isDateInFuture()) {
@@ -106,12 +105,12 @@ public class MoveButton extends TabPanelButton {
                                         }
                                     }
                                 }
-                                panel.move(selectedActivity);
-                                panel.removeRow(row);
+                                panel.move(selectedActivity); // TODO
+                                panel.getCurrentTable().removeRow(row);
                                 if (panel instanceof ActivitiesPanel) {
-                                    Main.gui.getToDoPanel().insertRow(selectedActivity);
+                                    Main.gui.getToDoPanel().getMainTable().insertRow(selectedActivity); // main table !
                                 } else if (panel instanceof ReportsPanel) { // reopen tasks
-                                    Main.gui.getActivityListPanel().getTable().insertRow(selectedActivity);
+                                    Main.gui.getActivityListPanel().getMainTable().insertRow(selectedActivity); // main table !
                                 }
                                 increment++;
                                 final int progressValue = increment;

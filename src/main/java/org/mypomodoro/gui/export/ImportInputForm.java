@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.export;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;

@@ -196,7 +196,7 @@ public final class MainPanel extends JFrame {
         String title = Labels.getString("FileMenu.Exit myPomodoro");
         String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
         int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);        
+                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
         if (reply == JOptionPane.YES_OPTION) {
             if (SystemTray.isSupported()
                     && Main.preferences.getSystemTray()) {

@@ -28,20 +28,13 @@ public interface IListPanel {
 
     void refresh(boolean fromDatabase);
 
-    void move(Activity activity);
-
-    //void moveAll();
-    void removeRow(int row);
-
-    void insertRow(Activity activity);
-        
     AbstractTable getMainTable();
 
-    AbstractTable getTable();
+    AbstractTable getCurrentTable();
 
-    int getIdKey();
+    void setCurrentTable(AbstractTable table);
 
-    Activity getActivityById(int id);
+    void move(Activity activity);
 
     void delete(Activity activity);
 
@@ -71,8 +64,4 @@ public interface IListPanel {
     JScrollPane getTableScrollPane();
 
     TableTitlePanel getTableTitlePanel();
-    
-    void setCurrentTable(AbstractTable table);
-    
-    AbstractTable getCurrentTable(); // TODO to be removed or remove getTable()
 }

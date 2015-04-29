@@ -125,7 +125,7 @@ public class UnplannedPanel extends CreatePanel {
         String message;
         if (unplannedInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) {
             panel.addActivity(newActivity);
-            panel.insertRow(newActivity);
+            panel.getCurrentTable().insertRow(newActivity);
             clearForm();
         } else {
             validation.setVisible(false);

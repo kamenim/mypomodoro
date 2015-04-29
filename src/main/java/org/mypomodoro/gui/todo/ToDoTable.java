@@ -411,9 +411,9 @@ public class ToDoTable extends AbstractTable {
                         getTitlePanel().hideOverestimationButton();
                     }
                     /*TODO remove these test lines
-                    getTitlePanel().showOverestimationButton();
-                    getTitlePanel().showExternalButton();
-                    getTitlePanel().showInternalButton();*/
+                     getTitlePanel().showOverestimationButton();
+                     getTitlePanel().showExternalButton();
+                     getTitlePanel().showInternalButton();*/
                 }
             }
             getTitlePanel().showUnplannedButton();
@@ -451,12 +451,12 @@ public class ToDoTable extends AbstractTable {
     public void createNewTask() {
         // not used
     }
-    
+
     @Override
     public void duplicateTask() {
         // nto used}
     }
-    
+
     // To delete tasks from sub table, move them to Activity List then delete
     @Override
     public void deleteTask(int rowIndex) {
@@ -464,12 +464,12 @@ public class ToDoTable extends AbstractTable {
     }
 
     protected void updateParentEstimatedPoms(int diffEstimated) {
-        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
         // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 
     @Override
@@ -519,29 +519,28 @@ public class ToDoTable extends AbstractTable {
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
-    
+
     @Override
     public void overestimateTask(int poms) {
         panel.getOverestimationPanel().overestimateTask(poms);
         updateParentOverestimatedPoms(poms);
     }
-    
+
     protected void updateParentOverestimatedPoms(int diffEstimated) {
-        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         parentActivity.setEstimatedPoms(parentActivity.getOverestimatedPoms() + diffEstimated);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
         // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
-            
 
     @Override
     public void reorderByPriority() {
         getList().reorderByPriority();
         for (int row = 0; row < getModel().getRowCount(); row++) {
             Activity activity = getActivityFromRowIndex(row);
-            getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), 0); // priority column index = 0            
+            getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
         }
     }
 }

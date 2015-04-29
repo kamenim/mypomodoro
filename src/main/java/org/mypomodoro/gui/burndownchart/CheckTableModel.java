@@ -47,7 +47,7 @@ public class CheckTableModel extends AbstractTableModel {
         rowData[ACTIVITYID_COLUMN_INDEX] = activity.getId();
         return rowData;
     }
-    
+
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;

@@ -46,7 +46,7 @@ public class RemoveButton extends TabPanelButton {
     }
 
     public void remove(final CheckPanel panel) {
-        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
@@ -61,15 +61,14 @@ public class RemoveButton extends TabPanelButton {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         int increment = 0;
-                        int[] rows = panel.getTable().getSelectedRows();
+                        int[] rows = panel.getCurrentTable().getSelectedRows();
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedActivity = panel.getActivityById(id);
+                                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 ChartList.getList().remove(selectedActivity);
-                                panel.removeRow(row);
+                                panel.getCurrentTable().removeRow(row);
                                 increment++;
                                 final int progressValue = increment;
                                 SwingUtilities.invokeLater(new Runnable() {

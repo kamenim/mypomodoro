@@ -218,43 +218,24 @@ public class ReportsPanel extends JPanel implements IListPanel {
         subTable.init();
         subTable.setTitle();
     }
-    
+
     @Override
     public ReportsTable getMainTable() {
         return table;
     }
 
     @Override
-    public ReportsTable getTable() {
-        return currentTable;
-    }
-    
-    @Override
     public ReportsTable getCurrentTable() {
         return currentTable;
     }
-    
+
     @Override
     public void setCurrentTable(AbstractTable table) {
-        currentTable = (ReportsTable)table;
+        currentTable = (ReportsTable) table;
     }
 
     public ReportsSubTable getSubTable() {
         return subTable;
-    }
-
-    @Override
-    public int getIdKey() {
-        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
-    }
-
-    @Override
-    public void removeRow(int rowIndex) {
-        getTable().removeRow(rowIndex);
-    }
-
-    @Override
-    public void insertRow(Activity activity) {
     }
 
     @Override
@@ -266,11 +247,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
      public void moveAll() {
      // no use
      }*/
-    @Override
-    public Activity getActivityById(int id) {
-        return getList().getById(id);
-    }
-
     @Override
     public void delete(Activity activity) {
         getList().delete(activity);
@@ -291,12 +267,12 @@ public class ReportsPanel extends JPanel implements IListPanel {
      // no use
      }*/
     @Override
-    public void addActivity(Activity activity) {
+    public void addActivity(Activity activity) { // TODO (put in table)
         getList().add(activity);
     }
 
     @Override
-    public void addActivity(Activity activity, Date date, Date dateCompleted) {
+    public void addActivity(Activity activity, Date date, Date dateCompleted) { // TODO (put in table)
         getList().add(activity, date, dateCompleted);
     }
 

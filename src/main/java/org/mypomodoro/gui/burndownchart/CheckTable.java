@@ -334,22 +334,22 @@ public class CheckTable extends AbstractTable {
         getList().remove(activity); // remove task
         removeRow(rowIndex);
     }
-    
+
     @Override
     public void createUnplannedTask() {
         // not used
     }
-            
+
     @Override
     public void createInternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void createExternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void overestimateTask(int poms) {
         // not used

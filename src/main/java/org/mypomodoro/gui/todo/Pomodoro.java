@@ -141,7 +141,7 @@ public class Pomodoro {
         //panel.showQuickInterruptionButtons(); // TODO
         // Show running button in quick toolbar
         //panel.showRunningButton(); TODO
-        panel.getTable().repaint(); // trigger row renderers      
+        panel.getCurrentTable().repaint(); // trigger row renderers      
     }
 
     public void stop() {
@@ -168,7 +168,7 @@ public class Pomodoro {
         //panel.hideQuickInterruptionButtons(); // TODO
         // Show selected button in quick toolbar
         //panel.showSelectedButton(); // TODO
-        panel.getTable().repaint(); // trigger row renderers
+        panel.getCurrentTable().repaint(); // trigger row renderers
     }
 
     public void pause() {
@@ -295,9 +295,8 @@ public class Pomodoro {
                     // Show selected button in quick toolbar
                     //panel.showSelectedButton(); // TODO
                 } else { // pomodoro time
-                    if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
-                        int row = panel.getTable().getSelectedRow();
-                        currentToDoId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+                    if (panel.getCurrentTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task                        
+                        currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
                     }
                     // update the current ToDo from the database (in case someone's changed it)
                     ToDoList.getList().refreshById(currentToDoId);
@@ -353,8 +352,8 @@ public class Pomodoro {
                 detailsPanel.showInfo();
                 panel.setIconLabels();
                 //panel.setPanelRemaining();
-                panel.getTable().setTitle();
-                panel.getTable().repaint(); // trigger row renderers
+                panel.getCurrentTable().setTitle();
+                panel.getCurrentTable().repaint(); // trigger row renderers
             }
         }
 

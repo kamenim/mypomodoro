@@ -33,7 +33,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ChoosePanel extends JPanel {
-    
+
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 

@@ -39,10 +39,10 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class ConfigurePanel extends JPanel {
-    
+
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
-    
+
     private final JTabbedPane tabbedPane;
     private final ConfigureInputForm configureInputForm;
     private final CheckPanel checkPanel;

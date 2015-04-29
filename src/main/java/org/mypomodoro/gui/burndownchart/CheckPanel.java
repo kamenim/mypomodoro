@@ -191,7 +191,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                     }
                 }
             }
-        });      
+        });
         createButton.setMinimumSize(CREATEBUTTON_DIMENSION);
         createButton.setMaximumSize(CREATEBUTTON_DIMENSION);
         createButton.setPreferredSize(CREATEBUTTON_DIMENSION);
@@ -236,39 +236,20 @@ public class CheckPanel extends JPanel implements IListPanel {
     public ChartList getList() {
         return ChartList.getList();
     }
-    
+
     @Override
     public CheckTable getMainTable() {
-        return null; // not used - only one table
+        return table; // not used - only one table
     }
 
     @Override
-    public CheckTable getTable() {
+    public CheckTable getCurrentTable() {
         return table;
     }
-    
-    @Override
-    public CheckTable getCurrentTable() {
-        return null; // not used - only one table
-    }
-    
+
     @Override
     public void setCurrentTable(AbstractTable table) {
         // not used - onle one table
-    }
-
-    @Override
-    public int getIdKey() {
-        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
-    }
-
-    @Override
-    public void removeRow(int rowIndex) {
-        getTable().removeRow(rowIndex);
-    }
-
-    @Override
-    public void insertRow(Activity activity) {
     }
 
     @Override
@@ -280,11 +261,6 @@ public class CheckPanel extends JPanel implements IListPanel {
      public void moveAll() {
      // no use
      }*/
-    @Override
-    public Activity getActivityById(int id) {
-        return getList().getById(id);
-    }
-
     @Override
     public void delete(Activity activity) {
         // not used

@@ -70,9 +70,9 @@ public abstract class AbstractTable extends JXTable {
 
         setBackground(Main.tableBackgroundColor);
         /*setSelectionBackground(Main.selectedRowColor);
-        setForeground(ColorUtil.BLACK);
-        setSelectionForeground(ColorUtil.BLACK);*/
-         
+         setForeground(ColorUtil.BLACK);
+         setSelectionForeground(ColorUtil.BLACK);*/
+
         // Row height
         setRowHeight(30);
 
@@ -234,7 +234,7 @@ public abstract class AbstractTable extends JXTable {
             }
         }
         am.put("Scroll", new scrollBackToTask());
-        
+
         // Activate Control U (quick unplanned task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Control U");
         class createUnplanned extends AbstractAction {
@@ -482,13 +482,13 @@ public abstract class AbstractTable extends JXTable {
     public abstract void duplicateTask();
 
     public abstract void deleteTask(int rowIndex);
-    
+
     public abstract void createUnplannedTask();
-            
+
     public abstract void createInternalInterruption();
-    
+
     public abstract void createExternalInterruption();
-    
+
     public abstract void overestimateTask(int poms);
 
     protected abstract void init();
@@ -541,8 +541,8 @@ public abstract class AbstractTable extends JXTable {
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
-    
+
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables
-    public void reorderByPriority() {        
-    }    
+    public void reorderByPriority() {
+    }
 }

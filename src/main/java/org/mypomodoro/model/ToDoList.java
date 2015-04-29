@@ -93,7 +93,11 @@ public final class ToDoList extends AbstractActivities {
     }
 
     public void add(Activity act, Date date, Date dateCompleted) {
-        act.setPriority(size() + 1);
+        if (act.isSubTask()) {
+            act.setPriority(getSubTaskList(act.getParentId()).size() + 1);
+        } else {
+            act.setPriority(getTaskList().size() + 1);
+        }
         act.setIsCompleted(false);
         act.setDate(date);
         act.setDateCompleted(dateCompleted);

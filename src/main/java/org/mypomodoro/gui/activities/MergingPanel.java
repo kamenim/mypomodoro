@@ -108,13 +108,12 @@ public class MergingPanel extends CreatePanel {
     public void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
-        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
-            int[] rows = panel.getTable().getSelectedRows();
+            int[] rows = panel.getCurrentTable().getSelectedRows();
             comments.append("<html><head></head><body>");
             for (int row : rows) {
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity selectedActivity = panel.getActivityById(id);
+                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                 // aggregate comments
                 if (selectedActivity.getNotes().length() > 0) {
                     comments.append("<p style=\"margin-top: 0\">");
@@ -161,16 +160,15 @@ public class MergingPanel extends CreatePanel {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // only now we may remove the merged tasks
-                        int[] rows = panel.getTable().getSelectedRows();
+                        int[] rows = panel.getCurrentTable().getSelectedRows();
                         int increment = 0;
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
-                                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                                Activity selectedActivity = panel.getActivityById(id);
-                                panel.delete(selectedActivity);
-                                panel.removeRow(row);
+                                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
+                                panel.delete(selectedActivity); // TODO
+                                panel.getCurrentTable().removeRow(row);
                                 increment++;
                                 final int progressValue = increment;
                                 SwingUtilities.invokeLater(new Runnable() {
@@ -183,7 +181,7 @@ public class MergingPanel extends CreatePanel {
                             }
                         }
                         ActivityList.getList().add(newActivity);
-                        Main.gui.getActivityListPanel().insertRow(newActivity);
+                        Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity); // main table !
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {

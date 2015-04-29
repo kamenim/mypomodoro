@@ -59,12 +59,12 @@ import org.mypomodoro.util.WaitCursor;
 public class ToDoPanel extends JPanel implements IListPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-    
+
     private static final Dimension LIST_TIMER_PANE_DIMENSION = new Dimension(800, 200);
     private static final Dimension PANE_DIMENSION = new Dimension(500, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
     // List and Timer Pane : listPane + Timer
-    private final JPanel listPaneAndTimer = new JPanel();        
+    private final JPanel listPaneAndTimer = new JPanel();
     private final GridBagConstraints gbcListPaneAndTimer = new GridBagConstraints();
     // List pane: title + table + sub-title + sub-table
     private final JPanel listPane = new JPanel();
@@ -82,7 +82,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
-    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);    
+    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     // Pomodoro
@@ -103,10 +103,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public ToDoPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+
         // Init List and Timer Pane
         listPaneAndTimer.setMinimumSize(LIST_TIMER_PANE_DIMENSION);
-        listPaneAndTimer.setPreferredSize(LIST_TIMER_PANE_DIMENSION);                
+        listPaneAndTimer.setPreferredSize(LIST_TIMER_PANE_DIMENSION);
         listPaneAndTimer.setLayout(new GridBagLayout());
         gbcListPaneAndTimer.fill = GridBagConstraints.BOTH;
 
@@ -156,7 +156,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
         // Add Split pane
         add(splitPane);
-        
+
         // Add list pane to ListAndTimerPane
         addListPane();
         // Add timer to ListAndTimerPane
@@ -169,7 +169,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private void initTabbedPane() {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
-        tabbedPane.setEditTabIndex(2);        
+        tabbedPane.setEditTabIndex(2);
         tabbedPane.setOverestimateTabIndex(3);
         tabbedPane.setUnplannedTabIndex(4);
         tabbedPane.setMergeTabIndex(5);
@@ -212,21 +212,21 @@ public class ToDoPanel extends JPanel implements IListPanel {
         subTable.setTitle(); // init title
         listPane.add(subTableTitlePanel);
     }
-    
+
     public void addListPane() {
         gbcListPaneAndTimer.gridx = 0;
         gbcListPaneAndTimer.gridy = 0;
         gbcListPaneAndTimer.weighty = 1.0;
-        gbcListPaneAndTimer.weightx = 1.0;        
+        gbcListPaneAndTimer.weightx = 1.0;
         listPaneAndTimer.add(listPane, gbcListPaneAndTimer);
     }
-    
+
     private void addTimerPanel() {
         gbcListPaneAndTimer.gridx = 1;
         gbcListPaneAndTimer.gridy = 0;
         gbcListPaneAndTimer.weighty = 1.0;
         gbcListPaneAndTimer.weightx = 1.0;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);        
+        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
@@ -289,43 +289,24 @@ public class ToDoPanel extends JPanel implements IListPanel {
         subTable.init();
         subTable.setTitle();
     }
-    
+
     @Override
     public ToDoTable getMainTable() {
         return table;
     }
 
     @Override
-    public ToDoTable getTable() {
-        return currentTable;
-    }
-    
-    @Override
     public ToDoTable getCurrentTable() {
         return currentTable;
     }
-    
+
     @Override
     public void setCurrentTable(AbstractTable table) {
-        currentTable = (ToDoTable)table;
+        currentTable = (ToDoTable) table;
     }
 
     public ToDoSubTable getSubTable() {
         return subTable;
-    }
-
-    @Override
-    public int getIdKey() {
-        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
-    }
-
-    @Override
-    public void removeRow(int rowIndex) {
-        getTable().removeRow(rowIndex);
-    }
-
-    @Override
-    public void insertRow(Activity activity) {
     }
 
     @Override
@@ -343,11 +324,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
      // no use
      }*/
     @Override
-    public Activity getActivityById(int id) {
-        return getList().getById(id);
-    }
-
-    @Override
     public void delete(Activity activity) {
         // not used
     }
@@ -356,7 +332,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void deleteAll() {
         // not used
     }
-    
+
     @Override
     public void complete(Activity activity) {
         getList().complete(activity);
@@ -453,9 +429,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
         subTable.init();
         subTable.setTitle();
     }
-    
+
     ////////////////////////////
-    // ToDoPanel specific
+    //  Specific to ToDoPanel
     ///////////////////////////
     private JPanel wrapInBackgroundImage(final TimerPanel timerPanel, ImageIcon pomodoroIcon) {
         // create wrapper JPanel
@@ -518,13 +494,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
-    
+
     public void setIconLabels() {
         setIconLabels(table.getSelectedRow());
     }
-    
+
     public void setIconLabels(int row) {
-        if (ToDoList.getListSize() > 0) {
+        if (ToDoList.getListSize() > 0) { // TODO ?
             Activity currentToDo = pomodoro.getCurrentToDo();
             Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
             if (pomodoro.inPomodoro()) {
@@ -537,8 +513,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 detailsPanel.disableButtons();
             }
             if (table.getSelectedRowCount() == 1) { // one selected only
-                Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                Activity selectedToDo = getActivityById(id);
+                Activity selectedToDo = getCurrentTable().getActivityFromSelectedRow();
                 if (pomodoro.inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(detailsPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(commentPanel.getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -579,23 +554,22 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void removeTabbedPane() {
         splitPane.remove(tabbedPane);
     }
-    
+
     public void removeListPane() {
         listPaneAndTimer.remove(listPane);
     }
 
     /*public void removeScrollPane() {
-        listPane.remove(tableScrollPane);
-    }
+     listPane.remove(tableScrollPane);
+     }
 
-    public void removeTitlePanel() {
-        listPane.remove(tableTitlePanel);
-    }
+     public void removeTitlePanel() {
+     listPane.remove(tableTitlePanel);
+     }
     
-    public void removeSubTitlePanel() {
-        listPane.remove(subTableTitlePanel);
-    }*/
-
+     public void removeSubTitlePanel() {
+     listPane.remove(subTableTitlePanel);
+     }*/
     public void addTabbedPane() {
         splitPane.setRightComponent(tabbedPane); // bottom
     }
@@ -624,30 +598,29 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public static ResizeButton getResizeButton() {
         return resizeButton;
     }
-    
+
     public OverestimationPanel getOverestimationPanel() {
         return overestimationPanel;
     }
 
     /*private void scrollToCurrentTask() {
-        if (pomodoro.inPomodoro()) {
-            for (int row = 0; row < table.getRowCount(); row++) {
-                Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-                if (pomodoro.getCurrentToDo().getId() == id) {
-                    currentSelectedRow = row;
-                }
-            }
-            table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
-        }
-        showCurrentSelectedRow();
-    }*/
+     if (pomodoro.inPomodoro()) {
+     for (int row = 0; row < table.getRowCount(); row++) {
+     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
+     if (pomodoro.getCurrentToDo().getId() == id) {
+     currentSelectedRow = row;
+     }
+     }
+     table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
+     }
+     showCurrentSelectedRow();
+     }*/
 
     /*public void showSelectedButton() {
-        selectedButton.setIcon(selectedIcon);
-    }
+     selectedButton.setIcon(selectedIcon);
+     }
 
-    public void showRunningButton() {
-        selectedButton.setIcon(runningIcon);
-    }*/
+     public void showRunningButton() {
+     selectedButton.setIcon(runningIcon);
+     }*/
 }
-

@@ -754,9 +754,7 @@ public class CommentPanel extends JPanel {
                  previewButton.getActionListeners()[0].actionPerformed(e);
                  }*/
                 hideSaveCancelButton();
-                int row = panel.getTable().getSelectedRow();
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity activity = panel.getActivityById(id);
+                Activity activity = panel.getCurrentTable().getActivityFromSelectedRow();
                 currentlySelectedActivityText = ""; // reset
                 showInfo(activity);
             }
@@ -788,9 +786,7 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 previewButton.getActionListeners()[0].actionPerformed(e);
                 hideSaveCancelButton();
-                int row = panel.getTable().getSelectedRow();
-                Integer id = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
-                Activity activity = panel.getActivityById(id);
+                Activity activity = panel.getCurrentTable().getActivityFromSelectedRow();
                 currentlySelectedActivityCaretPosition = 0; // reset
                 currentlySelectedActivityText = ""; // reset
                 showInfo(activity);
@@ -853,8 +849,7 @@ public class CommentPanel extends JPanel {
             comment += "+ ...";
             comment += "</p>";
         }
-        int row = panel.getTable().getSelectedRow();
-        int selectedActivityId = (Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey());
+        int selectedActivityId = panel.getCurrentTable().getActivityIdFromSelectedRow();
         if (selectedActivityId == activity.getId()) { // Activity actually selected
             if (selectedActivityId != currentlySelectedActivityId) { // New activity selected (compare to the current selected one)
                 previewButton.doClick(); // equivalent to previewButton.getActionListeners()[0].actionPerformed(e);

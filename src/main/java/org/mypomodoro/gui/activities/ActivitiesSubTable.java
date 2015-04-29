@@ -51,11 +51,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
-                if (panel.getTable().getSelectedRowCount() == 1) {
+                if (panel.getMainTable().getSelectedRowCount() == 1) {
                     if (getSelectedRowCount() == 1) {
                         showInfoForSelectedRow();
                     } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                        showInfo(panel.getTable().getActivityIdFromSelectedRow());
+                        showInfo(panel.getMainTable().getActivityIdFromSelectedRow());
                     }
                 }
                 mouseHoverRow = -1;
@@ -127,8 +127,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        if (panel.getTable().getRowCount() == 0
-                || panel.getTable().getSelectedRowCount() > 1) {
+        if (panel.getMainTable().getRowCount() == 0
+                || panel.getMainTable().getSelectedRowCount() > 1) {
             getTitlePanel().hideCreateButton();
         } else {
             getTitlePanel().showCreateButton();
@@ -193,7 +193,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         Activity newActivity = new Activity();
         newActivity.setName(Labels.getString("Common.New subtask"));
         // Set parent id
-        Activity parentActivity = panel.getTable().getActivityFromSelectedRow();
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         if (getRowCount() == 0) { // first sub-task
             newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
             newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
