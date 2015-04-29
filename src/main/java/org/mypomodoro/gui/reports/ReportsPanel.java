@@ -68,7 +68,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     // Tables
     private ReportsTable currentTable;
-    private final ReportsTableModel tableModel;
+    private ReportsTableModel tableModel;
     private final ReportsTable table;
     private final ReportsSubTableModel subTableModel;
     private final ReportsSubTable subTable;
@@ -187,8 +187,10 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel.setDataVector(getList());
+                tableModel = new ReportsTableModel();
+                table.setModel(tableModel);
                 table.init();
+                table.setTableHeader();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -215,6 +217,11 @@ public class ReportsPanel extends JPanel implements IListPanel {
         subTable.setParentId(-1);
         subTable.init();
         subTable.setTitle();
+    }
+    
+    @Override
+    public ReportsTable getMainTable() {
+        return table;
     }
 
     @Override

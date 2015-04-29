@@ -34,6 +34,7 @@ public final class DatePicker extends JXDatePicker {
         super(new Date(), locale);
         getEditor().setEditable(false);
         getEditor().setBackground(new JTextField().getBackground()); // set the background of the current theme
+        getEditor().setForeground(new JTextField().getForeground()); // set the background of the current theme
     }
 
     // Workaround to prevent from having empty text field when selecting a date outside of boundaries 

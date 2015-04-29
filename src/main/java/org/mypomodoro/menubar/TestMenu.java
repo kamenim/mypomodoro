@@ -162,10 +162,10 @@ public class TestMenu extends JMenu {
                                     }
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
                                         ReportList.getList().reopen(a);
-                                        Main.gui.getActivityListPanel().getTable().insertRow(a);
+                                        Main.gui.getActivityListPanel().getMainTable().insertRow(a);
                                         activityListValue++;
                                     } else {
-                                        Main.gui.getReportListPanel().getTable().insertRow(a);
+                                        Main.gui.getReportListPanel().getMainTable().insertRow(a);
                                         reportListValue++;
                                     }
                                 } else { // Tasks for the Activity and ToDo list
@@ -177,13 +177,13 @@ public class TestMenu extends JMenu {
                                         if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ToDoList.getList());
                                         }
-                                        Main.gui.getToDoPanel().getTable().insertRow(a); // TODO add .getTable() before insertRow
+                                        Main.gui.getToDoPanel().getMainTable().insertRow(a);
                                         todoListValue++;
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {
                                                 // once in a while duplicate a task
                                                 Activity duplicatedActivity = ToDoList.getList().duplicate(a);
-                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity); // TODO add .getTable() before insertRow
+                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity);
                                                 todoListValue++;
                                             } catch (CloneNotSupportedException ignored) {
                                             }
@@ -197,13 +197,13 @@ public class TestMenu extends JMenu {
                                         if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ActivityList.getList());
                                         }
-                                        Main.gui.getActivityListPanel().getTable().insertRow(a);
+                                        Main.gui.getActivityListPanel().getMainTable().insertRow(a);
                                         activityListValue++;
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {
                                                 // once in a while duplicate a task
                                                 Activity duplicatedActivity = ActivityList.getList().duplicate(a);
-                                                Main.gui.getActivityListPanel().getTable().insertRow(duplicatedActivity);
+                                                Main.gui.getActivityListPanel().getMainTable().insertRow(duplicatedActivity);
                                                 activityListValue++;
                                             } catch (CloneNotSupportedException ignored) {
                                             }

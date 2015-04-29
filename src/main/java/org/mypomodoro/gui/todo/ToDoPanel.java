@@ -91,7 +91,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
     // Tables
     private ToDoTable currentTable;
-    private final ToDoTableModel tableModel;
+    private ToDoTableModel tableModel;
     private final ToDoTable table;
     private final ToDoSubTableModel subTableModel;
     private final ToDoSubTable subTable;
@@ -258,8 +258,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel.setDataVector(getList());
+                tableModel = new ToDoTableModel();
+                table.setModel(tableModel);
                 table.init();
+                table.setTableHeader();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -287,8 +289,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         subTable.init();
         subTable.setTitle();
     }
+    
+    @Override
+    public ToDoTable getMainTable() {
+        return table;
+    }
 
-    //the current table (last selection)
     @Override
     public ToDoTable getTable() {
         return currentTable;

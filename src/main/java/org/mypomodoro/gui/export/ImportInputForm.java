@@ -27,6 +27,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.Labels;
 
@@ -59,12 +61,14 @@ public class ImportInputForm extends ExportInputForm {
         fileName.setEditable(false);
         fileName.setMinimumSize(TEXT_FIELD_DIMENSION);
         fileName.setPreferredSize(TEXT_FIELD_DIMENSION);
+        fileName.setBackground(new JTextField().getBackground()); // set the background of the current theme
+        fileName.setForeground(new JTextField().getForeground()); // set the background of the current theme
         fileChooserPanel.add(fileName);
         fileChooserPanel.add(new JLabel(" ")); // space
         JDialog d = new JDialog();
         d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // garbage collection
         fileDialog = new FileDialog(d, Labels.getString("ReportListPanel.Choose a file"), FileDialog.LOAD);
-        Button browseButton = new Button(Labels.getString("ReportListPanel.Browse"));
+        DefaultButton browseButton = new DefaultButton(Labels.getString("ReportListPanel.Browse"));
         browseButton.setFont(getFont().deriveFont(Font.BOLD));
         browseButton.addActionListener(new ActionListener() {
 
