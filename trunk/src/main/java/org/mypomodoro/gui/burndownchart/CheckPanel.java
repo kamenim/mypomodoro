@@ -67,7 +67,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     // Tables
-    private final CheckTableModel tableModel;
+    private CheckTableModel tableModel;
     private final CheckTable table;
     // Selected row
     private int currentSelectedRow = 0;
@@ -215,8 +215,10 @@ public class CheckPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel.setDataVector(getList());
+                tableModel = new CheckTableModel();
+                table.setModel(tableModel);
                 table.init();
+                table.setTableHeader();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -233,6 +235,11 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     public ChartList getList() {
         return ChartList.getList();
+    }
+    
+    @Override
+    public CheckTable getMainTable() {
+        return null; // not used - only one table
     }
 
     @Override

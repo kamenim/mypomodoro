@@ -97,6 +97,7 @@ public class HtmlEditor extends JTextPane {
         // Set colors according to input settings and themes
         setBackground(new JTextField().getBackground());
         setForeground(new JTextField().getForeground());
+        setCaretColor(new JTextField().getForeground());
 
         // limit the number of characters to 1000 to avoid java head size issue
         // ((AbstractDocument) getDocument()).setDocumentFilter(new SizeFilter(1000)); // this will make mergind of tasks (comments) difficult

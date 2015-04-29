@@ -20,8 +20,6 @@ import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import org.jdesktop.swingx.JXTable;
-import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.Activity;
 
 public interface IListPanel {
@@ -36,6 +34,8 @@ public interface IListPanel {
     void removeRow(int row);
 
     void insertRow(Activity activity);
+        
+    AbstractTable getMainTable();
 
     AbstractTable getTable();
 

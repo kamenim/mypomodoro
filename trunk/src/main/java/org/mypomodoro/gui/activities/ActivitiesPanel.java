@@ -188,13 +188,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
             try {
                 if (fromDatabase) {
                     getList().refresh();
-                }                
-                //tableModel.setDataVector(getList());
-                //tableModel.setRowCount(0);
+                }
                 tableModel = new ActivitiesTableModel();
                 table.setModel(tableModel);
-                table.setTableHeader();
-                //table.init();
+                table.init();
+                table.setTableHeader(); // TODO : tooltips lost !
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -221,6 +219,11 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTable.setParentId(-1);
         subTable.init();
         subTable.setTitle();
+    }
+    
+    @Override
+    public ActivitiesTable getMainTable() {
+        return table;
     }
 
     @Override
