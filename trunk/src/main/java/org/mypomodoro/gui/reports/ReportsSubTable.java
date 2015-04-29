@@ -50,11 +50,11 @@ public class ReportsSubTable extends ReportsTable {
             @Override
             public void mouseExited(MouseEvent e) {
                 // Reset to currently selected task
-                if (panel.getTable().getSelectedRowCount() == 1) {
+                if (panel.getMainTable().getSelectedRowCount() == 1) {
                     if (getSelectedRowCount() == 1) {
                         showInfoForSelectedRow();
                     } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                        showInfo(panel.getTable().getActivityIdFromSelectedRow());
+                        showInfo(panel.getMainTable().getActivityIdFromSelectedRow());
                     }
                 }
                 mouseHoverRow = -1;

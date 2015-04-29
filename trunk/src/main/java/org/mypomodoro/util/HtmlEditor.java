@@ -93,7 +93,7 @@ public class HtmlEditor extends JTextPane {
          ((HTMLDocument) getDocument()).getStyleSheet().addRule(bodyRule);*/
         // This line replaces the previous rule by instructing the editor to use the font of the UIManager        
         putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-        
+
         // Set colors according to input settings and themes
         setBackground(new JTextField().getBackground());
         setForeground(new JTextField().getForeground());

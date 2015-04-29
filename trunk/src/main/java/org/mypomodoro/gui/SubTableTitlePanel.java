@@ -133,7 +133,7 @@ public class SubTableTitlePanel extends TableTitlePanel {
                     panel.addTable();
                     panel.addSubTableTitlePanel(); // put the sub title back at the bottom
                     viewCount = 0;
-                } else if (viewCount == 0 && panel.getTable().getSelectedRowCount() == 1) { // expand half way: including buttons                        
+                } else if (viewCount == 0 && panel.getMainTable().getSelectedRowCount() == 1) { // expand half way: including buttons                        
                     panel.getListPane().add(panel.getSubTableScrollPane());
                     viewCount = 1;
                 } else if (viewCount == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
@@ -156,8 +156,8 @@ public class SubTableTitlePanel extends TableTitlePanel {
                     // Set cursor at the same original X position
                     robot.mouseMove((int) pOriginal.getX(), (int) pFinal.getY() + getHeight() / 2);
                 }
-                if (panel.getTable().getSelectedRowCount() == 1) {
-                    panel.getTable().showCurrentSelectedRow();
+                if (panel.getMainTable().getSelectedRowCount() == 1) {
+                    panel.getMainTable().showCurrentSelectedRow();
                 }
             }
         }

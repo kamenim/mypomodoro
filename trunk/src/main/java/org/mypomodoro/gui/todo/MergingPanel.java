@@ -108,12 +108,12 @@ public class MergingPanel extends CreatePanel {
     protected void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
-        final int selectedRowCount = panel.getTable().getSelectedRowCount();
+        final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
-            int[] rows = panel.getTable().getSelectedRows();
+            int[] rows = panel.getCurrentTable().getSelectedRows();
             comments.append("<html><head></head><body>");
             for (int row : rows) {
-                Activity selectedToDo = panel.getTable().getActivityFromRowIndex(row);
+                Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                     continue;
                 }
@@ -163,18 +163,18 @@ public class MergingPanel extends CreatePanel {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                         // only now we can remove the merged tasks
-                        int[] rows = panel.getTable().getSelectedRows();
+                        int[] rows = panel.getCurrentTable().getSelectedRows();
                         int increment = 0;
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
-                                row = row - increment;                                
-                                Activity selectedToDo = panel.getTable().getActivityFromRowIndex(row);
+                                row = row - increment;
+                                Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                                     continue;
                                 }
-                                panel.delete(selectedToDo);
-                                panel.removeRow(row);
+                                panel.delete(selectedToDo); // TODO
+                                panel.getCurrentTable().removeRow(row);
                                 increment++;
                                 final int progressValue = increment;
                                 SwingUtilities.invokeLater(new Runnable() {
@@ -196,13 +196,13 @@ public class MergingPanel extends CreatePanel {
                         });
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
-                        panel.getTable().reorderByPriority();
+                        panel.getCurrentTable().reorderByPriority();
                         if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                
-                            panel.addActivity(newActivity);
-                            panel.insertRow(newActivity);
+                            panel.addActivity(newActivity); // TODO
+                            panel.getCurrentTable().insertRow(newActivity);
                         } else { // add merged activity to activities list
                             ActivityList.getList().add(newActivity);
-                            Main.gui.getActivityListPanel().insertRow(newActivity);
+                            Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity); // main table !
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);

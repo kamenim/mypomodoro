@@ -68,7 +68,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private final MergingPanel mergingPanel = new MergingPanel(this);
     // Tables
     private ActivitiesTable currentTable;
-    private  ActivitiesTableModel tableModel;
+    private ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
     private final ActivitiesSubTableModel subTableModel;
     private final ActivitiesSubTable subTable;
@@ -220,43 +220,24 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTable.init();
         subTable.setTitle();
     }
-    
+
     @Override
     public ActivitiesTable getMainTable() {
         return table;
     }
 
     @Override
-    public ActivitiesTable getTable() {
-        return currentTable;
-    }
-    
-    @Override
     public ActivitiesTable getCurrentTable() {
         return currentTable;
     }
-    
+
     @Override
     public void setCurrentTable(AbstractTable table) {
-        currentTable = (ActivitiesTable)table;
+        currentTable = (ActivitiesTable) table;
     }
 
     public ActivitiesSubTable getSubTable() {
         return subTable;
-    }
-
-    @Override
-    public int getIdKey() {
-        return AbstractTableModel.ACTIVITYID_COLUMN_INDEX;
-    }
-
-    @Override
-    public void removeRow(int rowIndex) {
-        getTable().removeRow(rowIndex);
-    }
-
-    @Override
-    public void insertRow(Activity activity) {
     }
 
     @Override
@@ -268,11 +249,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
      public void moveAll() {
      // no use
      }*/
-    @Override
-    public Activity getActivityById(int id) {
-        return getList().getById(id);
-    }
-
     @Override
     public void delete(Activity activity) {
         getList().delete(activity);

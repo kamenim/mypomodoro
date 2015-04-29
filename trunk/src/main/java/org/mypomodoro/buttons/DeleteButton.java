@@ -48,7 +48,7 @@ public class DeleteButton extends TabPanelButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                final int selectedRowCount = panel.getTable().getSelectedRowCount();
+                final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
@@ -61,17 +61,17 @@ public class DeleteButton extends TabPanelButton {
                                 MainPanel.progressBar.setVisible(true);
                                 MainPanel.progressBar.getBar().setValue(0);
                                 MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
-                                /*if (panel.getTable().getSelectedRowCount() == panel.getTable().getRowCount()) { // delete all at once                        
+                                /*if (panel.getCurrentTable().getSelectedRowCount() == panel.getCurrentTable().getRowCount()) { // delete all at once                        
                                  panel.deleteAll();
                                  panel.refresh();
                                  } else {*/
                                 int increment = 0;
-                                int[] rows = panel.getTable().getSelectedRows();
+                                int[] rows = panel.getCurrentTable().getSelectedRows();
                                 for (int row : rows) {
                                     if (!MainPanel.progressBar.isStopped()) {
                                         // removing a row requires decreasing  the row index number
                                         row = row - increment;
-                                        //panel.getTable().deleteTask(row); TODO                                        
+                                        panel.getCurrentTable().deleteTask(row);
                                         increment++;
                                         final int progressValue = increment;
                                         SwingUtilities.invokeLater(new Runnable() {

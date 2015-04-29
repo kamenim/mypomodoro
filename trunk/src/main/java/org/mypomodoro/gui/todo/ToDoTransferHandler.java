@@ -42,12 +42,12 @@ import org.mypomodoro.util.WaitCursor;
 public class ToDoTransferHandler extends TransferHandler {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-    
+
     private final ToDoPanel panel;
     private final AbstractTable table;
 
     public ToDoTransferHandler(ToDoPanel panel, AbstractTable table) {
-        this.panel = panel;    
+        this.panel = panel;
         this.table = table;
     }
 
@@ -97,7 +97,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                 int toRow = dropLocation.getRow();
                                 toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
                                 ((DefaultTableModel) table.getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
-                                for (int row = 0; row < table.getRowCount(); row++) {                                   
+                                for (int row = 0; row < table.getRowCount(); row++) {
                                     Activity activity = table.getActivityFromRowIndex(row);
                                     int priority = row + 1;
                                     if (activity.getPriority() != priority) {

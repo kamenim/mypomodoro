@@ -34,7 +34,7 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
     private final Color RED = new Color(216, 54, 54);
     //private final Color GREEN_LIGHT = new Color(216, 255, 216);
     //private final Color GREEN_DARK = new Color(145, 221, 145);
-    private final Color GREEN = new Color(0, 204, 51);
+    //private final Color GREEN = new Color(0, 204, 51);
 
     public MAPLookAndFeel() {
         // Table colors
@@ -65,7 +65,7 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
         props.put("foregroundColor", ColorUtil.toProperty(ColorUtil.WHITE));
         props.put("backgroundColorLight", ColorUtil.toProperty(RED)); // these 2 lines are very important to override the background color of the Noire theme
         props.put("backgroundColorDark", ColorUtil.toProperty(RED));
-        
+
         // Menu background colors
         props.put("menuColorLight", ColorUtil.toProperty(RED));
         props.put("menuColorDark", ColorUtil.toProperty(DARK_RED));
@@ -113,9 +113,8 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
         props.put("rolloverColor", ColorUtil.toProperty(RED));
         props.put("rolloverColorLight", ColorUtil.toProperty(RED));
         props.put("rolloverColorDark", ColorUtil.toProperty(RED));
-        
-        // Missing property : rollover foreground color for buttons
 
+        // Missing property : rollover foreground color for buttons
         setCurrentTheme(props);
     }
 }

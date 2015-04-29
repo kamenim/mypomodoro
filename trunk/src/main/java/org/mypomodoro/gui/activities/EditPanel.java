@@ -100,8 +100,8 @@ public class EditPanel extends CreatePanel {
     protected void validActivityAction(Activity activity) {
         ActivityList.getList().update(activity);
         activity.databaseUpdate();
-        int row = panel.getTable().getSelectedRow();
-        panel.getTable().getModel().setValueAt(activity.getDate(), panel.getTable().convertRowIndexToModel(row), AbstractTableModel.DATE_COLUMN_INDEX);
+        int row = panel.getCurrentTable().getSelectedRow();
+        panel.getCurrentTable().getModel().setValueAt(activity.getDate(), panel.getCurrentTable().convertRowIndexToModel(row), AbstractTableModel.DATE_COLUMN_INDEX);
         // update details panel
         information.selectInfo(activity);
         information.showInfo();

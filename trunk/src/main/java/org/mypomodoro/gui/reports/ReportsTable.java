@@ -391,22 +391,22 @@ public class ReportsTable extends AbstractTable {
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
     }
-    
+
     @Override
     public void createUnplannedTask() {
         // not used
     }
-            
+
     @Override
     public void createInternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void createExternalInterruption() {
         // not used
     }
-    
+
     @Override
     public void overestimateTask(int poms) {
         // not used

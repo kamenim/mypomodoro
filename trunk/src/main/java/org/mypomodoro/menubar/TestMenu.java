@@ -162,10 +162,10 @@ public class TestMenu extends JMenu {
                                     }
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
                                         ReportList.getList().reopen(a);
-                                        Main.gui.getActivityListPanel().getMainTable().insertRow(a);
+                                        Main.gui.getActivityListPanel().getMainTable().insertRow(a); // main table !
                                         activityListValue++;
                                     } else {
-                                        Main.gui.getReportListPanel().getMainTable().insertRow(a);
+                                        Main.gui.getReportListPanel().getMainTable().insertRow(a); // main table !
                                         reportListValue++;
                                     }
                                 } else { // Tasks for the Activity and ToDo list
@@ -177,13 +177,13 @@ public class TestMenu extends JMenu {
                                         if (withSubtask) { // Adding subtasks                                            
                                             addSubTasks(a, ToDoList.getList());
                                         }
-                                        Main.gui.getToDoPanel().getMainTable().insertRow(a);
+                                        Main.gui.getToDoPanel().getMainTable().insertRow(a); // main table !
                                         todoListValue++;
                                         if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while duplicate a task
                                             try {
                                                 // once in a while duplicate a task
                                                 Activity duplicatedActivity = ToDoList.getList().duplicate(a);
-                                                Main.gui.getToDoPanel().insertRow(duplicatedActivity);
+                                                Main.gui.getToDoPanel().getMainTable().insertRow(duplicatedActivity); // main table !
                                                 todoListValue++;
                                             } catch (CloneNotSupportedException ignored) {
                                             }
@@ -297,6 +297,7 @@ public class TestMenu extends JMenu {
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));
+
                     if (list instanceof ToDoList) {
                         ToDoList.getList().add(aClone);
                     } else if (list instanceof ActivityList) {

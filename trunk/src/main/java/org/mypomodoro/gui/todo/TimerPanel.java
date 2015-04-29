@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
@@ -178,9 +177,8 @@ public class TimerPanel extends JPanel {
                 Activity currentToDo = pomodoro.getCurrentToDo();
                 if (currentToDo != null) {
                     if (startButton.getIcon().equals(startIcon)) {
-                        if (panel.getTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task
-                            int row = panel.getTable().getSelectedRow();
-                            pomodoro.setCurrentToDoId((Integer) panel.getTable().getModel().getValueAt(panel.getTable().convertRowIndexToModel(row), panel.getIdKey()));
+                        if (panel.getCurrentTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task                            
+                            pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());
                             currentToDo = pomodoro.getCurrentToDo();
                         }
                         panel.showCurrentSelectedRow(); // in any case
