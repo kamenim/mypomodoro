@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -162,7 +164,7 @@ public final class ToDoList extends AbstractActivities {
         } else {
             ToDoList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {
-                ActivityList.getList().add(subTask);
+                ReportList.getList().add(subTask);
                 remove(subTask);
             }
         }

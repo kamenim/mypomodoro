@@ -239,15 +239,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void move(Activity activity) {
-        getList().reopen(activity);
-    }
-
-    /*@Override
-     public void moveAll() {
-     // no use
-     }*/
-    @Override
     public void delete(Activity activity) {
         getList().delete(activity);
     }
@@ -255,11 +246,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     @Override
     public void deleteAll() {
         getList().deleteAll();
-    }
-
-    @Override
-    public void complete(Activity activity) {
-        // no use
     }
 
     /*@Override
@@ -286,14 +272,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
                 selectedActivity.databaseUpdateComment();
             }
         }
-    }
-
-    public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row;
-    }
-
-    public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
     /////////////////// NEW

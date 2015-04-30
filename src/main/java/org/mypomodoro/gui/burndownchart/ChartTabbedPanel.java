@@ -69,7 +69,7 @@ public class ChartTabbedPanel extends JPanel {
     }
 
     public void showCurrentSelectedRow() {
-        checkPanel.showCurrentSelectedRow();
+        checkPanel.getCurrentTable().showCurrentSelectedRow();
     }
 
     public CheckPanel getCheckPanel() {

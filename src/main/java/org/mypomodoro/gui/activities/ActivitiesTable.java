@@ -160,12 +160,12 @@ public class ActivitiesTable extends AbstractTable {
                         } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
                             if (estimated != act.getEstimatedPoms()
-                                    && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                    && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) { 
                                 int diffEstimated = estimated - act.getEstimatedPoms();
                                 act.setEstimatedPoms(estimated);
                                 act.databaseUpdate();
                                 if (act.isSubTask()) { // update parent activity
-                                    updateParentEstimatedPoms(diffEstimated);
+                                    addEstimatedPomsToParent(0, diffEstimated, 0);
                                 }
                             }
                         } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
@@ -455,7 +455,7 @@ public class ActivitiesTable extends AbstractTable {
                 Activity duplicatedActivity = getList().duplicate(activity);
                 insertRow(duplicatedActivity);
                 if (duplicatedActivity.isSubTask()) {
-                    updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
+                    addSubTaskEstimatedPomsToParent(duplicatedActivity);
                 }
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
@@ -466,18 +466,27 @@ public class ActivitiesTable extends AbstractTable {
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
+        if (activity.isSubTask()) {
+            removeSubTaskEstimatedPomsFromParent(activity);
+        }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
     }
-
-    private void updateParentEstimatedPoms(int diffEstimated) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + diffEstimated);
-        parentActivity.databaseUpdate();
-        getList().update(parentActivity);
-        // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+    
+    @Override
+    public void moveTask(int rowIndex) {
+        Activity activity = getActivityFromRowIndex(rowIndex);
+        if (activity.isSubTask()) {
+            removeSubTaskEstimatedPomsFromParent(activity);
+        }
+        getList().move(activity); // move to ToDoList
+        removeRow(rowIndex);
     }
+    
+    @Override
+    public void completeTask(int rowIndex) {
+        // not used
+    }        
 
     @Override
     public void createUnplannedTask() {
@@ -497,5 +506,30 @@ public class ActivitiesTable extends AbstractTable {
     @Override
     public void overestimateTask(int poms) {
         // not used
+    }
+
+    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(-parentActivity.getActualPoms(), 
+                -parentActivity.getEstimatedPoms(), 
+                -parentActivity.getOverestimatedPoms());
+    }
+    
+    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(parentActivity.getActualPoms(), 
+                parentActivity.getEstimatedPoms(), 
+                parentActivity.getOverestimatedPoms());
+    }
+
+    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
+        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
+        parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
+        parentActivity.databaseUpdate();
+        getList().update(parentActivity);
+        // getSelectedRow must not be converted (convertRowIndexToModel)
+        panel.getMainTable().getModel().setValueAt(parentActivity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

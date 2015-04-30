@@ -482,6 +482,10 @@ public abstract class AbstractTable extends JXTable {
     public abstract void duplicateTask();
 
     public abstract void deleteTask(int rowIndex);
+    
+    public abstract void moveTask(int rowIndex);
+    
+    public abstract void completeTask(int rowIndex);
 
     public abstract void createUnplannedTask();
 
@@ -513,7 +517,7 @@ public abstract class AbstractTable extends JXTable {
 
     protected abstract AbstractActivities getList();
 
-    protected abstract AbstractActivities getTableList();
+    protected abstract AbstractActivities getTableList();       
 
     protected abstract TableTitlePanel getTitlePanel();
 

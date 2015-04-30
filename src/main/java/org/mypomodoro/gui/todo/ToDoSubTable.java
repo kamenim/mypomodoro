@@ -210,7 +210,7 @@ public class ToDoSubTable extends ToDoTable {
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
                 insertRow(duplicatedActivity);
-                updateParentEstimatedPoms(duplicatedActivity.getEstimatedPoms());
+                addSubTaskEstimatedPomsToParent(duplicatedActivity);
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
             }
