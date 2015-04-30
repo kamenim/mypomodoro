@@ -307,22 +307,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public ToDoSubTable getSubTable() {
         return subTable;
-    }
-
-    @Override
-    public void move(Activity activity) {
-        getList().move(activity);
-        if (getList().isEmpty()
-                && pomodoro.getTimer().isRunning()) { // break running
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStartEnv();
-        }
-    }
-
-    /*@Override
-     public void moveAll() {
-     // no use
-     }*/
+    }    
+   
     @Override
     public void delete(Activity activity) {
         // not used
@@ -332,21 +318,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void deleteAll() {
         // not used
     }
-
-    @Override
-    public void complete(Activity activity) {
-        getList().complete(activity);
-        if (getList().isEmpty()
-                && pomodoro.getTimer().isRunning()) { // break running
-            pomodoro.stop();
-            pomodoro.getTimerPanel().setStartEnv();
-        }
-    }
-
-    /*@Override
-     public void completeAll() {
-     // no use
-     }*/
+    
     @Override
     public void addActivity(Activity activity) {
         getList().add(activity);
@@ -367,14 +339,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 selectedActivity.databaseUpdateComment();
             }
         }
-    }
-
-    public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row;
-    }
-
-    public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
     }
 
     /////////////////// NEW

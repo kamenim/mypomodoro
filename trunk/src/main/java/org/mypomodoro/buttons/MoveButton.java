@@ -105,8 +105,7 @@ public class MoveButton extends TabPanelButton {
                                         }
                                     }
                                 }
-                                panel.move(selectedActivity); // TODO
-                                panel.getCurrentTable().removeRow(row);
+                                panel.getCurrentTable().moveTask(row);                                
                                 if (panel instanceof ActivitiesPanel) {
                                     Main.gui.getToDoPanel().getMainTable().insertRow(selectedActivity); // main table !
                                 } else if (panel instanceof ReportsPanel) { // reopen tasks

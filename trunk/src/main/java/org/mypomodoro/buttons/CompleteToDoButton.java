@@ -82,8 +82,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                                     break;
                                                 }
                                             }
-                                            panel.complete(selectedActivity); // TODO
-                                            panel.getCurrentTable().removeRow(row);
+                                            panel.getCurrentTable().completeTask(row);
                                             Main.gui.getReportListPanel().getMainTable().insertRow(selectedActivity); // main table !
                                             increment++;
                                             final int progressValue = increment;

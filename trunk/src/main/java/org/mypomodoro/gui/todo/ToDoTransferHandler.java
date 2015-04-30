@@ -44,11 +44,9 @@ public class ToDoTransferHandler extends TransferHandler {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private final ToDoPanel panel;
-    private final AbstractTable table;
 
-    public ToDoTransferHandler(ToDoPanel panel, AbstractTable table) {
+    public ToDoTransferHandler(ToDoPanel panel) {
         this.panel = panel;
-        this.table = table;
     }
 
     @Override
@@ -69,20 +67,20 @@ public class ToDoTransferHandler extends TransferHandler {
                     if (reply == JOptionPane.OK_OPTION) {
                         /*
                          // sort programatically the priority column
-                         panel.getTable().setAutoCreateRowSorter(true);
-                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getTable().getRowSorter());
+                         panel.getCurrentTable().setAutoCreateRowSorter(true);
+                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getCurrentTable().getRowSorter());
                          ArrayList<SortKey> list = new ArrayList<SortKey>();
                          list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
                          sorter.setSortKeys(list);
                          sorter.sort(); // sort the view
                          */
                         //panel.setCurrentSelectedRow(0);                        
-                        int row = table.convertRowIndexToModel(table.getSelectedRow());
-                        table.setCurrentSelectedRow(row);
-                        panel.refresh();
+                        int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
+                        panel.getCurrentTable().setCurrentSelectedRow(row);
+                        //panel.getCurrentTable().refresh(); // TODO                        
                     }
                 } else if (isContinuousSelection()) {
-                    final int selectedRowCount = table.getSelectedRowCount();
+                    final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
                         public void run() {
@@ -93,12 +91,12 @@ public class ToDoTransferHandler extends TransferHandler {
                                 MainPanel.progressBar.setVisible(true);
                                 MainPanel.progressBar.getBar().setValue(0);
                                 MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                                int[] fromRows = table.getSelectedRows();
+                                int[] fromRows = panel.getCurrentTable().getSelectedRows();
                                 int toRow = dropLocation.getRow();
                                 toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
-                                ((DefaultTableModel) table.getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
-                                for (int row = 0; row < table.getRowCount(); row++) {
-                                    Activity activity = table.getActivityFromRowIndex(row);
+                                ((DefaultTableModel) panel.getCurrentTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
+                                for (int row = 0; row < panel.getCurrentTable().getRowCount(); row++) {
+                                    Activity activity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                     int priority = row + 1;
                                     if (activity.getPriority() != priority) {
                                         activity.setPriority(priority);
@@ -114,7 +112,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                         MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                                     }
                                 });
-                                table.reorderByPriority();
+                                panel.getCurrentTable().reorderByPriority();
                                 // Close progress bar
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
@@ -138,7 +136,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                 // Stop wait cursor
                                 WaitCursor.stopWaitCursor();
                                 // After cursor stops, reset interval of selected row(s)                                
-                                table.getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
+                                panel.getCurrentTable().getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
                             }
                         }
                     }.start();
@@ -151,11 +149,11 @@ public class ToDoTransferHandler extends TransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent cp) {
-        int row = table.getSelectedRow();
-        int colCount = table.getColumnCount();
+        int row = panel.getCurrentTable().getSelectedRow();
+        int colCount = panel.getCurrentTable().getColumnCount();
         ArrayList<Object> a = new ArrayList<Object>(colCount);
         for (int i = 0; i < colCount; i++) {
-            a.add(table.getModel().getValueAt(table.convertRowIndexToModel(row), i));
+            a.add(panel.getCurrentTable().getModel().getValueAt(panel.getCurrentTable().convertRowIndexToModel(row), i));
         }
         return new ToDoRowTransferable(a, row);
     }
@@ -167,9 +165,9 @@ public class ToDoTransferHandler extends TransferHandler {
 
     private boolean isPriorityColumnSorted() {
         boolean sorted = true;
-        for (int i = 0; i < table.getRowCount() - 1; i++) {
+        for (int i = 0; i < panel.getCurrentTable().getRowCount() - 1; i++) {
             // Look for the value of the priority in the View while column priority might have been moved around                    
-            if ((Integer) table.getValueAt(i, table.convertColumnIndexToView(0)) != (Integer) table.getValueAt(i + 1, table.convertColumnIndexToView(0)) - 1) {
+            if ((Integer) panel.getCurrentTable().getValueAt(i, panel.getCurrentTable().convertColumnIndexToView(0)) != (Integer) panel.getCurrentTable().getValueAt(i + 1, panel.getCurrentTable().convertColumnIndexToView(0)) - 1) {
                 sorted = false;
                 break;
             }
@@ -184,7 +182,7 @@ public class ToDoTransferHandler extends TransferHandler {
      */
     private boolean isContinuousSelection() {
         boolean continuous = true;
-        int[] rows = table.getSelectedRows();
+        int[] rows = panel.getCurrentTable().getSelectedRows();
         int row = rows[0];
         for (int i = 1; i < rows.length; i++) {
             if (row + 1 != rows[i]) {

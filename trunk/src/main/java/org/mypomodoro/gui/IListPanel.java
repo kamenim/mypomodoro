@@ -34,13 +34,9 @@ public interface IListPanel {
 
     void setCurrentTable(AbstractTable table);
 
-    void move(Activity activity);
-
     void delete(Activity activity);
 
     void deleteAll();
-
-    void complete(Activity activity);
 
     //void completeAll();
     void addActivity(Activity activity);

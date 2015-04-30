@@ -241,15 +241,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void move(Activity activity) {
-        getList().move(activity);
-    }
-
-    /*@Override
-     public void moveAll() {
-     // no use
-     }*/
-    @Override
     public void delete(Activity activity) {
         getList().delete(activity);
     }
@@ -257,11 +248,6 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     @Override
     public void deleteAll() {
         getList().deleteAll();
-    }
-
-    @Override
-    public void complete(Activity activity) {
-        // no use
     }
 
     /*@Override
@@ -290,13 +276,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         }
     }
 
-    public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row;
-    }
-
-    public void showCurrentSelectedRow() {
-        table.scrollRectToVisible(table.getCellRect(currentSelectedRow, 0, true));
-    }
+    
 
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
@@ -346,7 +326,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     public void populateSubTable(int parentId) {
         subTableModel.setDataVector(ActivityList.getSubTaskList(parentId));
-        subTable.setParentId(parentId);
+        subTable.setParentId(parentId);       
         subTable.init();
         subTable.setTitle();
     }

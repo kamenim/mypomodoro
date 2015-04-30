@@ -181,7 +181,7 @@ public class TimerPanel extends JPanel {
                             pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());
                             currentToDo = pomodoro.getCurrentToDo();
                         }
-                        panel.showCurrentSelectedRow(); // in any case
+                        panel.getCurrentTable().showCurrentSelectedRow(); // in any case
                         // Retrieve activity from the database in case it's changed (concurrent work : another user may have worked on it)                                       
                         if (currentToDo.hasChanged()) {
                             String title = Labels.getString("ToDoListPanel.ToDo changed");
@@ -210,7 +210,7 @@ public class TimerPanel extends JPanel {
                             }
                         }
                     } else if (pomodoro.stopWithWarning()) {
-                        panel.showCurrentSelectedRow(); // in any case
+                        panel.getCurrentTable().showCurrentSelectedRow(); // in any case
                         startButton.setIcon(startIcon);
                         startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
                         pomodoroTime.setForeground(ColorUtil.BLACK);

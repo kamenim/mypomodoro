@@ -63,7 +63,7 @@ public final class ActivityList extends AbstractActivities {
         ActivityList subTableList = new ActivityList();
         for (Activity a : list) {
             if (a.getParentId() != parentId) {
-                subTableList.removeById(a.getId());
+                subTableList.removeById(a.getId());                
             }
         }
         return subTableList;
@@ -90,7 +90,7 @@ public final class ActivityList extends AbstractActivities {
     }
 
     public void add(Activity act, Date date) {
-        add(act, date, act.getDateCompleted()); // date creation/schedule, date reopen
+        add(act, date, act.getDateCompleted()); // date creation/schedule, date complete
     }
 
     // Create or update
@@ -154,7 +154,7 @@ public final class ActivityList extends AbstractActivities {
         } else {
             ActivityList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {
-                ActivityList.getList().add(subTask);
+                ToDoList.getList().add(subTask);
                 remove(subTask);
             }
         }

@@ -388,8 +388,27 @@ public class ReportsTable extends AbstractTable {
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
+        if (activity.isSubTask()) {
+            removeSubTaskEstimatedPomsFromParent(activity);
+        }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
+    }
+    
+    @Override
+    public void moveTask(int rowIndex) {
+        System.err.println("reopen");
+        Activity activity = getActivityFromRowIndex(rowIndex);
+        if (activity.isSubTask()) {
+            removeSubTaskEstimatedPomsFromParent(activity);
+        }
+        getList().reopen(activity); // reopen/move to ActivityList
+        removeRow(rowIndex);
+    }
+    
+    @Override
+    public void completeTask(int rowIndex) {
+        // not used
     }
 
     @Override
@@ -410,5 +429,30 @@ public class ReportsTable extends AbstractTable {
     @Override
     public void overestimateTask(int poms) {
         // not used
+    }
+    
+    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(-parentActivity.getActualPoms(), 
+                -parentActivity.getEstimatedPoms(), 
+                -parentActivity.getOverestimatedPoms());
+    }
+    
+    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(parentActivity.getActualPoms(), 
+                parentActivity.getEstimatedPoms(), 
+                parentActivity.getOverestimatedPoms());
+    }
+
+    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
+        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
+        parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
+        parentActivity.databaseUpdate();
+        getList().update(parentActivity);
+        // getSelectedRow must not be converted (convertRowIndexToModel)        
+        panel.getMainTable().getModel().setValueAt(parentActivity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

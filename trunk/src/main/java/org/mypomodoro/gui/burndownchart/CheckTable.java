@@ -333,6 +333,16 @@ public class CheckTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().remove(activity); // remove task
         removeRow(rowIndex);
+    }       
+
+    @Override
+    public void moveTask(int rowIndex) {
+        // not used
+    }
+    
+    @Override
+    public void completeTask(int rowIndex) {
+        // not used
     }
 
     @Override
