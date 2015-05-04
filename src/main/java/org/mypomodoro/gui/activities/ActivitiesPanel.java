@@ -69,7 +69,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     private ActivitiesTable currentTable;
     private ActivitiesTableModel tableModel;
     private final ActivitiesTable table;
-    private ActivitiesSubTableModel subTableModel;
+    private final ActivitiesSubTableModel subTableModel;
     private final ActivitiesSubTable subTable;
 
     public ActivitiesPanel() {
@@ -189,7 +189,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 tableModel = new ActivitiesTableModel();                
                 table.setModel(tableModel);
                 table.setTableHeader();               
-                table.init();                
+                table.setColumnModel();
+                table.initTabs();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -215,7 +216,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     public void emptySubTable() {
         subTableModel.setRowCount(0);
         subTable.setParentId(-1);
-        subTable.init();
+        subTable.setColumnModel();
         subTable.setTitle();
     }
 
@@ -311,11 +312,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public void populateSubTable(int parentId) {
-        subTableModel = new ActivitiesSubTableModel(parentId);
-        subTable.setModel(subTableModel);       
-        subTable.init();
-        subTable.setTitle();        
+        subTableModel.update(parentId);        
         subTable.setParentId(parentId);
+        subTable.setColumnModel();
+        subTable.setTitle();
         setCurrentTable(table); // TODO find where the current table is set to subtable in this method
     }
 }

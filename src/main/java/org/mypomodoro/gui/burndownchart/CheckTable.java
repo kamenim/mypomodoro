@@ -45,6 +45,10 @@ public class CheckTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
+        
+        setColumnModel();
+
+        initTabs();
 
         getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
@@ -65,7 +69,7 @@ public class CheckTable extends AbstractTable {
                         currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
-                        // populate subtable
+                        // empty subtable
                         emptySubTable();
                     } else if (selectedRowCount == 1) {
                         // activate all panels
@@ -94,7 +98,7 @@ public class CheckTable extends AbstractTable {
     }
 
     @Override
-    protected void init() {
+    protected void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -162,8 +166,6 @@ public class CheckTable extends AbstractTable {
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
         }
-
-        initTabs();
 
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);

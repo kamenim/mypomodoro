@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -271,9 +270,8 @@ public abstract class AbstractTable extends JXTable {
     }
 
     /*protected void setRowCleared(int rowIndex) {
-        rowCleared = rowIndex;
-    }*/
-
+     rowCleared = rowIndex;
+     }*/
     // List selection listener
     // when a row is selected, the table it belongs to becomes the 'current' table
     protected abstract class AbstractListSelectionListener implements ListSelectionListener {
@@ -284,10 +282,10 @@ public abstract class AbstractTable extends JXTable {
                 if (!e.getValueIsAdjusting()) { // ignoring the deselection event                    
                     if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table 
                         /*if (!panel.getCurrentTable().equals(panel.getMainTable())) { // switching from sub table to main table                            
-                            panel.getMainTable().setRowCleared(-1);
-                        } else {                            
-                            panel.getMainTable().setRowCleared(panel.getMainTable().getSelectedRow()); // main table only
-                        }*/
+                         panel.getMainTable().setRowCleared(-1);
+                         } else {                            
+                         panel.getMainTable().setRowCleared(panel.getMainTable().getSelectedRow()); // main table only
+                         }*/
                         // clear selection in current table
                         panel.getCurrentTable().clearSelection();
                         // new current table
@@ -324,35 +322,40 @@ public abstract class AbstractTable extends JXTable {
 
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component c = super.prepareRenderer(renderer, row, column);
-        if (isRowSelected(row)) {
-            ((JComponent) c).setBackground(Main.selectedRowColor);
-            // using ((JComponent) c).getFont() to preserve current font (eg strike through)
-            ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-        } else if (row == mouseHoverRow) {
-            ((JComponent) c).setBackground(Main.hoverRowColor);
-            ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-            Component[] comps = ((JComponent) c).getComponents();
-            for (Component comp : comps) { // sub-components (combo boxes)
-                comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+        Component c = null;
+        try {
+            c = super.prepareRenderer(renderer, row, column);
+            if (isRowSelected(row)) {
+                ((JComponent) c).setBackground(Main.selectedRowColor);
+                // using ((JComponent) c).getFont() to preserve current font (eg strike through)
+                ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
+            } else if (row == mouseHoverRow) {
+                ((JComponent) c).setBackground(Main.hoverRowColor);
+                ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+                Component[] comps = ((JComponent) c).getComponents();
+                for (Component comp : comps) { // sub-components (combo boxes)
+                    comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+                }
+                ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
+            } /*else if (row == rowCleared) {
+             ((JComponent) c).setBackground(ColorUtil.GRAY);
+             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+             Component[] comps = ((JComponent) c).getComponents();
+             for (Component comp : comps) { // sub-components (combo boxes)
+             comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+             }
+             ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
+             }*/ else {
+                if (row % 2 == 0) { // odd
+                    ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
+                } else { // even
+                    ((JComponent) c).setBackground(Main.evenRowColor);
+                }
+                ((JComponent) c).setBorder(null);
             }
-            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-        } /*else if (row == rowCleared) {
-            ((JComponent) c).setBackground(ColorUtil.GRAY);
-            ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-            Component[] comps = ((JComponent) c).getComponents();
-            for (Component comp : comps) { // sub-components (combo boxes)
-                comp.setFont(comp.getFont().deriveFont(Font.BOLD));
-            }
-            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-        }*/ else {
-            if (row % 2 == 0) { // odd
-                ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
-            } else { // even
-                ((JComponent) c).setBackground(Main.evenRowColor);
-            }
-            ((JComponent) c).setBorder(null);
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+            // do nothing
         }
         return c;
     }
@@ -531,10 +534,10 @@ public abstract class AbstractTable extends JXTable {
         return (AbstractTableModel) super.getModel();
     }
 
-    protected abstract void init();
+    protected abstract void setColumnModel();
 
     // This method is empty in sub table classes
-    protected void initTabs() {
+    public void initTabs() {
         panel.getTabbedPane().initTabs(getModel().getRowCount());
     }
 
@@ -631,6 +634,9 @@ public abstract class AbstractTable extends JXTable {
         int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
+        /*if (panel.getMainTable().equals(this)) {
+         emptySubTable();
+         }*/
     }
 
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables
