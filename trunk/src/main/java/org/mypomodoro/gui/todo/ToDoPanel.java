@@ -92,7 +92,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private ToDoTable currentTable;
     private ToDoTableModel tableModel;
     private final ToDoTable table;
-    private ToDoSubTableModel subTableModel;
+    private final ToDoSubTableModel subTableModel;
     private final ToDoSubTable subTable;
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
@@ -258,7 +258,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 tableModel = new ToDoTableModel();                
                 table.setModel(tableModel);
                 table.setTableHeader();               
-                table.init();
+                table.setColumnModel();
+                table.initTabs();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -280,10 +281,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return ToDoList.getList();
     }
 
+    @Override
     public void emptySubTable() {
         subTableModel.setRowCount(0);
         subTable.setParentId(-1);
-        subTable.init();
+        subTable.setColumnModel();
         subTable.setTitle();
     }
 
@@ -373,12 +375,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return subTableScrollPane;
     }
 
+    @Override
     public void populateSubTable(int parentId) {        
-        subTableModel = new ToDoSubTableModel(parentId);
-        subTable.setModel(subTableModel);
-        subTable.init();
-        subTable.setTitle();
+        subTableModel.update(parentId);
         subTable.setParentId(parentId);
+        subTable.setColumnModel();        
+        subTable.setTitle();
         setCurrentTable(table);
     }
 

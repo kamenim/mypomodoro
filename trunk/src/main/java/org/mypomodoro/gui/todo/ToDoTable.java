@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import javax.swing.DropMode;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
@@ -42,7 +41,7 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ToDoTable extends AbstractTable {
 
-    private final ToDoPanel panel;
+    protected final ToDoPanel panel;
 
     public ToDoTable(final ToDoTableModel model, final ToDoPanel panel) {
         super(model, panel);
@@ -55,6 +54,10 @@ public class ToDoTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
+        
+        setColumnModel();
+
+        initTabs();
 
         getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
@@ -86,7 +89,7 @@ public class ToDoTable extends AbstractTable {
                         currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
-                        // populate subtable
+                        // empty subtable
                         emptySubTable();
                     } else if (selectedRowCount == 1) {
                         // activate all panels
@@ -115,14 +118,12 @@ public class ToDoTable extends AbstractTable {
                 }
             }
         });
-
-        init();
-
+        
         // Listener on editable cells
         // Table model has a flaw: the update table event is fired whenever once click on an editable cell
         // To avoid update overhead, we compare old value with new value
-        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener        
-        model.addTableModelListener(new TableModelListener() {
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
+        getModel().addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -146,7 +147,7 @@ public class ToDoTable extends AbstractTable {
                                         act.setName(name);
                                         act.databaseUpdate();
                                         // The customer resizer may resize the title column to fit the length of the new text
-                                        //ColumnResizer.adjustColumnPreferredWidths(this);
+                                        ColumnResizer.adjustColumnPreferredWidths(ToDoTable.this);
                                         revalidate();
                                     }
                                 }
@@ -194,7 +195,7 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    protected void init() {
+    protected void setColumnModel() {
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setCellRenderer(new CustomRenderer()); // priority
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title           
@@ -269,8 +270,6 @@ public class ToDoTable extends AbstractTable {
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
         }
-
-        initTabs();
 
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);

@@ -34,14 +34,10 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ReportsSubTable extends ReportsTable {
 
-    private final ReportsPanel panel;
-
     private int parentId = -1;
 
     public ReportsSubTable(ReportsSubTableModel model, final ReportsPanel panel) {
         super(model, panel);
-
-        this.panel = panel;
 
         // This is to address the case/event when the mouse exit the table
         // Replacing listener of the ActivtiesTable class constructor
@@ -130,8 +126,8 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void setColumnModel() {
+        super.setColumnModel();
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
@@ -142,7 +138,7 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected void initTabs() {
+    public void initTabs() {
         // Do nothing so this doesn't conflict with the main table
     }
 

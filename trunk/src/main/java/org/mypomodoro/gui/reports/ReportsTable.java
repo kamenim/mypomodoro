@@ -39,7 +39,7 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ReportsTable extends AbstractTable {
 
-    private final ReportsPanel panel;
+    protected final ReportsPanel panel;
 
     public ReportsTable(final ReportsTableModel model, final ReportsPanel panel) {
         super(model, panel);
@@ -47,6 +47,10 @@ public class ReportsTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
+        
+        setColumnModel();
+
+        initTabs();
 
         getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
@@ -69,7 +73,7 @@ public class ReportsTable extends AbstractTable {
                         currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
-                        // populate subtable
+                        // empty subtable
                         emptySubTable();
                     } else if (selectedRowCount == 1) {
                         // activate all panels
@@ -91,13 +95,11 @@ public class ReportsTable extends AbstractTable {
             }
         });
 
-        init();
-
         // Listener on editable cells
         // Table model has a flaw: the update table event is fired whenever once click on an editable cell
         // To avoid update overhead, we compare old value with new value
-        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener        
-        model.addTableModelListener(new TableModelListener() {
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
+        getModel().addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -120,7 +122,7 @@ public class ReportsTable extends AbstractTable {
                                     act.setName(name);
                                     act.databaseUpdate();
                                     // The customer resizer may resize the title column to fit the length of the new text
-                                    //ColumnResizer.adjustColumnPreferredWidths(this);
+                                    ColumnResizer.adjustColumnPreferredWidths(ReportsTable.this);
                                     revalidate();
                                 }
                             }
@@ -144,7 +146,7 @@ public class ReportsTable extends AbstractTable {
     }
 
     @Override
-    protected void init() {
+    protected void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -214,8 +216,6 @@ public class ReportsTable extends AbstractTable {
         if (getModel().getRowCount() > 0) {
             setAutoCreateRowSorter(true);
         }
-
-        initTabs();
 
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);

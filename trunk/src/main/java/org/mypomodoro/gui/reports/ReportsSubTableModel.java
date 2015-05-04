@@ -28,7 +28,7 @@ public class ReportsSubTableModel extends ReportsTableModel {
         emptyModel();
     }
     
-    public ReportsSubTableModel(int parentId) {
+    public void update(int parentId) {
         setDataVector(ReportList.getSubTaskList(parentId));
     }
 }

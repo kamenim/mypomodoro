@@ -17,8 +17,6 @@
 package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TableTitlePanel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
@@ -35,14 +33,10 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    private final ActivitiesPanel panel;
-
-    private int parentId = -1;
+    private int parentId = -1; // TODO: needed ?
 
     public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
-
-        this.panel = panel;
     }
 
     public void setParentId(int parentId) {
@@ -122,8 +116,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void setColumnModel() {
+        super.setColumnModel();
         // sub types
         String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
@@ -136,9 +130,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
     }
+    
+    /*@Override
+    public ActivitiesSubTableModel getModel() {
+        return (ActivitiesSubTableModel) super.getModel();
+    }*/
 
     @Override
-    protected void initTabs() {
+    public void initTabs() {
         // Do nothing so this doesn't conflict with the main table
     }
 

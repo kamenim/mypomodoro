@@ -42,7 +42,7 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesTable extends AbstractTable {
 
-    private final ActivitiesPanel panel;
+    protected final ActivitiesPanel panel;
 
     public ActivitiesTable(final ActivitiesTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
@@ -50,6 +50,10 @@ public class ActivitiesTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
+
+        setColumnModel();
+
+        initTabs();
 
         getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
@@ -73,7 +77,7 @@ public class ActivitiesTable extends AbstractTable {
                         currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
-                        // populate subtable
+                        // empty subtable
                         emptySubTable();
                     } else if (selectedRowCount == 1) {
                         // activate all panels
@@ -102,13 +106,11 @@ public class ActivitiesTable extends AbstractTable {
             }
         });
 
-        init();
-
         // Listener on editable cells
         // Table model has a flaw: the update table event is fired whenever once click on an editable cell
         // To avoid update overhead, we compare old value with new value
-        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener        
-        model.addTableModelListener(new TableModelListener() {
+        // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
+        getModel().addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -121,17 +123,17 @@ public class ActivitiesTable extends AbstractTable {
                     Object data = sourceModel.getValueAt(row, column);
                     if (data != null) {
                         Activity act = getActivityFromRowIndex(row);
-                        if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
+                        if (column == AbstractTableModel.TITLE_COLUMN_INDEX) {
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
-                                if (name.length() == 0) {
+                                if (name.length() == 0) { // Title (can't be empty)
                                     // reset the original value. Title can't be empty.
                                     sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
                                 } else {
                                     act.setName(name);
                                     act.databaseUpdate();
                                     // The customer resizer may resize the title column to fit the length of the new text
-                                    //ColumnResizer.adjustColumnPreferredWidths(this);
+                                    ColumnResizer.adjustColumnPreferredWidths(ActivitiesTable.this);
                                     revalidate();
                                 }
                             }
@@ -194,7 +196,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void init() {
+    protected void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -279,8 +281,6 @@ public class ActivitiesTable extends AbstractTable {
             setAutoCreateRowSorter(true);
         }
 
-        initTabs();
-
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
@@ -296,7 +296,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void showDetailsForSelectedRows() {
+    protected void showDetailsForSelectedRows() { // TODO to be removed? already in AbstractTable?
         String info = "";
         int[] rows = getSelectedRows();
         for (int row : rows) {
