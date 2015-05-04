@@ -19,15 +19,19 @@ package org.mypomodoro.gui.todo;
 import java.awt.datatransfer.Transferable;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.AbstractTable;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
@@ -65,19 +69,16 @@ public class ToDoTransferHandler extends TransferHandler {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                     if (reply == JOptionPane.OK_OPTION) {
-                        /*
-                         // sort programatically the priority column
-                         panel.getCurrentTable().setAutoCreateRowSorter(true);
-                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getCurrentTable().getRowSorter());
-                         ArrayList<SortKey> list = new ArrayList<SortKey>();
-                         list.add(new RowSorter.SortKey(ID_KEY - 6, SortOrder.ASCENDING));
-                         sorter.setSortKeys(list);
-                         sorter.sort(); // sort the view
-                         */
-                        //panel.setCurrentSelectedRow(0);                        
                         int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
                         panel.getCurrentTable().setCurrentSelectedRow(row);
-                        //panel.getCurrentTable().refresh(); // TODO                        
+                        // sort programatically the priority column
+                        panel.getCurrentTable().setAutoCreateRowSorter(true);
+                        DefaultRowSorter sorter = ((DefaultRowSorter) panel.getCurrentTable().getRowSorter());
+                        ArrayList<SortKey> list = new ArrayList<SortKey>();
+                        list.add(new RowSorter.SortKey(AbstractTableModel.PRIORITY_COLUMN_INDEX, SortOrder.ASCENDING));
+                        sorter.setSortKeys(list);
+                        sorter.sort(); // sort the view
+                        //panel.getCurrentTable().refresh();
                     }
                 } else if (isContinuousSelection()) {
                     final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();

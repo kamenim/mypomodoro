@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.reports;
 
+import org.mypomodoro.model.ReportList;
+
 /**
  * Table model for sub-reports
  *
@@ -24,5 +26,9 @@ public class ReportsSubTableModel extends ReportsTableModel {
 
     public ReportsSubTableModel() {
         emptyModel();
+    }
+    
+    public ReportsSubTableModel(int parentId) {
+        setDataVector(ReportList.getSubTaskList(parentId));
     }
 }

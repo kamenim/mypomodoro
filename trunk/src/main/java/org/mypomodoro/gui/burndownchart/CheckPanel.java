@@ -31,7 +31,6 @@ import javax.swing.JTabbedPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.TableTitlePanel;
@@ -69,9 +68,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     // Tables
     private CheckTableModel tableModel;
     private final CheckTable table;
-    // Selected row
-    private int currentSelectedRow = 0;
-
+    // head tabbed pane and side button
     private final JTabbedPane headTabbedPane;
     private final CreateChart chart;
 
@@ -217,8 +214,8 @@ public class CheckPanel extends JPanel implements IListPanel {
                 }
                 tableModel = new CheckTableModel();
                 table.setModel(tableModel);
-                table.init();
                 table.setTableHeader();
+                table.init();                
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -235,6 +232,14 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     public ChartList getList() {
         return ChartList.getList();
+    }
+    
+    @Override
+    public void emptySubTable() {
+    }
+    
+    @Override
+    public void populateSubTable(int parentId) {
     }
 
     @Override
@@ -276,18 +281,6 @@ public class CheckPanel extends JPanel implements IListPanel {
         // not used
     }
 
-    @Override
-    public void saveComment(String comment) {
-        if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-            Activity selectedActivity = getList().getById(id);
-            if (selectedActivity != null) {
-                selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdateComment();
-            }
-        }
-    }
-
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
@@ -297,6 +290,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         return commentPanel;
     }
 
+    @Override
     public TabbedPane getTabbedPane() {
         return tabbedPane;
     }

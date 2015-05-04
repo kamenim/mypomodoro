@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import org.mypomodoro.gui.TableTitlePanel;
 import java.text.DecimalFormat;
 import javax.swing.DropMode;
 import javax.swing.JTable;
@@ -41,12 +40,12 @@ import org.mypomodoro.util.TimeConverter;
  * Table for activities
  *
  */
-public class ToDoTable extends AbstractTable  {
+public class ToDoTable extends AbstractTable {
 
     private final ToDoPanel panel;
 
     public ToDoTable(final ToDoTableModel model, final ToDoPanel panel) {
-        super(model);
+        super(model, panel);
 
         // Drag and drop
         setDragEnabled(true);
@@ -57,66 +56,62 @@ public class ToDoTable extends AbstractTable  {
 
         setTableHeader();
 
-        getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                panel.setCurrentTable(ToDoTable.this); // set current table
+            public void customValueChanged(ListSelectionEvent e) {
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
-                    if (!e.getValueIsAdjusting()) { // ignoring the deselection event                        
-                        // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
-                        setInputMap(JTable.WHEN_FOCUSED, im);
-
-                        if (selectedRowCount > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            panel.getTabbedPane().disableCommentTab();
-                            panel.getTabbedPane().disableEditTab();
-                            panel.getTabbedPane().disableOverestimationTab();
-                            panel.getTabbedPane().disableUnplannedTab();
-                            if ((panel.getPomodoro().inPomodoro() && getSelectedRowCount() > 2) || !panel.getPomodoro().inPomodoro()) {
-                                panel.getTabbedPane().enableMergeTab();
-                            }
-                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
-                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()
-                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getOverestimateTabIndex()
-                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getUnplannedTabIndex()) {
-                                panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
-                            }
-                            if (!panel.getPomodoro().getTimer().isRunning()) {
-                                panel.getPomodoro().setCurrentToDoId(-1); // this will disable the start button
-                            }
-                            currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
-                            // Display info (list of selected tasks)                            
-                            showDetailsForSelectedRows();
-                            // populate subtable
-                            emptySubTable();
-                        } else if (selectedRowCount == 1) {
-                            // activate all panels
-                            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                                if (index == panel.getTabbedPane().getMergeTabIndex()) {
-                                    panel.getTabbedPane().disableMergeTab();
-                                    if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getMergeTabIndex()) {
-                                        panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
-                                    }
-                                } else {
-                                    panel.getTabbedPane().setEnabledAt(index, true);
-                                }
-                            }
-                            if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
-                            }
-                            currentSelectedRow = getSelectedRow();
-                            showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                            // Display details                           
-                            showInfoForSelectedRow();
-                            // populate subtable
-                            populateSubTable();
+                    // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
+                    setInputMap(JTable.WHEN_FOCUSED, im);
+                    if (selectedRowCount > 1) { // multiple selection
+                        // diactivate/gray out unused tabs
+                        panel.getTabbedPane().disableCommentTab();
+                        panel.getTabbedPane().disableEditTab();
+                        panel.getTabbedPane().disableOverestimationTab();
+                        panel.getTabbedPane().disableUnplannedTab();
+                        if ((panel.getPomodoro().inPomodoro() && getSelectedRowCount() > 2) || !panel.getPomodoro().inPomodoro()) {
+                            panel.getTabbedPane().enableMergeTab();
                         }
-                        panel.setIconLabels();
-                        setTitle();
+                        if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
+                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()
+                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getOverestimateTabIndex()
+                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getUnplannedTabIndex()) {
+                            panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
+                        }
+                        if (!panel.getPomodoro().getTimer().isRunning()) {
+                            panel.getPomodoro().setCurrentToDoId(-1); // this will disable the start button
+                        }
+                        currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
+                        // Display info (list of selected tasks)                            
+                        showDetailsForSelectedRows();
+                        // populate subtable
+                        emptySubTable();
+                    } else if (selectedRowCount == 1) {
+                        // activate all panels
+                        for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
+                            if (index == panel.getTabbedPane().getMergeTabIndex()) {
+                                panel.getTabbedPane().disableMergeTab();
+                                if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getMergeTabIndex()) {
+                                    panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
+                                }
+                            } else {
+                                panel.getTabbedPane().setEnabledAt(index, true);
+                            }
+                        }
+                        if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                            panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
+                        }
+                        currentSelectedRow = getSelectedRow();
+                        showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                        // Display details                           
+                        showInfoForSelectedRow();
+                        // populate subtable
+                        populateSubTable();
                     }
+                    panel.setIconLabels();
+                    setTitle();
                 }
             }
         });
@@ -200,7 +195,7 @@ public class ToDoTable extends AbstractTable  {
 
     @Override
     protected void init() {
-        getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // priority
+        getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setCellRenderer(new CustomRenderer()); // priority
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title           
         // The values of the combo depends on the activity : see EstimatedComboBoxCellRenderer and EstimatedComboBoxCellEditor
@@ -280,12 +275,6 @@ public class ToDoTable extends AbstractTable  {
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
-    }
-
-    // This method is empty in sub class    
-    @Override
-    protected void initTabs() {
-        panel.getTabbedPane().initTabs(getModel().getRowCount());
     }
 
     @Override
@@ -432,41 +421,10 @@ public class ToDoTable extends AbstractTable  {
         getTitlePanel().repaint();
     }
 
-    // This method is empty in sub class
-    protected void populateSubTable() {
-        panel.populateSubTable(getActivityIdFromSelectedRow());
-    }
-
-    // This method is empty in sub class
-    protected void emptySubTable() {
-        panel.emptySubTable();
-    }
-
-    @Override
-    protected TableTitlePanel getTitlePanel() {
-        return panel.getTableTitlePanel();
-    }
-
-    @Override
-    public void createNewTask() {
-        // not used
-    }
-
-    @Override
-    public void duplicateTask() {
-        // nto used}
-    }
-
-    // To delete tasks from sub table, move them to Activity List then delete
-    @Override
-    public void deleteTask(int rowIndex) {
-        // not used
-    }
-    
     @Override
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {            
+        if (activity.isSubTask()) {
             removeSubTaskEstimatedPomsFromParent(activity);
         }
         getList().move(activity); // move to ActivityList
@@ -477,7 +435,7 @@ public class ToDoTable extends AbstractTable  {
             panel.getPomodoro().getTimerPanel().setStartEnv();
         }
     }
-    
+
     @Override
     public void completeTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
@@ -554,30 +512,5 @@ public class ToDoTable extends AbstractTable  {
             Activity activity = getActivityFromRowIndex(row);
             getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
         }
-    }
-    
-    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(-parentActivity.getActualPoms(), 
-                -parentActivity.getEstimatedPoms(), 
-                -parentActivity.getOverestimatedPoms());
-    }
-    
-    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(parentActivity.getActualPoms(), 
-                parentActivity.getEstimatedPoms(), 
-                parentActivity.getOverestimatedPoms());
-    }
-
-    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
-        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
-        parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
-        parentActivity.databaseUpdate();
-        getList().update(parentActivity);
-        // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

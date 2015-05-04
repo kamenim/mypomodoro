@@ -26,7 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
@@ -70,10 +69,8 @@ public class ReportsPanel extends JPanel implements IListPanel {
     private ReportsTable currentTable;
     private ReportsTableModel tableModel;
     private final ReportsTable table;
-    private final ReportsSubTableModel subTableModel;
+    private ReportsSubTableModel subTableModel;
     private final ReportsSubTable subTable;
-    // Selected row
-    private int currentSelectedRow = 0;
 
     public ReportsPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -188,9 +185,9 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     getList().refresh();
                 }
                 tableModel = new ReportsTableModel();
-                table.setModel(tableModel);
-                table.init();
+                table.setModel(tableModel);                
                 table.setTableHeader();
+                table.init();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -212,6 +209,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         return ReportList.getList();
     }
 
+    @Override
     public void emptySubTable() {
         subTableModel.setRowCount(0);
         subTable.setParentId(-1);
@@ -262,18 +260,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
         getList().add(activity, date, dateCompleted);
     }
 
-    @Override
-    public void saveComment(String comment) {
-        if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-            Activity selectedActivity = getList().getById(id);
-            if (selectedActivity != null) {
-                selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdateComment();
-            }
-        }
-    }
-
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
@@ -287,6 +273,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         return editPanel;
     }
 
+    @Override
     public TabbedPane getTabbedPane() {
         return tabbedPane;
     }
@@ -320,10 +307,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
         return subTableScrollPane;
     }
 
-    public void populateSubTable(int parentId) {
-        subTableModel.setDataVector(ReportList.getSubTaskList(parentId));
-        subTable.setParentId(parentId);
+    @Override
+    public void populateSubTable(int parentId) {        
+        subTableModel = new ReportsSubTableModel(parentId);
+        subTable.setModel(subTableModel); 
         subTable.init();
         subTable.setTitle();
+        subTable.setParentId(parentId);
+        setCurrentTable(table);
     }
 }

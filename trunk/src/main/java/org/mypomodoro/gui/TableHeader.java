@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
+import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
 import org.mypomodoro.util.ColorUtil;
@@ -31,21 +32,23 @@ import org.mypomodoro.util.ColorUtil;
 public class TableHeader extends JTableHeader {
 
     private final String[] toolTips;
+    private final JTable myTable; // for some reason, table is null in the super class when using getTable() in getToolTipText 
 
-    public TableHeader(AbstractTable table, String[] toolTips) {
-        this.table = table; // setTable(table) / getTable() won't do any good
+    public TableHeader(JTable table, String[] toolTips) {
+        super(table.getColumnModel());
+        //setTable(table); // no need (see above myTable object)
+        this.myTable = table;
         this.toolTips = toolTips;
-        setColumnModel(table.getColumnModel());
         Border border = BorderFactory.createLineBorder(ColorUtil.BLACK);
         setBorder(border);
-        setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+        setFont(new Font(getTable().getFont().getName(), Font.BOLD, table.getFont().getSize()));
         setForeground(new JTableHeader().getForeground()); // this is necessary for themes such as JTatoo Noire
         // Shorten header names        
-        table.getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
-        table.getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
-        table.getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
-        table.getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
-        table.getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("IT");
+        getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setHeaderValue("P");
+        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setHeaderValue("D I");
+        getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setHeaderValue("D II");
+        getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setHeaderValue("SP");
+        getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setHeaderValue("IT");
         /* This code sets a black border around each cell of the header but the rendering is not that nice
          final TableCellRenderer render = table.getTableHeader().getDefaultRenderer();
          setDefaultRenderer(new TableCellRenderer() {
@@ -66,11 +69,16 @@ public class TableHeader extends JTableHeader {
     public String getToolTipText(MouseEvent e) {
         Point p = e.getPoint();
         int viewColumnIndex = columnAtPoint(p);
-        int modelColumnIndex = table.convertColumnIndexToModel(viewColumnIndex);
-        if (toolTips[modelColumnIndex].length() == 0) {
+        int modelColumnIndex = getTable().convertColumnIndexToModel(viewColumnIndex);
+        if (toolTips[modelColumnIndex].length() == 0) { // no tooltip for that index
             return super.getToolTipText(e);
         } else {
             return toolTips[modelColumnIndex];
         }
+    }
+    
+    @Override
+    public JTable getTable() {
+        return myTable;
     }
 }

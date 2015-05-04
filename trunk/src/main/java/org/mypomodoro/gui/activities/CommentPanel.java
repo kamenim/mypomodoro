@@ -746,7 +746,7 @@ public class CommentPanel extends JPanel {
                     doc.head().appendChild(tagMetaCharset);
                     comment = doc.toString();
                 }
-                panel.saveComment(StringEscapeUtils.unescapeHtml4(comment)); // remove HTML encoding; eg: &nbsp; --> semicolon 
+                panel.getCurrentTable().saveComment(StringEscapeUtils.unescapeHtml4(comment)); // remove HTML encoding; eg: &nbsp; --> semicolon 
                 //if (previewButton.isVisible()) { // editor opened; no switch to preview mode
                 // show caret
                 informationArea.requestFocusInWindow();
@@ -848,7 +848,7 @@ public class CommentPanel extends JPanel {
             comment += "<p style=\"margin-top: 0\">";
             comment += "+ ...";
             comment += "</p>";
-        }
+        }        
         int selectedActivityId = panel.getCurrentTable().getActivityIdFromSelectedRow();
         if (selectedActivityId == activity.getId()) { // Activity actually selected
             if (selectedActivityId != currentlySelectedActivityId) { // New activity selected (compare to the current selected one)
