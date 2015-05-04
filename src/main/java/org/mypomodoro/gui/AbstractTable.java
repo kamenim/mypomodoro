@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -38,9 +39,10 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.apache.commons.lang3.SystemUtils;
@@ -61,12 +63,16 @@ import static org.mypomodoro.util.TimeConverter.getLength;
  */
 public abstract class AbstractTable extends JXTable {
 
+    private final IListPanel panel;
     protected int mouseHoverRow = 0;
     protected int currentSelectedRow = 0;
     protected InputMap im;
+    //protected int rowCleared = -1;
 
-    public AbstractTable(AbstractTableModel model) {
+    public AbstractTable(AbstractTableModel model, final IListPanel panel) {
         super(model);
+
+        this.panel = panel;
 
         setBackground(Main.tableBackgroundColor);
         /*setSelectionBackground(Main.selectedRowColor);
@@ -75,10 +81,6 @@ public abstract class AbstractTable extends JXTable {
 
         // Row height
         setRowHeight(30);
-
-        // Make table allowing multiple selections
-        setRowSelectionAllowed(true);
-        setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
@@ -120,9 +122,8 @@ public abstract class AbstractTable extends JXTable {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // Reset to currently selected task
-                if (getSelectedRowCount() == 1) {
-                    showInfoForSelectedRow();
+                if (panel.getCurrentTable().getSelectedRowCount() == 1) { // one selected row either on the main or the sub table
+                    showInfo(panel.getCurrentTable().getActivityIdFromSelectedRow());
                 }
                 mouseHoverRow = -1;
             }
@@ -153,7 +154,7 @@ public abstract class AbstractTable extends JXTable {
                 b.doClick();
             }
         }
-        //am.put("Delete", new deleteAction(this)); TODO
+        //am.put("Delete", new deleteAction(this));
 
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
@@ -171,7 +172,7 @@ public abstract class AbstractTable extends JXTable {
                 moveButton.doClick();
             }
         }
-        //am.put("Add To ToDo List", new moveAction(this)); TODO
+        //am.put("Add To ToDo List", new moveAction(this)); 
 
         // Activate Shift + '<'
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Reopen");
@@ -269,6 +270,38 @@ public abstract class AbstractTable extends JXTable {
         am.put("Control E", new createExternal());
     }
 
+    /*protected void setRowCleared(int rowIndex) {
+        rowCleared = rowIndex;
+    }*/
+
+    // List selection listener
+    // when a row is selected, the table it belongs to becomes the 'current' table
+    protected abstract class AbstractListSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (e.getSource() == getSelectionModel() && e.getFirstIndex() >= 0) { // See if this is a valid table selection
+                if (!e.getValueIsAdjusting()) { // ignoring the deselection event                    
+                    if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table 
+                        /*if (!panel.getCurrentTable().equals(panel.getMainTable())) { // switching from sub table to main table                            
+                            panel.getMainTable().setRowCleared(-1);
+                        } else {                            
+                            panel.getMainTable().setRowCleared(panel.getMainTable().getSelectedRow()); // main table only
+                        }*/
+                        // clear selection in current table
+                        panel.getCurrentTable().clearSelection();
+                        // new current table
+                        panel.setCurrentTable(AbstractTable.this); // set new current table 
+                        //panel.getCurrentTable().setRowCleared(-1); // reset
+                    }
+                    customValueChanged(e);
+                }
+            }
+        }
+
+        public abstract void customValueChanged(ListSelectionEvent e);
+    }
+
     public int getActivityIdFromSelectedRow() {
         return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
     }
@@ -305,7 +338,15 @@ public abstract class AbstractTable extends JXTable {
                 comp.setFont(comp.getFont().deriveFont(Font.BOLD));
             }
             ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-        } else {
+        } /*else if (row == rowCleared) {
+            ((JComponent) c).setBackground(ColorUtil.GRAY);
+            ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
+            Component[] comps = ((JComponent) c).getComponents();
+            for (Component comp : comps) { // sub-components (combo boxes)
+                comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+            }
+            ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
+        }*/ else {
             if (row % 2 == 0) { // odd
                 ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
             } else { // even
@@ -325,7 +366,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     // selected row BOLD
-    public class CustomTableRenderer extends DefaultTableCellRenderer {
+    public class CustomRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -343,7 +384,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class UnplannedRenderer extends CustomTableRenderer {
+    public class UnplannedRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -361,7 +402,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class DateRenderer extends CustomTableRenderer {
+    public class DateRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -386,7 +427,20 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class TitleRenderer extends CustomTableRenderer {
+    public class ToolTipRenderer extends CustomRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            String text = (String) value;
+            if (!text.isEmpty()) {
+                renderer.setToolTipText(text);
+            }
+            return renderer;
+        }
+    }
+
+    public class TitleRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -407,7 +461,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class EstimatedCellRenderer extends CustomTableRenderer {
+    public class EstimatedCellRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -426,7 +480,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class StoryPointsCellRenderer extends CustomTableRenderer {
+    public class StoryPointsCellRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -442,7 +496,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class IterationCellRenderer extends CustomTableRenderer {
+    public class IterationCellRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -456,7 +510,7 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    public class Diff2CellRenderer extends CustomTableRenderer {
+    public class Diff2CellRenderer extends CustomRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -477,27 +531,26 @@ public abstract class AbstractTable extends JXTable {
         return (AbstractTableModel) super.getModel();
     }
 
-    public abstract void createNewTask();
-
-    public abstract void duplicateTask();
-
-    public abstract void deleteTask(int rowIndex);
-    
-    public abstract void moveTask(int rowIndex);
-    
-    public abstract void completeTask(int rowIndex);
-
-    public abstract void createUnplannedTask();
-
-    public abstract void createInternalInterruption();
-
-    public abstract void createExternalInterruption();
-
-    public abstract void overestimateTask(int poms);
-
     protected abstract void init();
 
-    protected abstract void initTabs();
+    // This method is empty in sub table classes
+    protected void initTabs() {
+        panel.getTabbedPane().initTabs(getModel().getRowCount());
+    }
+
+    // This method is empty in sub table classs
+    protected void populateSubTable() {
+        panel.populateSubTable(getActivityIdFromSelectedRow());
+    }
+
+    // This method is empty in sub table classs
+    protected void emptySubTable() {
+        panel.emptySubTable();
+    }
+
+    protected TableTitlePanel getTitlePanel() {
+        return panel.getTableTitlePanel();
+    }
 
     protected abstract void showInfo(int activityId);
 
@@ -517,9 +570,43 @@ public abstract class AbstractTable extends JXTable {
 
     protected abstract AbstractActivities getList();
 
-    protected abstract AbstractActivities getTableList();       
+    protected abstract AbstractActivities getTableList();
 
-    protected abstract TableTitlePanel getTitlePanel();
+    public void createNewTask() {
+        // do nothing by default
+    }
+
+    public void duplicateTask() {
+        // do nothing by default
+    }
+
+    public void deleteTask(int rowIndex) {
+        // do nothing by default
+    }
+
+    public void moveTask(int rowIndex) {
+        // do nothing by default
+    }
+
+    public void completeTask(int rowIndex) {
+        // do nothing by default
+    }
+
+    public void createUnplannedTask() {
+        // do nothing by default
+    }
+
+    public void createInternalInterruption() {
+        // do nothing by default
+    }
+
+    public void createExternalInterruption() {
+        // do nothing by default
+    }
+
+    public void overestimateTask(int poms) {
+        // do nothing by default
+    }
 
     public void removeRow(int rowIndex) {
         //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
@@ -548,5 +635,44 @@ public abstract class AbstractTable extends JXTable {
 
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables
     public void reorderByPriority() {
+    }
+
+    public void saveComment(String comment) {
+        if (getSelectedRowCount() == 1) {
+            Activity selectedActivity = getActivityFromSelectedRow();
+            if (selectedActivity != null) {
+                selectedActivity.setNotes(comment);
+                selectedActivity.databaseUpdateComment();
+            }
+        }
+    }
+
+    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(-parentActivity.getActualPoms(),
+                -parentActivity.getEstimatedPoms(),
+                -parentActivity.getOverestimatedPoms());
+    }
+
+    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        addEstimatedPomsToParent(parentActivity.getActualPoms(),
+                parentActivity.getEstimatedPoms(),
+                parentActivity.getOverestimatedPoms());
+    }
+
+    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
+        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+        parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
+        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
+        parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
+        parentActivity.databaseUpdate();
+        getList().update(parentActivity);
+        setValueEstimatedColumn(parentActivity);
+    }
+
+    protected void setValueEstimatedColumn(Activity activity) {
+        // getSelectedRow must not be converted (convertRowIndexToModel)
+        panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

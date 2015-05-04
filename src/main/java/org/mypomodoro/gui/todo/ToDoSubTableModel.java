@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.todo;
 
+import org.mypomodoro.model.ToDoList;
+
 /**
  * Table model for sub-ToDos
  *
@@ -24,6 +26,10 @@ public class ToDoSubTableModel extends ToDoTableModel {
 
     public ToDoSubTableModel() {
         emptyModel();
+    }
+    
+    public ToDoSubTableModel(int parentId) {
+        setDataVector(ToDoList.getSubTaskList(parentId));
     }
 
     @Override

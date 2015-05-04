@@ -16,11 +16,9 @@
  */
 package org.mypomodoro.gui.reports;
 
-import org.mypomodoro.gui.TableTitlePanel;
 import java.text.DecimalFormat;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
@@ -44,54 +42,51 @@ public class ReportsTable extends AbstractTable {
     private final ReportsPanel panel;
 
     public ReportsTable(final ReportsTableModel model, final ReportsPanel panel) {
-        super(model);
+        super(model, panel);
 
         this.panel = panel;
 
         setTableHeader();
 
-        getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                panel.setCurrentTable(ReportsTable.this); // set current table
+            public void customValueChanged(ListSelectionEvent e) {
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
-                    if (!e.getValueIsAdjusting()) { // ignoring the deselection event                        
-                        // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
-                        setInputMap(JTable.WHEN_FOCUSED, im);
+                    // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
+                    setInputMap(JTable.WHEN_FOCUSED, im);
 
-                        if (selectedRowCount > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            panel.getTabbedPane().disableCommentTab();
-                            panel.getTabbedPane().disableEditTab();
-                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
-                                    || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
-                                panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
-                            }
-                            currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
-                            // Display info (list of selected tasks)                            
-                            showDetailsForSelectedRows();
-                            // populate subtable
-                            emptySubTable();
-                        } else if (selectedRowCount == 1) {
-                            // activate all panels
-                            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                                panel.getTabbedPane().setEnabledAt(index, true);
-                            }
-                            if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
-                            }
-                            currentSelectedRow = getSelectedRow();
-                            showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                            // Display details                           
-                            showInfoForSelectedRow();
-                            // populate subtable
-                            populateSubTable();
+                    if (selectedRowCount > 1) { // multiple selection
+                        // diactivate/gray out unused tabs
+                        panel.getTabbedPane().disableCommentTab();
+                        panel.getTabbedPane().disableEditTab();
+                        if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
+                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
+                            panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                         }
-                        setTitle();
+                        currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
+                        // Display info (list of selected tasks)                            
+                        showDetailsForSelectedRows();
+                        // populate subtable
+                        emptySubTable();
+                    } else if (selectedRowCount == 1) {
+                        // activate all panels
+                        for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
+                            panel.getTabbedPane().setEnabledAt(index, true);
+                        }
+                        if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                            panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
+                        }
+                        currentSelectedRow = getSelectedRow();
+                        showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                        // Display details                           
+                        showInfoForSelectedRow();
+                        // populate subtable
+                        populateSubTable();
                     }
+                    setTitle();
                 }
             }
         });
@@ -154,9 +149,9 @@ public class ReportsTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // type
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated        
-        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // Diff I
+        getColumnModel().getColumn(AbstractTableModel.DIFFI_COLUMN_INDEX).setCellRenderer(new CustomRenderer()); // Diff I
         getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setCellRenderer(new Diff2CellRenderer()); // Diff II
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
@@ -225,12 +220,6 @@ public class ReportsTable extends AbstractTable {
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
-    }
-
-    // This method is empty in sub class    
-    @Override
-    protected void initTabs() {
-        panel.getTabbedPane().initTabs(getModel().getRowCount());
     }
 
     @Override
@@ -360,31 +349,6 @@ public class ReportsTable extends AbstractTable {
         getTitlePanel().repaint();
     }
 
-    // This method is empty in sub class
-    protected void populateSubTable() {
-        panel.populateSubTable(getActivityIdFromSelectedRow());
-    }
-
-    // This method is empty in sub class
-    protected void emptySubTable() {
-        panel.emptySubTable();
-    }
-
-    @Override
-    protected TableTitlePanel getTitlePanel() {
-        return panel.getTableTitlePanel();
-    }
-
-    @Override
-    public void createNewTask() {
-        // not used
-    }
-
-    @Override
-    public void duplicateTask() {
-        // not used
-    }
-
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
@@ -394,7 +358,7 @@ public class ReportsTable extends AbstractTable {
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
     }
-    
+
     @Override
     public void moveTask(int rowIndex) {
         System.err.println("reopen");
@@ -405,54 +369,11 @@ public class ReportsTable extends AbstractTable {
         getList().reopen(activity); // reopen/move to ActivityList
         removeRow(rowIndex);
     }
-    
-    @Override
-    public void completeTask(int rowIndex) {
-        // not used
-    }
 
+    // Actual pom !
     @Override
-    public void createUnplannedTask() {
-        // not used
-    }
-
-    @Override
-    public void createInternalInterruption() {
-        // not used
-    }
-
-    @Override
-    public void createExternalInterruption() {
-        // not used
-    }
-
-    @Override
-    public void overestimateTask(int poms) {
-        // not used
-    }
-    
-    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(-parentActivity.getActualPoms(), 
-                -parentActivity.getEstimatedPoms(), 
-                -parentActivity.getOverestimatedPoms());
-    }
-    
-    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(parentActivity.getActualPoms(), 
-                parentActivity.getEstimatedPoms(), 
-                parentActivity.getOverestimatedPoms());
-    }
-
-    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
-        parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
-        parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
-        parentActivity.databaseUpdate();
-        getList().update(parentActivity);
-        // getSelectedRow must not be converted (convertRowIndexToModel)        
-        panel.getMainTable().getModel().setValueAt(parentActivity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+    protected void setValueEstimatedColumn(Activity activity) {
+        // getSelectedRow must not be converted (convertRowIndexToModel)
+        panel.getMainTable().getModel().setValueAt(activity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

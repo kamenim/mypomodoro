@@ -36,7 +36,6 @@ import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
@@ -93,10 +92,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private ToDoTable currentTable;
     private ToDoTableModel tableModel;
     private final ToDoTable table;
-    private final ToDoSubTableModel subTableModel;
+    private ToDoSubTableModel subTableModel;
     private final ToDoSubTable subTable;
-    // Selected row
-    private int currentSelectedRow = 0;
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     private static final ResizeButton resizeButton = new ResizeButton();
@@ -258,10 +255,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel = new ToDoTableModel();
+                tableModel = new ToDoTableModel();                
                 table.setModel(tableModel);
+                table.setTableHeader();               
                 table.init();
-                table.setTableHeader();
                 if (tableModel.getRowCount() > 0) {
                     table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
@@ -329,18 +326,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         getList().add(activity, date, dateCompleted);
     }
 
-    @Override
-    public void saveComment(String comment) {
-        if (table.getSelectedRowCount() == 1) {
-            Integer id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-            Activity selectedActivity = getList().getById(id);
-            if (selectedActivity != null) {
-                selectedActivity.setNotes(comment);
-                selectedActivity.databaseUpdateComment();
-            }
-        }
-    }
-
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
@@ -354,6 +339,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return editPanel;
     }
 
+    @Override
     public TabbedPane getTabbedPane() {
         return tabbedPane;
     }
@@ -387,11 +373,13 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return subTableScrollPane;
     }
 
-    public void populateSubTable(int parentId) {
-        subTableModel.setDataVector(ToDoList.getSubTaskList(parentId));
-        subTable.setParentId(parentId);
+    public void populateSubTable(int parentId) {        
+        subTableModel = new ToDoSubTableModel(parentId);
+        subTable.setModel(subTableModel);
         subTable.init();
         subTable.setTitle();
+        subTable.setParentId(parentId);
+        setCurrentTable(table);
     }
 
     ////////////////////////////

@@ -19,12 +19,10 @@ package org.mypomodoro.gui.burndownchart;
 import java.text.DecimalFormat;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.gui.TableTitlePanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -42,51 +40,49 @@ public class CheckTable extends AbstractTable {
     private final CheckPanel panel;
 
     public CheckTable(final CheckTableModel model, final CheckPanel panel) {
-        super(model);
+        super(model, panel);
 
         this.panel = panel;
 
         setTableHeader();
 
-        getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        getSelectionModel().addListSelectionListener(new AbstractListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void customValueChanged(ListSelectionEvent e) {
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());
                 int selectedRowCount = getSelectedRowCount();
                 if (selectedRowCount > 0) {
-                    if (!e.getValueIsAdjusting()) { // ignoring the deselection event                        
-                        // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
-                        setInputMap(JTable.WHEN_FOCUSED, im);
+                    // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
+                    setInputMap(JTable.WHEN_FOCUSED, im);
 
-                        if (selectedRowCount > 1) { // multiple selection
-                            // diactivate/gray out unused tabs
-                            panel.getTabbedPane().disableCommentTab();
-                            if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()) {
-                                panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
-                            }
-                            currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
-                            // Display info (list of selected tasks)                            
-                            showDetailsForSelectedRows();
-                            // populate subtable
-                            emptySubTable();
-                        } else if (selectedRowCount == 1) {
-                            // activate all panels
-                            for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
-                                panel.getTabbedPane().setEnabledAt(index, true);
-                            }
-                            if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
-                                panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
-                            }
-                            currentSelectedRow = getSelectedRow();
-                            showCurrentSelectedRow(); // when sorting columns, focus on selected row
-                            // Display details                           
-                            showInfoForSelectedRow();
-                            // populate subtable
-                            populateSubTable();
+                    if (selectedRowCount > 1) { // multiple selection
+                        // diactivate/gray out unused tabs
+                        panel.getTabbedPane().disableCommentTab();
+                        if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()) {
+                            panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                         }
-                        setTitle();
+                        currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
+                        // Display info (list of selected tasks)                            
+                        showDetailsForSelectedRows();
+                        // populate subtable
+                        emptySubTable();
+                    } else if (selectedRowCount == 1) {
+                        // activate all panels
+                        for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
+                            panel.getTabbedPane().setEnabledAt(index, true);
+                        }
+                        if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
+                            panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
+                        }
+                        currentSelectedRow = getSelectedRow();
+                        showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                        // Display details                           
+                        showInfoForSelectedRow();
+                        // populate subtable
+                        populateSubTable();
                     }
+                    setTitle();
                 }
             }
         });
@@ -102,8 +98,8 @@ public class CheckTable extends AbstractTable {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
-        getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // title
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new CustomTableRenderer()); // type
+        getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // title
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
@@ -172,12 +168,6 @@ public class CheckTable extends AbstractTable {
         // Make sure column title will fit long titles
         ColumnResizer.adjustColumnPreferredWidths(this);
         revalidate();
-    }
-
-    // This method is empty in sub class    
-    @Override
-    protected void initTabs() {
-        panel.getTabbedPane().initTabs(getModel().getRowCount());
     }
 
     @Override
@@ -303,28 +293,13 @@ public class CheckTable extends AbstractTable {
         getTitlePanel().repaint();
     }
 
-    // This method is empty in sub class
+    @Override
     protected void populateSubTable() {
         // not used
     }
 
-    // This method is empty in sub class
+    @Override
     protected void emptySubTable() {
-        // not used
-    }
-
-    @Override
-    protected TableTitlePanel getTitlePanel() {
-        return panel.getTableTitlePanel();
-    }
-
-    @Override
-    public void createNewTask() {
-        // not used
-    }
-
-    @Override
-    public void duplicateTask() {
         // not used
     }
 
@@ -333,35 +308,5 @@ public class CheckTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().remove(activity); // remove task
         removeRow(rowIndex);
-    }       
-
-    @Override
-    public void moveTask(int rowIndex) {
-        // not used
-    }
-    
-    @Override
-    public void completeTask(int rowIndex) {
-        // not used
-    }
-
-    @Override
-    public void createUnplannedTask() {
-        // not used
-    }
-
-    @Override
-    public void createInternalInterruption() {
-        // not used
-    }
-
-    @Override
-    public void createExternalInterruption() {
-        // not used
-    }
-
-    @Override
-    public void overestimateTask(int poms) {
-        // not used
     }
 }

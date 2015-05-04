@@ -43,24 +43,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
         super(model, panel);
 
         this.panel = panel;
-
-        // This is to address the case/event when the mouse exit the table
-        // Replacing listener of the ActivtiesTable class constructor
-        addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Reset to currently selected task
-                if (panel.getMainTable().getSelectedRowCount() == 1) {
-                    if (getSelectedRowCount() == 1) {
-                        showInfoForSelectedRow();
-                    } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                        showInfo(panel.getMainTable().getActivityIdFromSelectedRow());
-                    }
-                }
-                mouseHoverRow = -1;
-            }
-        });
     }
 
     public void setParentId(int parentId) {

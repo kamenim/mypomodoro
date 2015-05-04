@@ -42,9 +42,7 @@ public interface IListPanel {
     void addActivity(Activity activity);
 
     void addActivity(Activity activity, Date date, Date dateCompleted);
-
-    void saveComment(String comment);
-
+    
     JSplitPane getSplitPane();
 
     JPanel getListPane();
@@ -60,4 +58,10 @@ public interface IListPanel {
     JScrollPane getTableScrollPane();
 
     TableTitlePanel getTableTitlePanel();
+    
+    TabbedPane getTabbedPane();
+    
+    void populateSubTable(int activityId);
+            
+    void emptySubTable();
 }

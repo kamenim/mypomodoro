@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.activities;
 
+import org.mypomodoro.model.ActivityList;
+
 /**
  * Table model for sub-activtiies
  *
@@ -24,6 +26,10 @@ public class ActivitiesSubTableModel extends ActivitiesTableModel {
 
     public ActivitiesSubTableModel() {
         emptyModel();
+    }
+    
+    public ActivitiesSubTableModel(int parentId) {
+        setDataVector(ActivityList.getSubTaskList(parentId));
     }
 
     @Override
