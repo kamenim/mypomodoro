@@ -66,7 +66,6 @@ public abstract class AbstractTable extends JXTable {
     protected int mouseHoverRow = 0;
     protected int currentSelectedRow = 0;
     protected InputMap im;
-    //protected int rowCleared = -1;
 
     public AbstractTable(AbstractTableModel model, final IListPanel panel) {
         super(model);
@@ -123,6 +122,9 @@ public abstract class AbstractTable extends JXTable {
             public void mouseExited(MouseEvent e) {
                 if (panel.getCurrentTable().getSelectedRowCount() == 1) { // one selected row either on the main or the sub table
                     showInfo(panel.getCurrentTable().getActivityIdFromSelectedRow());
+                } else if (panel.getCurrentTable().getSelectedRowCount() > 1) { // multiple selection
+                    // Display info (list of selected tasks)                        
+                    panel.getCurrentTable().showDetailsForSelectedRows();
                 }
                 mouseHoverRow = -1;
             }
@@ -269,28 +271,16 @@ public abstract class AbstractTable extends JXTable {
         am.put("Control E", new createExternal());
     }
 
-    /*protected void setRowCleared(int rowIndex) {
-     rowCleared = rowIndex;
-     }*/
     // List selection listener
-    // when a row is selected, the table it belongs to becomes the 'current' table
+    // when a row is selected, the table becomes the 'current' table
     protected abstract class AbstractListSelectionListener implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (e.getSource() == getSelectionModel() && e.getFirstIndex() >= 0) { // See if this is a valid table selection
                 if (!e.getValueIsAdjusting()) { // ignoring the deselection event                    
-                    if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table 
-                        /*if (!panel.getCurrentTable().equals(panel.getMainTable())) { // switching from sub table to main table                            
-                         panel.getMainTable().setRowCleared(-1);
-                         } else {                            
-                         panel.getMainTable().setRowCleared(panel.getMainTable().getSelectedRow()); // main table only
-                         }*/
-                        // clear selection in current table
-                        panel.getCurrentTable().clearSelection();
-                        // new current table
+                    if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table
                         panel.setCurrentTable(AbstractTable.this); // set new current table 
-                        //panel.getCurrentTable().setRowCleared(-1); // reset
                     }
                     customValueChanged(e);
                 }
@@ -338,15 +328,7 @@ public abstract class AbstractTable extends JXTable {
                     comp.setFont(comp.getFont().deriveFont(Font.BOLD));
                 }
                 ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-            } /*else if (row == rowCleared) {
-             ((JComponent) c).setBackground(ColorUtil.GRAY);
-             ((JComponent) c).setFont(((JComponent) c).getFont().deriveFont(Font.BOLD));
-             Component[] comps = ((JComponent) c).getComponents();
-             for (Component comp : comps) { // sub-components (combo boxes)
-             comp.setFont(comp.getFont().deriveFont(Font.BOLD));
-             }
-             ((JComponent) c).setBorder(new MatteBorder(1, 0, 1, 0, Main.rowBorderColor));
-             }*/ else {
+            } else {
                 if (row % 2 == 0) { // odd
                     ((JComponent) c).setBackground(Main.oddRowColor); // This stays White despite the background or the current theme
                 } else { // even
@@ -551,7 +533,7 @@ public abstract class AbstractTable extends JXTable {
         panel.emptySubTable();
     }
 
-    protected TableTitlePanel getTitlePanel() {
+    protected TitlePanel getTitlePanel() {
         return panel.getTableTitlePanel();
     }
 

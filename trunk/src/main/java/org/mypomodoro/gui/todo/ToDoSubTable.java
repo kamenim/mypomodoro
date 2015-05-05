@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.gui.todo;
 
-import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.gui.TitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import org.mypomodoro.Main;
@@ -173,7 +173,7 @@ public class ToDoSubTable extends ToDoTable {
     }
 
     @Override
-    protected TableTitlePanel getTitlePanel() {
+    protected TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 

@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.gui.reports;
 
-import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.gui.TitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import org.mypomodoro.Main;
@@ -164,7 +164,7 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected TableTitlePanel getTitlePanel() {
+    protected TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 }

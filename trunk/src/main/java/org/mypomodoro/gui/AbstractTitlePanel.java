@@ -34,7 +34,7 @@ import org.mypomodoro.buttons.DefaultButton;
  *
  *
  */
-public abstract class AbstractTableTitlePanel extends JPanel {
+public abstract class AbstractTitlePanel extends JPanel {
 
     protected final JLabel titleLabel = new JLabel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
@@ -56,11 +56,12 @@ public abstract class AbstractTableTitlePanel extends JPanel {
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
 
-    public AbstractTableTitlePanel() {
+    public AbstractTitlePanel() {
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         // Add label to panel
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+        //titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, titleLabel.getFont().getSize() - 1));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
         add(titleLabel);
         // Init buttons

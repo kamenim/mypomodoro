@@ -20,12 +20,12 @@ package org.mypomodoro.gui;
  * Title panel for tables
  *
  */
-public class TableTitlePanel extends AbstractTableTitlePanel {
+public class TitlePanel extends AbstractTitlePanel {
 
     private final IListPanel panel;
     private final AbstractTable table;
 
-    public TableTitlePanel(IListPanel panel, AbstractTable table) {
+    public TitlePanel(IListPanel panel, AbstractTable table) {
         super();
         this.panel = panel;
         this.table = table;

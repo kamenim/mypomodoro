@@ -33,7 +33,7 @@ import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.TabbedPane;
-import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.model.Activity;
@@ -57,7 +57,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
-    private final TableTitlePanel tableTitlePanel;
+    private final TitlePanel tableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
     // Tabbed pane: details + ...
@@ -106,7 +106,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         tableScrollPane = new JScrollPane(table);
 
         // Init title
-        tableTitlePanel = new TableTitlePanel(this, table);
+        tableTitlePanel = new TitlePanel(this, table);
 
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (tableModel.getRowCount() > 0) {
@@ -307,7 +307,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public TableTitlePanel getTableTitlePanel() {
+    public TitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 

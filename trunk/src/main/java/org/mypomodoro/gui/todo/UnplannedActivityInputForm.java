@@ -29,7 +29,7 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
     protected final String internal = Labels.getString("ToDoListPanel.Internal interruption");
     protected final String external = Labels.getString("ToDoListPanel.External interruption");
 
-    public UnplannedActivityInputForm() {
+    public UnplannedActivityInputForm() { // TODO hide storypoints, iteration and change types when sub table
         super(1);
         addInterruptions();
     }

@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
-import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.gui.TitlePanel;
 import java.awt.Dimension;
 import java.util.Date;
 import javax.swing.BoxLayout;
@@ -53,7 +53,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
-    private final TableTitlePanel tableTitlePanel;
+    private final TitlePanel tableTitlePanel;
     private final SubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
@@ -106,7 +106,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tableScrollPane = new JScrollPane(table);
 
         // Init title and sub title
-        tableTitlePanel = new TableTitlePanel(this, table);
+        tableTitlePanel = new TitlePanel(this, table);
         subTableTitlePanel = new SubTableTitlePanel(this, subTable);
 
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
@@ -292,7 +292,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public TableTitlePanel getTableTitlePanel() {
+    public TitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 
