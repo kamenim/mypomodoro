@@ -16,7 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
-import org.mypomodoro.gui.TableTitlePanel;
+import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.create.list.SubTaskTypeList;
@@ -163,7 +163,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected TableTitlePanel getTitlePanel() {
+    protected TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 

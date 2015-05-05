@@ -135,7 +135,7 @@ public class Pomodoro {
         inpomodoro = true;
         Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
         Main.gui.getIconBar().getIcon(2).highlight();
-        panel.setIconLabels();
+        panel.getCurrentTable().setIconLabels();
         // Show quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
         //panel.showQuickInterruptionButtons(); // TODO
@@ -162,7 +162,7 @@ public class Pomodoro {
         inpomodoro = false;
         Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
         Main.gui.getIconBar().getIcon(2).highlight();
-        panel.setIconLabels();
+        panel.getCurrentTable().setIconLabels();
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
         //panel.hideQuickInterruptionButtons(); // TODO
@@ -350,7 +350,7 @@ public class Pomodoro {
                 // update details panel
                 detailsPanel.selectInfo(getCurrentToDo());
                 detailsPanel.showInfo();
-                panel.setIconLabels();
+                panel.getCurrentTable().setIconLabels();
                 //panel.setPanelRemaining();
                 panel.getCurrentTable().setTitle();
                 panel.getCurrentTable().repaint(); // trigger row renderers

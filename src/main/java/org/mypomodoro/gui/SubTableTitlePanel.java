@@ -36,7 +36,7 @@ import org.mypomodoro.util.ColorUtil;
  *
  *
  */
-public class SubTableTitlePanel extends TableTitlePanel {
+public class SubTableTitlePanel extends TitlePanel {
 
     private final IListPanel panel;
     private int viewCount = 0;

@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import javax.swing.DropMode;
 import javax.swing.JTable;
@@ -106,6 +107,9 @@ public class ToDoTable extends AbstractTable {
                         if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                             panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
                         }
+                        if (!panel.getPomodoro().getTimer().isRunning()) {
+                            panel.getPomodoro().setCurrentToDoId(getActivityIdFromSelectedRow());
+                        }
                         currentSelectedRow = getSelectedRow();
                         showCurrentSelectedRow(); // when sorting columns, focus on selected row
                         // Display details                           
@@ -113,7 +117,7 @@ public class ToDoTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                     }
-                    panel.setIconLabels();
+                    setIconLabels();
                     setTitle();
                 }
             }
@@ -281,17 +285,19 @@ public class ToDoTable extends AbstractTable {
         Activity activity = getActivityById(activityId);
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
-        //panel.getDetailsPanel().showInfo(this);
         panel.getCommentPanel().showInfo(activity);
-        //panel.getEditPanel().showInfo(activity, this);
-        panel.getEditPanel().showInfo(activity);
-        // set table for merge, export panels
-        //panel.getMergePanel().setTable(this); TODO
-        //panel.getExportPanel().setTable(this); TODO
+        panel.getEditPanel().showInfo(activity);        
+    }
+    
+    @Override
+    protected void showInfoForRowIndex(int rowIndex) {        
+        setIconLabels(rowIndex); // This to adress selection in sub table
+        showInfo(getActivityIdFromRowIndex(rowIndex));
     }
 
     @Override
     protected void showDetailsForSelectedRows() {
+        setIconLabels(); // This to adress multiple selection in sub table
         String info = "";
         int[] rows = getSelectedRows();
         for (int row : rows) {
@@ -299,7 +305,6 @@ public class ToDoTable extends AbstractTable {
             info += getList().getById(id).getName() + "<br>";
         }
         panel.getDetailsPanel().showInfo(info);
-        //panel.getDetailsPanel().showInfo(info, this);
     }
 
     @Override
@@ -510,6 +515,62 @@ public class ToDoTable extends AbstractTable {
         for (int row = 0; row < getModel().getRowCount(); row++) {
             Activity activity = getActivityFromRowIndex(row);
             getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
+        }
+    }
+    
+    public void setIconLabels() {
+        setIconLabels(getSelectedRow());
+    }
+
+    public void setIconLabels(int row) {
+        if (getTableList().size() > 0) {
+            Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+            Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
+            if (panel.getPomodoro().inPomodoro()) {
+                //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, Main.taskRunningColor, false);
+                ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                panel.getDetailsPanel().disableButtons();
+            }
+            if (getSelectedRowCount() <= 1) { // no multiple selection
+                Activity selectedToDo = getActivityFromRowIndex(row);
+                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
+                    ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    panel.getDetailsPanel().enableButtons();
+                } else if (!panel.getPomodoro().inPomodoro()) {
+                    //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
+                    ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    panel.getDetailsPanel().enableButtons();
+                }
+            } else if (getSelectedRowCount() > 1) { // multiple selection
+                if (!panel.getPomodoro().inPomodoro()) {
+                    //ToDoIconPanel.clearIconPanel(iconPanel);
+                    ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
+                }
+                ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
+                ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
+                ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
+                ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
+                panel.getDetailsPanel().enableButtons();
+            }
+        } else { // empty list
+            //ToDoIconPanel.clearIconPanel(iconPanel);
+            ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
+            ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
+            ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
+            ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
+            ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
+            panel.getDetailsPanel().enableButtons();
         }
     }
 }

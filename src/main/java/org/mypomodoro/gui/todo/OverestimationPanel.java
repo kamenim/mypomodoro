@@ -111,7 +111,7 @@ public class OverestimationPanel extends JPanel {
             detailsPanel.selectInfo(selectedToDo);
             detailsPanel.showInfo();
             //panel.setPanelRemaining();
-            panel.setIconLabels(); // TODO
+            panel.getCurrentTable().setIconLabels();
         }
     }
 

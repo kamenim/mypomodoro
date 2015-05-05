@@ -57,7 +57,7 @@ public interface IListPanel {
 
     JScrollPane getTableScrollPane();
 
-    TableTitlePanel getTableTitlePanel();
+    TitlePanel getTableTitlePanel();
     
     TabbedPane getTabbedPane();
     
