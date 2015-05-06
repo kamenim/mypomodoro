@@ -334,13 +334,13 @@ public class ActivityInputForm extends JPanel {
         author = author != null ? author.trim() : "";
         String place = (String) places.getSelectedItem();
         place = place != null ? place.trim() : "";
-        int estimatedPoms = (Integer) estimatedPomodoros.getSelectedItem();
+        int estimatedPoms = estimatedPomodoros.getSelectedItem() != null ? (Integer) estimatedPomodoros.getSelectedItem() : 0; // no estimated in merging form
         Date dateActivity = datePicker.getDate();
         Activity activity = new Activity(place, author, name, description, type,
                 estimatedPoms, dateActivity, activityId);
         if (Main.preferences.getAgileMode()) {
-            float storypoint = (Float) storyPoints.getSelectedItem();
-            int iteration = (Integer) iterations.getSelectedItem();
+            float storypoint = storyPoints.getSelectedItem() != null ? (Float) storyPoints.getSelectedItem() : 0; // no story points in merging and unplanned form for subtasks
+            int iteration = iterations.getSelectedItem() != null ? (Integer) iterations.getSelectedItem() : -1; // no iteration in merging and unplanned form for subtasks
             activity = new Activity(place, author, name, description, type,
                     estimatedPoms, storypoint, iteration, dateActivity, activityId);
         }

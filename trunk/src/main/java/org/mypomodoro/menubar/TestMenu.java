@@ -161,7 +161,7 @@ public class TestMenu extends JMenu {
                                         addSubTasks(a, ReportList.getList());
                                     }
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
-                                        ReportList.getList().reopen(a);
+                                        ReportList.getList().reopenToActivtyList(a);
                                         Main.gui.getActivityListPanel().getMainTable().insertRow(a); // main table !
                                         activityListValue++;
                                     } else {

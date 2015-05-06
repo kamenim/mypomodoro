@@ -55,7 +55,7 @@ public class ToDoTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
-        
+
         setColumnModel();
 
         initTabs();
@@ -118,77 +118,70 @@ public class ToDoTable extends AbstractTable {
                         populateSubTable();
                     }
                     setIconLabels();
-                    setTitle();
                 }
             }
         });
-        
+
         // Listener on editable cells
         // Table model has a flaw: the update table event is fired whenever once click on an editable cell
         // To avoid update overhead, we compare old value with new value
         // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
-        getModel().addTableModelListener(new TableModelListener() {
+        getModel().addTableModelListener(new AbstractTableModelListener() {
 
             @Override
-            public void tableChanged(TableModelEvent e) {
+            public void customTableChanged(TableModelEvent e) {
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());                                                    
                 int row = e.getFirstRow();
                 int column = e.getColumn();
-                if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {
-                    ToDoTableModel sourceModel = (ToDoTableModel) e.getSource();
-                    Object data = sourceModel.getValueAt(row, column);
-                    if (data != null) {
-                        if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1 
-                            Activity act = getActivityFromRowIndex(row);
-                            if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
-                                String name = data.toString().trim();
-                                if (!name.equals(act.getName())) {
-                                    if (name.length() == 0) {
-                                        // reset the original value. Title can't be empty.
-                                        sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
-                                    } else {
-                                        act.setName(name);
-                                        act.databaseUpdate();
-                                        // The customer resizer may resize the title column to fit the length of the new text
-                                        ColumnResizer.adjustColumnPreferredWidths(ToDoTable.this);
-                                        revalidate();
-                                    }
-                                }
-                            } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
-                                int estimated = (Integer) data;
-                                if (estimated != act.getEstimatedPoms()
-                                        && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
-                                    int diffEstimated = estimated - act.getEstimatedPoms();
-                                    act.setEstimatedPoms(estimated);
+                ToDoTableModel sourceModel = (ToDoTableModel) e.getSource();
+                Object data = sourceModel.getValueAt(row, column);
+                if (data != null) {
+                    if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1 
+                        Activity act = getActivityFromRowIndex(row);
+                        if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
+                            String name = data.toString().trim();
+                            if (!name.equals(act.getName())) {
+                                if (name.length() == 0) {
+                                    // reset the original value. Title can't be empty.
+                                    sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
+                                } else {
+                                    act.setName(name);
                                     act.databaseUpdate();
-                                    if (act.isSubTask()) { // update parent activity
-                                        addEstimatedPomsToParent(0, diffEstimated, 0);
-                                    }
-                                }
-                            } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
-                                Float storypoints = (Float) data;
-                                if (storypoints != act.getStoryPoints()) {
-                                    act.setStoryPoints(storypoints);
-                                    act.databaseUpdate();
-                                }
-                            } else if (column == AbstractTableModel.ITERATION_COLUMN_INDEX) { // Iteration 
-                                int iteration = Integer.parseInt(data.toString());
-                                if (iteration != act.getIteration()) {
-                                    act.setIteration(iteration);
-                                    act.databaseUpdate();
+                                    // The customer resizer may resize the title column to fit the length of the new text
+                                    ColumnResizer.adjustColumnPreferredWidths(ToDoTable.this);
+                                    revalidate();
                                 }
                             }
-                            getList().update(act);
-                            // Updating details only
-                            panel.getDetailsPanel().selectInfo(act);
-                            panel.getDetailsPanel().showInfo();
-                            //activitiesPanel.getDetailsPanel().showInfo(this);
+                        } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
+                            int estimated = (Integer) data;
+                            if (estimated != act.getEstimatedPoms()
+                                    && estimated + act.getOverestimatedPoms() >= act.getActualPoms()) {
+                                int diffEstimated = estimated - act.getEstimatedPoms();
+                                act.setEstimatedPoms(estimated);
+                                act.databaseUpdate();
+                                if (act.isSubTask()) { // update parent activity
+                                    addEstimatedPomsToParent(0, diffEstimated, 0);
+                                }
+                            }
+                        } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
+                            Float storypoints = (Float) data;
+                            if (storypoints != act.getStoryPoints()) {
+                                act.setStoryPoints(storypoints);
+                                act.databaseUpdate();
+                            }
+                        } else if (column == AbstractTableModel.ITERATION_COLUMN_INDEX) { // Iteration 
+                            int iteration = Integer.parseInt(data.toString());
+                            if (iteration != act.getIteration()) {
+                                act.setIteration(iteration);
+                                act.databaseUpdate();
+                            }
                         }
+                        getList().update(act);
+                        // Updating details only
+                        panel.getDetailsPanel().selectInfo(act);
+                        panel.getDetailsPanel().showInfo();
                     }
                 }
-                // Refresh title either there has been a change in the data (estimation, story points) or a change in the number of rows
-                //setTitle();
             }
         });
     }
@@ -286,11 +279,11 @@ public class ToDoTable extends AbstractTable {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
         panel.getCommentPanel().showInfo(activity);
-        panel.getEditPanel().showInfo(activity);        
+        panel.getEditPanel().showInfo(activity);
     }
-    
+
     @Override
-    protected void showInfoForRowIndex(int rowIndex) {        
+    protected void showInfoForRowIndex(int rowIndex) {
         setIconLabels(rowIndex); // This to adress selection in sub table
         showInfo(getActivityIdFromRowIndex(rowIndex));
     }
@@ -298,13 +291,7 @@ public class ToDoTable extends AbstractTable {
     @Override
     protected void showDetailsForSelectedRows() {
         setIconLabels(); // This to adress multiple selection in sub table
-        String info = "";
-        int[] rows = getSelectedRows();
-        for (int row : rows) {
-            Integer id = getActivityIdFromRowIndex(row);
-            info += getList().getById(id).getName() + "<br>";
-        }
-        panel.getDetailsPanel().showInfo(info);
+        panel.getDetailsPanel().showInfo(getDetailsForSelectedRows());
     }
 
     @Override
@@ -431,7 +418,7 @@ public class ToDoTable extends AbstractTable {
         if (activity.isSubTask()) {
             removeSubTaskEstimatedPomsFromParent(activity);
         }
-        getList().move(activity); // move to ActivityList
+        getList().moveToActivtyList(activity); // move to ActivityList
         removeRow(rowIndex);
         if (getList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
@@ -446,7 +433,7 @@ public class ToDoTable extends AbstractTable {
         if (activity.isSubTask()) {
             removeSubTaskEstimatedPomsFromParent(activity);
         }
-        getList().complete(activity);
+        getList().completeToReportList(activity);
         removeRow(rowIndex);
         if (getList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
@@ -517,7 +504,7 @@ public class ToDoTable extends AbstractTable {
             getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
         }
     }
-    
+
     public void setIconLabels() {
         setIconLabels(getSelectedRow());
     }

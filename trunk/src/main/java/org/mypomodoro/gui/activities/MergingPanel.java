@@ -34,8 +34,8 @@ import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.gui.create.MergingActivityInputForm;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -43,16 +43,15 @@ import org.mypomodoro.util.WaitCursor;
  * Panel that allows the merging of Activities
  *
  */
-public class MergingPanel extends CreatePanel {
+public class MergingPanel extends CreatePanel { // TODO hide storypoints, iteration and change types when sub table
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private ActivityInputForm mergingInputFormPanel;
+    private MergingActivityInputForm mergingInputFormPanel;
     private final ActivitiesPanel panel;
 
     public MergingPanel(ActivitiesPanel activitiesPanel) {
         this.panel = activitiesPanel;
-        mergingInputFormPanel.setEstimatedPomodoro(1);
         setBorder(null); // remove create panel border
     }
 
@@ -64,7 +63,7 @@ public class MergingPanel extends CreatePanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        mergingInputFormPanel = new ActivityInputForm();
+        mergingInputFormPanel = new MergingActivityInputForm();
         mergingInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -108,6 +107,8 @@ public class MergingPanel extends CreatePanel {
     public void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
+        int estimatedPoms = 0;
+        int overestimatedPoms = 0;
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             int[] rows = panel.getCurrentTable().getSelectedRows();
@@ -136,19 +137,16 @@ public class MergingPanel extends CreatePanel {
                     comments.append("</p>");
                 }
                 actualPoms += selectedActivity.getActualPoms();
+                estimatedPoms += selectedActivity.getEstimatedPoms();
+                overestimatedPoms += selectedActivity.getOverestimatedPoms();
             }
             comments.append("</body>");
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
-            // make sure the estimate of the new activity is at least equals to the sum of pomodoros already done
-            if (actualPoms > 0) {
-                if (newActivity.getEstimatedPoms() < actualPoms) {
-                    newActivity.setOverestimatedPoms(actualPoms - newActivity.getEstimatedPoms());
-                }
-                newActivity.setActualPoms(actualPoms);
-            }
-            //validation.setVisible(false);
+            newActivity.setActualPoms(actualPoms);
+            newActivity.setEstimatedPoms(estimatedPoms);
+            newActivity.setOverestimatedPoms(overestimatedPoms);
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
                 public void run() {
@@ -167,7 +165,7 @@ public class MergingPanel extends CreatePanel {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
-                                panel.delete(selectedActivity); // TODO
+                                panel.getCurrentTable().delete(selectedActivity);
                                 panel.getCurrentTable().removeRow(row);
                                 increment++;
                                 final int progressValue = increment;
@@ -180,8 +178,11 @@ public class MergingPanel extends CreatePanel {
                                 });
                             }
                         }
-                        ActivityList.getList().add(newActivity);
-                        Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity); // main table !
+                        if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
+                            newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
+                        }
+                        panel.getCurrentTable().addActivity(newActivity);
+                        panel.getCurrentTable().insertRow(newActivity);
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {

@@ -47,7 +47,7 @@ public class ReportsTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
-        
+
         setColumnModel();
 
         initTabs();
@@ -90,7 +90,6 @@ public class ReportsTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                     }
-                    setTitle();
                 }
             }
         });
@@ -99,43 +98,37 @@ public class ReportsTable extends AbstractTable {
         // Table model has a flaw: the update table event is fired whenever once click on an editable cell
         // To avoid update overhead, we compare old value with new value
         // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
-        getModel().addTableModelListener(new TableModelListener() {
+        getModel().addTableModelListener(new AbstractTableModelListener() {
 
             @Override
-            public void tableChanged(TableModelEvent e) {
+            public void customTableChanged(TableModelEvent e) {
                 //System.err.println("method name = " + Thread.currentThread().getStackTrace()[1].getMethodName());                                                    
                 int row = e.getFirstRow();
                 int column = e.getColumn();
-                if (row != -1
-                        && e.getType() == TableModelEvent.UPDATE) {
-                    ReportsTableModel sourceModel = (ReportsTableModel) e.getSource();
-                    Object data = sourceModel.getValueAt(row, column);
-                    if (data != null) {
-                        Activity act = getActivityFromRowIndex(row);
-                        if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
-                            String name = data.toString().trim();
-                            if (!name.equals(act.getName())) {
-                                if (name.length() == 0) {
-                                    // reset the original value. Title can't be empty.
-                                    sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
-                                } else {
-                                    act.setName(name);
-                                    act.databaseUpdate();
-                                    // The customer resizer may resize the title column to fit the length of the new text
-                                    ColumnResizer.adjustColumnPreferredWidths(ReportsTable.this);
-                                    revalidate();
-                                }
+                ReportsTableModel sourceModel = (ReportsTableModel) e.getSource();
+                Object data = sourceModel.getValueAt(row, column);
+                if (data != null) {
+                    Activity act = getActivityFromRowIndex(row);
+                    if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
+                        String name = data.toString().trim();
+                        if (!name.equals(act.getName())) {
+                            if (name.length() == 0) {
+                                // reset the original value. Title can't be empty.
+                                sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
+                            } else {
+                                act.setName(name);
+                                act.databaseUpdate();
+                                // The customer resizer may resize the title column to fit the length of the new text
+                                ColumnResizer.adjustColumnPreferredWidths(ReportsTable.this);
+                                revalidate();
                             }
                         }
-                        getList().update(act);
-                        // Updating details only
-                        panel.getDetailsPanel().selectInfo(act);
-                        panel.getDetailsPanel().showInfo();
-                        //activitiesPanel.getDetailsPanel().showInfo(this);
                     }
+                    getList().update(act);
+                    // Updating details only
+                    panel.getDetailsPanel().selectInfo(act);
+                    panel.getDetailsPanel().showInfo();
                 }
-                // Refresh title either there has been a change in the data (estimation, story points) or a change in the number of rows
-                //setTitle();
             }
         });
     }
@@ -237,14 +230,7 @@ public class ReportsTable extends AbstractTable {
 
     @Override
     protected void showDetailsForSelectedRows() {
-        String info = "";
-        int[] rows = getSelectedRows();
-        for (int row : rows) {
-            Integer id = getActivityIdFromRowIndex(row);
-            info += getList().getById(id).getName() + "<br>";
-        }
-        panel.getDetailsPanel().showInfo(info);
-        //panel.getDetailsPanel().showInfo(info, this);
+        panel.getDetailsPanel().showInfo(getDetailsForSelectedRows());
     }
 
     @Override
@@ -361,18 +347,17 @@ public class ReportsTable extends AbstractTable {
 
     @Override
     public void moveTask(int rowIndex) {
-        System.err.println("reopen");
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
             removeSubTaskEstimatedPomsFromParent(activity);
         }
-        getList().reopen(activity); // reopen/move to ActivityList
+        getList().reopenToActivtyList(activity); // reopen/move to ActivityList
         removeRow(rowIndex);
     }
 
     // Actual pom !
     @Override
-    protected void setValueEstimatedColumn(Activity activity) {
+    protected void setValueEstimatedColumnMainTable(Activity activity) {
         // getSelectedRow must not be converted (convertRowIndexToModel)
         panel.getMainTable().getModel().setValueAt(activity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }

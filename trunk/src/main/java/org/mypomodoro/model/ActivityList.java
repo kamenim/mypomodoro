@@ -129,6 +129,7 @@ public final class ActivityList extends AbstractActivities {
         return clonedActivity;
     }
 
+    @Override
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
             ActivityList subList = getSubTaskList(activity.getId());
@@ -148,9 +149,9 @@ public final class ActivityList extends AbstractActivities {
 
     // Move a task and its subtasks to ToDoList
     // Move a subtask only will make it a task
-    public void move(Activity activity) {
+    public void moveToTODOList(Activity activity) {
         if (activity.isSubTask()) {
-            activity.setParentId(-1); // make sure sub-task become task
+            activity.setParentId(-1); // sub-task becomes task
         } else {
             ActivityList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {

@@ -34,8 +34,6 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ToDoSubTable extends ToDoTable {
 
-    private int parentId = -1;
-
     public ToDoSubTable(ToDoSubTableModel model, final ToDoPanel panel) {
         super(model, panel);
 
@@ -56,10 +54,6 @@ public class ToDoSubTable extends ToDoTable {
                 mouseHoverRow = -1;
             }
         });
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
     }
 
     // no story points and no refresh button for subtasks
@@ -169,7 +163,7 @@ public class ToDoSubTable extends ToDoTable {
 
     @Override
     protected ToDoList getTableList() {
-        return ToDoList.getSubTaskList(parentId);
+        return ToDoList.getSubTaskList(panel.getMainTable().getActivityIdFromSelectedRow());
     }
 
     @Override

@@ -16,12 +16,10 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Date;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -42,7 +40,6 @@ import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.model.Activity;
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
@@ -284,7 +281,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
     @Override
     public void emptySubTable() {
         subTableModel.setRowCount(0);
-        subTable.setParentId(-1);
         subTable.setColumnModel();
         subTable.setTitle();
     }
@@ -306,26 +302,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public ToDoSubTable getSubTable() {
         return subTable;
-    }    
-   
-    @Override
-    public void delete(Activity activity) {
-        // not used
-    }
-
-    @Override
-    public void deleteAll() {
-        // not used
-    }
-    
-    @Override
-    public void addActivity(Activity activity) {
-        getList().add(activity);
-    }
-
-    @Override
-    public void addActivity(Activity activity, Date date, Date dateCompleted) {
-        getList().add(activity, date, dateCompleted);
     }
 
     /////////////////// NEW
@@ -378,7 +354,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
     @Override
     public void populateSubTable(int parentId) {        
         subTableModel.update(parentId);
-        subTable.setParentId(parentId);
         subTable.setColumnModel();        
         subTable.setTitle();
         setCurrentTable(table);
