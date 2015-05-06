@@ -16,11 +16,9 @@
  */
 package org.mypomodoro.gui;
 
-import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import org.mypomodoro.model.Activity;
 
 public interface IListPanel {
 
@@ -33,15 +31,6 @@ public interface IListPanel {
     AbstractTable getCurrentTable();
 
     void setCurrentTable(AbstractTable table);
-
-    void delete(Activity activity);
-
-    void deleteAll();
-
-    //void completeAll();
-    void addActivity(Activity activity);
-
-    void addActivity(Activity activity, Date date, Date dateCompleted);
     
     JSplitPane getSplitPane();
 

@@ -36,6 +36,11 @@ public final class ChartList extends AbstractActivities {
     public void refresh() {
         removeAll();
     }
+    
+    @Override
+    public void delete(Activity activity) {
+        // not used
+    }
 
     public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         removeAll();

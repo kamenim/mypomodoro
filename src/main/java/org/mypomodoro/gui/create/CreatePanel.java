@@ -36,7 +36,6 @@ import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.buttons.SaveButton;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -144,7 +143,7 @@ public class CreatePanel extends JPanel {
     }
 
     protected void validActivityAction(Activity newActivity) {
-        ActivityList.getList().add(newActivity);
+        Main.gui.getActivityListPanel().getMainTable().addActivity(newActivity);
         Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity);
         clearForm();
         validation.setForeground(getForeground());

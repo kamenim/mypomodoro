@@ -94,6 +94,7 @@ public final class ReportList extends AbstractActivities {
         super.add(act); // add to the list
     }
 
+    @Override
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
             ReportList subList = getSubTaskList(activity.getId());
@@ -113,7 +114,7 @@ public final class ReportList extends AbstractActivities {
 
     // Reopen a task and its subtasks to ActivityList
     // Reopen a subtask only will make it a task
-    public void reopen(Activity activity) {        
+    public void reopenToActivtyList(Activity activity) {        
         if (activity.isSubTask()) {
             activity.setParentId(-1); // sub-task becomes task
         } else {

@@ -33,14 +33,8 @@ import org.mypomodoro.util.TimeConverter;
  */
 public class ActivitiesSubTable extends ActivitiesTable {
 
-    private int parentId = -1; // TODO: needed ?
-
     public ActivitiesSubTable(ActivitiesSubTableModel model, final ActivitiesPanel panel) {
         super(model, panel);
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
     }
 
     // no story points and no refresh button for subtasks
@@ -130,11 +124,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
         getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
     }
-    
-    /*@Override
-    public ActivitiesSubTableModel getModel() {
-        return (ActivitiesSubTableModel) super.getModel();
-    }*/
 
     @Override
     public void initTabs() {
@@ -159,7 +148,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     @Override
     protected ActivityList getTableList() {
-        return ActivityList.getSubTaskList(parentId);
+        return ActivityList.getSubTaskList(panel.getMainTable().getActivityIdFromSelectedRow());
     }
 
     @Override

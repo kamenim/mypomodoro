@@ -42,6 +42,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import org.apache.commons.lang3.SystemUtils;
@@ -283,11 +285,27 @@ public abstract class AbstractTable extends JXTable {
                         panel.setCurrentTable(AbstractTable.this); // set new current table 
                     }
                     customValueChanged(e);
+                    setTitle();  // reset title
+                } else if (getRowCount() == 0) {
+                    setTitle();  // reset title
                 }
             }
         }
 
         public abstract void customValueChanged(ListSelectionEvent e);
+    }
+    
+    protected abstract class AbstractTableModelListener implements TableModelListener {
+        
+        @Override
+        public void tableChanged(TableModelEvent e) {            
+            if (e.getFirstRow() != -1 && e.getType() == TableModelEvent.UPDATE) {
+                customTableChanged(e);
+                setTitle();  // reset title
+            }
+        }
+        
+        public abstract void customTableChanged(TableModelEvent e);        
     }
 
     public int getActivityIdFromSelectedRow() {
@@ -541,6 +559,16 @@ public abstract class AbstractTable extends JXTable {
 
     protected abstract void showDetailsForSelectedRows();
 
+    protected String getDetailsForSelectedRows() {
+        String info = "";
+        int[] rows = getSelectedRows();
+        for (int row : rows) {
+            Integer id = getActivityIdFromRowIndex(row);
+            info += getList().getById(id).getName() + "<br>";
+        }
+        return info;
+    }
+
     protected void showInfoForSelectedRow() {
         showInfo(getActivityIdFromSelectedRow());
     }
@@ -594,7 +622,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void removeRow(int rowIndex) {
-        //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
+        //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection) // TODO
         getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
         int rowCount = getRowCount(); // get row count on the view not the model !
         if (rowCount > 0) {
@@ -605,7 +633,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void insertRow(Activity activity) {
-        //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)        
+        //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection) // TODO       
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
         getModel().addRow(activity); // we add in the Model...
@@ -656,11 +684,19 @@ public abstract class AbstractTable extends JXTable {
         parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
-        setValueEstimatedColumn(parentActivity);
+        setValueEstimatedColumnMainTable(parentActivity);
     }
 
-    protected void setValueEstimatedColumn(Activity activity) {
+    protected void setValueEstimatedColumnMainTable(Activity activity) {
         // getSelectedRow must not be converted (convertRowIndexToModel)
         panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+    }
+
+    public void addActivity(Activity activity) {
+        getList().add(activity);
+    }
+
+    public void delete(Activity activity) {
+        getList().delete(activity);
     }
 }

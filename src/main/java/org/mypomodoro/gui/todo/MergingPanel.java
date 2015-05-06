@@ -34,8 +34,8 @@ import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
+import org.mypomodoro.gui.create.MergingActivityInputForm;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -43,16 +43,16 @@ import org.mypomodoro.util.WaitCursor;
  * Panel that allows the merging of ToDos
  *
  */
-public class MergingPanel extends CreatePanel {
+public class MergingPanel extends CreatePanel { // TODO hide storypoints, iteration and change types when sub table + aggregate subtasks
+    // merge subtasks ?
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private ActivityInputForm mergingInputFormPanel;
+    private MergingActivityInputForm mergingInputFormPanel;
     private final ToDoPanel panel;
 
     public MergingPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        mergingInputFormPanel.setEstimatedPomodoro(1);
         setBorder(null); // remove create panel border
     }
 
@@ -64,7 +64,7 @@ public class MergingPanel extends CreatePanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        mergingInputFormPanel = new ActivityInputForm();
+        mergingInputFormPanel = new MergingActivityInputForm();
         mergingInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -108,6 +108,8 @@ public class MergingPanel extends CreatePanel {
     protected void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
+        int estimatedPoms = 0;        
+        int overestimatedPoms = 0;
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             int[] rows = panel.getCurrentTable().getSelectedRows();
@@ -139,18 +141,16 @@ public class MergingPanel extends CreatePanel {
                     comments.append("</p>");
                 }
                 actualPoms += selectedToDo.getActualPoms();
+                estimatedPoms += selectedToDo.getEstimatedPoms();
+                overestimatedPoms += selectedToDo.getOverestimatedPoms();
             }
             comments.append("</body>");
             // set comment
             newActivity.setNotes(comments.toString());
             // set estimate
-            // make sure the estimate of the new activity is at least equals to the sum of pomodoros already done
-            if (actualPoms > 0) {
-                if (newActivity.getEstimatedPoms() < actualPoms) {
-                    newActivity.setOverestimatedPoms(actualPoms - newActivity.getEstimatedPoms());
-                }
-                newActivity.setActualPoms(actualPoms);
-            }
+            newActivity.setActualPoms(actualPoms);
+            newActivity.setEstimatedPoms(estimatedPoms);
+            newActivity.setOverestimatedPoms(overestimatedPoms);
             final String title = Labels.getString("ToDoListPanel.Merge ToDos");
             new Thread() { // This new thread is necessary for updating the progress bar
                 @Override
@@ -173,7 +173,7 @@ public class MergingPanel extends CreatePanel {
                                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                                     continue;
                                 }
-                                panel.delete(selectedToDo); // TODO
+                                panel.getCurrentTable().delete(selectedToDo);
                                 panel.getCurrentTable().removeRow(row);
                                 increment++;
                                 final int progressValue = increment;
@@ -197,11 +197,14 @@ public class MergingPanel extends CreatePanel {
                         // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
                         // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                         panel.getCurrentTable().reorderByPriority();
-                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                
-                            panel.addActivity(newActivity); // TODO
+                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
+                            if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
+                                newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
+                            }
+                            panel.getCurrentTable().addActivity(newActivity);
                             panel.getCurrentTable().insertRow(newActivity);
                         } else { // add merged activity to activities list
-                            ActivityList.getList().add(newActivity);
+                            Main.gui.getActivityListPanel().getMainTable().addActivity(newActivity);
                             Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity); // main table !
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,

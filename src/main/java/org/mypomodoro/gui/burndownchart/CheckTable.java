@@ -86,7 +86,6 @@ public class CheckTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                     }
-                    setTitle();
                 }
             }
         });
@@ -185,14 +184,7 @@ public class CheckTable extends AbstractTable {
 
     @Override
     protected void showDetailsForSelectedRows() {
-        String info = "";
-        int[] rows = getSelectedRows();
-        for (int row : rows) {
-            Integer id = getActivityIdFromRowIndex(row);
-            info += getList().getById(id).getName() + "<br>";
-        }
-        panel.getDetailsPanel().showInfo(info);
-        //panel.getDetailsPanel().showInfo(info, this);
+        panel.getDetailsPanel().showInfo(getDetailsForSelectedRows());
     }
 
     @Override

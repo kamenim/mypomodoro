@@ -132,12 +132,17 @@ public final class ToDoList extends AbstractActivities {
         }
         return clonedActivity;
     }
+    
+    @Override
+    public void delete(Activity activity) {
+        // not used
+    }
 
     // Move a task and its subtasks to ActivityList
     // Move a subtask only will make it a task
-    public void move(Activity activity) {
+    public void moveToActivtyList(Activity activity) {
         if (activity.isSubTask()) {
-            activity.setParentId(-1); // make sure sub-task become task
+            activity.setParentId(-1); // sub-task becomes task
         } else {
             ToDoList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {
@@ -158,9 +163,9 @@ public final class ToDoList extends AbstractActivities {
      }*/
     // Complete a task and its subtasks to ReportList
     // Complete a subtask only will make it a task
-    public void complete(Activity activity) {
+    public void completeToReportList(Activity activity) {
         if (activity.isSubTask()) {
-            activity.setParentId(-1); // make sure sub-task become task
+            activity.setParentId(-1); // sub-task becomes task
         } else {
             ToDoList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {

@@ -21,7 +21,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -36,7 +35,6 @@ import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
-import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -256,30 +254,6 @@ public class CheckPanel extends JPanel implements IListPanel {
     @Override
     public void setCurrentTable(AbstractTable table) {
         // not used - onle one table
-    }
-
-    @Override
-    public void delete(Activity activity) {
-        // not used
-    }
-
-    @Override
-    public void deleteAll() {
-        // not used
-    }
-
-    /*@Override
-     public void completeAll() {
-     // no use
-     }*/
-    @Override
-    public void addActivity(Activity activity) {
-        // not used
-    }
-
-    @Override
-    public void addActivity(Activity activity, Date date, Date dateCompleted) {
-        // not used
     }
 
     /////////////////// NEW

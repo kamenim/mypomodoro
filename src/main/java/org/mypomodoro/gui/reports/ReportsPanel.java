@@ -19,7 +19,6 @@ package org.mypomodoro.gui.reports;
 import org.mypomodoro.gui.activities.*;
 import org.mypomodoro.gui.TitlePanel;
 import java.awt.Dimension;
-import java.util.Date;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,7 +30,6 @@ import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -213,7 +211,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     @Override
     public void emptySubTable() {
         subTableModel.setRowCount(0);
-        subTable.setParentId(-1);
         subTable.setColumnModel();
         subTable.setTitle();
     }
@@ -235,30 +232,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
 
     public ReportsSubTable getSubTable() {
         return subTable;
-    }
-
-    @Override
-    public void delete(Activity activity) {
-        getList().delete(activity);
-    }
-
-    @Override
-    public void deleteAll() {
-        getList().deleteAll();
-    }
-
-    /*@Override
-     public void completeAll() {
-     // no use
-     }*/
-    @Override
-    public void addActivity(Activity activity) { // TODO (put in table)
-        getList().add(activity);
-    }
-
-    @Override
-    public void addActivity(Activity activity, Date date, Date dateCompleted) { // TODO (put in table)
-        getList().add(activity, date, dateCompleted);
     }
 
     /////////////////// NEW
@@ -311,7 +284,6 @@ public class ReportsPanel extends JPanel implements IListPanel {
     @Override
     public void populateSubTable(int parentId) {        
         subTableModel.update(parentId);
-        subTable.setParentId(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
         setCurrentTable(table);
