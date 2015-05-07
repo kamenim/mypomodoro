@@ -92,21 +92,27 @@ public class OverestimationPanel extends JPanel {
     }
 
     public void saveOverestimation() {
-        int overestimatedPomodoros = overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1;
-        overestimateTask(overestimatedPomodoros);
+        int overestimatedPoms = overestimationInputFormPanel.getOverestimationPomodoros().getSelectedIndex() + 1;
+        overestimateTask(overestimatedPoms);
         overestimationInputFormPanel.reset();
     }
 
     // Overestimation only when estimated != 0 and real >= estimated
-    public void overestimateTask(int pomodoros) {
-        int row = panel.getCurrentTable().getSelectedRow();
+    public void overestimateTask(int overestimatedPoms) {
         Activity selectedToDo = panel.getCurrentTable().getActivityFromSelectedRow();
-        if (selectedToDo.getEstimatedPoms() != 0 && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()) {
+        if (selectedToDo.getEstimatedPoms() != 0 
+                && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()
+                && (selectedToDo.isSubTask() || !ToDoList.hasSubTasks(selectedToDo.getId()))) {
             // Overestimation
-            selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + pomodoros);
+            selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + overestimatedPoms);
             ToDoList.getList().update(selectedToDo);
             selectedToDo.databaseUpdate();
-            panel.getCurrentTable().getModel().setValueAt(selectedToDo.getEstimatedPoms(), panel.getCurrentTable().convertRowIndexToModel(row), AbstractTableModel.ESTIMATED_COLUMN_INDEX); // update estimated colunm index = 3 (the renderer will do the rest)
+            if (selectedToDo.isSubTask()) {
+                panel.getMainTable().addPomsToSelectedRow(0, 0, overestimatedPoms);
+                panel.getMainTable().setTitle();
+            }
+            panel.getCurrentTable().repaint();
+            panel.getCurrentTable().setTitle();
             // update details panel
             detailsPanel.selectInfo(selectedToDo);
             detailsPanel.showInfo();

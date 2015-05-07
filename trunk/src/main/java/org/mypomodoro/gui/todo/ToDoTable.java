@@ -22,7 +22,6 @@ import javax.swing.DropMode;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
@@ -160,7 +159,7 @@ public class ToDoTable extends AbstractTable {
                                 act.setEstimatedPoms(estimated);
                                 act.databaseUpdate();
                                 if (act.isSubTask()) { // update parent activity
-                                    addEstimatedPomsToParent(0, diffEstimated, 0);
+                                    panel.getMainTable().addPomsToSelectedRow(0, diffEstimated, 0);
                                 }
                             }
                         } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
@@ -280,11 +279,11 @@ public class ToDoTable extends AbstractTable {
         panel.getDetailsPanel().showInfo();
         panel.getCommentPanel().showInfo(activity);
         panel.getEditPanel().showInfo(activity);
+        setIconLabels(activity);
     }
 
     @Override
     protected void showInfoForRowIndex(int rowIndex) {
-        setIconLabels(rowIndex); // This to adress selection in sub table
         showInfo(getActivityIdFromRowIndex(rowIndex));
     }
 
@@ -416,7 +415,7 @@ public class ToDoTable extends AbstractTable {
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().moveToActivtyList(activity); // move to ActivityList
         removeRow(rowIndex);
@@ -431,7 +430,7 @@ public class ToDoTable extends AbstractTable {
     public void completeTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().completeToReportList(activity);
         removeRow(rowIndex);
@@ -492,8 +491,7 @@ public class ToDoTable extends AbstractTable {
 
     @Override
     public void overestimateTask(int poms) {
-        panel.getOverestimationPanel().overestimateTask(poms);
-        addEstimatedPomsToParent(0, 0, poms);
+        panel.getOverestimationPanel().overestimateTask(poms);        
     }
 
     @Override
@@ -506,10 +504,10 @@ public class ToDoTable extends AbstractTable {
     }
 
     public void setIconLabels() {
-        setIconLabels(getSelectedRow());
+        setIconLabels(getActivityFromSelectedRow());
     }
 
-    public void setIconLabels(int row) {
+    public void setIconLabels(Activity selectedToDo) {
         if (getTableList().size() > 0) {
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
@@ -523,7 +521,7 @@ public class ToDoTable extends AbstractTable {
                 panel.getDetailsPanel().disableButtons();
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
-                Activity selectedToDo = getActivityFromRowIndex(row);
+                //Activity selectedToDo = getActivityFromRowIndex(row);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
