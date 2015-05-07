@@ -21,8 +21,8 @@ import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -35,7 +35,7 @@ public class MoveToDoButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public MoveToDoButton(String label, final ToDoPanel panel) {
+    public MoveToDoButton(String label, final IListPanel panel) {
         super(label);
         setToolTipText("SHIFT + <");
         addActionListener(new ActionListener() {
@@ -47,7 +47,7 @@ public class MoveToDoButton extends TabPanelButton {
         });
     }
 
-    public void move(final ToDoPanel panel) {
+    public void move(final IListPanel panel) {
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
             new Thread() { // This new thread is necessary for updating the progress bar

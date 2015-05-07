@@ -35,6 +35,7 @@ import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
+import org.mypomodoro.gui.todo.Pomodoro;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -292,6 +293,11 @@ public class CheckPanel extends JPanel implements IListPanel {
 
     @Override
     public JScrollPane getSubTableScrollPane() {
+        return null; // not used
+    }
+    
+    @Override
+    public Pomodoro getPomodoro() {
         return null; // not used
     }
 }

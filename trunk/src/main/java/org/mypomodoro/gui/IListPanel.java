@@ -19,6 +19,7 @@ package org.mypomodoro.gui;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import org.mypomodoro.gui.todo.Pomodoro;
 
 public interface IListPanel {
 
@@ -53,4 +54,6 @@ public interface IListPanel {
     void populateSubTable(int activityId);
             
     void emptySubTable();
+    
+    Pomodoro getPomodoro();
 }

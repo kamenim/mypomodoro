@@ -49,8 +49,13 @@ import javax.swing.table.TableCellRenderer;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
+import org.mypomodoro.buttons.MoveToDoButton;
+import org.mypomodoro.gui.activities.ActivitiesPanel;
+import org.mypomodoro.gui.reports.ReportsPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -171,43 +176,53 @@ public abstract class AbstractTable extends JXTable {
                 b.doClick();
             }
         }
-        //am.put("Delete", new deleteAction(this)); // TODO
+        am.put("Delete", new deleteAction(panel));
 
         // Activate Shift + '>'                
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
-        class moveAction extends AbstractAction {
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Move right"); // move to ToDoList and complete
+        class moveRightAction extends AbstractAction {
 
             final IListPanel panel;
 
-            public moveAction(IListPanel panel) {
+            public moveRightAction(IListPanel panel) {
                 this.panel = panel;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MoveButton moveButton = new MoveButton("", panel);
-                moveButton.doClick();
+                if (panel instanceof ActivitiesPanel) { // move to ToDo list
+                    MoveButton moveButton = new MoveButton("", panel);                    
+                    moveButton.doClick();
+                } else if (panel instanceof ToDoPanel) { // complete
+                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), panel);
+                    completeToDoButton.doClick();
+                }
             }
         }
-        //am.put("Add To ToDo List", new moveAction(this)); 
+        am.put("Move right", new moveRightAction(panel)); 
 
         // Activate Shift + '<'
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Reopen");
-        class reopenAction extends AbstractAction {
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Move left"); // send back to ActivityList and reopen
+        class moveLeftAction extends AbstractAction {
 
             final IListPanel panel;
 
-            public reopenAction(IListPanel panel) {
+            public moveLeftAction(IListPanel panel) {
                 this.panel = panel;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MoveButton moveButton = new MoveButton("", panel);
-                moveButton.doClick();
+                if (panel instanceof ReportsPanel) { // reopen
+                    MoveButton moveButton = new MoveButton("", panel);
+                    moveButton.doClick();
+                } else if (panel instanceof ToDoPanel) { // send back to ActivityList
+                    MoveToDoButton moveToDoButton = new MoveToDoButton("", panel);
+                    moveToDoButton.doClick();
+                }
             }
         }
-        //am.put("Reopen", new reopenAction(this)); TODO
+        am.put("Move left", new moveLeftAction(panel));
 
         // Activate Control A
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "Control A");

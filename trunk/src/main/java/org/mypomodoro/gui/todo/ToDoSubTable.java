@@ -91,6 +91,7 @@ public class ToDoSubTable extends ToDoTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideSelectedButton();
+                getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideDuplicateButton();
             } else {
                 title += " (" + rowCount + ")";
@@ -109,12 +110,30 @@ public class ToDoSubTable extends ToDoTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar
-                getTitlePanel().showSelectedButton();
-                getTitlePanel().showDuplicateButton();
+                if (getSelectedRowCount() == 1) {
+                    // Show buttons of the quick bar
+                    // Hide overestimation options when estimated == 0 or real < estimated
+                    getTitlePanel().showSelectedButton();
+                    Activity selectedActivity = getActivityFromSelectedRow();
+                    if (selectedActivity.getEstimatedPoms() != 0
+                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
+                        panel.getTabbedPane().enableOverestimationTab();
+                        getTitlePanel().showOverestimationButton();
+                    } else {
+                        panel.getTabbedPane().disableOverestimationTab();
+                        getTitlePanel().hideOverestimationButton();
+                    }
+                    /*TODO remove these test lines
+                     getTitlePanel().showOverestimationButton();
+                     getTitlePanel().showExternalButton();
+                     getTitlePanel().showInternalButton();*/
+                }
             }
         } else {
             getTitlePanel().hideSelectedButton();
-            getTitlePanel().hideDuplicateButton();
+            getTitlePanel().hideOverestimationButton();
+            getTitlePanel().hideExternalButton();
+            getTitlePanel().hideInternalButton();
         }
         if (panel.getMainTable().getRowCount() == 0
                 || panel.getMainTable().getSelectedRowCount() > 1) {
@@ -122,6 +141,7 @@ public class ToDoSubTable extends ToDoTable {
         } else {
             getTitlePanel().showCreateButton();
         }
+        getTitlePanel().showUnplannedButton();
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
