@@ -395,16 +395,16 @@ public class ToDoTable extends AbstractTable {
                      getTitlePanel().showInternalButton();*/
                 }
             }
-            getTitlePanel().showUnplannedButton();
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
-        }
+        }        
+        getTitlePanel().showUnplannedButton();
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
-        }
+        }        
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel

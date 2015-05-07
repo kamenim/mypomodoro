@@ -29,6 +29,7 @@ import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
+import org.mypomodoro.gui.todo.Pomodoro;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -288,5 +289,10 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTableModel.update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
+    }
+    
+    @Override
+    public Pomodoro getPomodoro() {
+        return null; // not used
     }
 }

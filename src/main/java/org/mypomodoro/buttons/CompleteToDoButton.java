@@ -21,9 +21,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -36,7 +36,7 @@ public class CompleteToDoButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
+    public CompleteToDoButton(final String title, final String message, final IListPanel  panel) {
         super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         setToolTipText("SHIFT + >");
         addActionListener(new ActionListener() {
