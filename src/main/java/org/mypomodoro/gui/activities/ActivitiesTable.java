@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
@@ -159,7 +158,7 @@ public class ActivitiesTable extends AbstractTable {
                             act.setEstimatedPoms(estimated);
                             act.databaseUpdate();
                             if (act.isSubTask()) { // update parent activity
-                                addEstimatedPomsToParent(0, diffEstimated, 0);
+                                panel.getMainTable().addPomsToSelectedRow(0, diffEstimated, 0);
                             }
                         }
                     } else if (column == AbstractTableModel.STORYPOINTS_COLUMN_INDEX) { // Story Points
@@ -415,7 +414,7 @@ public class ActivitiesTable extends AbstractTable {
                 Activity duplicatedActivity = getList().duplicate(activity);
                 insertRow(duplicatedActivity);
                 if (duplicatedActivity.isSubTask()) {
-                    addSubTaskEstimatedPomsToParent(duplicatedActivity);
+                    panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 }
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
@@ -427,7 +426,7 @@ public class ActivitiesTable extends AbstractTable {
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
@@ -437,7 +436,7 @@ public class ActivitiesTable extends AbstractTable {
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().moveToTODOList(activity); // move to ToDoList
         removeRow(rowIndex);

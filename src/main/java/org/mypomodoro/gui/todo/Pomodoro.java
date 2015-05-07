@@ -246,11 +246,20 @@ public class Pomodoro {
                     // increase the overestimation of the task by 1 to record the pomodoro
                     if (getCurrentToDo().isFinished()) {
                         getCurrentToDo().setOverestimatedPoms(getCurrentToDo().getOverestimatedPoms() + 1);
+                        if (getCurrentToDo().isSubTask()) {
+                            panel.getMainTable().addPomsToSelectedRow(0, 0, 1);                      
+                        }
                     } else if (getCurrentToDo().getEstimatedPoms() + getCurrentToDo().getOverestimatedPoms() == 0) { // task with no estimation
                         getCurrentToDo().setEstimatedPoms(1);
+                        if (getCurrentToDo().isSubTask()) {
+                            panel.getMainTable().addPomsToSelectedRow(0, 1, 0);                      
+                        }
                     }
                     getCurrentToDo().incrementPoms();
                     getCurrentToDo().databaseUpdate();
+                    if (getCurrentToDo().isSubTask()) {
+                        panel.getMainTable().addPomsToSelectedRow(1, 0, 0);                        
+                    }
                     if (isDiscontinuous) { // stop timer
                         pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
                         stop();
@@ -353,7 +362,11 @@ public class Pomodoro {
                 panel.getCurrentTable().setIconLabels();
                 //panel.setPanelRemaining();
                 panel.getCurrentTable().setTitle();
-                panel.getCurrentTable().repaint(); // trigger row renderers
+                panel.getCurrentTable().repaint(); // trigger row renderers // TODO not necessary if we set estimated value
+                if (getCurrentToDo().isSubTask()) {
+                    panel.getMainTable().setTitle();
+                    panel.getMainTable().repaint();
+                }
             }
         }
 

@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
@@ -339,7 +338,7 @@ public class ReportsTable extends AbstractTable {
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
@@ -349,16 +348,9 @@ public class ReportsTable extends AbstractTable {
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
-            removeSubTaskEstimatedPomsFromParent(activity);
+            panel.getMainTable().removePomsFromSelectedRow(activity);
         }
         getList().reopenToActivtyList(activity); // reopen/move to ActivityList
         removeRow(rowIndex);
-    }
-
-    // Actual pom !
-    @Override
-    protected void setValueEstimatedColumnMainTable(Activity activity) {
-        // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getMainTable().getModel().setValueAt(activity.getActualPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
     }
 }

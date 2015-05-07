@@ -51,6 +51,7 @@ import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
+import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
@@ -119,6 +120,19 @@ public abstract class AbstractTable extends JXTable {
         });
         // This is to address the case/event when the mouse exit the table
         addMouseListener(new MouseAdapter() {
+            
+            // Way to select a row of the main table that is already selected in order to trigger AbstractListSelectionListener            
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                if (rowIndex != -1
+                        && panel.getMainTable().equals(AbstractTable.this)
+                        && rowIndex == getSelectedRow()) {
+                    clearSelection();
+                    setRowSelectionInterval(rowIndex, rowIndex);
+                }
+            }            
 
             @Override
             public void mouseExited(MouseEvent e) {
@@ -157,7 +171,7 @@ public abstract class AbstractTable extends JXTable {
                 b.doClick();
             }
         }
-        //am.put("Delete", new deleteAction(this));
+        //am.put("Delete", new deleteAction(this)); // TODO
 
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Add To ToDo List");
@@ -287,6 +301,12 @@ public abstract class AbstractTable extends JXTable {
                     customValueChanged(e);
                     setTitle();  // reset title
                 } else if (getRowCount() == 0) {
+                    // Way to select a row in the main table that is already selected
+                    if (!panel.getMainTable().equals(AbstractTable.this)) {
+                        int rowIndex = panel.getMainTable().getSelectedRow();
+                        panel.getMainTable().clearSelection();
+                        panel.getMainTable().setRowSelectionInterval(rowIndex, rowIndex);
+                    }
                     setTitle();  // reset title
                 }
             }
@@ -294,18 +314,18 @@ public abstract class AbstractTable extends JXTable {
 
         public abstract void customValueChanged(ListSelectionEvent e);
     }
-    
+
     protected abstract class AbstractTableModelListener implements TableModelListener {
-        
+
         @Override
-        public void tableChanged(TableModelEvent e) {            
+        public void tableChanged(TableModelEvent e) {
             if (e.getFirstRow() != -1 && e.getType() == TableModelEvent.UPDATE) {
                 customTableChanged(e);
                 setTitle();  // reset title
             }
         }
-        
-        public abstract void customTableChanged(TableModelEvent e);        
+
+        public abstract void customTableChanged(TableModelEvent e);
     }
 
     public int getActivityIdFromSelectedRow() {
@@ -378,10 +398,19 @@ public abstract class AbstractTable extends JXTable {
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
             renderer.setHorizontalAlignment(SwingConstants.CENTER);
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-            Activity activity = getList().getById(id);
-            if (activity != null && activity.isFinished()) {
-                renderer.setForeground(Main.taskFinishedColor);
+            Activity activity = getActivityFromRowIndex(row);
+            if (activity != null) {
+                if (Main.gui != null && table instanceof ToDoTable) {
+                    Activity currentToDo = Main.gui.getToDoPanel().getPomodoro().getCurrentToDo();
+                    if (currentToDo != null) {
+                        if (Main.gui.getToDoPanel().getPomodoro().inPomodoro() && activity.getId() == currentToDo.getId()) {
+                            renderer.setForeground(ColorUtil.RED);
+                        }
+                    }
+                }
+                if (activity.isFinished()) {
+                    renderer.setForeground(Main.taskFinishedColor);
+                }
             }
             return renderer;
         }
@@ -663,33 +692,28 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    protected void removeSubTaskEstimatedPomsFromParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(-parentActivity.getActualPoms(),
-                -parentActivity.getEstimatedPoms(),
-                -parentActivity.getOverestimatedPoms());
+    public void removePomsFromSelectedRow(Activity activity) {
+        addPomsToSelectedRow(-activity.getActualPoms(),
+                -activity.getEstimatedPoms(),
+                -activity.getOverestimatedPoms());
     }
 
-    protected void addSubTaskEstimatedPomsToParent(Activity activity) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        addEstimatedPomsToParent(parentActivity.getActualPoms(),
-                parentActivity.getEstimatedPoms(),
-                parentActivity.getOverestimatedPoms());
+    public void addPomsToSelectedRow(Activity activity) {
+        addPomsToSelectedRow(activity.getActualPoms(),
+                activity.getEstimatedPoms(),
+                activity.getOverestimatedPoms());
     }
 
-    protected void addEstimatedPomsToParent(int realPoms, int estimatedPoms, int overestimatedPoms) {
-        Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
+    public void addPomsToSelectedRow(int realPoms, int estimatedPoms, int overestimatedPoms) {
+        Activity parentActivity = getActivityFromSelectedRow();
         parentActivity.setActualPoms(parentActivity.getActualPoms() + realPoms);
         parentActivity.setEstimatedPoms(parentActivity.getEstimatedPoms() + estimatedPoms);
         parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
-        setValueEstimatedColumnMainTable(parentActivity);
-    }
-
-    protected void setValueEstimatedColumnMainTable(Activity activity) {
-        // getSelectedRow must not be converted (convertRowIndexToModel)
-        panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        // For convenience, we use repaint instead of the following line:
+        // panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        repaint(); // trigger row renderers        
     }
 
     public void addActivity(Activity activity) {
