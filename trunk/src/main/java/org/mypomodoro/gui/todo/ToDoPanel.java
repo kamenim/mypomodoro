@@ -35,12 +35,10 @@ import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.IListPanel;
-import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -67,8 +65,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
-    private final TitlePanel tableTitlePanel;
-    private final SubTableTitlePanel subTableTitlePanel;
+    private final ToDoTitlePanel tableTitlePanel;
+    private final ToDoSubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
     private final JScrollPane subTableScrollPane;
@@ -93,7 +91,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final ToDoSubTable subTable;
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
-    private static final ResizeButton resizeButton = new ResizeButton();
+    public static final ResizeButton RESIZEBUTTON = new ResizeButton();
 
     public ToDoPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -135,8 +133,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         tableScrollPane = new JScrollPane(table);
 
         // Init title and sub title
-        tableTitlePanel = new TitlePanel(this, table);
-        subTableTitlePanel = new SubTableTitlePanel(this, subTable);
+        tableTitlePanel = new ToDoTitlePanel(this, table);
+        subTableTitlePanel = new ToDoSubTableTitlePanel(this, subTable);
 
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
         if (tableModel.getRowCount() > 0) {
@@ -258,7 +256,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 table.setColumnModel();
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
-                    table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
                 } else {
                     emptySubTable();
@@ -333,11 +330,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public TitlePanel getTableTitlePanel() {
+    public ToDoTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 
-    public SubTableTitlePanel getSubTableTitlePanel() {
+    public ToDoSubTableTitlePanel getSubTableTitlePanel() {
         return subTableTitlePanel;
     }
 
@@ -393,10 +390,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pinButton.setMargin(new Insets(1, 1, 1, 1));
         pinButton.setFocusPainted(false); // removes borders around text
         toolBar.add(pinButton, wc);
-        resizeButton.setVisible(true); // this is a TransparentButton       
-        resizeButton.setMargin(new Insets(1, 1, 1, 1));
-        resizeButton.setFocusPainted(false); // removes borders around text
-        toolBar.add(resizeButton, wc);
+        RESIZEBUTTON.setVisible(true); // this is a TransparentButton       
+        RESIZEBUTTON.setMargin(new Insets(1, 1, 1, 1));
+        RESIZEBUTTON.setFocusPainted(false); // removes borders around text
+        toolBar.add(RESIZEBUTTON, wc);
         backgroundPanel.add(toolBar, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -431,18 +428,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void removeListPane() {
         listPaneAndTimer.remove(listPane);
     }
-
-    /*public void removeScrollPane() {
-     listPane.remove(tableScrollPane);
-     }
-
-     public void removeTitlePanel() {
-     listPane.remove(tableTitlePanel);
-     }
     
-     public void removeSubTitlePanel() {
-     listPane.remove(subTableTitlePanel);
-     }*/
     public void addTabbedPane() {
         splitPane.setRightComponent(tabbedPane); // bottom
     }
@@ -468,36 +454,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
         splitPane.setDividerSize(0);
     }
 
-    public static ResizeButton getResizeButton() {
-        return resizeButton;
-    }
-
     public OverestimationPanel getOverestimationPanel() {
         return overestimationPanel;
     }
     
     public UnplannedPanel getUnplannedPanel() {
         return unplannedPanel;
-    }
-
-    /*private void scrollToCurrentTask() {
-     if (pomodoro.inPomodoro()) {
-     for (int row = 0; row < table.getRowCount(); row++) {
-     Integer id = (Integer) activitiesTableModel.getValueAt(table.convertRowIndexToModel(row), activitiesTableModel.getColumnCount() - 1);
-     if (pomodoro.getCurrentToDo().getId() == id) {
-     currentSelectedRow = row;
-     }
-     }
-     table.setRowSelectionInterval(currentSelectedRow, currentSelectedRow);
-     }
-     showCurrentSelectedRow();
-     }*/
-
-    /*public void showSelectedButton() {
-     selectedButton.setIcon(selectedIcon);
-     }
-
-     public void showRunningButton() {
-     selectedButton.setIcon(runningIcon);
-     }*/
+    }    
 }

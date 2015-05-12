@@ -25,7 +25,7 @@ import org.mypomodoro.util.DateUtil;
  * Preference Object stores all user preferences.
  *
  */
-public final class Preferences {
+public class Preferences {
 
     public Preferences() {
         refresh();

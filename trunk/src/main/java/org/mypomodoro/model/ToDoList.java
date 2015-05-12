@@ -16,8 +16,6 @@
  */
 package org.mypomodoro.model;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -25,7 +23,7 @@ import org.mypomodoro.db.ActivitiesDAO;
  * ToDo list
  *
  */
-public final class ToDoList extends AbstractActivities {
+public class ToDoList extends AbstractActivities {
 
     private static final ToDoList list = new ToDoList();
 

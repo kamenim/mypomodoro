@@ -158,7 +158,7 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected TitlePanel getTitlePanel() {
+    public TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 }

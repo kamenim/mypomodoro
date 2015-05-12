@@ -51,7 +51,7 @@ public class Resize {
             Main.gui.setMaximizedBounds(env.getMaximumWindowBounds());
             Main.gui.setExtendedState(Main.gui.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             // set down size icon for resize button
-            ToDoPanel.getResizeButton().setDownSizeIcon();
+            ToDoPanel.RESIZEBUTTON.setDownSizeIcon();
             viewCount = 1;
         } else { // back to the original location
             Dimension size;
@@ -114,7 +114,7 @@ public class Resize {
                 viewCount = 0;
             }
             // set up size icon for resize button
-            ToDoPanel.getResizeButton().setUpSizeIcon();
+            ToDoPanel.RESIZEBUTTON.setUpSizeIcon();
             Dimension dGUI = new Dimension(Math.max(800, gui.getWidth()), Math.max(600, gui.getHeight()));
             Main.gui.setPreferredSize(dGUI);
             if (size != null) { // this may happen when the window is maximize using the maximize icon on the top right hand corner of the window
@@ -129,10 +129,10 @@ public class Resize {
         Main.gui.repaint();
         // Center cursor on resize button
         if (robot != null
-                && ToDoPanel.getResizeButton().isShowing()) {
-            Point p = ToDoPanel.getResizeButton().getLocationOnScreen(); // location on screen
+                && ToDoPanel.RESIZEBUTTON.isShowing()) {
+            Point p = ToDoPanel.RESIZEBUTTON.getLocationOnScreen(); // location on screen
             // Center cursor in the middle of the button
-            robot.mouseMove((int) p.getX() + ToDoPanel.getResizeButton().getWidth() / 2, (int) p.getY() + ToDoPanel.getResizeButton().getHeight() / 2);
+            robot.mouseMove((int) p.getX() + ToDoPanel.RESIZEBUTTON.getWidth() / 2, (int) p.getY() + ToDoPanel.RESIZEBUTTON.getHeight() / 2);
 
         }
         // we make sure the selected task appears on screen despite the resizing

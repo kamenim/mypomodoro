@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
@@ -37,6 +36,7 @@ import org.mypomodoro.buttons.DefaultButton;
 public abstract class AbstractTitlePanel extends JPanel {
 
     protected final JLabel titleLabel = new JLabel();
+    protected final JPanel buttonPanel = new JPanel();
     private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
     private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
     private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
@@ -55,19 +55,48 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
+    // left and rigth 'small' arrows
+    private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
+    private final String leftArrow = " " + (getFont().canDisplay('\u25c0') ? "\u25c0" : "<") + " ";    
+    // Expand/Fold button
+    protected final DefaultButton foldButton = new DefaultButton(leftArrow);
 
     public AbstractTitlePanel() {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));        
         // Add label to panel
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         //titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, titleLabel.getFont().getSize() - 1));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
-        add(titleLabel);
+        showTitleLabel();
+        // init button panel
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
+        buttonPanel.setBorder(null);
+        showButtonPanel();
         // Init buttons
+        // Fold button
+        foldButton.setText(leftArrow);
+        foldButton.setBorder(null); // this is important to remove the invisible border
+        //foldButton.setMargin(buttonInsets); this doesn't work reason why we add spaces to rightArrow and leftArrow strings
+        // foldButton.setSize(selectedButton.getSize()); this doesn't work either
+        foldButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (titleLabel.isShowing()) {
+                    foldButton.setText(rightArrow);
+                    hideTitleLabel();
+                    showButtonPanel();
+                } else {
+                    foldButton.setText(leftArrow);
+                    hideButtonPanel();
+                    showTitleLabel();
+                }
+                AbstractTitlePanel.this.repaint();
+            }
+        });
         // Scroll to selected task
         selectedButton.setMargin(buttonInsets);
-        selectedButton.setFocusPainted(false); // removes borders around text
         selectedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -78,8 +107,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         selectedButton.setToolTipText("CTRL + G");
         // Create new task
         createButton.setMargin(buttonInsets);
-        createButton.setFocusPainted(false); // removes borders around text
-
         createButton.addActionListener(new ActionListener() {
 
             @Override
@@ -90,7 +117,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         createButton.setToolTipText("CTRL + T");
         // Duplicate selected task
         duplicateButton.setMargin(buttonInsets);
-        duplicateButton.setFocusPainted(false); // removes borders around text
         duplicateButton.addActionListener(new ActionListener() {
 
             @Override
@@ -101,7 +127,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         duplicateButton.setToolTipText("CTRL + D");
         // Create unplanned task
         unplannedButton.setMargin(buttonInsets);
-        unplannedButton.setFocusPainted(false); // removes borders around text
         unplannedButton.addActionListener(new ActionListener() {
 
             @Override
@@ -112,7 +137,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         unplannedButton.setToolTipText("CTRL + U");
         // Create internal interruption
         internalButton.setMargin(buttonInsets);
-        internalButton.setFocusPainted(false); // removes borders around text
         internalButton.addActionListener(new ActionListener() {
 
             @Override
@@ -123,7 +147,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         internalButton.setToolTipText("CTRL + I");
         // Create external interruption
         externalButton.setMargin(buttonInsets);
-        externalButton.setFocusPainted(false); // removes borders around text
         externalButton.addActionListener(new ActionListener() {
 
             @Override
@@ -134,7 +157,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         externalButton.setToolTipText("CTRL + E");
         // Overestimate by one pomodoro
         overestimationButton.setMargin(buttonInsets);
-        overestimationButton.setFocusPainted(false); // removes borders around text
         overestimationButton.addActionListener(new ActionListener() {
 
             @Override
@@ -144,7 +166,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         });
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
-        refreshButton.setFocusPainted(false); // removes borders around text
         refreshButton.addActionListener(new ActionListener() {
 
             @Override
@@ -155,69 +176,97 @@ public abstract class AbstractTitlePanel extends JPanel {
             }
         });
     }
+    
+    public void showTitleLabel() {
+        add(titleLabel);
+    }
+    
+    public void hideTitleLabel() {
+        remove(titleLabel);
+    }
+    
+    public void showButtonPanel() {
+        add(buttonPanel);
+    }
+    
+    public void hideButtonPanel() {
+        remove(buttonPanel);
+    }
+    
+    public void showFoldButton() {
+       add(foldButton, 0);
+    }
 
     public void showSelectedButton() {
-        add(selectedButton);
+        buttonPanel.add(selectedButton);
+    }
+
+    public void switchSelectedButton() {
+        selectedButton.setIcon(selectedIcon);
+    }
+
+    public void switchRunningButton() {
+        selectedButton.setIcon(runningIcon);
     }
 
     public void showCreateButton() {
-        add(createButton);
+        buttonPanel.add(createButton);
     }
 
     public void showDuplicateButton() {
-        add(duplicateButton);
+        buttonPanel.add(duplicateButton);
     }
 
     public void showOverestimationButton() {
-        add(overestimationButton);
+        buttonPanel.add(overestimationButton);
     }
 
     public void showUnplannedButton() {
-        add(unplannedButton);
+        buttonPanel.add(unplannedButton);
     }
 
     public void showInternalButton() {
-        add(internalButton);
+        buttonPanel.add(internalButton);
     }
 
     public void showExternalButton() {
-        add(externalButton);
+        buttonPanel.add(externalButton);
     }
 
     public void showRefreshButton() {
-        add(refreshButton);
+        buttonPanel.add(refreshButton);
     }
 
     public void hideSelectedButton() {
-        remove(selectedButton);
+        buttonPanel.remove(selectedButton);
     }
 
     public void hideCreateButton() {
-        remove(createButton);
+        buttonPanel.remove(createButton);
     }
 
     public void hideDuplicateButton() {
-        remove(duplicateButton);
+        buttonPanel.remove(duplicateButton);
     }
 
     public void hideOverestimationButton() {
-        remove(overestimationButton);
+        buttonPanel.remove(overestimationButton);
     }
 
     public void hideUnplannedButton() {
-        remove(unplannedButton);
+        buttonPanel.remove(unplannedButton);
     }
 
     public void hideInternalButton() {
-        remove(internalButton);
+        buttonPanel.remove(internalButton);
     }
 
     public void hideExternalButton() {
-        remove(externalButton);
+        buttonPanel.remove(externalButton);
     }
-
+   
     public void hideRefreshButton() {
-        remove(refreshButton);
+        buttonPanel.remove(refreshButton);
     }
 
     @Override
@@ -228,17 +277,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void setText(String text) {
         titleLabel.setText(text);
     }
-
-    public void clear() {
-        titleLabel.setText(null);
-        Component[] comps = getComponents();
-        for (Component comp : comps) {
-            if (comp instanceof DefaultButton) {
-                remove(comp);
-            }
-        }
-    }
-
+     
     /*public void repaintLabel() {
      titleLabel.repaint();        
      }*/

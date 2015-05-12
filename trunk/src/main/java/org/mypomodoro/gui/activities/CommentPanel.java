@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -74,18 +73,18 @@ public class CommentPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JPanel iconPanel = new JPanel();
     private final IListPanel panel;
-    private final JButton saveButton = new DefaultButton(Labels.getString("Common.Save"));
-    private final JButton cancelButton = new DefaultButton(Labels.getString("Common.Cancel"));
-    private final JButton previewButton = new DefaultButton(Labels.getString("Common.Preview"));
-    private final JButton foldButton = new DefaultButton(">");
-    private final JButton htmlButton = new DefaultButton("HTML");
-    private final JButton boldButton = new DefaultButton("B");
-    private final JButton italicButton = new DefaultButton("I");
-    private final JButton underlineButton = new DefaultButton("U");
-    private final JButton backgroundColorButton = new DefaultButton("ab");
-    private final JButton foregroundColorButton = new DefaultButton("A");
+    private final DefaultButton saveButton = new DefaultButton(Labels.getString("Common.Save"));
+    private final DefaultButton cancelButton = new DefaultButton(Labels.getString("Common.Cancel"));
+    private final DefaultButton previewButton = new DefaultButton(Labels.getString("Common.Preview"));
+    private final DefaultButton expandButton = new DefaultButton(">");
+    private final DefaultButton htmlButton = new DefaultButton("HTML");
+    private final DefaultButton boldButton = new DefaultButton("B");
+    private final DefaultButton italicButton = new DefaultButton("I");
+    private final DefaultButton underlineButton = new DefaultButton("U");
+    private final DefaultButton backgroundColorButton = new DefaultButton("ab");
+    private final DefaultButton foregroundColorButton = new DefaultButton("A");
     private final JTextField linkTextField = new JTextField();
-    private final JButton linkButton = new DefaultButton(">>");
+    private final DefaultButton linkButton = new DefaultButton(">>");
     private final HtmlEditor informationArea = new HtmlEditor();
     private final JScrollPane scrollPaneInformationArea;
     private boolean showIconLabel = false;
@@ -129,7 +128,7 @@ public class CommentPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (!informationArea.isEditable()) {
                     informationArea.setEditable(true);
-                    foldButton.setVisible(true);
+                    expandButton.setVisible(true);
                     // show caret
                     informationArea.getCaret().setVisible(true);
                     informationArea.setCaretPosition(informationArea.getCaretPosition()); // reset position (activates automatic horizontal scrolling in case of long line)
@@ -343,11 +342,11 @@ public class CommentPanel extends JPanel {
                 boolean htmlMode = informationArea.isHTMLMode();
                 displayPreviewMode();
                 if (getFont().canDisplay('\u25b6')) {
-                    foldButton.setText("\u25b6");
+                    expandButton.setText("\u25b6");
                 } else {
-                    foldButton.setText(">");
+                    expandButton.setText(">");
                 }
-                foldButton.setToolTipText(Labels.getString("Common.Show editor"));
+                expandButton.setToolTipText(Labels.getString("Common.Show editor"));
                 informationArea.setEditable(false);
                 if (htmlMode) {
                     currentlySelectedActivityCaretPosition = 0; // reset
@@ -652,16 +651,16 @@ public class CommentPanel extends JPanel {
         gbc.gridheight = 4;
         gbc.fill = GridBagConstraints.BOTH;
         if (getFont().canDisplay('\u25b6')) {
-            foldButton.setText("\u25b6");
+            expandButton.setText("\u25b6");
         } else {
-            foldButton.setText(">");
+            expandButton.setText(">");
         }
         //Remove marging /transparent border around text 
-        foldButton.setBorder(null);
-        foldButton.setBorderPainted(false);
-        foldButton.setMargin(new Insets(0, 0, 0, 0));
-        foldButton.setToolTipText(Labels.getString("Common.Show editor"));
-        foldButton.addActionListener(new ActionListener() {
+        expandButton.setBorder(null);
+        expandButton.setBorderPainted(false);
+        expandButton.setMargin(new Insets(0, 0, 0, 0));
+        expandButton.setToolTipText(Labels.getString("Common.Show editor"));
+        expandButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -669,27 +668,27 @@ public class CommentPanel extends JPanel {
                     if (previewButton.isVisible()) {
                         hideEditorButtons();
                         if (getFont().canDisplay('\u25b6')) {
-                            foldButton.setText("\u25b6");
+                            expandButton.setText("\u25b6");
                         } else {
-                            foldButton.setText(">");
+                            expandButton.setText(">");
                         }
-                        foldButton.setToolTipText(Labels.getString("Common.Show editor"));
+                        expandButton.setToolTipText(Labels.getString("Common.Show editor"));
                     } else {
                         showEditorButtons();
                         if (getFont().canDisplay('\u25c0')) {
-                            foldButton.setText("\u25c0");
+                            expandButton.setText("\u25c0");
                         } else {
-                            foldButton.setText("<");
+                            expandButton.setText("<");
                         }
-                        foldButton.setToolTipText(Labels.getString("Common.Hide editor"));
+                        expandButton.setToolTipText(Labels.getString("Common.Hide editor"));
                     }
                     // Show caret
                     informationArea.requestFocusInWindow();
                 }
             }
         });
-        foldButton.setVisible(false);
-        add(foldButton, gbc);
+        expandButton.setVisible(false);
+        add(expandButton, gbc);
     }
 
     private void addCommentArea() {
@@ -895,7 +894,7 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setVisible(false);
         linkTextField.setVisible(false);
         linkButton.setVisible(false);
-        foldButton.setVisible(false);
+        expandButton.setVisible(false);
     }
 
     private void displayEditorMode() {
@@ -911,7 +910,7 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setVisible(true);
         linkTextField.setVisible(true);
         linkButton.setVisible(true);
-        foldButton.setVisible(true);
+        expandButton.setVisible(true);
     }
 
     private void displayPreviewMode() {
@@ -929,7 +928,7 @@ public class CommentPanel extends JPanel {
         foregroundColorButton.setVisible(false);
         linkTextField.setVisible(false);
         linkButton.setVisible(false);
-        foldButton.setVisible(false);
+        expandButton.setVisible(false);
     }
 
     private void displaySaveCancelButton() {

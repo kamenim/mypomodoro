@@ -73,7 +73,6 @@ public class ActivitiesTable extends AbstractTable {
                                 || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
                             panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                         }
-                        currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
                         // empty subtable
@@ -93,7 +92,6 @@ public class ActivitiesTable extends AbstractTable {
                         if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                             panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
                         }
-                        currentSelectedRow = getSelectedRow();
                         showCurrentSelectedRow(); // when sorting columns, focus on selected row
                         // Display details                           
                         showInfoForSelectedRow();

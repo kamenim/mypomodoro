@@ -100,48 +100,50 @@ public class Pomodoro {
     }
 
     public void start() {
-        // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
-        if (!strictPomodoro
-                && pomSetNumber > 0) {
-            String title = Labels.getString("ToDoListPanel.New Set");
-            int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
-            int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
-            Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
-            String message = Labels.getString("ToDoListPanel.pomodoros to finish the current Set", pomSetNumberRemaining, DateUtil.getFormatedTime(dateLongBreakStart));
-            int pomNewSetNumberRemaining = Main.preferences.getNbPomPerSet();
-            int newSetShortBreaksNumber = pomNewSetNumberRemaining - 1;
-            Date dateNewSetLongBreakStart = DateUtil.addMinutesToNow(pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
-            message += System.getProperty("line.separator");
-            message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
-            if (reply == JOptionPane.YES_OPTION) {
-                pomSetNumber = 0;
+        if (getCurrentToDo().isSubTask()
+                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
+            // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
+            if (!strictPomodoro
+                    && pomSetNumber > 0) {
+                String title = Labels.getString("ToDoListPanel.New Set");
+                int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
+                int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
+                Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
+                String message = Labels.getString("ToDoListPanel.pomodoros to finish the current Set", pomSetNumberRemaining, DateUtil.getFormatedTime(dateLongBreakStart));
+                int pomNewSetNumberRemaining = Main.preferences.getNbPomPerSet();
+                int newSetShortBreaksNumber = pomNewSetNumberRemaining - 1;
+                Date dateNewSetLongBreakStart = DateUtil.addMinutesToNow(pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
+                message += System.getProperty("line.separator");
+                message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
+                int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
+                if (reply == JOptionPane.YES_OPTION) {
+                    pomSetNumber = 0;
+                }
             }
-        }
-        // Start timer
-        pomodoroTimer.start();
-        // Tooltip                        
-        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
-        setTooltipOnImage();
-        if (Main.preferences.getTicking() && !isMute) {
-            tick();
-        }
-        if (isSystemTray()) {
-            if (isSystemTrayMessage()) {
-                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+            // Start timer
+            pomodoroTimer.start();
+            // Tooltip                        
+            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+            setTooltipOnImage();
+            if (Main.preferences.getTicking() && !isMute) {
+                tick();
             }
-            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+            if (isSystemTray()) {
+                if (isSystemTrayMessage()) {
+                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                }
+                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+            }
+            inpomodoro = true;
+            Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
+            Main.gui.getIconBar().getIcon(2).highlight();
+            panel.getCurrentTable().setIconLabels();
+            // Show quick interruption button and items in combo box
+            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+            refreshTitlesAndTables();
+        } else {
+            // no start // ToDo message: you must start a subtask ?
         }
-        inpomodoro = true;
-        Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
-        Main.gui.getIconBar().getIcon(2).highlight();
-        panel.getCurrentTable().setIconLabels();
-        // Show quick interruption button and items in combo box
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-        //panel.showQuickInterruptionButtons(); // TODO
-        // Show running button in quick toolbar
-        //panel.showRunningButton(); TODO
-        panel.getCurrentTable().repaint(); // trigger row renderers      
     }
 
     public void stop() {
@@ -165,10 +167,7 @@ public class Pomodoro {
         panel.getCurrentTable().setIconLabels();
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        //panel.hideQuickInterruptionButtons(); // TODO
-        // Show selected button in quick toolbar
-        //panel.showSelectedButton(); // TODO
-        panel.getCurrentTable().repaint(); // trigger row renderers
+        refreshTitlesAndTables();
     }
 
     public void pause() {
@@ -185,30 +184,33 @@ public class Pomodoro {
         }
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-        //panel.hideQuickInterruptionButtons(); // TODO
+        refreshTitlesAndTables();
     }
 
     public void resume() {
-        pomodoroTimer.start();
-        // Tooltip                        
-        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
-        setTooltipOnImage();
-        if (inPomodoro() && Main.preferences.getTicking() && !isMute) {
-            tick();
-        }
-        if (inPomodoro() && isSystemTray()) {
-            if (isSystemTrayMessage()) {
-                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Resumed"), TrayIcon.MessageType.NONE);
+        if (getCurrentToDo().isSubTask()
+                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
+            pomodoroTimer.start();
+            // Tooltip                        
+            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+            setTooltipOnImage();
+            if (inPomodoro() && Main.preferences.getTicking() && !isMute) {
+                tick();
             }
-            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Resumed"));
-            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
-        }
-        // Show quick interruption button and items in combo box
-        if (inPomodoro()) {
-            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-            //panel.showQuickInterruptionButtons(); // TODO
-            // Show running button in quick toolbar
-            //panel.showRunningButton(); // TODO
+            if (inPomodoro() && isSystemTray()) {
+                if (isSystemTrayMessage()) {
+                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Resumed"), TrayIcon.MessageType.NONE);
+                }
+                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Resumed"));
+                MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+            }
+            // Show quick interruption button and items in combo box
+            if (inPomodoro()) {
+                ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+                refreshTitlesAndTables();
+            }
+        } else {
+            // no start // ToDo message: you must start a subtask ?
         }
     }
 
@@ -247,18 +249,18 @@ public class Pomodoro {
                     if (getCurrentToDo().isFinished()) {
                         getCurrentToDo().setOverestimatedPoms(getCurrentToDo().getOverestimatedPoms() + 1);
                         if (getCurrentToDo().isSubTask()) {
-                            panel.getMainTable().addPomsToSelectedRow(0, 0, 1);                      
+                            panel.getMainTable().addPomsToSelectedRow(0, 0, 1);
                         }
                     } else if (getCurrentToDo().getEstimatedPoms() + getCurrentToDo().getOverestimatedPoms() == 0) { // task with no estimation
                         getCurrentToDo().setEstimatedPoms(1);
                         if (getCurrentToDo().isSubTask()) {
-                            panel.getMainTable().addPomsToSelectedRow(0, 1, 0);                      
+                            panel.getMainTable().addPomsToSelectedRow(0, 1, 0);
                         }
                     }
                     getCurrentToDo().incrementPoms();
                     getCurrentToDo().databaseUpdate();
                     if (getCurrentToDo().isSubTask()) {
-                        panel.getMainTable().addPomsToSelectedRow(1, 0, 0);                        
+                        panel.getMainTable().addPomsToSelectedRow(1, 0, 0);
                     }
                     if (isDiscontinuous) { // stop timer
                         pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
@@ -300,9 +302,7 @@ public class Pomodoro {
                     Main.gui.getIconBar().getIcon(2).highlight();
                     // Hide quick interruption button and items in combo box 
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
-                    //panel.hideQuickInterruptionButtons(); // TODO
-                    // Show selected button in quick toolbar
-                    //panel.showSelectedButton(); // TODO
+                    refreshTitlesAndTables();
                 } else { // pomodoro time
                     if (panel.getCurrentTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task                        
                         currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
@@ -321,32 +321,32 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(message);
                         }
                         timerPanel.setToolTipText(null);
-                        //panel.hideQuickInterruptionButtons(); // TODO
-                        // Show selected button in quick toolbar
-                        //panel.showSelectedButton(); // TODO
                     } else {
-                        if (Main.preferences.getTicking() && !isMute) {
-                            tick();
-                        }
-                        timerPanel.setPomodoroEnv();
-                        inpomodoro = true;
-                        Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
-                        Main.gui.getIconBar().getIcon(2).highlight();
-                        if (isSystemTray()) {
-                            if (isSystemTrayMessage()) {
-                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                        if (getCurrentToDo().isSubTask()
+                                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
+                            if (Main.preferences.getTicking() && !isMute) {
+                                tick();
                             }
-                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                            timerPanel.setPomodoroEnv();
+                            inpomodoro = true;
+                            Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
+                            Main.gui.getIconBar().getIcon(2).highlight();
+                            if (isSystemTray()) {
+                                if (isSystemTrayMessage()) {
+                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                                }
+                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                            }
+                            goInPomodoro();
+                            // Tooltip                        
+                            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+                            setTooltipOnImage();
+                            // Show quick interruption button and items in combo box 
+                            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+                            refreshTitlesAndTables();
+                        } else {
+                            // no start // ToDo message: you must start a subtask ?
                         }
-                        goInPomodoro();
-                        // Tooltip                        
-                        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
-                        setTooltipOnImage();
-                        // Show quick interruption button and items in combo box 
-                        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-                        //panel.showQuickInterruptionButtons(); // TODO
-                        // Show running button in quick toolbar
-                        //panel.showRunningButton(); // TODO
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)
@@ -361,12 +361,7 @@ public class Pomodoro {
                 detailsPanel.showInfo();
                 panel.getCurrentTable().setIconLabels();
                 //panel.setPanelRemaining();
-                panel.getCurrentTable().setTitle();
-                panel.getCurrentTable().repaint(); // trigger row renderers // TODO not necessary if we set estimated value
-                if (getCurrentToDo().isSubTask()) {
-                    panel.getMainTable().setTitle();
-                    panel.getMainTable().repaint();
-                }
+                refreshTitlesAndTables();
             }
         }
 
@@ -387,6 +382,9 @@ public class Pomodoro {
     // multi-lines tooltip
     private void setTooltipOnImage() {
         String tooltip = "<html>";
+        tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task");
+        tooltip += ": ";
+        tooltip += "<br>";
         tooltip += getCurrentToDo().getName();
         tooltip += "<br>";
         Date dateShortBreakStart = DateUtil.addMinutesToNow(Main.preferences.getPomodoroLength());
@@ -643,5 +641,18 @@ public class Pomodoro {
 
     public boolean isDiscontinuous() {
         return isDiscontinuous;
+    }
+    
+    // Repaint title with proper buttons and trigger row renderers of the tables
+    private void refreshTitlesAndTables() {
+        panel.getCurrentTable().setTitle();
+        panel.getCurrentTable().repaint();
+        if (panel.getCurrentTable().equals(panel.getMainTable())) {
+            panel.getSubTable().setTitle();
+            panel.getSubTable().repaint();
+        } else {
+            panel.getMainTable().setTitle();
+            panel.getMainTable().repaint();
+        }
     }
 }

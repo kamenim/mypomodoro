@@ -28,7 +28,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.Labels;
 
-public final class TimerValueSlider extends JPanel {
+public class TimerValueSlider extends JPanel {
 
     private final JSlider slider;
     private final JLabel label = new JLabel();

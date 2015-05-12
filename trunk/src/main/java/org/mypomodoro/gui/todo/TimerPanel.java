@@ -34,6 +34,7 @@ import org.mypomodoro.buttons.TimePlusButton;
 import org.mypomodoro.buttons.TransparentButton;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.Labels;
 
@@ -193,19 +194,24 @@ public class TimerPanel extends JPanel {
                                 message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                                 JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             } else {
-                                if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
-                                    pomodoro.start();
-                                    startButton.setIcon(stopRedIcon);
-                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
-                                    if (strictPomodoro) {
-                                        startButton.setVisible(false);
+                                if (currentToDo.isSubTask()
+                                        || !ToDoList.hasSubTasks(currentToDo.getId())) {
+                                    if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
+                                        pomodoro.start();
+                                        startButton.setIcon(stopRedIcon);
+                                        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+                                        if (strictPomodoro) {
+                                            startButton.setVisible(false);
+                                        }
+                                        pomodoroTime.setForeground(Main.taskRunningColor);
+                                        timePlus.setTimePlusRedIcon(true); // turn time plus button red
+                                        timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
+                                        if (!strictPomodoro) {
+                                            pauseButton.setVisible(true);
+                                        }
                                     }
-                                    pomodoroTime.setForeground(Main.taskRunningColor);
-                                    timePlus.setTimePlusRedIcon(true); // turn time plus button red
-                                    timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
-                                    if (!strictPomodoro) {
-                                        pauseButton.setVisible(true);
-                                    }
+                                } else {
+                                    // no start // ToDo message: you must start a subtask ?
                                 }
                             }
                         }

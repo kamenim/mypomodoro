@@ -57,16 +57,9 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        String unicode_arrow_move_left = "\u226a";
-        if (!getFont().canDisplay('\u226a')) {
-            unicode_arrow_move_left = "<<<";
-        }
-        moveButton = new MoveToDoButton(unicode_arrow_move_left, todoPanel);
-        if (!getFont().canDisplay('\u226a')) {
-            moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 6));
-        } else {
-            moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + 30));
-        }
+        String leftArrow = getFont().canDisplay('\u226a') ? "\u226a" : "<<<";
+        moveButton = new MoveToDoButton(leftArrow, todoPanel);
+        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226a') ? 30 : 6)));        
         add(moveButton, gbc);
     }
 

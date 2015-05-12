@@ -37,9 +37,8 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
-        Activity activity = ToDoList.getList().getById(id);
+        super.getTableCellEditorComponent(table, value, isSelected, row, column);        
+        Activity activity = ((ToDoTable)table).getActivityFromRowIndex(row);
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();

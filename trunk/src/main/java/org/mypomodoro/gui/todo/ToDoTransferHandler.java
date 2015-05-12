@@ -69,8 +69,7 @@ public class ToDoTransferHandler extends TransferHandler {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                     if (reply == JOptionPane.OK_OPTION) {
-                        int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
-                        panel.getCurrentTable().setCurrentSelectedRow(row);
+                        //int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
                         // sort programatically the priority column
                         panel.getCurrentTable().setAutoCreateRowSorter(true);
                         DefaultRowSorter sorter = ((DefaultRowSorter) panel.getCurrentTable().getRowSorter());
