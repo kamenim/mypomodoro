@@ -23,7 +23,7 @@ import org.mypomodoro.db.ActivitiesDAO;
  * Report list
  *
  */
-public final class ReportList extends AbstractActivities {
+public class ReportList extends AbstractActivities {
 
     private static final ReportList list = new ReportList();
 

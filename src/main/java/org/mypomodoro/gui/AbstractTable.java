@@ -72,7 +72,6 @@ public abstract class AbstractTable extends JXTable {
 
     private final IListPanel panel;
     protected int mouseHoverRow = 0;
-    protected int currentSelectedRow = 0;
     protected InputMap im;
 
     public AbstractTable(AbstractTableModel model, final IListPanel panel) {
@@ -108,7 +107,7 @@ public abstract class AbstractTable extends JXTable {
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
                 int rowIndex = rowAtPoint(p);
-                if (rowIndex != -1) {
+                if (rowIndex >= 0) {
                     if (getSelectedRowCount() <= 1
                             && mouseHoverRow != rowIndex) { // no multiple selection
                         showInfoForRowIndex(rowIndex);
@@ -125,19 +124,19 @@ public abstract class AbstractTable extends JXTable {
         });
         // This is to address the case/event when the mouse exit the table
         addMouseListener(new MouseAdapter() {
-            
+
             // Way to select a row of the main table that is already selected in order to trigger AbstractListSelectionListener            
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
                 int rowIndex = rowAtPoint(p);
-                if (rowIndex != -1
+                if (rowIndex >= 0
                         && panel.getMainTable().equals(AbstractTable.this)
                         && rowIndex == getSelectedRow()) {
-                    clearSelection();
-                    setRowSelectionInterval(rowIndex, rowIndex);
+                    clearSelection(); // clear row selected in main table...
+                    setRowSelectionInterval(rowIndex, rowIndex); // ... then reselect row to trigger the listener
                 }
-            }            
+            }
 
             @Override
             public void mouseExited(MouseEvent e) {
@@ -191,7 +190,7 @@ public abstract class AbstractTable extends JXTable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (panel instanceof ActivitiesPanel) { // move to ToDo list
-                    MoveButton moveButton = new MoveButton("", panel);                    
+                    MoveButton moveButton = new MoveButton("", panel);
                     moveButton.doClick();
                 } else if (panel instanceof ToDoPanel) { // complete
                     CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), panel);
@@ -199,7 +198,7 @@ public abstract class AbstractTable extends JXTable {
                 }
             }
         }
-        am.put("Move right", new moveRightAction(panel)); 
+        am.put("Move right", new moveRightAction(panel));
 
         // Activate Shift + '<'
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_MASK), "Move left"); // send back to ActivityList and reopen
@@ -311,18 +310,19 @@ public abstract class AbstractTable extends JXTable {
             if (e.getSource() == getSelectionModel() && e.getFirstIndex() >= 0) { // See if this is a valid table selection
                 if (!e.getValueIsAdjusting()) { // ignoring the deselection event                    
                     if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table
-                        panel.setCurrentTable(AbstractTable.this); // set new current table 
+                        panel.setCurrentTable(AbstractTable.this); // set new current table                        
                     }
                     customValueChanged(e);
-                    setTitle();  // reset title
+                    // refresh title of both tables
+                    setTitle();
                 } else if (getRowCount() == 0) {
-                    // Way to select a row in the main table that is already selected
-                    if (!panel.getMainTable().equals(AbstractTable.this)) {
+                    if (!panel.getMainTable().equals(AbstractTable.this)) { // the sub table is empty so we reselect the row currently selected in the main table
                         int rowIndex = panel.getMainTable().getSelectedRow();
-                        panel.getMainTable().clearSelection();
-                        panel.getMainTable().setRowSelectionInterval(rowIndex, rowIndex);
+                        panel.getMainTable().clearSelection(); // clear first...
+                        panel.getMainTable().setRowSelectionInterval(rowIndex, rowIndex); // ...then reselect
                     }
-                    setTitle();  // reset title
+                    // refresh title of both tables
+                    setTitle();
                 }
             }
         }
@@ -334,7 +334,9 @@ public abstract class AbstractTable extends JXTable {
 
         @Override
         public void tableChanged(TableModelEvent e) {
-            if (e.getFirstRow() != -1 && e.getType() == TableModelEvent.UPDATE) {
+            if (e.getFirstRow() >= 0
+                    && e.getColumn() >= 0
+                    && e.getType() == TableModelEvent.UPDATE) {
                 customTableChanged(e);
                 setTitle();  // reset title
             }
@@ -395,12 +397,8 @@ public abstract class AbstractTable extends JXTable {
         return c;
     }
 
-    public void setCurrentSelectedRow(int row) {
-        currentSelectedRow = row;
-    }
-
     public void showCurrentSelectedRow() {
-        scrollRectToVisible(getCellRect(currentSelectedRow, 0, true));
+        scrollRectToVisible(getCellRect(getSelectedRow(), 0, true));
     }
 
     // selected row BOLD
@@ -416,11 +414,11 @@ public abstract class AbstractTable extends JXTable {
             Activity activity = getActivityFromRowIndex(row);
             if (activity != null) {
                 if (Main.gui != null && table instanceof ToDoTable) {
-                    Activity currentToDo = Main.gui.getToDoPanel().getPomodoro().getCurrentToDo();
-                    if (currentToDo != null) {
-                        if (Main.gui.getToDoPanel().getPomodoro().inPomodoro() && activity.getId() == currentToDo.getId()) {
-                            renderer.setForeground(ColorUtil.RED);
-                        }
+                    if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                            && (activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
+                            || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
+                            && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
+                        renderer.setForeground(Main.taskRunningColor);
                     }
                 }
                 if (activity.isFinished()) {
@@ -595,7 +593,7 @@ public abstract class AbstractTable extends JXTable {
         panel.emptySubTable();
     }
 
-    protected TitlePanel getTitlePanel() {
+    public TitlePanel getTitlePanel() {
         return panel.getTableTitlePanel();
     }
 
@@ -670,7 +668,7 @@ public abstract class AbstractTable extends JXTable {
         getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
         int rowCount = getRowCount(); // get row count on the view not the model !
         if (rowCount > 0) {
-            int currentRow = currentSelectedRow > rowIndex || currentSelectedRow == rowCount ? currentSelectedRow - 1 : currentSelectedRow;
+            int currentRow = getSelectedRow() > rowIndex || getSelectedRow() == rowCount ? getSelectedRow() - 1 : getSelectedRow();
             setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
             scrollRectToVisible(getCellRect(currentRow, 0, true));
         }

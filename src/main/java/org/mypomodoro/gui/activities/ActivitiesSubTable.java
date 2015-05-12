@@ -152,7 +152,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected TitlePanel getTitlePanel() {
+    public TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 
@@ -161,7 +161,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
-        newActivity.setName(Labels.getString("Common.New subtask"));
+        newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
         // Set parent id
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         if (getRowCount() == 0) { // first sub-task

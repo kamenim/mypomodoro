@@ -20,14 +20,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import org.mypomodoro.Main;
-import static org.mypomodoro.gui.MainPanel.resize;
+import org.mypomodoro.gui.MainPanel;
 
 /**
  * Up / Downsize the app
  *
  *
  */
-public final class ResizeButton extends TransparentButton {
+public class ResizeButton extends TransparentButton {
 
     private final ImageIcon upSizeIcon = new ImageIcon(Main.class.getResource("/images/upsize.png"));
     private final ImageIcon downSizeIcon = new ImageIcon(Main.class.getResource("/images/downsize.png"));
@@ -39,7 +39,7 @@ public final class ResizeButton extends TransparentButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                resize.resize();
+                MainPanel.RESIZE.resize();
             }
         });
     }

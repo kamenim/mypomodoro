@@ -94,6 +94,7 @@ public class SubTableTitlePanel extends TitlePanel {
             setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.rowBorderColor));
             setBackground(Main.hoverRowColor);
             titleLabel.setForeground(ColorUtil.BLACK); // this is necessary for themes such as JTatoo Noire
+            buttonPanel.setBackground(Main.hoverRowColor);
         }
     }
 
@@ -106,6 +107,7 @@ public class SubTableTitlePanel extends TitlePanel {
             JPanel p = new JPanel();
             setBackground(p.getBackground()); // reset default/theme background color
             titleLabel.setForeground(p.getForeground()); // this is necessary for themes such as JTatoo Noire
+            buttonPanel.setBackground(p.getBackground()); // reset default/theme background color
         }
     }
 

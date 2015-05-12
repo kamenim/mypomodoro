@@ -22,7 +22,6 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
 
 /**
@@ -38,15 +37,16 @@ class ToDoComboBoxCellRenderer extends ComboBoxCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
-        Activity activity = ToDoList.getList().getById(id);
+        Activity activity = ((ToDoTable)table).getActivityFromRowIndex(row);
         if (activity != null && activity.isFinished()) {
             labelBefore.setForeground(Main.taskFinishedColor);
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
             comboBox.setForeground(Main.taskFinishedColor);
             labelAfter.setForeground(Main.taskFinishedColor);
-        } else if (Main.gui != null && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
-                && id == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
+        } else if (activity != null 
+                && Main.gui != null && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                && (activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
+                    || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             labelBefore.setForeground(Main.taskRunningColor);
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskRunningColor); // editable combo box

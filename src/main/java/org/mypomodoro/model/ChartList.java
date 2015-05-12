@@ -24,7 +24,7 @@ import org.mypomodoro.db.ActivitiesDAO;
  * Chart list
  *
  */
-public final class ChartList extends AbstractActivities {
+public class ChartList extends AbstractActivities {
 
     private static final ChartList list = new ChartList();
 

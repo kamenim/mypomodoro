@@ -26,7 +26,7 @@ import org.jdesktop.swingx.JXDatePicker;
  * Custom date picker
  *
  */
-public final class DatePicker extends JXDatePicker {
+public class DatePicker extends JXDatePicker {
 
     private String editorText;
 

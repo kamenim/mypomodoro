@@ -35,7 +35,7 @@ import org.mypomodoro.util.TimeConverter;
 public class ToDoSubTable extends ToDoTable {
 
     public ToDoSubTable(ToDoSubTableModel model, final ToDoPanel panel) {
-        super(model, panel);
+        super(model, panel);        
 
         // This is to address the case/event when the mouse exit the table
         // Replacing listener of the ActivtiesTable class constructor
@@ -91,8 +91,10 @@ public class ToDoSubTable extends ToDoTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideSelectedButton();
-                getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideDuplicateButton();
+                getTitlePanel().hideOverestimationButton();
+                getTitlePanel().hideExternalButton();
+                getTitlePanel().hideInternalButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -114,6 +116,7 @@ public class ToDoSubTable extends ToDoTable {
                     // Show buttons of the quick bar
                     // Hide overestimation options when estimated == 0 or real < estimated
                     getTitlePanel().showSelectedButton();
+                    getTitlePanel().showDuplicateButton();
                     Activity selectedActivity = getActivityFromSelectedRow();
                     if (selectedActivity.getEstimatedPoms() != 0
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
@@ -123,14 +126,23 @@ public class ToDoSubTable extends ToDoTable {
                         panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
                     }
-                    /*TODO remove these test lines
-                     getTitlePanel().showOverestimationButton();
-                     getTitlePanel().showExternalButton();
-                     getTitlePanel().showInternalButton();*/
+                    if (panel.getPomodoro().inPomodoro()
+                            && panel.getPomodoro().getCurrentToDo().isSubTask()) {
+                        getTitlePanel().switchRunningButton();
+                    } else {
+                        getTitlePanel().switchSelectedButton();
+                    }
+                } else { // no row selected
+                    getTitlePanel().hideSelectedButton();
+                    getTitlePanel().hideDuplicateButton();
+                    getTitlePanel().hideOverestimationButton();
+                    getTitlePanel().hideExternalButton();
+                    getTitlePanel().hideInternalButton();                 
                 }
             }
-        } else {
+        } else { // empty table
             getTitlePanel().hideSelectedButton();
+            getTitlePanel().hideDuplicateButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
@@ -142,6 +154,14 @@ public class ToDoSubTable extends ToDoTable {
             getTitlePanel().showCreateButton();
         }
         getTitlePanel().showUnplannedButton();
+        if (panel.getPomodoro().inPomodoro() 
+                && panel.getPomodoro().getTimer().isRunning()) {
+            getTitlePanel().showExternalButton();
+            getTitlePanel().showInternalButton();
+        } else {
+            getTitlePanel().hideExternalButton();
+            getTitlePanel().hideInternalButton();
+        }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
@@ -187,7 +207,7 @@ public class ToDoSubTable extends ToDoTable {
     }
 
     @Override
-    protected TitlePanel getTitlePanel() {
+    public TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
 
@@ -196,7 +216,7 @@ public class ToDoSubTable extends ToDoTable {
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
-        newActivity.setName(Labels.getString("Common.New subtask"));
+        newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
         // Set parent id
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         if (getRowCount() == 0) { // first sub-task

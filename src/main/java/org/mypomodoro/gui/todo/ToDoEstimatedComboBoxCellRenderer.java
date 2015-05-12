@@ -34,9 +34,8 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
-        Activity activity = ToDoList.getList().getById(id);
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);        
+        Activity activity = ((ToDoTable)table).getActivityFromRowIndex(row);
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();

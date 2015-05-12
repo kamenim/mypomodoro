@@ -217,7 +217,6 @@ public class CheckPanel extends JPanel implements IListPanel {
                 table.setColumnModel();                
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
-                    table.setCurrentSelectedRow(0);
                     table.setRowSelectionInterval(0, 0);
                 }
                 table.setTitle();

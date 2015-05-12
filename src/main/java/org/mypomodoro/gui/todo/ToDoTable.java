@@ -86,7 +86,6 @@ public class ToDoTable extends AbstractTable {
                         if (!panel.getPomodoro().getTimer().isRunning()) {
                             panel.getPomodoro().setCurrentToDoId(-1); // this will disable the start button
                         }
-                        currentSelectedRow = getSelectedRows()[0]; // always selecting the first selected row (otherwise removeRow will fail)
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
                         // empty subtable
@@ -109,8 +108,8 @@ public class ToDoTable extends AbstractTable {
                         if (!panel.getPomodoro().getTimer().isRunning()) {
                             panel.getPomodoro().setCurrentToDoId(getActivityIdFromSelectedRow());
                         }
-                        currentSelectedRow = getSelectedRow();
-                        showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                        // here do not use showCurrentSelectedRow()
+                        scrollRectToVisible(getCellRect(getSelectedRow(), 0, true)); // when sorting columns, focus on selected row
                         // Display details                           
                         showInfoForSelectedRow();
                         // populate subtable
@@ -182,7 +181,7 @@ public class ToDoTable extends AbstractTable {
                     }
                 }
             }
-        });
+        });        
     }
 
     @Override
@@ -354,7 +353,8 @@ public class ToDoTable extends AbstractTable {
                 // Hide buttons of the quick bar
                 getTitlePanel().hideSelectedButton();
                 getTitlePanel().hideOverestimationButton();
-                getTitlePanel().hideDuplicateButton();
+                getTitlePanel().hideExternalButton();
+                getTitlePanel().hideInternalButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -382,26 +382,36 @@ public class ToDoTable extends AbstractTable {
                     getTitlePanel().showSelectedButton();
                     Activity selectedActivity = getActivityFromSelectedRow();
                     if (selectedActivity.getEstimatedPoms() != 0
-                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
+                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()
+                            && !ToDoList.hasSubTasks(selectedActivity.getId())) {
                         panel.getTabbedPane().enableOverestimationTab();
                         getTitlePanel().showOverestimationButton();
                     } else {
                         panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
                     }
-                    /*TODO remove these test lines
-                     getTitlePanel().showOverestimationButton();
-                     getTitlePanel().showExternalButton();
-                     getTitlePanel().showInternalButton();*/
+                    if (panel.getPomodoro().inPomodoro()) {
+                        getTitlePanel().switchRunningButton();
+                    } else {
+                        getTitlePanel().switchSelectedButton();
+                    }
                 }
             }
-        } else {
+        } else { // empty table
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }        
         getTitlePanel().showUnplannedButton();
+        if (panel.getPomodoro().inPomodoro() 
+                && panel.getPomodoro().getTimer().isRunning()) {
+            getTitlePanel().showExternalButton();
+            getTitlePanel().showInternalButton();
+        } else {
+            getTitlePanel().hideExternalButton();
+            getTitlePanel().hideInternalButton();
+        }
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
         }        
@@ -556,6 +566,22 @@ public class ToDoTable extends AbstractTable {
             ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
             panel.getDetailsPanel().enableButtons();
+        }
+    }
+    
+    @Override
+    public void showCurrentSelectedRow() {
+        if (panel.getPomodoro().inPomodoro()) {
+            for (int row = 0; row < getRowCount(); row++) {
+                // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
+                if (panel.getPomodoro().getCurrentToDo().getId() == getActivityIdFromRowIndex(row)
+                        || panel.getPomodoro().getCurrentToDo().getParentId() == getActivityIdFromRowIndex(row)) {
+                    scrollRectToVisible(getCellRect(row, 0, true));
+                    break;
+                }
+            }
+        } else {
+            super.showCurrentSelectedRow();
         }
     }
 }

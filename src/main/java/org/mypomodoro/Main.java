@@ -54,7 +54,7 @@ public class Main {
     // Google drive
     public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
     // Preferences
-    public static Preferences preferences = new Preferences();
+    public static final Preferences preferences = new Preferences();
     // GUI
     public static MainPanel gui;
     private static Font font;

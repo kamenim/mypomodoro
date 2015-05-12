@@ -51,7 +51,7 @@ import org.mypomodoro.util.ProgressBar;
  * Application GUI for myPomodoro.
  *
  */
-public final class MainPanel extends JFrame {
+public class MainPanel extends JFrame {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
@@ -59,7 +59,7 @@ public final class MainPanel extends JFrame {
     public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
     public static final String MYPOMODORO_VERSION = "4.0.0";
-    public static Resize resize = new Resize();
+    public static final Resize RESIZE = new Resize();
     public static PreferencesPanel preferencesPanel = new PreferencesPanel();
     public static SplashScreen splashScreen = new SplashScreen();
     public static CreatePanel createPanel = new CreatePanel();
@@ -172,7 +172,7 @@ public final class MainPanel extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                resize.resize();
+                RESIZE.resize();
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(maximizeKeyStroke, "Maximize");
