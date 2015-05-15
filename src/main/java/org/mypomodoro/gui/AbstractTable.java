@@ -349,19 +349,33 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public int getActivityIdFromSelectedRow() {
-        return (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+        int activityId = -1;
+        try {
+            activityId = (Integer) getModel().getValueAt(convertRowIndexToModel(getSelectedRow()), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+        } catch (IndexOutOfBoundsException ignored) {
+            // do nothing
+            // this may happen when hovering the cursor over the tasks while deleting/moving it 
+        }
+        return activityId;
     }
 
     public Activity getActivityFromSelectedRow() {
-        return getList().getById(getActivityIdFromSelectedRow());
+        return getList().getById(getActivityIdFromSelectedRow()); // return null if not found
     }
 
     public int getActivityIdFromRowIndex(int rowIndex) {
-        return (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+        int activityId = -1;
+        try {
+            activityId = (Integer) getModel().getValueAt(convertRowIndexToModel(rowIndex), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+        } catch (IndexOutOfBoundsException ignored) {
+            // do nothing
+            // this may happen when hovering the cursor over the tasks while deleting/moving it 
+        }
+        return activityId;
     }
 
     public Activity getActivityFromRowIndex(int rowIndex) {
-        return getList().getById(getActivityIdFromRowIndex(rowIndex));
+        return getList().getById(getActivityIdFromRowIndex(rowIndex)); // return null if not found
     }
 
     public Activity getActivityById(int id) {

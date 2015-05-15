@@ -149,6 +149,8 @@ public class ToDoTable extends AbstractTable {
                                     ColumnResizer.adjustColumnPreferredWidths(ToDoTable.this);
                                     revalidate();
                                 }
+                                // Refresh icon label
+                                setIconLabels();
                             }
                         } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
@@ -534,7 +536,20 @@ public class ToDoTable extends AbstractTable {
     public void setIconLabels(Activity selectedToDo) {
         if (getTableList().size() > 0) {
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-            Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color
+            Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color 
+            if (selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
+                panel.getUnplannedPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                panel.getCommentPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                panel.getOverestimationPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                panel.getEditPanel().getIconPanel().setBackground(Main.selectedRowColor);
+            } else {
+                panel.getUnplannedPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                panel.getDetailsPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                panel.getCommentPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                panel.getOverestimationPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                panel.getEditPanel().getIconPanel().setBackground(Main.hoverRowColor);
+            }
             if (panel.getPomodoro().inPomodoro()) {
                 //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, Main.taskRunningColor, false);
                 ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), currentToDo, Main.taskRunningColor);

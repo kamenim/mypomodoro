@@ -24,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.buttons.TabPanelButton;
-import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
