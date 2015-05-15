@@ -74,7 +74,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final TabbedPane tabbedPane;
     // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
-    private final CommentPanel commentPanel = new CommentPanel(this);
+    private final CommentPanel commentPanel = new CommentPanel(this, true);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
     private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
     private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
