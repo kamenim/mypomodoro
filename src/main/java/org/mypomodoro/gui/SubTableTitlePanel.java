@@ -23,7 +23,6 @@ import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
@@ -46,44 +45,32 @@ public class SubTableTitlePanel extends TitlePanel {
 
         this.panel = panel;
 
-        // Manage mouse hovering
-        addMouseMotionListener(new HoverMouseMotionAdapter());
-        // This is to address the case/event when the mouse exit the title
-        addMouseListener(new ExitMouseAdapter());
+        // Add listeners
+        setListeners();
 
-        // On click action
-        addMouseListener(new OneClickMouseAdapter(this));
+        // Add listeners to components        
+        setListeners(titleLabel);
+        setListeners(buttonPanel);
+        setListeners(unplannedButton);
+        setListeners(internalButton);
+        setListeners(externalButton);
+        setListeners(overestimationButton);
+        setListeners(createButton);
+        setListeners(duplicateButton);
+        setListeners(selectedButton);
     }
 
-    // Add listeners to possible components
-    // Component (button) are added dynamically to this panel    
-    @Override
-    public Component add(Component comp) {
-        boolean isHoverMouseMotionAdapter = false;
-        boolean isExitMouseAdapter = false;
-        boolean isOneClickMouseAdapter = false;
-        // make sure the listeners aren't added each the component is added
-        for (MouseListener listener : comp.getMouseListeners()) {
-            if (listener instanceof HoverMouseMotionAdapter) {
-                isHoverMouseMotionAdapter = true;
-            }
-            if (listener instanceof ExitMouseAdapter) {
-                isExitMouseAdapter = true;
-            }
-            if (listener instanceof OneClickMouseAdapter) {
-                isOneClickMouseAdapter = true;
-            }
-        }
-        if (!isHoverMouseMotionAdapter) {
-            comp.addMouseMotionListener(new HoverMouseMotionAdapter());
-        }
-        if (!isExitMouseAdapter) {
-            comp.addMouseListener(new ExitMouseAdapter());
-        }
-        if (!isOneClickMouseAdapter) {
-            comp.addMouseListener(new OneClickMouseAdapter(comp));
-        }
-        return super.add(comp);
+    private void setListeners() {
+        setListeners(this);
+    }
+
+    private void setListeners(Component comp) {
+        // Manage mouse hovering
+        comp.addMouseMotionListener(new HoverMouseMotionAdapter());
+        // This is to address the case/event when the mouse exit the title
+        comp.addMouseListener(new ExitMouseAdapter());
+        // On click action
+        comp.addMouseListener(new OneClickMouseAdapter(comp));
     }
 
     // Hover
@@ -135,7 +122,8 @@ public class SubTableTitlePanel extends TitlePanel {
                     panel.addTable();
                     panel.addSubTableTitlePanel(); // put the sub title back at the bottom
                     viewCount = 0;
-                } else if (viewCount == 0 && panel.getMainTable().getSelectedRowCount() == 1) { // expand half way: including buttons                        
+                } else if (viewCount == 0
+                        && panel.getMainTable().getSelectedRowCount() == 1) { // expand half way: including buttons                        
                     panel.getListPane().add(panel.getSubTableScrollPane());
                     viewCount = 1;
                 } else if (viewCount == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
@@ -157,9 +145,6 @@ public class SubTableTitlePanel extends TitlePanel {
                     Point pFinal = getLocationOnScreen(); // final location on screen
                     // Set cursor at the same original X position
                     robot.mouseMove((int) pOriginal.getX(), (int) pFinal.getY() + getHeight() / 2);
-                }
-                if (panel.getMainTable().getSelectedRowCount() == 1) {
-                    panel.getMainTable().showCurrentSelectedRow();
                 }
             }
         }

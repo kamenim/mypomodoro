@@ -39,6 +39,8 @@ import org.mypomodoro.util.TimeConverter;
  * Table for activities
  *
  */
+// TODO when selecting a subtask, title panel isn't refreshed (same with Report)
+// TODO when multiple selecting upward, the selecion is deselected (doesn't happen with downward selection)
 public class ActivitiesTable extends AbstractTable {
 
     protected final ActivitiesPanel panel;
@@ -114,13 +116,13 @@ public class ActivitiesTable extends AbstractTable {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
                 ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
-                Object data = sourceModel.getValueAt(row, column);
+                Object data = sourceModel.getValueAt(row, column); // in the view !!!!!!
                 if (data != null) {
                     Activity act = getActivityFromRowIndex(row);
                     if (column == AbstractTableModel.TITLE_COLUMN_INDEX) {
                         String name = data.toString().trim();
                         if (!name.equals(act.getName())) {
-                            if (name.length() == 0) { // Title (can't be empty)
+                            if (name.isEmpty()) { // Title (can't be empty)
                                 // reset the original value. Title can't be empty.
                                 sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
                             } else {
@@ -278,8 +280,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void showInfo(int activityId) {
-        Activity activity = getActivityById(activityId);
+    protected void showInfo(Activity activity) {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
         panel.getCommentPanel().showInfo(activity);
@@ -314,10 +315,13 @@ public class ActivitiesTable extends AbstractTable {
     @Override
     protected void setTitle() {
         String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
-        int rowCount = getModel().getRowCount(); // get row count on the model not the view !
+        int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
+            if (selectedRowCount > 0) {
+                getTitlePanel().showSelectedButton();
+            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -350,7 +354,6 @@ public class ActivitiesTable extends AbstractTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
-                getTitlePanel().hideSelectedButton();
                 getTitlePanel().hideDuplicateButton();
             } else {
                 title += " (" + rowCount + ")";
@@ -372,8 +375,7 @@ public class ActivitiesTable extends AbstractTable {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                 }
                 getTitlePanel().setToolTipText(toolTipText);
-                // Show buttons of the quick bar
-                getTitlePanel().showSelectedButton();
+                // Show buttons of the quick bar                
                 getTitlePanel().showDuplicateButton();
             }
         } else {
@@ -386,7 +388,6 @@ public class ActivitiesTable extends AbstractTable {
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
-        //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
         getTitlePanel().repaint();
     }
 

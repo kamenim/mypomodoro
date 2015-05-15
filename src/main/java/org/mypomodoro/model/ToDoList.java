@@ -117,20 +117,20 @@ public class ToDoList extends AbstractActivities {
         Activity clonedActivity = activity.clone(); // a clone is necessary to remove the reference/pointer to the original task        
         clonedActivity.setActualPoms(0);
         clonedActivity.setOverestimatedPoms(0);
-        if (!activity.isSubTask()) {
-            clonedActivity.setName("(D) " + clonedActivity.getName());
+        clonedActivity.setName("(D) " + clonedActivity.getName());
+        if (activity.isSubTask()) {
+            clonedActivity.setParentId(parentId);
+            getList().add(clonedActivity, new Date(), new Date(0));
+        } else {
             getList().add(clonedActivity, new Date(), new Date(0)); // add task here to get the new Id to be the parentId of the subtasks
             ToDoList subList = getSubTaskList(activity.getId());
             for (Activity subTask : subList) {
                 duplicate(subTask, clonedActivity.getId());
             }
-        } else {
-            clonedActivity.setParentId(parentId);
-            getList().add(clonedActivity, new Date(), new Date(0));
         }
         return clonedActivity;
     }
-    
+
     @Override
     public void delete(Activity activity) {
         // not used

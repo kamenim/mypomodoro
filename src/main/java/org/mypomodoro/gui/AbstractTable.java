@@ -141,7 +141,11 @@ public abstract class AbstractTable extends JXTable {
             @Override
             public void mouseExited(MouseEvent e) {
                 if (panel.getCurrentTable().getSelectedRowCount() == 1) { // one selected row either on the main or the sub table
-                    showInfo(panel.getCurrentTable().getActivityIdFromSelectedRow());
+                    Activity activity = panel.getCurrentTable().getActivityFromSelectedRow();
+                    // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+                    if (activity != null) {
+                        showInfo(activity);
+                    }
                 } else if (panel.getCurrentTable().getSelectedRowCount() > 1) { // multiple selection
                     // Display info (list of selected tasks)                        
                     panel.getCurrentTable().showDetailsForSelectedRows();
@@ -313,15 +317,14 @@ public abstract class AbstractTable extends JXTable {
                         panel.setCurrentTable(AbstractTable.this); // set new current table                        
                     }
                     customValueChanged(e);
-                    // refresh title of both tables
                     setTitle();
                 } else if (getRowCount() == 0) {
-                    if (!panel.getMainTable().equals(AbstractTable.this)) { // the sub table is empty so we reselect the row currently selected in the main table
+                    if (panel.getMainTable().getRowCount() > 0
+                            && !panel.getMainTable().equals(AbstractTable.this)) { // the sub table is empty so we reselect the row currently selected in the main table
                         int rowIndex = panel.getMainTable().getSelectedRow();
                         panel.getMainTable().clearSelection(); // clear first...
                         panel.getMainTable().setRowSelectionInterval(rowIndex, rowIndex); // ...then reselect
                     }
-                    // refresh title of both tables
                     setTitle();
                 }
             }
@@ -393,6 +396,10 @@ public abstract class AbstractTable extends JXTable {
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
             // do nothing
+            // this may happen when hovering the cursor over the tasks while deleting/moving it        
+        } catch (IndexOutOfBoundsException ignored) {
+            // do nothing
+            // this may happen when hovering the cursor over the tasks while deleting/moving it 
         }
         return c;
     }
@@ -491,16 +498,16 @@ public abstract class AbstractTable extends JXTable {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = (String) value;
-            if (!text.isEmpty()) {
-                renderer.setToolTipText(text);
-            } else {
+            if (text.isEmpty() && isSelected) {
                 // Set the blinking cursor and the ability to type in right away
-                table.editCellAt(getSelectedRow(), AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell
+                table.editCellAt(row, AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell in the view !
                 table.setSurrendersFocusOnKeystroke(true); // focus
                 if (table.getEditorComponent() != null) { // set blinking cursor
                     table.getEditorComponent().requestFocus();
                 }
                 renderer.setToolTipText(null);
+            } else {
+                renderer.setToolTipText(text);
             }
             return renderer;
         }
@@ -597,7 +604,7 @@ public abstract class AbstractTable extends JXTable {
         return panel.getTableTitlePanel();
     }
 
-    protected abstract void showInfo(int activityId);
+    protected abstract void showInfo(Activity activity);
 
     protected abstract void showDetailsForSelectedRows();
 
@@ -612,11 +619,19 @@ public abstract class AbstractTable extends JXTable {
     }
 
     protected void showInfoForSelectedRow() {
-        showInfo(getActivityIdFromSelectedRow());
+        Activity activity = getActivityFromSelectedRow();
+        // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+        if (activity != null) {
+            showInfo(activity);
+        }
     }
 
     protected void showInfoForRowIndex(int rowIndex) {
-        showInfo(getActivityIdFromRowIndex(rowIndex));
+        Activity activity = getActivityFromRowIndex(rowIndex);
+        // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+        if (activity != null) {
+            showInfo(activity);
+        }
     }
 
     protected abstract void setTitle();
@@ -666,11 +681,12 @@ public abstract class AbstractTable extends JXTable {
     public void removeRow(int rowIndex) {
         //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection) // TODO
         getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
-        int rowCount = getRowCount(); // get row count on the view not the model !
-        if (rowCount > 0) {
-            int currentRow = getSelectedRow() > rowIndex || getSelectedRow() == rowCount ? getSelectedRow() - 1 : getSelectedRow();
-            setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
-            scrollRectToVisible(getCellRect(currentRow, 0, true));
+        if (getModel().getRowCount() > 0) {
+            int currentRow = rowIndex == 0 ? 0 : rowIndex - 1;
+            if (currentRow >= 0) {
+                setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
+                scrollRectToVisible(getCellRect(currentRow, 0, true));
+            }
         }
     }
 
@@ -686,12 +702,9 @@ public abstract class AbstractTable extends JXTable {
         int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
-        /*if (panel.getMainTable().equals(this)) {
-         emptySubTable();
-         }*/
     }
 
-    // This method does not need to be abstract as it's implemented by the TODO table and sub-tables
+    // This method does not need to be abstract as it's implemented by the TODO table and sub-tables only
     public void reorderByPriority() {
     }
 
@@ -725,7 +738,7 @@ public abstract class AbstractTable extends JXTable {
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
         // For convenience, we use repaint instead of the following line:
-        // panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), panel.getMainTable().getSelectedRow(), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        // panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), convertRowIndexToModel(panel.getMainTable().getSelectedRow()), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
         repaint(); // trigger row renderers        
     }
 

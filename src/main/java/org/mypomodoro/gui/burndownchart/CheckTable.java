@@ -170,8 +170,7 @@ public class CheckTable extends AbstractTable {
     }
 
     @Override
-    protected void showInfo(int activityId) {
-        Activity activity = getActivityById(activityId);
+    protected void showInfo(Activity activity) {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
         //panel.getDetailsPanel().showInfo(this);
@@ -208,10 +207,13 @@ public class CheckTable extends AbstractTable {
     @Override
     protected void setTitle() {
         String title = Labels.getString("BurndownChartPanel.Chart List");
-        int rowCount = getModel().getRowCount(); // get row count on the model not the view !
+        int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
+            if (selectedRowCount > 0) {
+                getTitlePanel().showSelectedButton();
+            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -245,8 +247,6 @@ public class CheckTable extends AbstractTable {
                 }
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
-                // Hide buttons of the quick bar
-                getTitlePanel().hideSelectedButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -270,8 +270,6 @@ public class CheckTable extends AbstractTable {
                 }
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
-                // Show buttons of the quick bar
-                getTitlePanel().showSelectedButton();
             }
         } else {
             getTitlePanel().hideSelectedButton();
@@ -281,7 +279,6 @@ public class CheckTable extends AbstractTable {
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
-        //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
         getTitlePanel().repaint();
     }
 
