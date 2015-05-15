@@ -41,10 +41,13 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     protected void setTitle() {
         String title = Labels.getString("Common.Subtasks");
-        int rowCount = getRowCount();
+        int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
+            if (selectedRowCount > 0) {
+                getTitlePanel().showSelectedButton();
+            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -71,7 +74,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
-                getTitlePanel().hideSelectedButton();
                 getTitlePanel().hideDuplicateButton();
             } else {
                 title += " (" + rowCount + ")";
@@ -89,23 +91,23 @@ public class ActivitiesSubTable extends ActivitiesTable {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                 }
                 getTitlePanel().setToolTipText(toolTipText);
-                // Show buttons of the quick bar
-                getTitlePanel().showSelectedButton();
-                getTitlePanel().showDuplicateButton();
+                if (getSelectedRowCount() == 1) {
+                    getTitlePanel().showDuplicateButton();
+                } else {
+                    getTitlePanel().hideDuplicateButton();
+                }
             }
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        if (panel.getMainTable().getRowCount() == 0
-                || panel.getMainTable().getSelectedRowCount() > 1) {
-            getTitlePanel().hideCreateButton();
-        } else {
+        if (panel.getMainTable().getSelectedRowCount() == 1) {
             getTitlePanel().showCreateButton();
+        } else {
+            getTitlePanel().hideCreateButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
-        //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
         getTitlePanel().repaint(); // this is necessary to force stretching of panel
     }
 
@@ -164,7 +166,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
         // Set parent id
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        if (getRowCount() == 0) { // first sub-task
+        if (getModel().getRowCount() == 0) { // first sub-task
             newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
             newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
             newActivity.setActualPoms(parentActivity.getActualPoms());

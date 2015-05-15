@@ -277,10 +277,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void setText(String text) {
         titleLabel.setText(text);
     }
-     
-    /*public void repaintLabel() {
-     titleLabel.repaint();        
-     }*/
+    
     protected abstract void showCurrentSelectedRow();
 
     protected abstract void createNewTask();
@@ -296,4 +293,13 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void overestimateTask(int poms);
 
     protected abstract void refreshTable(boolean fromDatabase);
+    
+    /*@Override
+    public void repaint() {
+        super.repaint();
+        if (buttonPanel != null) {
+            titleLabel.repaint();
+            buttonPanel.repaint();
+        }
+    }*/
 }

@@ -36,6 +36,7 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.create.MergingActivityInputForm;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -160,11 +161,21 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
                         // only now we may remove the merged tasks
                         int[] rows = panel.getCurrentTable().getSelectedRows();
                         int increment = 0;
+                        // Add newActivity to list so it gets an ID to be used as parentID for subtasks                        
+                        if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
+                            newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
+                        }
+                        panel.getCurrentTable().addActivity(newActivity);
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
+                                // Add subtasks to lists
+                                for (Activity subTask : ActivityList.getSubTaskList(selectedActivity.getId())) {
+                                    subTask.setParentId(newActivity.getId());
+                                    ActivityList.getList().update(subTask);
+                                }
                                 panel.getCurrentTable().delete(selectedActivity);
                                 panel.getCurrentTable().removeRow(row);
                                 increment++;
@@ -178,10 +189,7 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
                                 });
                             }
                         }
-                        if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
-                            newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
-                        }
-                        panel.getCurrentTable().addActivity(newActivity);
+                        // insert new activity into Activity list's current table
                         panel.getCurrentTable().insertRow(newActivity);
                         // Close progress bar
                         final int progressCount = increment;

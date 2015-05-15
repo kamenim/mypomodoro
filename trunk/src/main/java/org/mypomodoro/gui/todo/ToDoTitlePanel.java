@@ -27,7 +27,7 @@ public class ToDoTitlePanel extends TitlePanel {
     public ToDoTitlePanel(IListPanel panel, AbstractTable table) {
         super(panel, table);
         
-        // show fold button and hide buton panel
+        // show fold button and hide button panel
         showFoldButton();
         hideButtonPanel();
     }

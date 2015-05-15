@@ -36,6 +36,8 @@ import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.gui.create.MergingActivityInputForm;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -108,7 +110,7 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
     protected void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
-        int estimatedPoms = 0;        
+        int estimatedPoms = 0;
         int overestimatedPoms = 0;
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
         if (selectedRowCount > 0) {
@@ -165,13 +167,37 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
                         // only now we can remove the merged tasks
                         int[] rows = panel.getCurrentTable().getSelectedRows();
                         int increment = 0;
+                        // Add newActivity to list so it gets an ID to be used as parentID for subtasks
+                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
+                            if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
+                                newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
+                            }
+                            ToDoList.getList().add(newActivity);
+                        } else { // add merged activity to activities list
+                            ActivityList.getList().add(newActivity);
+                        }
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
                                 Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
+                                // Skip current running task
                                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                                     continue;
+                                }
+                                // Add subtasks to lists
+                                if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
+                                    for (Activity subTask : ToDoList.getSubTaskList(selectedToDo.getId())) {
+                                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday()) { // update subtask in ToDo list
+                                            subTask.setParentId(newActivity.getId());
+                                            ToDoList.getList().update(subTask);
+                                        } else {
+                                            ToDoList.getList().moveToActivtyList(subTask);
+                                            // update after moving to make it a subtask of the new activity
+                                            subTask.setParentId(newActivity.getId());
+                                            ActivityList.getList().update(subTask);
+                                        }
+                                    }
                                 }
                                 panel.getCurrentTable().delete(selectedToDo);
                                 panel.getCurrentTable().removeRow(row);
@@ -194,18 +220,12 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
                                 MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
-                        // Reorder the priorities BEFORE adding the task to the ToDo list otherwise its priority will be wrong due to previous deletion of tasks
-                        // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion of tasks
                         panel.getCurrentTable().reorderByPriority();
-                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
-                            if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
-                                newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
-                            }
-                            panel.getCurrentTable().addActivity(newActivity);
+                        // insert new activity into ToDo list's current table
+                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
                             panel.getCurrentTable().insertRow(newActivity);
-                        } else { // add merged activity to activities list
-                            Main.gui.getActivityListPanel().getMainTable().addActivity(newActivity);
-                            Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity); // main table !
+                        } else { // insert new activity into Activity list's main table
+                            Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity);
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);

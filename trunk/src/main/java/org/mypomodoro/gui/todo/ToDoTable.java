@@ -272,18 +272,12 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    protected void showInfo(int activityId) {
-        Activity activity = getActivityById(activityId);
+    protected void showInfo(Activity activity) {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
         panel.getCommentPanel().showInfo(activity);
         panel.getEditPanel().showInfo(activity);
         setIconLabels(activity);
-    }
-
-    @Override
-    protected void showInfoForRowIndex(int rowIndex) {
-        showInfo(getActivityIdFromRowIndex(rowIndex));
     }
 
     @Override
@@ -319,6 +313,9 @@ public class ToDoTable extends AbstractTable {
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
+            if (selectedRowCount > 0) {
+                getTitlePanel().showSelectedButton();
+            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -351,7 +348,6 @@ public class ToDoTable extends AbstractTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
-                getTitlePanel().hideSelectedButton();
                 getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideExternalButton();
                 getTitlePanel().hideInternalButton();
@@ -379,8 +375,12 @@ public class ToDoTable extends AbstractTable {
                 if (getSelectedRowCount() == 1) {
                     // Show buttons of the quick bar
                     // Hide overestimation options when estimated == 0 or real < estimated
-                    getTitlePanel().showSelectedButton();
                     Activity selectedActivity = getActivityFromSelectedRow();
+                    if (panel.getPomodoro().inPomodoro()) {
+                        getTitlePanel().switchRunningButton();
+                    } else {
+                        getTitlePanel().switchSelectedButton();
+                    }
                     if (selectedActivity.getEstimatedPoms() != 0
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()
                             && !ToDoList.hasSubTasks(selectedActivity.getId())) {
@@ -390,11 +390,6 @@ public class ToDoTable extends AbstractTable {
                         panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
                     }
-                    if (panel.getPomodoro().inPomodoro()) {
-                        getTitlePanel().switchRunningButton();
-                    } else {
-                        getTitlePanel().switchSelectedButton();
-                    }
                 }
             }
         } else { // empty table
@@ -402,10 +397,13 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
-        }        
-        getTitlePanel().showUnplannedButton();
-        if (panel.getPomodoro().inPomodoro() 
-                && panel.getPomodoro().getTimer().isRunning()) {
+        }
+        if (canCreateUnplannedTask()) {
+            getTitlePanel().showUnplannedButton();
+        } else {
+            getTitlePanel().hideUnplannedButton();
+        }
+        if (canCreateInterruptions()) {
             getTitlePanel().showExternalButton();
             getTitlePanel().showInternalButton();
         } else {
@@ -417,7 +415,6 @@ public class ToDoTable extends AbstractTable {
         }        
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
-        //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
         getTitlePanel().repaint();
     }
 
@@ -453,50 +450,67 @@ public class ToDoTable extends AbstractTable {
 
     @Override
     public void createUnplannedTask() {
-        Activity unplannedToDo = new Activity();
-        unplannedToDo.setEstimatedPoms(0);
-        unplannedToDo.setIsUnplanned(true);
-        unplannedToDo.setName("(U) " + Labels.getString("Common.Unplanned"));
-        getList().add(unplannedToDo);
-        unplannedToDo.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-        insertRow(unplannedToDo);
-        panel.getTabbedPane().selectEditTab(); // open edit tab
+        createUnplannedTask(new Activity());
     }
-
+    
+    public void createUnplannedTask(Activity activity) {
+        activity.setEstimatedPoms(0);
+        activity.setIsUnplanned(true);
+        activity.setName("(U) " + Labels.getString("Common.Unplanned"));
+        getList().add(activity);
+        activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+        insertRow(activity);
+        panel.getTabbedPane().selectEditTab(); // open edit tab
+    }        
+    
     @Override
     public void createInternalInterruption() {
+        createInternalInterruption(new Activity());
+    }
+    
+    public void createInternalInterruption(Activity activity) {
         // Interruptions : update current/running pomodoro
-        Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        if (currentToDo != null && panel.getPomodoro().inPomodoro()) {
+        if (canCreateInterruptions()) {
+            Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             currentToDo.incrementInternalInter();
             currentToDo.databaseUpdate();
-            Activity interruption = new Activity();
-            interruption.setEstimatedPoms(0);
-            interruption.setIsUnplanned(true);
-            interruption.setName("(I) " + Labels.getString("ToDoListPanel.Internal"));
-            getList().add(interruption);
-            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(interruption);
+            activity.setEstimatedPoms(0);
+            activity.setIsUnplanned(true);
+            activity.setName("(I) " + Labels.getString("ToDoListPanel.Internal"));
+            getList().add(activity);
+            activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+            insertRow(activity);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
-
+    
     @Override
     public void createExternalInterruption() {
+        createExternalInterruption(new Activity());
+    }
+    
+    public void createExternalInterruption(Activity activity) {
         // Interruptions : update current/running pomodoro
-        Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        if (currentToDo != null && panel.getPomodoro().inPomodoro()) {
+        if (canCreateInterruptions()) {
+            Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             currentToDo.incrementInter();
             currentToDo.databaseUpdate();
-            Activity interruption = new Activity();
-            interruption.setEstimatedPoms(0);
-            interruption.setIsUnplanned(true);
-            interruption.setName("(E) " + Labels.getString("ToDoListPanel.External"));
-            getList().add(interruption);
-            interruption.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(interruption);
+            activity.setEstimatedPoms(0);
+            activity.setIsUnplanned(true);
+            activity.setName("(E) " + Labels.getString("ToDoListPanel.External"));
+            getList().add(activity);
+            activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
+            insertRow(activity);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
+    }
+    
+    protected boolean canCreateInterruptions() {
+        return getRowCount() > 0 && panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning();
+    }
+    
+    protected boolean canCreateUnplannedTask() {
+        return getRowCount() > 0;
     }
 
     @Override

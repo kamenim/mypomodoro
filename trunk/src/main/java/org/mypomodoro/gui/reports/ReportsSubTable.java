@@ -48,7 +48,11 @@ public class ReportsSubTable extends ReportsTable {
                     if (getSelectedRowCount() == 1) {
                         showInfoForSelectedRow();
                     } else if (getSelectedRowCount() == 0) { // selected row on the main table
-                        showInfo(panel.getMainTable().getActivityIdFromSelectedRow());
+                        Activity activity = panel.getMainTable().getActivityFromSelectedRow();
+                        // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+                        if (activity != null) {
+                            showInfo(activity);
+                        }
                     }
                 }
                 mouseHoverRow = -1;
@@ -60,10 +64,13 @@ public class ReportsSubTable extends ReportsTable {
     @Override
     protected void setTitle() {
         String title = Labels.getString("Common.Subtasks");
-        int rowCount = getRowCount();
+        int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
+            if (selectedRowCount > 0) {
+                getTitlePanel().showSelectedButton();
+            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -89,8 +96,6 @@ public class ReportsSubTable extends ReportsTable {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
                 }
                 getTitlePanel().setToolTipText(toolTipText);
-                // Hide buttons of the quick bar
-                getTitlePanel().hideSelectedButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -107,15 +112,12 @@ public class ReportsSubTable extends ReportsTable {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                 }
                 getTitlePanel().setToolTipText(toolTipText);
-                // Show buttons of the quick bar
-                getTitlePanel().showSelectedButton();
             }
         } else {
             getTitlePanel().hideSelectedButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
-        //activitiesPanel.getTitlePanel().repaintLabel(); // this is necessary to force stretching of panel
         getTitlePanel().repaint(); // this is necessary to force stretching of panel
     }
 
