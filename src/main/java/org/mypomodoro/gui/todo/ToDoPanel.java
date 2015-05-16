@@ -82,6 +82,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // Pomodoro
     private final JLabel pomodoroTime = new JLabel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel, pomodoroTime);
+    private final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
     // Tables
     private ToDoTable currentTable;
@@ -218,7 +219,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
         gbcListPaneAndTimer.gridy = 0;
         gbcListPaneAndTimer.weighty = 1.0;
         gbcListPaneAndTimer.weightx = 1.0;
-        TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
         JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
@@ -417,6 +417,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         return backgroundPanel;
     }
 
+    @Override
     public Pomodoro getPomodoro() {
         return pomodoro;
     }    
@@ -460,5 +461,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     
     public UnplannedPanel getUnplannedPanel() {
         return unplannedPanel;
-    }    
+    }
+    
+    public TimerPanel getTimerPanel() {
+        return timerPanel;
+    }
 }
