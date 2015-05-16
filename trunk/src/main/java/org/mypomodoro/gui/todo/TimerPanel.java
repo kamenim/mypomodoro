@@ -195,7 +195,7 @@ public class TimerPanel extends JPanel {
                                 JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             } else {
                                 if (currentToDo.isSubTask()
-                                        || !ToDoList.hasSubTasks(currentToDo.getId())) {
+                                        || !ToDoList.hasSubTasks(currentToDo.getId())) { // optimization: isSubtask is not necessary but it's a way to avoid triggering hasSubTasks 
                                     if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
                                         pomodoro.start();
                                         startButton.setIcon(stopRedIcon);
@@ -288,5 +288,13 @@ public class TimerPanel extends JPanel {
             timeMinus.setVisible(true);
             strictPomodoro = false;
         }
+    }
+    
+    public void hideStartButton() {
+        startButton.setVisible(false);
+    }
+    
+    public void showStartButton() {
+        startButton.setVisible(true);
     }
 }

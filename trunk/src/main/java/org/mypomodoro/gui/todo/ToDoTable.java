@@ -90,6 +90,10 @@ public class ToDoTable extends AbstractTable {
                         showDetailsForSelectedRows();
                         // empty subtable
                         emptySubTable();
+                        // hide start button unless timer is running
+                        if (!panel.getPomodoro().getTimer().isRunning()) {
+                            panel.getTimerPanel().hideStartButton();
+                        }
                     } else if (selectedRowCount == 1) {
                         // activate all panels
                         for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
@@ -114,6 +118,16 @@ public class ToDoTable extends AbstractTable {
                         showInfoForSelectedRow();
                         // populate subtable
                         populateSubTable();
+                        // hide start button unless timer is running and task has no subtasks or task is not finished
+                        // optimization: isSubtask is not necessary but it's a way to avoid triggering hasSubTasks 
+                        // we don't check if the task is finished here: we leave it to the Pomodoro object to display the error dialog
+                        if (!panel.getPomodoro().getTimer().isRunning() 
+                                && (getActivityFromSelectedRow().isSubTask()
+                                        || ToDoList.hasSubTasks(getActivityIdFromSelectedRow()))) {
+                            panel.getTimerPanel().hideStartButton();
+                        } else {
+                            panel.getTimerPanel().showStartButton();
+                        }
                     }
                     setIconLabels();
                 }
@@ -431,7 +445,7 @@ public class ToDoTable extends AbstractTable {
         if (getList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
             panel.getPomodoro().stop();
-            panel.getPomodoro().getTimerPanel().setStartEnv();
+            panel.getTimerPanel().setStartEnv();
         }
     }
 
@@ -446,7 +460,7 @@ public class ToDoTable extends AbstractTable {
         if (getList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
             panel.getPomodoro().stop();
-            panel.getPomodoro().getTimerPanel().setStartEnv();
+            panel.getTimerPanel().setStartEnv();
         }
     }
 

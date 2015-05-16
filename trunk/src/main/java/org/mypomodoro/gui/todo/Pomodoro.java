@@ -519,10 +519,6 @@ public class Pomodoro {
         this.timerPanel = timerPanel;
     }
 
-    public TimerPanel getTimerPanel() {
-        return timerPanel;
-    }
-
     public Timer getTimer() {
         return pomodoroTimer;
     }
