@@ -30,6 +30,8 @@ public interface IListPanel {
     AbstractTable getMainTable();
 
     AbstractTable getCurrentTable();
+   
+    AbstractTable getSubTable();        
 
     void setCurrentTable(AbstractTable table);
     

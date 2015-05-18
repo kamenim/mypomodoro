@@ -232,6 +232,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         currentTable = (ActivitiesTable) table;
     }
 
+    @Override
     public ActivitiesSubTable getSubTable() {
         return subTable;
     }       

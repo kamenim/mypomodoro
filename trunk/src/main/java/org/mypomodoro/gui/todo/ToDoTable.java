@@ -119,11 +119,11 @@ public class ToDoTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                         // hide start button unless timer is running and task has no subtasks or task is not finished
-                        // optimization: isSubtask is not necessary but it's a way to avoid triggering hasSubTasks 
+                        // optimization: isSubtask is not necessary but it's a way to avoid using hasSubTasks as much as possible
                         // we don't check if the task is finished here: we leave it to the Pomodoro object to display the error dialog
                         if (!panel.getPomodoro().getTimer().isRunning() 
-                                && (getActivityFromSelectedRow().isSubTask()
-                                        || ToDoList.hasSubTasks(getActivityIdFromSelectedRow()))) {
+                                && !getActivityFromSelectedRow().isSubTask()
+                                && ToDoList.hasSubTasks(getActivityIdFromSelectedRow())) {
                             panel.getTimerPanel().hideStartButton();
                         } else {
                             panel.getTimerPanel().showStartButton();

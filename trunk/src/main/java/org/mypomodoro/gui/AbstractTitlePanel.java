@@ -66,7 +66,6 @@ public abstract class AbstractTitlePanel extends JPanel {
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));        
         // Add label to panel
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        //titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, titleLabel.getFont().getSize() - 1));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
         showTitleLabel();
         // init button panel
@@ -74,24 +73,23 @@ public abstract class AbstractTitlePanel extends JPanel {
         buttonPanel.setBorder(null);
         showButtonPanel();
         // Init buttons
-        // Fold button
-        foldButton.setText(leftArrow);
+        // Fold button (the fold button doen't appear by default)
+        foldButton.setText(rightArrow);
         foldButton.setBorder(null); // this is important to remove the invisible border
-        //foldButton.setMargin(buttonInsets); this doesn't work reason why we add spaces to rightArrow and leftArrow strings
-        // foldButton.setSize(selectedButton.getSize()); this doesn't work either
         foldButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (titleLabel.isShowing()) {
+                if (buttonPanel.isShowing()) {
                     foldButton.setText(rightArrow);
-                    hideTitleLabel();
-                    showButtonPanel();
+                    buttonPanel.setToolTipText(null);
+                    hideButtonPanel();
                 } else {
                     foldButton.setText(leftArrow);
-                    hideButtonPanel();
-                    showTitleLabel();
+                    buttonPanel.setToolTipText(titleLabel.getText());                    
+                    add(buttonPanel, 0);                  
                 }
+                showTitleLabel();
                 AbstractTitlePanel.this.repaint();
             }
         });

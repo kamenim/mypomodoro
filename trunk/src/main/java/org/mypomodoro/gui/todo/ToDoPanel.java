@@ -297,6 +297,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         currentTable = (ToDoTable) table;
     }
 
+    @Override
     public ToDoSubTable getSubTable() {
         return subTable;
     }
