@@ -24,10 +24,9 @@ import org.mypomodoro.gui.*;
  */
 public class ToDoSubTableTitlePanel extends SubTableTitlePanel {
 
- 
     public ToDoSubTableTitlePanel(IListPanel panel, AbstractTable table) {
         super(panel, table);
-        
+
         // show fold button and hide button panel
         showExpandButton();
         hideButtonPanel();

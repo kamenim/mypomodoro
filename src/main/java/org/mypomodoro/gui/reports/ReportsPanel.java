@@ -184,7 +184,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
                     getList().refresh();
                 }
                 tableModel = new ReportsTableModel();
-                table.setModel(tableModel);                
+                table.setModel(tableModel);
                 table.setTableHeader();
                 table.setColumnModel();
                 table.initTabs();
@@ -283,13 +283,13 @@ public class ReportsPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void populateSubTable(int parentId) {        
+    public void populateSubTable(int parentId) {
         subTableModel.update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
         setCurrentTable(table);
     }
-    
+
     @Override
     public Pomodoro getPomodoro() {
         return null; // not used

@@ -45,7 +45,7 @@ public class CheckTable extends AbstractTable {
         this.panel = panel;
 
         setTableHeader();
-        
+
         setColumnModel();
 
         initTabs();

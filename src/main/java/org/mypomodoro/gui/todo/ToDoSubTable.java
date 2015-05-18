@@ -292,7 +292,7 @@ public class ToDoSubTable extends ToDoTable {
     // no running task or subtask running
     private boolean canCreateNewTask() {
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        return panel.getMainTable().getSelectedRowCount() == 1 
+        return panel.getMainTable().getSelectedRowCount() == 1
                 && (!panel.getPomodoro().inPomodoro() || (currentToDo != null && currentToDo.isSubTask()));
     }
 

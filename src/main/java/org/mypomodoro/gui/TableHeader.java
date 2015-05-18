@@ -76,7 +76,7 @@ public class TableHeader extends JTableHeader {
             return toolTips[modelColumnIndex];
         }
     }
-    
+
     @Override
     public JTable getTable() {
         return myTable;

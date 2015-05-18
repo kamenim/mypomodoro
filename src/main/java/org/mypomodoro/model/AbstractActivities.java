@@ -30,7 +30,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public void add(Activity activity) {
         activities.add(activity);
     }
-    
+
     public abstract void delete(Activity activity);
 
     public boolean isEmpty() {

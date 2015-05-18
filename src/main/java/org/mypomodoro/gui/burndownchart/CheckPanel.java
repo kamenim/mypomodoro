@@ -214,7 +214,7 @@ public class CheckPanel extends JPanel implements IListPanel {
                 tableModel = new CheckTableModel();
                 table.setModel(tableModel);
                 table.setTableHeader();
-                table.setColumnModel();                
+                table.setColumnModel();
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
                     table.setRowSelectionInterval(0, 0);
@@ -232,11 +232,11 @@ public class CheckPanel extends JPanel implements IListPanel {
     public ChartList getList() {
         return ChartList.getList();
     }
-    
+
     @Override
     public void emptySubTable() {
     }
-    
+
     @Override
     public void populateSubTable(int parentId) {
     }
@@ -250,7 +250,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     public CheckTable getCurrentTable() {
         return table;
     }
-    
+
     @Override
     public CheckTable getSubTable() {
         return null; // not used - only one table
@@ -299,7 +299,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     public JScrollPane getSubTableScrollPane() {
         return null; // not used
     }
-    
+
     @Override
     public Pomodoro getPomodoro() {
         return null; // not used

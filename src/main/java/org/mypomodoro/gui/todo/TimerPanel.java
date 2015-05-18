@@ -289,11 +289,11 @@ public class TimerPanel extends JPanel {
             strictPomodoro = false;
         }
     }
-    
+
     public void hideStartButton() {
         startButton.setVisible(false);
     }
-    
+
     public void showStartButton() {
         startButton.setVisible(true);
     }

@@ -99,7 +99,7 @@ public class OverestimationPanel extends JPanel {
     // Overestimation only when estimated != 0 and real >= estimated
     public void overestimateTask(int overestimatedPoms) {
         Activity selectedToDo = panel.getCurrentTable().getActivityFromSelectedRow();
-        if (selectedToDo.getEstimatedPoms() != 0 
+        if (selectedToDo.getEstimatedPoms() != 0
                 && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()
                 && (selectedToDo.isSubTask() || !ToDoList.hasSubTasks(selectedToDo.getId()))) {
             // Overestimation

@@ -114,7 +114,7 @@ public class ReportList extends AbstractActivities {
 
     // Reopen a task and its subtasks to ActivityList
     // Reopen a subtask only will make it a task
-    public void reopenToActivtyList(Activity activity) {        
+    public void reopenToActivtyList(Activity activity) {
         if (activity.isSubTask()) {
             activity.setParentId(-1); // sub-task becomes task
         } else {
@@ -124,7 +124,7 @@ public class ReportList extends AbstractActivities {
                 //subTask.setIteration(-1); // not really necessary
                 ActivityList.getList().add(subTask);
                 remove(subTask);
-            }            
+            }
         }
         activity.setDateCompleted(new Date());
         activity.setIteration(-1); // reset iteration

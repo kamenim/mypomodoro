@@ -30,11 +30,11 @@ public interface IListPanel {
     AbstractTable getMainTable();
 
     AbstractTable getCurrentTable();
-   
-    AbstractTable getSubTable();        
+
+    AbstractTable getSubTable();
 
     void setCurrentTable(AbstractTable table);
-    
+
     JSplitPane getSplitPane();
 
     JPanel getListPane();
@@ -50,12 +50,12 @@ public interface IListPanel {
     JScrollPane getTableScrollPane();
 
     TitlePanel getTableTitlePanel();
-    
+
     TabbedPane getTabbedPane();
-    
+
     void populateSubTable(int activityId);
-            
+
     void emptySubTable();
-    
+
     Pomodoro getPomodoro();
 }

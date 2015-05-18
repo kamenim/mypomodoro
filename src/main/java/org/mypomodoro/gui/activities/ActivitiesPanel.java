@@ -185,9 +185,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel = new ActivitiesTableModel();                
+                tableModel = new ActivitiesTableModel();
                 table.setModel(tableModel);
-                table.setTableHeader();               
+                table.setTableHeader();
                 table.setColumnModel();
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
@@ -235,7 +235,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     @Override
     public ActivitiesSubTable getSubTable() {
         return subTable;
-    }       
+    }
 
     /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
@@ -290,7 +290,7 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         subTable.setColumnModel();
         subTable.setTitle();
     }
-    
+
     @Override
     public Pomodoro getPomodoro() {
         return null; // not used

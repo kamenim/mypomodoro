@@ -36,7 +36,7 @@ public class CompleteToDoButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public CompleteToDoButton(final String title, final String message, final IListPanel  panel) {
+    public CompleteToDoButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         setToolTipText("SHIFT + >");
         addActionListener(new ActionListener() {

@@ -121,7 +121,7 @@ public class ToDoTable extends AbstractTable {
                         // hide start button unless timer is running and task has no subtasks or task is not finished
                         // optimization: isSubtask is not necessary but it's a way to avoid using hasSubTasks as much as possible
                         // we don't check if the task is finished here: we leave it to the Pomodoro object to display the error dialog
-                        if (!panel.getPomodoro().getTimer().isRunning() 
+                        if (!panel.getPomodoro().getTimer().isRunning()
                                 && !getActivityFromSelectedRow().isSubTask()
                                 && ToDoList.hasSubTasks(getActivityIdFromSelectedRow())) {
                             panel.getTimerPanel().hideStartButton();
@@ -197,7 +197,7 @@ public class ToDoTable extends AbstractTable {
                     }
                 }
             }
-        });        
+        });
     }
 
     @Override
@@ -428,7 +428,7 @@ public class ToDoTable extends AbstractTable {
         }
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
-        }        
+        }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint();
@@ -468,7 +468,7 @@ public class ToDoTable extends AbstractTable {
     public void createUnplannedTask() {
         createUnplannedTask(new Activity());
     }
-    
+
     public void createUnplannedTask(Activity activity) {
         activity.setEstimatedPoms(0);
         activity.setIsUnplanned(true);
@@ -477,13 +477,13 @@ public class ToDoTable extends AbstractTable {
         activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
         insertRow(activity);
         panel.getTabbedPane().selectEditTab(); // open edit tab
-    }        
-    
+    }
+
     @Override
     public void createInternalInterruption() {
         createInternalInterruption(new Activity());
     }
-    
+
     public void createInternalInterruption(Activity activity) {
         // Interruptions : update current/running pomodoro
         if (canCreateInterruptions()) {
@@ -499,12 +499,12 @@ public class ToDoTable extends AbstractTable {
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
-    
+
     @Override
     public void createExternalInterruption() {
         createExternalInterruption(new Activity());
     }
-    
+
     public void createExternalInterruption(Activity activity) {
         // Interruptions : update current/running pomodoro
         if (canCreateInterruptions()) {
@@ -520,18 +520,18 @@ public class ToDoTable extends AbstractTable {
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
-    
+
     protected boolean canCreateInterruptions() {
         return getRowCount() > 0 && panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning();
     }
-    
+
     protected boolean canCreateUnplannedTask() {
         return getRowCount() > 0;
     }
 
     @Override
     public void overestimateTask(int poms) {
-        panel.getOverestimationPanel().overestimateTask(poms);        
+        panel.getOverestimationPanel().overestimateTask(poms);
     }
 
     @Override
@@ -611,7 +611,7 @@ public class ToDoTable extends AbstractTable {
             panel.getDetailsPanel().enableButtons();
         }
     }
-    
+
     @Override
     public void showCurrentSelectedRow() {
         if (panel.getPomodoro().inPomodoro()) {
