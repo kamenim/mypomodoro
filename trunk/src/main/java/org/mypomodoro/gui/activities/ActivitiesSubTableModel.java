@@ -27,7 +27,7 @@ public class ActivitiesSubTableModel extends ActivitiesTableModel {
     public ActivitiesSubTableModel() {
         emptyModel();
     }
-    
+
     public void update(int parentId) {
         setDataVector(ActivityList.getSubTaskList(parentId));
     }

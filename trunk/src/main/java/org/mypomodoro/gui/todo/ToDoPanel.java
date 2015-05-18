@@ -250,9 +250,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel = new ToDoTableModel();                
+                tableModel = new ToDoTableModel();
                 table.setModel(tableModel);
-                table.setTableHeader();               
+                table.setTableHeader();
                 table.setColumnModel();
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
@@ -350,9 +350,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public void populateSubTable(int parentId) {        
+    public void populateSubTable(int parentId) {
         subTableModel.update(parentId);
-        subTable.setColumnModel();        
+        subTable.setColumnModel();
         subTable.setTitle();
         setCurrentTable(table);
     }
@@ -421,7 +421,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     @Override
     public Pomodoro getPomodoro() {
         return pomodoro;
-    }    
+    }
 
     public void removeTabbedPane() {
         splitPane.remove(tabbedPane);
@@ -430,7 +430,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public void removeListPane() {
         listPaneAndTimer.remove(listPane);
     }
-    
+
     public void addTabbedPane() {
         splitPane.setRightComponent(tabbedPane); // bottom
     }
@@ -459,11 +459,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
     public OverestimationPanel getOverestimationPanel() {
         return overestimationPanel;
     }
-    
+
     public UnplannedPanel getUnplannedPanel() {
         return unplannedPanel;
     }
-    
+
     public TimerPanel getTimerPanel() {
         return timerPanel;
     }

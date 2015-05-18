@@ -35,16 +35,16 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        super.getTableCellEditorComponent(table, value, isSelected, row, column);        
-        Activity activity = ((ToDoTable)table).getActivityFromRowIndex(row);
+        super.getTableCellEditorComponent(table, value, isSelected, row, column);
+        Activity activity = ((ToDoTable) table).getActivityFromRowIndex(row);
         if (activity != null && activity.isFinished()) {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
             comboBox.setForeground(Main.taskFinishedColor);
             //label.setForeground(Main.taskFinishedColor);
-        } else if (activity != null 
+        } else if (activity != null
                 && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && (activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
-                    || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
+                || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskRunningColor); // editable combo box
             comboBox.setForeground(Main.taskRunningColor);

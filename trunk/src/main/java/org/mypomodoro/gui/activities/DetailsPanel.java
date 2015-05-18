@@ -72,7 +72,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.weightx = 0.1;
         String rightArrow = getFont().canDisplay('\u226b') ? "\u226b" : ">>>";
         MoveButton moveButton = new MoveButton(rightArrow, activitiesPanel);
-        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 30 : 6)));        
+        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 30 : 6)));
         add(moveButton, gbc);
     }
 

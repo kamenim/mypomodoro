@@ -59,7 +59,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridheight = 2;
         String leftArrow = getFont().canDisplay('\u226a') ? "\u226a" : "<<<";
         moveButton = new MoveToDoButton(leftArrow, todoPanel);
-        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226a') ? 30 : 6)));        
+        moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226a') ? 30 : 6)));
         add(moveButton, gbc);
     }
 

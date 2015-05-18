@@ -34,7 +34,7 @@ public class TitlePanel extends AbstractTitlePanel {
     @Override
     protected void showCurrentSelectedRow() {
         table.showCurrentSelectedRow();
-    }        
+    }
 
     @Override
     protected void createNewTask() {

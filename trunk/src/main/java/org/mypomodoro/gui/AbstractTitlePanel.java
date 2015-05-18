@@ -33,7 +33,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
-import org.mypomodoro.util.Labels;
 
 /**
  *

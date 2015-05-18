@@ -27,7 +27,7 @@ public class ToDoSubTableModel extends ToDoTableModel {
     public ToDoSubTableModel() {
         emptyModel();
     }
-    
+
     public void update(int parentId) {
         setDataVector(ToDoList.getSubTaskList(parentId));
     }

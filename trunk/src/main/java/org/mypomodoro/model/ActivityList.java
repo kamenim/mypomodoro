@@ -63,7 +63,7 @@ public class ActivityList extends AbstractActivities {
         ActivityList subTableList = new ActivityList();
         for (Activity a : list) {
             if (a.getParentId() != parentId) {
-                subTableList.removeById(a.getId());                
+                subTableList.removeById(a.getId());
             }
         }
         return subTableList;
@@ -118,7 +118,7 @@ public class ActivityList extends AbstractActivities {
         clonedActivity.setName("(D) " + clonedActivity.getName());
         if (activity.isSubTask()) {
             clonedActivity.setParentId(parentId);
-            getList().add(clonedActivity, new Date(), new Date(0));            
+            getList().add(clonedActivity, new Date(), new Date(0));
         } else {
             getList().add(clonedActivity, new Date(), new Date(0)); // add task here to get the new Id to be the parentId of the subtasks
             ActivityList subList = getSubTaskList(activity.getId());
