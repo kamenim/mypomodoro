@@ -132,6 +132,7 @@ public abstract class AbstractTable extends JXTable {
                 int rowIndex = rowAtPoint(p);
                 if (rowIndex >= 0
                         && panel.getMainTable().equals(AbstractTable.this)
+                        && getSelectedRowCount() == 1
                         && rowIndex == getSelectedRow()) {
                     clearSelection(); // clear row selected in main table...
                     setRowSelectionInterval(rowIndex, rowIndex); // ... then reselect row to trigger the listener

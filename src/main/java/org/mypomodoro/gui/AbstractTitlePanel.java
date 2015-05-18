@@ -16,11 +16,16 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.AWTException;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,6 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.util.Labels;
 
 /**
  *
@@ -57,13 +63,13 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
     private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
-    private final String leftArrow = " " + (getFont().canDisplay('\u25c0') ? "\u25c0" : "<") + " ";    
+    private final String leftArrow = " " + (getFont().canDisplay('\u25c0') ? "\u25c0" : "<") + " ";
     // Expand/Fold button
-    protected final DefaultButton foldButton = new DefaultButton(leftArrow);
+    protected final DefaultButton expandButton = new DefaultButton(rightArrow);
 
     public AbstractTitlePanel() {
         setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));        
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         // Add label to panel
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -74,25 +80,8 @@ public abstract class AbstractTitlePanel extends JPanel {
         showButtonPanel();
         // Init buttons
         // Fold button (the fold button doen't appear by default)
-        foldButton.setText(rightArrow);
-        foldButton.setBorder(null); // this is important to remove the invisible border
-        foldButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (buttonPanel.isShowing()) {
-                    foldButton.setText(rightArrow);
-                    buttonPanel.setToolTipText(null);
-                    hideButtonPanel();
-                } else {
-                    foldButton.setText(leftArrow);
-                    buttonPanel.setToolTipText(titleLabel.getText());                    
-                    add(buttonPanel, 0);                  
-                }
-                showTitleLabel();
-                AbstractTitlePanel.this.repaint();
-            }
-        });
+        expandButton.setBorder(null); // this is important to remove the invisible border
+        expandButton.addMouseListener(new ExpandMouseAdapter());
         // Scroll to selected task
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
@@ -174,25 +163,59 @@ public abstract class AbstractTitlePanel extends JPanel {
             }
         });
     }
-    
+
+    class ExpandMouseAdapter extends MouseAdapter {
+
+        private Robot robot = null; // used to move the cursor
+
+        public ExpandMouseAdapter() {
+            try {
+                robot = new Robot();
+            } catch (AWTException ignored) {
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Point pOriginal = e.getLocationOnScreen(); // original location on screen
+            if (buttonPanel.isShowing()) {
+                hideButtonPanel();
+                buttonPanel.setToolTipText(null);
+                expandButton.setText(rightArrow);
+            } else {
+                add(buttonPanel, 0);
+                expandButton.setText(leftArrow);
+                buttonPanel.setToolTipText(titleLabel.getText());
+            }
+            // The following line are required get the cursor to move correctly        
+            AbstractTitlePanel.this.validate();
+            // Center cursor on button
+            if (robot != null) {
+                Point pFinal = expandButton.getLocationOnScreen(); // final location on screen
+                // Set cursor at the same original Y position
+                robot.mouseMove((int) pFinal.getX() + expandButton.getWidth() / 2, (int) pOriginal.getY());
+            }
+        }
+    }
+
     public void showTitleLabel() {
         add(titleLabel);
     }
-    
+
     public void hideTitleLabel() {
         remove(titleLabel);
     }
-    
+
     public void showButtonPanel() {
         add(buttonPanel);
     }
-    
+
     public void hideButtonPanel() {
         remove(buttonPanel);
     }
-    
-    public void showFoldButton() {
-       add(foldButton, 0);
+
+    public void showExpandButton() {
+        add(expandButton, 0);
     }
 
     public void showSelectedButton() {
@@ -262,7 +285,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
-   
+
     public void hideRefreshButton() {
         buttonPanel.remove(refreshButton);
     }
@@ -275,7 +298,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void setText(String text) {
         titleLabel.setText(text);
     }
-    
+
     protected abstract void showCurrentSelectedRow();
 
     protected abstract void createNewTask();
@@ -291,13 +314,13 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void overestimateTask(int poms);
 
     protected abstract void refreshTable(boolean fromDatabase);
-    
+
     /*@Override
-    public void repaint() {
-        super.repaint();
-        if (buttonPanel != null) {
-            titleLabel.repaint();
-            buttonPanel.repaint();
-        }
-    }*/
+     public void repaint() {
+     super.repaint();
+     if (buttonPanel != null) {
+     titleLabel.repaint();
+     buttonPanel.repaint();
+     }
+     }*/
 }
