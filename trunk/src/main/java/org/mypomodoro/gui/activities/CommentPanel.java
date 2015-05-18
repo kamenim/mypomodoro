@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,6 +24,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -76,7 +79,6 @@ public class CommentPanel extends JPanel {
     private final DefaultButton saveButton = new DefaultButton(Labels.getString("Common.Save"));
     private final DefaultButton cancelButton = new DefaultButton(Labels.getString("Common.Cancel"));
     private final DefaultButton previewButton = new DefaultButton(Labels.getString("Common.Preview"));
-    private final DefaultButton expandButton = new DefaultButton(">");
     private final DefaultButton htmlButton = new DefaultButton("HTML");
     private final DefaultButton boldButton = new DefaultButton("B");
     private final DefaultButton italicButton = new DefaultButton("I");
@@ -88,6 +90,11 @@ public class CommentPanel extends JPanel {
     private final HtmlEditor informationArea = new HtmlEditor();
     private final JScrollPane scrollPaneInformationArea;
     private boolean showIconLabel = false;
+    // left and rigth 'small' arrows
+    private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
+    private final String leftArrow = " " + (getFont().canDisplay('\u25c0') ? "\u25c0" : "<") + " ";
+    // Expand/Fold button
+    private final DefaultButton expandButton = new DefaultButton(rightArrow);
 
     // Record
     private int currentlySelectedActivityId = -1;
@@ -115,7 +122,7 @@ public class CommentPanel extends JPanel {
         setBorder(null);
 
         addEditorButtons();
-        addFoldButton();
+        addExpandButton();
         addCommentArea();
         addSaveButton();
         addCancelButton();
@@ -341,11 +348,7 @@ public class CommentPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 boolean htmlMode = informationArea.isHTMLMode();
                 displayPreviewMode();
-                if (getFont().canDisplay('\u25b6')) {
-                    expandButton.setText("\u25b6");
-                } else {
-                    expandButton.setText(">");
-                }
+                expandButton.setText(rightArrow);
                 expandButton.setToolTipText(Labels.getString("Common.Show editor"));
                 informationArea.setEditable(false);
                 if (htmlMode) {
@@ -642,53 +645,60 @@ public class CommentPanel extends JPanel {
         add(linkButton, gbc);
     }
 
-    private void addFoldButton() {
-        // Fold button
+    private void addExpandButton() {
+        // Expand button
         gbc.gridx = 5;
         gbc.gridy = 0;
         gbc.weightx = 0.02; // 2 %
         gbc.weighty = 1.0;
         gbc.gridheight = 4;
         gbc.fill = GridBagConstraints.BOTH;
-        if (getFont().canDisplay('\u25b6')) {
-            expandButton.setText("\u25b6");
-        } else {
-            expandButton.setText(">");
-        }
         //Remove marging /transparent border around text 
         expandButton.setBorder(null);
         expandButton.setBorderPainted(false);
         expandButton.setMargin(new Insets(0, 0, 0, 0));
         expandButton.setToolTipText(Labels.getString("Common.Show editor"));
-        expandButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (informationArea.isEditable()) {
-                    if (previewButton.isVisible()) {
-                        hideEditorButtons();
-                        if (getFont().canDisplay('\u25b6')) {
-                            expandButton.setText("\u25b6");
-                        } else {
-                            expandButton.setText(">");
-                        }
-                        expandButton.setToolTipText(Labels.getString("Common.Show editor"));
-                    } else {
-                        showEditorButtons();
-                        if (getFont().canDisplay('\u25c0')) {
-                            expandButton.setText("\u25c0");
-                        } else {
-                            expandButton.setText("<");
-                        }
-                        expandButton.setToolTipText(Labels.getString("Common.Hide editor"));
-                    }
-                    // Show caret
-                    informationArea.requestFocusInWindow();
-                }
-            }
-        });
+        expandButton.addMouseListener(new ExpandMouseAdapter());
         expandButton.setVisible(false);
         add(expandButton, gbc);
+    }
+
+    class ExpandMouseAdapter extends MouseAdapter {
+
+        private Robot robot = null; // used to move the cursor
+
+        public ExpandMouseAdapter() {
+            try {
+                robot = new Robot();
+            } catch (AWTException ignored) {
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (informationArea.isEditable()) {
+                Point pOriginal = e.getLocationOnScreen(); // original location on screen
+                if (previewButton.isVisible()) {
+                    hideEditorButtons();
+                    expandButton.setText(rightArrow);
+                    expandButton.setToolTipText(Labels.getString("Common.Show editor"));
+                } else {
+                    showEditorButtons();
+                    expandButton.setText(leftArrow);
+                    expandButton.setToolTipText(Labels.getString("Common.Hide editor"));
+                }
+                // Show caret
+                informationArea.requestFocusInWindow();
+                // The following line are required get the cursor to move correctly        
+                CommentPanel.this.validate();
+                // Center cursor on button
+                if (robot != null) {
+                    Point pFinal = expandButton.getLocationOnScreen(); // final location on screen
+                    // Set cursor at the same original Y position
+                    robot.mouseMove((int) pFinal.getX() + expandButton.getWidth() / 2, (int) pOriginal.getY());
+                }
+            }
+        }
     }
 
     private void addCommentArea() {
@@ -847,7 +857,7 @@ public class CommentPanel extends JPanel {
             comment += "<p style=\"margin-top: 0\">";
             comment += "+ ...";
             comment += "</p>";
-        }        
+        }
         int selectedActivityId = panel.getCurrentTable().getActivityIdFromSelectedRow();
         if (selectedActivityId == activity.getId()) { // Activity actually selected
             if (selectedActivityId != currentlySelectedActivityId) { // New activity selected (compare to the current selected one)

@@ -44,7 +44,8 @@ public class Resize {
     }
 
     public void resize() {
-        if ((!Main.gui.getToDoPanel().isShowing() || viewCount == 0) && Main.gui.getExtendedState() != (Main.gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui            
+        if ((!Main.gui.getToDoPanel().isShowing() || viewCount == 0) 
+                && Main.gui.getExtendedState() != (Main.gui.getExtendedState() | JFrame.MAXIMIZED_BOTH)) { // maximize gui            
             guiRecordedLocation = Main.gui.getLocation(); // record location of the previous window
             guiRecordedSize = Main.gui.getSize(); // record size of the previous window
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
