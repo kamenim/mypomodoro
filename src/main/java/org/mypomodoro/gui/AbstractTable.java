@@ -701,6 +701,10 @@ public abstract class AbstractTable extends JXTable {
                 setRowSelectionInterval(currentRow, currentRow); // ...while selecting in the View
                 scrollRectToVisible(getCellRect(currentRow, 0, true));
             }
+        } else if (panel.getCurrentTable().equals(panel.getMainTable())) {
+            // refresh tabs and emty sub-table when main table is empty
+            emptySubTable();
+            initTabs();
         }
     }
 

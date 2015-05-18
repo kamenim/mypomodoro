@@ -250,6 +250,11 @@ public class CheckPanel extends JPanel implements IListPanel {
     public CheckTable getCurrentTable() {
         return table;
     }
+    
+    @Override
+    public CheckTable getSubTable() {
+        return null; // not used - only one table
+    }
 
     @Override
     public void setCurrentTable(AbstractTable table) {

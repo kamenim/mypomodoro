@@ -638,17 +638,12 @@ public class Pomodoro {
     public boolean isDiscontinuous() {
         return isDiscontinuous;
     }
-    
+
     // Repaint title with proper buttons and trigger row renderers of the tables
     private void refreshTitlesAndTables() {
-        panel.getCurrentTable().setTitle();
-        panel.getCurrentTable().repaint();
-        if (panel.getCurrentTable().equals(panel.getMainTable())) {
-            panel.getSubTable().setTitle();
-            panel.getSubTable().repaint();
-        } else {
-            panel.getMainTable().setTitle();
-            panel.getMainTable().repaint();
-        }
+        panel.getSubTable().setTitle();
+        panel.getSubTable().repaint();
+        panel.getMainTable().setTitle();
+        panel.getMainTable().repaint();
     }
 }

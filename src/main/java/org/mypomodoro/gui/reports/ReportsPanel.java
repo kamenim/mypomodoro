@@ -230,6 +230,7 @@ public class ReportsPanel extends JPanel implements IListPanel {
         currentTable = (ReportsTable) table;
     }
 
+    @Override
     public ReportsSubTable getSubTable() {
         return subTable;
     }
