@@ -137,10 +137,10 @@ public class Resize {
 
         }
         // we make sure the selected task appears on screen despite the resizing
-        Main.gui.getActivityListPanel().getCurrentTable().showCurrentSelectedRow();
-        Main.gui.getToDoPanel().getCurrentTable().showCurrentSelectedRow(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
-        Main.gui.getReportListPanel().getCurrentTable().showCurrentSelectedRow();
-        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().showCurrentSelectedRow();
+        Main.gui.getActivityListPanel().getCurrentTable().scrollToSelectedRows();
+        Main.gui.getToDoPanel().getCurrentTable().scrollToSelectedRows(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
+        Main.gui.getReportListPanel().getCurrentTable().scrollToSelectedRows();
+        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRows();
     }
 
     /**

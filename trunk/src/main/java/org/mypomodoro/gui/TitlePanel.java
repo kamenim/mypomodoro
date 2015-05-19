@@ -32,8 +32,8 @@ public class TitlePanel extends AbstractTitlePanel {
     }
 
     @Override
-    protected void showCurrentSelectedRow() {
-        table.showCurrentSelectedRow();
+    protected void scrollToSelectedRows() {
+        table.scrollToSelectedRows();
     }
 
     @Override

@@ -109,9 +109,6 @@ public class ToDoTable extends AbstractTable {
                         if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                             panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
                         }
-                        if (!panel.getPomodoro().getTimer().isRunning()) {
-                            panel.getPomodoro().setCurrentToDoId(getActivityIdFromSelectedRow());
-                        }
                         // here do not use showCurrentSelectedRow()
                         scrollRectToVisible(getCellRect(getSelectedRow(), 0, true)); // when sorting columns, focus on selected row
                         // Display details                           
@@ -550,7 +547,7 @@ public class ToDoTable extends AbstractTable {
     public void setIconLabels(Activity selectedToDo) {
         if (getTableList().size() > 0) {
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-            Color defaultForegroundColor = getForeground(); // leave it to the theme foreground color 
+            Color defaultForegroundColor = ColorUtil.BLACK;
             if (selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
                 panel.getUnplannedPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
@@ -574,7 +571,6 @@ public class ToDoTable extends AbstractTable {
                 panel.getDetailsPanel().disableButtons();
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
-                //Activity selectedToDo = getActivityFromRowIndex(row);
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -613,18 +609,25 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    public void showCurrentSelectedRow() {
+    public void scrollToSelectedRows() {
         if (panel.getPomodoro().inPomodoro()) {
-            for (int row = 0; row < getRowCount(); row++) {
+            for (int row = 0; row < panel.getMainTable().getModel().getRowCount(); row++) {
                 // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
-                if (panel.getPomodoro().getCurrentToDo().getId() == getActivityIdFromRowIndex(row)
-                        || panel.getPomodoro().getCurrentToDo().getParentId() == getActivityIdFromRowIndex(row)) {
-                    scrollRectToVisible(getCellRect(row, 0, true));
+                if (panel.getPomodoro().getCurrentToDo().getId() == panel.getMainTable().getActivityIdFromRowIndex(row)
+                        || panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row)) {
+                    panel.getMainTable().scrollToRowIndex(row);                    
+                    break;
+                }
+            }
+            for (int row = 0; row < panel.getSubTable().getModel().getRowCount(); row++) {
+                // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
+                if (panel.getPomodoro().getCurrentToDo().getId() == panel.getSubTable().getActivityIdFromRowIndex(row)) {
+                    panel.getSubTable().scrollToRowIndex(row);
                     break;
                 }
             }
         } else {
-            super.showCurrentSelectedRow();
+            super.scrollToSelectedRows();
         }
     }
 }

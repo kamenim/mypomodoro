@@ -304,7 +304,10 @@ public class Pomodoro {
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
                     refreshTitlesAndTables();
                 } else { // pomodoro time
-                    if (panel.getCurrentTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task                        
+                    // change of current ToDo
+                    // This addresses the case when a task is selected during the pomodoro of another task unless it is a task with subtasks
+                    if (panel.getCurrentTable().getSelectedRowCount() == 1
+                            && (panel.getCurrentTable().getActivityFromSelectedRow().isSubTask() || !ToDoList.hasSubTasks(panel.getCurrentTable().getActivityIdFromSelectedRow()))) {
                         currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
                     }
                     // update the current ToDo from the database (in case someone's changed it)
@@ -322,31 +325,26 @@ public class Pomodoro {
                         }
                         timerPanel.setToolTipText(null);
                     } else {
-                        if (getCurrentToDo().isSubTask()
-                                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
-                            if (Main.preferences.getTicking() && !isMute) {
-                                tick();
-                            }
-                            timerPanel.setPomodoroEnv();
-                            inpomodoro = true;
-                            Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
-                            Main.gui.getIconBar().getIcon(2).highlight();
-                            if (isSystemTray()) {
-                                if (isSystemTrayMessage()) {
-                                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
-                                }
-                                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
-                            }
-                            goInPomodoro();
-                            // Tooltip                        
-                            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
-                            setTooltipOnImage();
-                            // Show quick interruption button and items in combo box 
-                            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
-                            refreshTitlesAndTables();
-                        } else {
-                            // no start // ToDo message: you must start a subtask ?
+                        if (Main.preferences.getTicking() && !isMute) {
+                            tick();
                         }
+                        timerPanel.setPomodoroEnv();
+                        inpomodoro = true;
+                        Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
+                        Main.gui.getIconBar().getIcon(2).highlight();
+                        if (isSystemTray()) {
+                            if (isSystemTrayMessage()) {
+                                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Started"), TrayIcon.MessageType.NONE);
+                            }
+                            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
+                        }
+                        goInPomodoro();
+                            // Tooltip                        
+                        // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+                        setTooltipOnImage();
+                        // Show quick interruption button and items in combo box 
+                        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
+                        refreshTitlesAndTables();
                     }
                 }
                 // Put app back in front (system tray, minimized, in the background)

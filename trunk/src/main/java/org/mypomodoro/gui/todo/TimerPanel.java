@@ -175,14 +175,17 @@ public class TimerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Activity currentToDo = pomodoro.getCurrentToDo();
-                if (currentToDo != null) {
-                    if (startButton.getIcon().equals(startIcon)) {
-                        if (panel.getCurrentTable().getSelectedRowCount() == 1) { // this addresses the case when a task is selected during the pomodoro of another task                            
-                            pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());
+                if (startButton.getIcon().equals(startIcon)) {
+                    Activity currentToDo = null;
+                    if (panel.getCurrentTable().getSelectedRowCount() == 1) {
+                        Activity selectedToDo = panel.getCurrentTable().getActivityFromSelectedRow();
+                        if (selectedToDo.isSubTask() || !ToDoList.hasSubTasks(selectedToDo.getId())) {
+                            pomodoro.setCurrentToDoId(selectedToDo.getId());
                             currentToDo = pomodoro.getCurrentToDo();
                         }
-                        panel.getCurrentTable().showCurrentSelectedRow(); // in any case
+                    }
+                    if (currentToDo != null) {
+                        panel.getCurrentTable().scrollToSelectedRows(); // in any case
                         // Retrieve activity from the database in case it's changed (concurrent work : another user may have worked on it)                                       
                         if (currentToDo.hasChanged()) {
                             String title = Labels.getString("ToDoListPanel.ToDo changed");
@@ -194,40 +197,35 @@ public class TimerPanel extends JPanel {
                                 message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
                                 JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             } else {
-                                if (currentToDo.isSubTask()
-                                        || !ToDoList.hasSubTasks(currentToDo.getId())) { // optimization: isSubtask is not necessary but it's a way to avoid using hasSubTasks as much as possible
-                                    if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
-                                        pomodoro.start();
-                                        startButton.setIcon(stopRedIcon);
-                                        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
-                                        if (strictPomodoro) {
-                                            startButton.setVisible(false);
-                                        }
-                                        pomodoroTime.setForeground(Main.taskRunningColor);
-                                        timePlus.setTimePlusRedIcon(true); // turn time plus button red
-                                        timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
-                                        if (!strictPomodoro) {
-                                            pauseButton.setVisible(true);
-                                        }
+                                if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
+                                    pomodoro.start();
+                                    startButton.setIcon(stopRedIcon);
+                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+                                    if (strictPomodoro) {
+                                        startButton.setVisible(false);
                                     }
-                                } else {
-                                    // no start // ToDo message: you must start a subtask ?
+                                    pomodoroTime.setForeground(Main.taskRunningColor);
+                                    timePlus.setTimePlusRedIcon(true); // turn time plus button red
+                                    timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
+                                    if (!strictPomodoro) {
+                                        pauseButton.setVisible(true);
+                                    }
                                 }
                             }
                         }
-                    } else if (pomodoro.stopWithWarning()) {
-                        panel.getCurrentTable().showCurrentSelectedRow(); // in any case
-                        startButton.setIcon(startIcon);
-                        startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
-                        pomodoroTime.setForeground(ColorUtil.BLACK);
-                        timePlus.setTimePlusRedIcon(false);
-                        timeMinus.setTimeMinusRedIcon(false);
-                        pauseButton.setIcon(pauseRedIcon); // set the icon before setting the visibility to false so it doesn't flicker on Win7 aero
-                        pauseButton.setVisible(false);
-                        pauseButton.setMargin(new Insets(0, 20, 0, 20));
-                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
-                        setToolTipText(null);
                     }
+                } else if (pomodoro.stopWithWarning()) {
+                    panel.getCurrentTable().scrollToSelectedRows(); // in any case
+                    startButton.setIcon(startIcon);
+                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
+                    pomodoroTime.setForeground(ColorUtil.BLACK);
+                    timePlus.setTimePlusRedIcon(false);
+                    timeMinus.setTimeMinusRedIcon(false);
+                    pauseButton.setIcon(pauseRedIcon); // set the icon before setting the visibility to false so it doesn't flicker on Win7 aero
+                    pauseButton.setVisible(false);
+                    pauseButton.setMargin(new Insets(0, 20, 0, 20));
+                    pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
+                    setToolTipText(null);
                 }
             }
         });
