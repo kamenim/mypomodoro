@@ -689,7 +689,7 @@ public class CommentPanel extends JPanel {
                 }
                 // Show caret
                 informationArea.requestFocusInWindow();
-                // The following line are required get the cursor to move correctly        
+                // The following line is required to get the cursor to move correctly        
                 CommentPanel.this.validate();
                 // Center cursor on button
                 if (robot != null) {

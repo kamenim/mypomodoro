@@ -16,18 +16,27 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Field;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.border.EtchedBorder;
+import org.mypomodoro.Main;
 
 /**
  *
@@ -50,7 +59,11 @@ public class TabbedPane extends JTabbedPane {
     public TabbedPane(IListPanel panel) {
         this.panel = panel;
         setFocusable(false); // removes borders around tab text
-        setForeground(new JTabbedPane().getForeground()); // this is necessary for themes such as JTatoo Noire        
+        setForeground(new JTabbedPane().getForeground()); // this is necessary for themes such as JTatoo Noire
+        // Manage mouse hovering
+        addMouseMotionListener(new HoverMouseMotionAdapter());
+        // This is to address the case/event when the mouse exit the title
+        addMouseListener(new ExitMouseAdapter());
         // One click action (expand / fold)
         addMouseListener(new CustomMouseAdapter());
         // Keystroke
@@ -62,50 +75,83 @@ public class TabbedPane extends JTabbedPane {
         }
     }
 
+    
+    // Hover
+    class HoverMouseMotionAdapter extends MouseMotionAdapter {
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.rowBorderColor));
+            //setBackground(Main.hoverRowColor);            
+        }
+    }
+
+    // Exit
+    class ExitMouseAdapter extends MouseAdapter {
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+            //JPanel p = new JPanel();
+            //setBackground(p.getBackground()); // reset default/theme background color            
+        }
+    }
+
+    /*
+    @Override
+    public void paintComponent(Graphics g) {
+        g.setColor(Main.hoverRowColor);
+        g.fillRect(0, 0, getWidth(), getHeight());        
+    }
+    */
+
     // Implement one-click action on selected tabs
     // Tab already selected = one click to expand
     // Tab not selected = double click to expand
     class CustomMouseAdapter extends MouseAdapter {
 
-        private int dividerLocation;
-        //private int selectedIndex = 0;
-        //private Robot robot = null; // used to move the cursor
+        private int originalDividerLocation;
+        private int selectedIndex = 0; // first tab is selected by default
+        private Robot robot = null; // used to move the cursor
+        private int viewCount = 0;
 
         public CustomMouseAdapter() {
-            /*try {
-             robot = new Robot();
-             } catch (AWTException ignored) {
-             }*/
+            try {
+                robot = new Robot();
+            } catch (AWTException ignored) {
+            }
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            // make sure the double click action is served first            
-            if (e.getClickCount() > 1) {
-                move();
-            } /*else if (e.getClickCount() == 1 && selectedIndex == getSelectedIndex()) {
-             move();
-             } else {
-             selectedIndex = getSelectedIndex();
-             }*/
-
-        }
-
-        private void move() {
+            Double topPosition = 0.0;
+            Double bottomPosition = 0.93;
             JSplitPane splitPane = panel.getSplitPane();
-            // Expand
-            if (splitPane.getDividerLocation() != 0) {
-                dividerLocation = splitPane.getDividerLocation();
-                splitPane.setDividerLocation(0.0);
-            } else { // back to original position
-                splitPane.setDividerLocation(dividerLocation);
+            if (e.getClickCount() == 1) {
+                Point pOriginal = e.getLocationOnScreen(); // original location on screen
+                if (viewCount == 2) { // set back to original position                    
+                    splitPane.setDividerLocation(originalDividerLocation);
+                    viewCount = 0;
+                } else if (selectedIndex == getSelectedIndex()) {
+                    if (viewCount == 0) { // set divider on top
+                        originalDividerLocation = splitPane.getDividerLocation();
+                        splitPane.setDividerLocation(topPosition); // top
+                        viewCount = 1;
+                    } else if (viewCount == 1) { // set divider on bottom                        
+                        splitPane.setDividerLocation(bottomPosition); // bottom
+                        viewCount = 2;
+                    }
+                }
+                // The following line is required to get the cursor to move correctly        
+                splitPane.validate();
+                // Set cursor on splitpane
+                if (robot != null) {
+                    Point pFinal = getSelectedComponent().getLocationOnScreen(); // final location on screen
+                    // Set cursor at the same original X position
+                    robot.mouseMove((int) pOriginal.getX(), (int) pFinal.getY() - 15); // center the cursor in the middle of the selected tab
+                }
+                selectedIndex = getSelectedIndex();
             }
-            // Set cursor on splitpane
-            // This doesn't work properly
-            /*if (robot != null) {
-             Point p = splitPane.getLocationOnScreen();
-             robot.mouseMove((int) p.getX(), (int) p.getY());
-             }*/
         }
     }
 
