@@ -68,9 +68,6 @@ public class ToDoSubTable extends ToDoTable {
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
-            if (selectedRowCount > 0) {
-                getTitlePanel().showSelectedButton();
-            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -122,12 +119,6 @@ public class ToDoSubTable extends ToDoTable {
                     // Show buttons of the quick bar
                     // Hide overestimation options when estimated == 0 or real < estimated
                     Activity selectedActivity = getActivityFromSelectedRow();
-                    if (panel.getPomodoro().inPomodoro()
-                            && panel.getPomodoro().getCurrentToDo().isSubTask()) {
-                        getTitlePanel().switchRunningButton();
-                    } else {
-                        getTitlePanel().switchSelectedButton();
-                    }
                     if (canDuplicateTask()) {
                         getTitlePanel().showDuplicateButton();
                     }
@@ -140,7 +131,6 @@ public class ToDoSubTable extends ToDoTable {
                         getTitlePanel().hideOverestimationButton();
                     }
                 } else { // no row selected
-                    getTitlePanel().hideSelectedButton();
                     getTitlePanel().hideDuplicateButton();
                     getTitlePanel().hideOverestimationButton();
                     getTitlePanel().hideExternalButton();
@@ -148,7 +138,6 @@ public class ToDoSubTable extends ToDoTable {
                 }
             }
         } else { // empty table
-            getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();

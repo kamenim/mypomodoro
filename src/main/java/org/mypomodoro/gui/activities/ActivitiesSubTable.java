@@ -45,9 +45,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
-            if (selectedRowCount > 0) {
-                getTitlePanel().showSelectedButton();
-            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -98,7 +95,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 }
             }
         } else {
-            getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
         if (panel.getMainTable().getSelectedRowCount() == 1) {

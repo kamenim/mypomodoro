@@ -68,9 +68,6 @@ public class ReportsSubTable extends ReportsTable {
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
             AbstractActivities tableList = getTableList();
-            if (selectedRowCount > 0) {
-                getTitlePanel().showSelectedButton();
-            }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
@@ -113,8 +110,6 @@ public class ReportsSubTable extends ReportsTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             }
-        } else {
-            getTitlePanel().hideSelectedButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");

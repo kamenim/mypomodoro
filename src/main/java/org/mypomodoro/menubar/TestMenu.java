@@ -271,22 +271,19 @@ public class TestMenu extends JMenu {
                     Activity aClone = a.clone();
                     aClone.setParentId(a.getId());
                     aClone.setName(a.getName() + "." + j);
-                    // all poms must be distributed amongs the subtasks                    
-                    int real = subTaskReal > 0 ? rand.nextInt(subTaskReal + 1) : 0; // 0 to real
-                    int estimated = subTaskEstimated > 0 ? rand.nextInt(subTaskEstimated + 1) : 0; // 0 to estimated
-                    int overestimated = subTaskOverestimated > 0 ? rand.nextInt(subTaskOverestimated + 1) : 0; // 0 to overestimated
-                    if (estimated == 0) { // overestimation with no initial estimation doesn't make sense
-                        overestimated = 0;
-                    }
-                    // last subtask
-                    if (j == nbSubTask - 1) {
+                    // Add all overestimated poms to the first subtask
+                    int overestimated = 0;
+                    int real = 0;
+                    int estimated = subTaskEstimated > 0 ? rand.nextInt(subTaskEstimated + 1) : 0; // 0 to estimated                    
+                    if (j == 0 && subTaskOverestimated > 0) { // first subtask if overestimated
                         real = subTaskReal;
                         overestimated = subTaskOverestimated;
                         estimated = subTaskEstimated;
+                    } else if (j == nbSubTask - 1) { // last subtask (leftovers)                        
+                        estimated = subTaskEstimated;
+                        real = subTaskReal;
                     } else {
-                        while (real > estimated + overestimated) {
-                            --real;
-                        }
+                        real = subTaskReal > estimated ? estimated : subTaskReal; // estimated or real
                     }
                     subTaskReal = subTaskReal - real;
                     subTaskOverestimated = subTaskOverestimated - overestimated;

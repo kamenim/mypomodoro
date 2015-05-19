@@ -87,7 +87,7 @@ public abstract class AbstractTitlePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                showCurrentSelectedRow();
+                scrollToSelectedRows();
             }
         });
         selectedButton.setToolTipText("CTRL + G");
@@ -298,7 +298,7 @@ public abstract class AbstractTitlePanel extends JPanel {
         titleLabel.setText(text);
     }
 
-    protected abstract void showCurrentSelectedRow();
+    protected abstract void scrollToSelectedRows();
 
     protected abstract void createNewTask();
 

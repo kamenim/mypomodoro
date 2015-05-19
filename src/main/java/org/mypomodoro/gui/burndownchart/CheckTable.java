@@ -78,7 +78,7 @@ public class CheckTable extends AbstractTable {
                         if (panel.getTabbedPane().getTabCount() > 0) { // at start-up time not yet initialised (see constructor)
                             panel.getTabbedPane().setSelectedIndex(panel.getTabbedPane().getSelectedIndex()); // switch to selected panel
                         }
-                        showCurrentSelectedRow(); // when sorting columns, focus on selected row
+                        scrollToSelectedRow(); // when sorting columns, focus on selected row
                         // Display details                           
                         showInfoForSelectedRow();
                         // populate subtable
