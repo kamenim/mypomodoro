@@ -140,7 +140,7 @@ public class Resize {
         Main.gui.getActivityListPanel().getCurrentTable().scrollToSelectedRows();
         Main.gui.getToDoPanel().getCurrentTable().scrollToSelectedRows(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
         Main.gui.getReportListPanel().getCurrentTable().scrollToSelectedRows();
-        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRows();
+        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRow();
     }
 
     /**

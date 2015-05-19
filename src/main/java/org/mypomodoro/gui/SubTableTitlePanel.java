@@ -69,7 +69,7 @@ public class SubTableTitlePanel extends TitlePanel {
         comp.addMouseMotionListener(new HoverMouseMotionAdapter());
         // This is to address the case/event when the mouse exit the title
         comp.addMouseListener(new ExitMouseAdapter());
-        // On click action
+        // On click action (expand / fold)
         comp.addMouseListener(new OneClickMouseAdapter(comp));
     }
 
@@ -79,9 +79,9 @@ public class SubTableTitlePanel extends TitlePanel {
         @Override
         public void mouseMoved(MouseEvent e) {
             setBorder(new EtchedBorder(EtchedBorder.LOWERED, Main.selectedRowColor, Main.rowBorderColor));
-            setBackground(Main.hoverRowColor);
-            titleLabel.setForeground(ColorUtil.BLACK); // this is necessary for themes such as JTatoo Noire
-            buttonPanel.setBackground(Main.hoverRowColor);
+            //setBackground(Main.hoverRowColor);
+            //titleLabel.setForeground(ColorUtil.BLACK); // this is necessary for themes such as JTatoo Noire
+            //buttonPanel.setBackground(Main.hoverRowColor);
         }
     }
 
@@ -91,10 +91,10 @@ public class SubTableTitlePanel extends TitlePanel {
         @Override
         public void mouseExited(MouseEvent e) {
             setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-            JPanel p = new JPanel();
-            setBackground(p.getBackground()); // reset default/theme background color
-            titleLabel.setForeground(p.getForeground()); // this is necessary for themes such as JTatoo Noire
-            buttonPanel.setBackground(p.getBackground()); // reset default/theme background color
+            //JPanel p = new JPanel();
+            //setBackground(p.getBackground()); // reset default/theme background color
+            //titleLabel.setForeground(p.getForeground()); // this is necessary for themes such as JTatoo Noire
+            //buttonPanel.setBackground(p.getBackground()); // reset default/theme background color
         }
     }
 
@@ -116,17 +116,17 @@ public class SubTableTitlePanel extends TitlePanel {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) { // single click
                 Point pOriginal = e.getLocationOnScreen(); // original location on screen
-                if (viewCount == 2 && !(comp instanceof DefaultButton)) { // fold: excluding buttons
+                if (viewCount == 2 && !(comp instanceof DefaultButton)) { // fold: excluding click on buttons
                     panel.getListPane().remove(panel.getSubTableScrollPane());
                     panel.addTableTitlePanel();
                     panel.addTable();
                     panel.addSubTableTitlePanel(); // put the sub title back at the bottom
                     viewCount = 0;
                 } else if (viewCount == 0
-                        && panel.getMainTable().getSelectedRowCount() == 1) { // expand half way: including buttons                        
+                        && panel.getMainTable().getSelectedRowCount() == 1) { // expand half way: including click on buttons                        
                     panel.getListPane().add(panel.getSubTableScrollPane());
                     viewCount = 1;
-                } else if (viewCount == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding buttons                        
+                } else if (viewCount == 1 && !(comp instanceof DefaultButton)) { // maximize: excluding click on buttons                        
                     panel.getListPane().remove(panel.getTableScrollPane());
                     panel.getListPane().remove(panel.getTableTitlePanel());
                     viewCount = 2;
