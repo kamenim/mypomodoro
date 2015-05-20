@@ -470,11 +470,11 @@ public class Activity implements Cloneable {
 
     public int databaseInsert() {
         // update lists
-        if (isSubTask()) {
+        /*if (isSubTask()) {
             SubTaskTypeList.addType(getType());
-        } else {
+        } else {*/
             TaskTypeList.addType(getType());
-        }
+        //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
         return ActivitiesDAO.getInstance().insert(this);
@@ -482,11 +482,11 @@ public class Activity implements Cloneable {
 
     public void databaseUpdate() {
         // update lists
-        if (isSubTask()) {
+        /*if (isSubTask()) {
             SubTaskTypeList.addType(getType());
-        } else {
+        } else {*/
             TaskTypeList.addType(getType());
-        }
+        //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
         ActivitiesDAO.getInstance().update(this);
@@ -498,11 +498,11 @@ public class Activity implements Cloneable {
 
     public void databaseDelete() {
         // update lists
-        if (isSubTask()) {
+        /*if (isSubTask()) {
             SubTaskTypeList.addType(getType());
-        } else {
+        } else {*/
             TaskTypeList.addType(getType());
-        }
+        //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
         ActivitiesDAO.getInstance().delete(this);

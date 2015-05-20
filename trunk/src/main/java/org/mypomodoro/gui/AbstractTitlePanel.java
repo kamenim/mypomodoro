@@ -179,11 +179,13 @@ public abstract class AbstractTitlePanel extends JPanel {
             Point pOriginal = e.getLocationOnScreen(); // original location on screen
             if (buttonPanel.isShowing()) {
                 hideButtonPanel();
-                buttonPanel.setToolTipText(null);
                 expandButton.setText(rightArrow);
+                expandButton.setToolTipText(null);
+                buttonPanel.setToolTipText(null);
             } else {
                 add(buttonPanel, 0);
                 expandButton.setText(leftArrow);
+                expandButton.setToolTipText(titleLabel.getText());
                 buttonPanel.setToolTipText(titleLabel.getText());
             }
             // The following line are required get the cursor to move correctly        

@@ -17,8 +17,6 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -31,7 +29,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;

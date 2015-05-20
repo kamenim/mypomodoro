@@ -44,7 +44,7 @@ import org.mypomodoro.util.WaitCursor;
  * Panel that allows the merging of Activities
  *
  */
-public class MergingPanel extends CreatePanel { // TODO hide storypoints, iteration and change types when sub table
+public class MergingPanel extends CreatePanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
@@ -64,7 +64,7 @@ public class MergingPanel extends CreatePanel { // TODO hide storypoints, iterat
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        mergingInputFormPanel = new MergingActivityInputForm();
+        mergingInputFormPanel = new MergingActivityInputForm();        
         mergingInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

@@ -29,7 +29,7 @@ public class Labels {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Labels.class);
 
-    private static String BUNDLE_NAME = "org.mypomodoro.labels.mypomodoro";
+    private final static String BUNDLE_NAME = "org.mypomodoro.labels.mypomodoro";
     private static ResourceBundle resource_bundle;
 
     public Labels(Locale locale) {
