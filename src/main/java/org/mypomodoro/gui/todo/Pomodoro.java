@@ -141,8 +141,6 @@ public class Pomodoro {
             // Show quick interruption button and items in combo box
             ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
             refreshTitlesAndTables();
-        } else {
-            // no start // ToDo message: you must start a subtask ?
         }
     }
 
@@ -209,8 +207,6 @@ public class Pomodoro {
                 ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
                 refreshTitlesAndTables();
             }
-        } else {
-            // no start // ToDo message: you must start a subtask ?
         }
     }
 

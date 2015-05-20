@@ -111,9 +111,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
     protected void setColumnModel() {
         super.setColumnModel();
         // sub types
-        String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
+        /*String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));*/
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);

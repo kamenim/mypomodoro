@@ -24,7 +24,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -40,7 +39,6 @@ import org.mypomodoro.util.TimeConverter;
  *
  */
 // TODO when selecting a subtask, title panel isn't refreshed (same with Report)
-// TODO when multiple selecting upward, the selecion is deselected (doesn't happen with downward selection)
 public class ActivitiesTable extends AbstractTable {
 
     protected final ActivitiesPanel panel;
@@ -144,9 +142,9 @@ public class ActivitiesTable extends AbstractTable {
                             }
                             // refresh the combo boxes of all rows to display the new type (if any)
                             String[] types = (String[]) TaskTypeList.getTypes().toArray(new String[0]);
-                            if (act.isSubTask()) {
+                            /*if (act.isSubTask()) {
                                 types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
-                            }
+                            }*/
                             getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
                             getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
                         }

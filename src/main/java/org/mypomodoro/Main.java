@@ -206,7 +206,7 @@ public class Main {
             @Override
             public void run() {
                 TaskTypeList.refresh();
-                SubTaskTypeList.refresh();
+                //SubTaskTypeList.refresh();
                 AuthorList.refresh();
                 PlaceList.refresh();
             }

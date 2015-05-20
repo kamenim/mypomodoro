@@ -45,7 +45,7 @@ import org.mypomodoro.util.WaitCursor;
  * Panel that allows the merging of ToDos
  *
  */
-public class MergingPanel extends CreatePanel { // TODO hide storypoints, iteration and change types when sub table + aggregate subtasks
+public class MergingPanel extends CreatePanel {
     // merge subtasks ?
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());

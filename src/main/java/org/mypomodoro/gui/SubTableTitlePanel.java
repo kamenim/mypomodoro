@@ -24,12 +24,10 @@ import java.awt.Robot;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.preferences.PreferencesInputForm;
-import org.mypomodoro.util.ColorUtil;
 
 /**
  *
