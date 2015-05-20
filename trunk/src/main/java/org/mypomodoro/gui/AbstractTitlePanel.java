@@ -17,6 +17,7 @@
 package org.mypomodoro.gui;
 
 import java.awt.AWTException;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
@@ -33,6 +34,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 
 /**
  *
@@ -67,9 +69,11 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton expandButton = new DefaultButton(rightArrow);
 
     public AbstractTitlePanel() {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
+        setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));        
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        // Add label to panel
+        setPreferredSize(new Dimension(800, 30));
+        //setPreferredSize(new Dimension(getWidth(), 40)); // set the height
+        // Add label to panel        
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
         showTitleLabel();
@@ -180,12 +184,10 @@ public abstract class AbstractTitlePanel extends JPanel {
             if (buttonPanel.isShowing()) {
                 hideButtonPanel();
                 expandButton.setText(rightArrow);
-                expandButton.setToolTipText(null);
                 buttonPanel.setToolTipText(null);
-            } else {
+            } else {                
                 add(buttonPanel, 0);
                 expandButton.setText(leftArrow);
-                expandButton.setToolTipText(titleLabel.getText());
                 buttonPanel.setToolTipText(titleLabel.getText());
             }
             // The following line are required get the cursor to move correctly        

@@ -65,7 +65,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // Split pane: list pane + tabbed pane
     private final JSplitPane splitPane;
     // Title panes: title and sub-title    
-    private final ToDoTitlePanel tableTitlePanel;
+    private final ToDoTableTitlePanel tableTitlePanel;
     private final ToDoSubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     private final JScrollPane tableScrollPane;
@@ -134,7 +134,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         tableScrollPane = new JScrollPane(table);
 
         // Init title and sub title
-        tableTitlePanel = new ToDoTitlePanel(this, table);
+        tableTitlePanel = new ToDoTableTitlePanel(this, table);
         subTableTitlePanel = new ToDoSubTableTitlePanel(this, subTable);
 
         // select first activity of the table so the selection listener gets fired only now that both tables have been instanciated
@@ -331,7 +331,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public ToDoTitlePanel getTableTitlePanel() {
+    public ToDoTableTitlePanel getTableTitlePanel() {
         return tableTitlePanel;
     }
 
