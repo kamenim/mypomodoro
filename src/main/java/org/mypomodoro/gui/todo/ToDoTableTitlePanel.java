@@ -22,9 +22,9 @@ import org.mypomodoro.gui.*;
  * Title panel for tables
  *
  */
-public class ToDoTitlePanel extends TitlePanel {
+public class ToDoTableTitlePanel extends TitlePanel {
 
-    public ToDoTitlePanel(IListPanel panel, AbstractTable table) {
+    public ToDoTableTitlePanel(IListPanel panel, AbstractTable table) {
         super(panel, table);
 
         // show fold button and hide button panel
