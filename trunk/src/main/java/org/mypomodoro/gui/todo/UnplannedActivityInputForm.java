@@ -75,12 +75,12 @@ public class UnplannedActivityInputForm extends ActivityInputForm {
         interruptionsComboBox.setSelectedItem(internal);
         interruptionsComboBox.repaint();
     }
-    
+
     @Override
     protected void addStoryPoints(int gridy) {
         // not used
     }
-    
+
     @Override
     protected void addIterations(int gridy) {
         // not used

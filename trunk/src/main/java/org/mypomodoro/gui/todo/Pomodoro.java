@@ -335,7 +335,7 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
                         goInPomodoro();
-                            // Tooltip                        
+                        // Tooltip                        
                         // If the name is modified during the pomodoro, it won't be updated, which is acceptable
                         setTooltipOnImage();
                         // Show quick interruption button and items in combo box 

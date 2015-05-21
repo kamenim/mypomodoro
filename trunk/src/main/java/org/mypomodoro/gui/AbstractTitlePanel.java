@@ -34,7 +34,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
-import org.mypomodoro.gui.preferences.PreferencesInputForm;
 
 /**
  *
@@ -69,7 +68,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton expandButton = new DefaultButton(rightArrow);
 
     public AbstractTitlePanel() {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));        
+        setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(800, 30));
         //setPreferredSize(new Dimension(getWidth(), 40)); // set the height
@@ -185,7 +184,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 hideButtonPanel();
                 expandButton.setText(rightArrow);
                 buttonPanel.setToolTipText(null);
-            } else {                
+            } else {
                 add(buttonPanel, 0);
                 expandButton.setText(leftArrow);
                 buttonPanel.setToolTipText(titleLabel.getText());

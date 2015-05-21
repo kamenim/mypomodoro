@@ -19,7 +19,6 @@ package org.mypomodoro.gui.activities;
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.AbstractTableModel;
-import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -112,8 +111,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
         super.setColumnModel();
         // sub types
         /*String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));*/
+         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));*/
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);

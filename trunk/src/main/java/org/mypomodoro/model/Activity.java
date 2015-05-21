@@ -22,7 +22,6 @@ import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
-import org.mypomodoro.gui.create.list.SubTaskTypeList;
 import org.mypomodoro.gui.create.list.TaskTypeList;
 import org.mypomodoro.util.DateUtil;
 
@@ -471,9 +470,9 @@ public class Activity implements Cloneable {
     public int databaseInsert() {
         // update lists
         /*if (isSubTask()) {
-            SubTaskTypeList.addType(getType());
-        } else {*/
-            TaskTypeList.addType(getType());
+         SubTaskTypeList.addType(getType());
+         } else {*/
+        TaskTypeList.addType(getType());
         //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
@@ -483,9 +482,9 @@ public class Activity implements Cloneable {
     public void databaseUpdate() {
         // update lists
         /*if (isSubTask()) {
-            SubTaskTypeList.addType(getType());
-        } else {*/
-            TaskTypeList.addType(getType());
+         SubTaskTypeList.addType(getType());
+         } else {*/
+        TaskTypeList.addType(getType());
         //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());
@@ -499,9 +498,9 @@ public class Activity implements Cloneable {
     public void databaseDelete() {
         // update lists
         /*if (isSubTask()) {
-            SubTaskTypeList.addType(getType());
-        } else {*/
-            TaskTypeList.addType(getType());
+         SubTaskTypeList.addType(getType());
+         } else {*/
+        TaskTypeList.addType(getType());
         //}
         AuthorList.addAuthor(getAuthor());
         PlaceList.addPlace(getPlace());

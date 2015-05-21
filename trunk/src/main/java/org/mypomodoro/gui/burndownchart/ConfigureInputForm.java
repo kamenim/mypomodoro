@@ -61,7 +61,7 @@ public class ConfigureInputForm extends JPanel {
     private final GridBagConstraints c = new GridBagConstraints();
     // Tasks form
     private final JPanel tasksInputFormPanel = new JPanel();
-    private final JComboBox iterationonlyComboBox = new JComboBox(); 
+    private final JComboBox iterationonlyComboBox = new JComboBox();
     // Dates form
     private final JPanel datesInputFormPanel = new JPanel();
     protected final DatePicker startDatePicker = new DatePicker(Labels.getLocale());

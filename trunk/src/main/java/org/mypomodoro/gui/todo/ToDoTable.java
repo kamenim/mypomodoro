@@ -615,7 +615,7 @@ public class ToDoTable extends AbstractTable {
                 // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
                 if (panel.getPomodoro().getCurrentToDo().getId() == panel.getMainTable().getActivityIdFromRowIndex(row)
                         || panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row)) {
-                    panel.getMainTable().scrollToRowIndex(row);                    
+                    panel.getMainTable().scrollToRowIndex(row);
                     break;
                 }
             }
