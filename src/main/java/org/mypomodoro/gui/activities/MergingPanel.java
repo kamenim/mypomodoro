@@ -64,7 +64,7 @@ public class MergingPanel extends CreatePanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        mergingInputFormPanel = new MergingActivityInputForm();        
+        mergingInputFormPanel = new MergingActivityInputForm();
         mergingInputFormPanel.getNameField().getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

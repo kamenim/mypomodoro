@@ -72,7 +72,6 @@ public class TabbedPane extends JTabbedPane {
         }
     }
 
-    
     // Hover
     class HoverMouseMotionAdapter extends MouseMotionAdapter {
 
@@ -95,13 +94,12 @@ public class TabbedPane extends JTabbedPane {
     }
 
     /*
-    @Override
-    public void paintComponent(Graphics g) {
-        g.setColor(Main.hoverRowColor);
-        g.fillRect(0, 0, getWidth(), getHeight());        
-    }
-    */
-
+     @Override
+     public void paintComponent(Graphics g) {
+     g.setColor(Main.hoverRowColor);
+     g.fillRect(0, 0, getWidth(), getHeight());        
+     }
+     */
     // Implement one-click action on selected tabs
     // Tab already selected = one click to expand
     // Tab not selected = double click to expand

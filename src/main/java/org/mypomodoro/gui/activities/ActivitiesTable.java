@@ -143,8 +143,8 @@ public class ActivitiesTable extends AbstractTable {
                             // refresh the combo boxes of all rows to display the new type (if any)
                             String[] types = (String[]) TaskTypeList.getTypes().toArray(new String[0]);
                             /*if (act.isSubTask()) {
-                                types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
-                            }*/
+                             types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
+                             }*/
                             getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
                             getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
                         }

@@ -418,11 +418,11 @@ public abstract class AbstractTable extends JXTable {
         }
         return c;
     }
-    
+
     public void scrollToSelectedRow() {
         scrollToRowIndex(getSelectedRow());
     }
-    
+
     public void scrollToRowIndex(int row) {
         scrollRectToVisible(getCellRect(row, 0, true));
     }
@@ -430,7 +430,7 @@ public abstract class AbstractTable extends JXTable {
     // Scroll to selected rows in the main and the sub-table
     public void scrollToSelectedRows() {
         panel.getMainTable().scrollToRowIndex(panel.getMainTable().getSelectedRow());
-        panel.getSubTable().scrollToRowIndex(panel.getSubTable().getSelectedRow());        
+        panel.getSubTable().scrollToRowIndex(panel.getSubTable().getSelectedRow());
     }
 
     // selected row BOLD

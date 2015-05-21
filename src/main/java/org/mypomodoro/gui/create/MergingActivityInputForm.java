@@ -22,12 +22,12 @@ public class MergingActivityInputForm extends ActivityInputForm {
     protected void addEstimatedPoms(int gridy) {
         // not used
     }
-    
+
     @Override
     protected void addStoryPoints(int gridy) {
         // not used
     }
-    
+
     @Override
     protected void addIterations(int gridy) {
         // not used
