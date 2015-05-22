@@ -241,10 +241,10 @@ public class CheckTable extends AbstractTable {
                 }
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated);
-                if (overestimated > 0) {
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }
+                }*/
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
@@ -259,15 +259,15 @@ public class CheckTable extends AbstractTable {
                 title += " (" + accuracy + "%)";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(tableList.getStoryPoints());
+                    title += " > SP: " + df.format(tableList.getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom());
-                if (tableList.getNbOverestimatedPom() > 0) {
+                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
+                /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }
+                }*/
                 toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             }

@@ -341,15 +341,15 @@ public class ActivitiesTable extends AbstractTable {
                 title += "&nbsp;</span>";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > " + Labels.getString("Agile.Common.Story Points") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated);
-                if (overestimated > 0) {
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }
+                }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
@@ -363,15 +363,15 @@ public class ActivitiesTable extends AbstractTable {
                 }
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(tableList.getStoryPoints());
+                    title += " > SP: " + df.format(tableList.getStoryPoints());
                 }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom());
-                if (tableList.getNbOverestimatedPom() > 0) {
+                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
+                /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }
+                }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar                
                 getTitlePanel().showDuplicateButton();
