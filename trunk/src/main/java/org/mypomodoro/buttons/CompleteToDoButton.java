@@ -32,6 +32,8 @@ import org.mypomodoro.util.WaitCursor;
  * Delete button
  *
  */
+
+// TODO Merge. move, complete: problem refresh priorities after reordering priorities
 public class CompleteToDoButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
