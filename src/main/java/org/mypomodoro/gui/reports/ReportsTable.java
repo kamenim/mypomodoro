@@ -17,6 +17,8 @@
 package org.mypomodoro.gui.reports;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
@@ -29,6 +31,7 @@ import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.ReportList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -267,12 +270,18 @@ public class ReportsTable extends AbstractTable {
                 int overestimated = 0;
                 int real = 0;
                 float storypoints = 0;
+                ArrayList<Date> datesCompleted = new ArrayList<Date>();
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
                     real += selectedActivity.getActualPoms();
+                    // calculate the number of different completed dates for the selection
+                    Date dateCompletedAtMidnight = DateUtil.getDateAtMidnight(selectedActivity.getDateCompleted());
+                    if (!datesCompleted.contains(dateCompletedAtMidnight)) {
+                        datesCompleted.add(dateCompletedAtMidnight);
+                    }
                 }
                 title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
@@ -281,10 +290,14 @@ public class ReportsTable extends AbstractTable {
                 }
                 title += "&nbsp;</span>";
                 int accuracy = Math.round(((float) real / ((float) estimated + overestimated)) * 100);
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>" + ")";
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";                
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    // Velovity
+                    //" + Labels.getString("Agile.Velocity") + "
+                    title += " > V: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    // productivity (SP / day)
+                    title += " > P: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints / datesCompleted.size()) + "&nbsp;</span>";
                 }
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
@@ -292,7 +305,6 @@ public class ReportsTable extends AbstractTable {
                 /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
                 }*/
-                toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
@@ -303,7 +315,8 @@ public class ReportsTable extends AbstractTable {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
                 int accuracy = getList().getAccuracy();
-                title += " (" + accuracy + "%)";
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
+                title += accuracy + "%";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     title += " > SP: " + df.format(tableList.getStoryPoints());
@@ -315,7 +328,7 @@ public class ReportsTable extends AbstractTable {
                 /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                 }*/
-                toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
+                //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } else {

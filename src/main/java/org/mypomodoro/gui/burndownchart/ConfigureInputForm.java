@@ -131,7 +131,7 @@ public class ConfigureInputForm extends JPanel {
         });
         datesInputFormPanel.setBorder(borderDates);
         datesInputFormPanel.setLayout(new GridBagLayout());
-        addDatesFields();
+        addDatesFields();        
         tasksInputFormPanel.add(datesInputFormPanel);
         //add(datesInputFormPanel, c);
     }
@@ -193,8 +193,10 @@ public class ConfigureInputForm extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 typeReleaseAndIteration.setSelected(true);
                 typeReleaseOnly.setSelected(false);
-                typeIterationOnly.setSelected(false);
-                iterationsInputFormPanel.setVisible(true);
+                if (Main.preferences.getAgileMode()) {
+                    typeIterationOnly.setSelected(false);
+                    iterationsInputFormPanel.setVisible(true);
+                }
             }
         });
         typeReleaseOnly.addActionListener(new ActionListener() {
@@ -203,10 +205,12 @@ public class ConfigureInputForm extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 typeReleaseAndIteration.setSelected(false);
                 typeReleaseOnly.setSelected(true);
-                typeIterationOnly.setSelected(false);
-                iterationsInputFormPanel.setVisible(false);
                 datesCheckBox.setSelected(true); // force use of dates
-                iterationsCheckBox.setSelected(false);
+                if (Main.preferences.getAgileMode()) {
+                    typeIterationOnly.setSelected(false);
+                    iterationsInputFormPanel.setVisible(false);
+                    iterationsCheckBox.setSelected(false);
+                }
             }
         });
         typeIterationOnly.addActionListener(new ActionListener() {
@@ -215,10 +219,12 @@ public class ConfigureInputForm extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 typeReleaseAndIteration.setSelected(false);
                 typeReleaseOnly.setSelected(false);
-                typeIterationOnly.setSelected(true);
-                iterationsInputFormPanel.setVisible(false);
                 datesCheckBox.setSelected(true); // force use of dates
-                iterationsCheckBox.setSelected(false);
+                if (Main.preferences.getAgileMode()) {
+                    typeIterationOnly.setSelected(true);
+                    iterationsInputFormPanel.setVisible(false);
+                    iterationsCheckBox.setSelected(false);
+                }
             }
         });
         tasksInputFormPanel.add(tasks);
