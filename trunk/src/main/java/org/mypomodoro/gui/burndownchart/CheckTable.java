@@ -17,6 +17,8 @@
 package org.mypomodoro.gui.burndownchart;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import org.mypomodoro.Main;
@@ -28,6 +30,7 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -234,10 +237,12 @@ public class CheckTable extends AbstractTable {
                 }
                 title += "&nbsp;</span>";
                 int accuracy = Math.round(((float) real / ((float) estimated + overestimated)) * 100);
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>" + ")";
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > " + Labels.getString("Agile.Velocity") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
+                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    // (do not display productivity P in CheckTabel as tasks may not be all completed)
                 }
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
@@ -245,7 +250,7 @@ public class CheckTable extends AbstractTable {
                 /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
                 }*/
-                toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
+                //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
@@ -256,7 +261,8 @@ public class CheckTable extends AbstractTable {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
                 int accuracy = getList().getAccuracy();
-                title += " (" + accuracy + "%)";
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
+                title += accuracy + "%";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     title += " > SP: " + df.format(tableList.getStoryPoints());
@@ -268,7 +274,7 @@ public class CheckTable extends AbstractTable {
                 /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                 }*/
-                toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
+                //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } else {
