@@ -17,8 +17,6 @@
 package org.mypomodoro.gui.burndownchart;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import org.mypomodoro.Main;
@@ -30,7 +28,6 @@ import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
-import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
@@ -248,8 +245,8 @@ public class CheckTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
                 /*if (overestimated > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(overestimated);
+                 }*/
                 //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
@@ -272,8 +269,8 @@ public class CheckTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
                 toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
                 /*if (tableList.getNbOverestimatedPom() > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
+                 }*/
                 //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             }

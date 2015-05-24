@@ -290,7 +290,7 @@ public class ReportsTable extends AbstractTable {
                 }
                 title += "&nbsp;</span>";
                 int accuracy = Math.round(((float) real / ((float) estimated + overestimated)) * 100);
-                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";                
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     // Velovity
@@ -303,8 +303,8 @@ public class ReportsTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
                 /*if (overestimated > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(overestimated);
+                 }*/
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
@@ -326,8 +326,8 @@ public class ReportsTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
                 toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
                 /*if (tableList.getNbOverestimatedPom() > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
+                 }*/
                 //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
                 getTitlePanel().setToolTipText(toolTipText);
             }

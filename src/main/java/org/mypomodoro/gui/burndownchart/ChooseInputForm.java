@@ -123,7 +123,7 @@ public class ChooseInputForm extends JPanel {
                 if (!burnupChartCheckBox.isSelected()) {
                     burndownChartCheckBox.setSelected(true); // force select at least one
                 }
-                scopeCheckBox.setSelected(scopeCheckBox.isSelected() && !burndownChartCheckBox.isSelected());                
+                scopeCheckBox.setSelected(scopeCheckBox.isSelected() && !burndownChartCheckBox.isSelected());
                 borderScope.repaint();
             }
         });

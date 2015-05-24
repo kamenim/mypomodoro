@@ -56,9 +56,8 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ConfigureInputForm extends JPanel {
-    
-    // TODO use gridlayout for subpanels to center them
 
+    // TODO use gridlayout for subpanels to center them
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
     // Tasks form
     private final JPanel tasksInputFormPanel = new JPanel();
@@ -100,10 +99,10 @@ public class ConfigureInputForm extends JPanel {
     }
 
     private void addTasksInputFormPanel() {
-        TitledBorder borderTasks = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));        
+        TitledBorder borderTasks = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
         borderTasks.setTitleFont(borderTasks.getTitleFont().deriveFont(Font.BOLD));
         borderTasks.setTitle(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
-        tasksInputFormPanel.setBorder(borderTasks);        
+        tasksInputFormPanel.setBorder(borderTasks);
         tasksInputFormPanel.setLayout(new BoxLayout(tasksInputFormPanel, BoxLayout.Y_AXIS));
         addTasksFields();
         add(tasksInputFormPanel);
@@ -123,7 +122,7 @@ public class ConfigureInputForm extends JPanel {
         });
         datesInputFormPanel.setBorder(borderDates);
         datesInputFormPanel.setLayout(new GridBagLayout());
-        addDatesFields();        
+        addDatesFields();
         tasksInputFormPanel.add(datesInputFormPanel);
     }
 
@@ -159,20 +158,6 @@ public class ConfigureInputForm extends JPanel {
         JPanel tasks = new JPanel();
         tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
         // ToDo List + ReportList / Iteration Backlog + Release Backlog
-        tasks.add(typeReleaseAndIteration); // include ToDos /Iteration Backlog tasks
-        // ReportList / Release Backlog only
-        tasks.add(typeReleaseOnly); // excludes ToDos/Iteration Backlog tasks
-        // Specific iteration
-        if (Main.preferences.getAgileMode()) {
-            JPanel iteration = new JPanel();
-            iteration.setLayout(new FlowLayout());
-            iteration.add(typeIterationOnly); // only iteration
-            for (int i = 0; i <= 100; i++) {
-                iterationonlyComboBox.addItem(new Integer(i));
-            }
-            iteration.add(iterationonlyComboBox);
-            tasks.add(iteration);
-        }
         typeReleaseAndIteration.addActionListener(new ActionListener() {
 
             @Override
@@ -185,6 +170,8 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
+        tasks.add(typeReleaseAndIteration); // include ToDos /Iteration Backlog tasks
+        // ReportList / Release Backlog only
         typeReleaseOnly.addActionListener(new ActionListener() {
 
             @Override
@@ -199,20 +186,42 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
-        typeIterationOnly.addActionListener(new ActionListener() {
+        tasks.add(typeReleaseOnly); // excludes ToDos/Iteration Backlog tasks
+        // Specific iteration
+        if (Main.preferences.getAgileMode()) {
+            JPanel iteration = new JPanel();
+            iteration.setLayout(new FlowLayout());
+            typeIterationOnly.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                typeReleaseAndIteration.setSelected(false);
-                typeReleaseOnly.setSelected(false);
-                datesCheckBox.setSelected(true); // force use of dates
-                if (Main.preferences.getAgileMode()) {
+                @Override
+                public void actionPerformed(ActionEvent event) {
+                    typeReleaseAndIteration.setSelected(false);
+                    typeReleaseOnly.setSelected(false);
+                    datesCheckBox.setSelected(true); // force use of dates
                     typeIterationOnly.setSelected(true);
                     iterationsInputFormPanel.setVisible(false);
                     iterationsCheckBox.setSelected(false);
                 }
+            });
+            iteration.add(typeIterationOnly); // only iteration
+            for (int i = 0; i <= 100; i++) {
+                iterationonlyComboBox.addItem(new Integer(i));
             }
-        });
+            iterationonlyComboBox.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent event) {
+                    typeReleaseAndIteration.setSelected(false);
+                    typeReleaseOnly.setSelected(false);
+                    datesCheckBox.setSelected(true); // force use of dates
+                    typeIterationOnly.setSelected(true);
+                    iterationsInputFormPanel.setVisible(false);
+                    iterationsCheckBox.setSelected(false);
+                }
+            });
+            iteration.add(iterationonlyComboBox);
+            tasks.add(iteration);
+        }
         tasksInputFormPanel.add(tasks);
     }
 
@@ -520,8 +529,20 @@ public class ConfigureInputForm extends JPanel {
         return excludeSundays;
     }
 
-    public JCheckBox getExcludeToDos() {
+    public JCheckBox getReleaseOnly() {
         return typeReleaseOnly;
+    }
+
+    public JCheckBox getReleaseAndIteration() {
+        return typeReleaseAndIteration;
+    }
+
+    public JCheckBox getIterationOnly() {
+        return typeIterationOnly;
+    }
+
+    public int getIteration() {
+        return (Integer) iterationonlyComboBox.getSelectedItem();
     }
 
     public ArrayList<Date> getExcludedDates() {

@@ -30,7 +30,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import org.mypomodoro.Main;
 
 public class ComponentTitledBorder implements Border, MouseListener, MouseMotionListener, SwingConstants {
@@ -66,17 +65,17 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         Insets insets = getBorderInsets(c);
         int temp = (insets.top - borderInsets.top) / 2;
         /*if (comp instanceof JCheckBox
-                && ((JCheckBox)comp).isSelected()) {
-            comp.setBackground(Main.selectedRowColor);
-            border = new LineBorder(Main.selectedRowColor);
-        } else {
-            comp.setBackground(container.getBackground());
-            border = new LineBorder(container.getBackground());
-        }*/     
+         && ((JCheckBox)comp).isSelected()) {
+         comp.setBackground(Main.selectedRowColor);
+         border = new LineBorder(Main.selectedRowColor);
+         } else {
+         comp.setBackground(container.getBackground());
+         border = new LineBorder(container.getBackground());
+         }*/
         border.paintBorder(c, g, x, y + temp, width, height - temp);
         Dimension size = comp.getPreferredSize();
         rect = new Rectangle(offset, 0, size.width, size.height);
-        SwingUtilities.paintComponent(g, comp, (Container) c, rect);        
+        SwingUtilities.paintComponent(g, comp, (Container) c, rect);
     }
 
     @Override

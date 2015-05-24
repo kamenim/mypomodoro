@@ -42,7 +42,6 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
-
 // TODO with duplicate and reopened the number of tasks is more than 100, 500...
 public class TestMenu extends JMenu {
 

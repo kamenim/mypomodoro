@@ -23,9 +23,8 @@ import org.mypomodoro.Main;
  *
  */
 public class TimeConverter {
-    
+
     // TODO the convertion in days in wrong: 1 day = nb pomodoro/day * pomodoro length
-    
     // Convertion minutes to duration
     // @return time in format mm:hh; or d days if time > 1 day
     public static String convertMinutesToString(float min) {

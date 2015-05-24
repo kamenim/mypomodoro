@@ -97,7 +97,13 @@ public class ConfigurePanel extends JPanel {
                                         configureInputForm.getExcludeSaturdays().isSelected(),
                                         configureInputForm.getExcludeSundays().isSelected(),
                                         configureInputForm.getExcludedDates());
-                                ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getExcludeToDos().isSelected());
+                                if (configureInputForm.getReleaseOnly().isSelected()) {
+                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, true);
+                                } else if (configureInputForm.getReleaseAndIteration().isSelected()) {
+                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, false);
+                                } else if (configureInputForm.getIterationOnly().isSelected()) {
+                                    ChartList.getList().refreshDateRangeAndIteration(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getIteration());
+                                }
                             } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
                                 ChartList.getList().refreshIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
                             }
