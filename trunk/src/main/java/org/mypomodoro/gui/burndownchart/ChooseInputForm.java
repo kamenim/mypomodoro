@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -53,7 +54,6 @@ public class ChooseInputForm extends JPanel {
 
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
-    private final GridBagConstraints c = new GridBagConstraints();
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private final JPanel burndownChartTypeLegendInputFormPanel = new JPanel();
@@ -106,19 +106,13 @@ public class ChooseInputForm extends JPanel {
     private final ComponentTitledBorder borderScope = new ComponentTitledBorder(scopeCheckBox, scopeInputFormPanel, new EtchedBorder(), scopeCheckBox.getFont().deriveFont(Font.BOLD));
 
     public ChooseInputForm() {
-        setLayout(new GridBagLayout());
-        // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
-        c.weightx = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.BOTH;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         addBurndownChartInputFormPanel();
         addBurnupChartInputFormPanel();
     }
 
     private void addBurndownChartInputFormPanel() {
-        c.gridx = 0;
-        c.gridy = 0;
         // Burndown       
         burndownChartCheckBox.setFocusPainted(false);
         burndownChartCheckBox.setSelected(true);
@@ -126,7 +120,10 @@ public class ChooseInputForm extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                scopeCheckBox.setSelected(scopeCheckBox.isSelected() && !burndownChartCheckBox.isSelected());
+                if (!burnupChartCheckBox.isSelected()) {
+                    burndownChartCheckBox.setSelected(true); // force select at least one
+                }
+                scopeCheckBox.setSelected(scopeCheckBox.isSelected() && !burndownChartCheckBox.isSelected());                
                 borderScope.repaint();
             }
         });
@@ -145,15 +142,22 @@ public class ChooseInputForm extends JPanel {
         targetInputFormPanel.setBorder(borderTarget);
         targetInputFormPanel.setLayout(new GridBagLayout());
         addTargetFields(cChart);
-        add(burndownChartInputFormPanel, c);
+        add(burndownChartInputFormPanel);
     }
 
     private void addBurnupChartInputFormPanel() {
-        c.gridx = 0;
-        c.gridy = 1;
         // Burnup        
         burnupChartCheckBox.setFocusPainted(false);
         burnupChartCheckBox.setSelected(false);
+        burnupChartCheckBox.addActionListener(new ActionListener() { // no burndown and scope line on the same chart as they share the same axis (X-Axis)
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                if (!burndownChartCheckBox.isSelected()) {
+                    burnupChartCheckBox.setSelected(true); // force select at least one
+                }
+            }
+        });
         burnupChartInputFormPanel.setBorder(borderBurnupChart);
         burnupChartInputFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints cChart = new GridBagConstraints();
@@ -176,7 +180,9 @@ public class ChooseInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 burndownChartCheckBox.setSelected(burndownChartCheckBox.isSelected() && !scopeCheckBox.isSelected());
-                burnupChartCheckBox.setSelected(true);
+                if (!burndownChartCheckBox.isSelected()) {
+                    burnupChartCheckBox.setSelected(true); // force select at least one
+                }
                 borderBurndownChart.repaint();
                 borderBurnupChart.repaint();
             }
@@ -184,7 +190,7 @@ public class ChooseInputForm extends JPanel {
         scopeInputFormPanel.setBorder(borderScope);
         scopeInputFormPanel.setLayout(new GridBagLayout());
         addScopeFields(cChart);
-        add(burnupChartInputFormPanel, c);
+        add(burnupChartInputFormPanel);
     }
 
     private void addBurndownChartFields(final GridBagConstraints cChart) {

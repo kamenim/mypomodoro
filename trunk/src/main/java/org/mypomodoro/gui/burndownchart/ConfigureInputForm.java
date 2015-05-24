@@ -56,9 +56,10 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class ConfigureInputForm extends JPanel {
+    
+    // TODO use gridlayout for subpanels to center them
 
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
-    private final GridBagConstraints c = new GridBagConstraints();
     // Tasks form
     private final JPanel tasksInputFormPanel = new JPanel();
     private final JComboBox iterationonlyComboBox = new JComboBox();
@@ -87,11 +88,7 @@ public class ConfigureInputForm extends JPanel {
     private final JTextField chartHeight = new JTextField("410");
 
     public ConfigureInputForm() {
-        setLayout(new GridBagLayout());
-        // The following three lines are necessary to make the additional jpanels to fill up the parent jpanel
-        c.weightx = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.BOTH;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         addTasksInputFormPanel();
         addDatesInputFormPanel();
@@ -103,21 +100,16 @@ public class ConfigureInputForm extends JPanel {
     }
 
     private void addTasksInputFormPanel() {
-        c.gridx = 0;
-        c.gridy = 0;
-        TitledBorder borderTasks = new TitledBorder(new EtchedBorder());
+        TitledBorder borderTasks = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));        
         borderTasks.setTitleFont(borderTasks.getTitleFont().deriveFont(Font.BOLD));
         borderTasks.setTitle(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
-        tasksInputFormPanel.setBorder(borderTasks);
-        //tasksInputFormPanel.setLayout(new GridBagLayout());
+        tasksInputFormPanel.setBorder(borderTasks);        
         tasksInputFormPanel.setLayout(new BoxLayout(tasksInputFormPanel, BoxLayout.Y_AXIS));
         addTasksFields();
-        add(tasksInputFormPanel, c);
+        add(tasksInputFormPanel);
     }
 
     private void addDatesInputFormPanel() {
-        //c.gridx = 0;
-        //c.gridy = 1;
         datesCheckBox.setFocusPainted(false);
         datesCheckBox.setSelected(true);
         datesCheckBox.addActionListener(new ActionListener() {
@@ -133,12 +125,9 @@ public class ConfigureInputForm extends JPanel {
         datesInputFormPanel.setLayout(new GridBagLayout());
         addDatesFields();        
         tasksInputFormPanel.add(datesInputFormPanel);
-        //add(datesInputFormPanel, c);
     }
 
     private void addReleaseInputFormPanel() {
-        //c.gridx = 0;
-        //c.gridy = 2;
         iterationsCheckBox.setFocusPainted(false);
         iterationsCheckBox.setSelected(false);
         iterationsCheckBox.addActionListener(new ActionListener() {
@@ -154,19 +143,16 @@ public class ConfigureInputForm extends JPanel {
         iterationsInputFormPanel.setLayout(new GridBagLayout());
         addIterationsFields();
         tasksInputFormPanel.add(iterationsInputFormPanel);
-        //add(iterationsInputFormPanel, c);
     }
 
     private void addImageInputFormPanel() {
-        c.gridx = 0;
-        c.gridy = 3;
-        TitledBorder borderDimension = new TitledBorder(new EtchedBorder());
+        TitledBorder borderDimension = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
         borderDimension.setTitleFont(borderDimension.getTitleFont().deriveFont(Font.BOLD));
         borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());
         addDimensionFields();
-        add(dimensionInputFormPanel, c);
+        add(dimensionInputFormPanel);
     }
 
     private void addTasksFields() {

@@ -29,6 +29,9 @@ import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import org.mypomodoro.Main;
 
 public class ComponentTitledBorder implements Border, MouseListener, MouseMotionListener, SwingConstants {
 
@@ -36,7 +39,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     private final Component comp;
     private final JComponent container;
     private Rectangle rect;
-    private final Border border;
+    private Border border;
     private boolean mouseEntered = false;
 
     public ComponentTitledBorder(Component comp, JComponent container, Border border) {
@@ -62,10 +65,18 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         Insets borderInsets = border.getBorderInsets(c);
         Insets insets = getBorderInsets(c);
         int temp = (insets.top - borderInsets.top) / 2;
+        /*if (comp instanceof JCheckBox
+                && ((JCheckBox)comp).isSelected()) {
+            comp.setBackground(Main.selectedRowColor);
+            border = new LineBorder(Main.selectedRowColor);
+        } else {
+            comp.setBackground(container.getBackground());
+            border = new LineBorder(container.getBackground());
+        }*/     
         border.paintBorder(c, g, x, y + temp, width, height - temp);
         Dimension size = comp.getPreferredSize();
         rect = new Rectangle(offset, 0, size.width, size.height);
-        SwingUtilities.paintComponent(g, comp, (Container) c, rect);
+        SwingUtilities.paintComponent(g, comp, (Container) c, rect);        
     }
 
     @Override
@@ -107,6 +118,7 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
     public void mouseExited(MouseEvent me) {
         if (mouseEntered) {
             mouseEntered = false;
+            border = new EtchedBorder(); // change border on exit 
             dispatchEvent(me, MouseEvent.MOUSE_EXITED);
         }
     }
@@ -132,10 +144,12 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         }
         if (mouseEntered == false && rect.contains(me.getX(), me.getY())) {
             mouseEntered = true;
+            border = new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor); // change border on exit
             dispatchEvent(me, MouseEvent.MOUSE_ENTERED);
         } else if (mouseEntered == true) {
             if (rect.contains(me.getX(), me.getY()) == false) {
                 mouseEntered = false;
+                border = new EtchedBorder(); // change border on entering
                 dispatchEvent(me, MouseEvent.MOUSE_EXITED);
             } else {
                 dispatchEvent(me, MouseEvent.MOUSE_MOVED);
