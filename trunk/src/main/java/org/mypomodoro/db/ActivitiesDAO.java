@@ -250,16 +250,23 @@ public class ActivitiesDAO {
     /// CHARTS
     //////////////////////
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
+        return getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
+    }
+
+    public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
                 String query = "SELECT * FROM activities WHERE ";
+                query += "parent_id = -1 AND "; // no subtasks
+                if (iteration >= 0) {
+                    query += "iteration = " + iteration + " AND "; // specific iteration
+                }
                 if (!excludeToDos) {
-                    query += "priority > -1 OR (";
+                    query += "(priority > -1 OR (";
                 }
                 query += "is_complete = 'true' ";
-                query += "AND parent_id = -1 "; // no subtasks
                 int increment = 1;
                 query += "AND (";
                 for (Date date : datesToBeIncluded) {
@@ -272,7 +279,7 @@ public class ActivitiesDAO {
                 }
                 query += ")";
                 if (!excludeToDos) {
-                    query += ")";
+                    query += "))";
                 }
                 query += " ORDER BY date_completed DESC";  // from newest to oldest
                 ResultSet rs = database.query(query);

@@ -357,8 +357,8 @@ public class ToDoTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
                 /*if (overestimated > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(overestimated);
+                 }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideOverestimationButton();
@@ -381,8 +381,8 @@ public class ToDoTable extends AbstractTable {
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
                 toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
                 /*if (tableList.getNbOverestimatedPom() > 0) {
-                    toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }*/
+                 toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
+                 }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar
                 if (getSelectedRowCount() == 1) {

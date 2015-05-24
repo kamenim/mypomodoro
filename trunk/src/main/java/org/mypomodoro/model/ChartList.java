@@ -49,6 +49,13 @@ public class ChartList extends AbstractActivities {
         }
     }
 
+    public void refreshDateRangeAndIteration(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, int iteration) {
+        removeAll();
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, false, iteration)) {
+            super.add(act);
+        }
+    }
+
     public void refreshIterationRange(int startIteration, int endIteration) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartIterationRange(startIteration, endIteration)) {

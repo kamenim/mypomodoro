@@ -32,7 +32,6 @@ import org.mypomodoro.util.WaitCursor;
  * Delete button
  *
  */
-
 // TODO Merge. move, complete: problem refresh priorities after reordering priorities
 public class CompleteToDoButton extends TabPanelButton {
 
