@@ -172,7 +172,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             estover += a.getEstimatedPoms() + a.getOverestimatedPoms();
             real += a.getActualPoms();
         }
-        int accuracy = Math.round(((float) real / (float) estover) * 100);
+        int accuracy = real == 0 || estover == 0 ? 0 : Math.round(((float) real / (float) estover) * 100);
         return accuracy;
     }
 }

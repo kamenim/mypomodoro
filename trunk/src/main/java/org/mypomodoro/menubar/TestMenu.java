@@ -42,7 +42,7 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
-// TODO with duplicate and reopened the number of tasks is more than 100, 500...
+// TODO improve distribution of estimated, real. over amongs subtasks
 public class TestMenu extends JMenu {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
@@ -103,7 +103,7 @@ public class TestMenu extends JMenu {
                         MainPanel.progressBar.setVisible(true);
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(nbTask);
-                        String[] tasks = new String[]{"Task", "Tâche", "任务", "задача", "कार्य"}; // English, French, Hindi, Russian, Chinese simplified                        
+                        String[] tasks = new String[]{"Task", "Tâche", "任务", "задача", "कार्य"}; // English, French, Hindi, Russian, Chinese simplified
                         Float[] storypoint = new Float[]{0f, 0.5f, 0.5f, 0.5f, 1f, 1f, 1f, 2f, 2f, 2f, 3f, 3f, 5f, 5f, 8f};
                         Integer[] iterations = new Integer[]{-1, 0, 1, 2, 3, 4};
                         Integer[] iterationsForActivities = new Integer[]{-1, -1, -1, iterations.length - 1, iterations.length};
@@ -156,16 +156,20 @@ public class TestMenu extends JMenu {
                                         dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
                                     }
                                     Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
-                                    ReportList.getList().add(a, dateAdded, dateCompleted);
-                                    if (withSubtask) {
-                                        // Adding subtasks
-                                        addSubTasks(a, ReportList.getList());
-                                    }
+                                    ReportList.getList().add(a, dateAdded, dateCompleted);                                    
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
                                         ReportList.getList().reopenToActivtyList(a);
+                                        if (withSubtask) {
+                                            // Adding subtasks
+                                            addSubTasks(a, ActivityList.getList());
+                                        }
                                         Main.gui.getActivityListPanel().getMainTable().insertRow(a); // main table !
                                         activityListValue++;
                                     } else {
+                                        if (withSubtask) {
+                                            // Adding subtasks
+                                            addSubTasks(a, ReportList.getList());
+                                        }
                                         Main.gui.getReportListPanel().getMainTable().insertRow(a); // main table !
                                         reportListValue++;
                                     }
@@ -186,6 +190,7 @@ public class TestMenu extends JMenu {
                                                 Activity duplicatedActivity = ToDoList.getList().duplicate(a);
                                                 Main.gui.getToDoPanel().getMainTable().insertRow(duplicatedActivity); // main table !
                                                 todoListValue++;
+                                                i++; // an extra activity was added
                                             } catch (CloneNotSupportedException ignored) {
                                             }
                                         }
@@ -206,6 +211,7 @@ public class TestMenu extends JMenu {
                                                 Activity duplicatedActivity = ActivityList.getList().duplicate(a);
                                                 Main.gui.getActivityListPanel().getMainTable().insertRow(duplicatedActivity);
                                                 activityListValue++;
+                                                i++; // an extra activity was added
                                             } catch (CloneNotSupportedException ignored) {
                                             }
                                         }
@@ -295,7 +301,6 @@ public class TestMenu extends JMenu {
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));
-
                     if (list instanceof ToDoList) {
                         ToDoList.getList().add(aClone);
                     } else if (list instanceof ActivityList) {
