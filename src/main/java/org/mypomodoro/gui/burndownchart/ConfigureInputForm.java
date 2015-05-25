@@ -21,6 +21,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -57,7 +58,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ConfigureInputForm extends JPanel {
 
-    // TODO use gridlayout for subpanels to center them
+    // TODO improve layout of subpanels
     protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
     // Tasks form
     private final JPanel tasksInputFormPanel = new JPanel();
@@ -90,8 +91,6 @@ public class ConfigureInputForm extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         addTasksInputFormPanel();
-        addDatesInputFormPanel();
-        addReleaseInputFormPanel();
         if (!Main.preferences.getAgileMode()) {
             iterationsInputFormPanel.setVisible(false);
         }
@@ -101,63 +100,25 @@ public class ConfigureInputForm extends JPanel {
     private void addTasksInputFormPanel() {
         TitledBorder borderTasks = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
         borderTasks.setTitleFont(borderTasks.getTitleFont().deriveFont(Font.BOLD));
-        borderTasks.setTitle(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
+        borderTasks.setTitle(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");        
+        GridBagConstraints cChart = new GridBagConstraints();
+        cChart.weightx = 1;
+        cChart.weighty = 1;
+        cChart.fill = GridBagConstraints.CENTER;
+        cChart.insets = new Insets(0, 5, 2, 5);
         tasksInputFormPanel.setBorder(borderTasks);
-        tasksInputFormPanel.setLayout(new BoxLayout(tasksInputFormPanel, BoxLayout.Y_AXIS));
-        addTasksFields();
-        add(tasksInputFormPanel);
+        tasksInputFormPanel.setLayout(new GridBagLayout());
+        addTasksFields(cChart);
+        addDatesInputFormPanel(cChart);
+        addIterationsInputFormPanel(cChart);
+        add(tasksInputFormPanel, cChart);
     }
 
-    private void addDatesInputFormPanel() {
-        datesCheckBox.setFocusPainted(false);
-        datesCheckBox.setSelected(true);
-        datesCheckBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                datesCheckBox.setSelected(true);
-                iterationsCheckBox.setSelected(false);
-                borderIterations.repaint();
-            }
-        });
-        datesInputFormPanel.setBorder(borderDates);
-        datesInputFormPanel.setLayout(new GridBagLayout());
-        addDatesFields();
-        tasksInputFormPanel.add(datesInputFormPanel);
-    }
-
-    private void addReleaseInputFormPanel() {
-        iterationsCheckBox.setFocusPainted(false);
-        iterationsCheckBox.setSelected(false);
-        iterationsCheckBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                iterationsCheckBox.setSelected(true);
-                datesCheckBox.setSelected(false);
-                borderDates.repaint();
-            }
-        });
-        iterationsInputFormPanel.setBorder(borderIterations);
-        iterationsInputFormPanel.setLayout(new GridBagLayout());
-        addIterationsFields();
-        tasksInputFormPanel.add(iterationsInputFormPanel);
-    }
-
-    private void addImageInputFormPanel() {
-        TitledBorder borderDimension = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
-        borderDimension.setTitleFont(borderDimension.getTitleFont().deriveFont(Font.BOLD));
-        borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
-        dimensionInputFormPanel.setBorder(borderDimension);
-        dimensionInputFormPanel.setLayout(new GridBagLayout());
-        addDimensionFields();
-        add(dimensionInputFormPanel);
-    }
-
-    private void addTasksFields() {
+    private void addTasksFields(final GridBagConstraints cChart) {
+        cChart.gridx = 0;
+        cChart.gridy = 0;
         JPanel tasks = new JPanel();
         tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
-        // ToDo List + ReportList / Iteration Backlog + Release Backlog
         typeReleaseAndIteration.addActionListener(new ActionListener() {
 
             @Override
@@ -223,6 +184,56 @@ public class ConfigureInputForm extends JPanel {
             tasks.add(iteration);
         }
         tasksInputFormPanel.add(tasks);
+    }
+
+    private void addDatesInputFormPanel(final GridBagConstraints cChart) {
+        cChart.gridx = 0;
+        cChart.gridy = 1;
+        datesCheckBox.setFocusPainted(false);
+        datesCheckBox.setSelected(true);
+        datesCheckBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                datesCheckBox.setSelected(true);
+                iterationsCheckBox.setSelected(false);
+                borderIterations.repaint();
+            }
+        });
+        datesInputFormPanel.setBorder(borderDates);
+        datesInputFormPanel.setLayout(new GridBagLayout());
+        addDatesFields();
+        tasksInputFormPanel.add(datesInputFormPanel, cChart);
+    }
+
+    private void addIterationsInputFormPanel(final GridBagConstraints cChart) {
+        cChart.gridx = 0;
+        cChart.gridy = 2;
+        iterationsCheckBox.setFocusPainted(false);
+        iterationsCheckBox.setSelected(false);
+        iterationsCheckBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                iterationsCheckBox.setSelected(true);
+                datesCheckBox.setSelected(false);
+                borderDates.repaint();
+            }
+        });
+        iterationsInputFormPanel.setBorder(borderIterations);
+        iterationsInputFormPanel.setLayout(new GridBagLayout());
+        addIterationsFields();
+        tasksInputFormPanel.add(iterationsInputFormPanel, cChart);
+    }
+
+    private void addImageInputFormPanel() {
+        TitledBorder borderDimension = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
+        borderDimension.setTitleFont(borderDimension.getTitleFont().deriveFont(Font.BOLD));
+        borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
+        dimensionInputFormPanel.setBorder(borderDimension);
+        dimensionInputFormPanel.setLayout(new GridBagLayout());
+        addDimensionFields();
+        add(dimensionInputFormPanel);
     }
 
     private void addDatesFields() {
@@ -387,18 +398,18 @@ public class ConfigureInputForm extends JPanel {
         JPanel iterations = new JPanel();
         iterations.setLayout(new GridBagLayout());
         GridBagConstraints iterationsgbc = new GridBagConstraints();
+        iterationsgbc.weightx = 1;
+        iterationsgbc.weighty = 1;
+        iterationsgbc.fill = GridBagConstraints.BOTH;
+        iterationsgbc.insets = new Insets(0, 5, 2, 5);
         FormLabel iterationslabel = new FormLabel(Labels.getString("BurndownChartPanel.Iterations") + "*: ");
         iterationslabel.setMinimumSize(LABEL_DIMENSION);
         iterationslabel.setPreferredSize(LABEL_DIMENSION);
         iterationsgbc.gridx = 0;
         iterationsgbc.gridy = 0;
-        iterationsgbc.weightx = 1.0;
-        iterationsgbc.weighty = 0.5;
         iterations.add(iterationslabel, iterationsgbc);
         iterationsgbc.gridx = 1;
         iterationsgbc.gridy = 0;
-        iterationsgbc.weightx = 1.0;
-        iterationsgbc.weighty = 0.5;
         for (int i = 0; i <= 100; i++) {
             startIteration.addItem(new Integer(i));
         }
@@ -420,8 +431,6 @@ public class ConfigureInputForm extends JPanel {
         iterations.add(startIteration, iterationsgbc);
         iterationsgbc.gridx = 2;
         iterationsgbc.gridy = 0;
-        iterationsgbc.weightx = 1.0;
-        iterationsgbc.weighty = 0.5;
         for (int i = 0; i <= 100; i++) {
             endIteration.addItem(new Integer(i));
         }

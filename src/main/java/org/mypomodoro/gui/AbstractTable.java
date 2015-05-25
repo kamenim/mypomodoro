@@ -704,7 +704,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void removeRow(int rowIndex) {
-        //clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection) // TODO
+        clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
         getModel().removeRow(convertRowIndexToModel(rowIndex)); // we remove in the Model...
         if (getModel().getRowCount() > 0) {
             int currentRow = rowIndex == 0 ? 0 : rowIndex - 1;
@@ -720,7 +720,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void insertRow(Activity activity) {
-        //clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection) // TODO       
+        clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)       
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
         getModel().addRow(activity); // we add in the Model...

@@ -289,7 +289,7 @@ public class ReportsTable extends AbstractTable {
                     title += " + " + overestimated;
                 }
                 title += "&nbsp;</span>";
-                int accuracy = Math.round(((float) real / ((float) estimated + overestimated)) * 100);
+                int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100);
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 if (Main.preferences.getAgileMode()) {
                     DecimalFormat df = new DecimalFormat("0.#");
