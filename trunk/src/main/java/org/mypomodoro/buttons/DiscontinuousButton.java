@@ -34,8 +34,8 @@ import org.mypomodoro.gui.todo.Pomodoro;
  */
 public class DiscontinuousButton extends TransparentButton {
 
-    private final ImageIcon discontinuousIcon = new ImageIcon(Main.class.getResource("/images/discontinuous.png"));
-    private final ImageIcon continuousIcon = new ImageIcon(Main.class.getResource("/images/continuous.png"));
+    private final ImageIcon discontinuousIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "discontinuous.png"));
+    private final ImageIcon continuousIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "continuous.png"));
     private boolean isDiscontinuousIcon = true;
 
     public DiscontinuousButton(final Pomodoro pomodoro) {

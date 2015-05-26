@@ -32,11 +32,11 @@ import org.mypomodoro.model.Activity;
  */
 public class ToDoIconPanel {
 
-    private final static ImageIcon squareCrossIcon = new ImageIcon(Main.class.getResource("/images/squareCross.png"));
-    private final static ImageIcon squareIcon = new ImageIcon(Main.class.getResource("/images/square.png"));
-    private final static ImageIcon plusIcon = new ImageIcon(Main.class.getResource("/images/plus.png"));
-    private final static ImageIcon quoteIcon = new ImageIcon(Main.class.getResource("/images/quote.png"));
-    private final static ImageIcon dashIcon = new ImageIcon(Main.class.getResource("/images/dash.png"));
+    private final static ImageIcon squareCrossIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "squareCross.png"));
+    private final static ImageIcon squareIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "square.png"));
+    private final static ImageIcon plusIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plus.png"));
+    private final static ImageIcon quoteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "quote.png"));
+    private final static ImageIcon dashIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "dash.png"));
 
     static public void showIconPanel(JPanel iconPanel, Activity activity, Color color) {
         showIconPanel(iconPanel, activity, color, true);

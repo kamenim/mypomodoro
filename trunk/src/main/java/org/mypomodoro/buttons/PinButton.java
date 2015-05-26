@@ -28,8 +28,8 @@ import org.mypomodoro.Main;
  */
 public class PinButton extends TransparentButton {
 
-    private final ImageIcon pinIcon = new ImageIcon(Main.class.getResource("/images/pin.png"));
-    private final ImageIcon unpinIcon = new ImageIcon(Main.class.getResource("/images/unpin.png"));
+    private final ImageIcon pinIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pin.png"));
+    private final ImageIcon unpinIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "unpin.png"));
     private boolean isPinIcon = true;
 
     public PinButton() {

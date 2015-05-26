@@ -43,15 +43,15 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected final JLabel titleLabel = new JLabel();
     protected final JPanel buttonPanel = new JPanel();
-    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource("/images/refresh.png"));
-    private final ImageIcon createIcon = new ImageIcon(Main.class.getResource("/images/create.png"));
-    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource("/images/duplicate.png"));
-    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource("/images/selected.png"));
-    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource("/images/unplanned.png"));
-    private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource("/images/internal.png"));
-    private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource("/images/external.png"));
-    private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource("/images/plusone.png"));
-    protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource("/images/running.png"));
+    private final ImageIcon refreshIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "refresh.png"));
+    private final ImageIcon createIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "create.png"));
+    private final ImageIcon duplicateIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "duplicate.png"));
+    private final ImageIcon selectedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "selected.png"));
+    private final ImageIcon unplannedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "unplanned.png"));
+    private final ImageIcon internalIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "internal.png"));
+    private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "external.png"));
+    private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plusone.png"));
+    protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "running.png"));
     protected final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
     protected final DefaultButton internalButton = new DefaultButton(internalIcon);
     protected final DefaultButton externalButton = new DefaultButton(externalIcon);
