@@ -67,6 +67,7 @@ public class Main {
     public static Color taskFinishedColor = ColorUtil.GREEN;
     public static Color taskRunningColor = ColorUtil.RED;
     public static Color myIconBackgroundColor; // eg mAP laf uses this setting
+    public static String iconsSetPath = "/images/icons_dark_set/";
 
     /**
      * Main

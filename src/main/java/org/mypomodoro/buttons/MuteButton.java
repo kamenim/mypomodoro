@@ -28,8 +28,8 @@ import org.mypomodoro.gui.todo.Pomodoro;
  */
 public class MuteButton extends TransparentButton {
 
-    private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource("/images/mute.png"));
-    private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource("/images/sound.png"));
+    private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "mute.png"));
+    private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "sound.png"));
     private boolean isMuteIcon = true;
 
     public MuteButton(final Pomodoro pomodoro, boolean mute) {

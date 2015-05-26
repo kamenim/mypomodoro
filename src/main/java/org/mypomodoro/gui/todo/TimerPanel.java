@@ -42,14 +42,14 @@ public class TimerPanel extends JPanel {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final ImageIcon startIcon = new ImageIcon(Main.class.getResource("/images/start.png"));
-    private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource("/images/stop.png"));
-    private final ImageIcon stopRedIcon = new ImageIcon(Main.class.getResource("/images/stopred.png"));
+    private final ImageIcon startIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "start.png"));
+    private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "stop.png"));
+    private final ImageIcon stopRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "stopred.png"));
     private final TransparentButton startButton = new TransparentButton(startIcon);
-    private final ImageIcon pauseIcon = new ImageIcon(Main.class.getResource("/images/pause.png"));
-    private final ImageIcon pauseRedIcon = new ImageIcon(Main.class.getResource("/images/pausered.png"));
-    private final ImageIcon resumeIcon = new ImageIcon(Main.class.getResource("/images/resume.png"));
-    private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource("/images/resumered.png"));
+    private final ImageIcon pauseIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pause.png"));
+    private final ImageIcon pauseRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pausered.png"));
+    private final ImageIcon resumeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resume.png"));
+    private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resumered.png"));
     private final TransparentButton pauseButton = new TransparentButton(pauseRedIcon);
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;

@@ -29,8 +29,8 @@ import org.mypomodoro.gui.MainPanel;
  */
 public class ResizeButton extends TransparentButton {
 
-    private final ImageIcon upSizeIcon = new ImageIcon(Main.class.getResource("/images/upsize.png"));
-    private final ImageIcon downSizeIcon = new ImageIcon(Main.class.getResource("/images/downsize.png"));
+    private final ImageIcon upSizeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "upsize.png"));
+    private final ImageIcon downSizeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "downsize.png"));
 
     public ResizeButton() {
         setUpSizeIcon();

@@ -28,8 +28,8 @@ import org.mypomodoro.gui.todo.Pomodoro;
  */
 public class TimeMinusButton extends TransparentButton {
 
-    private final ImageIcon timeMinusIcon = new ImageIcon(Main.class.getResource("/images/timeminus.png"));
-    private final ImageIcon timeMinusRedIcon = new ImageIcon(Main.class.getResource("/images/timeminusred.png"));
+    private final ImageIcon timeMinusIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "timeminus.png"));
+    private final ImageIcon timeMinusRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "timeminusred.png"));
 
     public TimeMinusButton(final Pomodoro pomodoro) {
         setIcon(timeMinusIcon);

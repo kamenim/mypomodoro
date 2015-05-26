@@ -616,17 +616,19 @@ public class ToDoTable extends AbstractTable {
     public void scrollToSelectedRows() {
         if (panel.getPomodoro().inPomodoro()) {
             for (int row = 0; row < panel.getMainTable().getModel().getRowCount(); row++) {
-                // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
+                // Scroll to the currentToDo task or, if the currentToDo is a subtask, scroll to its parent task AND select
                 if (panel.getPomodoro().getCurrentToDo().getId() == panel.getMainTable().getActivityIdFromRowIndex(row)
                         || panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row)) {
                     panel.getMainTable().scrollToRowIndex(row);
+                    panel.getMainTable().setRowSelectionInterval(row, row);
                     break;
                 }
             }
             for (int row = 0; row < panel.getSubTable().getModel().getRowCount(); row++) {
-                // Scroll to the currentToDo or, if the currentToDo is a subtask, scroll to the parent task
+                // Scroll to the currentToDo subtask AND select
                 if (panel.getPomodoro().getCurrentToDo().getId() == panel.getSubTable().getActivityIdFromRowIndex(row)) {
                     panel.getSubTable().scrollToRowIndex(row);
+                    panel.getMainTable().setRowSelectionInterval(row, row);
                     break;
                 }
             }

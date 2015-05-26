@@ -41,6 +41,8 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
         //Main.taskFinishedColor = GREEN;
         Main.tableBackgroundColor = ColorUtil.WHITE;
         Main.myIconBackgroundColor = RED;
+        // icon set path
+        Main.iconsSetPath = "/images/icons_light_set/";
 
         // JTatoo theme settings
         Properties props = new Properties();
