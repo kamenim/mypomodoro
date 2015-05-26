@@ -23,15 +23,17 @@ import org.mypomodoro.Main;
  *
  */
 public class TimeConverter {
-
-    // TODO the convertion in days in wrong: 1 day = nb pomodoro/day * pomodoro length
+    
+    private final int dayInMinutes = Main.preferences.getMaxNbPomPerDay() * Main.preferences.getPomodoroLength();
+    
     // Convertion minutes to duration
     // @return time in format mm:hh; or d days if time > 1 day
     public static String convertMinutesToString(float min) {
         String time;
-        long days = Math.round(Math.floor(min / (60 * 24))); // round is only used to convert to long        
+        float dayInPomodoroInSeconds = getDayInPomodoroInMinutes() * 60; // Normally: 24 * 60
+        long days = Math.round(Math.floor(min / (dayInPomodoroInSeconds))); // round is only used to convert to long        
         if (days >= 1) {
-            min = min - days * 60 * 24; // minutes left
+            min = min - days * dayInPomodoroInSeconds; // minutes left
         }
         float hours = min / 60;
         float minutes = min % 60;
@@ -71,5 +73,13 @@ public class TimeConverter {
             length = convertMinutesToString(calculateEffectiveMinutes(pomodoros));
         }
         return length;
+    }
+    
+    private static float getDayInPomodoroInMinutes() {
+        long nbLongBreaks = Math.round(Math.floor(Main.preferences.getMaxNbPomPerDay() / Main.preferences.getNbPomPerSet())); // one long break per set
+        long nbShortbreaks = Math.round(Main.preferences.getMaxNbPomPerDay() - nbLongBreaks); // on short break per pomodoro minus the long breaks
+        return Main.preferences.getMaxNbPomPerDay() * Main.preferences.getPomodoroLength()
+                + nbShortbreaks * Main.preferences.getShortBreakLength()
+                + nbLongBreaks * Main.preferences.getLongBreakLength();
     }
 }

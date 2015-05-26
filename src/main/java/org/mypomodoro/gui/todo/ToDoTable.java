@@ -434,30 +434,28 @@ public class ToDoTable extends AbstractTable {
     @Override
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {
-            panel.getMainTable().removePomsFromSelectedRow(activity);
-        }
-        getList().moveToActivtyList(activity); // move to ActivityList
-        removeRow(rowIndex);
-        if (getList().isEmpty()
-                && panel.getPomodoro().getTimer().isRunning()) { // break running
-            panel.getPomodoro().stop();
-            panel.getTimerPanel().setStartEnv();
+        if (!activity.isSubTask()) {
+            getList().moveToActivtyList(activity); // move to ActivityList
+            removeRow(rowIndex);
+            if (getList().isEmpty()
+                    && panel.getPomodoro().getTimer().isRunning()) { // break running
+                panel.getPomodoro().stop();
+                panel.getTimerPanel().setStartEnv();
+            }
         }
     }
 
     @Override
     public void completeTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {
-            panel.getMainTable().removePomsFromSelectedRow(activity);
-        }
-        getList().completeToReportList(activity);
-        removeRow(rowIndex);
-        if (getList().isEmpty()
-                && panel.getPomodoro().getTimer().isRunning()) { // break running
-            panel.getPomodoro().stop();
-            panel.getTimerPanel().setStartEnv();
+        if (!activity.isSubTask()) {
+            getList().completeToReportList(activity);
+            removeRow(rowIndex);
+            if (getList().isEmpty()
+                    && panel.getPomodoro().getTimer().isRunning()) { // break running
+                panel.getPomodoro().stop();
+                panel.getTimerPanel().setStartEnv();
+            }
         }
     }
 
@@ -519,11 +517,11 @@ public class ToDoTable extends AbstractTable {
     }
 
     protected boolean canCreateInterruptions() {
-        return getRowCount() > 0 && panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning();
+        return panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning(); // no interruptions during pauses
     }
 
     protected boolean canCreateUnplannedTask() {
-        return getRowCount() > 0;
+        return true; // anytime
     }
 
     @Override
@@ -568,7 +566,7 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                panel.getDetailsPanel().disableButtons();
+                //panel.getDetailsPanel().disableButtons();
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
@@ -576,7 +574,9 @@ public class ToDoTable extends AbstractTable {
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    panel.getDetailsPanel().enableButtons();
+                    /*if (!selectedToDo.isSubTask()) {
+                        panel.getDetailsPanel().enableButtons();
+                    }*/
                 } else if (!panel.getPomodoro().inPomodoro()) {
                     //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
                     ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -584,7 +584,9 @@ public class ToDoTable extends AbstractTable {
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    panel.getDetailsPanel().enableButtons();
+                    /*if (!selectedToDo.isSubTask()) {
+                        panel.getDetailsPanel().enableButtons();
+                    }*/
                 }
             } else if (getSelectedRowCount() > 1) { // multiple selection
                 if (!panel.getPomodoro().inPomodoro()) {
@@ -595,7 +597,9 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
-                panel.getDetailsPanel().enableButtons();
+                /*if (panel.getCurrentTable().equals(panel.getMainTable())) { // no subtasks
+                    panel.getDetailsPanel().enableButtons();
+                }*/
             }
         } else { // empty list
             //ToDoIconPanel.clearIconPanel(iconPanel);
@@ -604,7 +608,7 @@ public class ToDoTable extends AbstractTable {
             ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
-            panel.getDetailsPanel().enableButtons();
+            //panel.getDetailsPanel().enableButtons();
         }
     }
 

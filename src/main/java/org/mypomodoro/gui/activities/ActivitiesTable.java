@@ -432,10 +432,9 @@ public class ActivitiesTable extends AbstractTable {
     @Override
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {
-            panel.getMainTable().removePomsFromSelectedRow(activity);
+        if (!activity.isSubTask()) {            
+            getList().moveToTODOList(activity); // move to ToDoList
+            removeRow(rowIndex);
         }
-        getList().moveToTODOList(activity); // move to ToDoList
-        removeRow(rowIndex);
     }
 }

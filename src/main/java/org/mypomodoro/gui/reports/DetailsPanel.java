@@ -33,6 +33,8 @@ import org.mypomodoro.util.Labels;
 public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private MoveButton reopenButton;
+    private DeleteButton deleteButton;
 
     public DetailsPanel(ReportsPanel reportsPanel) {
         setLayout(new GridBagLayout());
@@ -48,7 +50,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        MoveButton reopenButton = new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel);
+        reopenButton = new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel);
         reopenButton.setToolTipText("SHIFT + <");
         add(reopenButton, gbc);
     }
@@ -69,12 +71,20 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), reportsPanel), gbc);
+        deleteButton = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), reportsPanel);
+        add(deleteButton, gbc);
     }
 
     @Override
     public void selectInfo(Activity activity) {
-        super.selectInfo(activity);
+        super.selectInfo(activity);        
+        if (activity.isSubTask()) {
+            reopenButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+        } else {
+            reopenButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        }
         textMap.remove("date_reopened");
         // add additional info
         textMap.put("diffi", "<b>" + Labels.getString("ReportListPanel.Diff I") + ":</b> " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "<br>");

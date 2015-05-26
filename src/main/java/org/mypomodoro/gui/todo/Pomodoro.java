@@ -41,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
@@ -100,6 +101,7 @@ public class Pomodoro {
     }
 
     public void start() {
+        // either a subtask or a task with no subtasks may start
         if (getCurrentToDo().isSubTask()
                 || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
             // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
@@ -138,6 +140,7 @@ public class Pomodoro {
             Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
             Main.gui.getIconBar().getIcon(2).highlight();
             panel.getCurrentTable().setIconLabels();
+            panel.getDetailsPanel().disableButtons();
             // Show quick interruption button and items in combo box
             ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
             refreshTitlesAndTables();
@@ -163,6 +166,12 @@ public class Pomodoro {
         Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.getCurrentTable().setIconLabels();
+        if (!getCurrentToDo().isSubTask()) {
+            panel.getDetailsPanel().enableButtons();
+        }
+        if (ToDoList.hasSubTasks(panel.getCurrentTable().getActivityIdFromSelectedRow())) { // another ToDo with subtasks was selected during the pomodoro or the break
+            timerPanel.hideStartButton();
+        }
         // Hide quick interruption button and items in combo box
         ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
         refreshTitlesAndTables();
@@ -187,7 +196,7 @@ public class Pomodoro {
 
     public void resume() {
         if (getCurrentToDo().isSubTask()
-                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) {
+                || !ToDoList.hasSubTasks(getCurrentToDo().getId())) { // this should never be a problem (subtasks can't added to a running task)
             pomodoroTimer.start();
             // Tooltip                        
             // If the name is modified during the pomodoro, it won't be updated, which is acceptable
@@ -237,9 +246,11 @@ public class Pomodoro {
                 if (Main.preferences.getRinging() && !isMute) {
                     ring(); // riging at the end of pomodoros and breaks; no ticking during breaks
                 }
-                if (inPomodoro()) { // break time
-                    // update the current ToDo from the database (in case someone's changed it)
+                // update the current ToDo from the database (in case someone's changed it)
+                if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
                     ToDoList.getList().refreshById(currentToDoId);
+                }
+                if (inPomodoro()) { // break time
                     // updated version of the task is already finished (by someone else)
                     // increase the overestimation of the task by 1 to record the pomodoro
                     if (getCurrentToDo().isFinished()) {
@@ -299,20 +310,19 @@ public class Pomodoro {
                     // Hide quick interruption button and items in combo box 
                     ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
                     refreshTitlesAndTables();
-                } else { // pomodoro time
+                } else { // pomodoro time                    
                     // change of current ToDo
-                    // This addresses the case when a task is selected during the pomodoro of another task unless it is a task with subtasks
-                    if (panel.getCurrentTable().getSelectedRowCount() == 1
-                            && (panel.getCurrentTable().getActivityFromSelectedRow().isSubTask() || !ToDoList.hasSubTasks(panel.getCurrentTable().getActivityIdFromSelectedRow()))) {
+                    // This addresses the case when a task is selected during the pomodoro of another task or subtask
+                    if (panel.getCurrentTable().getSelectedRowCount() == 1) {
                         currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
                     }
-                    // update the current ToDo from the database (in case someone's changed it)
-                    ToDoList.getList().refreshById(currentToDoId);
-                    // end of the break and user has not selected another ToDo (while all the pomodoros of the current one are done)                    
-                    if (getCurrentToDo().isFinished()) {
+                    // end of the break and all the pomodoros are done (finished) or another ToDo with subtasks was selected during the pomodoro
+                    if (getCurrentToDo().isFinished()
+                            || ToDoList.hasSubTasks(getCurrentToDo().getId())) {
                         stop();
                         timerPanel.setStartEnv();
-                        if (isSystemTray()) {
+                        if (isSystemTray()
+                                && getCurrentToDo().isFinished()) {
                             String message = Labels.getString("ToDoListPanel.Finished");
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
@@ -320,6 +330,9 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(message);
                         }
                         timerPanel.setToolTipText(null);
+                        if (ToDoList.hasSubTasks(getCurrentToDo().getId())) {
+                            timerPanel.hideStartButton();
+                        }
                     } else {
                         if (Main.preferences.getTicking() && !isMute) {
                             tick();

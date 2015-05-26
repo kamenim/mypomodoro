@@ -36,6 +36,7 @@ import org.mypomodoro.util.Labels;
 public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private MoveButton moveButton;
 
     public DetailsPanel(ActivitiesPanel activitiesPanel) {
         setLayout(new GridBagLayout());
@@ -71,7 +72,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         String rightArrow = getFont().canDisplay('\u226b') ? "\u226b" : ">>>";
-        MoveButton moveButton = new MoveButton(rightArrow, activitiesPanel);
+        moveButton = new MoveButton(rightArrow, activitiesPanel);
         moveButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 30 : 6)));
         add(moveButton, gbc);
     }
@@ -79,6 +80,11 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
+        if (activity.isSubTask()) {
+            moveButton.setEnabled(false);
+        } else {
+            moveButton.setEnabled(true);
+        }
         if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
             textMap.remove("date_reopened");
         }

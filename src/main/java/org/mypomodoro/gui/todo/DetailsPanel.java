@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui.todo;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,12 +36,15 @@ import org.mypomodoro.util.Labels;
  */
 public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
+    private final ToDoPanel panel;
     private final JPanel iconPanel = new JPanel();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private MoveToDoButton moveButton;
     private CompleteToDoButton completeButton;
 
     public DetailsPanel(ToDoPanel todoPanel) {
+        this.panel = todoPanel;
+        
         setLayout(new GridBagLayout());
         setBorder(null);
 
@@ -112,6 +114,15 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     @Override
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
+        Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+        if (activity.isSubTask()
+                || (currentToDo != null 
+                && activity.getId() == currentToDo.getId() 
+                && panel.getPomodoro().inPomodoro())) {
+            disableButtons();
+        } else {
+            enableButtons();
+        }
         textMap.remove("date_reopened");
         if (Main.preferences.getAgileMode()) {
             textMap.remove("storypoints");
@@ -125,21 +136,12 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     }
 
     public void disableButtons() {
-        moveButton.setEnabled(false);
-        moveButton.setOpaque(false);
-        moveButton.setForeground(Color.GRAY);
+        moveButton.setEnabled(false);        
         completeButton.setEnabled(false);
-        completeButton.setOpaque(false);
-        completeButton.setForeground(Color.GRAY);
-
     }
 
     public void enableButtons() {
         moveButton.setEnabled(true);
-        moveButton.setOpaque(true);
-        moveButton.setForeground(getForeground()); // reset the foreground of the current theme
         completeButton.setEnabled(true);
-        completeButton.setOpaque(true);
-        completeButton.setForeground(getForeground()); // reset the foreground of the current theme
     }
 }
