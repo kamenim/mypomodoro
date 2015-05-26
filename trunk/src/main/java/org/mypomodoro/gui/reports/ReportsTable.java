@@ -345,20 +345,18 @@ public class ReportsTable extends AbstractTable {
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {
-            panel.getMainTable().removePomsFromSelectedRow(activity);
+        if (!activity.isSubTask()) {
+            getList().delete(activity); // delete tasks and subtasks
+            removeRow(rowIndex);
         }
-        getList().delete(activity); // delete tasks and subtasks
-        removeRow(rowIndex);
     }
 
     @Override
     public void moveTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (activity.isSubTask()) {
-            panel.getMainTable().removePomsFromSelectedRow(activity);
-        }
-        getList().reopenToActivtyList(activity); // reopen/move to ActivityList
-        removeRow(rowIndex);
+        if (!activity.isSubTask()) {
+            getList().reopenToActivtyList(activity); // reopen/move to ActivityList
+            removeRow(rowIndex);
+        }        
     }
 }

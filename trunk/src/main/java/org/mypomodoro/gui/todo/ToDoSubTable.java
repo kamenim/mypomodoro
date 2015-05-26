@@ -148,12 +148,14 @@ public class ToDoSubTable extends ToDoTable {
         } else {
             getTitlePanel().hideCreateButton();
         }
-        if (canCreateUnplannedTask()) {
+        if (canCreateNewTask() 
+                && super.canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();
         } else {
             getTitlePanel().hideUnplannedButton();
         }
-        if (canCreateInterruptions()) {
+        if (canCreateNewTask() 
+                && super.canCreateInterruptions()) {
             getTitlePanel().showExternalButton();
             getTitlePanel().showInternalButton();
         } else {
@@ -250,7 +252,8 @@ public class ToDoSubTable extends ToDoTable {
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createUnplannedTask() {
-        if (canCreateUnplannedTask()) {
+        if (canCreateNewTask() 
+                && super.canCreateUnplannedTask()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
@@ -260,7 +263,8 @@ public class ToDoSubTable extends ToDoTable {
 
     @Override
     public void createInternalInterruption() {
-        if (canCreateInterruptions()) {
+        if (canCreateNewTask() 
+                && super.canCreateInterruptions()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
@@ -270,7 +274,8 @@ public class ToDoSubTable extends ToDoTable {
 
     @Override
     public void createExternalInterruption() {
-        if (canCreateInterruptions()) {
+        if (canCreateNewTask() 
+                && super.canCreateInterruptions()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
@@ -278,13 +283,16 @@ public class ToDoSubTable extends ToDoTable {
         }
     }
 
-    // no running task or subtask running
+    // only new subtask may be created
+    // no running task or subtask, or task selected not currently running
     private boolean canCreateNewTask() {
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
         return panel.getMainTable().getSelectedRowCount() == 1
-                && (!panel.getPomodoro().inPomodoro() || (currentToDo != null && currentToDo.isSubTask()));
+                && (!panel.getPomodoro().inPomodoro()
+                || (currentToDo != null && (currentToDo.isSubTask() || panel.getMainTable().getActivityIdFromSelectedRow() != currentToDo.getId())));
     }
 
+    // only subtask may be duplicated
     private boolean canDuplicateTask() {
         return getSelectedRowCount() == 1;
     }
