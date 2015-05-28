@@ -253,4 +253,10 @@ public class DateUtil {
         calendar.add(Calendar.MINUTE, minutes);
         return calendar.getTime();
     }
+    
+    public static Date addMillisecondsToNow(long milliseconds) {
+        Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
+        calendar.add(Calendar.MILLISECOND, (int) milliseconds);
+        return calendar.getTime();
+    }
 }

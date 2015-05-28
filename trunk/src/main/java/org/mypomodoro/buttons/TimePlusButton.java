@@ -38,6 +38,8 @@ public class TimePlusButton extends TransparentButton {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pomodoro.increaseTime();
+                // refresh tooltip on timer
+                pomodoro.setTooltipOnImage();
             }
         });
     }

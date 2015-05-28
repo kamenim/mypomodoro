@@ -387,7 +387,7 @@ public class Pomodoro {
     }
 
     // multi-lines tooltip
-    private void setTooltipOnImage() {
+    /*private void setTooltipOnImage() {
         String tooltip = "<html>";
         tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task");
         tooltip += ": ";
@@ -401,6 +401,32 @@ public class Pomodoro {
         int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
         Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
         tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateLongBreakStart));
+        tooltip += "</html>";
+        timerPanel.setToolTipText(tooltip);
+    }*/
+    // multi-lines tooltip for timer
+    // show next break and pomodoro time
+    public void setTooltipOnImage() {
+        String tooltip = "<html>";
+        tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task");
+        tooltip += ": ";
+        tooltip += "<br>";
+        tooltip += getCurrentToDo().getName();
+        tooltip += "<br>";
+        // use tmpPomodoroLength because the value of the timer may have changed (minus / plus buttons)        
+        Date dateStartNextBreak = DateUtil.addMillisecondsToNow(time); // either short or long break
+        int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber; // number of pomodoro yet to be done including current one        
+        if (pomSetNumberRemaining == 1) { // next break is a long break
+            tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextBreak));
+        } else { // next break is a short break
+            tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateStartNextBreak));
+            tooltip += "<br>";
+            int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1; // number of short breaks yet to be done (1 represents the long break at the end of the Set)
+            Date dateStartNextLongBreak = DateUtil.addMillisecondsToNow(time 
+                    + pomSetNumberRemaining * Main.preferences.getPomodoroLength() * MINUTE 
+                    + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength() * MINUTE);
+            tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextLongBreak));
+        }
         tooltip += "</html>";
         timerPanel.setToolTipText(tooltip);
     }
