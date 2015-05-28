@@ -38,6 +38,8 @@ public class TimeMinusButton extends TransparentButton {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pomodoro.decreaseTime();
+                // refresh tooltip on timer
+                pomodoro.setTooltipOnImage();
             }
         });
     }

@@ -162,6 +162,8 @@ public class ToDoTable extends AbstractTable {
                                 }
                                 // Refresh icon label
                                 setIconLabels();
+                                // Refresh tooltip (name) on timer
+                                panel.getPomodoro().setTooltipOnImage();
                             }
                         } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
