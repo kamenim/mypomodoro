@@ -148,14 +148,12 @@ public class ToDoSubTable extends ToDoTable {
         } else {
             getTitlePanel().hideCreateButton();
         }
-        if (canCreateNewTask() 
-                && super.canCreateUnplannedTask()) {
+        if (canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();
         } else {
             getTitlePanel().hideUnplannedButton();
         }
-        if (canCreateNewTask() 
-                && super.canCreateInterruptions()) {
+        if (canCreateInterruptions()) {
             getTitlePanel().showExternalButton();
             getTitlePanel().showInternalButton();
         } else {
@@ -252,8 +250,7 @@ public class ToDoSubTable extends ToDoTable {
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createUnplannedTask() {
-        if (canCreateNewTask() 
-                && super.canCreateUnplannedTask()) {
+        if (canCreateUnplannedTask()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
@@ -263,19 +260,17 @@ public class ToDoSubTable extends ToDoTable {
 
     @Override
     public void createInternalInterruption() {
-        if (canCreateNewTask() 
-                && super.canCreateInterruptions()) {
+        if (canCreateInterruptions()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
             super.createInternalInterruption(activity);
         }
     }
-
+        
     @Override
     public void createExternalInterruption() {
-        if (canCreateNewTask() 
-                && super.canCreateInterruptions()) {
+        if (canCreateInterruptions()) {
             Activity activity = new Activity();
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             activity.setParentId(parentActivity.getId());
@@ -291,9 +286,26 @@ public class ToDoSubTable extends ToDoTable {
                 && (!panel.getPomodoro().inPomodoro()
                 || (currentToDo != null && (currentToDo.isSubTask() || panel.getMainTable().getActivityIdFromSelectedRow() != currentToDo.getId())));
     }
+    
+    // Can't create an interruption subtask of a task that has no subtasks already
+    @Override
+    protected boolean canCreateInterruptions() {
+        return canCreateNewTask()
+                && ToDoList.hasSubTasks(panel.getMainTable().getActivityFromSelectedRow().getId())
+                && super.canCreateInterruptions();
+    }
+    
+    // Can't create an unplanned subtask of a task that has no subtasks already
+    @Override
+    protected boolean canCreateUnplannedTask() {
+        return canCreateNewTask()
+                && ToDoList.hasSubTasks(panel.getMainTable().getActivityFromSelectedRow().getId())
+                && super.canCreateUnplannedTask();
+    }
 
     // only subtask may be duplicated
     private boolean canDuplicateTask() {
-        return getSelectedRowCount() == 1;
+        return canCreateNewTask()
+                && getSelectedRowCount() == 1;
     }
 }

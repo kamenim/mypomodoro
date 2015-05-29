@@ -17,10 +17,12 @@
 package org.mypomodoro.gui;
 
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import org.mypomodoro.menubar.FileMenu;
 import org.mypomodoro.menubar.HelpMenu;
 import org.mypomodoro.menubar.TestMenu;
 import org.mypomodoro.menubar.ViewMenu;
+import org.mypomodoro.util.Clock;
 
 /**
  * Menu Bar
@@ -33,6 +35,9 @@ public class MenuBar extends JMenuBar {
         add(new ViewMenu(view));
         add(new TestMenu());
         add(new HelpMenu());
+        JPanel clock = new Clock();
+        clock.setFont(getFont());
+        add(clock);
         setBorder(null);
     }
 }

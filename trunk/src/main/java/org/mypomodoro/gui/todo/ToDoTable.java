@@ -163,7 +163,11 @@ public class ToDoTable extends AbstractTable {
                                 // Refresh icon label
                                 setIconLabels();
                                 // Refresh tooltip (name) on timer
-                                panel.getPomodoro().setTooltipOnImage();
+                                Activity currentToDo = panel.getPomodoro().getCurrentToDo();
+                                if (currentToDo != null
+                                        && act.getId() == currentToDo.getId()) {
+                                    panel.getPomodoro().setTooltipOnImage();
+                                }
                             }
                         } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                             int estimated = (Integer) data;
@@ -567,18 +571,14 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                //panel.getDetailsPanel().disableButtons();
+                ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);                
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    /*if (!selectedToDo.isSubTask()) {
-                        panel.getDetailsPanel().enableButtons();
-                    }*/
+                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);     
                 } else if (!panel.getPomodoro().inPomodoro()) {
                     //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
                     ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -586,9 +586,6 @@ public class ToDoTable extends AbstractTable {
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    /*if (!selectedToDo.isSubTask()) {
-                        panel.getDetailsPanel().enableButtons();
-                    }*/
                 }
             } else if (getSelectedRowCount() > 1) { // multiple selection
                 if (!panel.getPomodoro().inPomodoro()) {
@@ -599,9 +596,6 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
-                /*if (panel.getCurrentTable().equals(panel.getMainTable())) { // no subtasks
-                    panel.getDetailsPanel().enableButtons();
-                }*/
             }
         } else { // empty list
             //ToDoIconPanel.clearIconPanel(iconPanel);
@@ -609,8 +603,7 @@ public class ToDoTable extends AbstractTable {
             ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
-            ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
-            //panel.getDetailsPanel().enableButtons();
+            ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());            
         }
     }
 
