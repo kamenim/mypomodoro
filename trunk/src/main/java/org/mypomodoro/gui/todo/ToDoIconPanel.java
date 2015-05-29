@@ -80,7 +80,7 @@ public class ToDoIconPanel {
         }
         // Overestimated pomodoros
         if (overestimatedPoms > 0) {
-            // Plus sign
+            // Plus sign            
             iconPanel.add(new DefaultButton(plusIcon, true));
             // Overestimated pomodoros
             for (int i = 0; i < overestimatedPoms; i++) {

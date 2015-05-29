@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
 
@@ -52,6 +53,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "external.png"));
     private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plusone.png"));
     protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "running.png"));
+    protected final ImageIcon deleteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "delete.png"));
     protected final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
     protected final DefaultButton internalButton = new DefaultButton(internalIcon);
     protected final DefaultButton externalButton = new DefaultButton(externalIcon);
@@ -60,6 +62,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton createButton = new DefaultButton(createIcon);
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
+    protected final DefaultButton deleteButton = new DefaultButton(deleteIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
     private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
@@ -153,6 +156,20 @@ public abstract class AbstractTitlePanel extends JPanel {
                 overestimateTask(1);
             }
         });
+        // Delete
+        deleteButton.setMargin(buttonInsets);
+        deleteButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteTasks();
+            }
+        });
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+            deleteButton.setToolTipText("BACKSPACE");
+        } else {
+            deleteButton.setToolTipText("DEL");
+        }
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.addActionListener(new ActionListener() {
@@ -255,6 +272,10 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showExternalButton() {
         buttonPanel.add(externalButton);
     }
+    
+    public void showDeleteButton() {
+        buttonPanel.add(deleteButton);
+    }
 
     public void showRefreshButton() {
         buttonPanel.add(refreshButton);
@@ -287,6 +308,10 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
+    
+    public void hideDeleteButton() {
+        buttonPanel.remove(deleteButton);
+    }
 
     public void hideRefreshButton() {
         buttonPanel.remove(refreshButton);
@@ -314,6 +339,8 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void createExternalInterruption();
 
     protected abstract void overestimateTask(int poms);
+    
+    protected abstract void deleteTasks();
 
     protected abstract void refreshTable(boolean fromDatabase);
 

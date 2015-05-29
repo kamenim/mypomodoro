@@ -158,4 +158,15 @@ public class ReportsSubTable extends ReportsTable {
     public TitlePanel getTitlePanel() {
         return panel.getSubTableTitlePanel();
     }
+    
+    // Can't delete subtasks
+    @Override
+    public void deleteTask(int rowIndex) {
+        
+    }
+
+    // Can't reopen subtasks
+    @Override
+    public void moveTask(int rowIndex) {                
+    }
 }

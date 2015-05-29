@@ -168,19 +168,19 @@ public abstract class AbstractTable extends JXTable {
         }
         class deleteAction extends AbstractAction {
 
-            final IListPanel panel;
+            /*final IListPanel panel;
 
             public deleteAction(IListPanel panel) {
                 this.panel = panel;
-            }
+            }*/
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
-                b.doClick();
+                deleteTasks();
             }
         }
-        am.put("Delete", new deleteAction(panel));
+        am.put("Delete", new deleteAction());
+        //am.put("Delete", new deleteAction(panel));
 
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Move right"); // move to ToDoList and complete
@@ -676,7 +676,7 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void deleteTask(int rowIndex) {
-        // do nothing by default
+        // do nothing by default        
     }
 
     public void moveTask(int rowIndex) {
@@ -702,6 +702,10 @@ public abstract class AbstractTable extends JXTable {
     public void overestimateTask(int poms) {
         // do nothing by default
     }
+    
+     public void deleteTasks() {    
+        // do nothign by default
+     }
 
     public void removeRow(int rowIndex) {
         clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)
