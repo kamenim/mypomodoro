@@ -214,7 +214,8 @@ public class ToDoSubTable extends ToDoTable {
         return panel.getSubTableTitlePanel();
     }
 
-    // no default name
+    // Create specific to subtasks
+    // default name (N) + New subtask
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
@@ -223,11 +224,11 @@ public class ToDoSubTable extends ToDoTable {
             newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
             // Set parent id
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-            if (getRowCount() == 0) { // first sub-task
+            /*if (getRowCount() == 0) { // first sub-task
                 newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
                 newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
                 newActivity.setActualPoms(parentActivity.getActualPoms());
-            }
+            }*/
             newActivity.setParentId(parentActivity.getId());
             getList().add(newActivity); // save activity in database
             newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
@@ -303,25 +304,24 @@ public class ToDoSubTable extends ToDoTable {
     
     @Override
     public void deleteTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);
-        panel.getMainTable().removePomsFromSelectedRow(activity);        
+        Activity activity = getActivityFromRowIndex(rowIndex);        
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
+         // set main table as current table when no subtasks anymore
+        if (getRowCount() == 0) {
+            panel.setCurrentTable(panel.getMainTable());
+        }
     }
-
-    // Can't create an interruption subtask of a task that has no subtasks already
+    
     @Override
     protected boolean canCreateInterruptions() {
         return canCreateNewTask()
-                && ToDoList.hasSubTasks(panel.getMainTable().getActivityFromSelectedRow().getId())
                 && super.canCreateInterruptions();
     }
-
-    // Can't create an unplanned subtask of a task that has no subtasks already
+    
     @Override
     protected boolean canCreateUnplannedTask() {
         return canCreateNewTask()
-                && ToDoList.hasSubTasks(panel.getMainTable().getActivityFromSelectedRow().getId())
                 && super.canCreateUnplannedTask();
     }
 
@@ -335,5 +335,15 @@ public class ToDoSubTable extends ToDoTable {
     // no running subtask (see DeleteButton)   
     private boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;
+    }
+    
+    // can't complete subtasks
+    @Override
+    public void completeTask(int rowIndex) {        
+    }
+    
+    // can't move subtasks
+    @Override
+    public void moveTask(int rowIndex) {
     }
 }
