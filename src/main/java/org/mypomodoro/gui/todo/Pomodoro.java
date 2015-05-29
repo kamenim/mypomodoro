@@ -124,9 +124,6 @@ public class Pomodoro {
             }
             // Start timer
             pomodoroTimer.start();
-            // Tooltip                        
-            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
-            setTooltipOnImage();
             if (Main.preferences.getTicking() && !isMute) {
                 tick();
             }
@@ -137,6 +134,8 @@ public class Pomodoro {
                 MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
             }
             inpomodoro = true;
+            // Tooltip                        
+            setTooltipOnImage();
             Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
             Main.gui.getIconBar().getIcon(2).highlight();
             panel.getCurrentTable().setIconLabels();
@@ -149,8 +148,6 @@ public class Pomodoro {
 
     public void stop() {
         pomodoroTimer.stop();
-        // Remove tooltip 
-        timerPanel.setToolTipText(null);
         time = pomodoroLength;
         tmpPomodoroLength = pomodoroLength;
         pomodoroTime.setText(sdf.format(pomodoroLength));
@@ -163,6 +160,8 @@ public class Pomodoro {
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
         inpomodoro = false;
+        // Remove tooltip 
+        setTooltipOnImage();
         Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.getCurrentTable().setIconLabels();
@@ -180,7 +179,7 @@ public class Pomodoro {
     public void pause() {
         pomodoroTimer.stop();
         // Tooltip : name only
-        timerPanel.setToolTipText(getCurrentToDo().getName());
+        setTooltipOnImage();
         stopSound();
         if (inPomodoro() && isSystemTray()) {
             if (isSystemTrayMessage()) {
@@ -198,8 +197,7 @@ public class Pomodoro {
         if (getCurrentToDo().isSubTask()
                 || !ToDoList.hasSubTasks(getCurrentToDo().getId())) { // this should never be a problem (subtasks can't added to a running task)
             pomodoroTimer.start();
-            // Tooltip                        
-            // If the name is modified during the pomodoro, it won't be updated, which is acceptable
+            // Tooltip
             setTooltipOnImage();
             if (inPomodoro() && Main.preferences.getTicking() && !isMute) {
                 tick();
@@ -303,8 +301,9 @@ public class Pomodoro {
                         }
                         timerPanel.setBreakEnv();
                     }
-                    timerPanel.setToolTipText(null);
                     inpomodoro = false;
+                    // Remove tooltip
+                    setTooltipOnImage();
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).highlight();
                     // Hide quick interruption button and items in combo box 
@@ -319,7 +318,7 @@ public class Pomodoro {
                     // end of the break and all the pomodoros are done (finished) or another ToDo with subtasks was selected during the pomodoro
                     if (getCurrentToDo().isFinished()
                             || ToDoList.hasSubTasks(getCurrentToDo().getId())) {
-                        stop();
+                        stop(); // stop and remove tooltip
                         timerPanel.setStartEnv();
                         if (isSystemTray()
                                 && getCurrentToDo().isFinished()) {
@@ -329,7 +328,6 @@ public class Pomodoro {
                             }
                             MainPanel.trayIcon.setToolTip(message);
                         }
-                        timerPanel.setToolTipText(null);
                         if (ToDoList.hasSubTasks(getCurrentToDo().getId())) {
                             timerPanel.hideStartButton();
                         }
@@ -386,49 +384,48 @@ public class Pomodoro {
         }
     }
 
-    // multi-lines tooltip
-    /*private void setTooltipOnImage() {
-        String tooltip = "<html>";
-        tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task");
-        tooltip += ": ";
-        tooltip += "<br>";
-        tooltip += getCurrentToDo().getName();
-        tooltip += "<br>";
-        Date dateShortBreakStart = DateUtil.addMinutesToNow(Main.preferences.getPomodoroLength());
-        tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateShortBreakStart));
-        tooltip += "<br>";
-        int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
-        int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
-        Date dateLongBreakStart = DateUtil.addMinutesToNow(pomSetNumberRemaining * Main.preferences.getPomodoroLength() + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength());
-        tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateLongBreakStart));
-        tooltip += "</html>";
-        timerPanel.setToolTipText(tooltip);
-    }*/
     // multi-lines tooltip for timer
     // show next break and pomodoro time
     public void setTooltipOnImage() {
-        String tooltip = "<html>";
-        tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task");
-        tooltip += ": ";
-        tooltip += "<br>";
-        tooltip += getCurrentToDo().getName();
-        tooltip += "<br>";
-        // use tmpPomodoroLength because the value of the timer may have changed (minus / plus buttons)        
-        Date dateStartNextBreak = DateUtil.addMillisecondsToNow(time); // either short or long break
-        int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber; // number of pomodoro yet to be done including current one        
-        if (pomSetNumberRemaining == 1) { // next break is a long break
-            tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextBreak));
-        } else { // next break is a short break
-            tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateStartNextBreak));
-            tooltip += "<br>";
-            int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1; // number of short breaks yet to be done (1 represents the long break at the end of the Set)
-            Date dateStartNextLongBreak = DateUtil.addMillisecondsToNow(time 
-                    + pomSetNumberRemaining * Main.preferences.getPomodoroLength() * MINUTE 
-                    + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength() * MINUTE);
-            tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextLongBreak));
+        if (inPomodoro()) {
+            String tooltip = "<html>";
+            /* MAP laf : red color doesn't show with the red background of the tooltip
+             tooltip += "<span";
+             if (inPomodoro()) {
+             tooltip += " style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\"";
+             } else if (getCurrentToDo().isFinished()) {
+             tooltip += " style=\"color:" + ColorUtil.toHex(Main.taskFinishedColor) + "\"";
+             }
+             tooltip += ">";*/
+            if (pomodoroTimer.isRunning()) {
+                //tooltip += getCurrentToDo().isSubTask() ? Labels.getString("Common.Subtask") : Labels.getString("Common.Task") + ": ";            
+                //tooltip += "<br>";
+                tooltip += getCurrentToDo().getName();
+                tooltip += "<br>";
+                // use tmpPomodoroLength because the value of the timer may have changed (minus / plus buttons)        
+                Date dateStartNextBreak = DateUtil.addMillisecondsToNow(time); // either short or long break
+                int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber; // number of pomodoro yet to be done including current one        
+                if (pomSetNumberRemaining == 1) { // next break is a long break
+                    tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextBreak));
+                } else { // next break is a short break
+                    tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateStartNextBreak));
+                    tooltip += "<br>";
+                    int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1; // number of short breaks yet to be done (1 represents the long break at the end of the Set)
+                    Date dateStartNextLongBreak = DateUtil.addMillisecondsToNow(time
+                            + pomSetNumberRemaining * Main.preferences.getPomodoroLength() * MINUTE
+                            + shortBreakSetNumberRemaining * Main.preferences.getShortBreakLength() * MINUTE);
+                    tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextLongBreak));
+                }
+                timerPanel.setToolTipText(tooltip);
+            } else { // only name during paused pomodoro and breaks
+                tooltip += getCurrentToDo().getName();
+            }
+            //tooltip += "</span>";
+            tooltip += "</html>";
+            timerPanel.setToolTipText(tooltip);
+        } else { // no tooltip during breaks
+            timerPanel.setToolTipText(null);
         }
-        tooltip += "</html>";
-        timerPanel.setToolTipText(tooltip);
     }
 
     public void setLongBreak(long longBreakLength) {
