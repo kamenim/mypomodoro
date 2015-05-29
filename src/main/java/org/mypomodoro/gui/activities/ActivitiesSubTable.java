@@ -153,7 +153,8 @@ public class ActivitiesSubTable extends ActivitiesTable {
         return panel.getSubTableTitlePanel();
     }
 
-    // no default name
+    // Create specific to subtasks
+    // default name (N) + New subtask
     // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
@@ -161,15 +162,24 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
         // Set parent id
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-        if (getModel().getRowCount() == 0) { // first sub-task
-            newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
-            newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
-            newActivity.setActualPoms(parentActivity.getActualPoms());
-        }
         newActivity.setParentId(parentActivity.getId());
         getList().add(newActivity); // save activity in database
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
         panel.getTabbedPane().selectEditTab(); // open edit tab
+    }
+    
+    @Override
+    public void deleteTask(int rowIndex) {
+        super.deleteTask(rowIndex);
+         // set main table as current table when no subtasks anymore
+        if (getRowCount() == 0) {
+            panel.setCurrentTable(panel.getMainTable());
+        }
+    }
+    
+    // Can't move subtasks
+    @Override
+    public void moveTask(int rowIndex) {    
     }
 }

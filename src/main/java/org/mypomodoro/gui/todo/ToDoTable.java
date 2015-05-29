@@ -115,16 +115,8 @@ public class ToDoTable extends AbstractTable {
                         showInfoForSelectedRow();
                         // populate subtable
                         populateSubTable();
-                        // hide start button unless timer is running and task has no subtasks or task is not finished
-                        // optimization: isSubtask is not necessary but it's a way to avoid using hasSubTasks as much as possible
-                        // we don't check if the task is finished here: we leave it to the Pomodoro object to display the error dialog
-                        if (!panel.getPomodoro().getTimer().isRunning()
-                                && !getActivityFromSelectedRow().isSubTask()
-                                && ToDoList.hasSubTasks(getActivityIdFromSelectedRow())) {
-                            panel.getTimerPanel().hideStartButton();
-                        } else {
-                            panel.getTimerPanel().showStartButton();
-                        }
+                        // the start button may have been hidden by a multiple selection
+                        panel.getTimerPanel().showStartButton();                        
                     }
                     setIconLabels();
                 }
@@ -437,32 +429,40 @@ public class ToDoTable extends AbstractTable {
         getTitlePanel().repaint();
     }
 
+    // Can't delete tasks
     @Override
-    public void moveTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);
-        if (!activity.isSubTask()) {
-            getList().moveToActivtyList(activity); // move to ActivityList
-            removeRow(rowIndex);
-            if (getList().isEmpty()
-                    && panel.getPomodoro().getTimer().isRunning()) { // break running
-                panel.getPomodoro().stop();
-                panel.getTimerPanel().setStartEnv();
-            }
-        }
+    public void deleteTasks() {
     }
 
+    // only tasks can be moved
+    @Override
+    public void moveTask(int rowIndex) {
+        Activity activity = getActivityFromRowIndex(rowIndex);        
+        getList().moveToActivtyList(activity); // move to ActivityList
+        removeRow(rowIndex);
+        if (getList().isEmpty()
+                && panel.getPomodoro().getTimer().isRunning()) { // break running
+            panel.getPomodoro().stop();
+            panel.getTimerPanel().setStartEnv();
+        }        
+    }
+
+    // only tasks can be completed
     @Override
     public void completeTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
-        if (!activity.isSubTask()) {
-            getList().completeToReportList(activity);
-            removeRow(rowIndex);
-            if (getList().isEmpty()
-                    && panel.getPomodoro().getTimer().isRunning()) { // break running
-                panel.getPomodoro().stop();
-                panel.getTimerPanel().setStartEnv();
-            }
+        getList().completeToReportList(activity);
+        removeRow(rowIndex);
+        if (getList().isEmpty()
+                && panel.getPomodoro().getTimer().isRunning()) { // break running
+            panel.getPomodoro().stop();
+            panel.getTimerPanel().setStartEnv();
         }
+    }
+
+    // Can't duplicate tasks
+    @Override
+    public void duplicateTask() {
     }
 
     @Override
@@ -571,14 +571,14 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);                
+                ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);     
+                    ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                 } else if (!panel.getPomodoro().inPomodoro()) {
                     //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
                     ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -603,7 +603,7 @@ public class ToDoTable extends AbstractTable {
             ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
-            ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());            
+            ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
         }
     }
 
