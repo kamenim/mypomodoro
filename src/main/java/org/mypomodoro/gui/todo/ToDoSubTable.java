@@ -20,6 +20,7 @@ import org.mypomodoro.gui.TitlePanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -160,6 +161,11 @@ public class ToDoSubTable extends ToDoTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }
+        if (canDeleteTasks()) {
+            getTitlePanel().showDeleteButton();
+        } else {
+            getTitlePanel().hideDeleteButton();
+        }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint(); // this is necessary to force stretching of panel
@@ -267,7 +273,7 @@ public class ToDoSubTable extends ToDoTable {
             super.createInternalInterruption(activity);
         }
     }
-        
+
     @Override
     public void createExternalInterruption() {
         if (canCreateInterruptions()) {
@@ -278,7 +284,7 @@ public class ToDoSubTable extends ToDoTable {
         }
     }
 
-    // only new subtask may be created
+    // only new subtask can be created
     // no running task or subtask, or task selected not currently running
     private boolean canCreateNewTask() {
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
@@ -286,7 +292,23 @@ public class ToDoSubTable extends ToDoTable {
                 && (!panel.getPomodoro().inPomodoro()
                 || (currentToDo != null && (currentToDo.isSubTask() || panel.getMainTable().getActivityIdFromSelectedRow() != currentToDo.getId())));
     }
+
+    @Override
+    public void deleteTasks() {
+        if (canDeleteTasks()) {
+            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
+            b.doClick();
+        }
+    }
     
+    @Override
+    public void deleteTask(int rowIndex) {
+        Activity activity = getActivityFromRowIndex(rowIndex);
+        panel.getMainTable().removePomsFromSelectedRow(activity);        
+        getList().delete(activity); // delete tasks and subtasks
+        removeRow(rowIndex);
+    }
+
     // Can't create an interruption subtask of a task that has no subtasks already
     @Override
     protected boolean canCreateInterruptions() {
@@ -294,7 +316,7 @@ public class ToDoSubTable extends ToDoTable {
                 && ToDoList.hasSubTasks(panel.getMainTable().getActivityFromSelectedRow().getId())
                 && super.canCreateInterruptions();
     }
-    
+
     // Can't create an unplanned subtask of a task that has no subtasks already
     @Override
     protected boolean canCreateUnplannedTask() {
@@ -307,5 +329,11 @@ public class ToDoSubTable extends ToDoTable {
     private boolean canDuplicateTask() {
         return canCreateNewTask()
                 && getSelectedRowCount() == 1;
+    }
+
+    // only subtasks can be delete
+    // no running subtask (see DeleteButton)   
+    private boolean canDeleteTasks() {
+        return getSelectedRowCount() > 0;
     }
 }

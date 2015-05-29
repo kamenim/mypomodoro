@@ -16,6 +16,9 @@
  */
 package org.mypomodoro.gui;
 
+import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.util.Labels;
+
 /**
  * Title panel for tables
  *
@@ -64,6 +67,11 @@ public class TitlePanel extends AbstractTitlePanel {
     @Override
     protected void overestimateTask(int poms) {
         table.overestimateTask(poms);
+    }
+    
+    @Override
+    protected void deleteTasks() {
+        table.deleteTasks();
     }
 
     @Override

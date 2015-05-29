@@ -131,9 +131,13 @@ public class ToDoList extends AbstractActivities {
         return clonedActivity;
     }
 
+    // use only for subtasks
     @Override
     public void delete(Activity activity) {
-        // not used
+        if (activity.isSubTask()) {
+            remove(activity);
+            activity.databaseDelete();
+        }
     }
 
     // Move a task and its subtasks to ActivityList
