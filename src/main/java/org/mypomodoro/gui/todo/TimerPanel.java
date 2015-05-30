@@ -178,10 +178,8 @@ public class TimerPanel extends JPanel {
                     Activity currentToDo = null;
                     if (panel.getCurrentTable().getSelectedRowCount() == 1) {
                         Activity selectedToDo = panel.getCurrentTable().getActivityFromSelectedRow();
-                        //if (selectedToDo.isSubTask() || !ToDoList.hasSubTasks(selectedToDo.getId())) {
-                            pomodoro.setCurrentToDoId(selectedToDo.getId());
-                            currentToDo = pomodoro.getCurrentToDo();
-                        //}
+                        pomodoro.setCurrentToDoId(selectedToDo.getId());
+                        currentToDo = pomodoro.getCurrentToDo();
                     }
                     if (currentToDo != null) {
                         panel.getCurrentTable().scrollToSelectedRows(); // in any case
