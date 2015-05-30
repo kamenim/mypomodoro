@@ -41,8 +41,7 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
             // no real poms & no subtask --> estimated may be changed
-            if (realpoms == 0
-                    && (activity.isSubTask() || !ToDoList.hasSubTasks(activity.getId()))) {
+            if (realpoms == 0) {
                 labelBefore.setText(realpoms + " /");
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
