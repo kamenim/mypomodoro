@@ -123,7 +123,7 @@ public class UnplannedPanel extends CreatePanel {
         newActivity.setIsUnplanned(true);
         String title = Labels.getString("ToDoListPanel.Add Unplanned task");
         String message;
-        if (unplannedInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) {
+        if (newActivity.isSubTask() || unplannedInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) {
             panel.getCurrentTable().addActivity(newActivity);
             panel.getCurrentTable().insertRow(newActivity);
             clearForm();

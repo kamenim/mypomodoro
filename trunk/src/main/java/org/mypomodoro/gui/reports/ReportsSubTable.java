@@ -85,6 +85,8 @@ public class ReportsSubTable extends ReportsTable {
                     title += " + " + overestimated;
                 }
                 title += "&nbsp;</span>";
+                int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100);
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
@@ -101,6 +103,9 @@ public class ReportsSubTable extends ReportsTable {
                 if (tableList.getNbOverestimatedPom() > 0) {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
+                int accuracy = ReportList.getSubTaskList(panel.getMainTable().getActivityIdFromSelectedRow()).getAccuracy();
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
+                title += accuracy + "%";
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";

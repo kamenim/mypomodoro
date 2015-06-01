@@ -393,8 +393,7 @@ public class ToDoTable extends AbstractTable {
                         getTitlePanel().switchSelectedButton();
                     }
                     if (selectedActivity.getEstimatedPoms() != 0
-                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()
-                            && !ToDoList.hasSubTasks(selectedActivity.getId())) {
+                            && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
                         panel.getTabbedPane().enableOverestimationTab();
                         getTitlePanel().showOverestimationButton();
                     } else {
@@ -611,21 +610,26 @@ public class ToDoTable extends AbstractTable {
     public void scrollToSelectedRows() {
         if (panel.getPomodoro().inPomodoro()) {
             for (int row = 0; row < panel.getMainTable().getModel().getRowCount(); row++) {
-                // Scroll to the currentToDo task or, if the currentToDo is a subtask, scroll to its parent task AND select
+                // Scroll to the currentToDo task or, if the currentToDo is a subtask, scroll to its parent task AND select to display the subtasks
                 if (panel.getPomodoro().getCurrentToDo().getId() == panel.getMainTable().getActivityIdFromRowIndex(row)
-                        || panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row)) {
+                        || (panel.getPomodoro().getCurrentToDo().isSubTask() 
+                        && panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row))) {
                     panel.getMainTable().scrollToRowIndex(row);
                     panel.getMainTable().setRowSelectionInterval(row, row);
                     break;
                 }
             }
-            for (int row = 0; row < panel.getSubTable().getModel().getRowCount(); row++) {
-                // Scroll to the currentToDo subtask AND select
-                if (panel.getPomodoro().getCurrentToDo().getId() == panel.getSubTable().getActivityIdFromRowIndex(row)) {
-                    panel.getSubTable().scrollToRowIndex(row);
-                    panel.getMainTable().setRowSelectionInterval(row, row);
-                    break;
+            if (panel.getPomodoro().getCurrentToDo().isSubTask()) {
+                for (int row = 0; row < panel.getSubTable().getModel().getRowCount(); row++) {
+                    // Scroll to the currentToDo subtask AND select
+                    if (panel.getPomodoro().getCurrentToDo().getId() == panel.getSubTable().getActivityIdFromRowIndex(row)) {
+                        panel.getSubTable().scrollToRowIndex(row);
+                        panel.getSubTable().setRowSelectionInterval(row, row);
+                        break;
+                    }
                 }
+            } else { // subtask not running but selected
+                panel.getSubTable().scrollToSelectedRows();
             }
         } else {
             super.scrollToSelectedRows();
