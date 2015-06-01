@@ -47,8 +47,7 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
                 int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
-                if (!activity.isSubTask() 
-                        && ToDoList.hasSubTasks(activity.getId())) {
+                if (!activity.isSubTask()) {
                     for (Activity act : ToDoList.getSubTaskList(activity.getId())) {
                         minimum += act.getEstimatedPoms();
                     }

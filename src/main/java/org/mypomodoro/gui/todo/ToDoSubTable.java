@@ -224,11 +224,6 @@ public class ToDoSubTable extends ToDoTable {
             newActivity.setName("(N) " + Labels.getString("Common.New subtask"));
             // Set parent id
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
-            /*if (getRowCount() == 0) { // first sub-task
-                newActivity.setEstimatedPoms(parentActivity.getEstimatedPoms());
-                newActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms());
-                newActivity.setActualPoms(parentActivity.getActualPoms());
-            }*/
             newActivity.setParentId(parentActivity.getId());
             getList().add(newActivity); // save activity in database
             newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
@@ -286,12 +281,8 @@ public class ToDoSubTable extends ToDoTable {
     }
 
     // only new subtask can be created
-    // no running task or subtask, or task selected not currently running
     private boolean canCreateNewTask() {
-        Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        return panel.getMainTable().getSelectedRowCount() == 1
-                && (!panel.getPomodoro().inPomodoro()
-                || (currentToDo != null && (currentToDo.isSubTask() || panel.getMainTable().getActivityIdFromSelectedRow() != currentToDo.getId())));
+        return true;
     }
 
     @Override
@@ -331,7 +322,7 @@ public class ToDoSubTable extends ToDoTable {
                 && getSelectedRowCount() == 1;
     }
 
-    // only subtasks can be delete
+    // only subtasks can be deleted
     // no running subtask (see DeleteButton)   
     private boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;
@@ -345,5 +336,10 @@ public class ToDoSubTable extends ToDoTable {
     // can't move subtasks
     @Override
     public void moveTask(int rowIndex) {
+    }
+    
+    @Override
+    public void scrollToSelectedRows() {
+        scrollToRowIndex(getSelectedRow());
     }
 }

@@ -188,7 +188,7 @@ public class MergingPanel extends CreatePanel {
                                 // Add subtasks to lists
                                 if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
                                     for (Activity subTask : ToDoList.getSubTaskList(selectedToDo.getId())) {
-                                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday()) { // update subtask in ToDo list
+                                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // update subtask in ToDo list
                                             subTask.setParentId(newActivity.getId());
                                             ToDoList.getList().update(subTask);
                                         } else {
@@ -222,7 +222,7 @@ public class MergingPanel extends CreatePanel {
                         });
                         panel.getCurrentTable().reorderByPriority();
                         // insert new activity into ToDo list's current table
-                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
+                        if (newActivity.isSubTask() || mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                                            
                             panel.getCurrentTable().insertRow(newActivity);
                         } else { // insert new activity into Activity list's main table
                             Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity);
