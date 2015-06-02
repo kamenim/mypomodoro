@@ -42,17 +42,17 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
             // no subtask --> estimated may be changed
-            if (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId())) {
+            //if (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId())) {
                 labelBefore.setText(realpoms > 0 ? realpoms + " /" : "");
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
                 comboBox.addItem(estimatedpoms);
                 labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");
-            } else { // has subtasks --> estimated cannot be changed
+            /*} else { // has subtasks --> estimated cannot be changed
                 labelBefore.setText(realpoms > 0 ? realpoms + " / " : "");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
-            }
+            }*/
             setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
         }
         return this;

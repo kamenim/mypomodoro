@@ -51,7 +51,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                     + (activity.isUnplanned() ? "]" : "") + "<br>");
-        // Date reopened
+            // Date reopened
             // Foreground set to black in anycase (important for theme such as Noire which default color is white)        
             textMap.put("date_reopened", "<span style=\"color:black; background-color:#FFFF66\"><b>" + Labels.getString("Common.Date reopened") + ":</b> "
                     + (activity.isUnplanned() ? "U [" : "")
@@ -73,22 +73,25 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br>");
         textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br>");
     }
-
+    
+    // informationArea may be null when moving the cursor around (mouseExited) while deleting/moving tasks
     @Override
     public void showInfo() {
-        clearInfo();
-        Iterator<String> keySetIterator = textMap.keySet().iterator();
-        String text = "";
-        while (keySetIterator.hasNext()) {
-            String key = keySetIterator.next();
-            text += textMap.get(key);
-        }
-        try {
-            informationArea.setText(text);
-            // disable auto scrolling
-            informationArea.setCaretPosition(0);
-        } catch (IndexOutOfBoundsException ignored) {
-            // this may happen some time and must be ignored
+        if (informationArea != null) {
+            try {
+                clearInfo();
+                Iterator<String> keySetIterator = textMap.keySet().iterator();
+                String text = "";
+                while (keySetIterator.hasNext()) {
+                    String key = keySetIterator.next();
+                    text += textMap.get(key);
+                }
+                informationArea.setText(text);
+                // disable auto scrolling
+                informationArea.setCaretPosition(0);
+            } catch (IndexOutOfBoundsException ignored) {
+                // this may happen some time and must be ignored
+            }
         }
     }
 

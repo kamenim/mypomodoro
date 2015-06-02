@@ -105,9 +105,9 @@ public class EditPanel extends CreatePanel {
         // update details panel
         information.selectInfo(activity);
         information.showInfo();
-        String title = Labels.getString("ActivityListPanel.Edit activity");
+        /*String title = Labels.getString("ActivityListPanel.Edit activity");
         String message = Labels.getString("ActivityListPanel.Activity updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
+        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);*/
     }
 
     @Override
