@@ -28,7 +28,7 @@ public class ToDoTableTitlePanel extends TitlePanel {
         super(panel, table);
 
         // show fold button and hide button panel
-        showExpandButton();
-        hideButtonPanel();
+        //showExpandButton();
+        //hideButtonPanel();
     }
 }

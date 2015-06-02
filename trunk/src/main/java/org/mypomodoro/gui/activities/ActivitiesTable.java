@@ -319,7 +319,6 @@ public class ActivitiesTable extends AbstractTable {
             AbstractActivities tableList = getTableList();
             if (selectedRowCount > 0) {
                 getTitlePanel().showSelectedButton();
-                getTitlePanel().showDeleteButton();
             }
             if (selectedRowCount > 1) {
                 int[] rows = getSelectedRows();
