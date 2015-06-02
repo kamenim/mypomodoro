@@ -16,9 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import org.mypomodoro.buttons.DeleteButton;
-import org.mypomodoro.util.Labels;
-
 /**
  * Title panel for tables
  *

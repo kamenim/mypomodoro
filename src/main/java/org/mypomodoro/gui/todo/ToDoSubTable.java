@@ -123,12 +123,10 @@ public class ToDoSubTable extends ToDoTable {
                     if (canDuplicateTask()) {
                         getTitlePanel().showDuplicateButton();
                     }
-                    if (selectedActivity.getEstimatedPoms() != 0
+                    if (selectedActivity.getEstimatedPoms() > 0
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
-                        panel.getTabbedPane().enableOverestimationTab();
                         getTitlePanel().showOverestimationButton();
                     } else {
-                        panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
                     }
                 } else { // no row selected

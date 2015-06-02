@@ -35,6 +35,7 @@ import javax.swing.border.EtchedBorder;
 import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.util.Labels;
 
 /**
  *
@@ -96,7 +97,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 scrollToSelectedRows();
             }
         });
-        selectedButton.setToolTipText("CTRL + G");
+        selectedButton.setToolTipText(Labels.getString("Common.Scroll to selected") + " (CTRL + G)");
         // Create new task
         createButton.setMargin(buttonInsets);
         createButton.addActionListener(new ActionListener() {
@@ -106,7 +107,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 createNewTask();
             }
         });
-        createButton.setToolTipText("CTRL + T");
+        createButton.setToolTipText(Labels.getString("Common.Create") + " (CTRL + T)");
         // Duplicate selected task
         duplicateButton.setMargin(buttonInsets);
         duplicateButton.addActionListener(new ActionListener() {
@@ -116,7 +117,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 duplicateTask();
             }
         });
-        duplicateButton.setToolTipText("CTRL + D");
+        duplicateButton.setToolTipText(Labels.getString("Common.Duplicate") + " (CTRL + D)");
         // Create unplanned task
         unplannedButton.setMargin(buttonInsets);
         unplannedButton.addActionListener(new ActionListener() {
@@ -126,7 +127,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 createUnplannedTask();
             }
         });
-        unplannedButton.setToolTipText("CTRL + U");
+        unplannedButton.setToolTipText(Labels.getString("Common.Unplanned") + " (CTRL + U)");
         // Create internal interruption
         internalButton.setMargin(buttonInsets);
         internalButton.addActionListener(new ActionListener() {
@@ -136,7 +137,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 createInternalInterruption();
             }
         });
-        internalButton.setToolTipText("CTRL + I");
+        internalButton.setToolTipText(Labels.getString("ToDoListPanel.Internal interruption") + " (CTRL + I)");
         // Create external interruption
         externalButton.setMargin(buttonInsets);
         externalButton.addActionListener(new ActionListener() {
@@ -146,7 +147,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 createExternalInterruption();
             }
         });
-        externalButton.setToolTipText("CTRL + E");
+        externalButton.setToolTipText(Labels.getString("ToDoListPanel.External interruption") + " (CTRL + E)");
         // Overestimate by one pomodoro
         overestimationButton.setMargin(buttonInsets);
         overestimationButton.addActionListener(new ActionListener() {
@@ -156,6 +157,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 overestimateTask(1);
             }
         });
+        overestimationButton.setToolTipText(Labels.getString("ToDoListPanel.Overestimate"));
         // Delete
         deleteButton.setMargin(buttonInsets);
         deleteButton.addActionListener(new ActionListener() {
@@ -164,11 +166,11 @@ public abstract class AbstractTitlePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 deleteTasks();
             }
-        });
+        });        
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            deleteButton.setToolTipText("BACKSPACE");
+            deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (BACKSPACE)");
         } else {
-            deleteButton.setToolTipText("DEL");
+            deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (DEL)");
         }
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
