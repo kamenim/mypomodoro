@@ -75,19 +75,19 @@ public abstract class AbstractTitlePanel extends JPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
         setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         setPreferredSize(new Dimension(800, 30));
-        //setPreferredSize(new Dimension(getWidth(), 40)); // set the height
+        //setPreferredSize(new Dimension(getWidth(), 40)); // set the height        
+        // init button panel
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
+        buttonPanel.setBorder(null);        
+        // Init buttons
+        // Fold button (the fold button doen't appear by default)
+        expandButton.setBorder(null); // this is important to remove the invisible border
+        expandButton.addMouseListener(new ExpandMouseAdapter()); 
+        showExpandButton();
         // Add label to panel        
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
         showTitleLabel();
-        // init button panel
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
-        buttonPanel.setBorder(null);
-        showButtonPanel();
-        // Init buttons
-        // Fold button (the fold button doen't appear by default)
-        expandButton.setBorder(null); // this is important to remove the invisible border
-        expandButton.addMouseListener(new ExpandMouseAdapter());
         // Scroll to selected task
         selectedButton.setMargin(buttonInsets);
         selectedButton.addActionListener(new ActionListener() {
@@ -237,6 +237,10 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     public void showExpandButton() {
         add(expandButton, 0);
+    }
+    
+    public void hideExpandButton() {
+        remove(expandButton);
     }
 
     public void showSelectedButton() {
