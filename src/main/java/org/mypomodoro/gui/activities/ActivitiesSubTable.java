@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -94,12 +95,18 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 }
             }
         } else {
+            title += " (0)";
             getTitlePanel().hideDuplicateButton();
         }
         if (panel.getMainTable().getSelectedRowCount() == 1) {
             getTitlePanel().showCreateButton();
         } else {
             getTitlePanel().hideCreateButton();
+        }
+        if (canDeleteTasks()) {
+            getTitlePanel().showDeleteButton();
+        } else {
+            getTitlePanel().hideDeleteButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
@@ -167,6 +174,19 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
         insertRow(newActivity);
         panel.getTabbedPane().selectEditTab(); // open edit tab
+    }
+    
+    @Override
+    public void deleteTasks() {
+        if (canDeleteTasks()) {
+            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
+            b.doClick();
+        }
+    }
+    
+    // only subtasks can be deleted  
+    private boolean canDeleteTasks() {
+        return getSelectedRowCount() > 0;
     }
     
     @Override

@@ -156,7 +156,7 @@ public class TestMenu extends JMenu {
                                         dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
                                     }
                                     Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
-                                    ReportList.getList().add(a, dateAdded, dateCompleted);                                    
+                                    ReportList.getList().add(a, dateAdded, dateCompleted);
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
                                         ReportList.getList().reopenToActivtyList(a);
                                         if (withSubtask) {
@@ -269,35 +269,48 @@ public class TestMenu extends JMenu {
 
         private void addSubTasks(Activity a, AbstractActivities list) {
             Random rand = new Random();
-            int subTaskReal = a.getActualPoms();
-            int subTaskOverestimated = a.getOverestimatedPoms();
-            int subTaskEstimated = a.getEstimatedPoms();
+            int totalEstimated = 0;
+            int totalReal = 0;
+            int totalOverestimated = 0;
             int nbSubTask = rand.nextInt(6); // 0 to 5 subtasks
             try {
                 for (int j = 0; j < nbSubTask; j++) {
                     Activity aClone = a.clone();
                     aClone.setParentId(a.getId());
                     aClone.setName(a.getName() + "." + j);
-                    // Add all overestimated poms to the first subtask
-                    int overestimated = 0;
-                    int real = 0;
-                    int estimated = subTaskEstimated > 0 ? rand.nextInt(subTaskEstimated + 1) : 0; // 0 to estimated                    
-                    if (j == 0 && subTaskOverestimated > 0) { // first subtask if overestimated
-                        real = subTaskReal;
-                        overestimated = subTaskOverestimated;
-                        estimated = subTaskEstimated;
-                    } else if (j == nbSubTask - 1) { // last subtask (leftovers)                        
-                        estimated = subTaskEstimated;
-                        real = subTaskReal;
+                    int estimated = rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1); // 0 to getMaxNbPomPerActivity
+                    if (totalEstimated == Main.preferences.getMaxNbPomPerActivity()) { // not enough estimate left
+                        estimated = 0;
                     } else {
-                        real = subTaskReal > estimated ? estimated : subTaskReal; // estimated or real
+                        while (estimated + totalEstimated > Main.preferences.getMaxNbPomPerActivity()) {
+                            estimated = rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1);
+                        }
+                    }                    
+                    int real = 0;
+                    if (estimated > 0
+                            && (list instanceof ToDoList
+                            || list instanceof ReportList)) {
+                        rand.nextInt(estimated + 1); // 0 to estimated
+                        if (rand.nextBoolean() && (list instanceof ReportList || rand.nextBoolean())) { // once in a while all poms done
+                            real = estimated;
+                        }
                     }
-                    subTaskReal = subTaskReal - real;
-                    subTaskOverestimated = subTaskOverestimated - overestimated;
-                    subTaskEstimated = subTaskEstimated - estimated;
-                    aClone.setActualPoms(real);
-                    aClone.setOverestimatedPoms(overestimated);
+                    int overestimated = 0;
+                    if (rand.nextBoolean() 
+                            && real > 0 
+                            && real == estimated
+                            && (list instanceof ToDoList
+                            || list instanceof ReportList)) { // overestimation only if all poms done                        
+                        overestimated = rand.nextInt(6);
+                        if (rand.nextBoolean() && (list instanceof ReportList || rand.nextBoolean())) { // once in a while set finished
+                            real += overestimated;
+                        } else if (overestimated > 0 && rand.nextBoolean()) {
+                            real += rand.nextInt(overestimated + 1); // 1 to overestimated                                       
+                        }
+                    }
                     aClone.setEstimatedPoms(estimated);
+                    aClone.setOverestimatedPoms(overestimated);
+                    aClone.setActualPoms(real);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));
@@ -308,8 +321,25 @@ public class TestMenu extends JMenu {
                     } else if (list instanceof ReportList) {
                         ReportList.getList().add(aClone, a.getDate(), a.getDateCompleted());
                     }
+                    totalEstimated += estimated;
+                    totalReal += real;
+                    totalOverestimated += overestimated;
                 }
             } catch (CloneNotSupportedException ignored) {
+            }
+            // update parent task 
+            if (nbSubTask > 0) {
+                a.setEstimatedPoms(totalEstimated);
+                a.setActualPoms(totalReal);
+                a.setOverestimatedPoms(totalOverestimated);
+                if (list instanceof ToDoList) {
+                    ToDoList.getList().update(a);
+                } else if (list instanceof ActivityList) {
+                    ActivityList.getList().update(a);
+                } else if (list instanceof ReportList) {
+                    ReportList.getList().update(a);
+                }
+                a.databaseUpdate();
             }
         }
     }

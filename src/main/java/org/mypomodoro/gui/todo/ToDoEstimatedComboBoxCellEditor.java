@@ -42,7 +42,7 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            if (realpoms == 0) { // estimated combo box only
+            if (realpoms == 0) { // can't edit when task already started (real > 0)
                 int minimum = 0; // no matter overestimation
                 int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();
                 comboBox.setVisible(true);

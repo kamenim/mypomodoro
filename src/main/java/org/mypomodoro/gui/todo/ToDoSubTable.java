@@ -137,6 +137,7 @@ public class ToDoSubTable extends ToDoTable {
                 }
             }
         } else { // empty table
+            title += " (0)";
             getTitlePanel().hideDuplicateButton();
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();

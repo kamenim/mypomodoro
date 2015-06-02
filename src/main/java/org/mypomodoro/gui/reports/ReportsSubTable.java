@@ -116,6 +116,8 @@ public class ReportsSubTable extends ReportsTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             }
+        } else {
+            title += " (0)";
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
