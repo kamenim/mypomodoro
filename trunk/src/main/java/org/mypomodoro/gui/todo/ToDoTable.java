@@ -72,15 +72,11 @@ public class ToDoTable extends AbstractTable {
                         // diactivate/gray out unused tabs
                         panel.getTabbedPane().disableCommentTab();
                         panel.getTabbedPane().disableEditTab();
-                        panel.getTabbedPane().disableOverestimationTab();
-                        panel.getTabbedPane().disableUnplannedTab();
                         if ((panel.getPomodoro().inPomodoro() && getSelectedRowCount() > 2) || !panel.getPomodoro().inPomodoro()) {
                             panel.getTabbedPane().enableMergeTab();
                         }
                         if (panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getCommentTabIndex()
-                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()
-                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getOverestimateTabIndex()
-                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getUnplannedTabIndex()) {
+                                || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
                             panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                         }
                         if (!panel.getPomodoro().getTimer().isRunning()) {
@@ -392,12 +388,10 @@ public class ToDoTable extends AbstractTable {
                     } else {
                         getTitlePanel().switchSelectedButton();
                     }
-                    if (selectedActivity.getEstimatedPoms() != 0
+                    if (selectedActivity.getEstimatedPoms() > 0
                             && selectedActivity.getActualPoms() >= selectedActivity.getEstimatedPoms()) {
-                        panel.getTabbedPane().enableOverestimationTab();
                         getTitlePanel().showOverestimationButton();
                     } else {
-                        panel.getTabbedPane().disableOverestimationTab();
                         getTitlePanel().hideOverestimationButton();
                     }
                 }
@@ -528,10 +522,28 @@ public class ToDoTable extends AbstractTable {
     protected boolean canCreateUnplannedTask() {
         return true; // anytime
     }
-
+    
+    // Overestimation only when estimated >0 and real >= estimated
     @Override
     public void overestimateTask(int poms) {
-        panel.getOverestimationPanel().overestimateTask(poms);
+        Activity selectedToDo = getActivityFromSelectedRow();
+        if (selectedToDo.getEstimatedPoms() > 0
+                && selectedToDo.getActualPoms() >= selectedToDo.getEstimatedPoms()) {
+            // Overestimation
+            selectedToDo.setOverestimatedPoms(selectedToDo.getOverestimatedPoms() + poms);
+            getList().update(selectedToDo);
+            selectedToDo.databaseUpdate();
+            if (selectedToDo.isSubTask()) {
+                panel.getMainTable().addPomsToSelectedRow(0, 0, poms);
+                panel.getMainTable().setTitle();
+            }
+            panel.getCurrentTable().repaint();
+            panel.getCurrentTable().setTitle();
+            // update details panel
+            panel.getDetailsPanel().selectInfo(selectedToDo);
+            panel.getDetailsPanel().showInfo();            
+            setIconLabels();
+        }
     }
 
     @Override
@@ -552,56 +564,56 @@ public class ToDoTable extends AbstractTable {
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             Color defaultForegroundColor = ColorUtil.BLACK;
             if (selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
-                panel.getUnplannedPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                //panel.getUnplannedPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.selectedRowColor);
-                panel.getOverestimationPanel().getIconPanel().setBackground(Main.selectedRowColor);
+                //panel.getOverestimationPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getEditPanel().getIconPanel().setBackground(Main.selectedRowColor);
             } else {
-                panel.getUnplannedPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                //panel.getUnplannedPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.hoverRowColor);
-                panel.getOverestimationPanel().getIconPanel().setBackground(Main.hoverRowColor);
+                //panel.getOverestimationPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getEditPanel().getIconPanel().setBackground(Main.hoverRowColor);
             }
             if (panel.getPomodoro().inPomodoro()) {
                 //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, Main.taskRunningColor, false);
-                ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                //ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
+                //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
             }
             if (getSelectedRowCount() <= 1) { // no multiple selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                 } else if (!panel.getPomodoro().inPomodoro()) {
                     //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
-                    ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    //ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
+                    //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                 }
             } else if (getSelectedRowCount() > 1) { // multiple selection
                 if (!panel.getPomodoro().inPomodoro()) {
                     //ToDoIconPanel.clearIconPanel(iconPanel);
-                    ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
+                    //ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
                 }
                 ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
-                ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
+                //ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
             }
         } else { // empty list
             //ToDoIconPanel.clearIconPanel(iconPanel);
-            ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
+            //ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
-            ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
+            //ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
         }
     }

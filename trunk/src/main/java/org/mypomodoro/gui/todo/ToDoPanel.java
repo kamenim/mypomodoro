@@ -76,12 +76,10 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this, true);
     private final EditPanel editPanel = new EditPanel(detailsPanel);
-    private final OverestimationPanel overestimationPanel = new OverestimationPanel(this, detailsPanel);
-    private final UnplannedPanel unplannedPanel = new UnplannedPanel(this);
     private final MergingPanel mergingPanel = new MergingPanel(this);
     // Pomodoro
     private final JLabel pomodoroTime = new JLabel();
-    private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, unplannedPanel, pomodoroTime);
+    private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, pomodoroTime);
     private final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
     // Tables
@@ -163,16 +161,12 @@ public class ToDoPanel extends JPanel implements IListPanel {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
         tabbedPane.setEditTabIndex(2);
-        tabbedPane.setOverestimateTabIndex(3);
-        tabbedPane.setUnplannedTabIndex(4);
-        tabbedPane.setMergeTabIndex(5);
-        tabbedPane.setImportTabIndex(6);
-        tabbedPane.setExportTabIndex(7);
+        tabbedPane.setMergeTabIndex(3);
+        tabbedPane.setImportTabIndex(4);
+        tabbedPane.setExportTabIndex(5);
         tabbedPane.add(Labels.getString("Common.Details"), detailsPanel);
         tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         tabbedPane.add(Labels.getString("Common.Edit"), editPanel);
-        tabbedPane.add(Labels.getString("ToDoListPanel.Overestimate"), overestimationPanel);
-        tabbedPane.add(Labels.getString("Common.Unplanned") + " / " + Labels.getString("ToDoListPanel.Interruption"), unplannedPanel);
         tabbedPane.add(Labels.getString("ToDoListPanel.Merge"), mergingPanel);
         ImportPanel importPanel = new ImportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
@@ -454,14 +448,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public void hideSplitPaneDivider() {
         splitPane.setDividerSize(0);
-    }
-
-    public OverestimationPanel getOverestimationPanel() {
-        return overestimationPanel;
-    }
-
-    public UnplannedPanel getUnplannedPanel() {
-        return unplannedPanel;
     }
 
     public TimerPanel getTimerPanel() {

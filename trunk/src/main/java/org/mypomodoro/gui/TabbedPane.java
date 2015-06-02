@@ -48,7 +48,6 @@ public class TabbedPane extends JTabbedPane {
     private int commentTabIndex = -1;
     private int editTabIndex = -1;
     private int overestimateTabIndex = -1;
-    private int unplannedTabIndex = -1;
     private int mergeTabIndex = -1;
     private int importTabIndex = -1;
     private int exportTabIndex = -1;
@@ -207,10 +206,6 @@ public class TabbedPane extends JTabbedPane {
         setEnabledAt(mergeTabIndex, true);
     }
 
-    public void enableOverestimationTab() {
-        setEnabledAt(overestimateTabIndex, true);
-    }
-
     public void disableCommentTab() {
         setEnabledAt(commentTabIndex, false);
     }
@@ -221,14 +216,6 @@ public class TabbedPane extends JTabbedPane {
 
     public void disableMergeTab() {
         setEnabledAt(mergeTabIndex, false);
-    }
-
-    public void disableOverestimationTab() {
-        setEnabledAt(overestimateTabIndex, false);
-    }
-
-    public void disableUnplannedTab() {
-        setEnabledAt(unplannedTabIndex, false);
     }
 
     public int getDetailsTabIndex() {
@@ -253,22 +240,6 @@ public class TabbedPane extends JTabbedPane {
 
     public void setEditTabIndex(int editTabIndex) {
         this.editTabIndex = editTabIndex;
-    }
-
-    public int getOverestimateTabIndex() {
-        return overestimateTabIndex;
-    }
-
-    public void setOverestimateTabIndex(int overestimateTabIndex) {
-        this.overestimateTabIndex = overestimateTabIndex;
-    }
-
-    public int getUnplannedTabIndex() {
-        return unplannedTabIndex;
-    }
-
-    public void setUnplannedTabIndex(int unplannedTabIndex) {
-        this.unplannedTabIndex = unplannedTabIndex;
     }
 
     public int getMergeTabIndex() {

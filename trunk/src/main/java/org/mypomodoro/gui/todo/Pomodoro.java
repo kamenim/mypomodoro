@@ -80,7 +80,6 @@ public class Pomodoro {
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
     private final IActivityInformation detailsPanel;
-    private final UnplannedPanel unplannedPanel;
     private TimerPanel timerPanel;
     private int currentToDoId = -1;
     private long time = pomodoroLength;
@@ -90,10 +89,9 @@ public class Pomodoro {
     private boolean isDiscontinuous = false;
     private int pomSetNumber = 0;
 
-    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, UnplannedPanel unplannedPanel, JLabel pomodoroTime) {
+    public Pomodoro(ToDoPanel panel, IActivityInformation detailsPanel, JLabel pomodoroTime) {
         this.panel = panel;
         this.detailsPanel = detailsPanel;
-        this.unplannedPanel = unplannedPanel;
         this.pomodoroTime = pomodoroTime;
 
         pomodoroTime.setText(sdf.format(pomodoroLength));
@@ -137,8 +135,6 @@ public class Pomodoro {
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.getCurrentTable().setIconLabels();
         panel.getDetailsPanel().disableButtons();
-        // Show quick interruption button and items in combo box
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
         refreshTitlesAndTables();
     }
 
@@ -164,8 +160,6 @@ public class Pomodoro {
         if (!getCurrentToDo().isSubTask()) {
             panel.getDetailsPanel().enableButtons();
         }
-        // Hide quick interruption button and items in combo box
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
         refreshTitlesAndTables();
     }
 
@@ -181,8 +175,6 @@ public class Pomodoro {
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Paused"));
             MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
         }
-        // Hide quick interruption button and items in combo box
-        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
         refreshTitlesAndTables();
     }
 
@@ -202,7 +194,6 @@ public class Pomodoro {
         }
         // Show quick interruption button and items in combo box
         if (inPomodoro()) {
-            ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
             refreshTitlesAndTables();
         }
     }
@@ -296,8 +287,6 @@ public class Pomodoro {
                     setTooltipOnImage();
                     Main.gui.getIconBar().getIcon(2).setForeground(ColorUtil.BLACK);
                     Main.gui.getIconBar().getIcon(2).highlight();
-                    // Hide quick interruption button and items in combo box 
-                    ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).hideInterruptionComboBox();
                     refreshTitlesAndTables();
                 } else { // pomodoro time                    
                     // change of current ToDo
@@ -335,8 +324,6 @@ public class Pomodoro {
                         // Tooltip                        
                         // If the name is modified during the pomodoro, it won't be updated, which is acceptable
                         setTooltipOnImage();
-                        // Show quick interruption button and items in combo box 
-                        ((UnplannedActivityInputForm) unplannedPanel.getFormPanel()).showInterruptionComboBox();
                         refreshTitlesAndTables();
                     }
                 }
