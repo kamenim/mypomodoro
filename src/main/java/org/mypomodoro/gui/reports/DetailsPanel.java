@@ -77,7 +77,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
 
     @Override
     public void selectInfo(Activity activity) {
-        super.selectInfo(activity);        
+        super.selectInfo(activity);
         if (activity.isSubTask()) {
             reopenButton.setEnabled(false);
             deleteButton.setEnabled(false);

@@ -259,18 +259,18 @@ public class DateUtil {
         calendar.add(Calendar.MILLISECOND, (int) milliseconds);
         return calendar.getTime();
     }
-    
+
     // Calendar.HOUR: gets hour in 12h format
     // Calendar.HOUR_OF_DAY: gets hour in 24h format
     public static int getHourOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date); 
-        return locale.getLanguage().equals("en") ? calendar.get(Calendar.HOUR) : calendar.get(Calendar.HOUR_OF_DAY);               
+        calendar.setTime(date);
+        return locale.getLanguage().equals("en") ? calendar.get(Calendar.HOUR) : calendar.get(Calendar.HOUR_OF_DAY);
     }
-    
+
     public static int getMinute(Date date) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date); 
-        return calendar.get(Calendar.MINUTE);               
+        calendar.setTime(date);
+        return calendar.get(Calendar.MINUTE);
     }
 }

@@ -285,7 +285,7 @@ public class TestMenu extends JMenu {
                         while (estimated + totalEstimated > Main.preferences.getMaxNbPomPerActivity()) {
                             estimated = rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1);
                         }
-                    }                    
+                    }
                     int real = 0;
                     if (estimated > 0
                             && (list instanceof ToDoList
@@ -296,8 +296,8 @@ public class TestMenu extends JMenu {
                         }
                     }
                     int overestimated = 0;
-                    if (rand.nextBoolean() 
-                            && real > 0 
+                    if (rand.nextBoolean()
+                            && real > 0
                             && real == estimated
                             && (list instanceof ToDoList
                             || list instanceof ReportList)) { // overestimation only if all poms done                        

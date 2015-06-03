@@ -19,7 +19,6 @@ package org.mypomodoro.gui.todo;
 import java.awt.Component;
 import javax.swing.JTable;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**

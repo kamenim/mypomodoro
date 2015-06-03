@@ -34,9 +34,9 @@ public class Clock extends JPanel {
     private final JLabel clock;
 
     public Clock() {
-        setLayout(new BorderLayout());       
+        setLayout(new BorderLayout());
         clock = new JLabel();
-        clock.setHorizontalAlignment(JLabel.RIGHT);        
+        clock.setHorizontalAlignment(JLabel.RIGHT);
         tickTock();
         add(clock);
         Timer timer = new Timer(500, new ActionListener() {

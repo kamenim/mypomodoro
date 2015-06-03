@@ -291,24 +291,24 @@ public class ToDoSubTable extends ToDoTable {
             b.doClick();
         }
     }
-    
+
     @Override
     public void deleteTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);        
+        Activity activity = getActivityFromRowIndex(rowIndex);
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
-         // set main table as current table when no subtasks anymore
+        // set main table as current table when no subtasks anymore
         if (getRowCount() == 0) {
             panel.setCurrentTable(panel.getMainTable());
         }
     }
-    
+
     @Override
     protected boolean canCreateInterruptions() {
         return canCreateNewTask()
                 && super.canCreateInterruptions();
     }
-    
+
     @Override
     protected boolean canCreateUnplannedTask() {
         return canCreateNewTask()
@@ -326,17 +326,17 @@ public class ToDoSubTable extends ToDoTable {
     private boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;
     }
-    
+
     // can't complete subtasks
     @Override
-    public void completeTask(int rowIndex) {        
+    public void completeTask(int rowIndex) {
     }
-    
+
     // can't move subtasks
     @Override
     public void moveTask(int rowIndex) {
     }
-    
+
     @Override
     public void scrollToSelectedRows() {
         scrollToRowIndex(getSelectedRow());

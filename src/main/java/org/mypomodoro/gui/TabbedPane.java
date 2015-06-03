@@ -47,7 +47,6 @@ public class TabbedPane extends JTabbedPane {
     private int detailsTabIndex = -1;
     private int commentTabIndex = -1;
     private int editTabIndex = -1;
-    private int overestimateTabIndex = -1;
     private int mergeTabIndex = -1;
     private int importTabIndex = -1;
     private int exportTabIndex = -1;

@@ -78,11 +78,11 @@ public abstract class AbstractTitlePanel extends JPanel {
         //setPreferredSize(new Dimension(getWidth(), 40)); // set the height        
         // init button panel
         buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
-        buttonPanel.setBorder(null);        
+        buttonPanel.setBorder(null);
         // Init buttons
         // Fold button (the fold button doen't appear by default)
         expandButton.setBorder(null); // this is important to remove the invisible border
-        expandButton.addMouseListener(new ExpandMouseAdapter()); 
+        expandButton.addMouseListener(new ExpandMouseAdapter());
         showExpandButton();
         // Add label to panel        
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
@@ -166,7 +166,7 @@ public abstract class AbstractTitlePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 deleteTasks();
             }
-        });        
+        });
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (BACKSPACE)");
         } else {
@@ -238,7 +238,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showExpandButton() {
         add(expandButton, 0);
     }
-    
+
     public void hideExpandButton() {
         remove(expandButton);
     }
@@ -278,7 +278,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showExternalButton() {
         buttonPanel.add(externalButton);
     }
-    
+
     public void showDeleteButton() {
         buttonPanel.add(deleteButton);
     }
@@ -314,7 +314,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
-    
+
     public void hideDeleteButton() {
         buttonPanel.remove(deleteButton);
     }
@@ -345,7 +345,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void createExternalInterruption();
 
     protected abstract void overestimateTask(int poms);
-    
+
     protected abstract void deleteTasks();
 
     protected abstract void refreshTable(boolean fromDatabase);

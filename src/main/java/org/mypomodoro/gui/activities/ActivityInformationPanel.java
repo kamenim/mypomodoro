@@ -73,7 +73,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br>");
         textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br>");
     }
-    
+
     // informationArea may be null when moving the cursor around (mouseExited) while deleting/moving tasks
     @Override
     public void showInfo() {

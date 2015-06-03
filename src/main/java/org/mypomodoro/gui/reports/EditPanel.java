@@ -17,18 +17,14 @@
 package org.mypomodoro.gui.reports;
 
 import java.awt.GridBagConstraints;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.mypomodoro.Main;
 import org.mypomodoro.gui.IActivityInformation;
-import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.create.ActivityInputForm;
 import org.mypomodoro.gui.create.CreatePanel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
-import org.mypomodoro.util.Labels;
 
 /**
  * GUI for editing an existing report and store to data layer.
@@ -102,8 +98,8 @@ public class EditPanel extends CreatePanel {
         information.selectInfo(activity);
         information.showInfo();
         /*String title = Labels.getString("ReportListPanel.Edit report");
-        String message = Labels.getString("ReportListPanel.Report updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);*/
+         String message = Labels.getString("ReportListPanel.Report updated");
+         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);*/
     }
 
     @Override

@@ -44,7 +44,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
 
     public DetailsPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
-        
+
         setLayout(new GridBagLayout());
         setBorder(null);
 
@@ -116,8 +116,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         super.selectInfo(activity);
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
         if (activity.isSubTask()
-                || (currentToDo != null 
-                && activity.getId() == currentToDo.getId() 
+                || (currentToDo != null
+                && activity.getId() == currentToDo.getId()
                 && panel.getPomodoro().inPomodoro())) {
             disableButtons();
         } else {
@@ -136,7 +136,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     }
 
     public void disableButtons() {
-        moveButton.setEnabled(false);        
+        moveButton.setEnabled(false);
         completeButton.setEnabled(false);
     }
 
