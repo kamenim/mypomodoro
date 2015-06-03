@@ -175,7 +175,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         insertRow(newActivity);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
-    
+
     @Override
     public void deleteTasks() {
         if (canDeleteTasks()) {
@@ -183,23 +183,23 @@ public class ActivitiesSubTable extends ActivitiesTable {
             b.doClick();
         }
     }
-    
+
     // only subtasks can be deleted  
     private boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;
     }
-    
+
     @Override
     public void deleteTask(int rowIndex) {
         super.deleteTask(rowIndex);
-         // set main table as current table when no subtasks anymore
+        // set main table as current table when no subtasks anymore
         if (getRowCount() == 0) {
             panel.setCurrentTable(panel.getMainTable());
         }
     }
-    
+
     // Can't move subtasks
     @Override
-    public void moveTask(int rowIndex) {    
+    public void moveTask(int rowIndex) {
     }
 }

@@ -394,7 +394,7 @@ public class ActivitiesDAO {
     }
 
     public ArrayList<Float> getSumOfPomodorosOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
-        ArrayList<Float> storyPoints = new ArrayList<Float>();
+        ArrayList<Float> pomodoros = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
@@ -404,7 +404,7 @@ public class ActivitiesDAO {
                             + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
-                            storyPoints.add((Float) rs.getFloat("sum"));
+                            pomodoros.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
                         logger.error("", ex);
@@ -420,7 +420,7 @@ public class ActivitiesDAO {
                 database.unlock();
             }
         }
-        return storyPoints;
+        return pomodoros;
     }
 
     public ArrayList<Float> getSumOfPomodorosOfActivitiesIterationRange(int startIteration, int endIteration) {
@@ -455,7 +455,7 @@ public class ActivitiesDAO {
     }
 
     public ArrayList<Float> getSumOfTasksOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
-        ArrayList<Float> storyPoints = new ArrayList<Float>();
+        ArrayList<Float> tasks = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
@@ -465,7 +465,7 @@ public class ActivitiesDAO {
                             + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
-                            storyPoints.add((Float) rs.getFloat("sum"));
+                            tasks.add((Float) rs.getFloat("sum"));
                         }
                     } catch (SQLException ex) {
                         logger.error("", ex);
@@ -481,11 +481,11 @@ public class ActivitiesDAO {
                 database.unlock();
             }
         }
-        return storyPoints;
+        return tasks;
     }
 
     public ArrayList<Float> getSumOfTasksOfActivitiesIterationRange(int startIteration, int endIteration) {
-        ArrayList<Float> pomodoros = new ArrayList<Float>();
+        ArrayList<Float> tasks = new ArrayList<Float>();
         try {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
@@ -496,8 +496,8 @@ public class ActivitiesDAO {
                 try {
                     while (rs.next()) {
                         Float sumOfPomodoros = (Float) rs.getFloat("sum");
-                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? pomodoros.get(pomodoros.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
-                        pomodoros.add(sumOfPomodoros);
+                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? tasks.get(tasks.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
+                        tasks.add(sumOfPomodoros);
                     }
                 } catch (SQLException ex) {
                     logger.error("", ex);
@@ -512,7 +512,7 @@ public class ActivitiesDAO {
         } finally {
             database.unlock();
         }
-        return pomodoros;
+        return tasks;
     }
 
     public void deleteAllReports() {

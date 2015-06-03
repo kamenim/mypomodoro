@@ -112,7 +112,7 @@ public class ToDoTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                         // the start button may have been hidden by a multiple selection
-                        panel.getTimerPanel().showStartButton();                        
+                        panel.getTimerPanel().showStartButton();
                     }
                     setIconLabels();
                 }
@@ -430,14 +430,14 @@ public class ToDoTable extends AbstractTable {
     // only tasks can be moved
     @Override
     public void moveTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);        
+        Activity activity = getActivityFromRowIndex(rowIndex);
         getList().moveToActivtyList(activity); // move to ActivityList
         removeRow(rowIndex);
         if (getList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
             panel.getPomodoro().stop();
             panel.getTimerPanel().setStartEnv();
-        }        
+        }
     }
 
     // only tasks can be completed
@@ -522,7 +522,7 @@ public class ToDoTable extends AbstractTable {
     protected boolean canCreateUnplannedTask() {
         return true; // anytime
     }
-    
+
     // Overestimation only when estimated >0 and real >= estimated
     @Override
     public void overestimateTask(int poms) {
@@ -541,7 +541,7 @@ public class ToDoTable extends AbstractTable {
             panel.getCurrentTable().setTitle();
             // update details panel
             panel.getDetailsPanel().selectInfo(selectedToDo);
-            panel.getDetailsPanel().showInfo();            
+            panel.getDetailsPanel().showInfo();
             setIconLabels();
         }
     }
@@ -624,7 +624,7 @@ public class ToDoTable extends AbstractTable {
             for (int row = 0; row < panel.getMainTable().getModel().getRowCount(); row++) {
                 // Scroll to the currentToDo task or, if the currentToDo is a subtask, scroll to its parent task AND select to display the subtasks
                 if (panel.getPomodoro().getCurrentToDo().getId() == panel.getMainTable().getActivityIdFromRowIndex(row)
-                        || (panel.getPomodoro().getCurrentToDo().isSubTask() 
+                        || (panel.getPomodoro().getCurrentToDo().isSubTask()
                         && panel.getPomodoro().getCurrentToDo().getParentId() == panel.getMainTable().getActivityIdFromRowIndex(row))) {
                     panel.getMainTable().scrollToRowIndex(row);
                     panel.getMainTable().setRowSelectionInterval(row, row);

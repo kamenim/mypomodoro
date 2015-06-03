@@ -50,7 +50,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
-import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
@@ -170,10 +169,9 @@ public abstract class AbstractTable extends JXTable {
 
             /*final IListPanel panel;
 
-            public deleteAction(IListPanel panel) {
-                this.panel = panel;
-            }*/
-
+             public deleteAction(IListPanel panel) {
+             this.panel = panel;
+             }*/
             @Override
             public void actionPerformed(ActionEvent e) {
                 deleteTasks();
@@ -702,10 +700,10 @@ public abstract class AbstractTable extends JXTable {
     public void overestimateTask(int poms) {
         // do nothing by default
     }
-    
-     public void deleteTasks() {    
+
+    public void deleteTasks() {
         // do nothign by default
-     }
+    }
 
     public void removeRow(int rowIndex) {
         clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)

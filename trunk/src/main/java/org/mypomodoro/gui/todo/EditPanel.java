@@ -109,8 +109,8 @@ public class EditPanel extends CreatePanel {
         information.selectInfo(activity);
         information.showInfo();
         /*String title = Labels.getString("ToDoListPanel.Edit ToDo");
-        String message = Labels.getString("ToDoListPanel.ToDo updated");
-        JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);*/
+         String message = Labels.getString("ToDoListPanel.ToDo updated");
+         JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);*/
     }
 
     @Override

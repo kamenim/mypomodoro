@@ -23,63 +23,69 @@ import org.mypomodoro.Main;
  *
  */
 public class TimeConverter {
-    
-    private final int dayInMinutes = Main.preferences.getMaxNbPomPerDay() * Main.preferences.getPomodoroLength();
-    
-    // Convertion minutes to duration
-    // @return time in format mm:hh; or d days if time > 1 day
-    public static String convertMinutesToString(float min) {
-        String time;
-        float dayInPomodoroInSeconds = getDayInPomodoroInMinutes() * 60; // Normally: 24 * 60
-        long days = Math.round(Math.floor(min / (dayInPomodoroInSeconds))); // round is only used to convert to long        
-        if (days >= 1) {
-            min = min - days * dayInPomodoroInSeconds; // minutes left
-        }
-        float hours = min / 60;
-        float minutes = min % 60;
-        if (days >= 1) {
-            time = String.format("%d " + (days == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")) + " %02d:%02d", days, Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
-        } else {
-            time = String.format("%02d:%02d", Math.round(Math.floor(hours)), Math.round(Math.floor(minutes)));
-        }
-        return time;
-    }
 
-    public static float roundToHours(float min) {
-        return new Float(Math.round(Math.floor(min / 60)));
-    }
+    private static final long nbPomodoroPerWorkDay = Main.preferences.getMaxNbPomPerDay(); // eg: 6 pom/day = 6 breaks
+    private static final long nbLongBreaksPerWorkDay = Math.round(Math.floor(nbPomodoroPerWorkDay / Main.preferences.getNbPomPerSet())); // eg: 6 pom/day / 3 pom/set --> 2 long breaks
+    private static final long nbShortbreaksPerWorkDay = nbPomodoroPerWorkDay - nbLongBreaksPerWorkDay; // eg: 6 breaks - 2 long breaks = 4 short breaks
 
-    // only pomodoros length
-    // @return minutes
-    public static float calculateEffectiveMinutes(float pomodoros) {
-        return pomodoros * Main.preferences.getPomodoroLength();
-    }
-
-    // pomodoros length + breaks
-    // @return minutes
-    public static float calculatePlainMinutes(float pomodoros) {
-        long nbLongBreaks = Math.round(Math.floor(pomodoros / Main.preferences.getNbPomPerSet())); // one long break per set
-        long nbShortbreaks = Math.round(pomodoros - nbLongBreaks); // on short break per pomodoro minus the long breaks
-        return calculateEffectiveMinutes(pomodoros)
-                + nbShortbreaks * Main.preferences.getShortBreakLength()
-                + nbLongBreaks * Main.preferences.getLongBreakLength();
-    }
-
+    // returns the time length of pomodoros based on the length of a work day in pomodoros
+    // one work day = MaxNbPomPerDay
     public static String getLength(int pomodoros) {
         String length;
-        if (Main.preferences.getPlainHours()) {
-            length = convertMinutesToString(calculatePlainMinutes(pomodoros));
-        } else {
-            length = convertMinutesToString(calculateEffectiveMinutes(pomodoros));
+        if (Main.preferences.getPlainHours()) { // plain
+            length = convertPomodorosToPlainWorkTime(pomodoros);
+        } else { // effective
+            length = convertPomodorosToEffectiveWorkTime(pomodoros);
         }
         return length;
     }
-    
-    private static float getDayInPomodoroInMinutes() {
-        long nbLongBreaks = Math.round(Math.floor(Main.preferences.getMaxNbPomPerDay() / Main.preferences.getNbPomPerSet())); // one long break per set
-        long nbShortbreaks = Math.round(Main.preferences.getMaxNbPomPerDay() - nbLongBreaks); // on short break per pomodoro minus the long breaks
-        return Main.preferences.getMaxNbPomPerDay() * Main.preferences.getPomodoroLength()
-                + nbShortbreaks * Main.preferences.getShortBreakLength()
-                + nbLongBreaks * Main.preferences.getLongBreakLength();
+
+    public static String convertPomodorosToPlainWorkTime(int pomodoros) {
+        long plainWorkDayOfPomdorosInMinutes = nbPomodoroPerWorkDay * Main.preferences.getPomodoroLength(); // no breaks
+        long workTimeOfPomodorosInMinutes = calculatePlainMinutes(pomodoros);
+        return convertPomodorosToWorkTime(plainWorkDayOfPomdorosInMinutes, workTimeOfPomodorosInMinutes);
+    }
+
+    public static String convertPomodorosToEffectiveWorkTime(int pomodoros) {
+        long effectiveWorkDayOfPomdorosAndBreaksInMinutes = nbPomodoroPerWorkDay * Main.preferences.getPomodoroLength()
+                + nbLongBreaksPerWorkDay * Main.preferences.getLongBreakLength()
+                + nbShortbreaksPerWorkDay * Main.preferences.getShortBreakLength(); // with breaks
+        long workTimeOfPomodorosAndBreaksInMinutes = calculateEffectiveMinutes(pomodoros); // with breaks
+        return convertPomodorosToWorkTime(effectiveWorkDayOfPomdorosAndBreaksInMinutes, workTimeOfPomodorosAndBreaksInMinutes);
+    }
+
+    // workDayOfPomdorosAndBreaksInMinutes represents a day in term of nb max of pomodoros and breaks per day
+    // workTimeOfPomodorosInMinutes reprents the length of pomdoros in minutes
+    private static String convertPomodorosToWorkTime(long workDayOfPomdorosAndBreaksInMinutes, long workTimeOfPomodorosInMinutes) {
+        long workTimeInDays = Math.round(Math.floor(workTimeOfPomodorosInMinutes / workDayOfPomdorosAndBreaksInMinutes)); // eg 5,6 --> 5 days; 0,3 --> 0 day
+        long workTimeLeftTotalInMinutes = workTimeInDays > 0 ? workTimeOfPomodorosInMinutes - (workTimeInDays * workDayOfPomdorosAndBreaksInMinutes) : workTimeOfPomodorosInMinutes; // eg 3,6 * 25 min/pom = 90 min
+        long workTimeLeftInHours = Math.round(Math.floor(workTimeLeftTotalInMinutes / 60)); // 90 min / 60 min = 1 h
+        long workTimeLeftInMinutes = Math.round(Math.floor(workTimeLeftTotalInMinutes - workTimeLeftInHours * 60)); // 90 min - 60 min = 30 min
+        String plainWorkTime;
+        if (workTimeInDays > 0) {
+            plainWorkTime = String.format("%d " + (workTimeInDays == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")) + " %02d:%02d", workTimeInDays, workTimeLeftInHours, workTimeLeftInMinutes);
+        } else {
+            plainWorkTime = String.format("%02d:%02d", workTimeLeftInHours, workTimeLeftInMinutes);
+        }
+        return plainWorkTime;
+    }
+
+    // pomodoros length + breaks    
+    public static long calculatePlainMinutes(long pomodoros) {
+        long nbLongBreaks = Math.round(Math.floor(pomodoros / Main.preferences.getNbPomPerSet()));
+        long nbShortBreaks = pomodoros - nbLongBreaks;
+        return calculateEffectiveMinutes(pomodoros)
+                + nbLongBreaks * Main.preferences.getLongBreakLength()
+                + nbShortBreaks * Main.preferences.getShortBreakLength();
+    }
+
+    // pomodoros only
+    private static long calculateEffectiveMinutes(long pomodoros) {
+        return pomodoros * Main.preferences.getPomodoroLength();
+    }
+
+    // Round minutes to hours
+    public static float roundToHours(float min) {
+        return new Float(Math.round(Math.floor(min / 60)));
     }
 }
