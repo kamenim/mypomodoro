@@ -26,6 +26,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -63,11 +64,15 @@ public class MoveUpButton extends TabPanelButton {
                                 MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                                 int increment = 0;
                                 int[] rows = panel.getSubTable().getSelectedRows();
+                                // clear current selection before adding selection row to main table
+                                panel.getMainTable().clearSelection();
                                 for (int row : rows) {
                                     if (!MainPanel.progressBar.isStopped()) {
                                         // removing a row requires decreasing  the row index number
                                         row = row - increment;
+                                        Activity selectedToDo = panel.getSubTable().getActivityFromRowIndex(row);
                                         panel.getSubTable().convertSubtaskToTask(row);
+                                        panel.getMainTable().addRow(selectedToDo); // add selection row to main table
                                         increment++;
                                         final int progressValue = increment;
                                         SwingUtilities.invokeLater(new Runnable() {

@@ -75,6 +75,12 @@ public class MoveButton extends TabPanelButton {
                          } else {*/
                         int increment = 0;
                         int[] rows = panel.getCurrentTable().getSelectedRows();
+                        // clear current selection before adding selection row to main table
+                        if (panel instanceof ActivitiesPanel) { // move to ToDo list
+                            Main.gui.getToDoPanel().getMainTable().clearSelection(); 
+                        } else if (panel instanceof ReportsPanel) { // reopen tasks
+                            Main.gui.getActivityListPanel().getMainTable().clearSelection();
+                        }
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
@@ -107,9 +113,9 @@ public class MoveButton extends TabPanelButton {
                                 }
                                 panel.getCurrentTable().moveTask(row);
                                 if (panel instanceof ActivitiesPanel) { // move to ToDo list
-                                    Main.gui.getToDoPanel().getMainTable().insertRow(selectedActivity); // main table !
+                                    Main.gui.getToDoPanel().getMainTable().addRow(selectedActivity); // add selection row to main table
                                 } else if (panel instanceof ReportsPanel) { // reopen tasks
-                                    Main.gui.getActivityListPanel().getMainTable().insertRow(selectedActivity); // main table !
+                                    Main.gui.getActivityListPanel().getMainTable().addRow(selectedActivity); // add selection row to main table
                                 }
                                 increment++;
                                 final int progressValue = increment;

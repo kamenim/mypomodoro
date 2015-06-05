@@ -95,7 +95,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                 int toRow = dropLocation.getRow();
                                 toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
                                 ((DefaultTableModel) panel.getCurrentTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
-                                for (int row = 0; row < panel.getCurrentTable().getRowCount(); row++) {
+                                for (int row = 0; row < panel.getCurrentTable().getModel().getRowCount(); row++) {
                                     Activity activity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                     int priority = row + 1;
                                     if (activity.getPriority() != priority) {
@@ -165,7 +165,7 @@ public class ToDoTransferHandler extends TransferHandler {
 
     private boolean isPriorityColumnSorted() {
         boolean sorted = true;
-        for (int i = 0; i < panel.getCurrentTable().getRowCount() - 1; i++) {
+        for (int i = 0; i < panel.getCurrentTable().getModel().getRowCount() - 1; i++) {
             // Look for the value of the priority in the View while column priority might have been moved around                    
             if ((Integer) panel.getCurrentTable().getValueAt(i, panel.getCurrentTable().convertColumnIndexToView(0)) != (Integer) panel.getCurrentTable().getValueAt(i + 1, panel.getCurrentTable().convertColumnIndexToView(0)) - 1) {
                 sorted = false;

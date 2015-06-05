@@ -34,7 +34,7 @@ public class ColumnResizer {
             TableColumn column = columnModel.getColumn(col);
             if (column.getPreferredWidth() != 0) { // not hidden
                 int maxwidth = 0;
-                for (int row = 0; row < table.getRowCount(); row++) {
+                for (int row = 0; row < table.getModel().getRowCount(); row++) {
                     TableCellRenderer rend = table.getCellRenderer(row, col);
                     Object value = table.getValueAt(table.convertRowIndexToModel(row), col);
                     Component comp = rend.getTableCellRendererComponent(table,

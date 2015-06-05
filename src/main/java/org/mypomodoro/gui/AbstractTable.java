@@ -249,7 +249,7 @@ public abstract class AbstractTable extends JXTable {
         am.put("Control T", new create());
 
         // Activate Control D (duplicate task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Duplicate");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Control D");
         class duplicate extends AbstractAction {
 
             @Override
@@ -257,10 +257,10 @@ public abstract class AbstractTable extends JXTable {
                 duplicateTask();
             }
         }
-        am.put("Duplicate", new duplicate());
+        am.put("Control D", new duplicate());
 
         // Activate Control R (scroll back to the selected task)
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Scroll");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK), "Control G");
         class scrollBackToTask extends AbstractAction {
 
             @Override
@@ -268,7 +268,7 @@ public abstract class AbstractTable extends JXTable {
                 scrollToSelectedRows();
             }
         }
-        am.put("Scroll", new scrollBackToTask());
+        am.put("Control G", new scrollBackToTask());
 
         // Activate Control U (quick unplanned task)
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Control U");
@@ -318,7 +318,7 @@ public abstract class AbstractTable extends JXTable {
                     customValueChanged(e);
                     setTitle();
                 } else if (getRowCount() == 0) {
-                    if (panel.getMainTable().getRowCount() > 0
+                    if (panel.getMainTable().getModel().getRowCount() > 0
                             && !panel.getMainTable().equals(AbstractTable.this)) { // the sub table is empty so we reselect the row currently selected in the main table
                         int rowIndex = panel.getMainTable().getSelectedRow();
                         panel.getMainTable().clearSelection(); // clear first...
@@ -417,18 +417,23 @@ public abstract class AbstractTable extends JXTable {
         return c;
     }
 
-    public void scrollToSelectedRow() {
-        scrollToRowIndex(getSelectedRow());
+    // Scroll to selected row(s) in the current table
+    // scroll to the bottom of the selection or, at least, the last item on the list of selected rows
+    public void scrollToSelectedRow() {        
+        int[] selectedRows = getSelectedRows();
+        scrollToRowIndex(selectedRows[selectedRows.length - 1]);
     }
 
     public void scrollToRowIndex(int row) {
         scrollRectToVisible(getCellRect(row, 0, true));
     }
 
-    // Scroll to selected rows in the main and the sub-table
+    // Scroll to selected row(s) in the main table and the sub-table
+    // scroll to the bottom of the selection or, at least, the last item on the list of selected rows
     public void scrollToSelectedRows() {
-        panel.getMainTable().scrollToRowIndex(panel.getMainTable().getSelectedRow());
-        panel.getSubTable().scrollToRowIndex(panel.getSubTable().getSelectedRow());
+        int[] selectedRows = panel.getMainTable().getSelectedRows();
+        panel.getMainTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+        panel.getSubTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
     }
 
     // selected row BOLD
@@ -740,6 +745,21 @@ public abstract class AbstractTable extends JXTable {
         }
         int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
         setRowSelectionInterval(currentRow, currentRow);
+        scrollRectToVisible(getCellRect(currentRow, 0, true));
+    }
+    
+    
+     // add selection interval
+    public void addRow(Activity activity) {
+        // By default, the row is added at the bottom of the list
+        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
+        getModel().addRow(activity); // we add in the Model...
+        int rowCount = getRowCount(); // get row count on the view not the model !
+        if (rowCount == 1) { // refresh tabs as the very first row has just been added to the table
+            initTabs();
+        }
+        int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
+        addRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
 
