@@ -42,7 +42,6 @@ import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
-// TODO improve distribution of estimated, real. over amongs subtasks
 public class TestMenu extends JMenu {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());

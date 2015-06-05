@@ -704,6 +704,14 @@ public abstract class AbstractTable extends JXTable {
     public void deleteTasks() {
         // do nothign by default
     }
+    
+    public void convertSubtasksToTasks() {
+        // do nothign by default
+    }
+    
+    public void convertSubtaskToTask(int rowIndex) {
+        // do nothign by default
+    }
 
     public void removeRow(int rowIndex) {
         clearSelection(); // clear the selection so removeRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)

@@ -433,7 +433,7 @@ public class ToDoTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().moveToActivtyList(activity); // move to ActivityList
         removeRow(rowIndex);
-        if (getList().isEmpty()
+        if (getTableList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
             panel.getPomodoro().stop();
             panel.getTimerPanel().setStartEnv();
@@ -446,7 +446,7 @@ public class ToDoTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().completeToReportList(activity);
         removeRow(rowIndex);
-        if (getList().isEmpty()
+        if (getTableList().isEmpty()
                 && panel.getPomodoro().getTimer().isRunning()) { // break running
             panel.getPomodoro().stop();
             panel.getTimerPanel().setStartEnv();

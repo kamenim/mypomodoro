@@ -36,6 +36,7 @@ import org.mypomodoro.util.Labels;
 public class DetailsPanel extends ActivityInformationPanel implements IActivityInformation {
 
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private DeleteButton deleteButton;
     private MoveButton moveButton;
 
     public DetailsPanel(ActivitiesPanel activitiesPanel) {
@@ -52,7 +53,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        add(new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), activitiesPanel), gbc);
+        deleteButton = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), activitiesPanel);
+        add(deleteButton, gbc);
     }
 
     private void addInformationArea() {
@@ -81,8 +83,10 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         if (activity.isSubTask()) {
+            deleteButton.setEnabled(false);
             moveButton.setEnabled(false);
         } else {
+            deleteButton.setEnabled(true);
             moveButton.setEnabled(true);
         }
         if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
