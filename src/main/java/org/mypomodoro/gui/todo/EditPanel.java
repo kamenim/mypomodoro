@@ -116,7 +116,7 @@ public class EditPanel extends CreatePanel {
     @Override
     public void saveActivity(Activity activity) {
         if (ToDoList.getList().size() > 0) {
-            // no check for existing reports with same name and date
+            // no check for existing todos with same name and date
             if (activity.isValid()) {
                 validActivityAction(activity);
             }

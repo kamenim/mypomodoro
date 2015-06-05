@@ -314,7 +314,7 @@ public class ReportsTable extends AbstractTable {
                 if (tableList.getNbOverestimatedPom() > 0) {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
-                int accuracy = getList().getAccuracy();
+                int accuracy = getTableList().getAccuracy();
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
                 title += accuracy + "%";
                 if (Main.preferences.getAgileMode()) {
