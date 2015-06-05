@@ -70,6 +70,8 @@ public class MoveToDoButton extends TabPanelButton {
                          } else {*/
                         int increment = 0;
                         int[] rows = panel.getCurrentTable().getSelectedRows();
+                        // clear current selection before adding selection row to main table
+                        Main.gui.getActivityListPanel().getMainTable().clearSelection();
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
@@ -84,7 +86,7 @@ public class MoveToDoButton extends TabPanelButton {
                                     }
                                 }
                                 panel.getCurrentTable().moveTask(row);
-                                Main.gui.getActivityListPanel().getMainTable().insertRow(selectedToDo); // main table !
+                                Main.gui.getActivityListPanel().getMainTable().addRow(selectedToDo); // add selection row to main table
                                 increment++;
                                 final int progressValue = increment;
                                 SwingUtilities.invokeLater(new Runnable() {

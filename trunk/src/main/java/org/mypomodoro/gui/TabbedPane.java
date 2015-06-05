@@ -50,6 +50,8 @@ public class TabbedPane extends JTabbedPane {
     private int mergeTabIndex = -1;
     private int importTabIndex = -1;
     private int exportTabIndex = -1;
+    // mouse adapter
+    private final CustomMouseAdapter customMouseAdapter = new CustomMouseAdapter();
 
     public TabbedPane(IListPanel panel) {
         this.panel = panel;
@@ -60,7 +62,7 @@ public class TabbedPane extends JTabbedPane {
         // This is to address the case/event when the mouse exit the title
         addMouseListener(new ExitMouseAdapter());
         // One click action (expand / fold)
-        addMouseListener(new CustomMouseAdapter());
+        addMouseListener(customMouseAdapter);
         // Keystroke
         InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
@@ -90,14 +92,7 @@ public class TabbedPane extends JTabbedPane {
             //setBackground(p.getBackground()); // reset default/theme background color            
         }
     }
-
-    /*
-     @Override
-     public void paintComponent(Graphics g) {
-     g.setColor(Main.hoverRowColor);
-     g.fillRect(0, 0, getWidth(), getHeight());        
-     }
-     */
+    
     // Implement one-click action on selected tabs
     // Tab already selected = one click to expand
     // Tab not selected = double click to expand
@@ -146,6 +141,10 @@ public class TabbedPane extends JTabbedPane {
                 selectedIndex = getSelectedIndex();
             }
         }
+        
+        public void setSelectedIndex(int index) {
+            selectedIndex = index;
+        }
     }
 
     public void initTabs(int rowCount) {
@@ -153,6 +152,7 @@ public class TabbedPane extends JTabbedPane {
             for (int index = 0; index < getTabCount(); index++) {
                 if (index == importTabIndex) { // import tab
                     setSelectedIndex(index);
+                    customMouseAdapter.setSelectedIndex(index); // make sure the selected index for the adapter is up to date
                     continue;
                 }
                 setEnabledAt(index, false);
@@ -162,11 +162,13 @@ public class TabbedPane extends JTabbedPane {
                 setEnabledAt(index, index != mergeTabIndex); // merge tab                                  
             }
             setSelectedIndex(0);
+            customMouseAdapter.setSelectedIndex(0); // make sure the selected index for the adapter is up to date
         }
     }
 
     public void selectEditTab() {
         setSelectedIndex(editTabIndex);
+        customMouseAdapter.setSelectedIndex(editTabIndex); // make sure the selected index for the adapter is up to date
     }
 
     // Keystroke for tab
@@ -182,6 +184,7 @@ public class TabbedPane extends JTabbedPane {
         public void actionPerformed(ActionEvent e) {
             if (isEnabledAt(index)) {
                 setSelectedIndex(index);
+                customMouseAdapter.setSelectedIndex(index); // make sure the selected index for the adapter is up to date
             }
         }
     }
