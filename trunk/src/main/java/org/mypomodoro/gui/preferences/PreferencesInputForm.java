@@ -375,27 +375,27 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 5;
         add(maxNbPomPerDaySlider, gbc);
         gbc.gridy = 6;
-        add(nbPomPerSetSlider, gbc);
+        add(nbPomPerSetSlider, gbc);        
         gbc.gridy = 7;
         gbc.gridwidth = 2;
-        addSounds(gbc);
+        addPlainHours(gbc);
         gbc.gridy = 8;
         gbc.gridwidth = 2;
-        addLocales(gbc);
+        addThemes(gbc);
         gbc.gridy = 9;
+        gbc.gridwidth = 2;
+        addSounds(gbc);
+        gbc.gridy = 10;
         gbc.gridwidth = 2;
         if (SystemTray.isSupported()) {
             addSystemTray(gbc);
         }
-        gbc.gridy = 10;
-        gbc.gridwidth = 2;
-        addPlainHours(gbc);
         gbc.gridy = 11;
         gbc.gridwidth = 2;
         addAlwaysOnTop(gbc);
         gbc.gridy = 12;
         gbc.gridwidth = 2;
-        addThemes(gbc);
+        addLocales(gbc);
     }
 
     private void addAgileMode(GridBagConstraints gbc) {

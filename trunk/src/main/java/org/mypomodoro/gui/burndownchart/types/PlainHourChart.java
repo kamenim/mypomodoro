@@ -18,7 +18,6 @@ package org.mypomodoro.gui.burndownchart.types;
 
 import java.util.ArrayList;
 import java.util.Date;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -45,7 +44,7 @@ public class PlainHourChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(activity.getActualPoms()));
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(activity.getActualPoms()));
     }
 
     @Override
@@ -54,7 +53,7 @@ public class PlainHourChart implements IChartType {
         for (Activity activity : ChartList.getList()) {
             total += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
         }
-        return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(total));
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(total));
     }
 
     @Override
@@ -62,17 +61,17 @@ public class PlainHourChart implements IChartType {
         int total = 0;
         for (Activity activity : ChartList.getList()) {
             if (activity.isCompleted()) {
-                total += activity.getActualPoms() * Main.preferences.getPomodoroLength();
+                total += activity.getActualPoms();
             }
         }
-        return TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(total));
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(total));
     }
 
     @Override
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(Math.round(sum.get(i))))); // use Math.round to convert to long // no problem: sum is not a float
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(Math.round(sum.get(i))))); // use Math.round to convert to long // no problem: sum is not a float
         }
         return sum;
     }
@@ -81,7 +80,7 @@ public class PlainHourChart implements IChartType {
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesIterationRange(startIteration, endIteration);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(TimeConverter.calculatePlainMinutes(Math.round(sum.get(i))))); // use Math.round to convert to long // no problem: sum is not a float
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(Math.round(sum.get(i))))); // use Math.round to convert to long // no problem: sum is not a float
         }
         return sum;
     }

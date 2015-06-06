@@ -290,7 +290,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showExternalButton() {
         buttonPanel.add(externalButton);
     }
- 
+
     public void showConvertSubtasksToTasksButton() {
         buttonPanel.add(convertSubtasksToTasksButton);
     }
@@ -330,7 +330,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
- 
+
     public void hideConvertSubtasksToTasksButton() {
         buttonPanel.remove(convertSubtasksToTasksButton);
     }
@@ -369,7 +369,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void deleteTasks();
 
     protected abstract void refreshTable(boolean fromDatabase);
-    
+
     protected abstract void convertSubtasksToTasks();
 
     /*@Override

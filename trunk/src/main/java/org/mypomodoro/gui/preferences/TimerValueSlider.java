@@ -27,16 +27,18 @@ import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.TimeConverter;
 
 public class TimerValueSlider extends JPanel {
 
     private final JSlider slider;
     private final JLabel label = new JLabel();
-    private String text = "";
+    private final int unit;
 
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, String name, final int recommendedMin,
-            final int recommendedMax, final int unit) {
+            final int recommendedMax, int unit) {
+        this.unit = unit;
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -49,22 +51,27 @@ public class TimerValueSlider extends JPanel {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                int sliderValue = getSliderValue();
                 setSliderColor(recommendedMin, recommendedMax);
-                text = unit == 0 ? Labels.getString("PreferencesPanel.minutes")
-                        : Labels.getString("PreferencesPanel.pomodoros");
-                label.setText(" " + sliderValue + " " + text);
+                setTexts();
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
             }
         });
         add(slider, c);
         c.gridx = 2;
-        int sliderValue = slider.getValue();
-        text = unit == 0 ? Labels.getString("PreferencesPanel.minutes")
-                : Labels.getString("PreferencesPanel.pomodoros");
-        label.setText(" " + sliderValue + " " + text);
+        setTexts();
         add(label, c);
+    }
+
+    private void setTexts() {
+        int sliderValue = slider.getValue();
+        String text = " " + sliderValue + " " + (unit == 0 ? Labels.getString("PreferencesPanel.minutes")
+                : Labels.getString("PreferencesPanel.pomodoros"));
+        String tooltiptext = unit == 0 ? text
+                : TimeConverter.getLength(sliderValue);
+        label.setText(text);
+        label.setToolTipText(tooltiptext);
+        slider.setToolTipText(tooltiptext);
     }
 
     public int getSliderValue() {

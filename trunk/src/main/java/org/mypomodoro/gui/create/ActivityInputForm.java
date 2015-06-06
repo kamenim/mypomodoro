@@ -42,6 +42,7 @@ import org.mypomodoro.util.DatePicker;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
+import static org.mypomodoro.util.TimeConverter.getLength;
 
 public class ActivityInputForm extends JPanel {
 
@@ -142,7 +143,7 @@ public class ActivityInputForm extends JPanel {
             items[i] = i;
         }
         estimatedPomodoros = new JComboBox(items);
-        estimatedPomodoros.setRenderer(new AbstractComboBoxRenderer());
+        estimatedPomodoros.setRenderer(new EstimatedComboBoxRenderer());
         displayLength(0);
         // Estimated Poms Description and TextField
         ++gridy;
@@ -214,6 +215,16 @@ public class ActivityInputForm extends JPanel {
         c.gridy = gridy;
         c.weighty = 0.5;
         add(iterations, c);
+    }
+
+    class EstimatedComboBoxRenderer extends AbstractComboBoxRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            setToolTipText(getLength((Integer) value));
+            return this;
+        }
     }
 
     class StoryPointsComboBoxRenderer extends AbstractComboBoxRenderer {
@@ -419,12 +430,11 @@ public class ActivityInputForm extends JPanel {
     }
 
     protected void displayLength(int estimatedPomodoros) {
+        String text = " " + TimeConverter.getLength(estimatedPomodoros);
         if (Main.preferences.getPlainHours()) {
-            String plainHours = TimeConverter.convertPomodorosToPlainWorkTime(estimatedPomodoros);
-            estimatedLengthLabel.setText(" " + plainHours + " (" + Labels.getString("Common.Plain hours") + ")");
+            estimatedLengthLabel.setText(text + " (" + Labels.getString("Common.Plain hours") + ")");
         } else {
-            String effectiveHours = TimeConverter.convertPomodorosToEffectiveWorkTime(estimatedPomodoros);
-            estimatedLengthLabel.setText(" " + effectiveHours + " (" + Labels.getString("Common.Effective hours") + ")");
+            estimatedLengthLabel.setText(text + " (" + Labels.getString("Common.Effective hours") + ")");
         }
     }
 }
