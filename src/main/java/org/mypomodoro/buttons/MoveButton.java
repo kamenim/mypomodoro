@@ -77,7 +77,7 @@ public class MoveButton extends TabPanelButton {
                         int[] rows = panel.getCurrentTable().getSelectedRows();
                         // clear current selection before adding selection row to main table
                         if (panel instanceof ActivitiesPanel) { // move to ToDo list
-                            Main.gui.getToDoPanel().getMainTable().clearSelection(); 
+                            Main.gui.getToDoPanel().getMainTable().clearSelection();
                         } else if (panel instanceof ReportsPanel) { // reopen tasks
                             Main.gui.getActivityListPanel().getMainTable().clearSelection();
                         }

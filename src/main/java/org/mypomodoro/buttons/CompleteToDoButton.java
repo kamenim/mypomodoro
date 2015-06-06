@@ -71,7 +71,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                     int increment = 0;
                                     int[] rows = panel.getCurrentTable().getSelectedRows();
                                     // clear current selection before adding selection row to main table
-                                    Main.gui.getReportListPanel().getMainTable().clearSelection(); 
+                                    Main.gui.getReportListPanel().getMainTable().clearSelection();
                                     for (int row : rows) {
                                         if (!MainPanel.progressBar.isStopped()) {
                                             // removing a row requires decreasing the row index number

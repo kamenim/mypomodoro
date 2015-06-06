@@ -254,7 +254,6 @@ public class TestMenu extends JMenu {
                                         MainPanel.progressBar.setStopped(false);
                                     }
                                 }.start();
-
                             }
                         });
                         // Enable item menu

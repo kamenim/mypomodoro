@@ -92,7 +92,7 @@ public class TabbedPane extends JTabbedPane {
             //setBackground(p.getBackground()); // reset default/theme background color            
         }
     }
-    
+
     // Implement one-click action on selected tabs
     // Tab already selected = one click to expand
     // Tab not selected = double click to expand
@@ -141,7 +141,7 @@ public class TabbedPane extends JTabbedPane {
                 selectedIndex = getSelectedIndex();
             }
         }
-        
+
         public void setSelectedIndex(int index) {
             selectedIndex = index;
         }

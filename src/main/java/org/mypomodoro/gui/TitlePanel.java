@@ -70,7 +70,7 @@ public class TitlePanel extends AbstractTitlePanel {
     protected void deleteTasks() {
         table.deleteTasks();
     }
-    
+
     @Override
     protected void convertSubtasksToTasks() {
         table.convertSubtasksToTasks();

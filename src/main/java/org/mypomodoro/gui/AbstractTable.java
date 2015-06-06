@@ -419,7 +419,7 @@ public abstract class AbstractTable extends JXTable {
 
     // Scroll to selected row(s) in the current table
     // scroll to the bottom of the selection or, at least, the last item on the list of selected rows
-    public void scrollToSelectedRow() {        
+    public void scrollToSelectedRow() {
         int[] selectedRows = getSelectedRows();
         scrollToRowIndex(selectedRows[selectedRows.length - 1]);
     }
@@ -554,7 +554,7 @@ public abstract class AbstractTable extends JXTable {
                 int overestimatedpoms = activity.getOverestimatedPoms();
                 String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
                 renderer.setText(text);
-                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms) + (overestimatedpoms > 0 ? " + " + getLength(overestimatedpoms) : ""));
+                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms));
             }
             return renderer;
         }
@@ -709,11 +709,11 @@ public abstract class AbstractTable extends JXTable {
     public void deleteTasks() {
         // do nothign by default
     }
-    
+
     public void convertSubtasksToTasks() {
         // do nothign by default
     }
-    
+
     public void convertSubtaskToTask(int rowIndex) {
         // do nothign by default
     }
@@ -747,9 +747,8 @@ public abstract class AbstractTable extends JXTable {
         setRowSelectionInterval(currentRow, currentRow);
         scrollRectToVisible(getCellRect(currentRow, 0, true));
     }
-    
-    
-     // add selection interval
+
+    // add selection interval
     public void addRow(Activity activity) {
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
