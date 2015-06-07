@@ -35,40 +35,58 @@ public class TimeConverter {
         int nbWorkDays = pomodoros / Main.preferences.getMaxNbPomPerDay();
         // Pomodoro lefts
         int nbPomodorosLeft = pomodoros - nbWorkDays * Main.preferences.getMaxNbPomPerDay();
-        int pomodoroLeftInMinutes;
-        if (Main.preferences.getPlainHours()) { // plain
-            pomodoroLeftInMinutes = convertPomodorosToPlainMinutes(nbPomodorosLeft);
-        } else { // effective
-            pomodoroLeftInMinutes = convertPomodorosToEffectiveMinutes(nbPomodorosLeft);
-        }
-        int nbWorkHours = pomodoroLeftInMinutes / 60; // eg 90 min / 60 min = 1 h
-        int nbWorkMinutes = pomodoroLeftInMinutes - nbWorkHours * 60; // eg 90 min - 60 min = 30 min
         if (nbWorkDays > 0) {
             length = String.format("%d " + (nbWorkDays == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")), nbWorkDays);
         }
-        if (nbWorkDays == 0
-                || nbWorkHours > 0
-                || nbWorkMinutes > 0) {
-            if (nbWorkDays > 0
-                    && (nbWorkHours > 0
-                    || nbWorkMinutes > 0)) {
-                length += " ";
-            }
-            length += String.format("%02d:%02d", nbWorkHours, nbWorkMinutes);
+        if (nbWorkDays > 0 
+            && nbPomodorosLeft > 0) {
+            length += " ";
+        }
+        if (nbPomodorosLeft > 0) {
+            length += getLengthInHours(nbPomodorosLeft);
         }
         return length;
     }
-
+        
+    public static String getLengthInHours(int pomodoros) {
+        return getLengthInHours(pomodoros,  
+                Main.preferences.getPomodoroLength(), 
+                Main.preferences.getShortBreakLength(),                 
+                Main.preferences.getLongBreakLength(),
+                Main.preferences.getNbPomPerSet(),
+                Main.preferences.getPlainHours());
+    }
+    
+    public static String getLengthInHours(int pomodoros, int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours) {
+        int pomodoroInMinutes;
+        if (isPlainHours) { // plain
+            pomodoroInMinutes = convertPomodorosToPlainMinutes(pomodoros, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet);
+        } else { // effective
+            pomodoroInMinutes = convertPomodorosToEffectiveMinutes(pomodoros, pomodoroLength);
+        }
+        int nbWorkHours = pomodoroInMinutes / 60; // eg 90 min / 60 min = 1 h
+        int nbWorkMinutes = pomodoroInMinutes - nbWorkHours * 60; // eg 90 min - 60 min = 30 min                
+        return String.format("%02d:%02d", nbWorkHours, nbWorkMinutes);
+    }
+    
     public static int convertPomodorosToPlainMinutes(int pomodoros) {
-        int nbLongBreaks = pomodoros / Main.preferences.getNbPomPerSet();
-        int nbShortBreaks = pomodoros - nbLongBreaks;
-        return convertPomodorosToEffectiveMinutes(pomodoros)
-                + nbLongBreaks * Main.preferences.getLongBreakLength()
-                + nbShortBreaks * Main.preferences.getShortBreakLength(); // with breaks        
+        return convertPomodorosToPlainMinutes(pomodoros,  
+                Main.preferences.getPomodoroLength(), 
+                Main.preferences.getShortBreakLength(),                 
+                Main.preferences.getLongBreakLength(),
+                Main.preferences.getNbPomPerSet());
     }
 
-    private static int convertPomodorosToEffectiveMinutes(int pomodoros) {
-        return pomodoros * Main.preferences.getPomodoroLength();
+    public static int convertPomodorosToPlainMinutes(int pomodoros, int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet) {
+        int nbLongBreaks = pomodoros / nbPomPerSet;
+        int nbShortBreaks = pomodoros - nbLongBreaks;
+        return convertPomodorosToEffectiveMinutes(pomodoros, pomodoroLength)
+                + nbLongBreaks * longBreakLength
+                + nbShortBreaks * shortBreakLength; // with breaks        
+    }
+
+    private static int convertPomodorosToEffectiveMinutes(int pomodoros, int pomodoroLength) {
+        return pomodoros * pomodoroLength;
     }
 
     // Round minutes to hours
