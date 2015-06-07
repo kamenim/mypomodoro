@@ -65,13 +65,30 @@ public class TimerValueSlider extends JPanel {
 
     private void setTexts() {
         int sliderValue = slider.getValue();
-        String text = " " + sliderValue + " " + (unit == 0 ? Labels.getString("PreferencesPanel.minutes")
-                : Labels.getString("PreferencesPanel.pomodoros"));
-        String tooltiptext = unit == 0 ? text
-                : TimeConverter.getLength(sliderValue);
+        String text = " " + sliderValue + " "; 
+        if (unit == 0) {
+            text += Labels.getString("PreferencesPanel.minutes");
+        } else {
+            text += Labels.getString("PreferencesPanel.pomodoros") 
+                    + " (" + TimeConverter.getLengthInHours(sliderValue) + ")";
+        }
         label.setText(text);
-        label.setToolTipText(tooltiptext);
-        slider.setToolTipText(tooltiptext);
+    }
+    
+    public void setTexts(int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours) {
+        int sliderValue = slider.getValue();
+        String text = " " + sliderValue + " "; 
+        if (unit == 0) {
+            text += Labels.getString("PreferencesPanel.minutes");
+        } else {
+            text += Labels.getString("PreferencesPanel.pomodoros") 
+                    + " (" + TimeConverter.getLengthInHours(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours) + ")";
+        }
+        label.setText(text);
+    } 
+    
+    public JSlider getSlider() {
+        return slider;
     }
 
     public int getSliderValue() {
