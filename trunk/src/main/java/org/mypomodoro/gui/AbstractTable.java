@@ -155,9 +155,6 @@ public abstract class AbstractTable extends JXTable {
         });
 
         // Activate Delete key stroke
-        // This is a tricky one : we first use WHEN_IN_FOCUSED_WINDOW to allow the deletion of the first selected row (by default, selected with setRowSelectionInterval not mouse pressed/focus)
-        // Then in ListSelectionListener we use WHEN_FOCUSED to prevent the title column to switch to edit mode when pressing the delete key
-        // none of table.requestFocus(), transferFocus() and changeSelection(0, 0, false, false) will do any good here to get focus on the first row
         im = getInputMap(JTable.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
@@ -167,18 +164,12 @@ public abstract class AbstractTable extends JXTable {
         }
         class deleteAction extends AbstractAction {
 
-            /*final IListPanel panel;
-
-             public deleteAction(IListPanel panel) {
-             this.panel = panel;
-             }*/
             @Override
             public void actionPerformed(ActionEvent e) {
                 deleteTasks();
             }
         }
         am.put("Delete", new deleteAction());
-        //am.put("Delete", new deleteAction(panel));
 
         // Activate Shift + '>'                
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_MASK), "Move right"); // move to ToDoList and complete
@@ -196,7 +187,7 @@ public abstract class AbstractTable extends JXTable {
                     MoveButton moveButton = new MoveButton("", panel);
                     moveButton.doClick();
                 } else if (panel instanceof ToDoPanel) { // complete
-                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), panel);
+                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel)panel);
                     completeToDoButton.doClick();
                 }
             }
@@ -219,7 +210,7 @@ public abstract class AbstractTable extends JXTable {
                     MoveButton moveButton = new MoveButton("", panel);
                     moveButton.doClick();
                 } else if (panel instanceof ToDoPanel) { // send back to ActivityList
-                    MoveToDoButton moveToDoButton = new MoveToDoButton("", panel);
+                    MoveToDoButton moveToDoButton = new MoveToDoButton("", (ToDoPanel)panel);
                     moveToDoButton.doClick();
                 }
             }
@@ -611,7 +602,7 @@ public abstract class AbstractTable extends JXTable {
         return (AbstractTableModel) super.getModel();
     }
 
-    protected abstract void setColumnModel();
+    public abstract void setColumnModel();
 
     // This method is empty in sub table classes
     public void initTabs() {
@@ -662,9 +653,9 @@ public abstract class AbstractTable extends JXTable {
         }
     }
 
-    protected abstract void setTitle();
+    public abstract void setTitle();
 
-    protected abstract void setTableHeader();
+    public abstract void setTableHeader();
 
     protected abstract AbstractActivities getList();
 

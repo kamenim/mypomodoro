@@ -276,12 +276,13 @@ public class TestMenu extends JMenu {
                     Activity aClone = a.clone();
                     aClone.setParentId(a.getId());
                     aClone.setName(a.getName() + "." + j);
-                    int estimated = rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1); // 0 to getMaxNbPomPerActivity
-                    if (totalEstimated == Main.preferences.getMaxNbPomPerActivity()) { // not enough estimate left
+                    int maxNbPomPerActivity = Main.preferences.getAgileMode() ? 5 : Main.preferences.getMaxNbPomPerActivity(); // 5 poms max for subtasks in Agile mode
+                    int estimated = rand.nextInt(maxNbPomPerActivity + 1);
+                    if (totalEstimated == maxNbPomPerActivity) { // not enough estimate left
                         estimated = 0;
                     } else {
-                        while (estimated + totalEstimated > Main.preferences.getMaxNbPomPerActivity()) {
-                            estimated = rand.nextInt(Main.preferences.getMaxNbPomPerActivity() + 1);
+                        while (estimated + totalEstimated > maxNbPomPerActivity) {
+                            estimated = rand.nextInt(maxNbPomPerActivity + 1);
                         }
                     }
                     int real = 0;

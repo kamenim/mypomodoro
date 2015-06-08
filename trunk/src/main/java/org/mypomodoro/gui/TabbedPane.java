@@ -19,19 +19,11 @@ package org.mypomodoro.gui;
 import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.Robot;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.lang.reflect.Field;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 
@@ -63,13 +55,6 @@ public class TabbedPane extends JTabbedPane {
         addMouseListener(new ExitMouseAdapter());
         // One click action (expand / fold)
         addMouseListener(customMouseAdapter);
-        // Keystroke
-        InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = getActionMap();
-        for (int i = 1; i <= getTabCount(); i++) {
-            im.put(KeyStroke.getKeyStroke(getKeyEvent(i), KeyEvent.CTRL_DOWN_MASK), "Tab" + i);
-            am.put("Tab" + i, new tabAction(i - 1));
-        }
     }
 
     // Hover
@@ -170,40 +155,7 @@ public class TabbedPane extends JTabbedPane {
         setSelectedIndex(editTabIndex);
         customMouseAdapter.setSelectedIndex(editTabIndex); // make sure the selected index for the adapter is up to date
     }
-
-    // Keystroke for tab
-    class tabAction extends AbstractAction {
-
-        final int index;
-
-        public tabAction(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (isEnabledAt(index)) {
-                setSelectedIndex(index);
-                customMouseAdapter.setSelectedIndex(index); // make sure the selected index for the adapter is up to date
-            }
-        }
-    }
-
-    // Retrieve key event with name
-    public int getKeyEvent(int index) {
-        int key = 0;
-        try {
-            Field f = KeyEvent.class.getField("VK_" + index);
-            f.setAccessible(true);
-            key = (Integer) f.get(null);
-        } catch (IllegalAccessException ignored) {
-        } catch (IllegalArgumentException ignored) {
-        } catch (NoSuchFieldException ignored) {
-        } catch (SecurityException ignored) {
-        }
-        return key;
-    }
-
+    
     public void enableMergeTab() {
         setEnabledAt(mergeTabIndex, true);
     }
@@ -266,5 +218,9 @@ public class TabbedPane extends JTabbedPane {
 
     public void setExportTabIndex(int exportTabIndex) {
         this.exportTabIndex = exportTabIndex;
+    }
+    
+    public void setSelectedIndexOnCustomMouseAdapter(int index) {
+        customMouseAdapter.setSelectedIndex(index);
     }
 }

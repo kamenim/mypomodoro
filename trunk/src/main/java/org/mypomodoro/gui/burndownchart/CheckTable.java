@@ -95,7 +95,7 @@ public class CheckTable extends AbstractTable {
     }
 
     @Override
-    protected void setColumnModel() {
+    public void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -195,7 +195,7 @@ public class CheckTable extends AbstractTable {
     }
 
     @Override
-    protected void setTableHeader() {
+    public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
@@ -205,7 +205,7 @@ public class CheckTable extends AbstractTable {
     }
 
     @Override
-    protected void setTitle() {
+    public void setTitle() {
         String title = Labels.getString("BurndownChartPanel.Chart List");
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
@@ -235,19 +235,21 @@ public class CheckTable extends AbstractTable {
                 title += "&nbsp;</span>";
                 int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100);
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
-                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
-                    // (do not display productivity P in CheckTabel as tasks may not be all completed)
-                }
+                
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
                 /*if (overestimated > 0) {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
-                //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
+                toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
+                if (Main.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
+                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    // (do not display productivity P in CheckTabel as tasks may not be all completed)
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
@@ -260,10 +262,6 @@ public class CheckTable extends AbstractTable {
                 int accuracy = getTableList().getAccuracy();
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
                 title += accuracy + "%";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + df.format(tableList.getStoryPoints());
-                }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
@@ -271,7 +269,13 @@ public class CheckTable extends AbstractTable {
                 /*if (tableList.getNbOverestimatedPom() > 0) {
                  toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                  }*/
-                //toolTipText += " (" + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%)";
+                toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
+                if (Main.preferences.getAgileMode()) {
+                    float storypoints = tableList.getStoryPoints();
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    title += " > SP: " + df.format(storypoints);
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } else {

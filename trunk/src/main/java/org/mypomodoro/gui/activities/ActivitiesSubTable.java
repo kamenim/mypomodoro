@@ -18,7 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveUpButton;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
@@ -40,7 +39,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     // no story points and no refresh button for subtasks
     @Override
-    protected void setTitle() {
+    public void setTitle() {
         String title = Labels.getString("Common.Subtasks");
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
@@ -66,10 +65,10 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated);
-                if (overestimated > 0) {
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }
+                }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
@@ -84,10 +83,10 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom());
-                if (tableList.getNbOverestimatedPom() > 0) {
+                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
+                /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }
+                }*/
                 getTitlePanel().setToolTipText(toolTipText);
                 if (getSelectedRowCount() == 1) {
                     getTitlePanel().showDuplicateButton();
@@ -120,7 +119,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected void setColumnModel() {
+    public void setColumnModel() {
         super.setColumnModel();
         // sub types
         /*String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
@@ -141,7 +140,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    protected void setTableHeader() {
+    public void setTableHeader() {
         // no table header
         setTableHeader(null);
     }
@@ -183,25 +182,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    public void deleteTasks() {
-        if (canDeleteTasks()) {
-            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
-            b.doClick();
-        }
-    }
-
-    @Override
     public void deleteTask(int rowIndex) {
         super.deleteTask(rowIndex);
         // set main table as current table when no subtasks anymore
         if (getRowCount() == 0) {
             panel.setCurrentTable(panel.getMainTable());
         }
-    }
-
-    // only subtasks can be deleted  
-    private boolean canDeleteTasks() {
-        return getSelectedRowCount() > 0;
     }
 
     @Override

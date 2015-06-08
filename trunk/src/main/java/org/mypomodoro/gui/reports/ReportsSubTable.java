@@ -62,7 +62,7 @@ public class ReportsSubTable extends ReportsTable {
 
     // no story points and no refresh button for subtasks
     @Override
-    protected void setTitle() {
+    public void setTitle() {
         getTitlePanel().hideExpandButton(); // no quick buttons
         String title = Labels.getString("Common.Subtasks");
         int rowCount = getModel().getRowCount();
@@ -91,10 +91,11 @@ public class ReportsSubTable extends ReportsTable {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
-                toolTipText += TimeConverter.getLength(estimated);
-                if (overestimated > 0) {
+                toolTipText += TimeConverter.getLength(estimated + overestimated);
+                /*if (overestimated > 0) {
                     toolTipText += " + " + TimeConverter.getLength(overestimated);
-                }
+                }*/
+                toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
@@ -110,10 +111,11 @@ public class ReportsSubTable extends ReportsTable {
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
-                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom());
-                if (tableList.getNbOverestimatedPom() > 0) {
+                toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
+                /*if (tableList.getNbOverestimatedPom() > 0) {
                     toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
-                }
+                }*/
+                toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } else {
@@ -125,7 +127,7 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected void setColumnModel() {
+    public void setColumnModel() {
         super.setColumnModel();
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
@@ -142,7 +144,7 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    protected void setTableHeader() {
+    public void setTableHeader() {
         // no table header
         setTableHeader(null);
     }
@@ -167,10 +169,10 @@ public class ReportsSubTable extends ReportsTable {
         return panel.getSubTableTitlePanel();
     }
 
-    // Can't delete subtasks
+    // Can't delete subtasks  
     @Override
-    public void deleteTask(int rowIndex) {
-
+    protected boolean canDeleteTasks() {
+        return false;
     }
 
     // Can't reopen subtasks

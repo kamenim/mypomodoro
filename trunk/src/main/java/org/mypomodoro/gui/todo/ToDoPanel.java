@@ -33,15 +33,14 @@ import org.mypomodoro.buttons.DiscontinuousButton;
 import org.mypomodoro.buttons.MuteButton;
 import org.mypomodoro.buttons.PinButton;
 import org.mypomodoro.buttons.ResizeButton;
+import org.mypomodoro.gui.AbstractPanel;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing what is in the ToDoList. This can be changed later. Right now
@@ -50,7 +49,7 @@ import org.mypomodoro.util.WaitCursor;
  * data layer.
  *
  */
-public class ToDoPanel extends JPanel implements IListPanel {
+public class ToDoPanel extends AbstractPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
@@ -60,18 +59,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
     // List and Timer Pane : listPane + Timer
     private final JPanel listPaneAndTimer = new JPanel();
     private final GridBagConstraints gbcListPaneAndTimer = new GridBagConstraints();
-    // List pane: title + table + sub-title + sub-table
-    private final JPanel listPane = new JPanel();
-    // Split pane: list pane + tabbed pane
-    private final JSplitPane splitPane;
-    // Title panes: title and sub-title    
-    private final ToDoTableTitlePanel tableTitlePanel;
-    private final ToDoSubTableTitlePanel subTableTitlePanel;
-    // Table panes: table and sub-table
-    private final JScrollPane tableScrollPane;
-    private final JScrollPane subTableScrollPane;
-    // Tabbed pane: details + ...
-    private final TabbedPane tabbedPane;
     // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this, true);
@@ -82,12 +69,6 @@ public class ToDoPanel extends JPanel implements IListPanel {
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, pomodoroTime);
     private final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
     final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
-    // Tables
-    private ToDoTable currentTable;
-    private ToDoTableModel tableModel;
-    private final ToDoTable table;
-    private final ToDoSubTableModel subTableModel;
-    private final ToDoSubTable subTable;
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     public static final ResizeButton RESIZEBUTTON = new ResizeButton();
@@ -123,8 +104,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ToDoSubTableModel();
         tableModel = new ToDoTableModel();
-        subTable = new ToDoSubTable(subTableModel, this); // instanciate this before table
-        table = new ToDoTable(tableModel, this);
+        subTable = new ToDoSubTable((ToDoSubTableModel)subTableModel, this); // instanciate this before table
+        table = new ToDoTable((ToDoTableModel)tableModel, this);
         currentTable = table;
 
         // Init scroll panes
@@ -157,7 +138,8 @@ public class ToDoPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TABBED PANE
     ////////////////////////////////////////////////
-    private void initTabbedPane() {
+    @Override
+    public void initTabbedPane() {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
         tabbedPane.setEditTabIndex(2);
@@ -172,32 +154,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TITLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addTableTitlePanel() {
-        table.setTitle(); // init title
-        listPane.add(tableTitlePanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TABLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addTable() {
-        listPane.add(tableScrollPane);
-    }
-
-    ////////////////////////////////////////////////
-    // SUB TITLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addSubTableTitlePanel() {
-        subTable.setTitle(); // init title
-        listPane.add(subTableTitlePanel);
+        addTabbedPaneKeyStrokes();
     }
 
     public void addListPane() {
@@ -227,63 +184,24 @@ public class ToDoPanel extends JPanel implements IListPanel {
         pomodoro.setTimerPanel(timerPanel);
     }
 
-    ////////////////////////////////////////////////
-    // REFRESH
-    ////////////////////////////////////////////////
     @Override
-    public void refresh() {
-        refresh(false);
+    public ToDoTableModel getNewTableModel() {
+        return new ToDoTableModel();
     }
 
     @Override
-    public void refresh(boolean fromDatabase) {
-        if (!WaitCursor.isStarted()) {
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
-            try {
-                if (fromDatabase) {
-                    getList().refresh();
-                }
-                tableModel = new ToDoTableModel();
-                table.setModel(tableModel);
-                table.setTableHeader();
-                table.setColumnModel();
-                table.initTabs();
-                if (tableModel.getRowCount() > 0) {
-                    table.setRowSelectionInterval(0, 0);
-                } else {
-                    emptySubTable();
-                }
-                table.setTitle();
-                subTable.setTitle();
-            } catch (Exception ex) {
-                logger.error("", ex);
-            } finally {
-                // Stop wait cursor
-                WaitCursor.stopWaitCursor();
-            }
-        }
-    }
-
     public ToDoList getList() {
         return ToDoList.getList();
     }
 
     @Override
-    public void emptySubTable() {
-        subTableModel.setRowCount(0);
-        subTable.setColumnModel();
-        subTable.setTitle();
-    }
-
-    @Override
     public ToDoTable getMainTable() {
-        return table;
+        return (ToDoTable)table;
     }
 
     @Override
     public ToDoTable getCurrentTable() {
-        return currentTable;
+        return (ToDoTable)currentTable;
     }
 
     @Override
@@ -293,10 +211,9 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     @Override
     public ToDoSubTable getSubTable() {
-        return subTable;
+        return (ToDoSubTable)subTable;
     }
 
-    /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
     }
@@ -307,45 +224,11 @@ public class ToDoPanel extends JPanel implements IListPanel {
 
     public EditPanel getEditPanel() {
         return editPanel;
-    }
-
-    @Override
-    public TabbedPane getTabbedPane() {
-        return tabbedPane;
-    }
-
-    @Override
-    public JPanel getListPane() {
-        return listPane;
-    }
-
-    @Override
-    public JSplitPane getSplitPane() {
-        return splitPane;
-    }
-
-    @Override
-    public ToDoTableTitlePanel getTableTitlePanel() {
-        return tableTitlePanel;
-    }
-
-    public ToDoSubTableTitlePanel getSubTableTitlePanel() {
-        return subTableTitlePanel;
-    }
-
-    @Override
-    public JScrollPane getTableScrollPane() {
-        return tableScrollPane;
-    }
-
-    @Override
-    public JScrollPane getSubTableScrollPane() {
-        return subTableScrollPane;
-    }
+    }    
 
     @Override
     public void populateSubTable(int parentId) {
-        subTableModel.update(parentId);
+        ((ToDoSubTableModel) subTableModel).update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
         setCurrentTable(table);
@@ -411,8 +294,7 @@ public class ToDoPanel extends JPanel implements IListPanel {
         backgroundPanel.add(pomodoroButton, gbc);
         return backgroundPanel;
     }
-
-    @Override
+    
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
