@@ -20,12 +20,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.mypomodoro.gui.todo.Pomodoro;
+import org.mypomodoro.model.AbstractActivities;
 
 public interface IListPanel {
 
     void refresh();
 
     void refresh(boolean fromDatabase);
+    
+    AbstractTableModel getNewTableModel();
+    
+    AbstractActivities getList();
+              
+    void initTabbedPane();
 
     AbstractTable getMainTable();
 
@@ -50,12 +57,12 @@ public interface IListPanel {
     JScrollPane getTableScrollPane();
 
     TitlePanel getTableTitlePanel();
+    
+    SubTableTitlePanel getSubTableTitlePanel();
 
     TabbedPane getTabbedPane();
 
     void populateSubTable(int activityId);
 
     void emptySubTable();
-
-    Pomodoro getPomodoro();
 }

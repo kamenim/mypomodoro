@@ -21,6 +21,7 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
@@ -187,7 +188,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void setColumnModel() {
+    public void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
@@ -301,7 +302,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void setTableHeader() {
+    public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date scheduled");
@@ -311,7 +312,7 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     @Override
-    protected void setTitle() {
+    public void setTitle() {
         String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
@@ -339,10 +340,6 @@ public class ActivitiesTable extends AbstractTable {
                     title += " + " + overestimated;
                 }
                 title += "&nbsp;</span>";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
-                }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
@@ -350,6 +347,11 @@ public class ActivitiesTable extends AbstractTable {
                 /*if (overestimated > 0) {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
+                if (Main.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");                    
+                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
@@ -361,10 +363,6 @@ public class ActivitiesTable extends AbstractTable {
                 if (tableList.getNbOverestimatedPom() > 0) {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + df.format(tableList.getStoryPoints());
-                }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
@@ -372,6 +370,12 @@ public class ActivitiesTable extends AbstractTable {
                 /*if (tableList.getNbOverestimatedPom() > 0) {
                  toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                  }*/
+                if (Main.preferences.getAgileMode()) {
+                    float storypoints = tableList.getStoryPoints();
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    title += " > SP: " + df.format(storypoints);
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar                
                 getTitlePanel().showDuplicateButton();
@@ -417,6 +421,19 @@ public class ActivitiesTable extends AbstractTable {
             } catch (CloneNotSupportedException ignored) {
             }
         }
+    }    
+
+    @Override
+    public void deleteTasks() {
+        if (canDeleteTasks()) {
+            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), panel);
+            b.doClick();
+        }
+    }
+    
+    // tasks and subtasks can be deleted  
+    protected boolean canDeleteTasks() {
+        return getSelectedRowCount() > 0;
     }
 
     @Override

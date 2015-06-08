@@ -19,20 +19,17 @@ package org.mypomodoro.gui.activities;
 import org.mypomodoro.gui.TitlePanel;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractPanel;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.SubTableTitlePanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.gui.export.ImportPanel;
-import org.mypomodoro.gui.todo.Pomodoro;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing what is in the ActivityList. This can be changed later. Right
@@ -41,35 +38,15 @@ import org.mypomodoro.util.WaitCursor;
  * layer.
  *
  */
-public class ActivitiesPanel extends JPanel implements IListPanel {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+public class ActivitiesPanel extends AbstractPanel {
 
     private static final Dimension PANE_DIMENSION = new Dimension(800, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
-    // List pane: title + table + sub-title + sub-table
-    private final JPanel listPane = new JPanel();
-    // Split pane: list pane + tabbed pane
-    private final JSplitPane splitPane;
-    // Title panes: title and sub-title    
-    private final TitlePanel tableTitlePanel;
-    private final SubTableTitlePanel subTableTitlePanel;
-    // Table panes: table and sub-table
-    private final JScrollPane tableScrollPane;
-    private final JScrollPane subTableScrollPane;
-    // Tabbed pane: details + ...
-    private final TabbedPane tabbedPane;
     // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     private final EditPanel editPanel = new EditPanel(this, detailsPanel);
     private final MergingPanel mergingPanel = new MergingPanel(this);
-    // Tables
-    private ActivitiesTable currentTable;
-    private ActivitiesTableModel tableModel;
-    private final ActivitiesTable table;
-    private final ActivitiesSubTableModel subTableModel;
-    private final ActivitiesSubTable subTable;
 
     public ActivitiesPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -78,13 +55,13 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         listPane.setMinimumSize(PANE_DIMENSION);
         listPane.setPreferredSize(PANE_DIMENSION);
         listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
-
+        
         // Init Tabbed pane        
         tabbedPane = new TabbedPane(this);
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
         tabbedPane.setPreferredSize(TABPANE_DIMENSION);
         initTabbedPane();
-
+        
         // Init Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPane, tabbedPane);
         splitPane.setOneTouchExpandable(true);
@@ -96,8 +73,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
         tableModel = new ActivitiesTableModel();
-        subTable = new ActivitiesSubTable(subTableModel, this); // instanciate this before table
-        table = new ActivitiesTable(tableModel, this);
+        subTable = new ActivitiesSubTable((ActivitiesSubTableModel)subTableModel, this); // instanciate this before table
+        table = new ActivitiesTable((ActivitiesTableModel)tableModel, this);
         currentTable = table;
 
         // Init scroll panes
@@ -125,7 +102,8 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TABBED PANE
     ////////////////////////////////////////////////
-    private void initTabbedPane() {
+    @Override
+    public void initTabbedPane() {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
         tabbedPane.setEditTabIndex(2);
@@ -140,91 +118,27 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
         tabbedPane.add(Labels.getString("ReportListPanel.Import"), importPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TITLE
-    ////////////////////////////////////////////////
+        addTabbedPaneKeyStrokes();
+    }    
+    
     @Override
-    public void addTableTitlePanel() {
-        table.setTitle(); // init title
-        listPane.add(tableTitlePanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TABLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addTable() {
-        listPane.add(tableScrollPane);
-    }
-
-    ////////////////////////////////////////////////
-    // SUB TITLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addSubTableTitlePanel() {
-        subTable.setTitle(); // init title
-        listPane.add(subTableTitlePanel);
-    }
-
-    ////////////////////////////////////////////////
-    // REFRESH
-    ////////////////////////////////////////////////
-    @Override
-    public void refresh() {
-        refresh(false);
+    public ActivitiesTableModel getNewTableModel() {
+        return new ActivitiesTableModel();
     }
 
     @Override
-    public void refresh(boolean fromDatabase) {
-        if (!WaitCursor.isStarted()) {
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
-            try {
-                if (fromDatabase) {
-                    getList().refresh();
-                }
-                tableModel = new ActivitiesTableModel();
-                table.setModel(tableModel);
-                table.setTableHeader();
-                table.setColumnModel();
-                table.initTabs();
-                if (tableModel.getRowCount() > 0) {
-                    table.setRowSelectionInterval(0, 0);
-                } else {
-                    emptySubTable();
-                }
-                table.setTitle();
-                subTable.setTitle();
-            } catch (Exception ex) {
-                logger.error("", ex);
-            } finally {
-                // Stop wait cursor
-                WaitCursor.stopWaitCursor();
-            }
-        }
-    }
-
     public ActivityList getList() {
         return ActivityList.getList();
     }
 
     @Override
-    public void emptySubTable() {
-        subTableModel.setRowCount(0);
-        subTable.setColumnModel();
-        subTable.setTitle();
-    }
-
-    @Override
     public ActivitiesTable getMainTable() {
-        return table;
+        return (ActivitiesTable)table;
     }
 
     @Override
     public ActivitiesTable getCurrentTable() {
-        return currentTable;
+        return (ActivitiesTable)currentTable;
     }
 
     @Override
@@ -234,10 +148,9 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     @Override
     public ActivitiesSubTable getSubTable() {
-        return subTable;
+        return (ActivitiesSubTable)subTable;
     }
 
-    /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
     }
@@ -248,51 +161,12 @@ public class ActivitiesPanel extends JPanel implements IListPanel {
 
     public EditPanel getEditPanel() {
         return editPanel;
-    }
-
-    @Override
-    public TabbedPane getTabbedPane() {
-        return tabbedPane;
-    }
-
-    @Override
-    public JPanel getListPane() {
-        return listPane;
-    }
-
-    @Override
-    public JSplitPane getSplitPane() {
-        return splitPane;
-    }
-
-    @Override
-    public TitlePanel getTableTitlePanel() {
-        return tableTitlePanel;
-    }
-
-    public SubTableTitlePanel getSubTableTitlePanel() {
-        return subTableTitlePanel;
-    }
-
-    @Override
-    public JScrollPane getTableScrollPane() {
-        return tableScrollPane;
-    }
-
-    @Override
-    public JScrollPane getSubTableScrollPane() {
-        return subTableScrollPane;
-    }
+    }    
 
     @Override
     public void populateSubTable(int parentId) {
-        subTableModel.update(parentId);
+        ((ActivitiesSubTableModel)subTableModel).update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
-    }
-
-    @Override
-    public Pomodoro getPomodoro() {
-        return null; // not used
     }
 }

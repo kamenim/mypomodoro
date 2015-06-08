@@ -23,19 +23,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.gui.AbstractPanel;
 import org.mypomodoro.gui.AbstractTable;
-import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.TabbedPane;
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
-import org.mypomodoro.gui.todo.Pomodoro;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
@@ -44,29 +42,16 @@ import org.mypomodoro.util.WaitCursor;
  * GUI for viewing the Chart List.
  *
  */
-public class CheckPanel extends JPanel implements IListPanel {
+public class CheckPanel extends AbstractPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(700, 50);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
-    // List pane: title + table + sub-title + sub-table
-    private final JPanel listPane = new JPanel();
-    // Split pane: list pane + tabbed pane
-    private final JSplitPane splitPane;
-    // Title panes: title and sub-title    
-    private final TitlePanel tableTitlePanel;
-    // Table panes: table and sub-table
-    private final JScrollPane tableScrollPane;
-    // Tabbed pane: details + ...
-    private final TabbedPane tabbedPane;
     // Tab panes: details,...
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
-    // Tables
-    private CheckTableModel tableModel;
-    private final CheckTable table;
     // head tabbed pane and side button
     private final JTabbedPane headTabbedPane;
     private final CreateChart chart;
@@ -99,7 +84,7 @@ public class CheckPanel extends JPanel implements IListPanel {
 
         // Init table (data model and rendering)
         tableModel = new CheckTableModel();
-        table = new CheckTable(tableModel, this);
+        table = new CheckTable((CheckTableModel)tableModel, this);
 
         // Init scroll panes
         tableScrollPane = new JScrollPane(table);
@@ -126,7 +111,8 @@ public class CheckPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     // TABBED PANE
     ////////////////////////////////////////////////
-    protected void initTabbedPane() {
+    @Override
+    public void initTabbedPane() {
         tabbedPane.setDetailsTabIndex(0);
         tabbedPane.setCommentTabIndex(1);
         tabbedPane.setExportTabIndex(2);
@@ -134,23 +120,7 @@ public class CheckPanel extends JPanel implements IListPanel {
         tabbedPane.add(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"), commentPanel);
         ExportPanel exportPanel = new ExportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TITLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addTableTitlePanel() {
-        table.setTitle(); // init title
-        listPane.add(tableTitlePanel);
-    }
-
-    ////////////////////////////////////////////////
-    // TABLE
-    ////////////////////////////////////////////////
-    @Override
-    public void addTable() {
-        listPane.add(tableScrollPane);
+        addTabbedPaneKeyStrokes();
     }
 
     ////////////////////////////////////////////////
@@ -158,7 +128,12 @@ public class CheckPanel extends JPanel implements IListPanel {
     ////////////////////////////////////////////////
     @Override
     public void addSubTableTitlePanel() {
-        // not used
+        // not used - only one table
+    }
+    
+    @Override
+    public CheckTableModel getNewTableModel() {
+        return new CheckTableModel();
     }
 
     private void addCreateButton() {
@@ -194,61 +169,29 @@ public class CheckPanel extends JPanel implements IListPanel {
         add(createButton, gbc);
     }
 
-    ////////////////////////////////////////////////
-    // REFRESH
-    ////////////////////////////////////////////////
     @Override
-    public void refresh() {
-        refresh(false);
-    }
-
-    @Override
-    public void refresh(boolean fromDatabase) {
-        if (!WaitCursor.isStarted()) {
-            // Start wait cursor
-            WaitCursor.startWaitCursor();
-            try {
-                if (fromDatabase) {
-                    getList().refresh();
-                }
-                tableModel = new CheckTableModel();
-                table.setModel(tableModel);
-                table.setTableHeader();
-                table.setColumnModel();
-                table.initTabs();
-                if (tableModel.getRowCount() > 0) {
-                    table.setRowSelectionInterval(0, 0);
-                }
-                table.setTitle();
-            } catch (Exception ex) {
-                logger.error("", ex);
-            } finally {
-                // Stop wait cursor
-                WaitCursor.stopWaitCursor();
-            }
-        }
-    }
-
     public ChartList getList() {
         return ChartList.getList();
     }
 
     @Override
     public void emptySubTable() {
+        // not used - only one table
     }
 
     @Override
     public void populateSubTable(int parentId) {
+        // not used - only one table
     }
 
     @Override
     public CheckTable getMainTable() {
-        return table; // not used - only one table
+        return (CheckTable)table; // not used - only one table
     }
 
     @Override
     public CheckTable getCurrentTable() {
-        return table;
+        return (CheckTable)table;
     }
 
     @Override
@@ -261,7 +204,6 @@ public class CheckPanel extends JPanel implements IListPanel {
         // not used - onle one table
     }
 
-    /////////////////// NEW
     public DetailsPanel getDetailsPanel() {
         return detailsPanel;
     }
@@ -271,37 +213,7 @@ public class CheckPanel extends JPanel implements IListPanel {
     }
 
     @Override
-    public TabbedPane getTabbedPane() {
-        return tabbedPane;
-    }
-
-    @Override
-    public JPanel getListPane() {
-        return listPane;
-    }
-
-    @Override
-    public JSplitPane getSplitPane() {
-        return splitPane;
-    }
-
-    @Override
-    public TitlePanel getTableTitlePanel() {
-        return tableTitlePanel;
-    }
-
-    @Override
-    public JScrollPane getTableScrollPane() {
-        return tableScrollPane;
-    }
-
-    @Override
     public JScrollPane getSubTableScrollPane() {
-        return null; // not used
-    }
-
-    @Override
-    public Pomodoro getPomodoro() {
-        return null; // not used
+        return null; // not used - only one table
     }
 }

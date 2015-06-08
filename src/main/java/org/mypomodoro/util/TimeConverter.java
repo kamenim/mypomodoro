@@ -42,7 +42,8 @@ public class TimeConverter {
             && nbPomodorosLeft > 0) {
             length += " ";
         }
-        if (nbPomodorosLeft > 0) {
+        if (nbWorkDays == 0 
+                || nbPomodorosLeft > 0) {
             length += getLengthInHours(nbPomodorosLeft);
         }
         return length;

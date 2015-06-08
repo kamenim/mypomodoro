@@ -197,7 +197,7 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    protected void setColumnModel() {
+    public void setColumnModel() {
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setCellRenderer(new CustomRenderer()); // priority
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title           
@@ -304,7 +304,7 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    protected void setTableHeader() {
+    public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
         columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date scheduled");
@@ -314,7 +314,7 @@ public class ToDoTable extends AbstractTable {
     }
 
     @Override
-    protected void setTitle() {
+    public void setTitle() {
         String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
         int rowCount = getModel().getRowCount(); // get row count on the model not the view !
         if (rowCount > 0) {
@@ -342,10 +342,6 @@ public class ToDoTable extends AbstractTable {
                     title += " + " + overestimated;
                 }
                 title += "&nbsp;</span>";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
-                }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
@@ -353,6 +349,11 @@ public class ToDoTable extends AbstractTable {
                 /*if (overestimated > 0) {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
+                if (Main.preferences.getAgileMode()) {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideOverestimationButton();
@@ -366,10 +367,6 @@ public class ToDoTable extends AbstractTable {
                 if (tableList.getNbOverestimatedPom() > 0) {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + df.format(tableList.getStoryPoints());
-                }
                 // Tool tip
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
@@ -377,6 +374,12 @@ public class ToDoTable extends AbstractTable {
                 /*if (tableList.getNbOverestimatedPom() > 0) {
                  toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                  }*/
+                if (Main.preferences.getAgileMode()) {
+                    float storypoints = tableList.getStoryPoints();
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    title += " > SP: " + df.format(storypoints);
+                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                }
                 getTitlePanel().setToolTipText(toolTipText);
                 // Show buttons of the quick bar
                 if (getSelectedRowCount() == 1) {
