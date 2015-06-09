@@ -18,6 +18,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.Component;
 import javax.swing.JTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
@@ -38,18 +39,22 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            int overestimatedpoms = activity.getOverestimatedPoms();
-            // no real poms & no subtask --> estimated may be changed
-            if (realpoms == 0) {
+            int overestimatedpoms = activity.getOverestimatedPoms(); 
+            // real poms > 0 or in pomodoro --> estimated cannot be changed
+            if (realpoms > 0
+                    || (Main.gui != null
+                        && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
+                        && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                        && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())) { 
+                labelBefore.setText(realpoms + " / ");
+                comboBox.setVisible(false);
+                labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
+            } else if (realpoms == 0) { // no real poms & not in pomodoro --> estimated may be changed
                 labelBefore.setText(realpoms + " /");
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
                 comboBox.addItem(estimatedpoms);
                 labelAfter.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
-            } else { // real poms > 0 or has subtasks --> estimated cannot be changed
-                labelBefore.setText(realpoms + " / ");
-                comboBox.setVisible(false);
-                labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
             }
             setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms));
         }

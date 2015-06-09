@@ -42,7 +42,14 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            if (realpoms == 0) { // can't edit when task already started (real > 0)
+            // no change to the label set by the cell renderer
+            if (realpoms > 0
+                    || (Main.gui != null
+                        && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
+                        && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                        && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())) { 
+                comboBox.setVisible(false);
+            } else if (realpoms == 0) { // can't edit when task already started (real > 0)
                 int minimum = 0; // no matter overestimation
                 int maximum = estimatedpoms + Main.preferences.getMaxNbPomPerActivity();
                 comboBox.setVisible(true);
@@ -56,8 +63,6 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
                     comboBox.addItem(i);
                 }
                 comboBox.setSelectedItem(activity.getEstimatedPoms());
-            } else { // no change to the label set by the cell renderer
-                comboBox.setVisible(false);
             }
         }
         return this;
