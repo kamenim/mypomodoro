@@ -348,7 +348,7 @@ public class ActivitiesTable extends AbstractTable {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
                 if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");                    
+                    DecimalFormat df = new DecimalFormat("0.#");
                     title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
                     toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
                 }
@@ -421,7 +421,7 @@ public class ActivitiesTable extends AbstractTable {
             } catch (CloneNotSupportedException ignored) {
             }
         }
-    }    
+    }
 
     @Override
     public void deleteTasks() {
@@ -430,7 +430,7 @@ public class ActivitiesTable extends AbstractTable {
             b.doClick();
         }
     }
-    
+
     // tasks and subtasks can be deleted  
     protected boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;

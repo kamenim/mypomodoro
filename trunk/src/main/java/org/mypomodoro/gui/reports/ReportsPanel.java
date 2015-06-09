@@ -41,8 +41,6 @@ import org.mypomodoro.util.Labels;
  */
 public class ReportsPanel extends AbstractPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private static final Dimension PANE_DIMENSION = new Dimension(800, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
     // Tab panes: details,...
@@ -75,8 +73,8 @@ public class ReportsPanel extends AbstractPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ReportsSubTableModel();
         tableModel = new ReportsTableModel();
-        subTable = new ReportsSubTable((ReportsSubTableModel)subTableModel, this); // instance this before table
-        table = new ReportsTable((ReportsTableModel)tableModel, this);
+        subTable = new ReportsSubTable((ReportsSubTableModel) subTableModel, this); // instance this before table
+        table = new ReportsTable((ReportsTableModel) tableModel, this);
         currentTable = table;
 
         // Init scroll panes
@@ -133,12 +131,12 @@ public class ReportsPanel extends AbstractPanel {
 
     @Override
     public ReportsTable getMainTable() {
-        return (ReportsTable)table;
+        return (ReportsTable) table;
     }
 
     @Override
     public ReportsTable getCurrentTable() {
-        return (ReportsTable)currentTable;
+        return (ReportsTable) currentTable;
     }
 
     @Override
@@ -148,7 +146,7 @@ public class ReportsPanel extends AbstractPanel {
 
     @Override
     public ReportsSubTable getSubTable() {
-        return (ReportsSubTable)subTable;
+        return (ReportsSubTable) subTable;
     }
 
     public DetailsPanel getDetailsPanel() {
@@ -162,10 +160,10 @@ public class ReportsPanel extends AbstractPanel {
     public EditPanel getEditPanel() {
         return editPanel;
     }
-    
+
     @Override
     public void populateSubTable(int parentId) {
-        ((ReportsSubTableModel)subTableModel).update(parentId);
+        ((ReportsSubTableModel) subTableModel).update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
         setCurrentTable(table);

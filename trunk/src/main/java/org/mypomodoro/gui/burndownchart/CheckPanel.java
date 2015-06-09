@@ -44,8 +44,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class CheckPanel extends AbstractPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(700, 50);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
@@ -84,7 +82,7 @@ public class CheckPanel extends AbstractPanel {
 
         // Init table (data model and rendering)
         tableModel = new CheckTableModel();
-        table = new CheckTable((CheckTableModel)tableModel, this);
+        table = new CheckTable((CheckTableModel) tableModel, this);
 
         // Init scroll panes
         tableScrollPane = new JScrollPane(table);
@@ -130,7 +128,7 @@ public class CheckPanel extends AbstractPanel {
     public void addSubTableTitlePanel() {
         // not used - only one table
     }
-    
+
     @Override
     public CheckTableModel getNewTableModel() {
         return new CheckTableModel();
@@ -186,12 +184,12 @@ public class CheckPanel extends AbstractPanel {
 
     @Override
     public CheckTable getMainTable() {
-        return (CheckTable)table; // not used - only one table
+        return (CheckTable) table; // not used - only one table
     }
 
     @Override
     public CheckTable getCurrentTable() {
-        return (CheckTable)table;
+        return (CheckTable) table;
     }
 
     @Override

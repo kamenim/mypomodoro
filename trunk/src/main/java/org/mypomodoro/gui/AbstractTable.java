@@ -187,7 +187,7 @@ public abstract class AbstractTable extends JXTable {
                     MoveButton moveButton = new MoveButton("", panel);
                     moveButton.doClick();
                 } else if (panel instanceof ToDoPanel) { // complete
-                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel)panel);
+                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel) panel);
                     completeToDoButton.doClick();
                 }
             }
@@ -210,7 +210,7 @@ public abstract class AbstractTable extends JXTable {
                     MoveButton moveButton = new MoveButton("", panel);
                     moveButton.doClick();
                 } else if (panel instanceof ToDoPanel) { // send back to ActivityList
-                    MoveToDoButton moveToDoButton = new MoveToDoButton("", (ToDoPanel)panel);
+                    MoveToDoButton moveToDoButton = new MoveToDoButton("", (ToDoPanel) panel);
                     moveToDoButton.doClick();
                 }
             }

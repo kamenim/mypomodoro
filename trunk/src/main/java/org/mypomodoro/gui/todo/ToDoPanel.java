@@ -51,8 +51,6 @@ import org.mypomodoro.util.Labels;
  */
 public class ToDoPanel extends AbstractPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private static final Dimension LIST_TIMER_PANE_DIMENSION = new Dimension(800, 200);
     private static final Dimension PANE_DIMENSION = new Dimension(500, 200);
     private static final Dimension TABPANE_DIMENSION = new Dimension(800, 50);
@@ -104,8 +102,8 @@ public class ToDoPanel extends AbstractPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ToDoSubTableModel();
         tableModel = new ToDoTableModel();
-        subTable = new ToDoSubTable((ToDoSubTableModel)subTableModel, this); // instanciate this before table
-        table = new ToDoTable((ToDoTableModel)tableModel, this);
+        subTable = new ToDoSubTable((ToDoSubTableModel) subTableModel, this); // instanciate this before table
+        table = new ToDoTable((ToDoTableModel) tableModel, this);
         currentTable = table;
 
         // Init scroll panes
@@ -196,12 +194,12 @@ public class ToDoPanel extends AbstractPanel {
 
     @Override
     public ToDoTable getMainTable() {
-        return (ToDoTable)table;
+        return (ToDoTable) table;
     }
 
     @Override
     public ToDoTable getCurrentTable() {
-        return (ToDoTable)currentTable;
+        return (ToDoTable) currentTable;
     }
 
     @Override
@@ -211,7 +209,7 @@ public class ToDoPanel extends AbstractPanel {
 
     @Override
     public ToDoSubTable getSubTable() {
-        return (ToDoSubTable)subTable;
+        return (ToDoSubTable) subTable;
     }
 
     public DetailsPanel getDetailsPanel() {
@@ -224,7 +222,7 @@ public class ToDoPanel extends AbstractPanel {
 
     public EditPanel getEditPanel() {
         return editPanel;
-    }    
+    }
 
     @Override
     public void populateSubTable(int parentId) {
@@ -294,7 +292,7 @@ public class ToDoPanel extends AbstractPanel {
         backgroundPanel.add(pomodoroButton, gbc);
         return backgroundPanel;
     }
-    
+
     public Pomodoro getPomodoro() {
         return pomodoro;
     }
