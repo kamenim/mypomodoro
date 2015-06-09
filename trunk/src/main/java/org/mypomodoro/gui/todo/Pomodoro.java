@@ -246,7 +246,16 @@ public class Pomodoro {
                     getCurrentToDo().incrementPoms();
                     getCurrentToDo().databaseUpdate();
                     if (getCurrentToDo().isSubTask()) {
-                        panel.getMainTable().addPomsToSelectedRow(1, 0, 0);
+                        Activity parentToDo = panel.getMainTable().getActivityFromSelectedRow();
+                        if (parentToDo.isFinished()) { // the parent task is already finished --> add 1 estimate or 1 overestimate depending on what was done on the subtask
+                            if (getCurrentToDo().getActualPoms() > getCurrentToDo().getEstimatedPoms()) { // done overestimated pom
+                                panel.getMainTable().addPomsToSelectedRow(1, 0, 1);
+                            } else { // done estimated pom
+                                panel.getMainTable().addPomsToSelectedRow(1, 1, 0);
+                            }
+                        } else {
+                            panel.getMainTable().addPomsToSelectedRow(1, 0, 0);
+                        }
                     }
                     if (isDiscontinuous) { // stop timer
                         pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
