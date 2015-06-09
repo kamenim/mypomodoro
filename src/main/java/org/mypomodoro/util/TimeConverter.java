@@ -38,26 +38,26 @@ public class TimeConverter {
         if (nbWorkDays > 0) {
             length = String.format("%d " + (nbWorkDays == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")), nbWorkDays);
         }
-        if (nbWorkDays > 0 
-            && nbPomodorosLeft > 0) {
+        if (nbWorkDays > 0
+                && nbPomodorosLeft > 0) {
             length += " ";
         }
-        if (nbWorkDays == 0 
+        if (nbWorkDays == 0
                 || nbPomodorosLeft > 0) {
             length += getLengthInHours(nbPomodorosLeft);
         }
         return length;
     }
-        
+
     public static String getLengthInHours(int pomodoros) {
-        return getLengthInHours(pomodoros,  
-                Main.preferences.getPomodoroLength(), 
-                Main.preferences.getShortBreakLength(),                 
+        return getLengthInHours(pomodoros,
+                Main.preferences.getPomodoroLength(),
+                Main.preferences.getShortBreakLength(),
                 Main.preferences.getLongBreakLength(),
                 Main.preferences.getNbPomPerSet(),
                 Main.preferences.getPlainHours());
     }
-    
+
     public static String getLengthInHours(int pomodoros, int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours) {
         int pomodoroInMinutes;
         if (isPlainHours) { // plain
@@ -69,11 +69,11 @@ public class TimeConverter {
         int nbWorkMinutes = pomodoroInMinutes - nbWorkHours * 60; // eg 90 min - 60 min = 30 min                
         return String.format("%02d:%02d", nbWorkHours, nbWorkMinutes);
     }
-    
+
     public static int convertPomodorosToPlainMinutes(int pomodoros) {
-        return convertPomodorosToPlainMinutes(pomodoros,  
-                Main.preferences.getPomodoroLength(), 
-                Main.preferences.getShortBreakLength(),                 
+        return convertPomodorosToPlainMinutes(pomodoros,
+                Main.preferences.getPomodoroLength(),
+                Main.preferences.getShortBreakLength(),
                 Main.preferences.getLongBreakLength(),
                 Main.preferences.getNbPomPerSet());
     }

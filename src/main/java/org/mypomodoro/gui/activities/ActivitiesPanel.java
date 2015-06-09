@@ -55,13 +55,13 @@ public class ActivitiesPanel extends AbstractPanel {
         listPane.setMinimumSize(PANE_DIMENSION);
         listPane.setPreferredSize(PANE_DIMENSION);
         listPane.setLayout(new BoxLayout(listPane, BoxLayout.Y_AXIS));
-        
+
         // Init Tabbed pane        
         tabbedPane = new TabbedPane(this);
         tabbedPane.setMinimumSize(TABPANE_DIMENSION);
         tabbedPane.setPreferredSize(TABPANE_DIMENSION);
         initTabbedPane();
-        
+
         // Init Split pane
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPane, tabbedPane);
         splitPane.setOneTouchExpandable(true);
@@ -73,8 +73,8 @@ public class ActivitiesPanel extends AbstractPanel {
         // Init table and sub table (data model and rendering)
         subTableModel = new ActivitiesSubTableModel();
         tableModel = new ActivitiesTableModel();
-        subTable = new ActivitiesSubTable((ActivitiesSubTableModel)subTableModel, this); // instanciate this before table
-        table = new ActivitiesTable((ActivitiesTableModel)tableModel, this);
+        subTable = new ActivitiesSubTable((ActivitiesSubTableModel) subTableModel, this); // instanciate this before table
+        table = new ActivitiesTable((ActivitiesTableModel) tableModel, this);
         currentTable = table;
 
         // Init scroll panes
@@ -119,8 +119,8 @@ public class ActivitiesPanel extends AbstractPanel {
         ExportPanel exportPanel = new ExportPanel(this);
         tabbedPane.add(Labels.getString("ReportListPanel.Export"), exportPanel);
         addTabbedPaneKeyStrokes();
-    }    
-    
+    }
+
     @Override
     public ActivitiesTableModel getNewTableModel() {
         return new ActivitiesTableModel();
@@ -133,12 +133,12 @@ public class ActivitiesPanel extends AbstractPanel {
 
     @Override
     public ActivitiesTable getMainTable() {
-        return (ActivitiesTable)table;
+        return (ActivitiesTable) table;
     }
 
     @Override
     public ActivitiesTable getCurrentTable() {
-        return (ActivitiesTable)currentTable;
+        return (ActivitiesTable) currentTable;
     }
 
     @Override
@@ -148,7 +148,7 @@ public class ActivitiesPanel extends AbstractPanel {
 
     @Override
     public ActivitiesSubTable getSubTable() {
-        return (ActivitiesSubTable)subTable;
+        return (ActivitiesSubTable) subTable;
     }
 
     public DetailsPanel getDetailsPanel() {
@@ -161,11 +161,11 @@ public class ActivitiesPanel extends AbstractPanel {
 
     public EditPanel getEditPanel() {
         return editPanel;
-    }    
+    }
 
     @Override
     public void populateSubTable(int parentId) {
-        ((ActivitiesSubTableModel)subTableModel).update(parentId);
+        ((ActivitiesSubTableModel) subTableModel).update(parentId);
         subTable.setColumnModel();
         subTable.setTitle();
     }

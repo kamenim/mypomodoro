@@ -35,9 +35,9 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public abstract class AbstractPanel extends JPanel implements IListPanel {
-    
+
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-    
+
     // List pane: title + table + sub-title + sub-table
     protected final JPanel listPane = new JPanel();
     // Split pane: list pane + tabbed pane
@@ -47,7 +47,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
     protected SubTableTitlePanel subTableTitlePanel;
     // Table panes: table and sub-table
     protected JScrollPane tableScrollPane;
-    protected JScrollPane subTableScrollPane;    
+    protected JScrollPane subTableScrollPane;
     // Tabbed pane: details + ...
     protected TabbedPane tabbedPane;
     // Tables
@@ -82,7 +82,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
         subTable.setTitle(); // init title
         listPane.add(subTableTitlePanel);
     }
-    
+
     ////////////////////////////////////////////////
     // REFRESH
     ////////////////////////////////////////////////
@@ -122,13 +122,13 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
             }
         }
     }
-    
+
     @Override
     public abstract AbstractTableModel getNewTableModel();
-    
+
     @Override
     public abstract AbstractActivities getList();
-              
+
     @Override
     public abstract void initTabbedPane();
 
@@ -188,7 +188,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
         subTable.setColumnModel();
         subTable.setTitle();
     }
-    
+
     protected void addTabbedPaneKeyStrokes() {
         // Activate Control Tab 1, 2 ...
         InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -198,7 +198,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
             am.put("Tab" + i, new tabAction(i - 1));
         }
     }
-    
+
     // Keystroke for tab
     class tabAction extends AbstractAction {
 
@@ -216,7 +216,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
             }
         }
     }
-    
+
     private int getKeyEvent(int index) {
         int key = 0;
         try {

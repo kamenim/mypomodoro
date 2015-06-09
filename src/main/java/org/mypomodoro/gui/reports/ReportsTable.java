@@ -220,12 +220,8 @@ public class ReportsTable extends AbstractTable {
     protected void showInfo(Activity activity) {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
-        //panel.getDetailsPanel().showInfo(this);
         panel.getCommentPanel().showInfo(activity);
-        //panel.getEditPanel().showInfo(activity, this);
         panel.getEditPanel().showInfo(activity);
-        // set table for export panel
-        //panel.getExportPanel().setTable(this); TODO
     }
 
     @Override
@@ -291,7 +287,7 @@ public class ReportsTable extends AbstractTable {
                 }
                 title += "&nbsp;</span>";
                 int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100);
-                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";                
+                title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
@@ -334,7 +330,7 @@ public class ReportsTable extends AbstractTable {
                     DecimalFormat df = new DecimalFormat("0.#");
                     title += " > SP: " + df.format(storypoints);
                     toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
-                }                
+                }
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } else {
@@ -347,7 +343,7 @@ public class ReportsTable extends AbstractTable {
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint();
     }
-    
+
     @Override
     public void deleteTasks() {
         if (canDeleteTasks()) {
@@ -355,7 +351,7 @@ public class ReportsTable extends AbstractTable {
             b.doClick();
         }
     }
-    
+
     // only tasks can be deleted  
     protected boolean canDeleteTasks() {
         return getSelectedRowCount() > 0;

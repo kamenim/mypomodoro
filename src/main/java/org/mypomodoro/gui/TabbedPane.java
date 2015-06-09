@@ -155,7 +155,7 @@ public class TabbedPane extends JTabbedPane {
         setSelectedIndex(editTabIndex);
         customMouseAdapter.setSelectedIndex(editTabIndex); // make sure the selected index for the adapter is up to date
     }
-    
+
     public void enableMergeTab() {
         setEnabledAt(mergeTabIndex, true);
     }
@@ -219,7 +219,7 @@ public class TabbedPane extends JTabbedPane {
     public void setExportTabIndex(int exportTabIndex) {
         this.exportTabIndex = exportTabIndex;
     }
-    
+
     public void setSelectedIndexOnCustomMouseAdapter(int index) {
         customMouseAdapter.setSelectedIndex(index);
     }

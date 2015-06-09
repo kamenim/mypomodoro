@@ -173,10 +173,7 @@ public class CheckTable extends AbstractTable {
     protected void showInfo(Activity activity) {
         panel.getDetailsPanel().selectInfo(activity);
         panel.getDetailsPanel().showInfo();
-        //panel.getDetailsPanel().showInfo(this);
         panel.getCommentPanel().showInfo(activity);
-        // set table for export panel
-        //panel.getExportPanel().setTable(this); TODO
     }
 
     @Override
@@ -235,7 +232,7 @@ public class CheckTable extends AbstractTable {
                 title += "&nbsp;</span>";
                 int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100);
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
-                
+
                 String toolTipText = Labels.getString("Common.Done") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);

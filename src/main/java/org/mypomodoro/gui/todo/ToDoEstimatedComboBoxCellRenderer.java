@@ -39,13 +39,13 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
         if (activity != null) {
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
-            int overestimatedpoms = activity.getOverestimatedPoms(); 
+            int overestimatedpoms = activity.getOverestimatedPoms();
             // real poms > 0 or in pomodoro --> estimated cannot be changed
             if (realpoms > 0
                     || (Main.gui != null
-                        && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
-                        && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
-                        && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())) { 
+                    && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
+                    && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
+                    && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())) {
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
