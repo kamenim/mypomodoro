@@ -39,7 +39,7 @@ public class CompleteToDoButton extends TabPanelButton {
 
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
         super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
-        setToolTipText("SHIFT + >");
+        setToolTipText(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete") + " (SHIFT + >)");
         addActionListener(new ActionListener() {
 
             @Override

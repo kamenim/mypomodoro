@@ -104,7 +104,7 @@ public class PreferencesPanel extends JPanel {
         saveButton.registerKeyboardAction(save,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
-        saveButton.setToolTipText("ENTER");
+        saveButton.setToolTipText(Labels.getString("Common.Save") + " (ENTER)");
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.5;

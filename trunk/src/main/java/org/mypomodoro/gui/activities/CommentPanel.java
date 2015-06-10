@@ -771,7 +771,7 @@ public class CommentPanel extends JPanel {
         // WHEN_IN_FOCUSED_WINDOW makes Save shortcut work (WHEN_FOCUSED doesn't)
         saveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
         saveButton.getActionMap().put("Save", saveAction);
-        saveButton.setToolTipText("CTRL + S");
+        saveButton.setToolTipText(Labels.getString("Common.Save") + " (CTRL + S)");
         saveButton.setVisible(false);
         saveButton.addActionListener(saveAction);
         // Set the width of the button to make it shorter

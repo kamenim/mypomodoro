@@ -37,7 +37,7 @@ public class MoveToDoButton extends TabPanelButton {
 
     public MoveToDoButton(String label, final ToDoPanel panel) {
         super(label);
-        setToolTipText("SHIFT + <");
+        setToolTipText(Labels.getString("Common.Move") + " (SHIFT + <)");
         addActionListener(new ActionListener() {
 
             @Override

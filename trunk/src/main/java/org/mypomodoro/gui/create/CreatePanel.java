@@ -208,7 +208,7 @@ public class CreatePanel extends JPanel {
     public void enableSaveButton() {
         saveButton.setEnabled(true);
         saveButton.setOpaque(true);
-        saveButton.setToolTipText("ENTER"); // not set on the saveButton object itself because ENTER shortcut won't work with the edit panels
+        saveButton.setToolTipText(Labels.getString("Common.Save") + " (ENTER)"); // not set on the saveButton object itself because ENTER shortcut won't work with the edit panels
         saveButton.setForeground(getForeground()); // reset the foreground of the current theme
     }
 

@@ -27,6 +27,7 @@ public class SaveButton extends TabPanelButton {
 
     public SaveButton(CreatePanel panel) {
         super(Labels.getString("Common.Save"));
+        setToolTipText(Labels.getString("Common.Save"));
         // Save action
         SaveListener save = new SaveListener(panel);
         // Listener for mouse action

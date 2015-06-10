@@ -51,7 +51,6 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         reopenButton = new MoveButton(Labels.getString("ReportListPanel.Reopen"), reportsPanel);
-        reopenButton.setToolTipText("SHIFT + <");
         add(reopenButton, gbc);
     }
 
@@ -71,7 +70,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        deleteButton = new DeleteButton(Labels.getString("Common.Delete activity"), Labels.getString("Common.Are you sure to delete those activities?"), reportsPanel);
+        deleteButton = new DeleteButton(Labels.getString("Common.Delete task"), Labels.getString("Common.Are you sure to delete those tasks?"), reportsPanel);
         add(deleteButton, gbc);
     }
 

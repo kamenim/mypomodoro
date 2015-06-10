@@ -183,7 +183,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 convertSubtasksToTasks();
             }
         });
-        convertSubtasksToTasksButton.setToolTipText(Labels.getString("Common.Convert"));
+        convertSubtasksToTasksButton.setToolTipText(Labels.getString("Common.Move"));
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.addActionListener(new ActionListener() {
@@ -372,12 +372,10 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected abstract void convertSubtasksToTasks();
 
-    /*@Override
-     public void repaint() {
-     super.repaint();
-     if (buttonPanel != null) {
-     titleLabel.repaint();
-     buttonPanel.repaint();
-     }
-     }*/
+    // This is important to make sure the title is refreshed and repainted
+    @Override
+    public void repaint() {
+        validate();
+        super.repaint();
+    }
 }
