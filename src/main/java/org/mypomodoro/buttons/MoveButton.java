@@ -42,7 +42,11 @@ public class MoveButton extends TabPanelButton {
 
     public MoveButton(String label, final IListPanel panel) {
         super(label);
-        setToolTipText("SHIFT + >");
+        if (panel instanceof ActivitiesPanel) { // move to ToDo list
+            setToolTipText(Labels.getString("Common.Move") + " (SHIFT + >)");
+        } else if (panel instanceof ReportsPanel) { // reopen tasks
+            setToolTipText(Labels.getString("ReportListPanel.Reopen") + " (SHIFT + <)");
+        }
         addActionListener(new ActionListener() {
 
             @Override

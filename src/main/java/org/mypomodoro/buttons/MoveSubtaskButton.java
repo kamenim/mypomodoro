@@ -34,11 +34,11 @@ import org.mypomodoro.util.WaitCursor;
  * Delete button
  *
  */
-public class MoveUpButton extends TabPanelButton {
+public class MoveSubtaskButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public MoveUpButton(final String title, final String message, final IListPanel panel) {
+    public MoveSubtaskButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             setToolTipText("BACKSPACE");

@@ -223,4 +223,12 @@ public class TabbedPane extends JTabbedPane {
     public void setSelectedIndexOnCustomMouseAdapter(int index) {
         customMouseAdapter.setSelectedIndex(index);
     }
+    
+    // set tooltip
+    @Override
+    public void setEnabledAt(int index, boolean enabled) {
+        super.setEnabledAt(index, enabled);
+        String tooltip = enabled ? getTitleAt(index) + " (CTRL + " + (index + 1) + " )" : null;
+        setToolTipTextAt(index, tooltip);
+    }    
 }

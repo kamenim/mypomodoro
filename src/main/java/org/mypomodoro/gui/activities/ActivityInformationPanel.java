@@ -102,9 +102,12 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         informationArea.setCaretPosition(0);
     }
 
+    // informationArea may be null when moving the cursor around (mouseExited) while deleting/moving tasks
     @Override
     public void clearInfo() {
-        informationArea.setText("");
+        if (informationArea != null) {
+            informationArea.setText("");
+        }
     }
 
     private String displayStoryPoint(float points) {

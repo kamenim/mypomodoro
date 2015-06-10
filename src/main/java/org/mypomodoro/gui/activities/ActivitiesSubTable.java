@@ -18,7 +18,8 @@ package org.mypomodoro.gui.activities;
 
 import org.mypomodoro.gui.TitlePanel;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.MoveUpButton;
+import org.mypomodoro.buttons.MoveSubtaskButton;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -98,11 +99,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
             title += " (0)";
             getTitlePanel().hideDuplicateButton();
         }
-        if (panel.getMainTable().getSelectedRowCount() == 1) {
-            getTitlePanel().showCreateButton();
-        } else {
-            getTitlePanel().hideCreateButton();
-        }
+        getTitlePanel().showCreateButton();
         if (canConvertSubtasksToTasks()) {
             getTitlePanel().showConvertSubtasksToTasksButton();
         } else {
@@ -182,6 +179,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
+    public void deleteTasks() {
+        if (canDeleteTasks()) {
+            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete subtask"), Labels.getString("Common.Are you sure to delete those subtasks?"), panel);
+            b.doClick();
+        }
+    }
+
+    @Override
     public void deleteTask(int rowIndex) {
         super.deleteTask(rowIndex);
         // set main table as current table when no subtasks anymore
@@ -192,26 +197,25 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     @Override
     public void convertSubtasksToTasks() {
-        MoveUpButton m = new MoveUpButton(Labels.getString("Common.Convert subtask"), Labels.getString("Common.Are you sure to convert those subtasks?"), panel);
+        MoveSubtaskButton m = new MoveSubtaskButton(Labels.getString("Common.Move subtask"), Labels.getString("Common.Are you sure to move those subtasks?"), panel);
         m.doClick();
     }
 
     // TODO write convertSubtaskToTask
     @Override
     public void convertSubtaskToTask(int rowIndex) {
-        /*Activity activity = getActivityFromRowIndex(rowIndex);
-         activity.setParentId(-1); // make subtask a task
-         // remove pomodoros from parent task
-        
-        
-        
-         getList().update(activity); // update ex-subtask
-         getList().update(parentActivity); // update parent task
-         removeRow(rowIndex);
-         // set main table as current table when no subtasks anymore
-         if (getRowCount() == 0) {
-         panel.setCurrentTable(panel.getMainTable());
-         }*/
+        Activity subtask = getActivityFromRowIndex(rowIndex);
+        subtask.setParentId(-1); // make subtask a task
+        getList().update(subtask); // update ex-subtask
+        // remove pomodoros from parent task
+        Activity parentTask = panel.getMainTable().getActivityFromSelectedRow();
+        getList().update(parentTask); // update parent task
+        removeRow(rowIndex);
+        panel.getMainTable().insertRow(subtask);
+        // set main table as current table when no subtasks anymore
+        if (getRowCount() == 0) {
+            panel.setCurrentTable(panel.getMainTable());
+        }
     }
 
     private boolean canConvertSubtasksToTasks() {

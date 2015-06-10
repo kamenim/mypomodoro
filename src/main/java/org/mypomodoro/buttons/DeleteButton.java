@@ -40,9 +40,9 @@ public class DeleteButton extends TabPanelButton {
     public DeleteButton(final String title, final String message, final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            setToolTipText("BACKSPACE");
+            setToolTipText(Labels.getString("Common.Delete") + " (BACKSPACE)");
         } else {
-            setToolTipText("DEL");
+            setToolTipText(Labels.getString("Common.Delete") + " (DEL)");
         }
         addActionListener(new ActionListener() {
 
