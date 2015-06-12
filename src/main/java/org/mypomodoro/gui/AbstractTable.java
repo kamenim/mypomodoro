@@ -58,6 +58,7 @@ import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -484,7 +485,7 @@ public abstract class AbstractTable extends JXTable {
                 if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
                     int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
                     Activity activity = getList().getById(id);
-                    if (activity != null && activity.isOverdue()) {
+                    if (activity != null && activity.isOverdue() && getList() instanceof ActivityList) { // activity list only
                         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                         map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
                         renderer.setFont(getFont().deriveFont(map));
@@ -560,7 +561,7 @@ public abstract class AbstractTable extends JXTable {
             if (value.toString().equals("0.5")) {
                 text = "1/2";
             } else {
-                text = Math.round((Float) value) + "";
+                text = Math.round((Float) value) + ""; // used Math.round to display SP as integer (eg: 1.0 --> 1)
             }
             renderer.setText(text);
             return renderer;

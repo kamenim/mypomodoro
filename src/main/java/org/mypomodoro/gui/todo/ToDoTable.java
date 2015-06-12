@@ -553,7 +553,7 @@ public class ToDoTable extends AbstractTable {
     public void reorderByPriority() {
         getTableList().reorderByPriority();
         for (int row = 0; row < getModel().getRowCount(); row++) {
-            Activity activity = getActivityFromRowIndex(row);
+            Activity activity = getTableList().getById(getActivityIdFromRowIndex(row));
             getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
         }
     }
@@ -563,60 +563,41 @@ public class ToDoTable extends AbstractTable {
     }
 
     public void setIconLabels(Activity selectedToDo) {
-        if (getTableList().size() > 0) {
+        if (panel.getMainTable().getModel().getRowCount() > 0) { // main table not empty
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             Color defaultForegroundColor = ColorUtil.BLACK;
             if (selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
-                //panel.getUnplannedPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.selectedRowColor);
-                //panel.getOverestimationPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getEditPanel().getIconPanel().setBackground(Main.selectedRowColor);
             } else {
-                //panel.getUnplannedPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.hoverRowColor);
-                //panel.getOverestimationPanel().getIconPanel().setBackground(Main.hoverRowColor);
                 panel.getEditPanel().getIconPanel().setBackground(Main.hoverRowColor);
             }
             if (panel.getPomodoro().inPomodoro()) {
-                //ToDoIconPanel.showIconPanel(iconPanel, currentToDo, Main.taskRunningColor, false);
-                //ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
-                //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
             }
-            if (getSelectedRowCount() <= 1) { // no multiple selection
+            if (getSelectedRowCount() <= 1) { // no selection (sub-table) or single selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                 } else if (!panel.getPomodoro().inPomodoro()) {
-                    //ToDoIconPanel.showIconPanel(iconPanel, selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor, false);
-                    //ToDoIconPanel.showIconPanel(panel.getUnplannedPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
-                    //ToDoIconPanel.showIconPanel(panel.getOverestimationPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                 }
             } else if (getSelectedRowCount() > 1) { // multiple selection
-                if (!panel.getPomodoro().inPomodoro()) {
-                    //ToDoIconPanel.clearIconPanel(iconPanel);
-                    //ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
-                }
                 ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
-                //ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
                 ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
             }
         } else { // empty list
-            //ToDoIconPanel.clearIconPanel(iconPanel);
-            //ToDoIconPanel.clearIconPanel(panel.getUnplannedPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getDetailsPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getCommentPanel().getIconPanel());
-            //ToDoIconPanel.clearIconPanel(panel.getOverestimationPanel().getIconPanel());
             ToDoIconPanel.clearIconPanel(panel.getEditPanel().getIconPanel());
         }
     }

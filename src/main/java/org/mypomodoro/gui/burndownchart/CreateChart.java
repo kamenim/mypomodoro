@@ -251,7 +251,7 @@ public class CreateChart extends JPanel {
                             total -= getBurndownValue(activity);
                         }
                     }
-                    total = burndownChartPercentage ? Math.round(total) : total;
+                    total = burndownChartPercentage ? Math.round(total) : total;  // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
                 } else {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
@@ -264,7 +264,7 @@ public class CreateChart extends JPanel {
                         total -= getBurndownValue(activity);
                     }
                 }
-                total = burndownChartPercentage ? Math.round(total) : total;
+                total = burndownChartPercentage ? Math.round(total) : total;  // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                 dataset.addValue((Number) total, label, i);
             }
         }
@@ -289,7 +289,7 @@ public class CreateChart extends JPanel {
                             total += getBurnupValue(activity);
                         }
                     }
-                    total = burnupChartPercentage ? Math.round(total) : total;
+                    total = burnupChartPercentage ? Math.round(total) : total; // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
                 } else {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
@@ -302,7 +302,7 @@ public class CreateChart extends JPanel {
                         total += getBurnupValue(activity);
                     }
                 }
-                total = burnupChartPercentage ? Math.round(total) : total;
+                total = burnupChartPercentage ? Math.round(total) : total; // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                 dataset.addValue((Number) total, label, i);
             }
         }
@@ -550,7 +550,7 @@ public class CreateChart extends JPanel {
         ArrayList<Float> sum = sumForScope;
         if (burnupChartPercentage) {
             for (int i = 0; i < sum.size(); i++) {
-                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100)));
+                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100))); // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
             }
         }
         return sum;
@@ -560,7 +560,7 @@ public class CreateChart extends JPanel {
         ArrayList<Float> sum = sumForScope;
         if (burnupChartPercentage) {
             for (int i = 0; i < sum.size(); i++) {
-                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100)));
+                sum.set(i, new Float(Math.round((sum.get(i) / totalForBurnupInPercentage) * 100))); // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
             }
         }
         return sum;

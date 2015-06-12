@@ -38,7 +38,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -98,9 +97,9 @@ public class ConfigureInputForm extends JPanel {
     }
 
     private void addTasksInputFormPanel() {
-        TitledBorder borderTasks = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
-        borderTasks.setTitleFont(borderTasks.getTitleFont().deriveFont(Font.BOLD));
-        borderTasks.setTitle(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
+        JLabel titleBorderTasks = new JLabel(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
+        titleBorderTasks.setOpaque(true);
+        ComponentTitledBorder borderTasks = new ComponentTitledBorder(titleBorderTasks, tasksInputFormPanel, new EtchedBorder(), titleBorderTasks.getFont().deriveFont(Font.BOLD));
         GridBagConstraints cChart = new GridBagConstraints();
         cChart.weightx = 1;
         cChart.weighty = 1;
@@ -226,10 +225,10 @@ public class ConfigureInputForm extends JPanel {
         tasksInputFormPanel.add(iterationsInputFormPanel, cChart);
     }
 
-    private void addImageInputFormPanel() {
-        TitledBorder borderDimension = new TitledBorder(new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor));
-        borderDimension.setTitleFont(borderDimension.getTitleFont().deriveFont(Font.BOLD));
-        borderDimension.setTitle(" " + Labels.getString("BurndownChartPanel.Image") + " ");
+    private void addImageInputFormPanel() {        
+        JLabel titleBorderDimension = new JLabel(" " + Labels.getString("BurndownChartPanel.Image") + " ");
+        titleBorderDimension.setOpaque(true);
+        ComponentTitledBorder borderDimension = new ComponentTitledBorder(titleBorderDimension, dimensionInputFormPanel, new EtchedBorder(), titleBorderDimension.getFont().deriveFont(Font.BOLD));        
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());
         addDimensionFields();

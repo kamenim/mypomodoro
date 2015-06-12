@@ -18,6 +18,7 @@ package org.mypomodoro.gui.create;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
@@ -67,6 +70,12 @@ public class ActivityInputForm extends JPanel {
     }
 
     public ActivityInputForm(int gridy) {
+        TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("FileMenu.New Activity") + " ");
+        titledborder.setTitleJustification(TitledBorder.LEFT);
+        titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
+        titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
+        setBorder(titledborder);
+        
         setLayout(new GridBagLayout());
         c.fill = GridBagConstraints.HORIZONTAL;
 

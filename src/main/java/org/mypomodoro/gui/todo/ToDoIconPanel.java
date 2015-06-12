@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.ColorUtil;
 
 /**
  * Icon/Button Panel
@@ -34,7 +35,6 @@ public class ToDoIconPanel {
 
     private final static ImageIcon squareCrossIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "squareCross.png"));
     private final static ImageIcon squareIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "square.png"));
-    private final static ImageIcon plusIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plus.png"));
     private final static ImageIcon quoteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "quote.png"));
     private final static ImageIcon dashIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "dash.png"));
 
@@ -81,7 +81,10 @@ public class ToDoIconPanel {
         // Overestimated pomodoros
         if (overestimatedPoms > 0) {
             // Plus sign            
-            iconPanel.add(new DefaultButton(plusIcon, true));
+            JLabel plus = new JLabel("+");
+            plus.setForeground(ColorUtil.BLACK);
+            plus.setFont(iconPanel.getFont().deriveFont(Font.BOLD));            
+            iconPanel.add(plus);
             // Overestimated pomodoros
             for (int i = 0; i < overestimatedPoms; i++) {
                 if (realPoms >= estimatedPoms + i + 1) {
