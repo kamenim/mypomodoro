@@ -80,7 +80,7 @@ public class ComboBoxPanel extends JPanel {
             if (value.toString().equals("0.5")) {
                 text = "1/2";
             } else {
-                text = Math.round((Float) value) + "";
+                text = Math.round((Float) value) + ""; // used Math.round to display SP as integer (eg: 1.0 --> 1 but 1.6 --> 2)
             }
             setText(text);
             return this;

@@ -64,14 +64,6 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         Insets borderInsets = border.getBorderInsets(c);
         Insets insets = getBorderInsets(c);
         int temp = (insets.top - borderInsets.top) / 2;
-        /*if (comp instanceof JCheckBox
-         && ((JCheckBox)comp).isSelected()) {
-         comp.setBackground(Main.selectedRowColor);
-         border = new LineBorder(Main.selectedRowColor);
-         } else {
-         comp.setBackground(container.getBackground());
-         border = new LineBorder(container.getBackground());
-         }*/
         border.paintBorder(c, g, x, y + temp, width, height - temp);
         Dimension size = comp.getPreferredSize();
         rect = new Rectangle(offset, 0, size.width, size.height);
@@ -111,15 +103,16 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
 
     @Override
     public void mouseEntered(MouseEvent me) {
+        mouseEntered = true;
+        border = new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor); // set colored border on enter
+        dispatchEvent(me, MouseEvent.MOUSE_ENTERED);
     }
 
     @Override
     public void mouseExited(MouseEvent me) {
-        if (mouseEntered) {
-            mouseEntered = false;
-            border = new EtchedBorder(); // change border on exit 
-            dispatchEvent(me, MouseEvent.MOUSE_EXITED);
-        }
+        mouseEntered = false;
+        border = new EtchedBorder(); // reset border on exit 
+        dispatchEvent(me, MouseEvent.MOUSE_EXITED);
     }
 
     @Override
@@ -143,12 +136,10 @@ public class ComponentTitledBorder implements Border, MouseListener, MouseMotion
         }
         if (mouseEntered == false && rect.contains(me.getX(), me.getY())) {
             mouseEntered = true;
-            border = new EtchedBorder(Main.selectedRowColor, Main.selectedRowColor); // change border on exit
             dispatchEvent(me, MouseEvent.MOUSE_ENTERED);
         } else if (mouseEntered == true) {
             if (rect.contains(me.getX(), me.getY()) == false) {
                 mouseEntered = false;
-                border = new EtchedBorder(); // change border on entering
                 dispatchEvent(me, MouseEvent.MOUSE_EXITED);
             } else {
                 dispatchEvent(me, MouseEvent.MOUSE_MOVED);

@@ -413,7 +413,7 @@ public class PreferencesInputForm extends JPanel {
         addPlainHours(gbc);
         gbc.gridy = 8;
         gbc.gridwidth = 2;
-        addThemes(gbc);
+        addLocales(gbc);
         gbc.gridy = 9;
         gbc.gridwidth = 2;
         addSounds(gbc);
@@ -427,7 +427,7 @@ public class PreferencesInputForm extends JPanel {
         addAlwaysOnTop(gbc);
         gbc.gridy = 12;
         gbc.gridwidth = 2;
-        addLocales(gbc);
+        addThemes(gbc);
     }
 
     private void addAgileMode(GridBagConstraints gbc) {
