@@ -30,7 +30,7 @@ public class WindowPanel extends JPanel {
         setLayout(new BorderLayout());
         setOpaque(true);
         add(iconBar, BorderLayout.NORTH);
-        if (Database.firstTime) { // display preferences as splash screen when MSQlite database is being created for the first time
+        if (Database.firstTime) { // display preferences as splash screen when MSQlite database is being created for the first time (does not work with MySQL)
             windowPanel.add(view.getPreferencesPanel(), view.getPreferencesPanel().getClass().getName());
             windowPanel.add(view.getSplashScreen(), view.getSplashScreen().getClass().getName());
         } else {

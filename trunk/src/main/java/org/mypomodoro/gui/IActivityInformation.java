@@ -29,6 +29,4 @@ public interface IActivityInformation {
     void showInfo();
 
     void showInfo(String info);
-
-    void clearInfo();
 }

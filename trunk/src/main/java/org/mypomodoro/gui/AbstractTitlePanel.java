@@ -65,7 +65,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
     protected final DefaultButton deleteButton = new DefaultButton(deleteIcon);
-    protected final DefaultButton convertSubtasksToTasksButton = new DefaultButton(moveupIcon);
+    protected final DefaultButton moveSubtasksButton = new DefaultButton(moveupIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
     private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
@@ -175,15 +175,15 @@ public abstract class AbstractTitlePanel extends JPanel {
             deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (DEL)");
         }
         // Move up subtask to main table (convert to task)
-        convertSubtasksToTasksButton.setMargin(buttonInsets);
-        convertSubtasksToTasksButton.addActionListener(new ActionListener() {
+        moveSubtasksButton.setMargin(buttonInsets);
+        moveSubtasksButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                convertSubtasksToTasks();
+                moveSubtasks();
             }
         });
-        convertSubtasksToTasksButton.setToolTipText(Labels.getString("Common.Move"));
+        moveSubtasksButton.setToolTipText(Labels.getString("Common.Move"));
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.addActionListener(new ActionListener() {
@@ -291,8 +291,8 @@ public abstract class AbstractTitlePanel extends JPanel {
         buttonPanel.add(externalButton);
     }
 
-    public void showConvertSubtasksToTasksButton() {
-        buttonPanel.add(convertSubtasksToTasksButton);
+    public void showMoveSubtasksButton() {
+        buttonPanel.add(moveSubtasksButton);
     }
 
     public void showDeleteButton() {
@@ -331,8 +331,8 @@ public abstract class AbstractTitlePanel extends JPanel {
         buttonPanel.remove(externalButton);
     }
 
-    public void hideConvertSubtasksToTasksButton() {
-        buttonPanel.remove(convertSubtasksToTasksButton);
+    public void hideMoveSubtasksButton() {
+        buttonPanel.remove(moveSubtasksButton);
     }
 
     public void hideDeleteButton() {
@@ -370,7 +370,7 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected abstract void refreshTable(boolean fromDatabase);
 
-    protected abstract void convertSubtasksToTasks();
+    protected abstract void moveSubtasks();
 
     // This is important to make sure the title is refreshed and repainted
     @Override
