@@ -304,6 +304,11 @@ public class ReportsTable extends AbstractTable {
                     // productivity (SP / day)
                     title += " > P: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints / datesCompleted.size()) + "&nbsp;</span>";
                     toolTipText += " > " + Labels.getString("Agile.Common.Productivity") + ": " + df.format(storypoints / datesCompleted.size());
+                } else {
+                    DecimalFormat df = new DecimalFormat("0.#");
+                    // productivity (Poms / day)
+                    title += " > P: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(new Float(real) / datesCompleted.size()) + "&nbsp;</span>";
+                    toolTipText += " > " + Labels.getString("Agile.Common.Productivity") + ": " + df.format(new Float(real) / datesCompleted.size());
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {

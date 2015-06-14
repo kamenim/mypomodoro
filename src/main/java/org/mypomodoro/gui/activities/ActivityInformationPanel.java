@@ -79,7 +79,6 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
     public void showInfo() {
         if (informationArea != null) {
             try {
-                clearInfo();
                 Iterator<String> keySetIterator = textMap.keySet().iterator();
                 String text = "";
                 while (keySetIterator.hasNext()) {
@@ -100,14 +99,6 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         informationArea.setText(newInfo);
         // disable auto scrolling
         informationArea.setCaretPosition(0);
-    }
-
-    // informationArea may be null when moving the cursor around (mouseExited) while deleting/moving tasks
-    @Override
-    public void clearInfo() {
-        if (informationArea != null) {
-            informationArea.setText("");
-        }
     }
 
     private String displayStoryPoint(float points) {

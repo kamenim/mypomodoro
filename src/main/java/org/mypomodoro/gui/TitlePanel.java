@@ -72,8 +72,8 @@ public class TitlePanel extends AbstractTitlePanel {
     }
 
     @Override
-    protected void convertSubtasksToTasks() {
-        table.convertSubtasksToTasks();
+    protected void moveSubtasks() {
+        table.moveSubtasks();
     }
 
     @Override

@@ -96,14 +96,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 }
             }
         } else {
-            title += " (0)";
+            //title += " (0)";
             getTitlePanel().hideDuplicateButton();
         }
         getTitlePanel().showCreateButton();
-        if (canConvertSubtasksToTasks()) {
-            getTitlePanel().showConvertSubtasksToTasksButton();
+        if (canMoveSubtasks()) {
+            getTitlePanel().showMoveSubtasksButton();
         } else {
-            getTitlePanel().hideConvertSubtasksToTasksButton();
+            getTitlePanel().hideMoveSubtasksButton();
         }
         if (canDeleteTasks()) {
             getTitlePanel().showDeleteButton();
@@ -196,14 +196,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    public void convertSubtasksToTasks() {
+    public void moveSubtasks() {
         MoveSubtaskButton m = new MoveSubtaskButton(Labels.getString("Common.Move subtask"), Labels.getString("Common.Are you sure to move those subtasks?"), panel);
         m.doClick();
     }
 
-    // TODO write convertSubtaskToTask
+    // TODO write moveSubtask
     @Override
-    public void convertSubtaskToTask(int rowIndex) {
+    public void moveSubtask(int rowIndex) {
         Activity subtask = getActivityFromRowIndex(rowIndex);
         subtask.setParentId(-1); // make subtask a task
         getList().update(subtask); // update ex-subtask
@@ -218,7 +218,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         }
     }
 
-    private boolean canConvertSubtasksToTasks() {
+    private boolean canMoveSubtasks() {
         return getSelectedRowCount() > 0;
     }
 

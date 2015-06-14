@@ -46,9 +46,12 @@ public class SubTableTitlePanel extends TitlePanel {
         // Add listeners
         setListeners();
 
-        // Add listeners to components        
+        // Add listeners to components 
+        setListeners(expandButton);
         setListeners(titleLabel);
         setListeners(buttonPanel);
+        // Add listeners to buttons
+        // One problem remains: when the sutable is empty,  when pressing the create button, the panel is repaint, new buttons appear but the sub table doesn't open
         setListeners(unplannedButton);
         setListeners(internalButton);
         setListeners(externalButton);
@@ -56,6 +59,8 @@ public class SubTableTitlePanel extends TitlePanel {
         setListeners(createButton);
         setListeners(duplicateButton);
         setListeners(selectedButton);
+        setListeners(deleteButton);
+        setListeners(moveSubtasksButton);                
     }
 
     private void setListeners() {

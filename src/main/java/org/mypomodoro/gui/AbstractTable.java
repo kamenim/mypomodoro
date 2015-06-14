@@ -702,11 +702,11 @@ public abstract class AbstractTable extends JXTable {
         // do nothign by default
     }
 
-    public void convertSubtasksToTasks() {
+    public void moveSubtasks() {
         // do nothign by default
     }
 
-    public void convertSubtaskToTask(int rowIndex) {
+    public void moveSubtask(int rowIndex) {
         // do nothign by default
     }
 

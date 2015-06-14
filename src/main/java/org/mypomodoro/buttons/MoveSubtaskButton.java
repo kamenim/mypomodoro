@@ -71,7 +71,7 @@ public class MoveSubtaskButton extends TabPanelButton {
                                         // removing a row requires decreasing  the row index number
                                         row = row - increment;
                                         Activity selectedToDo = panel.getSubTable().getActivityFromRowIndex(row);
-                                        panel.getSubTable().convertSubtaskToTask(row);
+                                        panel.getSubTable().moveSubtask(row);
                                         panel.getMainTable().addRow(selectedToDo); // add selection row to main table
                                         increment++;
                                         final int progressValue = increment;
