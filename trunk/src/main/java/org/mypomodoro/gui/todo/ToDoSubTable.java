@@ -215,7 +215,6 @@ public class ToDoSubTable extends ToDoTable {
 
     // Create specific to subtasks
     // default name (N) + New subtask
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         if (canCreateNewTask()) {
@@ -225,8 +224,8 @@ public class ToDoSubTable extends ToDoTable {
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             newActivity.setParentId(parentActivity.getId());
             getList().add(newActivity); // save activity in database
-            newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-            insertRow(newActivity);
+            int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
+            editTileCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -239,7 +238,8 @@ public class ToDoSubTable extends ToDoTable {
             Activity activity = getActivityFromSelectedRow();
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
-                insertRow(duplicatedActivity);
+                int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
+                editTileCellAtRowIndex(row);
                 panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {
@@ -248,7 +248,6 @@ public class ToDoSubTable extends ToDoTable {
     }
 
     // no default name
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createUnplannedTask() {
         if (canCreateUnplannedTask()) {

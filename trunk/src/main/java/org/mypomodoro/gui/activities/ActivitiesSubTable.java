@@ -164,7 +164,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
 
     // Create specific to subtasks
     // default name (N) + New subtask
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
@@ -172,9 +171,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
         // Set parent id
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         newActivity.setParentId(parentActivity.getId());
-        getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-        insertRow(newActivity);
+        getList().add(newActivity); // save activity in database       
+        int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
+        editTileCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 

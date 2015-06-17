@@ -159,7 +159,7 @@ public class ActivityInputForm extends JPanel {
         c.gridx = 0;
         c.gridy = gridy;
         c.weighty = 0.5;
-        add(new FormLabel(Labels.getString("Common.Estimated pomodoros") + ": "), c);
+        add(new FormLabel(Labels.getString("Common.Estimated") + ": "), c);
         c.gridx = 1;
         c.gridy = gridy;
         c.weighty = 0.5;

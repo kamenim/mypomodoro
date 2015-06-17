@@ -60,7 +60,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         }
         textMap.put("title", "<b>" + Labels.getString("Common.Title") + ":</b> " + activity.getName() + "<br>");
         textMap.put("type", "<b>" + Labels.getString("Common.Type") + ":</b> " + (activity.getType().isEmpty() ? "-" : activity.getType()) + "<br>");
-        textMap.put("estimated", "<b>" + Labels.getString("Common.Estimated pomodoros") + ":</b> "
+        textMap.put("estimated", "<b>" + Labels.getString("Common.Estimated") + ":</b> "
                 + activity.getActualPoms() + " / "
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")

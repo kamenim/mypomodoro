@@ -39,6 +39,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -46,6 +47,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.JTextComponent;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
@@ -87,8 +89,11 @@ public abstract class AbstractTable extends JXTable {
         // Row height
         setRowHeight(30);
 
-        // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)        
-        DefaultCellEditor editor = new DefaultCellEditor(new JTextField()) {
+        // Prevent key events from editing the cell (this meanly to avoid conflicts with shortcuts)
+        // The selecting editor is used to automatically select the whole text when editing
+        JTextField titleTextField = new JTextField();
+        titleTextField.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
+        SelectingEditor editor = new SelectingEditor(titleTextField) {
 
             @Override
             public boolean isCellEditable(EventObject e) {
@@ -294,6 +299,31 @@ public abstract class AbstractTable extends JXTable {
             }
         }
         am.put("Control E", new createExternal());
+    }
+
+    // Editor that select the whole text when editing
+    public class SelectingEditor extends DefaultCellEditor {
+
+        public SelectingEditor(JTextField textField) {
+            super(textField);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+            if (c instanceof JTextComponent) {
+                final JTextComponent jtc = (JTextComponent) c;                
+                SwingUtilities.invokeLater(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        jtc.requestFocus();
+                        jtc.selectAll();
+                    }
+                });
+            }
+            return c;
+        }
     }
 
     // List selection listener
@@ -518,17 +548,7 @@ public abstract class AbstractTable extends JXTable {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             String text = (String) value;
-            if (text.isEmpty() && isSelected) {
-                // Set the blinking cursor and the ability to type in right away
-                table.editCellAt(row, AbstractTableModel.TITLE_COLUMN_INDEX, null); // edit cell in the view !
-                table.setSurrendersFocusOnKeystroke(true); // focus
-                if (table.getEditorComponent() != null) { // set blinking cursor
-                    table.getEditorComponent().requestFocus();
-                }
-                renderer.setToolTipText(null);
-            } else {
-                renderer.setToolTipText(text);
-            }
+            renderer.setToolTipText(text);            
             return renderer;
         }
     }
@@ -725,33 +745,49 @@ public abstract class AbstractTable extends JXTable {
             initTabs();
         }
     }
-
-    public void insertRow(Activity activity) {
-        clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)       
-        // By default, the row is added at the bottom of the list
-        // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
-        getModel().addRow(activity); // we add in the Model...
-        int rowCount = getRowCount(); // get row count on the view not the model !
-        if (rowCount == 1) { // refresh tabs as the very first row has just been added to the table
-            initTabs();
-        }
-        int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
-        setRowSelectionInterval(currentRow, currentRow);
-        scrollRectToVisible(getCellRect(currentRow, 0, true));
+    
+    // insert but no selection of the inserted row (used when editing)
+    public int insertRowNoSelection(Activity activity) {
+        return insertRow(activity, false, false);
+    }    
+    
+    // insert but current selection not cleared (used when multiple row inserted)
+    public int addRow(Activity activity) {
+        return insertRow(activity, false, true);
+    }
+    
+    // clear selection, insert then select
+    public int insertRow(Activity activity) {
+        return insertRow(activity, true, true);
     }
 
-    // add selection interval
-    public void addRow(Activity activity) {
+    // Insert new row
+    public int insertRow(Activity activity, boolean clearSelection, boolean selectRow) {
+        if (clearSelection) {
+            clearSelection(); // clear the selection so insertRow won't fire valueChanged on ListSelectionListener (especially in case of large selection)       
+        }
         // By default, the row is added at the bottom of the list
         // However, if one of the columns has been previously sorted the position of the row might not be the bottom position...
         getModel().addRow(activity); // we add in the Model...
         int rowCount = getRowCount(); // get row count on the view not the model !
         if (rowCount == 1) { // refresh tabs as the very first row has just been added to the table
             initTabs();
-        }
+        }        
         int currentRow = convertRowIndexToView(rowCount - 1); // ...while selecting in the View
-        addRowSelectionInterval(currentRow, currentRow);
-        scrollRectToVisible(getCellRect(currentRow, 0, true));
+        if (selectRow) {
+            addRowSelectionInterval(currentRow, currentRow); // we use addRowSelectionInterval instead of setRowSelectionInterval so we get the inserted row(s) selected at once
+        }
+        scrollRectToVisible(getCellRect(currentRow, 0, true));        
+        return currentRow;
+    }
+    
+    protected void editTileCellAtRowIndex(int rowIndex) {
+        if (editCellAt(rowIndex, convertColumnIndexToView(AbstractTableModel.TITLE_COLUMN_INDEX))) { // programatic editing
+            setSurrendersFocusOnKeystroke(true);
+            if (getEditorComponent() != null) { // set blinking cursor
+                getEditorComponent().requestFocus();
+            }
+        }
     }
 
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables only
