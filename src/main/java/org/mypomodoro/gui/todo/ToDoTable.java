@@ -471,8 +471,8 @@ public class ToDoTable extends AbstractTable {
         activity.setIsUnplanned(true);
         activity.setName("(U) " + Labels.getString("Common.Unplanned"));
         getList().add(activity);
-        activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-        insertRow(activity);
+        int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
+        editTileCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -491,8 +491,8 @@ public class ToDoTable extends AbstractTable {
             activity.setIsUnplanned(true);
             activity.setName("(I) " + Labels.getString("ToDoListPanel.Internal"));
             getList().add(activity);
-            activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(activity);
+            int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
+            editTileCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -512,8 +512,8 @@ public class ToDoTable extends AbstractTable {
             activity.setIsUnplanned(true);
             activity.setName("(E) " + Labels.getString("ToDoListPanel.External"));
             getList().add(activity);
-            activity.setName(""); // the idea is to insert an empty title in the model so the editing (editCellAt) shows an empty field
-            insertRow(activity);
+            int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
+            editTileCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -566,7 +566,8 @@ public class ToDoTable extends AbstractTable {
         if (panel.getMainTable().getModel().getRowCount() > 0) { // main table not empty
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             Color defaultForegroundColor = ColorUtil.BLACK;
-            if (selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
+            if (selectedToDo != null 
+                    && selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getEditPanel().getIconPanel().setBackground(Main.selectedRowColor);
@@ -580,7 +581,8 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
             }
-            if (getSelectedRowCount() <= 1) { // no selection (sub-table) or single selection
+            if (selectedToDo != null 
+                    && getSelectedRowCount() <= 1) { // no selection (sub-table) or single selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
                     ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);

@@ -130,7 +130,10 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
-        tasks.add(typeReleaseAndIteration); // include ToDos /Iteration Backlog tasks
+        JPanel releaseanditeration = new JPanel();            
+        releaseanditeration.setLayout(new FlowLayout());
+        releaseanditeration.add(typeReleaseAndIteration);
+        tasks.add(releaseanditeration); // include ToDos /Iteration Backlog tasks
         // ReportList / Release Backlog only
         typeReleaseOnly.addActionListener(new ActionListener() {
 
@@ -146,10 +149,13 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
-        tasks.add(typeReleaseOnly); // excludes ToDos/Iteration Backlog tasks
+        JPanel releaseonly = new JPanel();            
+        releaseonly.setLayout(new FlowLayout());
+        releaseonly.add(typeReleaseOnly);
+        tasks.add(releaseonly); // excludes ToDos/Iteration Backlog tasks
         // Specific iteration
         if (Main.preferences.getAgileMode()) {
-            JPanel iteration = new JPanel();
+            JPanel iteration = new JPanel();            
             iteration.setLayout(new FlowLayout());
             typeIterationOnly.addActionListener(new ActionListener() {
 
@@ -201,6 +207,7 @@ public class ConfigureInputForm extends JPanel {
         });
         datesInputFormPanel.setBorder(borderDates);
         datesInputFormPanel.setLayout(new GridBagLayout());
+        
         addDatesFields();
         tasksInputFormPanel.add(datesInputFormPanel, cChart);
     }
@@ -237,6 +244,7 @@ public class ConfigureInputForm extends JPanel {
 
     private void addDatesFields() {
         GridBagConstraints cChart = new GridBagConstraints();
+        cChart.insets = new Insets(0, 5, 2, 5);
         cChart.gridx = 0;
         cChart.gridy = 0;
         // Dates
@@ -316,11 +324,15 @@ public class ConfigureInputForm extends JPanel {
         // second line
         exclusiongbc.gridx = 1;
         exclusiongbc.gridy = 1;
-        final JTextArea excludedDatesLabel = new JTextArea();
-        excludedDatesLabel.setEditable(false);
-        excludedDatesLabel.setVisible(false);
-        excludedDatesLabel.setPreferredSize(new Dimension(270, 100));
-        excludedDatesLabel.setLineWrap(true); // enable wrapping
+        final JTextArea excludedDatesTextArea = new JTextArea();
+        excludedDatesTextArea.setEditable(false);
+        // Set colors according to input settings and themes
+        // because the area is not editable by default the colors has to be reset
+        excludedDatesTextArea.setBackground(new JTextArea().getBackground());
+        excludedDatesTextArea.setForeground(new JTextArea().getForeground());
+        excludedDatesTextArea.setVisible(false);
+        excludedDatesTextArea.setPreferredSize(new Dimension(270, 100));
+        excludedDatesTextArea.setLineWrap(true); // enable wrapping
         excludeDatePicker.addActionListener(new ActionListener() {
 
             @Override
@@ -337,8 +349,8 @@ public class ConfigureInputForm extends JPanel {
                     text += DateUtil.getFormatedDate(date);
                     increment++;
                 }
-                excludedDatesLabel.setText(text);
-                excludedDatesLabel.setVisible(true);
+                excludedDatesTextArea.setText(text);
+                excludedDatesTextArea.setVisible(true);
             }
         });
         exclusion.add(excludeDatePicker, exclusiongbc);
@@ -350,15 +362,15 @@ public class ConfigureInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 excludedDates.clear();
-                excludedDatesLabel.setText("");
-                excludedDatesLabel.setVisible(false);
+                excludedDatesTextArea.setText("");
+                excludedDatesTextArea.setVisible(false);
             }
         });
         exclusion.add(reset, exclusiongbc);
         exclusiongbc.gridx = 1;
         exclusiongbc.gridy = 2;
         exclusiongbc.gridwidth = 2;
-        exclusion.add(excludedDatesLabel, exclusiongbc);
+        exclusion.add(excludedDatesTextArea, exclusiongbc);
         datesInputFormPanel.addMouseListener(new MouseListener() {
 
             @Override

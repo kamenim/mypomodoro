@@ -104,7 +104,7 @@ public class ActivitiesTable extends AbstractTable {
         });
 
         // Listener on editable cells
-        // Table model has a flaw: the update table event is fired whenever once click on an editable cell
+        // Table model has a flaw: the update table event is fired whenever once clicks on an editable cell
         // To avoid update overhead, we compare old value with new value
         // (we could also have used solution found at https://tips4java.wordpress.com/2009/06/07/table-cell-listener)        
         getModel().addTableModelListener(new AbstractTableModelListener() {
@@ -394,14 +394,13 @@ public class ActivitiesTable extends AbstractTable {
     }
 
     // default name (N) + New task
-    // cell editing is done by TitleRenderer in AbstractActivitiesTable
     @Override
     public void createNewTask() {
         Activity newActivity = new Activity();
         newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
-        newActivity.setName(""); // the idea is to insert an empty title so the editing (editCellAt in TitleRenderer) shows an empty field
-        insertRow(newActivity);
+        int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
+        editTileCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -412,8 +411,9 @@ public class ActivitiesTable extends AbstractTable {
         if (getSelectedRowCount() == 1) {
             Activity activity = getActivityFromSelectedRow();
             try {
-                Activity duplicatedActivity = getList().duplicate(activity);
-                insertRow(duplicatedActivity);
+                Activity duplicatedActivity = getList().duplicate(activity);                
+                int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
+                editTileCellAtRowIndex(row);
                 if (duplicatedActivity.isSubTask()) {
                     panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 }
