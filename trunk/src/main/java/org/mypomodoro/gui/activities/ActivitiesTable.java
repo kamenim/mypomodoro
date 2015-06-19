@@ -438,7 +438,10 @@ public class ActivitiesTable extends AbstractTable {
 
     @Override
     public void deleteTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);
+        Activity activity = getActivityFromRowIndex(rowIndex);        
+        if (activity.isSubTask()) {
+            panel.getMainTable().removePomsFromSelectedRow(activity);
+        }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
     }

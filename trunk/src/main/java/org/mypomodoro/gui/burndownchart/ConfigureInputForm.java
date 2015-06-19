@@ -57,8 +57,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ConfigureInputForm extends JPanel {
 
-    // TODO improve layout of subpanels
-    protected static final Dimension LABEL_DIMENSION = new Dimension(170, 20);
+    protected static final Dimension LABEL_DIMENSION = new Dimension(400, 100);
     // Tasks form
     private final JPanel tasksInputFormPanel = new JPanel();
     private final JComboBox iterationonlyComboBox = new JComboBox();
@@ -88,6 +87,9 @@ public class ConfigureInputForm extends JPanel {
 
     public ConfigureInputForm() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        
+        datesInputFormPanel.setPreferredSize(new Dimension(500, 140));                
+        iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));
 
         addTasksInputFormPanel();
         if (!Main.preferences.getAgileMode()) {
@@ -243,26 +245,22 @@ public class ConfigureInputForm extends JPanel {
     }
 
     private void addDatesFields() {
-        GridBagConstraints cChart = new GridBagConstraints();
-        cChart.insets = new Insets(0, 5, 2, 5);
-        cChart.gridx = 0;
-        cChart.gridy = 0;
-        // Dates
         JPanel dates = new JPanel();
         dates.setLayout(new GridBagLayout());
         GridBagConstraints datesgbc = new GridBagConstraints();
+        datesgbc.weightx = 1;
+        datesgbc.weighty = 1;
+        datesgbc.fill = GridBagConstraints.BOTH;
+        datesgbc.insets = new Insets(0, 5, 2, 5);
+        // Date pickers
         FormLabel dateslabel = new FormLabel(Labels.getString("BurndownChartPanel.Dates") + "*: ");
-        dateslabel.setMinimumSize(LABEL_DIMENSION);
-        dateslabel.setPreferredSize(LABEL_DIMENSION);
+        //dateslabel.setMinimumSize(LABEL_DIMENSION);
+        //dateslabel.setPreferredSize(LABEL_DIMENSION);
         datesgbc.gridx = 0;
         datesgbc.gridy = 0;
-        datesgbc.weightx = 1.0;
-        datesgbc.weighty = 0.5;
         dates.add(dateslabel, datesgbc);
         datesgbc.gridx = 1;
         datesgbc.gridy = 0;
-        datesgbc.weightx = 1.0;
-        datesgbc.weighty = 0.5;
         startDatePicker.addActionListener(new ActionListener() {
 
             @Override
@@ -282,8 +280,6 @@ public class ConfigureInputForm extends JPanel {
         dates.add(startDatePicker, datesgbc);
         datesgbc.gridx = 2;
         datesgbc.gridy = 0;
-        datesgbc.weightx = 1.0;
-        datesgbc.weighty = 0.5;
         endDatePicker.addActionListener(new ActionListener() {
 
             @Override
@@ -301,29 +297,23 @@ public class ConfigureInputForm extends JPanel {
             }
         });
         dates.add(endDatePicker, datesgbc);
-        datesInputFormPanel.add(dates, cChart);
         // Exclusion
-        cChart.gridx = 0;
-        cChart.gridy = 1;
         // first line
-        JPanel exclusion = new JPanel();
-        exclusion.setLayout(new GridBagLayout());
-        GridBagConstraints exclusiongbc = new GridBagConstraints();
         FormLabel exclusionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Exclusion") + "*: ");
-        exclusionlabel.setMinimumSize(LABEL_DIMENSION);
-        exclusionlabel.setPreferredSize(LABEL_DIMENSION);
-        exclusiongbc.gridx = 0;
-        exclusiongbc.gridy = 0;
-        exclusion.add(exclusionlabel, exclusiongbc);
-        exclusiongbc.gridx = 1;
-        exclusiongbc.gridy = 0;
-        exclusion.add(excludeSaturdays, exclusiongbc);
-        exclusiongbc.gridx = 2;
-        exclusiongbc.gridy = 0;
-        exclusion.add(excludeSundays, exclusiongbc);
+        //exclusionlabel.setMinimumSize(LABEL_DIMENSION);
+        //exclusionlabel.setPreferredSize(LABEL_DIMENSION);
+        datesgbc.gridx = 0;
+        datesgbc.gridy = 1;
+        dates.add(exclusionlabel, datesgbc);
+        datesgbc.gridx = 1;
+        datesgbc.gridy = 1;
+        dates.add(excludeSaturdays, datesgbc);
+        datesgbc.gridx = 2;
+        datesgbc.gridy = 1;
+        dates.add(excludeSundays, datesgbc);
         // second line
-        exclusiongbc.gridx = 1;
-        exclusiongbc.gridy = 1;
+        datesgbc.gridx = 1;
+        datesgbc.gridy = 2;
         final JTextArea excludedDatesTextArea = new JTextArea();
         excludedDatesTextArea.setEditable(false);
         // Set colors according to input settings and themes
@@ -331,7 +321,7 @@ public class ConfigureInputForm extends JPanel {
         excludedDatesTextArea.setBackground(new JTextArea().getBackground());
         excludedDatesTextArea.setForeground(new JTextArea().getForeground());
         excludedDatesTextArea.setVisible(false);
-        excludedDatesTextArea.setPreferredSize(new Dimension(270, 100));
+        excludedDatesTextArea.setPreferredSize(new Dimension(270, 50));
         excludedDatesTextArea.setLineWrap(true); // enable wrapping
         excludeDatePicker.addActionListener(new ActionListener() {
 
@@ -353,9 +343,9 @@ public class ConfigureInputForm extends JPanel {
                 excludedDatesTextArea.setVisible(true);
             }
         });
-        exclusion.add(excludeDatePicker, exclusiongbc);
-        exclusiongbc.gridx = 2;
-        exclusiongbc.gridy = 1;
+        dates.add(excludeDatePicker, datesgbc);
+        datesgbc.gridx = 2;
+        datesgbc.gridy = 2;
         JButton reset = new JButton(Labels.getString("Common.Reset"));
         reset.addActionListener(new ActionListener() {
 
@@ -366,11 +356,11 @@ public class ConfigureInputForm extends JPanel {
                 excludedDatesTextArea.setVisible(false);
             }
         });
-        exclusion.add(reset, exclusiongbc);
-        exclusiongbc.gridx = 1;
-        exclusiongbc.gridy = 2;
-        exclusiongbc.gridwidth = 2;
-        exclusion.add(excludedDatesTextArea, exclusiongbc);
+        dates.add(reset, datesgbc);
+        datesgbc.gridx = 1;
+        datesgbc.gridy = 3;
+        datesgbc.gridwidth = 2;
+        dates.add(excludedDatesTextArea, datesgbc);
         datesInputFormPanel.addMouseListener(new MouseListener() {
 
             @Override
@@ -401,7 +391,7 @@ public class ConfigureInputForm extends JPanel {
                 // no use
             }
         });
-        datesInputFormPanel.add(exclusion, cChart);
+        datesInputFormPanel.add(dates);
     }
 
     private void addIterationsFields() {
@@ -414,8 +404,8 @@ public class ConfigureInputForm extends JPanel {
         iterationsgbc.fill = GridBagConstraints.BOTH;
         iterationsgbc.insets = new Insets(0, 5, 2, 5);
         FormLabel iterationslabel = new FormLabel(Labels.getString("BurndownChartPanel.Iterations") + "*: ");
-        iterationslabel.setMinimumSize(LABEL_DIMENSION);
-        iterationslabel.setPreferredSize(LABEL_DIMENSION);
+        //iterationslabel.setMinimumSize(LABEL_DIMENSION);
+        //iterationslabel.setPreferredSize(LABEL_DIMENSION);
         iterationsgbc.gridx = 0;
         iterationsgbc.gridy = 0;
         iterations.add(iterationslabel, iterationsgbc);
@@ -500,31 +490,27 @@ public class ConfigureInputForm extends JPanel {
         JPanel dimension = new JPanel();
         dimension.setLayout(new GridBagLayout());
         GridBagConstraints dimensionsgbc = new GridBagConstraints();
+        dimensionsgbc.weightx = 1;
+        dimensionsgbc.weighty = 1;
+        dimensionsgbc.fill = GridBagConstraints.BOTH;
+        dimensionsgbc.insets = new Insets(0, 5, 2, 5);
         FormLabel dimensionlabel = new FormLabel(Labels.getString("BurndownChartPanel.Dimension") + "*: ");
-        dimensionlabel.setMinimumSize(LABEL_DIMENSION);
-        dimensionlabel.setPreferredSize(LABEL_DIMENSION);
+        //dimensionlabel.setMinimumSize(LABEL_DIMENSION);
+        //dimensionlabel.setPreferredSize(LABEL_DIMENSION);
         dimensionsgbc.gridx = 0;
         dimensionsgbc.gridy = 0;
-        dimensionsgbc.weightx = 1.0;
-        dimensionsgbc.weighty = 0.5;
         dimension.add(dimensionlabel, dimensionsgbc);
         dimensionsgbc.gridx = 1;
         dimensionsgbc.gridy = 0;
-        dimensionsgbc.weightx = 1.0;
-        dimensionsgbc.weighty = 0.5;
         chartWidth.setPreferredSize(new Dimension(40, 25));
         chartWidth.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartWidth.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
         dimension.add(chartWidth, dimensionsgbc);
         dimensionsgbc.gridx = 2;
         dimensionsgbc.gridy = 0;
-        dimensionsgbc.weightx = 1.0;
-        dimensionsgbc.weighty = 0.5;
         dimension.add(new JLabel(" X "), dimensionsgbc);
         dimensionsgbc.gridx = 3;
         dimensionsgbc.gridy = 0;
-        dimensionsgbc.weightx = 1.0;
-        dimensionsgbc.weighty = 0.5;
         chartHeight.setPreferredSize(new Dimension(40, 25));
         chartHeight.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartHeight.getDocument()).setDocumentFilter(new IntegerDocumentFilter());

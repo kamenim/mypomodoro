@@ -99,7 +99,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
             //title += " (0)";
             getTitlePanel().hideDuplicateButton();
         }
-        getTitlePanel().showCreateButton();
+        if (canCreateNewTask()) {
+            getTitlePanel().showCreateButton();
+        }
         if (canMoveSubtasks()) {
             getTitlePanel().showMoveSubtasksButton();
         } else {
@@ -195,34 +197,35 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     @Override
-    public void moveSubtasks() {
+    public void moveSubtasksToMainTable() {
         MoveSubtaskButton m = new MoveSubtaskButton(Labels.getString("Common.Move subtask"), Labels.getString("Common.Are you sure to move those subtasks?"), panel);
         m.doClick();
     }
-
-    // TODO write moveSubtask
+    
     @Override
-    public void moveSubtask(int rowIndex) {
+    public void moveSubtaskToMainTable(int rowIndex) {
         Activity subtask = getActivityFromRowIndex(rowIndex);
         subtask.setParentId(-1); // make subtask a task
         getList().update(subtask); // update ex-subtask
         // remove pomodoros from parent task
-        Activity parentTask = panel.getMainTable().getActivityFromSelectedRow();
-        getList().update(parentTask); // update parent task
+        panel.getMainTable().removePomsFromSelectedRow(subtask);
         removeRow(rowIndex);
-        panel.getMainTable().insertRow(subtask);
         // set main table as current table when no subtasks anymore
         if (getRowCount() == 0) {
             panel.setCurrentTable(panel.getMainTable());
         }
     }
 
-    private boolean canMoveSubtasks() {
-        return getSelectedRowCount() > 0;
-    }
-
     // Can't move subtasks
     @Override
     public void moveTask(int rowIndex) {
+    }
+    
+    private boolean canCreateNewTask() {
+        return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selettion
+    }
+
+    private boolean canMoveSubtasks() {
+        return getSelectedRowCount() > 0;
     }
 }

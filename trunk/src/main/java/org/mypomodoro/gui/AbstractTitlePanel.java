@@ -20,6 +20,7 @@ import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Robot;
@@ -75,9 +76,12 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     public AbstractTitlePanel() {
         setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        setBorder(new EtchedBorder(EtchedBorder.LOWERED));        
+        // Fixed size : prevents changes in height when resizing
+        setMaximumSize(new Dimension((int)new Frame().getToolkit().getScreenSize().getWidth(), 30));
+        setMinimumSize(new Dimension(800, 30));
         setPreferredSize(new Dimension(800, 30));
-        //setPreferredSize(new Dimension(getWidth(), 40)); // set the height        
+        
         // init button panel
         buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 1));
         buttonPanel.setBorder(null);

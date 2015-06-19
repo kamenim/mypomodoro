@@ -108,8 +108,11 @@ public class TestMenu extends JMenu {
                         Integer[] iterationsForActivities = new Integer[]{-1, -1, -1, iterations.length - 1, iterations.length};
                         Random rand = new Random();
                         int activityListValue = 0;
+                        int subactivityListValue = 0;
                         int todoListValue = 0;
+                        int subtodoListValue = 0;
                         int reportListValue = 0;
+                        int subreportListValue = 0;
                         final StringBuilder progressText = new StringBuilder();
                         for (int i = 0; i < nbTask; i++) {
                             if (!MainPanel.progressBar.isStopped()) {
@@ -160,14 +163,14 @@ public class TestMenu extends JMenu {
                                         ReportList.getList().reopenToActivtyList(a);
                                         if (withSubtask) {
                                             // Adding subtasks
-                                            addSubTasks(a, ActivityList.getList());
+                                            subreportListValue += addSubTasks(a, ActivityList.getList());
                                         }
                                         Main.gui.getActivityListPanel().getMainTable().insertRow(a); // main table !
                                         activityListValue++;
                                     } else {
                                         if (withSubtask) {
                                             // Adding subtasks
-                                            addSubTasks(a, ReportList.getList());
+                                            subreportListValue += addSubTasks(a, ReportList.getList());
                                         }
                                         Main.gui.getReportListPanel().getMainTable().insertRow(a); // main table !
                                         reportListValue++;
@@ -179,7 +182,7 @@ public class TestMenu extends JMenu {
                                         }
                                         ToDoList.getList().add(a);
                                         if (withSubtask) { // Adding subtasks                                            
-                                            addSubTasks(a, ToDoList.getList());
+                                            subtodoListValue += addSubTasks(a, ToDoList.getList());
                                         }
                                         Main.gui.getToDoPanel().getMainTable().insertRow(a); // main table !
                                         todoListValue++;
@@ -200,7 +203,7 @@ public class TestMenu extends JMenu {
                                         a.setActualPoms(0);
                                         ActivityList.getList().add(a, a.getDate());
                                         if (withSubtask) { // Adding subtasks                                            
-                                            addSubTasks(a, ActivityList.getList());
+                                            subactivityListValue += addSubTasks(a, ActivityList.getList());
                                         }
                                         Main.gui.getActivityListPanel().getMainTable().insertRow(a);
                                         activityListValue++;
@@ -220,12 +223,21 @@ public class TestMenu extends JMenu {
                                 progressText.setLength(0); // reset string builder
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
                                 progressText.append(Integer.toString(activityListValue));
+                                if (withSubtask) {
+                                    progressText.append(" (" + Integer.toString(subactivityListValue) + ")");
+                                }
                                 progressText.append(" | ");
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
                                 progressText.append(Integer.toString(todoListValue));
+                                if (withSubtask) {
+                                    progressText.append(" (" + Integer.toString(subtodoListValue) + ")");
+                                }
                                 progressText.append(" | ");
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ReportListPanel.Report List") + " : ");
                                 progressText.append(Integer.toString(reportListValue));
+                                if (withSubtask) {
+                                    progressText.append(" (" + Integer.toString(subreportListValue) + ")");
+                                }
                                 SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
@@ -265,7 +277,7 @@ public class TestMenu extends JMenu {
             }.start();
         }
 
-        private void addSubTasks(Activity a, AbstractActivities list) {
+        private int addSubTasks(Activity a, AbstractActivities list) {
             Random rand = new Random();
             int totalEstimated = 0;
             int totalReal = 0;
@@ -340,6 +352,7 @@ public class TestMenu extends JMenu {
                 }
                 a.databaseUpdate();
             }
+            return nbSubTask;
         }
     }
 

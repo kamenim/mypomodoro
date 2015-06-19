@@ -44,7 +44,6 @@ public class DiscontinuousButton extends TransparentButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (isDiscontinuousIcon) {
                     setContinuousIcon();
                     pomodoro.discontinueWorkflow();
@@ -52,6 +51,7 @@ public class DiscontinuousButton extends TransparentButton {
                     setDiscontinuousIcon();
                     pomodoro.continueWorkflow();
                 }
+                pomodoro.setTooltipOnImage();
             }
         });
     }
