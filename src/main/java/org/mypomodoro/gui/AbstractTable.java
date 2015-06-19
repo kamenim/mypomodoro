@@ -443,7 +443,9 @@ public abstract class AbstractTable extends JXTable {
     // scroll to the bottom of the selection or, at least, the last item on the list of selected rows
     public void scrollToSelectedRow() {
         int[] selectedRows = getSelectedRows();
-        scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+        if (selectedRows.length > 0) {
+            scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+        }
     }
 
     public void scrollToRowIndex(int row) {
@@ -454,8 +456,10 @@ public abstract class AbstractTable extends JXTable {
     // scroll to the bottom of the selection or, at least, the last item on the list of selected rows
     public void scrollToSelectedRows() {
         int[] selectedRows = panel.getMainTable().getSelectedRows();
-        panel.getMainTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
-        panel.getSubTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+        if (selectedRows.length > 0) {
+            panel.getMainTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+            panel.getSubTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
+        }
     }
 
     // selected row BOLD
@@ -722,11 +726,11 @@ public abstract class AbstractTable extends JXTable {
         // do nothign by default
     }
 
-    public void moveSubtasks() {
+    public void moveSubtasksToMainTable() {
         // do nothign by default
     }
 
-    public void moveSubtask(int rowIndex) {
+    public void moveSubtaskToMainTable(int rowIndex) {
         // do nothign by default
     }
 

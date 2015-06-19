@@ -73,7 +73,7 @@ public class TitlePanel extends AbstractTitlePanel {
 
     @Override
     protected void moveSubtasks() {
-        table.moveSubtasks();
+        table.moveSubtasksToMainTable();
     }
 
     @Override

@@ -41,18 +41,18 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
             int realpoms = activity.getActualPoms();
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
-            // no subtask --> estimated may be changed
-            //if (activity.isSubTask() || !ActivityList.hasSubTasks(activity.getId())) {
-            labelBefore.setText(realpoms > 0 ? realpoms + " /" : "");
-            comboBox.setVisible(true);
-            comboBox.removeAllItems();
-            comboBox.addItem(estimatedpoms);
-            labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");
-            /*} else { // has subtasks --> estimated cannot be changed
-             labelBefore.setText(realpoms > 0 ? realpoms + " / " : "");
-             comboBox.setVisible(false);
-             labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
-             }*/
+            // real poms > 0 --> estimated cannot be changed
+            if (realpoms > 0) {
+                labelBefore.setText(realpoms + " / ");
+                comboBox.setVisible(false);
+                labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
+            } else { // no real poms --> estimated may be changed
+                labelBefore.setText("");
+                comboBox.setVisible(true);
+                comboBox.removeAllItems();
+                comboBox.addItem(estimatedpoms);
+                labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");
+            }
             setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms + overestimatedpoms));
         }
         return this;

@@ -280,7 +280,7 @@ public class ToDoSubTable extends ToDoTable {
 
     // only new subtask can be created
     private boolean canCreateNewTask() {
-        return true;
+        return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selettion
     }
 
     @Override
@@ -294,6 +294,7 @@ public class ToDoSubTable extends ToDoTable {
     @Override
     public void deleteTask(int rowIndex) {
         Activity activity = getActivityFromRowIndex(rowIndex);
+        panel.getMainTable().removePomsFromSelectedRow(activity);
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
         // set main table as current table when no subtasks anymore

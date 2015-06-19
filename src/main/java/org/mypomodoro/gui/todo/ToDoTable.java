@@ -540,8 +540,8 @@ public class ToDoTable extends AbstractTable {
                 panel.getMainTable().addPomsToSelectedRow(0, 0, poms);
                 panel.getMainTable().setTitle();
             }
-            panel.getCurrentTable().repaint();
-            panel.getCurrentTable().setTitle();
+            repaint();
+            setTitle();
             // update details panel
             panel.getDetailsPanel().selectInfo(selectedToDo);
             panel.getDetailsPanel().showInfo();

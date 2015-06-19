@@ -386,8 +386,10 @@ public class Pomodoro {
                 tooltip += "<br>";
                 // use tmpPomodoroLength because the value of the timer may have changed (minus / plus buttons)        
                 Date dateStartNextBreak = DateUtil.addMillisecondsToNow(time); // either short or long break
-                int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber; // number of pomodoro yet to be done including current one        
-                if (pomSetNumberRemaining == 1) { // next break is a long break
+                int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber; // number of pomodoro yet to be done including current one
+                if (isDiscontinuous()) {
+                    tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateStartNextBreak));
+                } else if (pomSetNumberRemaining == 1) { // next break is a long break
                     tooltip += Labels.getString("ToDoListPanel.Long break at", DateUtil.getFormatedTime(dateStartNextBreak));
                 } else { // next break is a short break
                     tooltip += Labels.getString("ToDoListPanel.Next break at", DateUtil.getFormatedTime(dateStartNextBreak));

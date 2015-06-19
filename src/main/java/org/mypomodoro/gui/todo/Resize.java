@@ -24,7 +24,6 @@ import java.awt.Robot;
 import javax.swing.JFrame;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
-import org.mypomodoro.gui.preferences.PreferencesInputForm;
 
 /**
  * Resize app either using the shortcut or the resize button
@@ -55,11 +54,6 @@ public class Resize {
             // set down size icon for resize button
             ToDoPanel.RESIZEBUTTON.setDownSizeIcon();
             viewCount = 1;
-            // The next two lines adress an issue found on NimRod theme with the resizing of titles                    
-            if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
-                Main.gui.getToDoPanel().getSubTableTitlePanel().setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
-                Main.gui.getToDoPanel().getTableTitlePanel().setMaximumSize(new Dimension(Main.gui.getSize().width, 30));
-            }
         } else { // back to the original location
             Dimension size;
             Main.gui.pack();
@@ -144,9 +138,9 @@ public class Resize {
         }
         // we make sure the selected task appears on screen despite the resizing
         Main.gui.getActivityListPanel().getCurrentTable().scrollToSelectedRows();
-        Main.gui.getToDoPanel().getCurrentTable().scrollToSelectedRows(); // this doesn't work when viewCount = 3 (timer + list + tabs) with tasks selected at the bottom of the (long) list
+        Main.gui.getToDoPanel().getCurrentTable().scrollToSelectedRows();
         Main.gui.getReportListPanel().getCurrentTable().scrollToSelectedRows();
-        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRow();
+        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRow();        
     }
 
     /**

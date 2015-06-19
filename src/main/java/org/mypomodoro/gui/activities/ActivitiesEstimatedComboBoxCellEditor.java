@@ -41,23 +41,27 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null) {
-            int realPoms = activity.getActualPoms(); // real pomodoros of the parent task could be higher than the sum of real pomodoros of its subtasks            
-            int overestimatedPoms = activity.getOverestimatedPoms(); // overestimated pomodoros of the parent task could be higher than the sum of overestimated pomodoros of its subtasks
-            int mimumEstimated = overestimatedPoms > 0 && realPoms >= overestimatedPoms ? realPoms - overestimatedPoms : realPoms;
-            int estimated = 0;
-            comboBox.setVisible(true);
-            comboBox.removeAllItems();
-            if (!activity.isSubTask()) {
-                for (Activity act : ActivityList.getSubTaskList(activity.getId())) {
-                    estimated += act.getEstimatedPoms();
+            int realPoms = activity.getActualPoms();
+            if (realPoms > 0) {
+                comboBox.setVisible(false);
+            } else {
+                int overestimatedPoms = activity.getOverestimatedPoms();
+                int mimumEstimated = overestimatedPoms > 0 && realPoms >= overestimatedPoms ? realPoms - overestimatedPoms : realPoms;
+                int estimated = 0;
+                comboBox.setVisible(true);
+                comboBox.removeAllItems();
+                if (!activity.isSubTask()) {
+                    for (Activity act : ActivityList.getSubTaskList(activity.getId())) {
+                        estimated += act.getEstimatedPoms();
+                    }
                 }
+                int minimum = mimumEstimated > estimated ? mimumEstimated : estimated;
+                int maximum = minimum + Main.preferences.getMaxNbPomPerActivity();
+                for (int i = minimum; i <= maximum; i++) {
+                    comboBox.addItem(i);
+                }
+                comboBox.setSelectedItem(activity.getEstimatedPoms());
             }
-            int minimum = mimumEstimated > estimated ? mimumEstimated : estimated;
-            int maximum = minimum + Main.preferences.getMaxNbPomPerActivity();
-            for (int i = minimum; i <= maximum; i++) {
-                comboBox.addItem(i);
-            }
-            comboBox.setSelectedItem(activity.getEstimatedPoms());
         }
         return this;
     }
