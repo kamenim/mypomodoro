@@ -31,12 +31,14 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -53,6 +55,10 @@ import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
@@ -60,10 +66,18 @@ import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
+/*import java.io.FileWriter;
+ import java.io.IOException;
+ import org.jdom.Attribute;
+ import org.jdom.Document;
+ import org.jdom.Element;
+ import org.jdom.output.Format;
+ import org.jdom.output.XMLOutputter;*/
 /**
  * Panel to export reports
  *
@@ -95,6 +109,26 @@ public class ExportPanel extends JPanel {
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};
+    Labels labelsEN = new Labels(new Locale("en_US"));
+    private final String[] headerEntriesEN = new String[]{"U",
+        labelsEN.getString(Main.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
+        labelsEN.getString("Common.Date completed"),
+        labelsEN.getString("Common.Title"),
+        labelsEN.getString("Common.Estimated"),
+        labelsEN.getString("Common.Overestimated"),
+        labelsEN.getString("Common.Real"),
+        labelsEN.getString("ReportListPanel.Diff I"),
+        labelsEN.getString("ReportListPanel.Diff II"),
+        labelsEN.getString("ToDoListPanel.Internal"),
+        labelsEN.getString("ToDoListPanel.External"),
+        labelsEN.getString("Common.Type"),
+        labelsEN.getString("Common.Author"),
+        labelsEN.getString("Common.Place"),
+        labelsEN.getString("Common.Description"),
+        labelsEN.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+        labelsEN.getString("Agile.Common.Story Points"),
+        labelsEN.getString("Agile.Common.Iteration"),
+        labelsEN.getString("Common.Priority")};
 
     public ExportPanel(IListPanel panel) {
         this.panel = panel;
@@ -199,6 +233,8 @@ public class ExportPanel extends JPanel {
                                 exportOK = exportExcel(fileName, act);
                             } else if (exportInputForm.isFileExcelOpenXMLFormat()) {
                                 exportOK = exportExcelx(fileName, act);
+                            } else if (exportInputForm.isFileXMLFormat()) {
+                                exportOK = exportXML(fileName, act);
                             } else if (exportInputForm.isFileGoogleDriveFormat()) {
                                 exportOK = exportToGoogleDrive(fileName, act);
                             }
@@ -357,6 +393,85 @@ public class ExportPanel extends JPanel {
         workbook.write(fileOut);
         fileOut.flush();
         fileOut.close();
+        return true;
+    }
+
+    // using JDOM
+    private boolean exportXML(String fileName, Iterator<Activity> act)
+            throws IOException {
+        // returns an xml element object  
+        // 'tasks' is passed to make it root element in document  
+        Element tasks = new Element("tasks");
+        // created an document object, all elements will be added to it  
+        // passes 'tasks' as parameter to make it root element of document  
+        Document document = new Document(tasks);
+        while (act.hasNext()) {
+            // created other element to add to document  
+            Element task = new Element("task");
+            /*
+            
+            
+            attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
+            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+                attributes[2] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
+            } else {
+                attributes[2] = "";
+            }
+            attributes[3] = activity.getName();
+            attributes[4] = activity.getEstimatedPoms() + "";
+            attributes[5] = activity.getOverestimatedPoms() + "";
+            attributes[6] = activity.getActualPoms() + "";
+            attributes[7] = (activity.getActualPoms() - activity.getEstimatedPoms()) + "";
+            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : "";
+            attributes[9] = activity.getNumInternalInterruptions() + "";
+            attributes[10] = activity.getNumInterruptions() + "";
+            attributes[11] = activity.getType();
+            attributes[12] = activity.getAuthor();
+            attributes[13] = activity.getPlace();
+            attributes[14] = activity.getDescription();
+            attributes[15] = activity.getNotes();
+            attributes[16] = activity.getStoryPoints() + "";
+            attributes[17] = activity.getIteration() + "";
+            attributes[18] = activity.getPriority() + "";
+            
+            */
+            Activity activity = act.next();
+            task.addContent(new Element(headerEntriesEN[0].replaceAll("\\s","")).setText(activity.isUnplanned() ? "1" : "0"));
+            //task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","")).setText(DateUtil.getFormatedDate(activity.getDate(), datePattern)));
+            task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","")).setText(""));
+            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+                //task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","")).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern)));                
+            } else {
+                task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","")).setText(""));
+            }
+            task.addContent(new Element(headerEntriesEN[3].replaceAll("\\s","")).setText(activity.getName()));
+            task.addContent(new Element(headerEntriesEN[4].replaceAll("\\s","")).setText(activity.getEstimatedPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[5].replaceAll("\\s","")).setText(activity.getOverestimatedPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[6].replaceAll("\\s","")).setText(activity.getActualPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[7].replaceAll("\\s","")).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
+            task.addContent(new Element(headerEntriesEN[8].replaceAll("\\s","")).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
+            task.addContent(new Element(headerEntriesEN[9].replaceAll("\\s","")).setText(activity.getNumInternalInterruptions() + ""));
+            task.addContent(new Element(headerEntriesEN[10].replaceAll("\\s","")).setText(activity.getNumInterruptions() + ""));            
+            task.addContent(new Element(headerEntriesEN[11].replaceAll("\\s","")).setText(activity.getType()));
+            task.addContent(new Element(headerEntriesEN[12].replaceAll("\\s","")).setText(activity.getAuthor()));
+            task.addContent(new Element(headerEntriesEN[13].replaceAll("\\s","")).setText(activity.getPlace()));
+            task.addContent(new Element(headerEntriesEN[14].replaceAll("\\s","")).setText(activity.getDescription()));
+            task.addContent(new Element(headerEntriesEN[15].replaceAll("\\s","")).setText(activity.getNotes()));
+            task.addContent(new Element(headerEntriesEN[16].replaceAll("\\s","")).setText(activity.getStoryPoints() + ""));
+            task.addContent(new Element(headerEntriesEN[17].replaceAll("\\s","")).setText(activity.getIteration() + ""));
+            task.addContent(new Element(headerEntriesEN[18].replaceAll("\\s","")).setText(activity.getPriority() + ""));            
+            Element subtask = new Element("subtask");        
+            task.addContent(subtask);
+            // get root element and added student element as a child of it  
+            document.getRootElement().addContent(task);
+        }
+        // get object to see output of prepared document  
+        XMLOutputter xmlOutput = new XMLOutputter();
+        // passsed System.out to see document content on console  
+        //xmlOutput.output(document, System.out);
+        // passed fileWriter to write content in specified file  
+        xmlOutput.setFormat(Format.getPrettyFormat());
+        xmlOutput.output(document, new FileWriter(fileName));
         return true;
     }
 
