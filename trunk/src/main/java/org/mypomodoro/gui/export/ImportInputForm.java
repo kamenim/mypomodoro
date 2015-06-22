@@ -87,6 +87,6 @@ public class ImportInputForm extends ExportInputForm {
 
     @Override
     public Object[] getFileFormats() {
-        return new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
+        return new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, XMLFormat};
     }
 }

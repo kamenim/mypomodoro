@@ -50,6 +50,7 @@ import org.mypomodoro.util.Labels;
 public class ExportInputForm extends JPanel {
 
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
+    private FormLabel headerlabel = new FormLabel("");
     private JCheckBox headerCheckBox = new JCheckBox();
     protected JTextField fileName = new JTextField();
     private JComboBox fileFormatComboBox = new JComboBox();
@@ -62,6 +63,8 @@ public class ExportInputForm extends JPanel {
             FileFormat.ExcelExtention);
     public final FileFormat ExcelOpenXMLFormat = new FileFormat("XLSX (Excel 2007)",
             FileFormat.ExcelOpenXMLExtention);
+    public final FileFormat XMLFormat = new FileFormat("XML",
+            FileFormat.XMLExtention);
     private final FileFormat GoogleDriveFormat = new FileFormat(FileFormat.GoogleDriveFormatName,
             FileFormat.CSVExtention);
     private final Separator commaSeparator = new Separator(0,
@@ -106,7 +109,7 @@ public class ExportInputForm extends JPanel {
         c.gridy = 0;
         c.weighty = 0.5;
         c.anchor = GridBagConstraints.WEST;
-        FormLabel headerlabel = new FormLabel(Labels.getString("ReportListPanel.Header") + ": ");
+        headerlabel = new FormLabel(Labels.getString("ReportListPanel.Header") + ": ");
         exportFormPanel.add(headerlabel, c);
         c.gridx = 1;
         c.gridy = 0;
@@ -133,11 +136,21 @@ public class ExportInputForm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
                 if (selectedFormat.equals(ExcelFormat) || selectedFormat.equals(ExcelOpenXMLFormat)) {
+                    headerlabel.setVisible(true);
+                    headerCheckBox.setVisible(true);
                     patternsPanel.setVisible(false);
                     separatorLabel.setVisible(false);
                     separatorComboBox.setVisible(false);
                     datePatternLabel.setVisible(false);
                     excelPatternsPanel.setVisible(false);
+                } else if (selectedFormat.equals(XMLFormat)) {                    
+                    headerlabel.setVisible(false);
+                    headerCheckBox.setVisible(false);
+                    patternsPanel.setVisible(true);
+                    separatorLabel.setVisible(false);
+                    separatorComboBox.setVisible(false);
+                    datePatternLabel.setVisible(true);
+                    excelPatternsPanel.setVisible(true);
                 } else {
                     if (selectedFormat.equals(GoogleDriveFormat)) {
                         separatorComboBox.removeItem(tabSeparator);
@@ -148,6 +161,8 @@ public class ExportInputForm extends JPanel {
                         separatorComboBox.addItem(semicolonSeparator);
                         separatorComboBox.addItem(editableSeparator);
                     }
+                    headerlabel.setVisible(true);
+                    headerCheckBox.setVisible(true);
                     patternsPanel.setVisible(true);
                     separatorLabel.setVisible(true);
                     separatorComboBox.setVisible(true);
@@ -231,9 +246,9 @@ public class ExportInputForm extends JPanel {
     public Object[] getFileFormats() {
         Object[] fileFormat;
         if (GoogleConfigLoader.isValid()) {
-            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, GoogleDriveFormat};
+            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, XMLFormat, GoogleDriveFormat};
         } else {
-            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat};
+            fileFormat = new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, XMLFormat};
         }
         return fileFormat;
     }
@@ -398,6 +413,10 @@ public class ExportInputForm extends JPanel {
     public boolean isFileExcelOpenXMLFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelOpenXMLFormat();
     }
+    
+    public boolean isFileXMLFormat() {
+        return ((FileFormat) fileFormatComboBox.getSelectedItem()).isXMLFormat();
+    }
 
     public boolean isFileGoogleDriveFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isGoogleDriveFormat();
@@ -438,6 +457,7 @@ public class ExportInputForm extends JPanel {
         public static final String CSVFormatName = "CSV";
         public static final String ExcelExtention = "xls";
         public static final String ExcelOpenXMLExtention = "xlsx";
+        public static final String XMLExtention = "xml";
         public static final String GoogleDriveFormatName = "Google Drive";
 
         private final String formatName;
@@ -462,6 +482,10 @@ public class ExportInputForm extends JPanel {
 
         public boolean isExcelOpenXMLFormat() {
             return extention.equals(ExcelOpenXMLExtention);
+        }
+        
+        public boolean isXMLFormat() {
+            return extention.equals(XMLExtention);
         }
 
         public boolean isGoogleDriveFormat() {

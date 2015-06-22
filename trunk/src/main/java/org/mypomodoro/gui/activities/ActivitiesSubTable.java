@@ -102,11 +102,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
         if (canCreateNewTask()) {
             getTitlePanel().showCreateButton();
         }
-        if (canMoveSubtasks()) {
+        /*if (canMoveSubtasks()) {
             getTitlePanel().showMoveSubtasksButton();
         } else {
             getTitlePanel().hideMoveSubtasksButton();
-        }
+        }*/
         if (canDeleteTasks()) {
             getTitlePanel().showDeleteButton();
         } else {
@@ -205,11 +205,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void moveSubtaskToMainTable(int rowIndex) {
         Activity subtask = getActivityFromRowIndex(rowIndex);
+        // remove pomodoros from parent task
+        panel.getMainTable().removePomsFromSelectedRow(subtask);        
         subtask.setParentId(-1); // make subtask a task
         getList().update(subtask); // update ex-subtask
-        // remove pomodoros from parent task
-        panel.getMainTable().removePomsFromSelectedRow(subtask);
         removeRow(rowIndex);
+        panel.getMainTable().insertRow(subtask);
         // set main table as current table when no subtasks anymore
         if (getRowCount() == 0) {
             panel.setCurrentTable(panel.getMainTable());
