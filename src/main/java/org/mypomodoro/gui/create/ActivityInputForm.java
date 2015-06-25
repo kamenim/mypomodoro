@@ -123,7 +123,8 @@ public class ActivityInputForm extends JPanel {
         add(new FormLabel(Labels.getString("Common.Title") + "*: "), c);
         c.gridx = 1;
         c.gridy = gridy;
-        c.weighty = 0.5;
+        c.weighty = 0.5;        
+        nameField.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         addTextField(nameField);
     }
 
@@ -142,6 +143,7 @@ public class ActivityInputForm extends JPanel {
         types.setEditable(true);
         // Autocompletion
         AutoCompleteDecorator.decorate(types);
+        ((JTextField) types.getEditor().getEditorComponent()).setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         add(types, c);
     }
 
@@ -288,9 +290,10 @@ public class ActivityInputForm extends JPanel {
         c.weighty = 0.5;
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
-        authors.setEditable(true);
+        authors.setEditable(true);                        
         // Autocompletion
         AutoCompleteDecorator.decorate(authors);
+        ((JTextField) authors.getEditor().getEditorComponent()).setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         add(authors, c);
     }
 
@@ -309,6 +312,7 @@ public class ActivityInputForm extends JPanel {
         places.setEditable(true);
         // Autocompletion
         AutoCompleteDecorator.decorate(places);
+        ((JTextField) places.getEditor().getEditorComponent()).setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         add(places, c);
     }
 
@@ -325,6 +329,7 @@ public class ActivityInputForm extends JPanel {
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
         descriptionField.setBorder(null);
+        descriptionField.setCaretColor(new JTextArea().getForeground()); // Set colors according to input settings and themes
         JScrollPane description = new JScrollPane(descriptionField);
         description.setMinimumSize(TEXT_AREA_DIMENSION);
         description.setPreferredSize(TEXT_AREA_DIMENSION);

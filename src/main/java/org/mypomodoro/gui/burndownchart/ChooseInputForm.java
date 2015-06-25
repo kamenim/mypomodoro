@@ -272,6 +272,7 @@ public class ChooseInputForm extends JPanel {
         primaryYAxisName.setText(defaultPrimaryYAxisName);
         primaryYAxisName.setMinimumSize(COMBO_BOX_DIMENSION);
         primaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
+        primaryYAxisName.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         burndownChartTypeLegendInputFormPanel.add(primaryYAxisName, gbc);
         // Legend
         gbc.gridx = 2;
@@ -287,6 +288,7 @@ public class ChooseInputForm extends JPanel {
         primaryYAxisLegend.setText(defaultPrimaryYAxisLegend);
         primaryYAxisLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         primaryYAxisLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        primaryYAxisLegend.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         burndownChartTypeLegendInputFormPanel.add(primaryYAxisLegend, gbc);
         // Color
         gbc.gridx = 2;
@@ -397,6 +399,7 @@ public class ChooseInputForm extends JPanel {
         secondaryYAxisName.setText(defaultSecondaryYAxisName);
         secondaryYAxisName.setMinimumSize(COMBO_BOX_DIMENSION);
         secondaryYAxisName.setPreferredSize(COMBO_BOX_DIMENSION);
+        secondaryYAxisName.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         burnupChartTypeLegendInputFormPanel.add(secondaryYAxisName, gbc);
         // Legend
         gbc.gridx = 2;
@@ -413,6 +416,7 @@ public class ChooseInputForm extends JPanel {
         secondaryYAxisLegend.setText(defaultSecondaryYAxisLegend);
         secondaryYAxisLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         secondaryYAxisLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        secondaryYAxisLegend.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         burnupChartTypeLegendInputFormPanel.add(secondaryYAxisLegend, gbc);
         // Color
         gbc.gridx = 2;
@@ -469,6 +473,7 @@ public class ChooseInputForm extends JPanel {
         targetLegend.setText(defaultTargetLegend);
         targetLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         targetLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        targetLegend.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         targetInputFormPanel.add(targetLegend, gbc);
         // Color
         gbc.gridx = 0;
@@ -523,6 +528,7 @@ public class ChooseInputForm extends JPanel {
         burnupGuideLegend.setText(defaultBurnupGuideLegend);
         burnupGuideLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         burnupGuideLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        burnupGuideLegend.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         burnupGuideInputFormPanel.add(burnupGuideLegend, gbc);
         // Color
         gbc.gridx = 0;
@@ -579,6 +585,7 @@ public class ChooseInputForm extends JPanel {
         scopeLegend.setText(defaultScopeLegend);
         scopeLegend.setMinimumSize(COMBO_BOX_DIMENSION);
         scopeLegend.setPreferredSize(COMBO_BOX_DIMENSION);
+        scopeLegend.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         scopeInputFormPanel.add(scopeLegend, gbc);
         // Color
         gbc.gridx = 0;

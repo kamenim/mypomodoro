@@ -131,17 +131,12 @@ public class ToDoList extends AbstractActivities {
     }
 
     // Move a task and its subtasks to ActivityList
-    // Move a subtask only will make it a task
     public void moveToActivtyList(Activity activity) {
-        if (activity.isSubTask()) {
-            activity.setParentId(-1); // sub-task becomes task
-        } else {
-            ArrayList<Activity> subList = getSubTasks(activity.getId());
-            for (Activity subTask : subList) {
-                ActivityList.getList().add(subTask);
-                remove(subTask);
-            }
-        }
+        ArrayList<Activity> subList = getSubTasks(activity.getId());
+        for (Activity subTask : subList) {
+            ActivityList.getList().add(subTask);
+            remove(subTask);
+        }        
         ActivityList.getList().add(activity); // set the priority and update the database
         remove(activity);
     }
@@ -154,17 +149,12 @@ public class ToDoList extends AbstractActivities {
      removeAll();
      }*/
     // Complete a task and its subtasks to ReportList
-    // Complete a subtask only will make it a task
     public void completeToReportList(Activity activity) {
-        if (activity.isSubTask()) {
-            activity.setParentId(-1); // sub-task becomes task
-        } else {
-            ArrayList<Activity> subList = getSubTasks(activity.getId());
-            for (Activity subTask : subList) {
-                ReportList.getList().add(subTask);
-                remove(subTask);
-            }
-        }
+        ArrayList<Activity> subList = getSubTasks(activity.getId());
+        for (Activity subTask : subList) {
+            ReportList.getList().add(subTask);
+            remove(subTask);
+        }        
         ReportList.getList().add(activity);
         remove(activity);
     }

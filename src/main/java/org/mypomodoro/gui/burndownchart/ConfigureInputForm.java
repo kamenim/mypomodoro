@@ -505,6 +505,7 @@ public class ConfigureInputForm extends JPanel {
         chartWidth.setPreferredSize(new Dimension(40, 25));
         chartWidth.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartWidth.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
+        chartWidth.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         dimension.add(chartWidth, dimensionsgbc);
         dimensionsgbc.gridx = 2;
         dimensionsgbc.gridy = 0;
@@ -514,6 +515,7 @@ public class ConfigureInputForm extends JPanel {
         chartHeight.setPreferredSize(new Dimension(40, 25));
         chartHeight.setHorizontalAlignment(SwingConstants.RIGHT);
         ((AbstractDocument) chartHeight.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
+        chartHeight.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         dimension.add(chartHeight, dimensionsgbc);
         dimensionInputFormPanel.add(dimension);
     }
