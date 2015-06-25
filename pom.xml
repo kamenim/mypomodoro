@@ -164,6 +164,13 @@
       <artifactId>JTattoo</artifactId>
       <version>1.6.11</version>
     </dependency>
+    <!-- InfoNode look and feel -->
+    <!-- GPL : http://www.infonode.se/pages/itplicense.html -->
+    <dependency>
+      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+      <artifactId>ilf-gpl</artifactId>
+      <version>1.6.1</version>
+    </dependency>
     <!-- Substance look and feel -->
     <!--dependency>
       <groupId>org.java.net.substance</groupId>
@@ -187,12 +194,6 @@
       <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
       <artifactId>toniclf</artifactId>
       <version>1.0.5</version>
-    </dependency-->
-    <!-- InfoNode look and feel -->
-    <!--dependency>
-      <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
-      <artifactId>ilf-gpl</artifactId>
-      <version>1.6.1</version>
     </dependency-->
     <!-- kunstoff look and feel --> 
     <!--dependency>

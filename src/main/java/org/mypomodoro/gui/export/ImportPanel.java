@@ -21,11 +21,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import static java.lang.Thread.sleep;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,6 +43,10 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.input.sax.XMLReaderJDOMFactory;
+import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.IListPanel;
@@ -120,6 +126,8 @@ public class ImportPanel extends JPanel {
                                 importExcel(fileName);
                             } else if (importInputForm.isFileExcelOpenXMLFormat()) {
                                 importExcelx(fileName);
+                            } else if (importInputForm.isFileXMLFormat()) {
+                                importXML(fileName);
                             }
                         } catch (Exception ex) {
                             logger.error("Import failed", ex);
@@ -317,6 +325,47 @@ public class ImportPanel extends JPanel {
             });
         }
         myxlsx.close();
+    }
+
+    // http://www.w3.org/TR/xmlschema-0
+    private void importXML(String fileName) throws Exception {
+        String schemaFile = "/xsd/importSchema.xsd";        
+        XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(Main.class.getResource(schemaFile));
+        SAXBuilder saxBuilder = new SAXBuilder(factory);
+        InputStream myxml = new FileInputStream(fileName);        
+        Document document = saxBuilder.build(new InputStreamReader(myxml, "UTF-8"));       
+        org.jdom2.Element rootNode = document.getRootElement();
+        List<org.jdom2.Element> tasksList = rootNode.getChildren("task");
+        for (org.jdom2.Element task : tasksList) {
+            Activity newActivity = getXMLContent(task);
+            //panel.getList().add(newActivity);
+            //panel.getMainTable().insertRow(newActivity);
+            List<org.jdom2.Element> subtasksList = rootNode.getChildren("subtask");
+        }
+    }
+
+    private Activity getXMLContent(org.jdom2.Element element) {
+        Activity activity = new Activity();
+        System.err.println(element.getChildText("u"));
+        element.getChildText("date");
+        element.getChildText("datecompleted");
+        System.err.println(element.getChildText("title"));
+        element.getChildText("estimate");
+        element.getChildText("overestimate");
+        element.getChildText("real");
+        element.getChildText("diffi");
+        element.getChildText("diffii");
+        element.getChildText("internal");
+        element.getChildText("external");
+        System.err.println(element.getChildText("type"));
+        element.getChildText("author");
+        element.getChildText("place");
+        element.getChildText("description");
+        element.getChildText("comment");
+        element.getChildText("storypoints");
+        element.getChildText("iteration");
+        element.getChildText("priority");
+        return activity;
     }
 
     private String getCellContent(Cell cell, FormulaEvaluator eval) {

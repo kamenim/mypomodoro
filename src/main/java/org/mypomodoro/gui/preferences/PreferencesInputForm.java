@@ -74,6 +74,8 @@ public class PreferencesInputForm extends JPanel {
     private static final String NOIRE_LAF = "com.jtattoo.plaf.noire.NoireLookAndFeel"; // JTattoo
     private static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
     private static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo
+    public static final String INFONODE_LAF = "net.infonode.gui.laf.InfoNodeLookAndFeel"; // InfoNode
+    //private static final String WEB_LAF = "com.alee.laf.WebLookAndFeel"; // WebLaF    
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("PreferencesPanel.Preferences") + " ");
@@ -308,7 +310,7 @@ public class PreferencesInputForm extends JPanel {
         // GT: "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" (same as System - Linux only)
         // Motif: "com.sun.java.swing.plaf.motif.MotifLookAndFeel" (same as System - Solaris only)
         // Nimbus: "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"
-        // InfoNode: new InfoNodeLookAndFeel() (enable dependency in pom.xml)                        
+        // InfoNode: net.infonode.gui.laf.InfoNodeLookAndFeel (enable dependency in pom.xml)                        
         // Substance: new SubstanceCremeLookAndFeel() (enable dependency in pom.xml)                        
         // Tonic: "com.digitprop.tonic.TonicLookAndFeel" (enable dependency in pom.xml)
         // WebLaf: "com.alee.laf.WebLookAndFeel" (enable dependency in pom.xml)
@@ -353,6 +355,8 @@ public class PreferencesInputForm extends JPanel {
         themes.add(NOIRE_LAF); // JTattoo
         themes.add(ACRYL_LAF); // JTattoo
         themes.add(MCWIN_LAF); // JTattoo
+        themes.add(INFONODE_LAF); // InfoNode
+        //themes.add(WEB_LAF); // WebLaF        
         // Quaqua
         // Due to copyright restrictions and technical constraints, Quaqua can be run on non-Mac OS X systems for development purposes only.
         //if (SystemUtils.IS_OS_MAC_OSX) {
