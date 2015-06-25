@@ -29,6 +29,6 @@ public class ReportsSubTableModel extends ReportsTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ReportList.getSubTaskList(parentId));
+        setDataVector(ReportList.getList().getSubTasks(parentId));
     }
 }

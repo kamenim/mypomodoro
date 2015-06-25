@@ -29,7 +29,7 @@ public class ActivitiesSubTableModel extends ActivitiesTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ActivityList.getSubTaskList(parentId));
+        setDataVector(ActivityList.getList().getSubTasks(parentId));
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -55,20 +56,6 @@ public class ActivityList extends AbstractActivities {
         return tableList;
     }
 
-    // List of sub tasks
-    // The bigger the list the heavier this will be
-    // May we use use Guava https://github.com/google/guava
-    // OR have a specific list for subtasks ?...
-    public static ActivityList getSubTaskList(int parentId) {
-        ActivityList subTableList = new ActivityList();
-        for (Activity a : list) {
-            if (a.getParentId() != parentId) {
-                subTableList.removeById(a.getId());
-            }
-        }
-        return subTableList;
-    }
-
     public static boolean hasSubTasks(int activityId) {
         boolean hasSubTasks = false;
         for (Activity a : list) {
@@ -78,6 +65,16 @@ public class ActivityList extends AbstractActivities {
             }
         }
         return hasSubTasks;
+    } 
+   
+    public static ActivityList getSubTaskList(int parentId) {
+        ActivityList subTableList = new ActivityList();
+        for (Activity a : list) {
+            if (a.getParentId() != parentId) {
+                subTableList.removeById(a.getId());
+            }
+        }
+        return subTableList;
     }
 
     public static int getListSize() {
@@ -121,7 +118,7 @@ public class ActivityList extends AbstractActivities {
             getList().add(clonedActivity, new Date(), new Date(0));
         } else {
             getList().add(clonedActivity, new Date(), new Date(0)); // add task here to get the new Id to be the parentId of the subtasks
-            ActivityList subList = getSubTaskList(activity.getId());
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 duplicate(subTask, clonedActivity.getId());
             }
@@ -132,7 +129,7 @@ public class ActivityList extends AbstractActivities {
     @Override
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
-            ActivityList subList = getSubTaskList(activity.getId());
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);
                 subTask.databaseDelete();
@@ -153,7 +150,7 @@ public class ActivityList extends AbstractActivities {
         if (activity.isSubTask()) {
             activity.setParentId(-1); // sub-task becomes task
         } else {
-            ActivityList subList = getSubTaskList(activity.getId());
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 ToDoList.getList().add(subTask);
                 remove(subTask);

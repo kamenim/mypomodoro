@@ -105,7 +105,7 @@ public class ReportsSubTable extends ReportsTable {
                 if (tableList.getNbOverestimatedPom() > 0) {
                     title += " + " + tableList.getNbOverestimatedPom();
                 }
-                int accuracy = ReportList.getSubTaskList(panel.getMainTable().getActivityIdFromSelectedRow()).getAccuracy();
+                int accuracy = ReportList.getList().getSubTasksAccuracy(panel.getMainTable().getActivityIdFromSelectedRow());
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
                 title += accuracy + "%";
                 // Tool tip

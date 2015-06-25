@@ -27,7 +27,7 @@ import org.mypomodoro.model.ActivityList;
 public class ActivitiesTableModel extends AbstractTableModel {
 
     public ActivitiesTableModel() {
-        setDataVector(ActivityList.getTaskList());
+        setDataVector(ActivityList.getList().getTasks());
     }
 
     @Override
