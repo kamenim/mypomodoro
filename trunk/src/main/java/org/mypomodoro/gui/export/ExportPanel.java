@@ -59,23 +59,14 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jfree.chart.ChartPanel;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.ImageIcons;
-import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
-import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
-import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
-import org.mypomodoro.model.ChartList;
-import org.mypomodoro.model.ReportList;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
@@ -119,9 +110,10 @@ public class ExportPanel extends JPanel {
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};
+    // due to xsd validation, labels are in english and dont change no matter the mode (Agile or pomodoro)
     private final Labels labelsEN = new Labels(new Locale("en_US"));
     private final String[] headerEntriesEN = new String[]{"U",
-        labelsEN.getString(Main.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
+        labelsEN.getString("Common.Date"), 
         labelsEN.getString("Common.Date completed"),
         labelsEN.getString("Common.Title"),
         labelsEN.getString("Common.Estimated"),
@@ -135,7 +127,7 @@ public class ExportPanel extends JPanel {
         labelsEN.getString("Common.Author"),
         labelsEN.getString("Common.Place"),
         labelsEN.getString("Common.Description"),
-        labelsEN.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "Common.Comment"),
+        labelsEN.getString("Common.Comment"),
         labelsEN.getString("Agile.Common.Story Points"),
         labelsEN.getString("Agile.Common.Iteration"),
         labelsEN.getString("Common.Priority")};
@@ -413,47 +405,17 @@ public class ExportPanel extends JPanel {
     // using JDOM
     private boolean exportXML(String fileName, Iterator<Activity> act)
             throws IOException {
-        // returns an xml element object  
-        // 'tasks' is passed to make it root element in document  
-        Element tasks = new Element("tasks");
-        // created an document object, all elements will be added to it  
-        // passes 'tasks' as parameter to make it root element of document  
+        Element tasks = new Element("tasks"); 
         Document document = new Document(tasks);
         while (act.hasNext()) {
             // created other element to add to document  
             Element task = new Element("task");
             Activity activity = act.next();
-            task.addContent(new Element(headerEntriesEN[0].replaceAll("\\s", "").toLowerCase()).setText(activity.isUnplanned() ? "1" : "0"));
-            //task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDate(), datePattern)));
-            task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s", "")).setText(""));
-            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
-                //task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern)));                
-            } else {
-                task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "")).setText(""));
-            }
-            task.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(activity.getName()));
-            task.addContent(new Element(headerEntriesEN[4].replaceAll("\\s", "").toLowerCase()).setText(activity.getEstimatedPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[5].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[6].replaceAll("\\s", "").toLowerCase()).setText(activity.getActualPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[7].replaceAll("\\s", "").toLowerCase()).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
-            task.addContent(new Element(headerEntriesEN[8].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
-            task.addContent(new Element(headerEntriesEN[9].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInternalInterruptions() + ""));
-            task.addContent(new Element(headerEntriesEN[10].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInterruptions() + ""));
-            task.addContent(new Element(headerEntriesEN[11].replaceAll("\\s", "").toLowerCase()).setText(activity.getType()));
-            task.addContent(new Element(headerEntriesEN[12].replaceAll("\\s", "").toLowerCase()).setText(activity.getAuthor()));
-            task.addContent(new Element(headerEntriesEN[13].replaceAll("\\s", "").toLowerCase()).setText(activity.getPlace()));
-            task.addContent(new Element(headerEntriesEN[14].replaceAll("\\s", "").toLowerCase()).setText(activity.getDescription()));
-            task.addContent(new Element(headerEntriesEN[15].replaceAll("\\s", "").toLowerCase()).setText(activity.getNotes()));
-            task.addContent(new Element(headerEntriesEN[16].replaceAll("\\s", "").toLowerCase()).setText(activity.getStoryPoints() + ""));
-            task.addContent(new Element(headerEntriesEN[17].replaceAll("\\s", "").toLowerCase()).setText(activity.getIteration() + ""));
-            task.addContent(new Element(headerEntriesEN[18].replaceAll("\\s", "").toLowerCase()).setText(activity.getPriority() + ""));
-            // No sutask list for ChartPanel
-            System.err.println("activity = " + activity);
-            System.err.println("activity ID = " + activity.getId());
+            task = activityToXMLElement(task, activity);
             ArrayList<Activity> subtasklist = panel.getList().getSubTasks(activity.getId());
             for (Activity subActivity : subtasklist) {
                 Element subtask = new Element("subtask");
-                subtask.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(subActivity.getName()));
+                subtask = activityToXMLElement(subtask, subActivity);
                 task.addContent(subtask);
             }
             // get root element and added student element as a child of it  
@@ -465,6 +427,33 @@ public class ExportPanel extends JPanel {
         //xmlOutput.output(document, System.out); // System out
         writer.close();
         return true;
+    }
+
+    private Element activityToXMLElement(Element element, Activity activity) {
+        element.addContent(new Element(headerEntriesEN[0].replaceAll("\\s", "").toLowerCase()).setText(activity.isUnplanned() ? "1" : "0"));
+        element.addContent(new Element(headerEntriesEN[1].replaceAll("\\s", "").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDate(), exportInputForm.getDatePattern())));
+        if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
+            element.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), exportInputForm.getDatePattern())));
+        } else {
+            element.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "")).setText(""));
+        }
+        element.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(activity.getName()));
+        element.addContent(new Element(headerEntriesEN[4].replaceAll("\\s", "").toLowerCase()).setText(activity.getEstimatedPoms() + ""));
+        element.addContent(new Element(headerEntriesEN[5].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() + ""));
+        element.addContent(new Element(headerEntriesEN[6].replaceAll("\\s", "").toLowerCase()).setText(activity.getActualPoms() + ""));
+        element.addContent(new Element(headerEntriesEN[7].replaceAll("\\s", "").toLowerCase()).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
+        element.addContent(new Element(headerEntriesEN[8].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
+        element.addContent(new Element(headerEntriesEN[9].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInternalInterruptions() + ""));
+        element.addContent(new Element(headerEntriesEN[10].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInterruptions() + ""));
+        element.addContent(new Element(headerEntriesEN[11].replaceAll("\\s", "").toLowerCase()).setText(activity.getType()));
+        element.addContent(new Element(headerEntriesEN[12].replaceAll("\\s", "").toLowerCase()).setText(activity.getAuthor()));
+        element.addContent(new Element(headerEntriesEN[13].replaceAll("\\s", "").toLowerCase()).setText(activity.getPlace()));
+        element.addContent(new Element(headerEntriesEN[14].replaceAll("\\s", "").toLowerCase()).setText(activity.getDescription()));
+        element.addContent(new Element(headerEntriesEN[15].replaceAll("\\s", "").toLowerCase()).setText(activity.getNotes()));
+        element.addContent(new Element(headerEntriesEN[16].replaceAll("\\s", "").toLowerCase()).setText(activity.getStoryPoints() + ""));
+        element.addContent(new Element(headerEntriesEN[17].replaceAll("\\s", "").toLowerCase()).setText(activity.getIteration() + ""));
+        element.addContent(new Element(headerEntriesEN[18].replaceAll("\\s", "").toLowerCase()).setText(activity.getPriority() + ""));
+        return element;
     }
 
     private boolean exportToGoogleDrive(String fileName, Iterator<Activity> act)

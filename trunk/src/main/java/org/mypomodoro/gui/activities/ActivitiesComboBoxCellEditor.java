@@ -19,6 +19,7 @@ package org.mypomodoro.gui.activities;
 import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
@@ -47,6 +48,7 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.setForeground(new JComboBox().getForeground());
             //label.setForeground(getForeground());
         }
+        ((JTextField) comboBox.getEditor().getEditorComponent()).setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         return this;
     }
 }

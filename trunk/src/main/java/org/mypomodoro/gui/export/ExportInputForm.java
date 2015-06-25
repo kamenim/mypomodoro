@@ -616,7 +616,8 @@ public class ExportInputForm extends JPanel {
         fileName = new JTextField();
         fileName.setText(defaultFileName);
         fileName.setMinimumSize(COMBO_BOX_DIMENSION);
-        fileName.setPreferredSize(COMBO_BOX_DIMENSION);
+        fileName.setPreferredSize(COMBO_BOX_DIMENSION);                
+        fileName.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         exportFormPanel.add(fileName, c);
     }
 
