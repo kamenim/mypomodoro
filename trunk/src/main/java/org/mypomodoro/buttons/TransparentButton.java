@@ -76,6 +76,7 @@ public class TransparentButton extends DefaultButton {
             if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)
                     || Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)
                     || Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PGS_LAF)
+                    || Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)
                     || CheckWindowsClassicTheme.isWindowsClassicLAF()) {
                 setOpaque(true);
             } else {

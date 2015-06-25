@@ -72,13 +72,6 @@ import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
-/*import java.io.FileWriter;
- import java.io.IOException;
- import org.jdom.Attribute;
- import org.jdom.Document;
- import org.jdom.Element;
- import org.jdom.output.Format;
- import org.jdom.output.XMLOutputter;*/
 /**
  * Panel to export reports
  *
@@ -110,27 +103,6 @@ public class ExportPanel extends JPanel {
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};
-    // due to xsd validation, labels are in english and dont change no matter the mode (Agile or pomodoro)
-    private final Labels labelsEN = new Labels(new Locale("en_US"));
-    private final String[] headerEntriesEN = new String[]{"U",
-        labelsEN.getString("Common.Date"), 
-        labelsEN.getString("Common.Date completed"),
-        labelsEN.getString("Common.Title"),
-        labelsEN.getString("Common.Estimated"),
-        labelsEN.getString("Common.Overestimated"),
-        labelsEN.getString("Common.Real"),
-        labelsEN.getString("ReportListPanel.Diff I"),
-        labelsEN.getString("ReportListPanel.Diff II"),
-        labelsEN.getString("ToDoListPanel.Internal"),
-        labelsEN.getString("ToDoListPanel.External"),
-        labelsEN.getString("Common.Type"),
-        labelsEN.getString("Common.Author"),
-        labelsEN.getString("Common.Place"),
-        labelsEN.getString("Common.Description"),
-        labelsEN.getString("Common.Comment"),
-        labelsEN.getString("Agile.Common.Story Points"),
-        labelsEN.getString("Agile.Common.Iteration"),
-        labelsEN.getString("Common.Priority")};
 
     public ExportPanel(IListPanel panel) {
         this.panel = panel;
@@ -429,30 +401,33 @@ public class ExportPanel extends JPanel {
         return true;
     }
 
+    // the names of the elements are in english and must not change (see xsd schema importSchema.xsd)
     private Element activityToXMLElement(Element element, Activity activity) {
-        element.addContent(new Element(headerEntriesEN[0].replaceAll("\\s", "").toLowerCase()).setText(activity.isUnplanned() ? "1" : "0"));
-        element.addContent(new Element(headerEntriesEN[1].replaceAll("\\s", "").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDate(), exportInputForm.getDatePattern())));
+        element.addContent(new Element("u").setText(activity.isUnplanned() ? "1" : "0"));
+        element.addContent(new Element("date").setText(DateUtil.getFormatedDate(activity.getDate(), exportInputForm.getDatePattern())));
         if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
-            element.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), exportInputForm.getDatePattern())));
+            element.addContent(new Element("datecompleted").setText(DateUtil.getFormatedDate(activity.getDateCompleted(), exportInputForm.getDatePattern())));
         } else {
-            element.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "")).setText(""));
+            element.addContent(new Element("datecompleted").setText(""));
         }
-        element.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(activity.getName()));
-        element.addContent(new Element(headerEntriesEN[4].replaceAll("\\s", "").toLowerCase()).setText(activity.getEstimatedPoms() + ""));
-        element.addContent(new Element(headerEntriesEN[5].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() + ""));
-        element.addContent(new Element(headerEntriesEN[6].replaceAll("\\s", "").toLowerCase()).setText(activity.getActualPoms() + ""));
-        element.addContent(new Element(headerEntriesEN[7].replaceAll("\\s", "").toLowerCase()).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
-        element.addContent(new Element(headerEntriesEN[8].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
-        element.addContent(new Element(headerEntriesEN[9].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInternalInterruptions() + ""));
-        element.addContent(new Element(headerEntriesEN[10].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInterruptions() + ""));
-        element.addContent(new Element(headerEntriesEN[11].replaceAll("\\s", "").toLowerCase()).setText(activity.getType()));
-        element.addContent(new Element(headerEntriesEN[12].replaceAll("\\s", "").toLowerCase()).setText(activity.getAuthor()));
-        element.addContent(new Element(headerEntriesEN[13].replaceAll("\\s", "").toLowerCase()).setText(activity.getPlace()));
-        element.addContent(new Element(headerEntriesEN[14].replaceAll("\\s", "").toLowerCase()).setText(activity.getDescription()));
-        element.addContent(new Element(headerEntriesEN[15].replaceAll("\\s", "").toLowerCase()).setText(activity.getNotes()));
-        element.addContent(new Element(headerEntriesEN[16].replaceAll("\\s", "").toLowerCase()).setText(activity.getStoryPoints() + ""));
-        element.addContent(new Element(headerEntriesEN[17].replaceAll("\\s", "").toLowerCase()).setText(activity.getIteration() + ""));
-        element.addContent(new Element(headerEntriesEN[18].replaceAll("\\s", "").toLowerCase()).setText(activity.getPriority() + ""));
+        element.addContent(new Element("title").setText(activity.getName()));
+        element.addContent(new Element("estimate").setText(activity.getEstimatedPoms() + ""));
+        element.addContent(new Element("overestimate").setText(activity.getOverestimatedPoms() + ""));
+        element.addContent(new Element("real").setText(activity.getActualPoms() + ""));
+        element.addContent(new Element("diffi").setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
+        if (activity.getOverestimatedPoms() > 0) {
+            element.addContent(new Element("diffii").setText((activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + ""));
+        }
+        element.addContent(new Element("internal").setText(activity.getNumInternalInterruptions() + ""));
+        element.addContent(new Element("external").setText(activity.getNumInterruptions() + ""));
+        element.addContent(new Element("type").setText(activity.getType()));
+        element.addContent(new Element("author").setText(activity.getAuthor()));
+        element.addContent(new Element("place").setText(activity.getPlace()));
+        element.addContent(new Element("description").setText(activity.getDescription()));
+        element.addContent(new Element("comment").setText(activity.getNotes()));
+        element.addContent(new Element("storypoints").setText(activity.getStoryPoints() + ""));
+        element.addContent(new Element("iteration").setText(activity.getIteration() + ""));
+        element.addContent(new Element("priority").setText(activity.getPriority() + ""));
         return element;
     }
 
