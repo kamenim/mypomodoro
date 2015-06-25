@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.GridBagConstraints;
 import static java.lang.Thread.sleep;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -172,7 +173,8 @@ public class MergingPanel extends CreatePanel {
                                 row = row - increment;
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 // Add subtasks to lists
-                                for (Activity subTask : ActivityList.getSubTaskList(selectedActivity.getId())) {
+                                ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
+                                for (Activity subTask : subList) {
                                     subTask.setParentId(newActivity.getId());
                                     ActivityList.getList().update(subTask);
                                 }

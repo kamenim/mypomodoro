@@ -608,7 +608,7 @@ public class ExportInputForm extends JPanel {
         c.gridy = 1;
         c.weighty = 0.5;
         FormLabel fileNamelabel = new FormLabel(
-                Labels.getString("ReportListPanel.File name") + "*: ");
+                Labels.getString("ReportListPanel.File name") + ": ");
         exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
         c.gridy = 1;

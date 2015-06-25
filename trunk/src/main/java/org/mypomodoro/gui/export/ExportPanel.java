@@ -31,9 +31,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -59,13 +59,23 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jfree.chart.ChartPanel;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.TabPanelButton;
+import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.ImageIcons;
+import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.export.ExportInputForm.activityToArray;
 import org.mypomodoro.gui.export.google.GoogleConfigLoader;
+import org.mypomodoro.gui.reports.ReportsPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
+import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
+import org.mypomodoro.model.ActivityList;
+import org.mypomodoro.model.ChartList;
+import org.mypomodoro.model.ReportList;
+import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.HtmlEditor;
 import org.mypomodoro.util.Labels;
@@ -109,7 +119,7 @@ public class ExportPanel extends JPanel {
         Labels.getString("Agile.Common.Story Points"),
         Labels.getString("Agile.Common.Iteration"),
         Labels.getString("Common.Priority")};
-    Labels labelsEN = new Labels(new Locale("en_US"));
+    private final Labels labelsEN = new Labels(new Locale("en_US"));
     private final String[] headerEntriesEN = new String[]{"U",
         labelsEN.getString(Main.preferences.getAgileMode() ? "Common.Date created" : "Common.Date scheduled"),
         labelsEN.getString("Common.Date completed"),
@@ -195,11 +205,13 @@ public class ExportPanel extends JPanel {
     }
 
     private void export() {
-        if (panel.getCurrentTable().getSelectedRowCount() > 0) {
+        // XML format: always get list of main tasks
+        AbstractTable table = exportInputForm.isFileXMLFormat() ? panel.getMainTable() : panel.getCurrentTable();
+        if (table.getSelectedRowCount() > 0) {
             final ArrayList<Activity> activities = new ArrayList<Activity>();
-            int[] rows = panel.getCurrentTable().getSelectedRows();
+            int[] rows = table.getSelectedRows();
             for (int row : rows) {
-                Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
+                Activity selectedActivity = table.getActivityFromRowIndex(row);
                 // Extract raw content from HTML comment/story
                 HtmlEditor commentEditor = new HtmlEditor();
                 String comment = selectedActivity.getNotes();
@@ -210,7 +222,9 @@ public class ExportPanel extends JPanel {
                 // get raw text
                 comment = commentEditor.getRawText();
                 try {
+                    int activityId = selectedActivity.getId();
                     Activity copiedSelectedActivity = selectedActivity.clone(); // a clone is necessary to remove the reference/pointer to the original task
+                    copiedSelectedActivity.setId(activityId);
                     copiedSelectedActivity.setNotes(comment);
                     activities.add(copiedSelectedActivity);
                 } catch (CloneNotSupportedException ignored) {
@@ -408,70 +422,48 @@ public class ExportPanel extends JPanel {
         while (act.hasNext()) {
             // created other element to add to document  
             Element task = new Element("task");
-            /*
-            
-            
-            attributes[1] = DateUtil.getFormatedDate(activity.getDate(), datePattern);
-            if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
-                attributes[2] = DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern);
-            } else {
-                attributes[2] = "";
-            }
-            attributes[3] = activity.getName();
-            attributes[4] = activity.getEstimatedPoms() + "";
-            attributes[5] = activity.getOverestimatedPoms() + "";
-            attributes[6] = activity.getActualPoms() + "";
-            attributes[7] = (activity.getActualPoms() - activity.getEstimatedPoms()) + "";
-            attributes[8] = activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : "";
-            attributes[9] = activity.getNumInternalInterruptions() + "";
-            attributes[10] = activity.getNumInterruptions() + "";
-            attributes[11] = activity.getType();
-            attributes[12] = activity.getAuthor();
-            attributes[13] = activity.getPlace();
-            attributes[14] = activity.getDescription();
-            attributes[15] = activity.getNotes();
-            attributes[16] = activity.getStoryPoints() + "";
-            attributes[17] = activity.getIteration() + "";
-            attributes[18] = activity.getPriority() + "";
-            
-            */
             Activity activity = act.next();
-            task.addContent(new Element(headerEntriesEN[0].replaceAll("\\s","")).setText(activity.isUnplanned() ? "1" : "0"));
-            //task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","")).setText(DateUtil.getFormatedDate(activity.getDate(), datePattern)));
-            task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","")).setText(""));
+            task.addContent(new Element(headerEntriesEN[0].replaceAll("\\s", "").toLowerCase()).setText(activity.isUnplanned() ? "1" : "0"));
+            //task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s","").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDate(), datePattern)));
+            task.addContent(new Element(headerEntriesEN[1].replaceAll("\\s", "")).setText(""));
             if (!DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
-                //task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","")).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern)));                
+                //task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","").toLowerCase()).setText(DateUtil.getFormatedDate(activity.getDateCompleted(), datePattern)));                
             } else {
-                task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s","")).setText(""));
+                task.addContent(new Element(headerEntriesEN[2].replaceAll("\\s", "")).setText(""));
             }
-            task.addContent(new Element(headerEntriesEN[3].replaceAll("\\s","")).setText(activity.getName()));
-            task.addContent(new Element(headerEntriesEN[4].replaceAll("\\s","")).setText(activity.getEstimatedPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[5].replaceAll("\\s","")).setText(activity.getOverestimatedPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[6].replaceAll("\\s","")).setText(activity.getActualPoms() + ""));
-            task.addContent(new Element(headerEntriesEN[7].replaceAll("\\s","")).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
-            task.addContent(new Element(headerEntriesEN[8].replaceAll("\\s","")).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
-            task.addContent(new Element(headerEntriesEN[9].replaceAll("\\s","")).setText(activity.getNumInternalInterruptions() + ""));
-            task.addContent(new Element(headerEntriesEN[10].replaceAll("\\s","")).setText(activity.getNumInterruptions() + ""));            
-            task.addContent(new Element(headerEntriesEN[11].replaceAll("\\s","")).setText(activity.getType()));
-            task.addContent(new Element(headerEntriesEN[12].replaceAll("\\s","")).setText(activity.getAuthor()));
-            task.addContent(new Element(headerEntriesEN[13].replaceAll("\\s","")).setText(activity.getPlace()));
-            task.addContent(new Element(headerEntriesEN[14].replaceAll("\\s","")).setText(activity.getDescription()));
-            task.addContent(new Element(headerEntriesEN[15].replaceAll("\\s","")).setText(activity.getNotes()));
-            task.addContent(new Element(headerEntriesEN[16].replaceAll("\\s","")).setText(activity.getStoryPoints() + ""));
-            task.addContent(new Element(headerEntriesEN[17].replaceAll("\\s","")).setText(activity.getIteration() + ""));
-            task.addContent(new Element(headerEntriesEN[18].replaceAll("\\s","")).setText(activity.getPriority() + ""));            
-            Element subtask = new Element("subtask");        
-            task.addContent(subtask);
+            task.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(activity.getName()));
+            task.addContent(new Element(headerEntriesEN[4].replaceAll("\\s", "").toLowerCase()).setText(activity.getEstimatedPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[5].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[6].replaceAll("\\s", "").toLowerCase()).setText(activity.getActualPoms() + ""));
+            task.addContent(new Element(headerEntriesEN[7].replaceAll("\\s", "").toLowerCase()).setText((activity.getActualPoms() - activity.getEstimatedPoms()) + ""));
+            task.addContent(new Element(headerEntriesEN[8].replaceAll("\\s", "").toLowerCase()).setText(activity.getOverestimatedPoms() > 0 ? (activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms()) + "" : ""));
+            task.addContent(new Element(headerEntriesEN[9].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInternalInterruptions() + ""));
+            task.addContent(new Element(headerEntriesEN[10].replaceAll("\\s", "").toLowerCase()).setText(activity.getNumInterruptions() + ""));
+            task.addContent(new Element(headerEntriesEN[11].replaceAll("\\s", "").toLowerCase()).setText(activity.getType()));
+            task.addContent(new Element(headerEntriesEN[12].replaceAll("\\s", "").toLowerCase()).setText(activity.getAuthor()));
+            task.addContent(new Element(headerEntriesEN[13].replaceAll("\\s", "").toLowerCase()).setText(activity.getPlace()));
+            task.addContent(new Element(headerEntriesEN[14].replaceAll("\\s", "").toLowerCase()).setText(activity.getDescription()));
+            task.addContent(new Element(headerEntriesEN[15].replaceAll("\\s", "").toLowerCase()).setText(activity.getNotes()));
+            task.addContent(new Element(headerEntriesEN[16].replaceAll("\\s", "").toLowerCase()).setText(activity.getStoryPoints() + ""));
+            task.addContent(new Element(headerEntriesEN[17].replaceAll("\\s", "").toLowerCase()).setText(activity.getIteration() + ""));
+            task.addContent(new Element(headerEntriesEN[18].replaceAll("\\s", "").toLowerCase()).setText(activity.getPriority() + ""));
+            // No sutask list for ChartPanel
+            System.err.println("activity = " + activity);
+            System.err.println("activity ID = " + activity.getId());
+            ArrayList<Activity> subtasklist = panel.getList().getSubTasks(activity.getId());
+            for (Activity subActivity : subtasklist) {
+                Element subtask = new Element("subtask");
+                subtask.addContent(new Element(headerEntriesEN[3].replaceAll("\\s", "").toLowerCase()).setText(subActivity.getName()));
+                task.addContent(subtask);
+            }
             // get root element and added student element as a child of it  
             document.getRootElement().addContent(task);
         }
-        // get object to see output of prepared document  
-        XMLOutputter xmlOutput = new XMLOutputter();
-        // passsed System.out to see document content on console  
-        //xmlOutput.output(document, System.out);
-        // passed fileWriter to write content in specified file  
-        xmlOutput.setFormat(Format.getPrettyFormat());
-        xmlOutput.output(document, new FileWriter(fileName));
+        XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
+        Writer writer = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
+        xmlOutput.output(document, writer);
+        //xmlOutput.output(document, System.out); // System out
+        writer.close();
         return true;
     }
 

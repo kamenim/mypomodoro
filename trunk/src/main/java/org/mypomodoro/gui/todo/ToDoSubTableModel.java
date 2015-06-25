@@ -29,7 +29,7 @@ public class ToDoSubTableModel extends ToDoTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ToDoList.getSubTaskList(parentId));
+        setDataVector(ToDoList.getList().getSubTasks(parentId));
     }
 
     @Override

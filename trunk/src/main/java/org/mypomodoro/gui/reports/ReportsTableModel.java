@@ -27,7 +27,7 @@ import org.mypomodoro.model.ReportList;
 public class ReportsTableModel extends AbstractTableModel {
 
     public ReportsTableModel() {
-        setDataVector(ReportList.getTaskList());
+        setDataVector(ReportList.getList().getTasks());
     }
 
     @Override

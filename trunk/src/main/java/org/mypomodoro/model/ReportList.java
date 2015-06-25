@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 
@@ -97,7 +98,7 @@ public class ReportList extends AbstractActivities {
     @Override
     public void delete(Activity activity) {
         if (!activity.isSubTask()) {
-            ReportList subList = getSubTaskList(activity.getId());
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);
                 subTask.databaseDelete();
@@ -118,7 +119,7 @@ public class ReportList extends AbstractActivities {
         if (activity.isSubTask()) {
             activity.setParentId(-1); // sub-task becomes task
         } else {
-            ReportList subList = getSubTaskList(activity.getId());
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 subTask.setDateCompleted(new Date(0));
                 //subTask.setIteration(-1); // not really necessary

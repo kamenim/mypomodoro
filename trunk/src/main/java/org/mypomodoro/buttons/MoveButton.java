@@ -166,7 +166,7 @@ public class MoveButton extends TabPanelButton {
     }
 
     private boolean isMaxNbTotalEstimatedPomReached(Activity activity) {
-        int nbTotalEstimatedPom = ToDoList.getTaskList().getNbTotalEstimatedPom();
+        int nbTotalEstimatedPom = ToDoList.getList().getTasksNbTotalEstimatedPom();
         int nbTotalEstimatedPomWithActivity = nbTotalEstimatedPom + activity.getEstimatedPoms() + activity.getOverestimatedPoms();
         return nbTotalEstimatedPom <= Main.preferences.getMaxNbPomPerDay() && nbTotalEstimatedPomWithActivity > Main.preferences.getMaxNbPomPerDay();
     }

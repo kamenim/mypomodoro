@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
+import java.util.ArrayList;
 import javax.swing.JTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
@@ -51,7 +52,8 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
                 if (!activity.isSubTask()) {
-                    for (Activity act : ActivityList.getSubTaskList(activity.getId())) {
+                    ArrayList<Activity> subList = ActivityList.getList().getSubTasks(activity.getId());
+                    for (Activity act : subList) {
                         estimated += act.getEstimatedPoms();
                     }
                 }

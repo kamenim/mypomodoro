@@ -18,6 +18,7 @@ package org.mypomodoro.gui.todo;
 
 import java.awt.GridBagConstraints;
 import static java.lang.Thread.sleep;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -187,7 +188,8 @@ public class MergingPanel extends CreatePanel {
                                 }
                                 // Add subtasks to lists
                                 if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
-                                    for (Activity subTask : ToDoList.getSubTaskList(selectedToDo.getId())) {
+                                    ArrayList<Activity> subList = ToDoList.getList().getSubTasks(selectedToDo.getId());
+                                    for (Activity subTask : subList) {
                                         if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // update subtask in ToDo list
                                             subTask.setParentId(newActivity.getId());
                                             ToDoList.getList().update(subTask);
