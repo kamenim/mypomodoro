@@ -21,7 +21,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -329,43 +328,93 @@ public class ImportPanel extends JPanel {
 
     // http://www.w3.org/TR/xmlschema-0
     private void importXML(String fileName) throws Exception {
-        String schemaFile = "/xsd/importSchema.xsd";        
+        String schemaFile = "/xsd/importSchema.xsd";
         XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(Main.class.getResource(schemaFile));
         SAXBuilder saxBuilder = new SAXBuilder(factory);
-        InputStream myxml = new FileInputStream(fileName);        
-        Document document = saxBuilder.build(new InputStreamReader(myxml, "UTF-8"));       
+        InputStream myxml = new FileInputStream(fileName);
+        Document document = saxBuilder.build(new InputStreamReader(myxml, "UTF-8"));
         org.jdom2.Element rootNode = document.getRootElement();
         List<org.jdom2.Element> tasksList = rootNode.getChildren("task");
-        for (org.jdom2.Element task : tasksList) {
-            Activity newActivity = getXMLContent(task);
-            //panel.getList().add(newActivity);
-            //panel.getMainTable().insertRow(newActivity);
-            List<org.jdom2.Element> subtasksList = rootNode.getChildren("subtask");
+        final int rowCount = tasksList.size();
+        if (rowCount > 0) {
+            // Set progress bar
+            MainPanel.progressBar.setVisible(true);
+            MainPanel.progressBar.getBar().setValue(0);
+            MainPanel.progressBar.getBar().setMaximum(rowCount);
+            int increment = 0;
+            int incrementSubtask = 0;
+            for (org.jdom2.Element task : tasksList) {
+                Activity newTask = getActivity(getLineFromElement(task));
+                panel.getList().add(newTask);
+                int parentId = newTask.getId();
+                panel.getMainTable().insertRow(newTask);
+                increment++;
+                List<org.jdom2.Element> subtasksList = task.getChildren("subtask");
+                for (org.jdom2.Element subtask : subtasksList) {
+                    Activity newSubtask = getActivity(getLineFromElement(subtask));
+                    newSubtask.setParentId(parentId);
+                    panel.getList().add(newSubtask);
+                    incrementSubtask++;
+                }
+                final int progressValue = increment;
+                final int progressValueSubTask = incrementSubtask;                
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        String progressText = Integer.toString(progressValue);
+                        if (progressValueSubTask > 0) {
+                            progressText += " (" + progressValueSubTask + ")";
+                        }
+                        progressText += " / " + Integer.toString(rowCount);
+                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                        
+                        MainPanel.progressBar.getBar().setString(progressText); // task
+                    }
+                });
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + rowCount + ")");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                sleep(1000); // wait one second before hiding the progress bar
+                            } catch (InterruptedException ex) {
+                                logger.error("", ex);
+                            }
+                            // hide progress bar
+                            MainPanel.progressBar.getBar().setString(null);
+                            MainPanel.progressBar.setVisible(false);
+                        }
+                    }.start();
+                }
+            });
         }
     }
 
-    private Activity getXMLContent(org.jdom2.Element element) {
-        Activity activity = new Activity();
-        System.err.println(element.getChildText("u"));
-        element.getChildText("date");
-        element.getChildText("datecompleted");
-        System.err.println(element.getChildText("title"));
-        element.getChildText("estimate");
-        element.getChildText("overestimate");
-        element.getChildText("real");
-        element.getChildText("diffi");
-        element.getChildText("diffii");
-        element.getChildText("internal");
-        element.getChildText("external");
-        System.err.println(element.getChildText("type"));
-        element.getChildText("author");
-        element.getChildText("place");
-        element.getChildText("description");
-        element.getChildText("comment");
-        element.getChildText("storypoints");
-        element.getChildText("iteration");
-        element.getChildText("priority");
-        return activity;
+    private String[] getLineFromElement(org.jdom2.Element element) throws Exception {
+        String[] line = new String[19];
+        line[0] = element.getChildText("u");
+        line[1] = element.getChildText("date");
+        line[2] = element.getChildText("datecompleted");
+        line[3] = element.getChildText("title");
+        line[4] = element.getChildText("estimate");
+        line[5] = element.getChildText("overestimate");
+        line[6] = element.getChildText("real");
+        line[7] = ""; // diff I - no need
+        line[8] = ""; // diff II - no need
+        line[9] = element.getChildText("internal");
+        line[10] = element.getChildText("internal");
+        line[11] = element.getChildText("type");
+        line[12] = element.getChildText("author");
+        line[13] = element.getChildText("place");
+        line[14] = element.getChildText("description");
+        line[15] = element.getChildText("comment");
+        line[16] = element.getChildText("storypoints");
+        line[17] = element.getChildText("iteration");
+        line[18] = element.getChildText("priority");        
+        return line;
     }
 
     private String getCellContent(Cell cell, FormulaEvaluator eval) {
@@ -399,8 +448,8 @@ public class ImportPanel extends JPanel {
         }
         return value;
     }
-
-    private void insertData(String[] line) throws Exception {
+    
+    private Activity getActivity(String[] line) throws Exception {
         Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
@@ -425,8 +474,13 @@ public class ImportPanel extends JPanel {
             newActivity.setDate(org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
             newActivity.setDateCompleted(org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
         }
-        panel.getCurrentTable().addActivity(newActivity);
-        //System.err.println("newActivity date=" + org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
+        return newActivity;
+    }
+
+    // insert in main table
+    private void insertData(String[] line) throws Exception {
+        Activity newActivity = getActivity(line);        
+        panel.getMainTable().addActivity(newActivity);
         panel.getMainTable().insertRow(newActivity); // main table !
     }
 }
