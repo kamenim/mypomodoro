@@ -140,7 +140,7 @@ public class Resize {
         Main.gui.getActivityListPanel().getCurrentTable().scrollToSelectedRows();
         Main.gui.getToDoPanel().getCurrentTable().scrollToSelectedRows();
         Main.gui.getReportListPanel().getCurrentTable().scrollToSelectedRows();
-        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRow();        
+        Main.gui.getChartTabbedPanel().getCheckPanel().getCurrentTable().scrollToSelectedRow();
     }
 
     /**

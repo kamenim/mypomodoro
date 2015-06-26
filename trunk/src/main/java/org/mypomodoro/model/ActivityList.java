@@ -65,8 +65,8 @@ public class ActivityList extends AbstractActivities {
             }
         }
         return hasSubTasks;
-    } 
-   
+    }
+
     public static ActivityList getSubTaskList(int parentId) {
         ActivityList subTableList = new ActivityList();
         for (Activity a : list) {
@@ -132,11 +132,10 @@ public class ActivityList extends AbstractActivities {
             ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);
-                subTask.databaseDelete();
             }
         }
         remove(activity);
-        activity.databaseDelete();
+        activity.databaseDelete(); // delete tasks and subtasks
     }
 
     public void deleteAll() {

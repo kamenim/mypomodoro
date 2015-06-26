@@ -143,7 +143,7 @@ public class ExportInputForm extends JPanel {
                     separatorComboBox.setVisible(false);
                     datePatternLabel.setVisible(false);
                     excelPatternsPanel.setVisible(false);
-                } else if (selectedFormat.equals(XMLFormat)) {                    
+                } else if (selectedFormat.equals(XMLFormat)) {
                     headerlabel.setVisible(false);
                     headerCheckBox.setVisible(false);
                     patternsPanel.setVisible(true);
@@ -413,7 +413,7 @@ public class ExportInputForm extends JPanel {
     public boolean isFileExcelOpenXMLFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isExcelOpenXMLFormat();
     }
-    
+
     public boolean isFileXMLFormat() {
         return ((FileFormat) fileFormatComboBox.getSelectedItem()).isXMLFormat();
     }
@@ -483,7 +483,7 @@ public class ExportInputForm extends JPanel {
         public boolean isExcelOpenXMLFormat() {
             return extention.equals(ExcelOpenXMLExtention);
         }
-        
+
         public boolean isXMLFormat() {
             return extention.equals(XMLExtention);
         }
@@ -616,7 +616,7 @@ public class ExportInputForm extends JPanel {
         fileName = new JTextField();
         fileName.setText(defaultFileName);
         fileName.setMinimumSize(COMBO_BOX_DIMENSION);
-        fileName.setPreferredSize(COMBO_BOX_DIMENSION);                
+        fileName.setPreferredSize(COMBO_BOX_DIMENSION);
         fileName.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         exportFormPanel.add(fileName, c);
     }

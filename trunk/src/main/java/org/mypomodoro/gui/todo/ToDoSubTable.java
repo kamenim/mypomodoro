@@ -146,7 +146,7 @@ public class ToDoSubTable extends ToDoTable {
         if (canCreateNewTask()) {
             getTitlePanel().showCreateButton();
         } else {
-            getTitlePanel().hideCreateButton();
+            getTitlePanel().hideCreateButton(); // this happens when main table is empty
         }
         if (canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();

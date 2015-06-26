@@ -44,7 +44,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         textMap = new LinkedHashMap<String, String>();
         textMap.put("date", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
                 + (activity.isUnplanned() ? "U [" : "")
-                + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()): "")
+                + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
         if (!activity.isSubTask()) {
             textMap.put("date_completed", "<b>" + Labels.getString("Common.Date completed") + ":</b> "

@@ -68,8 +68,6 @@ public class CheckTable extends AbstractTable {
                         }
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
-                        // empty subtable
-                        emptySubTable();
                     } else if (selectedRowCount == 1) {
                         // activate all panels
                         for (int index = 0; index < panel.getTabbedPane().getTabCount(); index++) {
@@ -81,8 +79,6 @@ public class CheckTable extends AbstractTable {
                         scrollToSelectedRow(); // when sorting columns, focus on selected row
                         // Display details                           
                         showInfoForSelectedRow();
-                        // populate subtable
-                        populateSubTable();
                     }
                 }
             }

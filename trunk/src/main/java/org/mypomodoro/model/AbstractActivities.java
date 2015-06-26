@@ -175,7 +175,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         int accuracy = real == 0 || estover == 0 ? 0 : Math.round(((float) real / (float) estover) * 100); // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
         return accuracy;
     }
-    
+
     public ArrayList<Activity> getTasks() {
         ArrayList taskList = new ArrayList<Activity>();
         for (Iterator<Activity> it = iterator(); it.hasNext();) {
@@ -186,7 +186,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         }
         return taskList;
     }
-    
+
     public int getTasksNbTotalEstimatedPom() {
         int nbEstimatedPom = 0;
         for (Activity a : getTasks()) {
@@ -194,7 +194,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         }
         return nbEstimatedPom;
     }
-    
+
     public ArrayList<Activity> getSubTasks(int parentId) {
         ArrayList subtaskList = new ArrayList<Activity>();
         for (Iterator<Activity> it = iterator(); it.hasNext();) {
@@ -205,27 +205,27 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         }
         return subtaskList;
     }
-    
+
     public int getSubTasksAccuracy(int parentId) {
         int estover = 0;
         int real = 0;
-        for (Activity a : getSubTasks(parentId)) {            
+        for (Activity a : getSubTasks(parentId)) {
             estover += a.getEstimatedPoms() + a.getOverestimatedPoms();
             real += a.getActualPoms();
         }
         int accuracy = real == 0 || estover == 0 ? 0 : Math.round(((float) real / (float) estover) * 100); // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
         return accuracy;
     }
-    
+
     /*public boolean hasSubTasks(int activityId) {
-        boolean hasSubTasks = false;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
-            if (a.getParentId() == activityId) {
-                hasSubTasks = true;
-                break;
-            }
-        }
-        return hasSubTasks;
-    }*/
+     boolean hasSubTasks = false;
+     for (Iterator<Activity> it = iterator(); it.hasNext();) {
+     Activity a = it.next();
+     if (a.getParentId() == activityId) {
+     hasSubTasks = true;
+     break;
+     }
+     }
+     return hasSubTasks;
+     }*/
 }

@@ -152,7 +152,7 @@ public class ActivitiesDAO {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false' ORDER BY "
-                    + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;"));            
+                    + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;"));
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));

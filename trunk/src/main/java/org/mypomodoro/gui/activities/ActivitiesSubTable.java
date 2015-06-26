@@ -101,12 +101,14 @@ public class ActivitiesSubTable extends ActivitiesTable {
         }
         if (canCreateNewTask()) {
             getTitlePanel().showCreateButton();
+        } else {
+            getTitlePanel().hideCreateButton(); // this happens when main table is empty
         }
         /*if (canMoveSubtasks()) {
-            getTitlePanel().showMoveSubtasksButton();
-        } else {
-            getTitlePanel().hideMoveSubtasksButton();
-        }*/
+         getTitlePanel().showMoveSubtasksButton();
+         } else {
+         getTitlePanel().hideMoveSubtasksButton();
+         }*/
         if (canDeleteTasks()) {
             getTitlePanel().showDeleteButton();
         } else {
@@ -201,12 +203,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
         MoveSubtaskButton m = new MoveSubtaskButton(Labels.getString("Common.Move subtask"), Labels.getString("Common.Are you sure to move those subtasks?"), panel);
         m.doClick();
     }
-    
+
     @Override
     public void moveSubtaskToMainTable(int rowIndex) {
         Activity subtask = getActivityFromRowIndex(rowIndex);
         // remove pomodoros from parent task
-        panel.getMainTable().removePomsFromSelectedRow(subtask);        
+        panel.getMainTable().removePomsFromSelectedRow(subtask);
         subtask.setParentId(-1); // make subtask a task
         getList().update(subtask); // update ex-subtask
         removeRow(rowIndex);
@@ -221,12 +223,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void moveTask(int rowIndex) {
     }
-    
+
     private boolean canCreateNewTask() {
         return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selettion
     }
 
-    private boolean canMoveSubtasks() {
+    /*private boolean canMoveSubtasks() {
         return getSelectedRowCount() > 0;
-    }
+    }*/
 }

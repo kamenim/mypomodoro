@@ -566,7 +566,7 @@ public class ToDoTable extends AbstractTable {
         if (panel.getMainTable().getModel().getRowCount() > 0) { // main table not empty
             Activity currentToDo = panel.getPomodoro().getCurrentToDo();
             Color defaultForegroundColor = ColorUtil.BLACK;
-            if (selectedToDo != null 
+            if (selectedToDo != null
                     && selectedToDo.getId() == panel.getCurrentTable().getActivityIdFromSelectedRow()) {
                 panel.getDetailsPanel().getIconPanel().setBackground(Main.selectedRowColor);
                 panel.getCommentPanel().getIconPanel().setBackground(Main.selectedRowColor);
@@ -581,7 +581,7 @@ public class ToDoTable extends AbstractTable {
                 ToDoIconPanel.showIconPanel(panel.getCommentPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
                 ToDoIconPanel.showIconPanel(panel.getEditPanel().getIconPanel(), currentToDo, Main.taskRunningColor);
             }
-            if (selectedToDo != null 
+            if (selectedToDo != null
                     && getSelectedRowCount() <= 1) { // no selection (sub-table) or single selection
                 if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() != currentToDo.getId()) {
                     ToDoIconPanel.showIconPanel(panel.getDetailsPanel().getIconPanel(), selectedToDo, selectedToDo.isFinished() ? Main.taskFinishedColor : defaultForegroundColor);
@@ -627,7 +627,7 @@ public class ToDoTable extends AbstractTable {
                     }
                 }
             } else { // subtask not running but selected
-                panel.getSubTable().scrollToSelectedRows();
+                panel.getSubTable().scrollToSelectedRow();
             }
         } else {
             super.scrollToSelectedRows();

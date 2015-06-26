@@ -118,9 +118,9 @@ public class ReportsSubTable extends ReportsTable {
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
                 getTitlePanel().setToolTipText(toolTipText);
             }
-        } else {
+        } /*else {
             //title += " (0)";
-        }
+        }*/
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint(); // this is necessary to force stretching of panel

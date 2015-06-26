@@ -75,7 +75,7 @@ public class ActivityInputForm extends JPanel {
         titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
-        
+
         setLayout(new GridBagLayout());
         c.fill = GridBagConstraints.HORIZONTAL;
 
@@ -123,7 +123,7 @@ public class ActivityInputForm extends JPanel {
         add(new FormLabel(Labels.getString("Common.Title") + "*: "), c);
         c.gridx = 1;
         c.gridy = gridy;
-        c.weighty = 0.5;        
+        c.weighty = 0.5;
         nameField.setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes
         addTextField(nameField);
     }
@@ -290,7 +290,7 @@ public class ActivityInputForm extends JPanel {
         c.weighty = 0.5;
         authors.setMinimumSize(COMBO_BOX_DIMENSION);
         authors.setPreferredSize(COMBO_BOX_DIMENSION);
-        authors.setEditable(true);                        
+        authors.setEditable(true);
         // Autocompletion
         AutoCompleteDecorator.decorate(authors);
         ((JTextField) authors.getEditor().getEditorComponent()).setCaretColor(new JTextField().getForeground()); // Set colors according to input settings and themes

@@ -87,8 +87,8 @@ public class ConfigureInputForm extends JPanel {
 
     public ConfigureInputForm() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
-        datesInputFormPanel.setPreferredSize(new Dimension(500, 140));                
+
+        datesInputFormPanel.setPreferredSize(new Dimension(500, 140));
         iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));
 
         addTasksInputFormPanel();
@@ -132,7 +132,7 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
-        JPanel releaseanditeration = new JPanel();            
+        JPanel releaseanditeration = new JPanel();
         releaseanditeration.setLayout(new FlowLayout());
         releaseanditeration.add(typeReleaseAndIteration);
         tasks.add(releaseanditeration); // include ToDos /Iteration Backlog tasks
@@ -151,13 +151,13 @@ public class ConfigureInputForm extends JPanel {
                 }
             }
         });
-        JPanel releaseonly = new JPanel();            
+        JPanel releaseonly = new JPanel();
         releaseonly.setLayout(new FlowLayout());
         releaseonly.add(typeReleaseOnly);
         tasks.add(releaseonly); // excludes ToDos/Iteration Backlog tasks
         // Specific iteration
         if (Main.preferences.getAgileMode()) {
-            JPanel iteration = new JPanel();            
+            JPanel iteration = new JPanel();
             iteration.setLayout(new FlowLayout());
             typeIterationOnly.addActionListener(new ActionListener() {
 
@@ -209,7 +209,7 @@ public class ConfigureInputForm extends JPanel {
         });
         datesInputFormPanel.setBorder(borderDates);
         datesInputFormPanel.setLayout(new GridBagLayout());
-        
+
         addDatesFields();
         tasksInputFormPanel.add(datesInputFormPanel, cChart);
     }
@@ -234,10 +234,10 @@ public class ConfigureInputForm extends JPanel {
         tasksInputFormPanel.add(iterationsInputFormPanel, cChart);
     }
 
-    private void addImageInputFormPanel() {        
+    private void addImageInputFormPanel() {
         JLabel titleBorderDimension = new JLabel(" " + Labels.getString("BurndownChartPanel.Image") + " ");
         titleBorderDimension.setOpaque(true);
-        ComponentTitledBorder borderDimension = new ComponentTitledBorder(titleBorderDimension, dimensionInputFormPanel, new EtchedBorder(), titleBorderDimension.getFont().deriveFont(Font.BOLD));        
+        ComponentTitledBorder borderDimension = new ComponentTitledBorder(titleBorderDimension, dimensionInputFormPanel, new EtchedBorder(), titleBorderDimension.getFont().deriveFont(Font.BOLD));
         dimensionInputFormPanel.setBorder(borderDimension);
         dimensionInputFormPanel.setLayout(new GridBagLayout());
         addDimensionFields();

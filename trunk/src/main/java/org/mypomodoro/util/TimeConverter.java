@@ -90,6 +90,10 @@ public class TimeConverter {
         return pomodoros * pomodoroLength;
     }
 
+    public static int convertPomodorosToEffectiveMinutes(int pomodoros) {
+        return pomodoros * Main.preferences.getPomodoroLength();
+    }
+
     // Round minutes to hours
     public static float roundToHours(float min) {
         return new Float(Math.floor(min / 60)); // eg 2.78 --> 2.0
