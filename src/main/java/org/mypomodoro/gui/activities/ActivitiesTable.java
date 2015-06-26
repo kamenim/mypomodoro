@@ -411,7 +411,7 @@ public class ActivitiesTable extends AbstractTable {
         if (getSelectedRowCount() == 1) {
             Activity activity = getActivityFromSelectedRow();
             try {
-                Activity duplicatedActivity = getList().duplicate(activity);                
+                Activity duplicatedActivity = getList().duplicate(activity);
                 int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
                 editTileCellAtRowIndex(row);
                 if (duplicatedActivity.isSubTask()) {
@@ -438,7 +438,7 @@ public class ActivitiesTable extends AbstractTable {
 
     @Override
     public void deleteTask(int rowIndex) {
-        Activity activity = getActivityFromRowIndex(rowIndex);        
+        Activity activity = getActivityFromRowIndex(rowIndex);
         if (activity.isSubTask()) {
             panel.getMainTable().removePomsFromSelectedRow(activity);
         }

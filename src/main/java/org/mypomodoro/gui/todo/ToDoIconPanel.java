@@ -83,7 +83,7 @@ public class ToDoIconPanel {
             // Plus sign            
             JLabel plus = new JLabel("+");
             plus.setForeground(ColorUtil.BLACK);
-            plus.setFont(iconPanel.getFont().deriveFont(Font.BOLD));            
+            plus.setFont(iconPanel.getFont().deriveFont(Font.BOLD));
             iconPanel.add(plus);
             // Overestimated pomodoros
             for (int i = 0; i < overestimatedPoms; i++) {

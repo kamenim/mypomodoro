@@ -101,11 +101,10 @@ public class ReportList extends AbstractActivities {
             ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);
-                subTask.databaseDelete();
             }
         }
         remove(activity);
-        activity.databaseDelete();
+        activity.databaseDelete(); // delete tasks and subtasks
     }
 
     public void deleteAll() {

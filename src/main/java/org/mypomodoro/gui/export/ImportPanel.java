@@ -347,8 +347,6 @@ public class ImportPanel extends JPanel {
                 Activity newTask = getActivity(getLineFromElement(task));
                 panel.getList().add(newTask);
                 int parentId = newTask.getId();
-                panel.getMainTable().insertRow(newTask);
-                increment++;
                 List<org.jdom2.Element> subtasksList = task.getChildren("subtask");
                 for (org.jdom2.Element subtask : subtasksList) {
                     Activity newSubtask = getActivity(getLineFromElement(subtask));
@@ -356,8 +354,11 @@ public class ImportPanel extends JPanel {
                     panel.getList().add(newSubtask);
                     incrementSubtask++;
                 }
+                // insert task here so it gets selected and this will refresh the title of the sub table
+                panel.getMainTable().insertRow(newTask);
+                increment++;
                 final int progressValue = increment;
-                final int progressValueSubTask = incrementSubtask;                
+                final int progressValueSubTask = incrementSubtask;
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -413,7 +414,7 @@ public class ImportPanel extends JPanel {
         line[15] = element.getChildText("comment");
         line[16] = element.getChildText("storypoints");
         line[17] = element.getChildText("iteration");
-        line[18] = element.getChildText("priority");        
+        line[18] = element.getChildText("priority");
         return line;
     }
 
@@ -448,7 +449,7 @@ public class ImportPanel extends JPanel {
         }
         return value;
     }
-    
+
     private Activity getActivity(String[] line) throws Exception {
         Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
@@ -479,7 +480,7 @@ public class ImportPanel extends JPanel {
 
     // insert in main table
     private void insertData(String[] line) throws Exception {
-        Activity newActivity = getActivity(line);        
+        Activity newActivity = getActivity(line);
         panel.getMainTable().addActivity(newActivity);
         panel.getMainTable().insertRow(newActivity); // main table !
     }

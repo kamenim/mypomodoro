@@ -376,7 +376,7 @@ public class ExportPanel extends JPanel {
     // using JDOM
     private boolean exportXML(String fileName, Iterator<Activity> act)
             throws IOException {
-        Element tasks = new Element("tasks"); 
+        Element tasks = new Element("tasks");
         Document document = new Document(tasks);
         while (act.hasNext()) {
             // created other element to add to document  

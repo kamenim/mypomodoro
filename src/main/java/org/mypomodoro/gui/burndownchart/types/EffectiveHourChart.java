@@ -18,7 +18,6 @@ package org.mypomodoro.gui.burndownchart.types;
 
 import java.util.ArrayList;
 import java.util.Date;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -45,34 +44,34 @@ public class EffectiveHourChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return TimeConverter.roundToHours(activity.getActualPoms() * Main.preferences.getPomodoroLength());
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(activity.getActualPoms()));
     }
 
     @Override
     public float getTotalForBurndown() {
-        float total = 0;
+        int total = 0;
         for (Activity activity : ChartList.getList()) {
-            total += (activity.getEstimatedPoms() + activity.getOverestimatedPoms()) * Main.preferences.getPomodoroLength();
+            total += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
         }
-        return TimeConverter.roundToHours(total);
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(total));
     }
 
     @Override
     public float getTotalForBurnup() {
-        float total = 0;
+        int total = 0;
         for (Activity activity : ChartList.getList()) {
             if (activity.isCompleted()) {
-                total += activity.getActualPoms() * Main.preferences.getPomodoroLength();
+                total += activity.getActualPoms();
             }
         }
-        return TimeConverter.roundToHours(total);
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(total));
     }
 
     @Override
     public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(sum.get(i) * Main.preferences.getPomodoroLength()));
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(Math.round(sum.get(i)))));
         }
         return sum;
     }
@@ -81,7 +80,7 @@ public class EffectiveHourChart implements IChartType {
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
         ArrayList<Float> sum = ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesIterationRange(startIteration, endIteration);
         for (int i = 0; i < sum.size(); i++) {
-            sum.set(i, TimeConverter.roundToHours(sum.get(i) * Main.preferences.getPomodoroLength()));
+            sum.set(i, TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(Math.round(sum.get(i)))));
         }
         return sum;
     }

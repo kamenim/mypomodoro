@@ -67,7 +67,7 @@ public class ToDoList extends AbstractActivities {
             }
         }
         return subTableList;
-    }    
+    }
 
     public static int getListSize() {
         return getList().size();
@@ -136,7 +136,7 @@ public class ToDoList extends AbstractActivities {
         for (Activity subTask : subList) {
             ActivityList.getList().add(subTask);
             remove(subTask);
-        }        
+        }
         ActivityList.getList().add(activity); // set the priority and update the database
         remove(activity);
     }
@@ -154,7 +154,7 @@ public class ToDoList extends AbstractActivities {
         for (Activity subTask : subList) {
             ReportList.getList().add(subTask);
             remove(subTask);
-        }        
+        }
         ReportList.getList().add(activity);
         remove(activity);
     }

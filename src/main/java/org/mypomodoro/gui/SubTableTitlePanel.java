@@ -60,7 +60,7 @@ public class SubTableTitlePanel extends TitlePanel {
         setListeners(duplicateButton);
         setListeners(selectedButton);
         setListeners(deleteButton);
-        setListeners(moveSubtasksButton);                
+        setListeners(moveSubtasksButton);
     }
 
     private void setListeners() {
