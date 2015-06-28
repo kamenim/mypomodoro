@@ -66,15 +66,10 @@ public class TitlePanel extends AbstractTitlePanel {
         table.overestimateTask(poms);
     }
 
-    @Override
-    protected void deleteTasks() {
-        table.deleteTasks();
-    }
-
-    @Override
+    /*@Override
     protected void moveSubtasks() {
         table.moveSubtasksToMainTable();
-    }
+    }*/
 
     @Override
     protected void refreshTable(boolean fromDatabase) {

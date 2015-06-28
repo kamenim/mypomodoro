@@ -37,7 +37,7 @@ public class DeleteButton extends TabPanelButton {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    public DeleteButton(final String title, final String message, final IListPanel panel) {
+    public DeleteButton(final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             setToolTipText(Labels.getString("Common.Delete") + " (BACKSPACE)");
@@ -52,7 +52,13 @@ public class DeleteButton extends TabPanelButton {
                 if (selectedRowCount > 0) {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
-                        public void run() {
+                        public void run() {  
+                            String title = Labels.getString("Common.Delete task");
+                            String message = Labels.getString("Common.Are you sure to delete those tasks?");
+                            if (panel.getCurrentTable().equals(panel.getSubTable())) {
+                                title = Labels.getString("Common.Delete subtask");
+                                message = Labels.getString("Common.Are you sure to delete those subtasks?");
+                            }
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                             if (reply == JOptionPane.YES_OPTION) {
                                 // Disable button

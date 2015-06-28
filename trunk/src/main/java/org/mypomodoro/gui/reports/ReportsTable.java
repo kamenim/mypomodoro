@@ -352,7 +352,7 @@ public class ReportsTable extends AbstractTable {
     @Override
     public void deleteTasks() {
         if (canDeleteTasks()) {
-            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete task"), Labels.getString("Common.Are you sure to delete those tasks?"), panel);
+            DeleteButton b = new DeleteButton(panel);
             b.doClick();
         }
     }

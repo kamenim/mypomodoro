@@ -53,7 +53,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
-        deleteButton = new DeleteButton(Labels.getString("Common.Delete task"), Labels.getString("Common.Are you sure to delete those tasks?"), activitiesPanel);
+        deleteButton = new DeleteButton(activitiesPanel);
         add(deleteButton, gbc);
     }
 
@@ -83,10 +83,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         if (activity.isSubTask()) {
-            deleteButton.setEnabled(false);
             moveButton.setEnabled(false);
         } else {
-            deleteButton.setEnabled(true);
             moveButton.setEnabled(true);
         }
         if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
