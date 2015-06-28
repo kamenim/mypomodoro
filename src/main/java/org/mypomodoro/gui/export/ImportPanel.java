@@ -135,25 +135,6 @@ public class ImportPanel extends JPanel {
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                         } finally {
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                sleep(1000); // wait one second before hiding the progress bar
-                                            } catch (InterruptedException ex) {
-                                                logger.error("", ex);
-                                            }
-                                            // hide progress bar
-                                            MainPanel.progressBar.getBar().setString(null);
-                                            MainPanel.progressBar.setVisible(false);
-                                        }
-                                    }.start();
-                                }
-                            });
                             // Stop wait cursor
                             WaitCursor.stopWaitCursor();
                         }

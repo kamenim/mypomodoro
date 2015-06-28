@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EtchedBorder;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.DeleteButton;
 import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.gui.activities.ActivityInformationPanel;
@@ -41,6 +42,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     private final GridBagConstraints gbc = new GridBagConstraints();
     private MoveToDoButton moveButton;
     private CompleteToDoButton completeButton;
+    private DeleteButton deleteSubtaskButton;
 
     public DetailsPanel(ToDoPanel todoPanel) {
         this.panel = todoPanel;
@@ -49,12 +51,23 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         setBorder(null);
 
         addMoveButton(todoPanel);
+        addDeleteSubtaskButton(todoPanel);
         addInformationPanel();
         addCompleteButton(todoPanel);
     }
+    
+    private void addDeleteSubtaskButton(ToDoPanel todoPanel) {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 0.1;
+        deleteSubtaskButton = new DeleteButton(todoPanel);
+        deleteSubtaskButton.setVisible(false); // invisible by default
+        add(deleteSubtaskButton, gbc);
+    }
 
     private void addMoveButton(ToDoPanel todoPanel) {
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
@@ -67,7 +80,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
 
     private void addInformationPanel() {
         JPanel infoPanel = new JPanel();
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -102,7 +115,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     }
 
     private void addCompleteButton(ToDoPanel todoPanel) {
-        gbc.gridx = 2;
+        gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
@@ -136,12 +149,14 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     }
 
     public void disableButtons() {
-        moveButton.setEnabled(false);
+        deleteSubtaskButton.setVisible(true); // switch delete / move button
+        moveButton.setVisible(false);
         completeButton.setEnabled(false);
     }
 
     public void enableButtons() {
-        moveButton.setEnabled(true);
+        deleteSubtaskButton.setVisible(false); // switch delete / move button
+        moveButton.setVisible(true);
         completeButton.setEnabled(true);
     }
 }

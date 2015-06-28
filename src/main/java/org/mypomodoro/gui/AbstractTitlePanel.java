@@ -55,7 +55,6 @@ public abstract class AbstractTitlePanel extends JPanel {
     private final ImageIcon externalIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "external.png"));
     private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plusone.png"));
     protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "running.png"));
-    protected final ImageIcon deleteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "delete.png"));
     protected final ImageIcon moveupIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "moveup.png"));
     protected final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
     protected final DefaultButton internalButton = new DefaultButton(internalIcon);
@@ -65,8 +64,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton createButton = new DefaultButton(createIcon);
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
-    protected final DefaultButton deleteButton = new DefaultButton(deleteIcon);
-    protected final DefaultButton moveSubtasksButton = new DefaultButton(moveupIcon);
+    //protected final DefaultButton moveSubtasksButton = new DefaultButton(moveupIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
     private final String rightArrow = " " + (getFont().canDisplay('\u25b6') ? "\u25b6" : ">") + " ";
@@ -164,22 +162,8 @@ public abstract class AbstractTitlePanel extends JPanel {
             }
         });
         overestimationButton.setToolTipText(Labels.getString("ToDoListPanel.Overestimate"));
-        // Delete
-        deleteButton.setMargin(buttonInsets);
-        deleteButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteTasks();
-            }
-        });
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (BACKSPACE)");
-        } else {
-            deleteButton.setToolTipText(Labels.getString("Common.Delete") + " (DEL)");
-        }
         // Move up subtask to main table (convert to task)
-        moveSubtasksButton.setMargin(buttonInsets);
+        /*moveSubtasksButton.setMargin(buttonInsets);
         moveSubtasksButton.addActionListener(new ActionListener() {
 
             @Override
@@ -187,7 +171,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 moveSubtasks();
             }
         });
-        moveSubtasksButton.setToolTipText(Labels.getString("Common.Move"));
+        moveSubtasksButton.setToolTipText(Labels.getString("Common.Move"));*/
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.addActionListener(new ActionListener() {
@@ -295,13 +279,9 @@ public abstract class AbstractTitlePanel extends JPanel {
         buttonPanel.add(externalButton);
     }
 
-    public void showMoveSubtasksButton() {
+    /*public void showMoveSubtasksButton() {
         buttonPanel.add(moveSubtasksButton);
-    }
-
-    public void showDeleteButton() {
-        buttonPanel.add(deleteButton);
-    }
+    }*/
 
     public void showRefreshButton() {
         buttonPanel.add(refreshButton);
@@ -335,13 +315,9 @@ public abstract class AbstractTitlePanel extends JPanel {
         buttonPanel.remove(externalButton);
     }
 
-    public void hideMoveSubtasksButton() {
+    /*public void hideMoveSubtasksButton() {
         buttonPanel.remove(moveSubtasksButton);
-    }
-
-    public void hideDeleteButton() {
-        buttonPanel.remove(deleteButton);
-    }
+    }*/
 
     public void hideRefreshButton() {
         buttonPanel.remove(refreshButton);
@@ -370,11 +346,9 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected abstract void overestimateTask(int poms);
 
-    protected abstract void deleteTasks();
-
     protected abstract void refreshTable(boolean fromDatabase);
 
-    protected abstract void moveSubtasks();
+    //protected abstract void moveSubtasks();
 
     // This is important to make sure the title is refreshed and repainted
     @Override

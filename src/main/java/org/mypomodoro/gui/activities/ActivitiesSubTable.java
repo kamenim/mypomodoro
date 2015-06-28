@@ -109,11 +109,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
          } else {
          getTitlePanel().hideMoveSubtasksButton();
          }*/
-        if (canDeleteTasks()) {
-            getTitlePanel().showDeleteButton();
-        } else {
-            getTitlePanel().hideDeleteButton();
-        }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint(); // this is necessary to force stretching of panel
@@ -184,7 +179,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void deleteTasks() {
         if (canDeleteTasks()) {
-            DeleteButton b = new DeleteButton(Labels.getString("Common.Delete subtask"), Labels.getString("Common.Are you sure to delete those subtasks?"), panel);
+            DeleteButton b = new DeleteButton(panel);
             b.doClick();
         }
     }

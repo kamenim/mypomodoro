@@ -14,7 +14,7 @@
       <xs:element name="estimate" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... -->
       <xs:element name="overestimate" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... -->
       <xs:element name="real" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... -->
-      <xs:element name="diffi" type="xs:integer"/><!-- ...-1, 0, +1... : Diff I -->
+      <xs:element name="diffi" type="xs:integer" minOccurs="0" maxOccurs="1"/><!-- ...-1, 0, +1... : Diff I -->
       <xs:element name="diffii" type="xs:integer" minOccurs="0" maxOccurs="1"/><!-- ...-1, 0, +1...: Diff II -->
       <xs:element name="internal" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... : number of internal interruptions -->
       <xs:element name="external" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... : number of external interruptions -->
