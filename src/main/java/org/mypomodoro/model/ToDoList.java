@@ -175,7 +175,7 @@ public class ToDoList extends AbstractActivities {
         for (Activity activity : activities) {
             if (activity.getPriority() != increment) { // optimization
                 activity.setPriority(increment);
-                update(activity);
+                list.update(activity); // the update must be done on the list !!!! (because this is a sub list that is calling this method)
                 activity.databaseUpdate();
             }
             increment++;

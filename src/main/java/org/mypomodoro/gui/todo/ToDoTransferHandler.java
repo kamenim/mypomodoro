@@ -19,18 +19,22 @@ package org.mypomodoro.gui.todo;
 import java.awt.datatransfer.Transferable;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -64,16 +68,20 @@ public class ToDoTransferHandler extends TransferHandler {
                     int reply = JOptionPane.showConfirmDialog(Main.gui, message, title,
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
                     if (reply == JOptionPane.OK_OPTION) {
-                        // sort programatically the priority column
-                        /*
-                         panel.getCurrentTable().setAutoCreateRowSorter(true);
+                        // sort programatically the priority column                        
+                        /*panel.getCurrentTable().setAutoCreateRowSorter(true);
                          DefaultRowSorter sorter = ((DefaultRowSorter) panel.getCurrentTable().getRowSorter());
                          ArrayList<SortKey> list = new ArrayList<SortKey>();
                          list.add(new RowSorter.SortKey(AbstractTableModel.PRIORITY_COLUMN_INDEX, SortOrder.ASCENDING));
                          sorter.setSortKeys(list);
-                         sorter.sort(); // sort the view
-                         */
-                        panel.refresh();
+                         sorter.sort(); // sort the view*/
+
+                        //panel.getCurrentTable().getTableList().sortByPriority();
+                        //panel.refresh();
+                        //panel.getCurrentTable().sortByPriority();
+                        ((ToDoTableModel) panel.getMainTable().getModel()).update();
+                        panel.getMainTable().setColumnModel();
+                        panel.getMainTable().setTitle();
                     }
                 } else if (isContinuousSelection()) {
                     final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
@@ -81,58 +89,73 @@ public class ToDoTransferHandler extends TransferHandler {
                         @Override
                         public void run() {
                             if (!WaitCursor.isStarted()) {
-                                // Start wait cursor
-                                WaitCursor.startWaitCursor();
-                                // Set progress bar
-                                MainPanel.progressBar.setVisible(true);
-                                MainPanel.progressBar.getBar().setValue(0);
-                                MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
-                                int[] fromRows = panel.getCurrentTable().getSelectedRows();
-                                int toRow = dropLocation.getRow();
-                                toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
-                                ((DefaultTableModel) panel.getCurrentTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
-                                for (int row = 0; row < panel.getCurrentTable().getModel().getRowCount(); row++) {
-                                    Activity activity = panel.getCurrentTable().getActivityFromRowIndex(row);
-                                    int priority = row + 1;
-                                    if (activity.getPriority() != priority) {
-                                        activity.setPriority(priority);
-                                        activity.databaseUpdate();
-                                        ToDoList.getList().update(activity);
+                                try {
+                                    // Start wait cursor
+                                    WaitCursor.startWaitCursor();
+                                    // Set progress bar
+                                    MainPanel.progressBar.setVisible(true);
+                                    MainPanel.progressBar.getBar().setValue(0);
+                                    MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
+                                    // moving row with drag and drop
+                                    int[] fromRows = panel.getCurrentTable().getSelectedRows();
+                                    int toRow = dropLocation.getRow();
+                                    toRow = (toRow < fromRows[0]) ? toRow : toRow - fromRows.length;
+                                    // Error case: ArrayIndexOutOfBoundsException occurs here when trying to move rows in the main table when the current table is the subtable
+                                    ((DefaultTableModel) panel.getCurrentTable().getModel()).moveRow(fromRows[0], fromRows[fromRows.length - 1], toRow); // fires tableChanged event 
+                                    for (int row = 0; row < panel.getCurrentTable().getModel().getRowCount(); row++) {
+                                        Activity activity = panel.getCurrentTable().getActivityFromRowIndex(row);
+                                        int priority = row + 1;
+                                        if (activity.getPriority() != priority) { // set new priorities
+                                            activity.setPriority(priority);
+                                            activity.databaseUpdate();
+                                            panel.getCurrentTable().getList().update(activity);
+                                        }
                                     }
-                                }
-                                // Indicate reordoring by priority in progress bar
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
-                                        MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-                                    }
-                                });
-                                panel.getCurrentTable().reorderByPriority();
-                                // Close progress bar
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
-                                        new Thread() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    sleep(1000); // wait one second before hiding the progress bar
-                                                } catch (InterruptedException ex) {
-                                                    logger.error("", ex);
+                                    // Indicate reordering by priority in progress bar
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                            MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                        }
+                                    });
+                                    panel.getCurrentTable().updatePriorities();
+                                    // Close progress bar
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done"));
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        sleep(1000); // wait one second before hiding the progress bar
+                                                    } catch (InterruptedException ex) {
+                                                        logger.error("", ex);
+                                                    }
+                                                    // hide progress bar
+                                                    MainPanel.progressBar.getBar().setString(null);
+                                                    MainPanel.progressBar.setVisible(false);
                                                 }
-                                                // hide progress bar
-                                                MainPanel.progressBar.getBar().setString(null);
-                                                MainPanel.progressBar.setVisible(false);
-                                            }
-                                        }.start();
-                                    }
-                                });
-                                // Stop wait cursor
-                                WaitCursor.stopWaitCursor();
-                                // After cursor stops, reset interval of selected row(s)                                
-                                panel.getCurrentTable().getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
+                                            }.start();
+                                        }
+                                    });
+                                    // Stop wait cursor
+                                    WaitCursor.stopWaitCursor();
+                                    // After cursor stops, reset interval of selected row(s)                                
+                                    panel.getCurrentTable().getSelectionModel().setSelectionInterval(toRow, toRow + fromRows.length - 1);
+                                } catch (ArrayIndexOutOfBoundsException ignored) {
+                                    // Stop wait cursor
+                                    WaitCursor.stopWaitCursor();
+                                    // Close progress bar
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MainPanel.progressBar.getBar().setString(null);
+                                            MainPanel.progressBar.setVisible(false);
+                                        }
+                                    });
+                                }
                             }
                         }
                     }.start();

@@ -16,6 +16,10 @@
  */
 package org.mypomodoro.gui.reports;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ReportList;
 
 /**
@@ -29,6 +33,20 @@ public class ReportsSubTableModel extends ReportsTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ReportList.getList().getSubTasks(parentId));
+        ArrayList<Activity> subList = ReportList.getList().getSubTasks(parentId);
+        sortByPriority(subList); // sort by priority
+        setDataVector(subList);
+    }
+    
+    private void sortByPriority(ArrayList<Activity> activities) {
+        Collections.sort(activities, new Comparator<Activity>() {
+
+            @Override
+            public int compare(Activity a1, Activity a2) {
+                Integer p1 = (Integer) a1.getPriority();
+                Integer p2 = (Integer) a2.getPriority();
+                return p1.compareTo(p2);
+            }
+        });
     }
 }

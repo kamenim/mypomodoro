@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.activities;
 
+import java.util.ArrayList;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 
 /**
@@ -29,7 +31,9 @@ public class ActivitiesSubTableModel extends ActivitiesTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ActivityList.getList().getSubTasks(parentId));
+        ArrayList<Activity> subList = ActivityList.getList().getSubTasks(parentId);
+        // we don't sort the list by priority here (although this would be convenient for reopened tasks)        
+        setDataVector(subList);
     }
 
     @Override

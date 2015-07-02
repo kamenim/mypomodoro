@@ -16,6 +16,8 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.util.ArrayList;
+import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
 
 /**
@@ -29,7 +31,9 @@ public class ToDoSubTableModel extends ToDoTableModel {
     }
 
     public void update(int parentId) {
-        setDataVector(ToDoList.getList().getSubTasks(parentId));
+        ArrayList<Activity> subList = ToDoList.getList().getSubTasks(parentId); // this list is not sorted yet
+        sortByPriority(subList); // sort by priority       
+        setDataVector(subList);
     }
 
     @Override

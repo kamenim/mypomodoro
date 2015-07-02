@@ -16,6 +16,9 @@
  */
 package org.mypomodoro.gui.todo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ToDoList;
@@ -29,7 +32,13 @@ public class ToDoTableModel extends AbstractTableModel {
     public ToDoTableModel() {
         setDataVector(ToDoList.getList().getTasks());
     }
-
+    
+    public void update() {
+        ArrayList<Activity> subList = ToDoList.getList().getTasks(); // this list is not sorted yet
+        sortByPriority(subList); // sort by priority       
+        setDataVector(subList);
+    }
+    
     @Override
     protected Object[] getRow(Activity activity) {
         int colIndex = COLUMN_NAMES.length;
@@ -51,5 +60,17 @@ public class ToDoTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex == TITLE_COLUMN_INDEX || columnIndex == ESTIMATED_COLUMN_INDEX || columnIndex == STORYPOINTS_COLUMN_INDEX || columnIndex == ITERATION_COLUMN_INDEX;
+    }
+    
+    protected void sortByPriority(ArrayList<Activity> activities) {
+        Collections.sort(activities, new Comparator<Activity>() {
+
+            @Override
+            public int compare(Activity a1, Activity a2) {
+                Integer p1 = (Integer) a1.getPriority();
+                Integer p2 = (Integer) a2.getPriority();
+                return p1.compareTo(p2);
+            }
+        });    
     }
 }

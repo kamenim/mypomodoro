@@ -661,8 +661,11 @@ public abstract class AbstractTable extends JXTable {
         String info = "";
         int[] rows = getSelectedRows();
         for (int row : rows) {
-            Integer id = getActivityIdFromRowIndex(row);
-            info += getList().getById(id).getName() + "<br>";
+            Activity activity = getActivityFromRowIndex(row);
+            // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+            if (activity != null) {
+                info += activity.getName() + "<br>";
+            }
         }
         return info;
     }

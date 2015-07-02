@@ -460,8 +460,7 @@ public class ExportPanel extends JPanel {
             googleFile.setDescription("myAgilePomodoro file");
             googleFile.setMimeType("text/csv");
             // Send file
-            exportCSV(fileName, act); // first, export the data to a csv file
-            //String path = "./" + fileName;
+            exportCSV(fileName, act); // first, export the data to a csv file            
             java.io.File csvFile = new java.io.File(fileName);
             FileContent mediaContent = new FileContent("text/csv", csvFile);
             // convert and send the file to Google Drive

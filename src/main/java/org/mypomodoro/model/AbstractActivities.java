@@ -176,6 +176,9 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         return accuracy;
     }
 
+    // Consider using Guava for filtering or lambdaj (Java 8)
+    // https://github.com/google/guava
+    // http://stackoverflow.com/questions/122105/what-is-the-best-way-to-filter-a-java-collection
     public ArrayList<Activity> getTasks() {
         ArrayList taskList = new ArrayList<Activity>();
         for (Iterator<Activity> it = iterator(); it.hasNext();) {

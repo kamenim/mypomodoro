@@ -33,7 +33,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.TickUnits;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
@@ -140,8 +139,24 @@ public class CreateChart extends JPanel {
         return dates;
     }
 
+    // When the period exceeds 2 working weeks (10 days): first date + Mondays are displayed
+    // When the period exceeds 5 working months (100 days): ist date + first day of the month
     private Comparable getXAxisDateValue(int XAxisIndex) {
-        return new ComparableCustomDateForXAxis(XAxisDateValues.get(XAxisIndex));
+        Date date = XAxisDateValues.get(XAxisIndex);
+        boolean displayDate = true;
+        if (XAxisIndex != 0 
+                && XAxisIndex + 1 != XAxisDateValues.size()) { // first date always displayed            
+            if (XAxisDateValues.size() > 100
+                    && !DateUtil.isFirstDayOfMonth(date)) { // first condition
+                displayDate = false;
+            } else if (XAxisDateValues.size() <= 100
+                    && XAxisDateValues.size() > 10 
+                    && !DateUtil.isMonday(date)) { // second condition (cannot be mixed up with the first condition)
+                displayDate = false;      
+            }
+        }
+        return new ComparableCustomDateForXAxis(date, displayDate);
+        //return new ComparableCustomDateForXAxis(date, XAxisDateValues.displayDate(XAxisIndex));
     }
 
     /**
@@ -352,7 +367,7 @@ public class CreateChart extends JPanel {
         //////////////////// X-AXIS //////////////////////////
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
-        categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // x-axis font
+        categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 1)); // x-axis font
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45); // display diagonally
         }
@@ -519,7 +534,7 @@ public class CreateChart extends JPanel {
                 scopeRenderer.setSeriesPaint(0, chooseInputForm.getScopeColor());
                 // the following two lines make values being displayed onto the chart along the scope line
                 scopeRenderer.setBaseItemLabelsVisible(true);
-                scopeRenderer.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new StandardCategoryItemLabelGenerator());
+                scopeRenderer.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new ScopeCategoryItemLabelGenerator(XAxisDateValues));
                 // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
                 scopeRenderer.setToolTipGenerator(null);
                 scopeRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getScopeCheckBox().isSelected() && !chooseInputForm.getScopeLegend().isEmpty());

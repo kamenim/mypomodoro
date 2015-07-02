@@ -551,10 +551,15 @@ public class ToDoTable extends AbstractTable {
 
     @Override
     public void reorderByPriority() {
-        getTableList().reorderByPriority();
+        getTableList().reorderByPriority(); // reordering the list of tasks or sutasks
+        // Priorities have changed: the table must be updated
+        updatePriorities();
+    }
+    
+    public void updatePriorities() {
         for (int row = 0; row < getModel().getRowCount(); row++) {
-            Activity activity = getTableList().getById(getActivityIdFromRowIndex(row));
-            getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX);
+            Activity activity = getActivityFromRowIndex(row);
+            getModel().setValueAt(activity.getPriority(), convertRowIndexToModel(row), AbstractTableModel.PRIORITY_COLUMN_INDEX); // in view
         }
     }
 
