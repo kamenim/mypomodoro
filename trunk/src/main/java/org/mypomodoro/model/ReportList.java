@@ -83,7 +83,9 @@ public class ReportList extends AbstractActivities {
     }
 
     public void add(Activity act, Date date, Date dateCompleted) {
-        act.setPriority(-1);
+        if (!act.isSubTask()) { // don't reset the priority of subtasks so the subtasks can be sorted by priority in the ReportList
+            act.setPriority(-1);
+        }
         act.setIsCompleted(true);
         act.setDate(date);
         act.setDateCompleted(dateCompleted);
@@ -113,18 +115,13 @@ public class ReportList extends AbstractActivities {
     }
 
     // Reopen a task and its subtasks to ActivityList
-    // Reopen a subtask only will make it a task
     public void reopenToActivtyList(Activity activity) {
-        if (activity.isSubTask()) {
-            activity.setParentId(-1); // sub-task becomes task
-        } else {
-            ArrayList<Activity> subList = getSubTasks(activity.getId());
-            for (Activity subTask : subList) {
-                subTask.setDateCompleted(new Date(0));
-                //subTask.setIteration(-1); // not really necessary
-                ActivityList.getList().add(subTask);
-                remove(subTask);
-            }
+        ArrayList<Activity> subList = getSubTasks(activity.getId());
+        for (Activity subTask : subList) {
+            subTask.setDateCompleted(new Date(0));
+            //subTask.setIteration(-1); // not really necessary
+            ActivityList.getList().add(subTask);
+            remove(subTask);
         }
         activity.setDateCompleted(new Date());
         activity.setIteration(-1); // reset iteration

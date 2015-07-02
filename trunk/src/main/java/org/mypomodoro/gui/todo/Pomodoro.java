@@ -452,7 +452,9 @@ public class Pomodoro {
     public void tick() {
         InputStream is;
         try {
-            is = new FileInputStream("./ticking.wav");
+            // Exact path: http://stackoverflow.com/questions/320542/how-to-get-the-path-of-a-running-jar-file
+            // String path = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            is = new FileInputStream("ticking.wav"); // this will work also on a usb stick
             playSound(is, true);
         } catch (FileNotFoundException ex) {
             is = Main.class.getResourceAsStream("/sounds/ticking.wav");
@@ -464,11 +466,12 @@ public class Pomodoro {
     public void ring() {
         InputStream is;
         try {
-            is = new FileInputStream("./ringing.wav");
+                        
+            is = new FileInputStream("ringing.wav"); // this will work also on a usb stick           
             playSound(is);
         } catch (FileNotFoundException ex) {
             is = Main.class.getResourceAsStream("/sounds/ringing.wav");
-            playSound(is);
+            playSound(is);           
         }
     }
 

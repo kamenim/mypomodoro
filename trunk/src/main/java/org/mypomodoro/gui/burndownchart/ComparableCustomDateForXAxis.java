@@ -26,9 +26,16 @@ import org.mypomodoro.util.DateUtil;
 public class ComparableCustomDateForXAxis implements Comparable<ComparableCustomDateForXAxis> {
 
     private final Date date;
+    private final boolean display;
 
     ComparableCustomDateForXAxis(Date date) {
         this.date = date;
+        this.display = true;
+    }
+    
+    ComparableCustomDateForXAxis(Date date, boolean display) {
+        this.date = date;
+        this.display = display;
     }
 
     @Override
@@ -62,7 +69,8 @@ public class ComparableCustomDateForXAxis implements Comparable<ComparableCustom
 
     @Override
     public String toString() {
-        return DateUtil.getFormatedDate(getDate(), "dd MMM.");
+        //return DateUtil.getFormatedDate(getDate(), "dd MMM."); // before 4.0.0 format eg '15 Jun.'
+        return display ? DateUtil.getShortFormatedDateNoYear(getDate()) : "";
     }
 
     private Date getDate() {

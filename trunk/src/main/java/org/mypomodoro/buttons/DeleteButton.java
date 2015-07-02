@@ -26,6 +26,7 @@ import org.mypomodoro.Main;
 import org.mypomodoro.gui.IListPanel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.WaitCursor;
 
@@ -90,6 +91,12 @@ public class DeleteButton extends TabPanelButton {
                                     }
                                 }
                                 //}
+                                // Reorder priorities of subtasks of sub-table of ToDo Panel
+                                if (panel instanceof ToDoPanel 
+                                        && panel.getSubTable().getModel().getRowCount() > 0) { // delete in ToDo panel only applies to sub table
+                                    // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                                                            
+                                    panel.getCurrentTable().reorderByPriority();
+                                }
                                 // Close progress bar
                                 final int progressCount = increment;
                                 SwingUtilities.invokeLater(new Runnable() {

@@ -92,7 +92,7 @@ public class ActivityList extends AbstractActivities {
 
     // Create or update
     public void add(Activity act, Date date, Date dateReopen) {
-        act.setPriority(-1);
+        act.setPriority(-1);        
         act.setIsCompleted(false);
         act.setDate(date);
         act.setDateCompleted(dateReopen);
@@ -144,16 +144,11 @@ public class ActivityList extends AbstractActivities {
     }
 
     // Move a task and its subtasks to ToDoList
-    // Move a subtask only will make it a task
     public void moveToTODOList(Activity activity) {
-        if (activity.isSubTask()) {
-            activity.setParentId(-1); // sub-task becomes task
-        } else {
-            ArrayList<Activity> subList = getSubTasks(activity.getId());
-            for (Activity subTask : subList) {
-                ToDoList.getList().add(subTask);
-                remove(subTask);
-            }
+        ArrayList<Activity> subList = getSubTasks(activity.getId());
+        for (Activity subTask : subList) {
+            ToDoList.getList().add(subTask);
+            remove(subTask);
         }
         ToDoList.getList().add(activity); // this sets the priority and update the database
         remove(activity);

@@ -44,7 +44,7 @@ public class CompleteToDoButton extends TabPanelButton {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
+                final int selectedRowCount = panel.getMainTable().getSelectedRowCount();
                 if (selectedRowCount > 0) {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
@@ -61,7 +61,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                     MainPanel.progressBar.getBar().setValue(0);
                                     MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
                                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
-                                    /*if (!panel.getPomodoro().inPomodoro() && panel.getCurrentTable().getSelectedRowCount() == panel.getCurrentTable().getRowCount()) { // complete all at once                       
+                                    /*if (!panel.getPomodoro().inPomodoro() && panel.getMainTable().getSelectedRowCount() == panel.getMainTable().getRowCount()) { // complete all at once                       
                                      int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                                      if (reply == JOptionPane.YES_OPTION) {
                                      panel.completeAll();
@@ -69,14 +69,14 @@ public class CompleteToDoButton extends TabPanelButton {
                                      }
                                      } else {*/
                                     int increment = 0;
-                                    int[] rows = panel.getCurrentTable().getSelectedRows();
+                                    int[] rows = panel.getMainTable().getSelectedRows();
                                     // clear current selection before adding selection row to main table
                                     Main.gui.getReportListPanel().getMainTable().clearSelection();
                                     for (int row : rows) {
                                         if (!MainPanel.progressBar.isStopped()) {
                                             // removing a row requires decreasing the row index number
                                             row = row - increment;
-                                            Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
+                                            Activity selectedActivity = panel.getMainTable().getActivityFromRowIndex(row);
                                             // excluding current running task
                                             if (panel.getPomodoro().inPomodoro() && selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
                                                 if (rows.length > 1) {
@@ -85,7 +85,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                                     break;
                                                 }
                                             }
-                                            panel.getCurrentTable().completeTask(row);
+                                            panel.getMainTable().completeTask(row);
                                             Main.gui.getReportListPanel().getMainTable().addRow(selectedActivity); // add selection row to main table
                                             increment++;
                                             final int progressValue = increment;
@@ -108,7 +108,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                         }
                                     });
                                     // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
-                                    panel.getCurrentTable().reorderByPriority();
+                                    panel.getMainTable().reorderByPriority();
                                     // Close progress bar
                                     final int progressCount = increment;
                                     SwingUtilities.invokeLater(new Runnable() {
