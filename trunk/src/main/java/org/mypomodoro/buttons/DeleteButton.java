@@ -53,7 +53,7 @@ public class DeleteButton extends TabPanelButton {
                 if (selectedRowCount > 0) {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
-                        public void run() {  
+                        public void run() {
                             String title = Labels.getString("Common.Delete task");
                             String message = Labels.getString("Common.Are you sure to delete those tasks?");
                             if (panel.getCurrentTable().equals(panel.getSubTable())) {
@@ -92,7 +92,7 @@ public class DeleteButton extends TabPanelButton {
                                 }
                                 //}
                                 // Reorder priorities of subtasks of sub-table of ToDo Panel
-                                if (panel instanceof ToDoPanel 
+                                if (panel instanceof ToDoPanel
                                         && panel.getSubTable().getModel().getRowCount() > 0) { // delete in ToDo panel only applies to sub table
                                     // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                                                            
                                     panel.getCurrentTable().reorderByPriority();

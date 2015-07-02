@@ -67,10 +67,9 @@ public class TitlePanel extends AbstractTitlePanel {
     }
 
     /*@Override
-    protected void moveSubtasks() {
-        table.moveSubtasksToMainTable();
-    }*/
-
+     protected void moveSubtasks() {
+     table.moveSubtasksToMainTable();
+     }*/
     @Override
     protected void refreshTable(boolean fromDatabase) {
         panel.refresh(fromDatabase);

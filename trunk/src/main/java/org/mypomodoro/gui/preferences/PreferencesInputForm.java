@@ -70,7 +70,7 @@ public class PreferencesInputForm extends JPanel {
     public static final String NIMROD_LAF = "com.nilo.plaf.nimrod.NimRODLookAndFeel"; // NimROD
     public static final String PLASTIC3D_LAF = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel"; // JGoodies  
     public static final String PGS_LAF = "com.pagosoft.plaf.PgsLookAndFeel"; // Pgs
-    private static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
+    public static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
     private static final String NOIRE_LAF = "com.jtattoo.plaf.noire.NoireLookAndFeel"; // JTattoo
     private static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
     private static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo

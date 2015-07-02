@@ -37,7 +37,7 @@ public class ReportsSubTableModel extends ReportsTableModel {
         sortByPriority(subList); // sort by priority
         setDataVector(subList);
     }
-    
+
     private void sortByPriority(ArrayList<Activity> activities) {
         Collections.sort(activities, new Comparator<Activity>() {
 

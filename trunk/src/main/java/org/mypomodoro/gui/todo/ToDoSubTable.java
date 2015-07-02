@@ -220,7 +220,7 @@ public class ToDoSubTable extends ToDoTable {
             newActivity.setParentId(parentActivity.getId());
             getList().add(newActivity); // save activity in database
             int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
-            editTileCellAtRowIndex(row);
+            editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -234,7 +234,7 @@ public class ToDoSubTable extends ToDoTable {
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
                 int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
-                editTileCellAtRowIndex(row);
+                editTitleCellAtRowIndex(row);
                 panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 panel.getTabbedPane().selectEditTab(); // open edit tab
             } catch (CloneNotSupportedException ignored) {

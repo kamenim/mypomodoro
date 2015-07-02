@@ -164,14 +164,14 @@ public abstract class AbstractTitlePanel extends JPanel {
         overestimationButton.setToolTipText(Labels.getString("ToDoListPanel.Overestimate"));
         // Move up subtask to main table (convert to task)
         /*moveSubtasksButton.setMargin(buttonInsets);
-        moveSubtasksButton.addActionListener(new ActionListener() {
+         moveSubtasksButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moveSubtasks();
-            }
-        });
-        moveSubtasksButton.setToolTipText(Labels.getString("Common.Move"));*/
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         moveSubtasks();
+         }
+         });
+         moveSubtasksButton.setToolTipText(Labels.getString("Common.Move"));*/
         // Refresh table from database
         refreshButton.setMargin(buttonInsets);
         refreshButton.addActionListener(new ActionListener() {
@@ -280,9 +280,8 @@ public abstract class AbstractTitlePanel extends JPanel {
     }
 
     /*public void showMoveSubtasksButton() {
-        buttonPanel.add(moveSubtasksButton);
-    }*/
-
+     buttonPanel.add(moveSubtasksButton);
+     }*/
     public void showRefreshButton() {
         buttonPanel.add(refreshButton);
     }
@@ -316,9 +315,8 @@ public abstract class AbstractTitlePanel extends JPanel {
     }
 
     /*public void hideMoveSubtasksButton() {
-        buttonPanel.remove(moveSubtasksButton);
-    }*/
-
+     buttonPanel.remove(moveSubtasksButton);
+     }*/
     public void hideRefreshButton() {
         buttonPanel.remove(refreshButton);
     }
@@ -349,7 +347,6 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void refreshTable(boolean fromDatabase);
 
     //protected abstract void moveSubtasks();
-
     // This is important to make sure the title is refreshed and repainted
     @Override
     public void repaint() {

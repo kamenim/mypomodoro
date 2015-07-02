@@ -172,7 +172,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         newActivity.setParentId(parentActivity.getId());
         getList().add(newActivity); // save activity in database       
         int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
-        editTileCellAtRowIndex(row);
+        editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -224,6 +224,6 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     /*private boolean canMoveSubtasks() {
-        return getSelectedRowCount() > 0;
-    }*/
+     return getSelectedRowCount() > 0;
+     }*/
 }

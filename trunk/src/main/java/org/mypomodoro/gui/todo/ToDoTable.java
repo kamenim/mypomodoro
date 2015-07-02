@@ -134,13 +134,13 @@ public class ToDoTable extends AbstractTable {
                 Object data = sourceModel.getValueAt(row, column);
                 if (data != null) {
                     if (column >= 0) { // This needs to be checked : the moveRow method (see ToDoTransferHandler) fires tableChanged with column = -1 
-                        Activity act = getActivityFromRowIndex(row);
+                        Activity act = getActivityFromRowIndex(convertRowIndexToView(row)); // get index of the row in the view as getActivityFromRowIndex gets it in the model already
                         if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
                             String name = data.toString().trim();
                             if (!name.equals(act.getName())) {
                                 if (name.length() == 0) {
                                     // reset the original value. Title can't be empty.
-                                    sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
+                                    sourceModel.setValueAt(act.getName(), row, AbstractTableModel.TITLE_COLUMN_INDEX);
                                 } else {
                                     act.setName(name);
                                     act.databaseUpdate();
@@ -472,7 +472,7 @@ public class ToDoTable extends AbstractTable {
         activity.setName("(U) " + Labels.getString("Common.Unplanned"));
         getList().add(activity);
         int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
-        editTileCellAtRowIndex(row);
+        editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -492,7 +492,7 @@ public class ToDoTable extends AbstractTable {
             activity.setName("(I) " + Labels.getString("ToDoListPanel.Internal"));
             getList().add(activity);
             int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
-            editTileCellAtRowIndex(row);
+            editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -513,7 +513,7 @@ public class ToDoTable extends AbstractTable {
             activity.setName("(E) " + Labels.getString("ToDoListPanel.External"));
             getList().add(activity);
             int row = insertRowNoSelection(activity); // no selection after insertion so the editing works        
-            editTileCellAtRowIndex(row);
+            editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
     }
@@ -555,7 +555,7 @@ public class ToDoTable extends AbstractTable {
         // Priorities have changed: the table must be updated
         updatePriorities();
     }
-    
+
     public void updatePriorities() {
         for (int row = 0; row < getModel().getRowCount(); row++) {
             Activity activity = getActivityFromRowIndex(row);

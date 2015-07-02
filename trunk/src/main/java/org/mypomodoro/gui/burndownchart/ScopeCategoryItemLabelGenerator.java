@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.gui.burndownchart;
 
 import java.util.ArrayList;
@@ -25,33 +24,33 @@ import org.mypomodoro.util.DateUtil;
 
 /**
  * Custom renderer for Scope line
- * 
+ *
  */
 public class ScopeCategoryItemLabelGenerator extends StandardCategoryItemLabelGenerator {
-    
+
     private final ArrayList<Date> XAxisDateValues;
 
     public ScopeCategoryItemLabelGenerator(ArrayList<Date> list) {
         this.XAxisDateValues = list;
     }
-        
+
     // Match the occurence of the scope values with the dates of the XAxis (see getXAxisDateValue in CreateChart)
     @Override
     public String generateLabel(CategoryDataset dataset, int row, int column) {
         String label = super.generateLabel(dataset, row, column);
         Date date = XAxisDateValues.get(column);
         boolean displayDate = true;
-        if (column != 0 
+        if (column != 0
                 && column + 1 != XAxisDateValues.size()) { // first date always displayed            
             if (XAxisDateValues.size() > 100
                     && !DateUtil.isFirstDayOfMonth(date)) { // first condition
                 displayDate = false;
             } else if (XAxisDateValues.size() <= 100
-                    && XAxisDateValues.size() > 10 
+                    && XAxisDateValues.size() > 10
                     && !DateUtil.isMonday(date)) { // second condition (cannot be mixed up with the first condition)
-                displayDate = false;      
+                displayDate = false;
             }
         }
         return displayDate ? label : "";
-    }    
+    }
 }

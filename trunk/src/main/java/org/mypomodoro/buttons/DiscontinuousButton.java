@@ -19,8 +19,13 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 import org.mypomodoro.gui.todo.Pomodoro;
+import org.mypomodoro.util.CheckWindowsClassicTheme;
+import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.Labels;
 
 /**
  * Worflow interruption
@@ -32,37 +37,58 @@ import org.mypomodoro.gui.todo.Pomodoro;
  * Discontinous : workflow stops after each break
  *
  */
-public class DiscontinuousButton extends TransparentButton {
+public class DiscontinuousButton extends JButton {
 
     private final ImageIcon discontinuousIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "discontinuous.png"));
     private final ImageIcon continuousIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "continuous.png"));
-    private boolean isDiscontinuousIcon = true;
+    private boolean isContinuous = true;
 
     public DiscontinuousButton(final Pomodoro pomodoro) {
-        setDiscontinuousIcon();
+        setDiscontinuous();
         addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isDiscontinuousIcon) {
-                    setContinuousIcon();
+                if (isContinuous) {
+                    setContinuous();
                     pomodoro.discontinueWorkflow();
+                    isContinuous = false;
                 } else {
-                    setDiscontinuousIcon();
+                    setDiscontinuous();
                     pomodoro.continueWorkflow();
+                    isContinuous = true;
                 }
                 pomodoro.setTooltipOnImage();
             }
         });
     }
 
-    private void setDiscontinuousIcon() {
-        setIcon(discontinuousIcon);
-        isDiscontinuousIcon = true;
+    private void setDiscontinuous() {
+        setIcon(continuousIcon);
+        setBackground(null);
+        setOpaque(true);
+        setContentAreaFilled(true);
+        setBorderPainted(true);
+        setToolTipText(Labels.getString("ToDoListPanel.Stop the workflow"));
     }
 
-    private void setContinuousIcon() {
-        setIcon(continuousIcon);
-        isDiscontinuousIcon = false;
+    private void setContinuous() {
+        setIcon(discontinuousIcon);
+        setBackground(ColorUtil.GRAY);
+        setToolTipText(Labels.getString("ToDoListPanel.Restore the workflow"));
+        // Win LAF classic, InfoNode and Plastic3D get flattened and grayed out only if not opaque
+        if (!CheckWindowsClassicTheme.isWindowsClassicLAF()
+                && !Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)
+                && !Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)) {
+            setOpaque(false);
+        }
+        // Nimrod, PGS, System(Metal) get flattened only                 
+        // Seaglass and win LAF under win7 get the change of icon only       
+        // To make the button disappear for Seaglass and win LAF under win7
+        /*if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.SEAGLASS_LAF)
+         || (!CheckWindowsClassicTheme.isWindowsClassicLAF() && CheckWindowsClassicTheme.isWindowsLAF())) {
+         setContentAreaFilled(false);
+         setBorderPainted(false);
+         }*/
     }
 }
