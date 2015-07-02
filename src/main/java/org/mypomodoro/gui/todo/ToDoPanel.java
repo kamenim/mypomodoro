@@ -251,8 +251,8 @@ public class ToDoPanel extends AbstractPanel {
         discontinuousButton.setFocusPainted(false); // removes borders around text
         toolBar.add(discontinuousButton, wc);
         if (Main.preferences.getTicking()
-                || Main.preferences.getRinging()) {
-            MuteButton muteButton = Main.preferences.getTicking() ? new MuteButton(pomodoro) : new MuteButton(pomodoro, false);
+                && Main.preferences.getRinging()) { // The two options must be enabled
+            MuteButton muteButton = new MuteButton(pomodoro);
             muteButton.setVisible(true);
             muteButton.setMargin(new Insets(1, 1, 1, 1));
             muteButton.setFocusPainted(false); // removes borders around text
@@ -260,7 +260,7 @@ public class ToDoPanel extends AbstractPanel {
         }
         PinButton pinButton = new PinButton();
         if (Main.preferences.getAlwaysOnTop()) {
-            pinButton.setUnpinIcon();
+            pinButton.setPin();
         }
         pinButton.setVisible(true); // this is a TransparentButton       
         pinButton.setMargin(new Insets(1, 1, 1, 1));

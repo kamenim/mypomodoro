@@ -55,7 +55,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         addInformationPanel();
         addCompleteButton(todoPanel);
     }
-    
+
     private void addDeleteSubtaskButton(ToDoPanel todoPanel) {
         gbc.gridx = 0;
         gbc.gridy = 0;

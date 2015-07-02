@@ -119,8 +119,9 @@ public class ReportsSubTable extends ReportsTable {
                 getTitlePanel().setToolTipText(toolTipText);
             }
         } /*else {
-            //title += " (0)";
-        }*/
+         //title += " (0)";
+         }*/
+
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint(); // this is necessary to force stretching of panel

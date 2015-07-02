@@ -144,15 +144,15 @@ public class CreateChart extends JPanel {
     private Comparable getXAxisDateValue(int XAxisIndex) {
         Date date = XAxisDateValues.get(XAxisIndex);
         boolean displayDate = true;
-        if (XAxisIndex != 0 
+        if (XAxisIndex != 0
                 && XAxisIndex + 1 != XAxisDateValues.size()) { // first date always displayed            
             if (XAxisDateValues.size() > 100
                     && !DateUtil.isFirstDayOfMonth(date)) { // first condition
                 displayDate = false;
             } else if (XAxisDateValues.size() <= 100
-                    && XAxisDateValues.size() > 10 
+                    && XAxisDateValues.size() > 10
                     && !DateUtil.isMonday(date)) { // second condition (cannot be mixed up with the first condition)
-                displayDate = false;      
+                displayDate = false;
             }
         }
         return new ComparableCustomDateForXAxis(date, displayDate);

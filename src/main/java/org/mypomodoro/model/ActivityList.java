@@ -92,7 +92,7 @@ public class ActivityList extends AbstractActivities {
 
     // Create or update
     public void add(Activity act, Date date, Date dateReopen) {
-        act.setPriority(-1);        
+        act.setPriority(-1);
         act.setIsCompleted(false);
         act.setDate(date);
         act.setDateCompleted(dateReopen);

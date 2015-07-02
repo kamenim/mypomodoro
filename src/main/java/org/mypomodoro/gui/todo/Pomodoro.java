@@ -466,12 +466,12 @@ public class Pomodoro {
     public void ring() {
         InputStream is;
         try {
-                        
+
             is = new FileInputStream("ringing.wav"); // this will work also on a usb stick           
             playSound(is);
         } catch (FileNotFoundException ex) {
             is = Main.class.getResourceAsStream("/sounds/ringing.wav");
-            playSound(is);           
+            playSound(is);
         }
     }
 

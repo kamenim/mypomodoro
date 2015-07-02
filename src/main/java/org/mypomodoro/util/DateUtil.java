@@ -56,7 +56,7 @@ public class DateUtil {
         String pattern = locale.equals(US_LOCALE) ? US_shortDatePattern : "dd/MM/yyyy";
         return getFormatedDate(date, pattern);
     }
-    
+
     public static String getShortFormatedDateNoYear(Date date) {
         String pattern = locale.equals(US_LOCALE) ? US_shortDatePatternNoYear : "dd/MM";
         return getFormatedDate(date, pattern);
@@ -220,7 +220,7 @@ public class DateUtil {
     public static int convertToDayOfMonth(Date date) {
         return new DateTime(date.getTime()).dayOfMonth().get();
     }
-    
+
     /**
      * Returns the day of week of a date
      *
@@ -289,14 +289,14 @@ public class DateUtil {
         calendar.setTime(date);
         return calendar.get(Calendar.MINUTE);
     }
-    
+
     public static boolean isMonday(Date date) {
         return convertToDayOfWeek(date) == DateTimeConstants.MONDAY;
     }
-    
-    public static boolean isFirstDayOfMonth(Date date) {        
+
+    public static boolean isFirstDayOfMonth(Date date) {
         DateTime dateTime = new DateTime(date);
         DateTime firstDayOfMonth = dateTime.dayOfMonth().withMinimumValue(); // fist day of month
-        return dateTime.withTimeAtStartOfDay().isEqual(firstDayOfMonth.withTimeAtStartOfDay());       
+        return dateTime.withTimeAtStartOfDay().isEqual(firstDayOfMonth.withTimeAtStartOfDay());
     }
 }

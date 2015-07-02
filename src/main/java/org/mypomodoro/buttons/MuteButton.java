@@ -19,53 +19,69 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import org.mypomodoro.Main;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 import org.mypomodoro.gui.todo.Pomodoro;
+import org.mypomodoro.util.CheckWindowsClassicTheme;
+import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.Labels;
 
 /**
  * Mute sound button
  *
  */
-public class MuteButton extends TransparentButton {
+public class MuteButton extends JButton {
 
     private final ImageIcon muteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "mute.png"));
     private final ImageIcon soundIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "sound.png"));
-    private boolean isMuteIcon = true;
+    private boolean isSound = true;
 
-    public MuteButton(final Pomodoro pomodoro, boolean mute) {
-        if (mute) {
-            setMuteIcon();
-        } else {
-            setSoundIcon();
-            isMuteIcon = false;
-        }
-
+    public MuteButton(final Pomodoro pomodoro) {
+        setMute();
         addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isMuteIcon) {
-                    setSoundIcon();
+                if (isSound) {
+                    setSound();
                     pomodoro.mute();
-                    isMuteIcon = false;
+                    isSound = false;
                 } else {
-                    setMuteIcon();
+                    setMute();
                     pomodoro.unmute();
-                    isMuteIcon = true;
+                    isSound = true;
                 }
             }
         });
     }
 
-    public MuteButton(final Pomodoro pomodoro) {
-        this(pomodoro, true);
-    }
-
-    private void setSoundIcon() {
+    private void setMute() {
         setIcon(soundIcon);
+        setBackground(null);
+        setOpaque(true);
+        setContentAreaFilled(true);
+        setBorderPainted(true);
+        setToolTipText(Labels.getString("ToDoListPanel.Mute"));
     }
 
-    private void setMuteIcon() {
+    private void setSound() {
         setIcon(muteIcon);
+        setBackground(ColorUtil.GRAY);
+        setToolTipText(Labels.getString("ToDoListPanel.Unmute"));
+        // Win LAF classic, InfoNode and Plastic3D get flattened and grayed out only if not opaque
+        if (!CheckWindowsClassicTheme.isWindowsClassicLAF()
+                && !Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)
+                && !Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)) {
+            setOpaque(false);
+        }
+        // Nimrod, PGS, System(Metal) get flattened only                 
+        // Seaglass and win LAF under win7 get the change of icon only       
+        // To make the button disappear for Seaglass and win LAF under win7
+        /*if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.SEAGLASS_LAF)
+         || (!CheckWindowsClassicTheme.isWindowsClassicLAF() && CheckWindowsClassicTheme.isWindowsLAF())) {
+         setContentAreaFilled(false);
+         setBorderPainted(false);
+         }*/
     }
 }

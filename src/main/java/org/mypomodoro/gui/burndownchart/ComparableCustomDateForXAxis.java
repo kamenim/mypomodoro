@@ -32,7 +32,7 @@ public class ComparableCustomDateForXAxis implements Comparable<ComparableCustom
         this.date = date;
         this.display = true;
     }
-    
+
     ComparableCustomDateForXAxis(Date date, boolean display) {
         this.date = date;
         this.display = display;

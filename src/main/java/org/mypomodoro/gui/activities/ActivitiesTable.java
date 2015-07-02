@@ -117,13 +117,13 @@ public class ActivitiesTable extends AbstractTable {
                 ActivitiesTableModel sourceModel = (ActivitiesTableModel) e.getSource();
                 Object data = sourceModel.getValueAt(row, column); // in the view !!!!!!
                 if (data != null) {
-                    Activity act = getActivityFromRowIndex(row);
+                    Activity act = getActivityFromRowIndex(convertRowIndexToView(row)); // get index of the row in the view as getActivityFromRowIndex gets it in the model already
                     if (column == AbstractTableModel.TITLE_COLUMN_INDEX) {
                         String name = data.toString().trim();
                         if (!name.equals(act.getName())) {
                             if (name.isEmpty()) { // Title (can't be empty)
                                 // reset the original value. Title can't be empty.
-                                sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
+                                sourceModel.setValueAt(act.getName(), row, AbstractTableModel.TITLE_COLUMN_INDEX);
                             } else {
                                 act.setName(name);
                                 act.databaseUpdate();
@@ -146,8 +146,9 @@ public class ActivitiesTable extends AbstractTable {
                             /*if (act.isSubTask()) {
                              types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
                              }*/
-                            getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
-                            getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
+                            // if the columns have been moved around wemust covert the column index of the model to the column index of the view
+                            getColumnModel().getColumn(convertColumnIndexToView(AbstractTableModel.TYPE_COLUMN_INDEX)).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));
+                            getColumnModel().getColumn(convertColumnIndexToView(AbstractTableModel.TYPE_COLUMN_INDEX)).setCellEditor(new ActivitiesTypeComboBoxCellEditor(types, true));
                         }
                     } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // Estimated
                         int estimated = (Integer) data;
@@ -400,7 +401,7 @@ public class ActivitiesTable extends AbstractTable {
         newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
         int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
-        editTileCellAtRowIndex(row);
+        editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -413,7 +414,7 @@ public class ActivitiesTable extends AbstractTable {
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
                 int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
-                editTileCellAtRowIndex(row);
+                editTitleCellAtRowIndex(row);
                 if (duplicatedActivity.isSubTask()) {
                     panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 }

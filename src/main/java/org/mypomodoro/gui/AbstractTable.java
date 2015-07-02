@@ -792,7 +792,7 @@ public abstract class AbstractTable extends JXTable {
         return currentRow;
     }
 
-    protected void editTileCellAtRowIndex(int rowIndex) {
+    protected void editTitleCellAtRowIndex(int rowIndex) {
         if (editCellAt(rowIndex, convertColumnIndexToView(AbstractTableModel.TITLE_COLUMN_INDEX))) { // programatic editing
             setSurrendersFocusOnKeystroke(true);
             if (getEditorComponent() != null) { // set blinking cursor

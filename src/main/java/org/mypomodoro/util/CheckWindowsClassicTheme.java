@@ -30,7 +30,7 @@ public class CheckWindowsClassicTheme {
         return isWindowsLAF() && prop != null && !(Boolean) prop;
     }
 
-    private static boolean isWindowsLAF() {
+    public static boolean isWindowsLAF() {
         return UIManager.getLookAndFeel().getID().equals("Windows");
     }
 }

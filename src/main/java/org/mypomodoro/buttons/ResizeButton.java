@@ -19,22 +19,23 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.MainPanel;
+import org.mypomodoro.util.Labels;
 
 /**
  * Up / Downsize the app
  *
  *
  */
-public class ResizeButton extends TransparentButton {
+public class ResizeButton extends JButton {
 
     private final ImageIcon upSizeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "upsize.png"));
     private final ImageIcon downSizeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "downsize.png"));
 
     public ResizeButton() {
         setUpSizeIcon();
-        setToolTipText("ALT + M");
         addActionListener(new ActionListener() {
 
             @Override
@@ -46,9 +47,11 @@ public class ResizeButton extends TransparentButton {
 
     public void setUpSizeIcon() {
         setIcon(upSizeIcon);
+        setToolTipText(Labels.getString("ToDoListPanel.Enlarge") + " (ALT + M)");
     }
 
     public void setDownSizeIcon() {
         setIcon(downSizeIcon);
+        setToolTipText(Labels.getString("ToDoListPanel.Reduce") + " (ALT + M)");
     }
 }

@@ -109,13 +109,13 @@ public class ReportsTable extends AbstractTable {
                 ReportsTableModel sourceModel = (ReportsTableModel) e.getSource();
                 Object data = sourceModel.getValueAt(row, column);
                 if (data != null) {
-                    Activity act = getActivityFromRowIndex(row);
+                    Activity act = getActivityFromRowIndex(convertRowIndexToView(row)); // get index of the row in the view as getActivityFromRowIndex gets it in the model already
                     if (column == AbstractTableModel.TITLE_COLUMN_INDEX) { // Title (can't be empty)
                         String name = data.toString().trim();
                         if (!name.equals(act.getName())) {
                             if (name.length() == 0) {
                                 // reset the original value. Title can't be empty.
-                                sourceModel.setValueAt(act.getName(), convertRowIndexToModel(row), AbstractTableModel.TITLE_COLUMN_INDEX);
+                                sourceModel.setValueAt(act.getName(), row, AbstractTableModel.TITLE_COLUMN_INDEX);
                             } else {
                                 act.setName(name);
                                 act.databaseUpdate();
@@ -194,10 +194,10 @@ public class ReportsTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMaxWidth(40);
         getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setMinWidth(40);
         getColumnModel().getColumn(AbstractTableModel.DIFFII_COLUMN_INDEX).setPreferredWidth(40);
-        // Set min width of column type
-        //getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMaxWidth(200);
-        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMinWidth(100);
-        //getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setPreferredWidth(200);
+        // Set width of column type
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMaxWidth(150);
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setMinWidth(150);
+        getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setPreferredWidth(150);
         // hide priority
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.PRIORITY_COLUMN_INDEX).setMinWidth(0);
