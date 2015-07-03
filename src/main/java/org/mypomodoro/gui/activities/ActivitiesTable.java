@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.text.DecimalFormat;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
@@ -400,8 +401,8 @@ public class ActivitiesTable extends AbstractTable {
         Activity newActivity = new Activity();
         newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
-        int row = insertRowNoSelection(newActivity); // no selection after insertion so the editing works        
-        editTitleCellAtRowIndex(row);
+        int row = insertRow(newActivity);
+        editTitleCellAtRowIndex(row);           
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 
@@ -413,7 +414,7 @@ public class ActivitiesTable extends AbstractTable {
             Activity activity = getActivityFromSelectedRow();
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
-                int row = insertRowNoSelection(duplicatedActivity); // no selection after insertion so the editing works        
+                int row = insertRow(duplicatedActivity); // no selection after insertion so the editing works        
                 editTitleCellAtRowIndex(row);
                 if (duplicatedActivity.isSubTask()) {
                     panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);

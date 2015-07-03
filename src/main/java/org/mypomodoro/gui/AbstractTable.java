@@ -333,7 +333,7 @@ public abstract class AbstractTable extends JXTable {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            if (e.getSource() == getSelectionModel() && e.getFirstIndex() >= 0) { // See if this is a valid table selection
+            if (e.getSource() == getSelectionModel() && e.getFirstIndex() >= 0) { // See if this is a valid table selection                
                 if (!e.getValueIsAdjusting()) { // ignoring the deselection event 
                     if (!panel.getCurrentTable().equals(AbstractTable.this)) { // switch main table / sub table
                         panel.setCurrentTable(AbstractTable.this); // set new current table                        
@@ -792,13 +792,20 @@ public abstract class AbstractTable extends JXTable {
         return currentRow;
     }
 
-    protected void editTitleCellAtRowIndex(int rowIndex) {
-        if (editCellAt(rowIndex, convertColumnIndexToView(AbstractTableModel.TITLE_COLUMN_INDEX))) { // programatic editing
-            setSurrendersFocusOnKeystroke(true);
-            if (getEditorComponent() != null) { // set blinking cursor
-                getEditorComponent().requestFocus();
+    // The clear and selection, made in the insertRow method, will prevent the editCellAt method to edit the cell unless the call is done in a runnable
+    protected void editTitleCellAtRowIndex(final int rowIndex) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (editCellAt(rowIndex, convertColumnIndexToView(AbstractTableModel.TITLE_COLUMN_INDEX))) { // programatic editing                        
+                    setSurrendersFocusOnKeystroke(true);
+                    if (getEditorComponent() != null) { // set blinking cursor
+                        getEditorComponent().requestFocus();
+                    }
+                }
             }
-        }
+        });
+
     }
 
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables only

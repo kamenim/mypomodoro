@@ -75,13 +75,18 @@ public class ToDoTransferHandler extends TransferHandler {
                          list.add(new RowSorter.SortKey(AbstractTableModel.PRIORITY_COLUMN_INDEX, SortOrder.ASCENDING));
                          sorter.setSortKeys(list);
                          sorter.sort(); // sort the view*/
-
-                        //panel.getCurrentTable().getTableList().sortByPriority();
-                        //panel.refresh();
-                        //panel.getCurrentTable().sortByPriority();
-                        ((ToDoTableModel) panel.getMainTable().getModel()).update();
-                        panel.getMainTable().setColumnModel();
-                        panel.getMainTable().setTitle();
+                        // get the first row index of the selection
+                        int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
+                        if (panel.getCurrentTable().equals(panel.getMainTable())) {
+                            ((ToDoTableModel) panel.getCurrentTable().getModel()).update();
+                        } else {
+                            ((ToDoSubTableModel) panel.getCurrentTable().getModel()).update();
+                        }
+                        panel.getCurrentTable().setColumnModel();
+                        panel.getCurrentTable().setTitle();
+                        // reselect row
+                        panel.getCurrentTable().addRowSelectionInterval(row, row);
+                        panel.getCurrentTable().scrollRectToVisible(panel.getCurrentTable().getCellRect(row, 0, true));                        
                     }
                 } else if (isContinuousSelection()) {
                     final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
