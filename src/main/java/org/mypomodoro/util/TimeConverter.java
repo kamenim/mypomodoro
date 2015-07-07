@@ -53,19 +53,25 @@ public class TimeConverter {
         String length = "";
         // Integer division: Integer division returns the true result of division rounded down to the nearest integer. eg 1.8 --> 1
         int nbWorkDays = pomodoros / nbMaxNbPomPerDay;
+        System.err.println("nbWorkDays = " + nbWorkDays);
         // Pomodoro lefts
         int nbPomodorosLeft = pomodoros - nbWorkDays * nbMaxNbPomPerDay;
+        System.err.println("nbPomodorosLeft = " + nbPomodorosLeft);
         if (nbWorkDays > 0) {
             length = String.format("%d " + (nbWorkDays == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")), nbWorkDays);
+            System.err.println("length = " + length);
         }
+        System.err.println("length = " + length);
         if (nbWorkDays > 0
                 && nbPomodorosLeft > 0) {
             length += " ";
         }
+        System.err.println("length = " + length);
         if (nbWorkDays == 0
                 || nbPomodorosLeft > 0) {
             length += getLengthInHours(nbPomodorosLeft, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours);
         }
+        System.err.println("length = " + length);
         return length;
     }
 
