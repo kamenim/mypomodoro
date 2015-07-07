@@ -31,7 +31,8 @@ public class TimerValueSlider extends JPanel {
     private final JSlider slider;
     private final JLabel label = new JLabel();
     private final String textLabel;
-    private final boolean lengthInHours;
+    private final boolean displaylength;
+    private final boolean lengthInHours;    
 
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, final int recommendedMin,
@@ -40,14 +41,16 @@ public class TimerValueSlider extends JPanel {
         this(controlPanel, min, max,
                 val, recommendedMin,
                 recommendedMax,
-                textLabel, false);
+                textLabel, false, false);
     }
 
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, final int recommendedMin,
             final int recommendedMax,
-            String textLabel, boolean lengthInHours) {
+            String textLabel, 
+            boolean displaylength, boolean lengthInHours) {
         this.textLabel = textLabel;
+        this.displaylength = displaylength;
         this.lengthInHours = lengthInHours;
         setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
         slider = new JSlider(min, max, val);
@@ -56,8 +59,7 @@ public class TimerValueSlider extends JPanel {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                setSliderColor(recommendedMin, recommendedMax);
-                setText();
+                setSliderColor(recommendedMin, recommendedMax);                
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
             }
@@ -67,14 +69,16 @@ public class TimerValueSlider extends JPanel {
         add(label);
     }
 
-    private void setText() {
+    public void setText() {
         int sliderValue = slider.getValue();
         String text = " " + sliderValue + " ";
         text += textLabel;
-        if (lengthInHours) {
-            text += " (" + TimeConverter.getLengthInHours(sliderValue) + ")";
-        } else {
-            text += " (" + TimeConverter.getLength(sliderValue) + ")";
+        if (displaylength) {
+            if (lengthInHours) {
+                text += " (" + TimeConverter.getLengthInHours(sliderValue) + ")";
+            } else {
+                text += " (" + TimeConverter.getLength(sliderValue) + ")";
+            }
         }
         label.setText(text);
     }
@@ -83,12 +87,14 @@ public class TimerValueSlider extends JPanel {
         int sliderValue = slider.getValue();
         String text = " " + sliderValue + " ";
         text += textLabel;
-        if (lengthInHours) {
-            text += " (" + TimeConverter.getLengthInHours(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours) + ")";
-        } else {
-            text += " (" + TimeConverter.getLength(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours, nbMaxNbPomPerDay) + ")";
+        if (displaylength) {
+            if (lengthInHours) {
+                text += " (" + TimeConverter.getLengthInHours(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours) + ")";
+            } else {
+                text += " (" + TimeConverter.getLength(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours, nbMaxNbPomPerDay) + ")";
+            }
         }
-        label.setText(text);
+        label.setText(text);        
     }
 
     public JSlider getSlider() {
