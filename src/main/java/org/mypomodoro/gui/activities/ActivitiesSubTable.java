@@ -171,7 +171,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
         Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
         newActivity.setParentId(parentActivity.getId());
         getList().add(newActivity); // save activity in database       
-        int row = insertRow(newActivity);       
+        int row = insertRow(newActivity);
         editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }

@@ -89,16 +89,20 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 // disable auto scrolling
                 informationArea.setCaretPosition(0);
             } catch (IndexOutOfBoundsException ignored) {
-                // this may happen some time and must be ignored
+                // this may happen and must be ignored
+            } catch (java.lang.RuntimeException ignored) {
+                // this may happen and must be ignored (it happens when a multi, discontinued, selection of rows are moved back to the Activity List or completed)
             }
         }
     }
 
     @Override
     public void showInfo(String newInfo) {
-        informationArea.setText(newInfo);
-        // disable auto scrolling
-        informationArea.setCaretPosition(0);
+        if (informationArea != null) {
+            informationArea.setText(newInfo);
+            // disable auto scrolling
+            informationArea.setCaretPosition(0);
+        }
     }
 
     private String displayStoryPoint(float points) {

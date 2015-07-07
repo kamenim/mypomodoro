@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.preferences;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -161,24 +162,22 @@ public class PreferencesPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.1;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         validation.setFont(getFont().deriveFont(Font.BOLD));
-        GridBagConstraints vgbc = new GridBagConstraints();
-        vgbc.gridx = 0;
-        vgbc.gridy = 0;
-        vgbc.fill = GridBagConstraints.NONE;
-        validPanel.add(validation, vgbc);
-        vgbc.gridx = 1;
-        vgbc.gridy = 0;
-        vgbc.fill = GridBagConstraints.NONE;
+        //GridBagConstraints vgbc = new GridBagConstraints();
+        //vgbc.gridx = 0;
+        //vgbc.gridy = 0;
+        validPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        validPanel.add(validation);
+        //vgbc.gridx = 1;
+        //vgbc.gridy = 0;
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart button for Mac OS (does not work - see RestartMac class)
-            JLabel restartLabel = new JLabel(Labels.getString("Common.Restart"));
+            JLabel restartLabel = new JLabel(Labels.getString("Common.Restart") + " myAgilePomodoro");
             restartLabel.setFont(getFont().deriveFont(Font.BOLD));
-            validPanel.add(restartLabel, vgbc);
+            validPanel.add(restartLabel);
         } else {
-            validPanel.add(restartButton, vgbc);
+            validPanel.add(restartButton);
         }
-        validPanel.setLayout(new GridBagLayout());
         validPanel.setVisible(false);
         add(validPanel, gbc);
     }

@@ -49,6 +49,26 @@ public class TimeConverter {
         return length;
     }
 
+    public static String getLength(int pomodoros, int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours, int nbMaxNbPomPerDay) {
+        String length = "";
+        // Integer division: Integer division returns the true result of division rounded down to the nearest integer. eg 1.8 --> 1
+        int nbWorkDays = pomodoros / nbMaxNbPomPerDay;
+        // Pomodoro lefts
+        int nbPomodorosLeft = pomodoros - nbWorkDays * nbMaxNbPomPerDay;
+        if (nbWorkDays > 0) {
+            length = String.format("%d " + (nbWorkDays == 1 ? Labels.getString("Common.Day") : Labels.getString("Common.Days")), nbWorkDays);
+        }
+        if (nbWorkDays > 0
+                && nbPomodorosLeft > 0) {
+            length += " ";
+        }
+        if (nbWorkDays == 0
+                || nbPomodorosLeft > 0) {
+            length += getLengthInHours(nbPomodorosLeft, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours);
+        }
+        return length;
+    }
+
     public static String getLengthInHours(int pomodoros) {
         return getLengthInHours(pomodoros,
                 Main.preferences.getPomodoroLength(),

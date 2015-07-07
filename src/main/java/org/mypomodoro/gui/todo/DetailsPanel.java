@@ -128,13 +128,21 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         Activity currentToDo = panel.getPomodoro().getCurrentToDo();
-        if (activity.isSubTask()
-                || (currentToDo != null
-                && activity.getId() == currentToDo.getId()
-                && panel.getPomodoro().inPomodoro())) {
-            disableButtons();
+        if (activity.isSubTask()) {
+            deleteSubtaskButton.setVisible(true);
+            moveButton.setVisible(false);
+            completeButton.setVisible(false);
         } else {
-            enableButtons();
+            deleteSubtaskButton.setVisible(false);
+            moveButton.setVisible(true);
+            completeButton.setVisible(true);
+        }
+        if (currentToDo != null
+                && (activity.getId() == currentToDo.getId() || activity.getId() == currentToDo.getParentId())
+                && panel.getPomodoro().inPomodoro()) {
+            disableAllButtons();
+        } else {
+            enableAllButtons();
         }
         textMap.remove("date_reopened");
         if (Main.preferences.getAgileMode()) {
@@ -148,15 +156,15 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         return iconPanel;
     }
 
-    public void disableButtons() {
-        deleteSubtaskButton.setVisible(true); // switch delete / move button
-        moveButton.setVisible(false);
+    public void disableAllButtons() {
+        deleteSubtaskButton.setEnabled(false);
+        moveButton.setEnabled(false);
         completeButton.setEnabled(false);
     }
 
-    public void enableButtons() {
-        deleteSubtaskButton.setVisible(false); // switch delete / move button
-        moveButton.setVisible(true);
+    public void enableAllButtons() {
+        deleteSubtaskButton.setEnabled(true);
+        moveButton.setEnabled(true);
         completeButton.setEnabled(true);
     }
 }

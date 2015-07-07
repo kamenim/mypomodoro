@@ -40,6 +40,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.IActivityInformation;
@@ -112,7 +113,9 @@ public class Pomodoro {
             Date dateNewSetLongBreakStart = DateUtil.addMinutesToNow(pomNewSetNumberRemaining * Main.preferences.getPomodoroLength() + newSetShortBreaksNumber * Main.preferences.getShortBreakLength());
             message += System.getProperty("line.separator");
             message += Labels.getString("ToDoListPanel.Would you rather start a new Set", Main.preferences.getNbPomPerSet(), DateUtil.getFormatedTime(dateNewSetLongBreakStart));
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
+            // Set 'No' answer as default (for the sake of the Pomodoro Technique, restarting a Set should not happen)
+            Object[] options = {UIManager.getString("OptionPane.yesButtonText", Labels.getLocale()), UIManager.getString("OptionPane.noButtonText", Labels.getLocale())};
+            int reply = JOptionPane.showOptionDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON, options, options[1]);
             if (reply == JOptionPane.YES_OPTION) {
                 pomSetNumber = 0;
             }
@@ -134,7 +137,7 @@ public class Pomodoro {
         Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.getCurrentTable().setIconLabels();
-        panel.getDetailsPanel().disableButtons();
+        panel.getDetailsPanel().disableAllButtons();
         refreshTitlesAndTables();
     }
 
@@ -157,9 +160,7 @@ public class Pomodoro {
         Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
         Main.gui.getIconBar().getIcon(2).highlight();
         panel.getCurrentTable().setIconLabels();
-        if (!getCurrentToDo().isSubTask()) {
-            panel.getDetailsPanel().enableButtons();
-        }
+        panel.getDetailsPanel().enableAllButtons();
         refreshTitlesAndTables();
     }
 

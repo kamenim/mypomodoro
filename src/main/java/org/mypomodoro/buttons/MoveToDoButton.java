@@ -61,7 +61,7 @@ public class MoveToDoButton extends TabPanelButton {
                         // Set progress bar
                         MainPanel.progressBar.setVisible(true);
                         MainPanel.progressBar.getBar().setValue(0);
-                        MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                        MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                     /*if (!panel.getPomodoro().inPomodoro()
                          && panel.getCurrentTable().getSelectedRowCount() == panel.getCurrentTable().getRowCount()) { // complete all at once                       
@@ -78,7 +78,9 @@ public class MoveToDoButton extends TabPanelButton {
                                 row = row - increment;
                                 Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 // excluding current running task
-                                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                if (panel.getPomodoro().inPomodoro()
+                                        && (selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()
+                                        || selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getParentId())) {
                                     if (rows.length > 1) {
                                         continue;
                                     } else {

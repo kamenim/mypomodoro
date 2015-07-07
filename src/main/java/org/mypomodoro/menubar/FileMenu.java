@@ -125,7 +125,8 @@ public class FileMenu extends JMenu {
 
         public ExitItem() {
             super(Labels.getString("FileMenu.Exit"));
-            //setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0)); // ESC keystroke implemented in MainPanel
+            // set accelerator to display shortcut in the menu (ESC keystroke is implemented, exit() methid, in MainPanel for global access)
+            setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
             addActionListener(new MenuItemListener());
         }
 

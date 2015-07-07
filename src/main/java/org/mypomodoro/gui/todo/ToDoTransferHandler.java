@@ -19,19 +19,14 @@ package org.mypomodoro.gui.todo;
 import java.awt.datatransfer.Transferable;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
-import javax.swing.DefaultRowSorter;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.RowSorter.SortKey;
-import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.table.DefaultTableModel;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.AbstractTableModel;
 import org.mypomodoro.gui.ImageIcons;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.model.Activity;
@@ -75,18 +70,19 @@ public class ToDoTransferHandler extends TransferHandler {
                          list.add(new RowSorter.SortKey(AbstractTableModel.PRIORITY_COLUMN_INDEX, SortOrder.ASCENDING));
                          sorter.setSortKeys(list);
                          sorter.sort(); // sort the view*/
-                        // get the first row index of the selection
+                        // get the first row index of the selection (single or multiple)
                         int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
                         if (panel.getCurrentTable().equals(panel.getMainTable())) {
                             ((ToDoTableModel) panel.getCurrentTable().getModel()).update();
                         } else {
                             ((ToDoSubTableModel) panel.getCurrentTable().getModel()).update();
                         }
+                        panel.getCurrentTable().setTableHeader();
                         panel.getCurrentTable().setColumnModel();
                         panel.getCurrentTable().setTitle();
                         // reselect row
                         panel.getCurrentTable().addRowSelectionInterval(row, row);
-                        panel.getCurrentTable().scrollRectToVisible(panel.getCurrentTable().getCellRect(row, 0, true));                        
+                        panel.getCurrentTable().scrollRectToVisible(panel.getCurrentTable().getCellRect(row, 0, true));
                     }
                 } else if (isContinuousSelection()) {
                     final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();

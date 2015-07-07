@@ -39,6 +39,7 @@ import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.ItemLocale;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
 import org.mypomodoro.util.Labels;
 
@@ -52,9 +53,9 @@ public class PreferencesInputForm extends JPanel {
     protected final TimerValueSlider pomodoroSlider;
     protected final TimerValueSlider shortBreakSlider;
     protected final TimerValueSlider longBreakSlider;
-    protected final TimerValueSlider maxNbPomPerActivitySlider;
     protected final TimerValueSlider maxNbPomPerDaySlider;
     protected final TimerValueSlider nbPomPerSetSlider;
+    protected final TimerValueSlider maxNbPomPerActivitySlider;
     protected final JCheckBox tickingBox;
     protected final JCheckBox ringingBox;
     protected final JComboBox localesComboBox;
@@ -92,8 +93,8 @@ public class PreferencesInputForm extends JPanel {
         int unitPomodoro = 1;
         pomodoroSlider = new TimerValueSlider(controlPanel, 10, 45,
                 Main.preferences.getPomodoroLength(),
-                Labels.getString("PreferencesPanel.Pomodoro Length") + ": ",
-                25, 30, unitMinute);
+                25, 30,
+                Labels.getString("PreferencesPanel.minutes"));
         pomodoroSlider.getSlider().addChangeListener(new ChangeListener() {
 
             @Override
@@ -103,8 +104,8 @@ public class PreferencesInputForm extends JPanel {
         });
         shortBreakSlider = new TimerValueSlider(controlPanel, 1, 15,
                 Main.preferences.getShortBreakLength(),
-                Labels.getString("PreferencesPanel.Short Break Length") + ": ",
-                3, 5, unitMinute);
+                3, 5,
+                Labels.getString("PreferencesPanel.minutes"));
         shortBreakSlider.getSlider().addChangeListener(new ChangeListener() {
 
             @Override
@@ -114,8 +115,8 @@ public class PreferencesInputForm extends JPanel {
         });
         longBreakSlider = new TimerValueSlider(controlPanel, 5, 45,
                 Main.preferences.getLongBreakLength(),
-                Labels.getString("PreferencesPanel.Long Break Length") + ": ",
-                15, 30, unitMinute);
+                15, 30,
+                Labels.getString("PreferencesPanel.minutes"));
         longBreakSlider.getSlider().addChangeListener(new ChangeListener() {
 
             @Override
@@ -129,18 +130,25 @@ public class PreferencesInputForm extends JPanel {
         final int initMaxNbPomPerActivityAgileMode = 20;
         final int maxNbPomPerDay = 12;
         final int initMaxNbPomPerDay = 10;
-        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
-                Main.preferences.getMaxNbPomPerActivity(),
-                Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ",
-                1, initMaxNbPomPerActivityAgileMode, unitPomodoro);
         maxNbPomPerDaySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerDay,
                 Main.preferences.getMaxNbPomPerDay(),
-                Labels.getString("PreferencesPanel.Max nb pom/day") + ": ", 1,
-                initMaxNbPomPerDay, unitPomodoro);
+                1, initMaxNbPomPerDay,
+                Labels.getString("PreferencesPanel.pomodoros"), true);
+        maxNbPomPerDaySlider.getSlider().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updatePomodoroSlidersText();
+            }
+        });
         nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5,
                 Main.preferences.getNbPomPerSet(),
-                Labels.getString("PreferencesPanel.Nb pom/set") + ": ", 4, 4,
-                unitPomodoro);
+                4, 4,
+                Labels.getString("PreferencesPanel.pomodoros"), false);
+        maxNbPomPerActivitySlider = new TimerValueSlider(controlPanel, 1, maxNbPomPerActivityAgileMode,
+                Main.preferences.getMaxNbPomPerActivity(),
+                1, initMaxNbPomPerActivityAgileMode,
+                Labels.getString("PreferencesPanel.pomodoros"), false);
         nbPomPerSetSlider.getSlider().addChangeListener(new ChangeListener() {
 
             @Override
@@ -396,41 +404,22 @@ public class PreferencesInputForm extends JPanel {
         });
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
         addAgileMode(gbc);
         gbc.gridy = 1;
-        gbc.weighty = .5;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(pomodoroSlider, gbc);
+        addSliders(gbc);
         gbc.gridy = 2;
-        add(shortBreakSlider, gbc);
-        gbc.gridy = 3;
-        add(longBreakSlider, gbc);
-        gbc.gridy = 4;
-        add(maxNbPomPerActivitySlider, gbc);
-        gbc.gridy = 5;
-        add(nbPomPerSetSlider, gbc);
-        gbc.gridy = 6;
-        add(maxNbPomPerDaySlider, gbc);
-        gbc.gridy = 7;
-        gbc.gridwidth = 2;
         addPlainHours(gbc);
-        gbc.gridy = 8;
-        gbc.gridwidth = 2;
+        gbc.gridy = 3;
         addLocales(gbc);
-        gbc.gridy = 9;
-        gbc.gridwidth = 2;
+        gbc.gridy = 4;
         addSounds(gbc);
-        gbc.gridy = 10;
-        gbc.gridwidth = 2;
+        gbc.gridy = 5;
         if (SystemTray.isSupported()) {
             addSystemTray(gbc);
         }
-        gbc.gridy = 11;
-        gbc.gridwidth = 2;
+        gbc.gridy = 6;
         addAlwaysOnTop(gbc);
-        gbc.gridy = 12;
-        gbc.gridwidth = 2;
+        gbc.gridy = 7;
         addThemes(gbc);
     }
 
@@ -447,6 +436,69 @@ public class PreferencesInputForm extends JPanel {
         gbcAgileMode.gridy = 0;
         agileMode.add(pomodoroModeBox, gbcAgileMode);
         add(agileMode, gbc);
+    }
+
+    private void addSliders(GridBagConstraints gbc) {
+        JPanel sliderPanel = new JPanel();
+        sliderPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.EAST;
+        final FormLabel pomodoroSliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Pomodoro Length") + ": ");
+        c.gridx = 0;
+        c.gridy = 0;
+        sliderPanel.add(pomodoroSliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        sliderPanel.add(pomodoroSlider, c);
+
+        final FormLabel shortBreakSliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Short Break Length") + ": ");
+        c.gridx = 0;
+        c.gridy = 1;
+        sliderPanel.add(shortBreakSliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        sliderPanel.add(shortBreakSlider, c);
+
+        final FormLabel longBreakSliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Long Break Length") + ": ");
+        c.gridx = 0;
+        c.gridy = 2;
+        sliderPanel.add(longBreakSliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        sliderPanel.add(longBreakSlider, c);
+
+        final FormLabel maxNbPomPerDaySliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Max nb pom/day") + ": ");
+        c.gridx = 0;
+        c.gridy = 3;
+        sliderPanel.add(maxNbPomPerDaySliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 3;
+        sliderPanel.add(maxNbPomPerDaySlider, c);
+
+        final FormLabel nbPomPerSetSliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Nb pom/set") + ": ");
+        c.gridx = 0;
+        c.gridy = 4;
+        sliderPanel.add(nbPomPerSetSliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 4;
+        sliderPanel.add(nbPomPerSetSlider, c);
+
+        final FormLabel maxNbPomPerActivitySliderLabel = new FormLabel(
+                Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ");
+        c.gridx = 0;
+        c.gridy = 5;
+        sliderPanel.add(maxNbPomPerActivitySliderLabel, c);
+        c.gridx = 1;
+        c.gridy = 5;
+        sliderPanel.add(maxNbPomPerActivitySlider, c);
+
+        add(sliderPanel, gbc);
     }
 
     private void addSounds(GridBagConstraints gbc) {
@@ -548,8 +600,8 @@ public class PreferencesInputForm extends JPanel {
     }
 
     private void updatePomodoroSlidersText() {
-        maxNbPomPerActivitySlider.setTexts(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected());
-        maxNbPomPerDaySlider.setTexts(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected());
-        nbPomPerSetSlider.setTexts(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected());
+        maxNbPomPerActivitySlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
+        maxNbPomPerDaySlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
+        nbPomPerSetSlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
     }
 }

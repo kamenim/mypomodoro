@@ -871,13 +871,14 @@ public class CommentPanel extends JPanel {
                 comment = currentlySelectedActivityText;
                 displaySaveCancelButton();
             }
-            informationArea.setText(comment);
-            // Set caret position            
-            //try {
-            informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset() - 1);
-            //} catch (java.lang.IllegalArgumentException ex) { // bad position exception
-
-            //}
+            if (informationArea != null) { // informationArea may be null when hovering the mouse over the table while prioritising, moving, deleting... rows
+                informationArea.setText(comment);
+                // Set caret position            
+                //try {
+                informationArea.setCaretPosition(informationArea.getDocument().getEndPosition().getOffset() > currentlySelectedActivityCaretPosition ? currentlySelectedActivityCaretPosition : informationArea.getDocument().getEndPosition().getOffset() - 1);
+                //} catch (java.lang.IllegalArgumentException ex) { // bad position exception
+                //}
+            }
             // Warning: do not request focus in Window here. Focus will be lost on table hence prevent shorcuts and combos from working
         } else { // Activity actually hovered on with the mouse
             hideSaveCancelButton();

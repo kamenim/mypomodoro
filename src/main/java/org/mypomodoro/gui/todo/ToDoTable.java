@@ -471,7 +471,7 @@ public class ToDoTable extends AbstractTable {
         activity.setIsUnplanned(true);
         activity.setName("(U) " + Labels.getString("Common.Unplanned"));
         getList().add(activity);
-        int row = insertRow(activity);      
+        int row = insertRow(activity);
         editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
@@ -491,7 +491,7 @@ public class ToDoTable extends AbstractTable {
             activity.setIsUnplanned(true);
             activity.setName("(I) " + Labels.getString("ToDoListPanel.Internal"));
             getList().add(activity);
-            int row = insertRow(activity);      
+            int row = insertRow(activity);
             editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
@@ -512,7 +512,7 @@ public class ToDoTable extends AbstractTable {
             activity.setIsUnplanned(true);
             activity.setName("(E) " + Labels.getString("ToDoListPanel.External"));
             getList().add(activity);
-            int row = insertRow(activity);        
+            int row = insertRow(activity);
             editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
