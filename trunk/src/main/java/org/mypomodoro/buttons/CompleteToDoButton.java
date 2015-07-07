@@ -59,7 +59,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                     // Set progress bar
                                     MainPanel.progressBar.setVisible(true);
                                     MainPanel.progressBar.getBar().setValue(0);
-                                    MainPanel.progressBar.getBar().setMaximum(panel.getPomodoro().inPomodoro() ? selectedRowCount - 1 : selectedRowCount);
+                                    MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                                     // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
                                     /*if (!panel.getPomodoro().inPomodoro() && panel.getMainTable().getSelectedRowCount() == panel.getMainTable().getRowCount()) { // complete all at once                       
                                      int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
@@ -78,7 +78,9 @@ public class CompleteToDoButton extends TabPanelButton {
                                             row = row - increment;
                                             Activity selectedActivity = panel.getMainTable().getActivityFromRowIndex(row);
                                             // excluding current running task
-                                            if (panel.getPomodoro().inPomodoro() && selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                                            if (panel.getPomodoro().inPomodoro()
+                                                    && (selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getId()
+                                                    || selectedActivity.getId() == panel.getPomodoro().getCurrentToDo().getParentId())) {
                                                 if (rows.length > 1) {
                                                     continue;
                                                 } else {

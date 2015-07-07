@@ -219,7 +219,7 @@ public class ToDoSubTable extends ToDoTable {
             Activity parentActivity = panel.getMainTable().getActivityFromSelectedRow();
             newActivity.setParentId(parentActivity.getId());
             getList().add(newActivity); // save activity in database
-            int row = insertRow(newActivity);      
+            int row = insertRow(newActivity);
             editTitleCellAtRowIndex(row);
             panel.getTabbedPane().selectEditTab(); // open edit tab
         }
@@ -233,7 +233,7 @@ public class ToDoSubTable extends ToDoTable {
             Activity activity = getActivityFromSelectedRow();
             try {
                 Activity duplicatedActivity = getList().duplicate(activity);
-                int row = insertRow(duplicatedActivity);       
+                int row = insertRow(duplicatedActivity);
                 editTitleCellAtRowIndex(row);
                 panel.getMainTable().addPomsToSelectedRow(duplicatedActivity);
                 panel.getTabbedPane().selectEditTab(); // open edit tab

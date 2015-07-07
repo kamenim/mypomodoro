@@ -18,7 +18,6 @@ package org.mypomodoro.gui.activities;
 
 import java.text.DecimalFormat;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
@@ -402,7 +401,7 @@ public class ActivitiesTable extends AbstractTable {
         newActivity.setName("(N) " + Labels.getString("Common.New task"));
         getList().add(newActivity); // save activity in database
         int row = insertRow(newActivity);
-        editTitleCellAtRowIndex(row);           
+        editTitleCellAtRowIndex(row);
         panel.getTabbedPane().selectEditTab(); // open edit tab
     }
 

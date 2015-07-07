@@ -46,17 +46,16 @@ public class MuteButton extends JButton {
                 if (isSound) {
                     setSound();
                     pomodoro.mute();
-                    isSound = false;
                 } else {
                     setMute();
                     pomodoro.unmute();
-                    isSound = true;
                 }
             }
         });
     }
 
     private void setMute() {
+        isSound = true;
         setIcon(soundIcon);
         setBackground(null);
         setOpaque(true);
@@ -66,6 +65,7 @@ public class MuteButton extends JButton {
     }
 
     private void setSound() {
+        isSound = false;
         setIcon(muteIcon);
         setBackground(ColorUtil.GRAY);
         setToolTipText(Labels.getString("ToDoListPanel.Unmute"));

@@ -28,7 +28,7 @@ import org.mypomodoro.util.Restart;
 public class RestartButton extends DefaultButton {
 
     public RestartButton() {
-        super(Labels.getString("Common.Restart"));
+        super(Labels.getString("Common.Restart") + " myAgilePomodoro");
         addActionListener(new ActionListener() {
 
             @Override

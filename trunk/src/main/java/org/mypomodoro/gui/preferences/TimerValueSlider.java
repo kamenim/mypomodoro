@@ -17,34 +17,39 @@
 package org.mypomodoro.gui.preferences;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.create.FormLabel;
-import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
 public class TimerValueSlider extends JPanel {
 
     private final JSlider slider;
     private final JLabel label = new JLabel();
-    private final int unit;
+    private final String textLabel;
+    private final boolean lengthInHours;
 
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
-            int val, String name, final int recommendedMin,
-            final int recommendedMax, int unit) {
-        this.unit = unit;
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        add(new FormLabel(name));
-        c.gridx = 1;
+            int val, final int recommendedMin,
+            final int recommendedMax,
+            String textLabel) {
+        this(controlPanel, min, max,
+                val, recommendedMin,
+                recommendedMax,
+                textLabel, false);
+    }
+
+    public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
+            int val, final int recommendedMin,
+            final int recommendedMax,
+            String textLabel, boolean lengthInHours) {
+        this.textLabel = textLabel;
+        this.lengthInHours = lengthInHours;
+        setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
         slider = new JSlider(min, max, val);
         setSliderColor(recommendedMin, recommendedMax);
         slider.addChangeListener(new ChangeListener() {
@@ -52,37 +57,36 @@ public class TimerValueSlider extends JPanel {
             @Override
             public void stateChanged(ChangeEvent e) {
                 setSliderColor(recommendedMin, recommendedMax);
-                setTexts();
+                setText();
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
             }
         });
-        add(slider, c);
-        c.gridx = 2;
-        setTexts();
-        add(label, c);
+        add(slider);
+        setText();
+        add(label);
     }
 
-    private void setTexts() {
+    private void setText() {
         int sliderValue = slider.getValue();
         String text = " " + sliderValue + " ";
-        if (unit == 0) {
-            text += Labels.getString("PreferencesPanel.minutes");
+        text += textLabel;
+        if (lengthInHours) {
+            text += " (" + TimeConverter.getLengthInHours(sliderValue) + ")";
         } else {
-            text += Labels.getString("PreferencesPanel.pomodoros")
-                    + " (" + TimeConverter.getLengthInHours(sliderValue) + ")";
+            text += " (" + TimeConverter.getLength(sliderValue) + ")";
         }
         label.setText(text);
     }
 
-    public void setTexts(int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours) {
+    public void setText(int pomodoroLength, int shortBreakLength, int longBreakLength, int nbPomPerSet, boolean isPlainHours, int nbMaxNbPomPerDay) {
         int sliderValue = slider.getValue();
         String text = " " + sliderValue + " ";
-        if (unit == 0) {
-            text += Labels.getString("PreferencesPanel.minutes");
+        text += textLabel;
+        if (lengthInHours) {
+            text += " (" + TimeConverter.getLengthInHours(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours) + ")";
         } else {
-            text += Labels.getString("PreferencesPanel.pomodoros")
-                    + " (" + TimeConverter.getLengthInHours(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours) + ")";
+            text += " (" + TimeConverter.getLength(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours, nbMaxNbPomPerDay) + ")";
         }
         label.setText(text);
     }

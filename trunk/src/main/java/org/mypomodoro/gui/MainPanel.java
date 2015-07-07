@@ -36,7 +36,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import org.apache.commons.lang3.SystemUtils;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.RestartButton;
 import org.mypomodoro.gui.activities.ActivitiesPanel;
 import org.mypomodoro.gui.burndownchart.ChartTabbedPanel;
 import org.mypomodoro.gui.create.CreatePanel;
@@ -195,8 +198,11 @@ public class MainPanel extends JFrame {
     public static void exit() {
         String title = Labels.getString("FileMenu.Exit myPomodoro");
         String message = Labels.getString("FileMenu.Are you sure to exit myPomodoro?");
-        int reply = JOptionPane.showConfirmDialog(Main.gui, message,
-                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
+        Object[] options = {UIManager.getString("OptionPane.yesButtonText", Labels.getLocale()), Labels.getString("Common.Restart"), UIManager.getString("OptionPane.noButtonText", Labels.getLocale())};
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { // no restart on MAC
+            options = new Object[]{UIManager.getString("OptionPane.yesButtonText", Labels.getLocale()), UIManager.getString("OptionPane.noButtonText", Labels.getLocale())};
+        }
+        int reply = JOptionPane.showOptionDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON, options, options[0]);
         if (reply == JOptionPane.YES_OPTION) {
             if (SystemTray.isSupported()
                     && Main.preferences.getSystemTray()) {
@@ -205,6 +211,10 @@ public class MainPanel extends JFrame {
                 sysTray.remove(trayIcon);
             }
             System.exit(0);
+        } else if (reply == 1
+                && !SystemUtils.IS_OS_MAC && !SystemUtils.IS_OS_MAC_OSX) { // restart
+            RestartButton restartButton = new RestartButton();
+            restartButton.doClick();
         }
     }
 

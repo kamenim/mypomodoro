@@ -47,17 +47,16 @@ public class PinButton extends JButton {
                 if (isPin) {
                     setPin();
                     Main.gui.setAlwaysOnTop(true);
-                    isPin = false;
                 } else {
                     setUnpin();
                     Main.gui.setAlwaysOnTop(false);
-                    isPin = true;
                 }
             }
         });
     }
 
     private void setUnpin() {
+        isPin = true;
         setIcon(unpinIcon);
         setBackground(null);
         setOpaque(true);
@@ -67,6 +66,7 @@ public class PinButton extends JButton {
     }
 
     public void setPin() {
+        isPin = false;
         setIcon(pinIcon);
         setBackground(ColorUtil.GRAY);
         setToolTipText(Labels.getString("ToDoListPanel.Unpin"));

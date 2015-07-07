@@ -126,6 +126,7 @@ public class DeleteButton extends TabPanelButton {
                             }
                         }
                     }.start();
+                    //}
                 }
             }
         });

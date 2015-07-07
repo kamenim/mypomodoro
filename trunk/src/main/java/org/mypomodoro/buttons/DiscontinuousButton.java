@@ -52,11 +52,9 @@ public class DiscontinuousButton extends JButton {
                 if (isContinuous) {
                     setContinuous();
                     pomodoro.discontinueWorkflow();
-                    isContinuous = false;
                 } else {
                     setDiscontinuous();
                     pomodoro.continueWorkflow();
-                    isContinuous = true;
                 }
                 pomodoro.setTooltipOnImage();
             }
@@ -64,6 +62,7 @@ public class DiscontinuousButton extends JButton {
     }
 
     private void setDiscontinuous() {
+        isContinuous = true;
         setIcon(continuousIcon);
         setBackground(null);
         setOpaque(true);
@@ -73,6 +72,7 @@ public class DiscontinuousButton extends JButton {
     }
 
     private void setContinuous() {
+        isContinuous = false;
         setIcon(discontinuousIcon);
         setBackground(ColorUtil.GRAY);
         setToolTipText(Labels.getString("ToDoListPanel.Restore the workflow"));
