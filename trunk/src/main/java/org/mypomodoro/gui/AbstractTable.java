@@ -51,19 +51,12 @@ import javax.swing.text.JTextComponent;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
-import org.mypomodoro.buttons.CompleteToDoButton;
-import org.mypomodoro.buttons.MoveButton;
-import org.mypomodoro.buttons.MoveToDoButton;
-import org.mypomodoro.gui.activities.ActivitiesPanel;
-import org.mypomodoro.gui.reports.ReportsPanel;
-import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
-import org.mypomodoro.util.Labels;
 import static org.mypomodoro.util.TimeConverter.getLength;
 
 /**
@@ -190,13 +183,7 @@ public abstract class AbstractTable extends JXTable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (panel instanceof ActivitiesPanel) { // move to ToDo list
-                    MoveButton moveButton = new MoveButton("", panel);
-                    moveButton.doClick();
-                } else if (panel instanceof ToDoPanel) { // complete
-                    CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel) panel);
-                    completeToDoButton.doClick();
-                }
+                moveRightTasks(); // send to ToDo or complete
             }
         }
         am.put("Move right", new moveRightAction(panel));
@@ -213,13 +200,7 @@ public abstract class AbstractTable extends JXTable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (panel instanceof ReportsPanel) { // reopen
-                    MoveButton moveButton = new MoveButton("", panel);
-                    moveButton.doClick();
-                } else if (panel instanceof ToDoPanel) { // send back to ActivityList
-                    MoveToDoButton moveToDoButton = new MoveToDoButton("", (ToDoPanel) panel);
-                    moveToDoButton.doClick();
-                }
+                moveLeftTasks(); // send back to Activity or reopen
             }
         }
         am.put("Move left", new moveLeftAction(panel));
@@ -731,15 +712,23 @@ public abstract class AbstractTable extends JXTable {
     }
 
     public void deleteTasks() {
-        // do nothign by default
+        // do nothing by default
+    }
+    
+    public void moveLeftTasks() {
+        // do nothing by default
+    }
+    
+    public void moveRightTasks() {
+        // do nothing by default
     }
 
     public void moveSubtasksToMainTable() {
-        // do nothign by default
+        // do nothing by default
     }
 
     public void moveSubtaskToMainTable(int rowIndex) {
-        // do nothign by default
+        // do nothing by default
     }
 
     public void removeRow(int rowIndex) {

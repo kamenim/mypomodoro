@@ -106,7 +106,7 @@ public class MergingPanel extends CreatePanel {
     }
 
     @Override
-    public void validActivityAction(final Activity newActivity) {
+    protected void validActivityAction(final Activity newActivity) {
         StringBuilder comments = new StringBuilder();
         int actualPoms = 0;
         int estimatedPoms = 0;
@@ -166,18 +166,21 @@ public class MergingPanel extends CreatePanel {
                         if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
                             newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
                         }
-                        panel.getCurrentTable().addActivity(newActivity);
+                        ActivityList.getList().add(newActivity);
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
                                 row = row - increment;
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 // Add subtasks to lists
-                                ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
-                                for (Activity subTask : subList) {
-                                    subTask.setParentId(newActivity.getId());
-                                    ActivityList.getList().update(subTask);
-                                }
+                                // Add subtasks to lists
+                                if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
+                                    ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
+                                    for (Activity subTask : subList) {
+                                        subTask.setParentId(newActivity.getId());
+                                        ActivityList.getList().update(subTask);
+                                    }
+                                }             
                                 panel.getCurrentTable().delete(selectedActivity);
                                 panel.getCurrentTable().removeRow(row);
                                 increment++;
@@ -192,7 +195,7 @@ public class MergingPanel extends CreatePanel {
                             }
                         }
                         // insert new activity into Activity list's current table
-                        panel.getCurrentTable().insertRow(newActivity);
+                        panel.getCurrentTable().insertRow(newActivity);                        
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
@@ -239,15 +242,10 @@ public class MergingPanel extends CreatePanel {
     @Override
     public void clearForm() {
         mergingInputFormPanel.setNameField("");
-        mergingInputFormPanel.setEstimatedPomodoro(1);
-        if (Main.preferences.getAgileMode()) {
-            mergingInputFormPanel.setStoryPoints(0);
-            mergingInputFormPanel.setIterations(0);
-        }
-        mergingInputFormPanel.setDescriptionField("");
+        mergingInputFormPanel.setDate(new Date());
         mergingInputFormPanel.setTypeField("");
         mergingInputFormPanel.setAuthorField("");
         mergingInputFormPanel.setPlaceField("");
-        mergingInputFormPanel.setDate(new Date());
+        mergingInputFormPanel.setDescriptionField("");
     }
 }

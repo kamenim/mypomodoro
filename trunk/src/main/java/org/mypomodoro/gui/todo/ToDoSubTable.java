@@ -324,7 +324,8 @@ public class ToDoSubTable extends ToDoTable {
 
     // can't complete subtasks
     @Override
-    public void completeTask(int rowIndex) {
+    protected boolean canMoveTasks() {
+        return false;
     }
 
     // can't move subtasks
