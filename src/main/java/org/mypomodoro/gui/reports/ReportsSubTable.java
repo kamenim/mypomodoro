@@ -182,6 +182,7 @@ public class ReportsSubTable extends ReportsTable {
 
     // Can't reopen subtasks
     @Override
-    public void moveTask(int rowIndex) {
+    protected boolean canMoveTasks() {
+        return false;
     }
 }

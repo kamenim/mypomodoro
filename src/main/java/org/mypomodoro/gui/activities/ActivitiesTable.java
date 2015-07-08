@@ -21,7 +21,9 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.CompleteToDoButton;
 import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
@@ -31,6 +33,7 @@ import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
 import org.mypomodoro.gui.TableHeader;
+import org.mypomodoro.gui.todo.ToDoPanel;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
@@ -445,6 +448,19 @@ public class ActivitiesTable extends AbstractTable {
         }
         getList().delete(activity); // delete tasks and subtasks
         removeRow(rowIndex);
+    }
+    
+    @Override
+    public void moveRightTasks() {
+        if (canMoveTasks()) {            
+            MoveButton moveButton = new MoveButton("", panel);
+            moveButton.doClick();
+        }
+    }
+
+    // only tasks can be send to ToDo list  
+    protected boolean canMoveTasks() {
+        return getSelectedRowCount() > 0;
     }
 
     // only tasks can be moved

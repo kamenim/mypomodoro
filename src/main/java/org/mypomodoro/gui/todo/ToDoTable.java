@@ -23,6 +23,8 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
+import org.mypomodoro.buttons.CompleteToDoButton;
+import org.mypomodoro.buttons.MoveToDoButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
@@ -637,5 +639,26 @@ public class ToDoTable extends AbstractTable {
         } else {
             super.scrollToSelectedRows();
         }
+    }
+    
+    @Override
+    public void moveRightTasks() {
+        if (canMoveTasks()) {
+            CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel) panel);
+            completeToDoButton.doClick();
+        }
+    }
+    
+    @Override
+    public void moveLeftTasks() {
+        if (canMoveTasks()) {
+            MoveToDoButton moveToDoButton = new MoveToDoButton("", (ToDoPanel) panel);
+            moveToDoButton.doClick();
+        }
+    }
+
+    // only tasks can be reopened  
+    protected boolean canMoveTasks() {
+        return getSelectedRowCount() > 0;
     }
 }

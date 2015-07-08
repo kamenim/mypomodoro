@@ -24,6 +24,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DeleteButton;
+import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
@@ -367,6 +368,20 @@ public class ReportsTable extends AbstractTable {
         Activity activity = getActivityFromRowIndex(rowIndex);
         getList().delete(activity);
         removeRow(rowIndex);
+    }
+
+    // reopen
+    @Override
+    public void moveLeftTasks() {
+        if (canMoveTasks()) {
+            MoveButton moveButton = new MoveButton("", panel);
+            moveButton.doClick();
+        }
+    }
+
+    // only tasks can be reopened  
+    protected boolean canMoveTasks() {
+        return getSelectedRowCount() > 0;
     }
 
     @Override

@@ -223,7 +223,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
         return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selettion
     }
 
-    /*private boolean canMoveSubtasks() {
-     return getSelectedRowCount() > 0;
-     }*/
+    // can't send subtasks to ToDo list
+    @Override
+    protected boolean canMoveTasks() {
+        return false;
+    }
 }

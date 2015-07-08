@@ -46,8 +46,7 @@ import org.mypomodoro.util.WaitCursor;
  * Panel that allows the merging of ToDos
  *
  */
-public class MergingPanel extends CreatePanel {
-    // merge subtasks ?
+public class MergingPanel extends CreatePanel {    
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
@@ -119,7 +118,9 @@ public class MergingPanel extends CreatePanel {
             comments.append("<html><head></head><body>");
             for (int row : rows) {
                 Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
-                if (panel.getPomodoro().inPomodoro() && selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()) {
+                if (panel.getPomodoro().inPomodoro() && 
+                        (selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getId()
+                        || selectedToDo.getId() == panel.getPomodoro().getCurrentToDo().getParentId())) {
                     continue;
                 }
                 // aggregate comments
@@ -278,15 +279,10 @@ public class MergingPanel extends CreatePanel {
     @Override
     public void clearForm() {
         mergingInputFormPanel.setNameField("");
-        mergingInputFormPanel.setEstimatedPomodoro(1);
-        if (Main.preferences.getAgileMode()) {
-            mergingInputFormPanel.setStoryPoints(0);
-            mergingInputFormPanel.setIterations(0);
-        }
-        mergingInputFormPanel.setDescriptionField("");
+        mergingInputFormPanel.setDate(new Date());
         mergingInputFormPanel.setTypeField("");
         mergingInputFormPanel.setAuthorField("");
         mergingInputFormPanel.setPlaceField("");
-        mergingInputFormPanel.setDate(new Date());
+        mergingInputFormPanel.setDescriptionField("");        
     }
 }
