@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.menubar.help;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -167,6 +168,7 @@ public class AboutPanel extends JDialog {
         license += "<br>"
                 + Labels.getString("AboutPanel.All documentation and images are licensed");
         JEditorPane editorPane = new JEditorPane("text/html", license);
+        editorPane.setForeground(new JPanel().getForeground()); // set theme foreground color
         editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
                 Boolean.TRUE);
         editorPane.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 4));
@@ -183,7 +185,6 @@ public class AboutPanel extends JDialog {
         });
 
         JPanel panel = new JPanel();
-
         // Wrap content!
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
