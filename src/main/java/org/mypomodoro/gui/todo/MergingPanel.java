@@ -113,6 +113,7 @@ public class MergingPanel extends CreatePanel {
         int estimatedPoms = 0;
         int overestimatedPoms = 0;
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
+        final int rowCount = panel.getCurrentTable().getRowCount();
         if (selectedRowCount > 0) {
             int[] rows = panel.getCurrentTable().getSelectedRows();
             comments.append("<html><head></head><body>");
@@ -170,13 +171,13 @@ public class MergingPanel extends CreatePanel {
                         int[] rows = panel.getCurrentTable().getSelectedRows();
                         int increment = 0;
                         // Add newActivity to list so it gets an ID to be used as parentID for subtasks
-                        if (Main.preferences.getAgileMode() || mergingInputFormPanel.isDateToday() || !panel.getCurrentTable().equals(panel.getMainTable())) { // add new activity to ToDo list                                                            
-                            if (!panel.getCurrentTable().equals(panel.getMainTable())) { // subtask
+                        if (!panel.getCurrentTable().equals(panel.getSubTable()) && !Main.preferences.getAgileMode() && !mergingInputFormPanel.isDateToday()) {  // add merged activity to activities list
+                            ActivityList.getList().add(newActivity);                            
+                        } else { // add new activity to ToDo list
+                            if (panel.getCurrentTable().equals(panel.getSubTable())) { // subtask
                                 newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
                             }
                             ToDoList.getList().add(newActivity);
-                        } else { // add merged activity to activities list
-                            ActivityList.getList().add(newActivity);
                         }
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
@@ -188,17 +189,17 @@ public class MergingPanel extends CreatePanel {
                                     continue;
                                 }
                                 // Add subtasks to lists
-                                if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
+                                if (!newActivity.isSubTask()) { // task
                                     ArrayList<Activity> subList = ToDoList.getList().getSubTasks(selectedToDo.getId());
                                     for (Activity subTask : subList) {
-                                        if (mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // update subtask in ToDo list
-                                            subTask.setParentId(newActivity.getId());
-                                            ToDoList.getList().update(subTask);
-                                        } else {
+                                        if (!mergingInputFormPanel.isDateToday() && !Main.preferences.getAgileMode()) {
                                             ToDoList.getList().moveToActivtyList(subTask);
                                             // update after moving to make it a subtask of the new activity
                                             subTask.setParentId(newActivity.getId());
                                             ActivityList.getList().update(subTask);
+                                        } else {
+                                            subTask.setParentId(newActivity.getId());
+                                            ToDoList.getList().update(subTask);                                            
                                         }
                                     }
                                 }
@@ -214,8 +215,34 @@ public class MergingPanel extends CreatePanel {
                                     }
                                 });
                             }
+                        }                        
+                        // insert new activity into ToDo list's current table
+                        if (!newActivity.isSubTask() && !mergingInputFormPanel.isDateToday() && !Main.preferences.getAgileMode()) {
+                            Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity);
+                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");
+                            JOptionPane.showConfirmDialog(Main.gui, message, title,
+                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
+                        } else { // add new activity to ToDo list
+                            // the following condition addresses the issue where all subtasks are merged and for that reason the subtasks is populated which makes the insertion of row redondant
+                            if (!newActivity.isSubTask() 
+                                    || rowCount != selectedRowCount) {
+                                panel.getCurrentTable().insertRow(newActivity);
+                                // reordering subtasks
+                                /*if (!newActivity.isSubTask()) {                                   
+                                    // Indicate reordering by priority in progress bar
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
+                                            MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
+                                        }
+                                    });
+                                    // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
+                                    panel.getSubTable().reorderByPriority();
+                                }*/
+                            }
                         }
-                        // Indicate reordoring by priority in progress bar
+                        // Indicate reordering by priority in progress bar
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -224,15 +251,6 @@ public class MergingPanel extends CreatePanel {
                             }
                         });
                         panel.getCurrentTable().reorderByPriority();
-                        // insert new activity into ToDo list's current table
-                        if (newActivity.isSubTask() || mergingInputFormPanel.isDateToday() || Main.preferences.getAgileMode()) { // add new activity to ToDo list                                                            
-                            panel.getCurrentTable().insertRow(newActivity);
-                        } else { // insert new activity into Activity list's main table
-                            Main.gui.getActivityListPanel().getMainTable().insertRow(newActivity);
-                            String message = Labels.getString("ToDoListPanel.Task added to Activity List");
-                            JOptionPane.showConfirmDialog(Main.gui, message, title,
-                                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
-                        }
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {

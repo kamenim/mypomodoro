@@ -100,10 +100,10 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
                 if (fromDatabase) {
                     getList().refresh();
                 }
-                tableModel = getNewTableModel();
-                table.setModel(tableModel);
+                table.getModel().setDataVector(getList().getTasks());
                 table.setTableHeader();
                 table.setColumnModel();
+                table.setTitle();
                 table.initTabs();
                 if (tableModel.getRowCount() > 0) {
                     table.setRowSelectionInterval(0, 0);
