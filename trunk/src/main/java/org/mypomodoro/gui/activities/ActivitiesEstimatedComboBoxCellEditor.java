@@ -51,7 +51,7 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
                 int estimated = 0;
                 comboBox.setVisible(true);
                 comboBox.removeAllItems();
-                if (!activity.isSubTask()) {
+                if (activity.isTask()) {
                     ArrayList<Activity> subList = ActivityList.getList().getSubTasks(activity.getId());
                     for (Activity act : subList) {
                         estimated += act.getEstimatedPoms();

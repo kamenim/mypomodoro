@@ -82,8 +82,8 @@ public class DeleteButton extends TabPanelButton {
                                         if (panel instanceof ToDoPanel) {
                                             Activity selectedToDo = panel.getCurrentTable().getActivityFromRowIndex(row);
                                             // excluding current running task
-                                            if (((ToDoPanel)panel).getPomodoro().inPomodoro()
-                                                    && selectedToDo.getId() == ((ToDoPanel)panel).getPomodoro().getCurrentToDo().getId()) {
+                                            if (((ToDoPanel) panel).getPomodoro().inPomodoro()
+                                                    && selectedToDo.getId() == ((ToDoPanel) panel).getPomodoro().getCurrentToDo().getId()) {
                                                 if (rows.length > 1) {
                                                     continue;
                                                 } else {

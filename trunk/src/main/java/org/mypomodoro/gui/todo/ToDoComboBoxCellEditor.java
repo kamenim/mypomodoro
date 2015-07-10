@@ -45,7 +45,7 @@ class ToDoComboBoxCellEditor extends ComboBoxCellEditor {
         } else if (activity != null
                 && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                 && (activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
-                || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
+                || (activity.isTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
                 && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskRunningColor); // editable combo box
             comboBox.setForeground(Main.taskRunningColor);

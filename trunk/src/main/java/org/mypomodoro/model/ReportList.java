@@ -83,7 +83,7 @@ public class ReportList extends AbstractActivities {
     }
 
     public void add(Activity act, Date date, Date dateCompleted) {
-        if (!act.isSubTask()) { // don't reset the priority of subtasks so the subtasks can be sorted by priority in the ReportList
+        if (act.isTask()) { // don't reset the priority of subtasks so the subtasks can be sorted by priority in the ReportList
             act.setPriority(-1);
         }
         act.setIsCompleted(true);
@@ -99,7 +99,7 @@ public class ReportList extends AbstractActivities {
 
     @Override
     public void delete(Activity activity) {
-        if (!activity.isSubTask()) {
+        if (activity.isTask()) {
             ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);
@@ -116,12 +116,14 @@ public class ReportList extends AbstractActivities {
 
     // Reopen a task and its subtasks to ActivityList
     public void reopenToActivtyList(Activity activity) {
-        ArrayList<Activity> subList = getSubTasks(activity.getId());
-        for (Activity subTask : subList) {
-            subTask.setDateCompleted(new Date(0));
-            //subTask.setIteration(-1); // not really necessary
-            ActivityList.getList().add(subTask);
-            remove(subTask);
+        if (activity.isTask()) {
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
+            for (Activity subTask : subList) {
+                subTask.setDateCompleted(new Date(0));
+                //subTask.setIteration(-1); // not really necessary
+                ActivityList.getList().add(subTask);
+                remove(subTask);
+            }
         }
         activity.setDateCompleted(new Date());
         activity.setIteration(-1); // reset iteration
