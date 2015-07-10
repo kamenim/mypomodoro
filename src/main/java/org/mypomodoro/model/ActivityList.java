@@ -128,7 +128,7 @@ public class ActivityList extends AbstractActivities {
 
     @Override
     public void delete(Activity activity) {
-        if (!activity.isSubTask()) {
+        if (activity.isTask()) {
             ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
                 remove(subTask);

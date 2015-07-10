@@ -175,13 +175,13 @@ public class MergingPanel extends CreatePanel {
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 // Add subtasks to lists
                                 // Add subtasks to lists
-                                if (!newActivity.isSubTask()) { // task
+                                if (newActivity.isTask()) { // task
                                     ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
                                     for (Activity subTask : subList) {
                                         subTask.setParentId(newActivity.getId());
                                         ActivityList.getList().update(subTask);
                                     }
-                                }             
+                                }
                                 panel.getCurrentTable().delete(selectedActivity);
                                 panel.getCurrentTable().removeRow(row);
                                 increment++;
@@ -197,9 +197,9 @@ public class MergingPanel extends CreatePanel {
                         }
                         // insert new activity into Activity list's current table
                         // the following condition addresses the issue where all subtasks are merged and for that reason the subtasks is populated which makes the insertion of row redondant
-                        if (!newActivity.isSubTask() 
+                        if (newActivity.isTask()
                                 || rowCount != selectedRowCount) {
-                            panel.getCurrentTable().insertRow(newActivity);                        
+                            panel.getCurrentTable().insertRow(newActivity);
                         }
                         // Close progress bar
                         final int progressCount = increment;

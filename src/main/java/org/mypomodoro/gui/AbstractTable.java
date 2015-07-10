@@ -463,7 +463,7 @@ public abstract class AbstractTable extends JXTable {
                 if (Main.gui != null && table instanceof ToDoTable) {
                     if (Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                             && (activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId()
-                            || (!activity.isSubTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
+                            || (activity.isTask() && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getParentId()))
                             && Main.gui.getToDoPanel().getPomodoro().inPomodoro()) {
                         renderer.setForeground(Main.taskRunningColor);
                     }
@@ -714,11 +714,11 @@ public abstract class AbstractTable extends JXTable {
     public void deleteTasks() {
         // do nothing by default
     }
-    
+
     public void moveLeftTasks() {
         // do nothing by default
     }
-    
+
     public void moveRightTasks() {
         // do nothing by default
     }

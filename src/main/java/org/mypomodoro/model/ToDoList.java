@@ -122,17 +122,19 @@ public class ToDoList extends AbstractActivities {
     }
 
     @Override
-    public void delete(Activity activity) {        
+    public void delete(Activity activity) {
         remove(activity);
         activity.databaseDelete();
     }
 
     // Move a task and its subtasks to ActivityList
     public void moveToActivtyList(Activity activity) {
-        ArrayList<Activity> subList = getSubTasks(activity.getId());
-        for (Activity subTask : subList) {
-            ActivityList.getList().add(subTask);
-            remove(subTask);
+        if (activity.isTask()) {
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
+            for (Activity subTask : subList) {
+                ActivityList.getList().add(subTask);
+                remove(subTask);
+            }
         }
         ActivityList.getList().add(activity); // set the priority and update the database
         remove(activity);
@@ -147,10 +149,12 @@ public class ToDoList extends AbstractActivities {
      }*/
     // Complete a task and its subtasks to ReportList
     public void completeToReportList(Activity activity) {
-        ArrayList<Activity> subList = getSubTasks(activity.getId());
-        for (Activity subTask : subList) {
-            ReportList.getList().add(subTask);
-            remove(subTask);
+        if (activity.isTask()) {
+            ArrayList<Activity> subList = getSubTasks(activity.getId());
+            for (Activity subTask : subList) {
+                ReportList.getList().add(subTask);
+                remove(subTask);
+            }
         }
         ReportList.getList().add(activity);
         remove(activity);

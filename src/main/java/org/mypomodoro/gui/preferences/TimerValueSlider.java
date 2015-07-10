@@ -32,7 +32,7 @@ public class TimerValueSlider extends JPanel {
     private final JLabel label = new JLabel();
     private final String textLabel;
     private final boolean displaylength;
-    private final boolean lengthInHours;    
+    private final boolean lengthInHours;
 
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, final int recommendedMin,
@@ -47,7 +47,7 @@ public class TimerValueSlider extends JPanel {
     public TimerValueSlider(final PreferencesPanel controlPanel, int min, int max,
             int val, final int recommendedMin,
             final int recommendedMax,
-            String textLabel, 
+            String textLabel,
             boolean displaylength, boolean lengthInHours) {
         this.textLabel = textLabel;
         this.displaylength = displaylength;
@@ -59,7 +59,7 @@ public class TimerValueSlider extends JPanel {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                setSliderColor(recommendedMin, recommendedMax);                
+                setSliderColor(recommendedMin, recommendedMax);
                 controlPanel.enableSaveButton();
                 controlPanel.clearValidation();
             }
@@ -94,7 +94,7 @@ public class TimerValueSlider extends JPanel {
                 text += " (" + TimeConverter.getLength(sliderValue, pomodoroLength, shortBreakLength, longBreakLength, nbPomPerSet, isPlainHours, nbMaxNbPomPerDay) + ")";
             }
         }
-        label.setText(text);        
+        label.setText(text);
     }
 
     public JSlider getSlider() {

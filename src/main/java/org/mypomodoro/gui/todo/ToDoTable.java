@@ -640,7 +640,7 @@ public class ToDoTable extends AbstractTable {
             super.scrollToSelectedRows();
         }
     }
-    
+
     @Override
     public void moveRightTasks() {
         if (canMoveTasks()) {
@@ -648,7 +648,7 @@ public class ToDoTable extends AbstractTable {
             completeToDoButton.doClick();
         }
     }
-    
+
     @Override
     public void moveLeftTasks() {
         if (canMoveTasks()) {

@@ -27,7 +27,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.gui.IActivityInformation;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
-import org.mypomodoro.util.Labels;
 
 /**
  * Panel that displays information on the current Pomodoro
