@@ -73,11 +73,11 @@ public class ToDoTransferHandler extends TransferHandler {
                         // get the first row index of the selection (single or multiple)
                         int row = panel.getCurrentTable().convertRowIndexToModel(panel.getCurrentTable().getSelectedRow());
                         if (panel.getCurrentTable().equals(panel.getMainTable())) {
-                            ((ToDoTableModel) panel.getCurrentTable().getModel()).update();
+                            ((ToDoTableModel) panel.getMainTable().getModel()).update();
+                            panel.getMainTable().setTableHeader();
                         } else {
-                            ((ToDoSubTableModel) panel.getCurrentTable().getModel()).update();
+                            ((ToDoSubTableModel) panel.getSubTable().getModel()).update(panel.getMainTable().getActivityIdFromSelectedRow());
                         }
-                        panel.getCurrentTable().setTableHeader();
                         panel.getCurrentTable().setColumnModel();
                         panel.getCurrentTable().setTitle();
                         // reselect row

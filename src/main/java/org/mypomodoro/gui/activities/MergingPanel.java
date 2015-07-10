@@ -179,6 +179,7 @@ public class MergingPanel extends CreatePanel {
                                     ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
                                     for (Activity subTask : subList) {
                                         subTask.setParentId(newActivity.getId());
+                                        subTask.databaseUpdate();
                                         ActivityList.getList().update(subTask);
                                     }
                                 }

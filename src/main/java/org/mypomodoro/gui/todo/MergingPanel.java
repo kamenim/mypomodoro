@@ -179,6 +179,7 @@ public class MergingPanel extends CreatePanel {
                             }
                             ToDoList.getList().add(newActivity);
                         }
+                        int priority = 1;
                         for (int row : rows) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 // removing a row requires decreasing the row index number
@@ -192,13 +193,17 @@ public class MergingPanel extends CreatePanel {
                                 if (newActivity.isTask()) { // task
                                     ArrayList<Activity> subList = ToDoList.getList().getSubTasks(selectedToDo.getId());
                                     for (Activity subTask : subList) {
+                                        subTask.setPriority(priority);
+                                        priority++;
                                         if (!mergingInputFormPanel.isDateToday() && !Main.preferences.getAgileMode()) {
                                             ToDoList.getList().moveToActivtyList(subTask);
                                             // update after moving to make it a subtask of the new activity
                                             subTask.setParentId(newActivity.getId());
+                                            subTask.databaseUpdate();
                                             ActivityList.getList().update(subTask);
                                         } else {
                                             subTask.setParentId(newActivity.getId());
+                                            subTask.databaseUpdate();
                                             ToDoList.getList().update(subTask);
                                         }
                                     }
@@ -227,19 +232,6 @@ public class MergingPanel extends CreatePanel {
                             if (newActivity.isTask()
                                     || rowCount != selectedRowCount) {
                                 panel.getCurrentTable().insertRow(newActivity);
-                                // reordering subtasks
-                                /*if (newActivity.isTask()) {                                   
-                                 // Indicate reordering by priority in progress bar
-                                 SwingUtilities.invokeLater(new Runnable() {
-                                 @Override
-                                 public void run() {
-                                 MainPanel.progressBar.getBar().setValue(MainPanel.progressBar.getBar().getMaximum());
-                                 MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
-                                 }
-                                 });
-                                 // When the list has a lot of tasks, the reorderByPriority method is very slow (probably) because there are now gaps in the index of the ToDo list due to previous deletion (removal) of tasks                            
-                                 panel.getSubTable().reorderByPriority();
-                                 }*/
                             }
                         }
                         // Indicate reordering by priority in progress bar
@@ -250,12 +242,7 @@ public class MergingPanel extends CreatePanel {
                                 MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
-                        if (newActivity.isTask()) {
-                            panel.getMainTable().reorderByPriority();
-                            panel.getSubTable().reorderByPriority();
-                        } else {
-                            panel.getSubTable().reorderByPriority();
-                        }
+                        panel.getCurrentTable().reorderByPriority();                        
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
