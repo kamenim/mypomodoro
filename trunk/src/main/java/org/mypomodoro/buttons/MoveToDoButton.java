@@ -101,7 +101,7 @@ public class MoveToDoButton extends TabPanelButton {
                             }
                         }
                         //}
-                        // Indicate reordoring by priority in progress bar
+                        // Indicate reordering by priority in progress bar
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {

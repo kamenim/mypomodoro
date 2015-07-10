@@ -112,6 +112,7 @@ public class MergingPanel extends CreatePanel {
         int estimatedPoms = 0;
         int overestimatedPoms = 0;
         final int selectedRowCount = panel.getCurrentTable().getSelectedRowCount();
+        final int rowCount = panel.getCurrentTable().getRowCount();
         if (selectedRowCount > 0) {
             int[] rows = panel.getCurrentTable().getSelectedRows();
             comments.append("<html><head></head><body>");
@@ -174,7 +175,7 @@ public class MergingPanel extends CreatePanel {
                                 Activity selectedActivity = panel.getCurrentTable().getActivityFromRowIndex(row);
                                 // Add subtasks to lists
                                 // Add subtasks to lists
-                                if (panel.getCurrentTable().equals(panel.getMainTable())) { // task
+                                if (!newActivity.isSubTask()) { // task
                                     ArrayList<Activity> subList = ActivityList.getList().getSubTasks(selectedActivity.getId());
                                     for (Activity subTask : subList) {
                                         subTask.setParentId(newActivity.getId());
@@ -195,7 +196,11 @@ public class MergingPanel extends CreatePanel {
                             }
                         }
                         // insert new activity into Activity list's current table
-                        panel.getCurrentTable().insertRow(newActivity);                        
+                        // the following condition addresses the issue where all subtasks are merged and for that reason the subtasks is populated which makes the insertion of row redondant
+                        if (!newActivity.isSubTask() 
+                                || rowCount != selectedRowCount) {
+                            panel.getCurrentTable().insertRow(newActivity);                        
+                        }
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
