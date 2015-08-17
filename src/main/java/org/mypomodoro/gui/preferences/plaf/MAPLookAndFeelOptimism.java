@@ -32,6 +32,7 @@ public class MAPLookAndFeelOptimism extends MAPLookAndFeel {
         FOREGROUND_COLOR = Color.WHITE; // white
         // icon set path
         Main.iconsSetPath = "/images/icons_light_set/"; 
+        Main.mAPIconTimer = "mAPIconTimerOptimism.png"; 
         setProperties();        
         setCurrentTheme(props);
      }

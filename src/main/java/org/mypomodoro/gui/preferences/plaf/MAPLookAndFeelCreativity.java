@@ -31,7 +31,8 @@ public class MAPLookAndFeelCreativity extends MAPLookAndFeel {
         COLOR = new Color(136, 42, 236); // purple
         FOREGROUND_COLOR = Color.WHITE; // white
         // icon set path
-        Main.iconsSetPath = "/images/icons_light_set/";            
+        Main.iconsSetPath = "/images/icons_light_set/"; 
+        Main.mAPIconTimer = "mAPIconTimerCreativity.png";            
         setProperties();        
         setCurrentTheme(props);
      }

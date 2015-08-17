@@ -31,7 +31,8 @@ public class MAPLookAndFeelConfidence extends MAPLookAndFeel {
         COLOR = new Color(246, 193, 0); // yellow
         FOREGROUND_COLOR = Color.BLACK; // black
         // icon set path
-        Main.iconsSetPath = "/images/icons_dark_set/";
+        Main.iconsSetPath = "/images/icons_dark_set/"; 
+        Main.mAPIconTimer = "mAPIconTimerConfidence.png";
         setProperties();        
         setCurrentTheme(props);
      }
