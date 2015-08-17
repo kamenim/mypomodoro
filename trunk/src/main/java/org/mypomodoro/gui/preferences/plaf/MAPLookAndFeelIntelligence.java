@@ -31,7 +31,8 @@ public class MAPLookAndFeelIntelligence extends MAPLookAndFeel {
         COLOR = new Color(0, 99, 250); // blue
         FOREGROUND_COLOR = Color.WHITE; // white
         // icon set path
-        Main.iconsSetPath = "/images/icons_light_set/";          
+        Main.iconsSetPath = "/images/icons_light_set/"; 
+        Main.mAPIconTimer = "mAPIconTimerIntelligence.png";          
         setProperties();        
         setCurrentTheme(props);
      }

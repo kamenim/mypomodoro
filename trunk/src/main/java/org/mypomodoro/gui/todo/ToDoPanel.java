@@ -66,7 +66,7 @@ public class ToDoPanel extends AbstractPanel {
     private final JLabel pomodoroTime = new JLabel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, pomodoroTime);
     private final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/mAPIconTimer.png"));
+    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/" + Main.mAPIconTimer));
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     public static final ResizeButton RESIZEBUTTON = new ResizeButton();
