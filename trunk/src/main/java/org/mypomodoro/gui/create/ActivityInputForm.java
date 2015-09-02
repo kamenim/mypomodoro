@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -72,7 +73,7 @@ public class ActivityInputForm extends JPanel {
     public ActivityInputForm(int gridy) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("FileMenu.New Activity") + " ");
         titledborder.setTitleJustification(TitledBorder.LEFT);
-        titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
+        titledborder.setTitleFont(new JTextField().getFont().deriveFont(Font.BOLD)); // Ticket #70 : java 7: use of JTextField to retrieve the default font (titledborder.getTitleFont() fails)
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
 
