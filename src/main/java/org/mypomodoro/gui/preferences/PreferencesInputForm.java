@@ -30,10 +30,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -82,7 +81,7 @@ public class PreferencesInputForm extends JPanel {
 
     public PreferencesInputForm(final PreferencesPanel controlPanel) {
         TitledBorder titledborder = new TitledBorder(new EtchedBorder(), " " + Labels.getString("PreferencesPanel.Preferences") + " ");
-        titledborder.setTitleFont(titledborder.getTitleFont().deriveFont(Font.BOLD));
+        titledborder.setTitleFont(new JTextField().getFont().deriveFont(Font.BOLD)); // Ticket #70 : java 7: use of JTextField to retrieve the default font (titledborder.getTitleFont() fails)
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
         
