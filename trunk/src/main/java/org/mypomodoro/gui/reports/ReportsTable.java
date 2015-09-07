@@ -390,4 +390,9 @@ public class ReportsTable extends AbstractTable {
         getList().reopenToActivtyList(activity); // reopen to ActivityList; do not reopen/move subtasks only
         removeRow(rowIndex);
     }
+    
+    @Override
+    public void importActivity(Activity activity) {
+        getList().add(activity, activity.getDateCompleted());
+    }
 }
