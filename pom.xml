@@ -152,11 +152,13 @@
     </dependency>
     <!-- Seaglass look and feel -->
     <!-- Apache License 2.0: http://code.google.com/p/seaglass/ -->
-    <dependency>
+    <!--  Removing SeaGlass theme 0.2.1 as it fixes an issue on java8_u60 but it not backward compatible with java 6 -->
+    <!--  Version 0.2.0 is compatible with java 6 up to java 8_u5 -->
+    <!--dependency>
       <groupId>com.seaglasslookandfeel</groupId>
       <artifactId>seaglasslookandfeel</artifactId>
       <version>0.2.1</version>
-    </dependency>
+    </dependency-->
     <!-- JTatoo look and feel -->
     <!-- GPL3: http://www.jtattoo.net/License.html -->
     <dependency>

@@ -72,7 +72,8 @@ public class PreferencesInputForm extends JPanel {
     public static final String NIMROD_LAF = "com.nilo.plaf.nimrod.NimRODLookAndFeel"; // NimROD
     public static final String PLASTIC3D_LAF = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel"; // JGoodies  
     public static final String PGS_LAF = "com.pagosoft.plaf.PgsLookAndFeel"; // Pgs
-    public static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
+    // Removing SeaGlass theme 0.2.1 as it fixes an issue on java8_u60 but it not backward compatible with java 6 -->
+    //public static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
     private static final String NOIRE_LAF = "com.jtattoo.plaf.noire.NoireLookAndFeel"; // JTattoo
     private static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
     private static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo
@@ -371,7 +372,7 @@ public class PreferencesInputForm extends JPanel {
         themes.add(NIMROD_LAF); // NimROD
         themes.add(PLASTIC3D_LAF); // JGoodies  
         themes.add(PGS_LAF); // Pgs
-        themes.add(SEAGLASS_LAF); // Seaglass
+        //themes.add(SEAGLASS_LAF); // Seaglass
         themes.add(NOIRE_LAF); // JTattoo
         themes.add(ACRYL_LAF); // JTattoo
         themes.add(MCWIN_LAF); // JTattoo
