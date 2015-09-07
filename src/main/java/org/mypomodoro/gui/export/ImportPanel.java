@@ -462,7 +462,7 @@ public class ImportPanel extends JPanel {
     // insert in main table
     private void insertData(String[] line) throws Exception {
         Activity newActivity = getActivity(line);
-        panel.getMainTable().addActivity(newActivity);
+        panel.getMainTable().importActivity(newActivity);
         panel.getMainTable().insertRow(newActivity); // main table !
     }
 }
