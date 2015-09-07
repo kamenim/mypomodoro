@@ -155,7 +155,7 @@
     <dependency>
       <groupId>com.seaglasslookandfeel</groupId>
       <artifactId>seaglasslookandfeel</artifactId>
-      <version>0.2</version>
+      <version>0.2.1</version>
     </dependency>
     <!-- JTatoo look and feel -->
     <!-- GPL3: http://www.jtattoo.net/License.html -->
