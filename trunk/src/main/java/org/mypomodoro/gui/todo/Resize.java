@@ -57,7 +57,7 @@ public class Resize {
         } else { // back to the original location
             Dimension size;
             Main.gui.pack();
-            if (Main.gui.getToDoPanel().isShowing()) { // only when the ToDo panel is visible                
+            if (Main.gui.getToDoPanel().isShowing()) { // only when the ToDo panel is visible
                 if (viewCount == 1) { // timer only                    
                     // timer fix size
                     size = new Dimension(300, 360);

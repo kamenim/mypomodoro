@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -66,7 +67,9 @@ public class ToDoPanel extends AbstractPanel {
     private final JLabel pomodoroTime = new JLabel();
     private final Pomodoro pomodoro = new Pomodoro(this, detailsPanel, pomodoroTime);
     private final TimerPanel timerPanel = new TimerPanel(pomodoro, pomodoroTime, this);
-    final ImageIcon pomodoroIcon = new ImageIcon(Main.class.getResource("/images/" + Main.mAPIconTimer));
+    private final JPanel tinyTimerPanel = new JPanel();
+    final ImageIcon timerIcon = new ImageIcon(Main.class.getResource("/images/" + Main.mAPIconTimer));
+    //final ImageIcon tinyTimerIcon = new ImageIcon(Main.class.getResource("/images/" + Main.mAPIconTinyTimer));
     // Discontinuous and Resize buttons
     private final DiscontinuousButton discontinuousButton = new DiscontinuousButton(pomodoro);
     public static final ResizeButton RESIZEBUTTON = new ResizeButton();
@@ -163,12 +166,12 @@ public class ToDoPanel extends AbstractPanel {
         listPaneAndTimer.add(listPane, gbcListPaneAndTimer);
     }
 
-    private void addTimerPanel() {
+    public void addTimerPanel() {
         gbcListPaneAndTimer.gridx = 1;
         gbcListPaneAndTimer.gridy = 0;
         gbcListPaneAndTimer.weighty = 1.0;
         gbcListPaneAndTimer.weightx = 1.0;
-        JPanel wrap = wrapInBackgroundImage(timerPanel, pomodoroIcon);
+        JPanel wrap = wrapInBackgroundImage(timerPanel, timerIcon);
         // Deactivate/activate non-pomodoro options: pause, minus, plus buttons        
         /*wrap.addMouseListener(new MouseAdapter() {
 
@@ -181,6 +184,22 @@ public class ToDoPanel extends AbstractPanel {
         listPaneAndTimer.add(wrap, gbcListPaneAndTimer);
         pomodoro.setTimerPanel(timerPanel);
     }
+    
+    /*public void addTinyTimerPanel() {
+        gbcListPaneAndTimer.gridx = 1;
+        gbcListPaneAndTimer.gridy = 0;
+        gbcListPaneAndTimer.weighty = 1.0;
+        gbcListPaneAndTimer.weightx = 1.0;        
+        tinyTimerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
+        tinyTimerPanel.setBorder(null);        
+        final DefaultButton tinyTimerButton = new DefaultButton(tinyTimerIcon, true);
+        tinyTimerButton.setContentAreaFilled(false); // this is very important to remove borders on Win7 aero
+        tinyTimerButton.setOpaque(false);
+        tinyTimerPanel.add(tinyTimerButton);        
+        tinyTimerPanel.add(RESIZEBUTTON);        
+        listPaneAndTimer.add(tinyTimerPanel, gbcListPaneAndTimer);
+        //pomodoro.setTimerPanel(tinyTimerPanel);
+    }*/
 
     @Override
     public ToDoTableModel getNewTableModel() {
@@ -333,4 +352,12 @@ public class ToDoPanel extends AbstractPanel {
     public TimerPanel getTimerPanel() {
         return timerPanel;
     }
+    
+    /*public void removeTimerPanel() {
+        listPaneAndTimer.remove(timerPanel);
+    }
+    
+    public void removeTinyTimerPanel() {
+        listPaneAndTimer.remove(tinyTimerPanel);
+    }*/
 }
