@@ -61,7 +61,7 @@ public class MainPanel extends JFrame {
     public static final int FRAME_WIDTH = 800;
     public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
-    public static final String MYPOMODORO_VERSION = "4.0.1";
+    public static final String MYPOMODORO_VERSION = "4.1.0";
     public static final Resize RESIZE = new Resize();
     public static PreferencesPanel preferencesPanel = new PreferencesPanel();
     public static SplashScreen splashScreen = new SplashScreen();
