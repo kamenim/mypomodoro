@@ -28,6 +28,7 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
+import static org.mypomodoro.gui.AbstractTableModel.DIFFI_COLUMN_INDEX;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;
@@ -125,6 +126,14 @@ public class ReportsTable extends AbstractTable {
                                 revalidate();
                             }
                         }
+                    } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // This may happen when importing subtasks
+                        // Update Diff 1 and 2 cells
+                        Integer diffIPoms = new Integer(act.getActualPoms() - act.getEstimatedPoms());
+                        sourceModel.setValueAt(diffIPoms, row, AbstractTableModel.DIFFI_COLUMN_INDEX);
+                        Integer diffIIPoms = new Integer(act.getActualPoms()
+                                - act.getEstimatedPoms()
+                                - act.getOverestimatedPoms());
+                        sourceModel.setValueAt(diffIIPoms, row, AbstractTableModel.DIFFII_COLUMN_INDEX);
                     }
                     getList().update(act);
                     // Updating details only
@@ -390,7 +399,7 @@ public class ReportsTable extends AbstractTable {
         getList().reopenToActivtyList(activity); // reopen to ActivityList; do not reopen/move subtasks only
         removeRow(rowIndex);
     }
-    
+
     @Override
     public void importActivity(Activity activity) {
         getList().add(activity, activity.getDateCompleted());

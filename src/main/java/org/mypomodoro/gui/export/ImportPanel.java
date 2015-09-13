@@ -462,7 +462,15 @@ public class ImportPanel extends JPanel {
     // insert in main table
     private void insertData(String[] line) throws Exception {
         Activity newActivity = getActivity(line);
-        panel.getMainTable().importActivity(newActivity);
-        panel.getMainTable().insertRow(newActivity); // main table !
+        if (importInputForm.getTaskBox().isSelected()) {
+            panel.getMainTable().importActivity(newActivity);
+            panel.getMainTable().insertRow(newActivity);
+        } else if (importInputForm.getSubtaskBox().isSelected() && panel.getMainTable().getModel().getRowCount() != 0) {
+            newActivity.setParentId(panel.getMainTable().getActivityIdFromSelectedRow());
+            panel.getSubTable().importActivity(newActivity);
+            panel.getSubTable().insertRow(newActivity);
+            // adjust the parent task
+            panel.getMainTable().addPomsToSelectedRow(newActivity);
+        }
     }
 }

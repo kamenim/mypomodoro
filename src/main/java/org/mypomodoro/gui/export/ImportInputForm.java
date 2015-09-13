@@ -21,8 +21,10 @@ import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,21 +41,56 @@ public class ImportInputForm extends ExportInputForm {
 
     private FileDialog fileDialog;
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(215, 25);
-
+    
     public ImportInputForm() {
         defaultFileName = "";
+        taskBox.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                taskBox.setSelected(true);
+                subtaskBox.setSelected(false);
+            }
+        });
+        subtaskBox.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                subtaskBox.setSelected(true);
+                taskBox.setSelected(false);
+            }
+        });
+    }
+
+    @Override
+    protected void addTaskSubTaskCheckbox(GridBagConstraints c) {
+        c.gridx = 1;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        JPanel taskSubtaskMode = new JPanel();
+        taskSubtaskMode.setLayout(new GridBagLayout());
+        GridBagConstraints gbctaskSubtaskMode = new GridBagConstraints();
+        gbctaskSubtaskMode.fill = GridBagConstraints.HORIZONTAL;
+        gbctaskSubtaskMode.anchor = GridBagConstraints.NORTH;
+        gbctaskSubtaskMode.gridx = 0;
+        gbctaskSubtaskMode.gridy = 0;
+        taskSubtaskMode.add(taskBox, gbctaskSubtaskMode);
+        gbctaskSubtaskMode.gridx = 1;
+        gbctaskSubtaskMode.gridy = 0;
+        taskSubtaskMode.add(subtaskBox, gbctaskSubtaskMode);
+        exportFormPanel.add(taskSubtaskMode, c);
     }
 
     @Override
     protected void addFileField(GridBagConstraints c) {
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.weighty = 0.5;
         FormLabel fileNamelabel = new FormLabel(
                 Labels.getString("ReportListPanel.File") + "*: ");
         exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         c.weighty = 0.5;
         JPanel fileChooserPanel = new JPanel();
         fileChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -88,5 +125,13 @@ public class ImportInputForm extends ExportInputForm {
     @Override
     public Object[] getFileFormats() {
         return new Object[]{CSVFormat, ExcelFormat, ExcelOpenXMLFormat, XMLFormat};
+    }
+
+    public JCheckBox getTaskBox() {
+        return taskBox;
+    }
+
+    public JCheckBox getSubtaskBox() {
+        return subtaskBox;
     }
 }

@@ -87,6 +87,9 @@ public class ExportInputForm extends JPanel {
     // Google Drive
     private JTextField authorisationCodeTextField = new JTextField();
     private JTextField authorisationUrlTextField = new JTextField("");
+    // For import only
+    protected final JCheckBox taskBox = new JCheckBox(Labels.getString("BurndownChartPanel.Tasks"), true);
+    protected final JCheckBox subtaskBox = new JCheckBox(Labels.getString("Common.Subtasks"), false);
 
     public ExportInputForm() {
         setLayout(new GridBagLayout());
@@ -104,15 +107,17 @@ public class ExportInputForm extends JPanel {
         gbc.gridy = 0;
         exportFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        // Tasks and Subtasks checkbox (import only)
+        addTaskSubTaskCheckbox(c);
         // Header
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         c.weighty = 0.5;
         c.anchor = GridBagConstraints.WEST;
         headerlabel = new FormLabel(Labels.getString("ReportListPanel.Header") + ": ");
         exportFormPanel.add(headerlabel, c);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = 1;
         c.weighty = 0.5;
         headerCheckBox = new JCheckBox();
         headerCheckBox.setSelected(true);
@@ -121,12 +126,12 @@ public class ExportInputForm extends JPanel {
         addFileField(c);
         // File formats
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         c.weighty = 0.5;
         FormLabel fileFormatLabel = new FormLabel(Labels.getString("ReportListPanel.File format") + "*: ");
         exportFormPanel.add(fileFormatLabel, c);
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 3;
         c.weighty = 0.5;
         Object fileFormats[] = getFileFormats();
         fileFormatComboBox = new JComboBox(fileFormats);
@@ -136,6 +141,8 @@ public class ExportInputForm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 FileFormat selectedFormat = (FileFormat) fileFormatComboBox.getSelectedItem();
                 if (selectedFormat.equals(ExcelFormat) || selectedFormat.equals(ExcelOpenXMLFormat)) {
+                    taskBox.setVisible(true);
+                    subtaskBox.setVisible(true);
                     headerlabel.setVisible(true);
                     headerCheckBox.setVisible(true);
                     patternsPanel.setVisible(false);
@@ -144,6 +151,8 @@ public class ExportInputForm extends JPanel {
                     datePatternLabel.setVisible(false);
                     excelPatternsPanel.setVisible(false);
                 } else if (selectedFormat.equals(XMLFormat)) {
+                    taskBox.setVisible(false);
+                    subtaskBox.setVisible(false);        
                     headerlabel.setVisible(false);
                     headerCheckBox.setVisible(false);
                     patternsPanel.setVisible(true);
@@ -161,6 +170,8 @@ public class ExportInputForm extends JPanel {
                         separatorComboBox.addItem(semicolonSeparator);
                         separatorComboBox.addItem(editableSeparator);
                     }
+                    taskBox.setVisible(true);
+                    subtaskBox.setVisible(true);
                     headerlabel.setVisible(true);
                     headerCheckBox.setVisible(true);
                     patternsPanel.setVisible(true);
@@ -177,26 +188,26 @@ public class ExportInputForm extends JPanel {
         exportFormPanel.add(fileFormatComboBox, c);
         // Date patterns
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         c.weighty = 0.5;
         datePatternLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Date pattern") + "*: ");
         exportFormPanel.add(datePatternLabel, c);
         c.gridx = 1;
-        c.gridy = 3;
+        c.gridy = 4;
         c.weighty = 0.5;
         addPaternsComboBox(c);
         addExcelPaternsComboBox(c);
         excelPatternsPanel.setVisible(false);
         // Separator
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 5;
         c.weighty = 0.5;
         separatorLabel = new FormLabel(
                 Labels.getString("ReportListPanel.Separator") + "*: ");
         exportFormPanel.add(separatorLabel, c);
         c.gridx = 1;
-        c.gridy = 4;
+        c.gridy = 5;
         c.weighty = 0.5;
         Object separators[] = new Object[]{commaSeparator, tabSeparator,
             semicolonSeparator, editableSeparator};
@@ -236,7 +247,7 @@ public class ExportInputForm extends JPanel {
         exportFormPanel.add(separatorComboBox, c);
         // Columns
         /*c.gridx = 0;
-         c.gridy = 5;
+         c.gridy = 6;
          c.weighty = 0.5;
          c.gridwidth = 2;
          addColumnsComboBoxes(c);*/
@@ -602,16 +613,20 @@ public class ExportInputForm extends JPanel {
                     + datePatternsComboBox3.getSelectedItem().toString();
         }
     }
+    
+    // only for import
+    protected void addTaskSubTaskCheckbox(GridBagConstraints c) {
+    }
 
     protected void addFileField(GridBagConstraints c) {
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.weighty = 0.5;
         FormLabel fileNamelabel = new FormLabel(
                 Labels.getString("ReportListPanel.File name") + ": ");
         exportFormPanel.add(fileNamelabel, c);
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         c.weighty = 0.5;
         fileName = new JTextField();
         fileName.setText(defaultFileName);

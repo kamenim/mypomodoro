@@ -830,9 +830,9 @@ public abstract class AbstractTable extends JXTable {
         parentActivity.setOverestimatedPoms(parentActivity.getOverestimatedPoms() + overestimatedPoms);
         parentActivity.databaseUpdate();
         getList().update(parentActivity);
-        // For convenience, we use repaint instead of the following line:
-        // panel.getMainTable().getModel().setValueAt(activity.getEstimatedPoms(), convertRowIndexToModel(panel.getMainTable().getSelectedRow()), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
-        repaint(); // trigger row renderers        
+        panel.getMainTable().getModel().setValueAt(parentActivity.getEstimatedPoms(), convertRowIndexToModel(panel.getMainTable().getSelectedRow()), AbstractTableModel.ESTIMATED_COLUMN_INDEX);
+        // Do no use repaint(): it doesn't trigger TableModelListener (example in ReportsTable: listener is needed when updating diff I and II cells when changing estimate while importing subtasks)
+        //repaint(); // trigger row renderers        
     }
 
     public void addActivity(Activity activity) {
