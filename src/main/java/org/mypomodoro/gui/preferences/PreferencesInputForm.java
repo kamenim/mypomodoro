@@ -75,8 +75,8 @@ public class PreferencesInputForm extends JPanel {
     // Removing SeaGlass theme 0.2.1 as it fixes an issue on java8_u60 but it not backward compatible with java 6 -->
     //public static final String SEAGLASS_LAF = "com.seaglasslookandfeel.SeaGlassLookAndFeel"; // Seaglass
     private static final String NOIRE_LAF = "com.jtattoo.plaf.noire.NoireLookAndFeel"; // JTattoo
-    private static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
-    private static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo
+    public static final String ACRYL_LAF = "com.jtattoo.plaf.acryl.AcrylLookAndFeel"; // JTattoo
+    public static final String MCWIN_LAF = "com.jtattoo.plaf.mcwin.McWinLookAndFeel"; // JTattoo
     public static final String INFONODE_LAF = "net.infonode.gui.laf.InfoNodeLookAndFeel"; // InfoNode
     //private static final String WEB_LAF = "com.alee.laf.WebLookAndFeel"; // WebLaF    
 
@@ -358,16 +358,9 @@ public class PreferencesInputForm extends JPanel {
         /*for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
          System.err.println("theme = " + info.getClassName());
          }*/
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                
-                if ("Nimbus".equals(info.getName())) {
-                    themes.add(info.getClassName()); // Nimbus
-                    break;
-                }
-            }
-        } catch (Exception ignored) {
-            // Nimbus not available
+        String nimbusTheme = getNimbusTheme() ;
+        if (nimbusTheme != null) {
+            themes.add(nimbusTheme); // Nimbus
         }
         themes.add(NIMROD_LAF); // NimROD
         themes.add(PLASTIC3D_LAF); // JGoodies  
@@ -630,5 +623,21 @@ public class PreferencesInputForm extends JPanel {
     
     private void updateMaxNbPomPerActivitySliderText() {
         maxNbPomPerActivitySlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
+    }
+    
+    static public String getNimbusTheme() {
+        String nimbusTheme = null;
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                
+                if ("Nimbus".equals(info.getName())) {
+                    nimbusTheme = info.getClassName();
+                    break;
+                }
+            }
+        } catch (Exception ignored) {
+            // Nimbus not available
+        }
+        return nimbusTheme;
     }
 }

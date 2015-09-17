@@ -69,7 +69,7 @@ public class Main {
     public static Color myIconBackgroundColor; // eg mAP laf uses this setting
     public static String iconsSetPath = "/images/icons_dark_set/";
     public static String mAPIconTimer = "mAPIconTimer.png";
-    //public static String mAPIconTinyTimer = "mAPIconTinyTimer.png";
+    public static String mAPIconTinyTimer = "mAPIconTinyTimer.png";
 
     /**
      * Main
