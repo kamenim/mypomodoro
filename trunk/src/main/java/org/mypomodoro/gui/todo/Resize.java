@@ -22,8 +22,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Robot;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
+import org.mypomodoro.gui.preferences.PreferencesInputForm;
 
 /**
  * Resize app either using the shortcut or the resize button
@@ -35,6 +37,7 @@ public class Resize {
     private Point guiRecordedLocation;
     private static int viewCount = 0;
     private Robot robot = null; // used to move the cursor
+    private Dimension size;
 
     public Resize() {
         try {
@@ -55,12 +58,30 @@ public class Resize {
             ToDoPanel.RESIZEBUTTON.setDownSizeIcon();
             viewCount = 1;
         } else { // back to the original location
-            Dimension size;
             Main.gui.pack();
             if (Main.gui.getToDoPanel().isShowing()) { // only when the ToDo panel is visible
-                if (viewCount == 1) { // timer only                    
+                if (viewCount == 1) { // tiny timer
                     // timer fix size
-                    size = new Dimension(300, 360);
+                    size = new Dimension(434, 88); // dimension for JTatoo theme including mAP themes
+                    if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getSystemLookAndFeelClassName())) { // Windows / GTK / Motif
+                        size = new Dimension(368, 78);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getCrossPlatformLookAndFeelClassName())) { // Metal
+                        size = new Dimension(368, 78);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
+                        size = new Dimension(334, 72);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)) {
+                        size = new Dimension(368, 78);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PGS_LAF)) {
+                        size = new Dimension(380, 78);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)) {
+                        size = new Dimension(368, 78);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.getNimbusTheme())) {
+                        size = new Dimension(500, 84);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.ACRYL_LAF)) {
+                        size = new Dimension(404, 84);
+                    } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.MCWIN_LAF)) {
+                        size = new Dimension(484, 84);
+                    }                   
                     // record location after the location of the upper right corner
                     // whatever the original size, the reference point is now the upper right corner
                     Dimension screenSize = gui.getToolkit().getScreenSize();
@@ -75,6 +96,8 @@ public class Resize {
                     // Remove components from ToDoPanel
                     Main.gui.getToDoPanel().removeListPane();
                     Main.gui.getToDoPanel().removeTabbedPane();
+                    // Set tiny timer
+                    Main.gui.getToDoPanel().setTinyTimerPanel();
                     // hide divider
                     //Main.gui.getToDoPanel().hideSplitPaneDivider();
                     // we migth have lost focus when previously editing, overstimating... tasks 
@@ -83,17 +106,29 @@ public class Resize {
                     // MAC OSX Java transparency effect
                     //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
                     viewCount = 2;
-                } else if (viewCount == 2) { // timer + list
+                } else if (viewCount == 2) { // timer only                    
+                    double timerWidth = size.getWidth(); // current width
+                    // timer fix size
+                    size = new Dimension(300, 360);
+                    // get location : the timer window may have been moved around
+                    guiRecordedLocation = Main.gui.getLocation();                    
+                    guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 300, guiRecordedLocation.getY());
+                    // Set timer
+                    Main.gui.getToDoPanel().setTimerPanel();
+                    // MAC OSX Java transparency effect
+                    //getRootPane().putClientProperty("Window.alpha", new Float(0.4f)); // this is a MAC OSX Java transparency effect
+                    viewCount = 3;
+                } else if (viewCount == 3) { // timer + list
+                    double timerWidth = size.getWidth(); // current width
                     size = new Dimension(800, 360);
                     // get location : the timer window may have been moved around
                     guiRecordedLocation = Main.gui.getLocation();
-                    double timerWidth = 300; // ignoring any resize of timer
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 800, guiRecordedLocation.getY());
                     // put components back in place
                     Main.gui.getToDoPanel().addListPane();
                     // MAC OSX Java transparency effect : 1.0f = opaque
                     //getRootPane().putClientProperty("Window.alpha", new Float(1.0f));                           
-                    viewCount = 3;
+                    viewCount = 4;
                 } else { // timer + list + tabs
                     // original size
                     size = guiRecordedSize;
@@ -146,14 +181,18 @@ public class Resize {
     /**
      * Force resizing to original size
      */
-    public void resizeToOriginalSize() {
+    /*public void resizeToOriginalSize() {
         if (Main.gui.getToDoPanel().isVisible()) {
-            if (viewCount == 2) { // resize two times
+            if (viewCount == 2) { // resize 3 times
                 resize();
                 resize();
-            } else if (viewCount == 3) { // resize one time
+                resize();
+            } else if (viewCount == 3) { // resize 2 times
+                resize();
+                resize();
+            } else if (viewCount == 4) { // resize 1 time
                 resize();
             }
         }
-    }
+    }*/
 }
