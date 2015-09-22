@@ -26,6 +26,7 @@ import javax.swing.UIManager;
 import org.mypomodoro.Main;
 import static org.mypomodoro.Main.gui;
 import org.mypomodoro.gui.preferences.PreferencesInputForm;
+import org.mypomodoro.util.CheckWindowsClassicTheme;
 
 /**
  * Resize app either using the shortcut or the resize button
@@ -63,24 +64,27 @@ public class Resize {
                 if (viewCount == 1) { // tiny timer
                     // timer fix size
                     size = new Dimension(434, 88); // dimension for JTatoo theme including mAP themes
+                    //////////////////////////
+                    // Note: use of wil work on Win 7 classic theme NOT Win XP classic theme
+                    //////////////////////////
                     if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getSystemLookAndFeelClassName())) { // Windows / GTK / Motif
-                        size = new Dimension(368, 78);
+                        size = new Dimension(368, 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 8 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getCrossPlatformLookAndFeelClassName())) { // Metal
-                        size = new Dimension(368, 78);
+                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
-                        size = new Dimension(334, 72);
+                        size = new Dimension(344 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 14 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)) {
-                        size = new Dimension(368, 78);
+                        size = new Dimension(378  - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PGS_LAF)) {
-                        size = new Dimension(380, 78);
+                        size = new Dimension(390 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)) {
-                        size = new Dimension(368, 78);
+                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.getNimbusTheme())) {
-                        size = new Dimension(500, 84);
+                        size = new Dimension(510 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 94 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.ACRYL_LAF)) {
                         size = new Dimension(404, 84);
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.MCWIN_LAF)) {
-                        size = new Dimension(484, 84);
+                        size = new Dimension(482, 84);
                     }                   
                     // record location after the location of the upper right corner
                     // whatever the original size, the reference point is now the upper right corner
