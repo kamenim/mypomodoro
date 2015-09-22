@@ -18,9 +18,7 @@ package org.mypomodoro.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.SystemUtils;
@@ -58,68 +56,63 @@ public class Restart {
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) { //for Mac OS X .app, need to additionally seperate .jar from .app b/c .jar still won't restart on mac
             new RestartMac(0);
         } else {
-            try {
-                // init the command to execute, add the vm args
-                final ArrayList<String> cmd = new ArrayList<String>();
-                // java binary
-                String java = System.getProperty("java.home") + "/bin/java";
-                cmd.add(java);
-                // vm arguments
-                List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-                for (String arg : vmArguments) {
-                    // if it's the agent argument : we ignore it otherwise the
-                    // address of the old application and the new one will be in conflict
-                    if (!arg.contains("-agentlib")) {
-                        cmd.add(arg);
-                    }
+            // init the command to execute, add the vm args
+            final ArrayList<String> cmd = new ArrayList<String>();
+            // java binary
+            String java = System.getProperty("java.home") + "/bin/java";
+            cmd.add(java);
+            // vm arguments
+            List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+            for (String arg : vmArguments) {
+                // if it's the agent argument : we ignore it otherwise the
+                // address of the old application and the new one will be in conflict
+                if (!arg.contains("-agentlib")) {
+                    cmd.add(arg);
                 }
-                // program main and program arguments
-                String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
-                String pathFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                pathFile = URLDecoder.decode(pathFile, "UTF-8"); // Spaces and special charaters decoding
-                if (pathFile.endsWith(".exe")) { // EXE wrapper
-                    cmd.add("-jar");
-                    cmd.add(new File(pathFile).toString());
-                } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
-                    if (pathFile.endsWith(".jar")) { // Jar file  
-                        cmd.add("-jar");
-                        cmd.add(new File(pathFile).toString());
-                    } else { // Class file (running in IDE like Netbeans)
-                        cmd.add("-cp");
-                        cmd.add(System.getProperty("java.class.path"));
-                        cmd.add(mainCommand[0]);
-                        // Program arguments
-                        for (int i = 1; i < mainCommand.length; i++) {
-                            cmd.add(mainCommand[i]);
-                        }
-                    }
-                } else { // Non Hotspot VM implementation
-                    cmd.add("-jar");
-                    cmd.add(new File(pathFile).toString());
-                }
-
-                // execute the command in a shutdown hook, to be sure that all the
-                // resources have been disposed before restarting the application
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
-                        } catch (IOException ex) {
-                            logger.error("", ex);
-                        }
-                    }
-                });
-                // execute some custom code before restarting
-                if (runBeforeRestart != null) {
-                    runBeforeRestart.run();
-                }
-                // exit
-                System.exit(0);
-            } catch (UnsupportedEncodingException ex) {
-                logger.error("Error while trying to restart the application", ex);
             }
+            // program main and program arguments
+            String[] mainCommand = System.getProperty(SUN_JAVA_COMMAND).split(" ");
+            String pathFile = Main.getJarPath();
+            if (pathFile.endsWith(".exe")) { // EXE wrapper
+                cmd.add("-jar");
+                cmd.add(new File(pathFile).toString());
+            } else if (mainCommand != null && !mainCommand[0].isEmpty()) { // Hotspot VM implementation
+                if (pathFile.endsWith(".jar")) { // Jar file  
+                    cmd.add("-jar");
+                    cmd.add(new File(pathFile).toString());
+                } else { // Class file (running in IDE like Netbeans)
+                    cmd.add("-cp");
+                    cmd.add(System.getProperty("java.class.path"));
+                    cmd.add(mainCommand[0]);
+                    // Program arguments
+                    for (int i = 1; i < mainCommand.length; i++) {
+                        cmd.add(mainCommand[i]);
+                    }
+                }
+            } else { // Non Hotspot VM implementation
+                cmd.add("-jar");
+                cmd.add(new File(pathFile).toString());
+            }
+
+            // execute the command in a shutdown hook, to be sure that all the
+            // resources have been disposed before restarting the application
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+
+                @Override
+                public void run() {
+                    try {
+                        Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
+                    } catch (IOException ex) {
+                        logger.error("", ex);
+                    }
+                }
+            });
+            // execute some custom code before restarting
+            if (runBeforeRestart != null) {
+                runBeforeRestart.run();
+            }
+            // exit
+            System.exit(0);
         }
     }
 }

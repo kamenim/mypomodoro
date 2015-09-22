@@ -37,11 +37,11 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
 
     public MAPLookAndFeel() {
         // icon set path
-        Main.iconsSetPath = "/images/icons_light_set/";   
-        setProperties();                
+        Main.iconsSetPath = "/images/icons_light_set/";
+        setProperties();
         setCurrentTheme(props);
     }
-    
+
     protected void setProperties() {
         // Table colors        
         Main.tableBackgroundColor = ColorUtil.WHITE;
@@ -117,7 +117,7 @@ public class MAPLookAndFeel extends NoireLookAndFeel {
         props.put("rolloverColor", ColorUtil.toProperty(COLOR));
         props.put("rolloverColorLight", ColorUtil.toProperty(COLOR));
         props.put("rolloverColorDark", ColorUtil.toProperty(COLOR));
-        
+
         // Missing property : rollover foreground color for buttons
     }
 }

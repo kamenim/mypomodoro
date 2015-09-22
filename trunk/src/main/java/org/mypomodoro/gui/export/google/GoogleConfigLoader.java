@@ -19,6 +19,7 @@ package org.mypomodoro.gui.export.google;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import org.mypomodoro.Main;
 
 /**
  * Loader for Google config properties file
@@ -39,7 +40,7 @@ public class GoogleConfigLoader {
     }
 
     public static void loadProperties() throws IOException {
-        String path = "google.properties";
+        String path = Main.configPath + "google.properties";
         FileInputStream file = new FileInputStream(path);
         properties.load(file);
         file.close();

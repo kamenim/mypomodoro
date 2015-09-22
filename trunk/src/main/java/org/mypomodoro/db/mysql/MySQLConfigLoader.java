@@ -19,6 +19,7 @@ package org.mypomodoro.db.mysql;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import org.mypomodoro.Main;
 
 /**
  * Loader for MySQL config properties file
@@ -39,7 +40,7 @@ public class MySQLConfigLoader {
     }
 
     public static void loadProperties() throws IOException {
-        String path = "mysql.properties";
+        String path = Main.configPath + "mysql.properties";
         FileInputStream file = new FileInputStream(path);
         properties.load(file);
         file.close();

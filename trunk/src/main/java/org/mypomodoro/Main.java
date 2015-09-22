@@ -20,7 +20,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.security.CodeSource;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -48,12 +55,12 @@ public class Main {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
 
     // Database
-    public static final MySQLConfigLoader mySQLconfig = new MySQLConfigLoader(); // load properties
-    public static final Database database = new Database(); // create database if necessary
+    public static MySQLConfigLoader mySQLconfig;
+    public static Database database;
     // Google drive
-    public static final GoogleConfigLoader googleConfig = new GoogleConfigLoader(); // load properties
+    public static GoogleConfigLoader googleConfig;
     // Preferences
-    public static final Preferences preferences = new Preferences();
+    public static Preferences preferences;
     // GUI
     public static MainPanel gui;
     private static Font font;
@@ -70,6 +77,7 @@ public class Main {
     public static String iconsSetPath = "/images/icons_dark_set/";
     public static String mAPIconTimer = "mAPIconTimer.png";
     public static String mAPIconTinyTimer = "mAPIconTinyTimer.png";
+    public static String configPath = getJarDirectoryWithSeparator();
 
     /**
      * Main
@@ -79,8 +87,21 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Compute arguments
+        if (args.length > 0) {
+            configPath = args[0] + File.separator;
+            configPath = URLDecode(configPath);
+        }
+
+        // Load database
+        mySQLconfig = new MySQLConfigLoader(); // load properties
+        database = new Database(); // create database if necessary
+        googleConfig = new GoogleConfigLoader(); // load properties
+
         // Load preferences
+        preferences = new Preferences(); // load preferences
         preferences.loadPreferences();
+
         // Set font from font file
         GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fonts = g.getAvailableFontFamilyNames();
@@ -213,5 +234,56 @@ public class Main {
                 PlaceList.refresh();
             }
         });
+    }
+
+    // Full jar path
+    // eg C:\...\...\myAgilePomodoro.jar
+    public static String getJarPath() {
+        String jarPath = "";
+        try {
+            CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+            jarPath = codeSource.getLocation().toURI().getPath();
+            jarPath = URLDecode(jarPath);
+        } catch (URISyntaxException ex) {
+            // nothing to do here
+        }
+        return jarPath;
+    }
+
+    // Full jar directory path
+    // eg C:\...\...
+    public static String getJarDirectory() {
+        String jarDirectory = "";
+        try {
+            CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+            File jarFile = new File(codeSource.getLocation().toURI().getPath());
+            jarDirectory = jarFile.getParentFile().getPath();
+            jarDirectory = URLDecode(jarDirectory);
+        } catch (URISyntaxException ex) {
+            // nothing to do here
+        }
+        return jarDirectory;
+    }
+
+    // Full jar directory path with file separator at the end
+    // eg C:\...\...\
+    public static String getJarDirectoryWithSeparator() {
+        String jarDirectoryWithSeparator = getJarDirectory();
+        if (!jarDirectoryWithSeparator.isEmpty()) {
+            jarDirectoryWithSeparator += File.separator;
+        }
+        return jarDirectoryWithSeparator;
+    }
+
+    // Spaces and special charaters decoding
+    // Note: URLDecoder might not work properly : http://stackoverflow.com/questions/320542/how-to-get-the-path-of-a-running-jar-file
+    public static String URLDecode(String aString) {
+        String aDecodedString = "";
+        try {
+            aDecodedString = URLDecoder.decode(aString, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            logger.error("Error while trying to decode some special characters", ex);
+        }
+        return aDecodedString;
     }
 }

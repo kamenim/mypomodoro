@@ -152,7 +152,7 @@ public class ExportInputForm extends JPanel {
                     excelPatternsPanel.setVisible(false);
                 } else if (selectedFormat.equals(XMLFormat)) {
                     taskBox.setVisible(false);
-                    subtaskBox.setVisible(false);        
+                    subtaskBox.setVisible(false);
                     headerlabel.setVisible(false);
                     headerCheckBox.setVisible(false);
                     patternsPanel.setVisible(true);
@@ -613,7 +613,7 @@ public class ExportInputForm extends JPanel {
                     + datePatternsComboBox3.getSelectedItem().toString();
         }
     }
-    
+
     // only for import
     protected void addTaskSubTaskCheckbox(GridBagConstraints c) {
     }

@@ -838,7 +838,7 @@ public abstract class AbstractTable extends JXTable {
     public void addActivity(Activity activity) {
         getList().add(activity);
     }
-    
+
     public void importActivity(Activity activity) { // this is overwritten in Report table
         getList().add(activity);
     }

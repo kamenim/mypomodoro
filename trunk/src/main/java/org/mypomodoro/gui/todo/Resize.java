@@ -68,24 +68,24 @@ public class Resize {
                     // Note: use of wil work on Win 7 classic theme NOT Win XP classic theme
                     //////////////////////////
                     if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getSystemLookAndFeelClassName())) { // Windows / GTK / Motif
-                        size = new Dimension(368, 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 8 : 0));
+                        size = new Dimension(368, 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 8 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(UIManager.getCrossPlatformLookAndFeelClassName())) { // Metal
-                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
+                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.NIMROD_LAF)) {
-                        size = new Dimension(344 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 14 : 0));
+                        size = new Dimension(344 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 86 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 14 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PLASTIC3D_LAF)) {
-                        size = new Dimension(378  - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
+                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.PGS_LAF)) {
-                        size = new Dimension(390 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
+                        size = new Dimension(390 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.INFONODE_LAF)) {
-                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
+                        size = new Dimension(378 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 88 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.getNimbusTheme())) {
-                        size = new Dimension(510 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0), 94 - (CheckWindowsClassicTheme.isWindowsClassicLAF()? 10 : 0));
+                        size = new Dimension(510 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0), 94 - (CheckWindowsClassicTheme.isWindowsClassicLAF() ? 10 : 0));
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.ACRYL_LAF)) {
                         size = new Dimension(404, 84);
                     } else if (Main.preferences.getTheme().equalsIgnoreCase(PreferencesInputForm.MCWIN_LAF)) {
                         size = new Dimension(482, 84);
-                    }                   
+                    }
                     // record location after the location of the upper right corner
                     // whatever the original size, the reference point is now the upper right corner
                     Dimension screenSize = gui.getToolkit().getScreenSize();
@@ -115,7 +115,7 @@ public class Resize {
                     // timer fix size
                     size = new Dimension(300, 360);
                     // get location : the timer window may have been moved around
-                    guiRecordedLocation = Main.gui.getLocation();                    
+                    guiRecordedLocation = Main.gui.getLocation();
                     guiRecordedLocation.setLocation(guiRecordedLocation.getX() + timerWidth - 300, guiRecordedLocation.getY());
                     // Set timer
                     Main.gui.getToDoPanel().setTimerPanel();
@@ -186,17 +186,17 @@ public class Resize {
      * Force resizing to original size
      */
     /*public void resizeToOriginalSize() {
-        if (Main.gui.getToDoPanel().isVisible()) {
-            if (viewCount == 2) { // resize 3 times
-                resize();
-                resize();
-                resize();
-            } else if (viewCount == 3) { // resize 2 times
-                resize();
-                resize();
-            } else if (viewCount == 4) { // resize 1 time
-                resize();
-            }
-        }
-    }*/
+     if (Main.gui.getToDoPanel().isVisible()) {
+     if (viewCount == 2) { // resize 3 times
+     resize();
+     resize();
+     resize();
+     } else if (viewCount == 3) { // resize 2 times
+     resize();
+     resize();
+     } else if (viewCount == 4) { // resize 1 time
+     resize();
+     }
+     }
+     }*/
 }
