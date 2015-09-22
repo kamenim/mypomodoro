@@ -49,7 +49,7 @@ import org.mypomodoro.util.Labels;
  *
  */
 public class PreferencesInputForm extends JPanel {
-    
+
     private static final Dimension PANEL_DIMENSION = new Dimension(400, 200);
     protected final TimerValueSlider pomodoroSlider;
     protected final TimerValueSlider shortBreakSlider;
@@ -85,7 +85,7 @@ public class PreferencesInputForm extends JPanel {
         titledborder.setTitleFont(new JTextField().getFont().deriveFont(Font.BOLD)); // Ticket #70 : java 7: use of JTextField to retrieve the default font (titledborder.getTitleFont() fails)
         titledborder.setTitleColor(getForeground()); // normally black; depends on the theme
         setBorder(titledborder);
-        
+
         setMinimumSize(PANEL_DIMENSION);
         setPreferredSize(PANEL_DIMENSION);
         setLayout(new GridBagLayout());
@@ -96,7 +96,7 @@ public class PreferencesInputForm extends JPanel {
                 25, 30,
                 Labels.getString("PreferencesPanel.minutes"));
         pomodoroSlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 pomodoroSlider.setText();
@@ -108,7 +108,7 @@ public class PreferencesInputForm extends JPanel {
                 3, 5,
                 Labels.getString("PreferencesPanel.minutes"));
         shortBreakSlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 shortBreakSlider.setText();
@@ -120,7 +120,7 @@ public class PreferencesInputForm extends JPanel {
                 15, 30,
                 Labels.getString("PreferencesPanel.minutes"));
         longBreakSlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 longBreakSlider.setText();
@@ -139,7 +139,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.pomodoros"),
                 true, true);
         maxNbPomPerDaySlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 updatePomodoroSlidersText();
@@ -151,7 +151,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.pomodoros"),
                 true, false);
         nbPomPerSetSlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateNbPomPerSetSliderText();
@@ -163,7 +163,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.pomodoros"),
                 true, false);
         maxNbPomPerActivitySlider.getSlider().addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 updateMaxNbPomPerActivitySliderText();
@@ -176,7 +176,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.ringing"),
                 Main.preferences.getRinging());
         tickingBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -184,7 +184,7 @@ public class PreferencesInputForm extends JPanel {
             }
         });
         ringingBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -201,7 +201,7 @@ public class PreferencesInputForm extends JPanel {
         }
         // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
         localesComboBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -215,7 +215,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Popup Message"),
                 Main.preferences.getSystemTrayMessage());
         systemTrayBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -226,7 +226,7 @@ public class PreferencesInputForm extends JPanel {
             }
         });
         systemTrayMessageBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -240,7 +240,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Always On Top"),
                 Main.preferences.getAlwaysOnTop());
         alwaysOnTopBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -251,7 +251,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Bring To Front"),
                 Main.preferences.getBringToFront());
         bringToFrontBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -262,7 +262,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Agile.Agile Mode"),
                 Main.preferences.getAgileMode());
         agileModeBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -278,7 +278,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Agile.Pomodoro Mode"),
                 !Main.preferences.getAgileMode());
         pomodoroModeBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -294,7 +294,7 @@ public class PreferencesInputForm extends JPanel {
                 Labels.getString("PreferencesPanel.Plain hours"),
                 Main.preferences.getPlainHours());
         plainHoursBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -302,14 +302,14 @@ public class PreferencesInputForm extends JPanel {
                 plainHoursBox.setSelected(true);
                 effectiveHoursBox.setSelected(false);
                 updatePomodoroSlidersText();
-                
+
             }
         });
         effectiveHoursBox = new JCheckBox(
                 Labels.getString("PreferencesPanel.Effective hours"),
                 !Main.preferences.getPlainHours());
         effectiveHoursBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 controlPanel.enableSaveButton();
@@ -358,7 +358,7 @@ public class PreferencesInputForm extends JPanel {
         /*for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
          System.err.println("theme = " + info.getClassName());
          }*/
-        String nimbusTheme = getNimbusTheme() ;
+        String nimbusTheme = getNimbusTheme();
         if (nimbusTheme != null) {
             themes.add(nimbusTheme); // Nimbus
         }
@@ -389,29 +389,29 @@ public class PreferencesInputForm extends JPanel {
         }
         // Setting the background color is required here for the Cross Platform Look And Feel (see Main)
         themesComboBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                 // The following block has been commented out because it doesn't work well, and doesn't work at all with Metal (cross platform) laf
+                // The following block has been commented out because it doesn't work well, and doesn't work at all with Metal (cross platform) laf
                 // The problem here is that some Look and Feel classes are subclasses of MetalLookAndFeel. 
                 // The color theme is a static field in the MetalLookAndFeel, which means that all instances of KunststoffLookAndFeel and MetalLookAndFeel are using one and the same color theme. 
                 // JDK 7: To get the default metal color theme when switching to the Metal Look&Feel you will have to insert a line like this:
                 // myMetalLookAndFeel.setCurrentTheme(new javax.swing.plaf.metal.DefaultMetalTheme())
                 /*try {
-                    // Show look and feel at run time
-                    if (((String) themesComboBox.getSelectedItem()).contains("MAPLookAndFeel")) {
-                        UIManager.setLookAndFeel((String) themesComboBox.getSelectedItem());
-                        SwingUtilities.updateComponentTreeUI(Main.gui);
-                        Main.gui.pack();
-                    }*/
-                    controlPanel.enableSaveButton();
-                    controlPanel.clearValidation();
+                 // Show look and feel at run time
+                 if (((String) themesComboBox.getSelectedItem()).contains("MAPLookAndFeel")) {
+                 UIManager.setLookAndFeel((String) themesComboBox.getSelectedItem());
+                 SwingUtilities.updateComponentTreeUI(Main.gui);
+                 Main.gui.pack();
+                 }*/
+                controlPanel.enableSaveButton();
+                controlPanel.clearValidation();
                 /*} catch (ClassNotFoundException ignored) {
-                } catch (InstantiationException ignored) {
-                } catch (IllegalAccessException ignored) {
-                } catch (UnsupportedLookAndFeelException ignored) {
-                }*/
+                 } catch (InstantiationException ignored) {
+                 } catch (IllegalAccessException ignored) {
+                 } catch (UnsupportedLookAndFeelException ignored) {
+                 }*/
             }
         });
         gbc.gridx = 0;
@@ -434,7 +434,7 @@ public class PreferencesInputForm extends JPanel {
         gbc.gridy = 7;
         addThemes(gbc);
     }
-    
+
     private void addAgileMode(GridBagConstraints gbc) {
         JPanel agileMode = new JPanel();
         agileMode.setLayout(new GridBagLayout());
@@ -449,7 +449,7 @@ public class PreferencesInputForm extends JPanel {
         agileMode.add(pomodoroModeBox, gbcAgileMode);
         add(agileMode, gbc);
     }
-    
+
     private void addSliders(GridBagConstraints gbc) {
         JPanel sliderPanel = new JPanel();
         sliderPanel.setLayout(new GridBagLayout());
@@ -464,7 +464,7 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         sliderPanel.add(pomodoroSlider, c);
-        
+
         final FormLabel shortBreakSliderLabel = new FormLabel(
                 Labels.getString("PreferencesPanel.Short Break Length") + ": ");
         c.gridx = 0;
@@ -473,7 +473,7 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 1;
         sliderPanel.add(shortBreakSlider, c);
-        
+
         final FormLabel longBreakSliderLabel = new FormLabel(
                 Labels.getString("PreferencesPanel.Long Break Length") + ": ");
         c.gridx = 0;
@@ -482,7 +482,7 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 2;
         sliderPanel.add(longBreakSlider, c);
-        
+
         final FormLabel maxNbPomPerDaySliderLabel = new FormLabel(
                 Labels.getString("PreferencesPanel.Max nb pom/day") + ": ");
         c.gridx = 0;
@@ -491,7 +491,7 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 3;
         sliderPanel.add(maxNbPomPerDaySlider, c);
-        
+
         final FormLabel nbPomPerSetSliderLabel = new FormLabel(
                 Labels.getString("PreferencesPanel.Nb pom/set") + ": ");
         c.gridx = 0;
@@ -500,7 +500,7 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 4;
         sliderPanel.add(nbPomPerSetSlider, c);
-        
+
         final FormLabel maxNbPomPerActivitySliderLabel = new FormLabel(
                 Labels.getString("PreferencesPanel.Max nb pom/activity") + ": ");
         c.gridx = 0;
@@ -509,10 +509,10 @@ public class PreferencesInputForm extends JPanel {
         c.gridx = 1;
         c.gridy = 5;
         sliderPanel.add(maxNbPomPerActivitySlider, c);
-        
+
         add(sliderPanel, gbc);
     }
-    
+
     private void addSounds(GridBagConstraints gbc) {
         JPanel sounds = new JPanel();
         sounds.setLayout(new GridBagLayout());
@@ -527,7 +527,7 @@ public class PreferencesInputForm extends JPanel {
         sounds.add(ringingBox, gbcSounds);
         add(sounds, gbc);
     }
-    
+
     private void addLocales(GridBagConstraints gbc) {
         JPanel locales = new JPanel();
         locales.setLayout(new GridBagLayout());
@@ -540,7 +540,7 @@ public class PreferencesInputForm extends JPanel {
         locales.add(localesComboBox, gbcLocales);
         add(locales, gbc);
     }
-    
+
     private void addSystemTray(GridBagConstraints gbc) {
         JPanel systemTray = new JPanel();
         systemTray.setLayout(new GridBagLayout());
@@ -555,7 +555,7 @@ public class PreferencesInputForm extends JPanel {
         systemTray.add(systemTrayMessageBox, gbcSystemTray);
         add(systemTray, gbc);
     }
-    
+
     private void addPlainHours(GridBagConstraints gbc) {
         JPanel plainHours = new JPanel();
         plainHours.setLayout(new GridBagLayout());
@@ -570,7 +570,7 @@ public class PreferencesInputForm extends JPanel {
         plainHours.add(effectiveHoursBox, gbcSystemTray);
         add(plainHours, gbc);
     }
-    
+
     private void addAlwaysOnTop(GridBagConstraints gbc) {
         JPanel alwaysOnTop = new JPanel();
         alwaysOnTop.setLayout(new GridBagLayout());
@@ -585,7 +585,7 @@ public class PreferencesInputForm extends JPanel {
         alwaysOnTop.add(bringToFrontBox, gbcAlwaysOnTop);
         add(alwaysOnTop, gbc);
     }
-    
+
     private void addThemes(GridBagConstraints gbc) {
         JPanel themes = new JPanel();
         themes.setLayout(new GridBagLayout());
@@ -601,7 +601,7 @@ public class PreferencesInputForm extends JPanel {
 
     // Display the class name of the look and feel instead of the whole class path
     class ThemeComboBoxRenderer extends AbstractComboBoxRenderer {
-        
+
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -610,26 +610,26 @@ public class PreferencesInputForm extends JPanel {
             return this;
         }
     }
-    
+
     private void updatePomodoroSlidersText() {
         maxNbPomPerDaySlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
         updateNbPomPerSetSliderText();
         updateMaxNbPomPerActivitySliderText();
     }
-    
+
     private void updateNbPomPerSetSliderText() {
         nbPomPerSetSlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
     }
-    
+
     private void updateMaxNbPomPerActivitySliderText() {
         maxNbPomPerActivitySlider.setText(pomodoroSlider.getSliderValue(), shortBreakSlider.getSliderValue(), longBreakSlider.getSliderValue(), nbPomPerSetSlider.getSliderValue(), plainHoursBox.isSelected(), maxNbPomPerDaySlider.getSliderValue());
     }
-    
+
     static public String getNimbusTheme() {
         String nimbusTheme = null;
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                
+
                 if ("Nimbus".equals(info.getName())) {
                     nimbusTheme = info.getClassName();
                     break;

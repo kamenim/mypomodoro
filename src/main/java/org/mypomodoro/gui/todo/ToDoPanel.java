@@ -76,7 +76,7 @@ public class ToDoPanel extends AbstractPanel {
 
     public ToDoPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+
         // Init List and Timer Pane
         listPaneAndTimer.setMinimumSize(LIST_TIMER_PANE_DIMENSION);
         listPaneAndTimer.setPreferredSize(LIST_TIMER_PANE_DIMENSION);
@@ -186,7 +186,7 @@ public class ToDoPanel extends AbstractPanel {
         gbcListPaneAndTimer.anchor = GridBagConstraints.CENTER;
         listPaneAndTimer.add(wrap, gbcListPaneAndTimer);
     }
-    
+
     public void addTinyTimerPanel() {
         gbcListPaneAndTimer.gridx = 1;
         gbcListPaneAndTimer.gridy = 0;
@@ -316,11 +316,11 @@ public class ToDoPanel extends AbstractPanel {
         backgroundPanel.add(pomodoroButton, gbc);
         return backgroundPanel;
     }
-    
+
     private JPanel wrapInBackgroundTinyImage(final TimerPanel timerPanel, ImageIcon tinyTimerIcon) {
         // create wrapper JPanel
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
-        backgroundPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));        
+        backgroundPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -342,16 +342,16 @@ public class ToDoPanel extends AbstractPanel {
          });*/
         //gbc.fill = GridBagConstraints.BOTH;// this is very important to center the component (otherwise won't work with some themes such as Metal)        
         //gbc.anchor = GridBagConstraints.WEST; // this is very important to center the component (otherwise won't work with some themes such as Metal)
-        backgroundPanel.add(tinyTimerButton, gbc); 
+        backgroundPanel.add(tinyTimerButton, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 0;            
+        gbc.gridy = 0;
         if (Main.preferences.getTicking()
                 && Main.preferences.getRinging()) { // The two options must be enabled
             backgroundPanel.add(muteButton, gbc);
             gbc.gridx = 2;
             gbc.gridy = 0;
         }
-        backgroundPanel.add(RESIZEBUTTON, gbc);     
+        backgroundPanel.add(RESIZEBUTTON, gbc);
         return backgroundPanel;
     }
 
@@ -395,13 +395,13 @@ public class ToDoPanel extends AbstractPanel {
     public TimerPanel getTimerPanel() {
         return timerPanel;
     }
-    
+
     public void setTimerPanel() {
         listPaneAndTimer.remove(wrap);
         timerPanel.setTimer();
-        addTimerPanel();        
+        addTimerPanel();
     }
-    
+
     public void setTinyTimerPanel() {
         listPaneAndTimer.remove(wrap);
         timerPanel.setTinyTimer();

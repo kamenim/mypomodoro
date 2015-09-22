@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.locks.ReentrantLock;
+import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
 
@@ -38,8 +39,8 @@ public class Database {
     private Connection connection = null;
     private Statement statement = null;
     private String driverClassName = "org.sqlite.JDBC";
-    private String databaseFileName = "myagilepomodoro.db";
-    private String connectionStatement = "jdbc:sqlite:" + databaseFileName;
+    private final String databaseFileName = "myagilepomodoro.db";
+    private String connectionStatement = "jdbc:sqlite:" + Main.configPath + databaseFileName;
     final public static String SQLLITE = "SQLLITE";
     final public static String MYSQL = "MYSQL";
     // SQLLite database specific
@@ -67,7 +68,7 @@ public class Database {
             selectStatementSeqId = "SELECT LAST_INSERT_ID()";
             sequenceIdName = "last_insert_id()";
         } else { // SQLite
-            File file = new File(databaseFileName);
+            File file = new File(Main.configPath + databaseFileName);
             if (!file.exists()) { // SQLlite database not created yet            
                 firstTime = true;
             }

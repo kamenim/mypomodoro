@@ -103,7 +103,7 @@ public class TimerPanel extends JPanel {
                             pauseButton.setIcon(pauseRedIcon);
                         } else {
                             pauseButton.setIcon(pauseIcon);
-                        }                     
+                        }
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     } else { // pause
                         pomodoro.pause();

@@ -33,7 +33,7 @@ public class TimeSaveButton extends TransparentButton {
     public void setStarted(boolean started) {
         this.started = started;
     }
-    
+
     public boolean isStarted() {
         return started;
     }

@@ -20,8 +20,8 @@ import java.awt.Toolkit;
 import javax.swing.UIManager;
 
 /**
- * Check if the Windows current theme is Win 7 classic and the System look and feel is Windows
- * This won't work on Win XP classic theme
+ * Check if the Windows current theme is Win 7 classic and the System look and
+ * feel is Windows This won't work on Win XP classic theme
  */
 public class CheckWindowsClassicTheme {
 

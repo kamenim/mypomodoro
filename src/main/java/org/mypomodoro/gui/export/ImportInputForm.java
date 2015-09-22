@@ -41,11 +41,11 @@ public class ImportInputForm extends ExportInputForm {
 
     private FileDialog fileDialog;
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(215, 25);
-    
+
     public ImportInputForm() {
         defaultFileName = "";
         taskBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 taskBox.setSelected(true);
@@ -53,7 +53,7 @@ public class ImportInputForm extends ExportInputForm {
             }
         });
         subtaskBox.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent event) {
                 subtaskBox.setSelected(true);

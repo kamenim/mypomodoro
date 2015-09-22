@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mypomodoro.gui.preferences.plaf;
 
 import java.awt.Color;
@@ -22,18 +21,18 @@ import org.mypomodoro.Main;
 
 /**
  * Green mAP custom theme
- * 
+ *
  */
 public class MAPLookAndFeelConfidence extends MAPLookAndFeel {
-    
-     public MAPLookAndFeelConfidence() {
+
+    public MAPLookAndFeelConfidence() {
         DARK_COLOR = new Color(230, 181, 0); // dark yellow
         COLOR = new Color(246, 193, 0); // yellow
         FOREGROUND_COLOR = Color.BLACK; // black
         // icon set path
-        Main.iconsSetPath = "/images/icons_dark_set/"; 
+        Main.iconsSetPath = "/images/icons_dark_set/";
         Main.mAPIconTimer = "mAPIconTimerConfidence.png";
-        setProperties();        
+        setProperties();
         setCurrentTheme(props);
-     }
+    }
 }

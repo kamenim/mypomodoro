@@ -242,7 +242,7 @@ public class MergingPanel extends CreatePanel {
                                 MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Updating priorities"));
                             }
                         });
-                        panel.getCurrentTable().reorderByPriority();                        
+                        panel.getCurrentTable().reorderByPriority();
                         // Close progress bar
                         final int progressCount = increment;
                         SwingUtilities.invokeLater(new Runnable() {
