@@ -44,7 +44,7 @@ public class TimerPanel extends JPanel {
 
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private final GridBagConstraints gbc = new GridBagConstraints();
+    private GridBagConstraints gbc = new GridBagConstraints();
     private final ImageIcon startIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "start.png"));
     private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "stop.png"));
     private final ImageIcon stopRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "stopred.png"));
@@ -186,12 +186,13 @@ public class TimerPanel extends JPanel {
     // Normal size timer
     public void setTimer() {
         setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints(); // reset grid
         // Transparent !
         setOpaque(false);
-        addTimeMinusButton();
-        pomodoroTime.setBorder(null); // no margin around jlabel
-        addPomodoroTimerLabel();
         addTimePlusButton();
+        pomodoroTime.setBorder(new EmptyBorder(0, 10, 0, 10)); // margin around jlabel
+        addPomodoroTimerLabel();
+        addTimeMinusButton();
         startButton.setMargin(new Insets(0, 20, 0, 20));
         addStartButton();
         pauseButton.setMargin(new Insets(0, 20, 0, 20));
@@ -205,10 +206,10 @@ public class TimerPanel extends JPanel {
         setOpaque(false);
         startButton.setMargin(new Insets(0, 0, 0, 0));
         add(startButton);
-        add(timePlus);
+        add(timeMinus);
         pomodoroTime.setBorder(new EmptyBorder(0, 8, 0, 8)); // margin around jlabel
         add(pomodoroTime);
-        add(timeMinus);
+        add(timePlus);
         pauseButton.setMargin(new Insets(0, 0, 0, 0));
         add(pauseButton);
     }
