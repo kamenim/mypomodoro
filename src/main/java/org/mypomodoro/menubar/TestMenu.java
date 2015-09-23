@@ -44,8 +44,6 @@ import org.mypomodoro.util.WaitCursor;
 
 public class TestMenu extends JMenu {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public TestMenu() {
         super(Labels.getString("MenuBar.Data"));
         add(new TestDataMenu(100));
@@ -258,7 +256,7 @@ public class TestMenu extends JMenu {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
                                         } catch (InterruptedException ex) {
-                                            logger.error("", ex);
+                                            Main.logger.error("", ex);
                                         }
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);

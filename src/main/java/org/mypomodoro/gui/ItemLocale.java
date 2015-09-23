@@ -39,8 +39,6 @@ import org.mypomodoro.Main;
  */
 public class ItemLocale {
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ItemLocale.class);
-
     private final Locale locale;
     private final String localeText;
 
@@ -103,9 +101,9 @@ public class ItemLocale {
                 }
             }
         } catch (IOException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         } catch (URISyntaxException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         } finally {
             if (vLocales.isEmpty()) {
                 vLocales.add(new ItemLocale(Main.preferences.getLocale(), Main.preferences.getLocale().getDisplayLanguage()

@@ -72,7 +72,6 @@ import org.mypomodoro.util.Labels;
  */
 public class CommentPanel extends JPanel {
 
-    //private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JPanel iconPanel = new JPanel();
     private final IListPanel panel;

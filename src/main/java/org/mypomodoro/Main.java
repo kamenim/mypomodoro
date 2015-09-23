@@ -22,12 +22,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.security.CodeSource;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -45,6 +40,7 @@ import org.mypomodoro.model.Preferences;
 import org.mypomodoro.model.ReportList;
 import org.mypomodoro.model.ToDoList;
 import org.mypomodoro.util.ColorUtil;
+import org.mypomodoro.util.ExecutablePath;
 
 /**
  * Main Application Starter
@@ -52,7 +48,7 @@ import org.mypomodoro.util.ColorUtil;
  */
 public class Main {
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Main.class);
+    public static org.slf4j.Logger logger;
 
     // Database
     public static MySQLConfigLoader mySQLconfig;
@@ -77,23 +73,38 @@ public class Main {
     public static String iconsSetPath = "/images/icons_dark_set/";
     public static String mAPIconTimer = "mAPIconTimer.png";
     public static String mAPIconTinyTimer = "mAPIconTinyTimer.png";
-    public static String configPath = getJarDirectoryWithSeparator();
+    public static String configPath = "";
 
     /**
      * Main
      *
-     * Command line: java -jar myAgilePomodoro-....jar
+     * Command line: java -jar <full path of executable> [<full path of database
+     * and config files>]
      *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Compute arguments
-        if (args.length > 0) {
-            configPath = args[0] + File.separator;
-            configPath = URLDecode(configPath);
+        try {
+            // full path of the executable with file separator at the end
+            configPath = ExecutablePath.getExecutableDirectoryWithSeparator();
+            // Compute arguments
+            // first argument: full path where to create (first launch) or use the database, the config files and the log file (may be different form the executable path)
+            if (args.length > 0) {
+                // full path of the database and config files with file separator at the end
+                configPath = args[0] + File.separator;
+                configPath = ExecutablePath.URLDecode(configPath);
+            }
+            System.setProperty("full_path_log", configPath); // this is for log back (see logback.xml config file)
+            // invoking the logger to set the path
+            logger = org.slf4j.LoggerFactory.getLogger(Main.class);
+        } catch (UnsupportedEncodingException ex) {
+            System.setProperty("full_path_log", configPath); // this is for log back (see logback.xml config file)
+            // invoking the logger to set the path
+            logger = org.slf4j.LoggerFactory.getLogger(Main.class);
+            logger.error("Error while trying to decode some special characters", ex);
         }
 
-        // Load database
+        // Load database and config files
         mySQLconfig = new MySQLConfigLoader(); // load properties
         database = new Database(); // create database if necessary
         googleConfig = new GoogleConfigLoader(); // load properties
@@ -234,56 +245,5 @@ public class Main {
                 PlaceList.refresh();
             }
         });
-    }
-
-    // Full jar path
-    // eg C:\...\...\myAgilePomodoro.jar
-    public static String getJarPath() {
-        String jarPath = "";
-        try {
-            CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
-            jarPath = codeSource.getLocation().toURI().getPath();
-            jarPath = URLDecode(jarPath);
-        } catch (URISyntaxException ex) {
-            // nothing to do here
-        }
-        return jarPath;
-    }
-
-    // Full jar directory path
-    // eg C:\...\...
-    public static String getJarDirectory() {
-        String jarDirectory = "";
-        try {
-            CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
-            File jarFile = new File(codeSource.getLocation().toURI().getPath());
-            jarDirectory = jarFile.getParentFile().getPath();
-            jarDirectory = URLDecode(jarDirectory);
-        } catch (URISyntaxException ex) {
-            // nothing to do here
-        }
-        return jarDirectory;
-    }
-
-    // Full jar directory path with file separator at the end
-    // eg C:\...\...\
-    public static String getJarDirectoryWithSeparator() {
-        String jarDirectoryWithSeparator = getJarDirectory();
-        if (!jarDirectoryWithSeparator.isEmpty()) {
-            jarDirectoryWithSeparator += File.separator;
-        }
-        return jarDirectoryWithSeparator;
-    }
-
-    // Spaces and special charaters decoding
-    // Note: URLDecoder might not work properly : http://stackoverflow.com/questions/320542/how-to-get-the-path-of-a-running-jar-file
-    public static String URLDecode(String aString) {
-        String aDecodedString = "";
-        try {
-            aDecodedString = URLDecoder.decode(aString, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("Error while trying to decode some special characters", ex);
-        }
-        return aDecodedString;
     }
 }

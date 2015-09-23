@@ -56,8 +56,6 @@ import org.mypomodoro.util.ProgressBar;
  */
 public class MainPanel extends JFrame {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public static final int FRAME_WIDTH = 800;
     public static final int FRAME_HEIGHT = 600;
     public static TrayIcon trayIcon;
@@ -143,7 +141,7 @@ public class MainPanel extends JFrame {
             try {
                 sysTray.add(trayIcon);
             } catch (AWTException ex) {
-                logger.error("", ex);
+                Main.logger.error("", ex);
             }
         } else {
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

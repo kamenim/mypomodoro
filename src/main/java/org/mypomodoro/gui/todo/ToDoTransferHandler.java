@@ -39,8 +39,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ToDoTransferHandler extends TransferHandler {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private final ToDoPanel panel;
 
     public ToDoTransferHandler(ToDoPanel panel) {
@@ -132,7 +130,7 @@ public class ToDoTransferHandler extends TransferHandler {
                                                     try {
                                                         sleep(1000); // wait one second before hiding the progress bar
                                                     } catch (InterruptedException ex) {
-                                                        logger.error("", ex);
+                                                        Main.logger.error("", ex);
                                                     }
                                                     // hide progress bar
                                                     MainPanel.progressBar.getBar().setString(null);

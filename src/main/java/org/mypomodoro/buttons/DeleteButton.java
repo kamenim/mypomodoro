@@ -37,8 +37,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class DeleteButton extends TabPanelButton {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public DeleteButton(final IListPanel panel) {
         super(Labels.getString("Common.Delete"));
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
@@ -122,7 +120,7 @@ public class DeleteButton extends TabPanelButton {
                                                 try {
                                                     sleep(1000); // wait one second before hiding the progress bar
                                                 } catch (InterruptedException ex) {
-                                                    logger.error("", ex);
+                                                    Main.logger.error("", ex);
                                                 }
                                                 // hide progress bar
                                                 MainPanel.progressBar.getBar().setString(null);

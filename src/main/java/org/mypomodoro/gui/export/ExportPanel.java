@@ -77,8 +77,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ExportPanel extends JPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     protected final ExportInputForm exportInputForm = new ExportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final IListPanel panel;
@@ -228,7 +226,7 @@ public class ExportPanel extends JPanel {
                                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
                             }
                         } catch (IOException ex) {
-                            logger.error("Export failed", ex);
+                            Main.logger.error("Export failed", ex);
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Export failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,

@@ -38,8 +38,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class MoveButton extends TabPanelButton {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public MoveButton(String label, final IListPanel panel) {
         super(label);
         if (panel instanceof ActivitiesPanel) { // move to ToDo list
@@ -145,7 +143,7 @@ public class MoveButton extends TabPanelButton {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
                                         } catch (InterruptedException ex) {
-                                            logger.error("", ex);
+                                            Main.logger.error("", ex);
                                         }
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);

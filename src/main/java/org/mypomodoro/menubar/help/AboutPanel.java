@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.menubar.help;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

@@ -42,8 +42,6 @@ import org.mypomodoro.util.Labels;
 
 public class TimerPanel extends JPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private GridBagConstraints gbc = new GridBagConstraints();
     private final ImageIcon startIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "start.png"));
     private final ImageIcon stopIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "stop.png"));
@@ -69,10 +67,10 @@ public class TimerPanel extends JPanel {
                     Main.class.getResourceAsStream("/fonts/timer.ttf")));
         } catch (FontFormatException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
-            logger.error("TrueType not supported. Replaced with default System font.", ex);
+            Main.logger.error("TrueType not supported. Replaced with default System font.", ex);
         } catch (IOException ex) {
             pomodoroTime.setFont(new JLabel().getFont().deriveFont(Font.PLAIN));
-            logger.error("Timer TTF file not found. Replaced with default System font.", ex);
+            Main.logger.error("Timer TTF file not found. Replaced with default System font.", ex);
         }
         pomodoroTime.setForeground(ColorUtil.DARK_GRAY_TIMER);
         // Init time minus button

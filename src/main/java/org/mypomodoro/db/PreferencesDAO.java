@@ -27,8 +27,6 @@ import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
 
 public class PreferencesDAO {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private final Database database = Main.database;
     private static final PreferencesDAO instance = new PreferencesDAO();
 
@@ -78,7 +76,7 @@ public class PreferencesDAO {
                 }
             } catch (SQLException ex) {
                 // Upgrade from version 3.0, 3.1, 3.2 to 3.3, 3.4 or 4.0
-                logger.error("Fixing following issue... Done", ex);
+                Main.logger.error("Fixing following issue... Done", ex);
                 database.update("ALTER TABLE preferences ADD bring_to_front BOOLEAN DEFAULT 0;");
                 String mAPLookAndFeel = MAPLookAndFeel.class.getPackage().getName() + ".MAPLookAndFeel";
                 if (MySQLConfigLoader.isValid()) {
@@ -92,7 +90,7 @@ public class PreferencesDAO {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    logger.error("", ex);
+                    Main.logger.error("", ex);
                 }
             }
         } finally {

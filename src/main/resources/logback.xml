@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </appender>
   <!-- file appender -->
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>myAgilePomodoro.log</file>
+    <file>${full_path_log}myAgilePomodoro.log</file><!-- the full path is set programmatically in teh Main class of the program -->
     <append>false</append>
     <encoder>
       <pattern>==================================================================================================================%n%d [%thread] %-5level [%file:%line] - %msg%n</pattern>

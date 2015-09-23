@@ -28,7 +28,6 @@ import org.mypomodoro.buttons.MoveButton;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import static org.mypomodoro.gui.AbstractTableModel.DIFFI_COLUMN_INDEX;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.ColumnResizer;

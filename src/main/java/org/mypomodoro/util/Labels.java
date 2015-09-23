@@ -20,14 +20,13 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import org.mypomodoro.Main;
 
 /**
  * Labels bundle
  *
  */
 public class Labels {
-
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Labels.class);
 
     private final static String BUNDLE_NAME = "org.mypomodoro.labels.mypomodoro";
     private static ResourceBundle resource_bundle;
@@ -40,7 +39,7 @@ public class Labels {
         try {
             return resource_bundle.getString(key);
         } catch (MissingResourceException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
             return '!' + key + '!';
         }
     }
@@ -49,7 +48,7 @@ public class Labels {
         try {
             return MessageFormat.format(resource_bundle.getString(key), params);
         } catch (MissingResourceException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
             return '!' + key + '!';
         }
     }

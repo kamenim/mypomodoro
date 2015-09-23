@@ -62,8 +62,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class ImportPanel extends JPanel {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     protected final ImportInputForm importInputForm = new ImportInputForm();
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final IListPanel panel;
@@ -129,7 +127,7 @@ public class ImportPanel extends JPanel {
                                 importXML(fileName);
                             }
                         } catch (Exception ex) {
-                            logger.error("Import failed", ex);
+                            Main.logger.error("Import failed", ex);
                             String title = Labels.getString("Common.Error");
                             String message = Labels.getString("ReportListPanel.Import failed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
@@ -181,7 +179,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                Main.logger.error("", ex);
                             }
                             // hide progress bar
                             MainPanel.progressBar.getBar().setString(null);
@@ -238,7 +236,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                Main.logger.error("", ex);
                             }
                             // hide progress bar
                             MainPanel.progressBar.getBar().setString(null);
@@ -294,7 +292,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                Main.logger.error("", ex);
                             }
                             // hide progress bar
                             MainPanel.progressBar.getBar().setString(null);
@@ -363,7 +361,7 @@ public class ImportPanel extends JPanel {
                             try {
                                 sleep(1000); // wait one second before hiding the progress bar
                             } catch (InterruptedException ex) {
-                                logger.error("", ex);
+                                Main.logger.error("", ex);
                             }
                             // hide progress bar
                             MainPanel.progressBar.getBar().setString(null);
@@ -441,12 +439,12 @@ public class ImportPanel extends JPanel {
             newActivity.setIteration(Integer.parseInt(line[17]));
             newActivity.setPriority(Integer.parseInt(line[18]));
         } catch (NumberFormatException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
             newActivity.setStoryPoints(0);
             newActivity.setIteration(-1);
             newActivity.setPriority(-1);
