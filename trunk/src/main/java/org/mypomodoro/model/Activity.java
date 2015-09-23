@@ -19,6 +19,7 @@ package org.mypomodoro.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
@@ -31,8 +32,6 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 public class Activity implements Cloneable {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Activity clone() throws CloneNotSupportedException {
@@ -278,7 +277,7 @@ public class Activity implements Cloneable {
             this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 

@@ -20,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.mypomodoro.Main;
 
 /**
  * This class Restarts Java Bundled Native Mac Applications with the .app
@@ -34,8 +35,6 @@ import java.io.IOException;
  *
  */
 public class RestartMac {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     /* AppleScript */
     private final String restartScript = "tell application \"myAgilePomodoro\" to quit" + System.getProperty("line.separator")
@@ -99,7 +98,7 @@ public class RestartMac {
             restartWriter.write(restartScript);
             restartWriter.close();
         } catch (IOException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -112,9 +111,9 @@ public class RestartMac {
             osacompile = Runtime.getRuntime().exec(osacompileString);
             osacompile.waitFor(); //everything must wait until this process is completed
         } catch (InterruptedException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         } catch (IOException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -125,7 +124,7 @@ public class RestartMac {
         try {
             open = Runtime.getRuntime().exec(openString);
         } catch (IOException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -145,7 +144,7 @@ public class RestartMac {
         try {
             delete = Runtime.getRuntime().exec(deleteString);
         } catch (IOException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 }

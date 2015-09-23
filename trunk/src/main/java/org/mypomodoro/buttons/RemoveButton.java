@@ -19,6 +19,7 @@ package org.mypomodoro.buttons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.SwingUtilities;
+import org.mypomodoro.Main;
 import org.mypomodoro.gui.MainPanel;
 import org.mypomodoro.gui.burndownchart.CheckPanel;
 import org.mypomodoro.model.Activity;
@@ -31,8 +32,6 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public class RemoveButton extends TabPanelButton {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     public RemoveButton(String label, final CheckPanel panel) {
         super(label);
@@ -92,7 +91,7 @@ public class RemoveButton extends TabPanelButton {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
                                         } catch (InterruptedException ex) {
-                                            logger.error("", ex);
+                                            Main.logger.error("", ex);
                                         }
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);

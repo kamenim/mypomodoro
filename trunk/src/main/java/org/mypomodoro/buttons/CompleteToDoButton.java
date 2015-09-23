@@ -35,8 +35,6 @@ import org.mypomodoro.util.WaitCursor;
 // TODO Merge. move, complete: problem refresh priorities after reordering priorities
 public class CompleteToDoButton extends TabPanelButton {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
         super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         setToolTipText(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete") + " (SHIFT + >)");
@@ -123,7 +121,7 @@ public class CompleteToDoButton extends TabPanelButton {
                                                     try {
                                                         sleep(1000); // wait one second before hiding the progress bar
                                                     } catch (InterruptedException ex) {
-                                                        logger.error("", ex);
+                                                        Main.logger.error("", ex);
                                                     }
                                                     // hide progress bar
                                                     MainPanel.progressBar.getBar().setString(null);

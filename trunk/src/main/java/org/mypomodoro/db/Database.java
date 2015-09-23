@@ -33,8 +33,6 @@ import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
  */
 public class Database {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private final ReentrantLock lock = new ReentrantLock();
     private Connection connection = null;
     private Statement statement = null;
@@ -79,9 +77,9 @@ public class Database {
             connection = DriverManager.getConnection(connectionStatement);
             statement = connection.createStatement();
         } catch (ClassNotFoundException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -97,7 +95,7 @@ public class Database {
                 connection.close();
             }
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -105,7 +103,7 @@ public class Database {
         try {
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
     }
 
@@ -114,7 +112,7 @@ public class Database {
         try {
             rs = statement.executeQuery(sql);
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         }
         return rs;
     }
@@ -185,12 +183,12 @@ public class Database {
                 update(insertPreferencesSQL);
             }
         } catch (SQLException ex) {
-            logger.error("", ex);
+            Main.logger.error("", ex);
         } finally {
             try {
                 rs.close();
             } catch (SQLException ex) {
-                logger.error("", ex);
+                Main.logger.error("", ex);
             }
         }
     }

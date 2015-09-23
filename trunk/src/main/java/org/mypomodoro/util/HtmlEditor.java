@@ -49,14 +49,13 @@ import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+import org.mypomodoro.Main;
 
 /**
  * HTML editor
  *
  */
 public class HtmlEditor extends JTextPane {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     /**
      * Override paint method to turn on the anti-aliasing property
@@ -216,7 +215,7 @@ public class HtmlEditor extends JTextPane {
         try {
             text = getDocument().getText(0, getDocument().getLength());
         } catch (BadLocationException ex) {
-            logger.error("Problem extracting raw content out of html content", ex);
+            Main.logger.error("Problem extracting raw content out of html content", ex);
         }
         return text;
     }

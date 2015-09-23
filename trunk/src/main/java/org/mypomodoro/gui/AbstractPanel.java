@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.util.WaitCursor;
 
@@ -35,8 +36,6 @@ import org.mypomodoro.util.WaitCursor;
  *
  */
 public abstract class AbstractPanel extends JPanel implements IListPanel {
-
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
     // List pane: title + table + sub-title + sub-table
     protected final JPanel listPane = new JPanel();
@@ -115,7 +114,7 @@ public abstract class AbstractPanel extends JPanel implements IListPanel {
                     subTable.setTitle();
                 }
             } catch (Exception ex) {
-                logger.error("", ex);
+                Main.logger.error("", ex);
             } finally {
                 // Stop wait cursor
                 WaitCursor.stopWaitCursor();

@@ -33,8 +33,6 @@ import org.mypomodoro.util.WaitCursor;
  */
 public class MoveToDoButton extends TabPanelButton {
 
-    private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     public MoveToDoButton(String label, final ToDoPanel panel) {
         super(label);
         setToolTipText(Labels.getString("Common.Move") + " (SHIFT + <)");
@@ -123,7 +121,7 @@ public class MoveToDoButton extends TabPanelButton {
                                         try {
                                             sleep(1000); // wait one second before hiding the progress bar
                                         } catch (InterruptedException ex) {
-                                            logger.error("", ex);
+                                            Main.logger.error("", ex);
                                         }
                                         // hide progress bar
                                         MainPanel.progressBar.getBar().setString(null);
