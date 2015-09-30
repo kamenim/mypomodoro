@@ -454,6 +454,7 @@ public abstract class AbstractTable extends JXTable {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+            value = " " + value + " ";
             JLabel renderer = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             renderer.setForeground(ColorUtil.BLACK);
             renderer.setFont(isSelected ? getFont().deriveFont(Font.BOLD) : getFont());
@@ -470,6 +471,17 @@ public abstract class AbstractTable extends JXTable {
                 }
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
+                }
+                if (!activity.isDone()) {
+                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                    
+                    //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
+                    //renderer.setBackground(ColorUtil.GRAY);
+                    //renderer.setOpaque(false);
+                    //renderer.setBackground(ColorUtil.GRAY);
+                    //renderer.setOpaque(true);
                 }
             }
             return renderer;

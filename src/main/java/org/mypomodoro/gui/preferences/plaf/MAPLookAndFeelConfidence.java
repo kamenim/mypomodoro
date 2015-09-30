@@ -26,8 +26,10 @@ import org.mypomodoro.Main;
 public class MAPLookAndFeelConfidence extends MAPLookAndFeel {
 
     public MAPLookAndFeelConfidence() {
-        DARK_COLOR = new Color(230, 181, 0); // dark yellow
-        COLOR = new Color(246, 193, 0); // yellow
+        //DARK_COLOR = new Color(230, 181, 0); // dark yellow
+        //COLOR = new Color(246, 193, 0); // yellow
+        DARK_COLOR = new Color(246, 193, 0); // dark yellow
+        COLOR = new Color(246, 205, 12); // yellow
         FOREGROUND_COLOR = Color.BLACK; // black
         // icon set path
         Main.iconsSetPath = "/images/icons_dark_set/";
