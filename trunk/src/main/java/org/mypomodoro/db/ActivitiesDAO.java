@@ -60,7 +60,8 @@ public class ActivitiesDAO {
                 + newActivity.getNumInternalInterruptions() + ", "
                 + newActivity.getStoryPoints() + ", "
                 + newActivity.getIteration() + ", "
-                + newActivity.getParentId() + ");";
+                + newActivity.getParentId() + ", "
+                + (newActivity.isDone() ? 1 : 0) + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -106,7 +107,8 @@ public class ActivitiesDAO {
                 + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
                 + "story_points = " + activity.getStoryPoints() + ", "
                 + "iteration = " + activity.getIteration() + ", "
-                + "parent_id = " + activity.getParentId()
+                + "parent_id = " + activity.getParentId() + ", "
+                + "is_done = " + (activity.isDone() ? 1 : 0)
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -121,6 +123,20 @@ public class ActivitiesDAO {
     public void updateComment(Activity activity) {
         String updateSQL = "UPDATE activities SET "
                 + "notes = '" + activity.getNotes().replace("'", "''") + "'"
+                + " WHERE id = " + activity.getId() + ";";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+            database.update("commit;");
+        } finally {
+            database.unlock();
+        }
+    }
+    
+    public void updateDone(Activity activity) {
+        String updateSQL = "UPDATE activities SET "
+                + "is_done = " + (activity.isDone() ? 1 : 0)
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();

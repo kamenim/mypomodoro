@@ -63,6 +63,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton createButton = new DefaultButton(createIcon);
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
+    protected final DefaultButton doneButton = new DefaultButton(getFont().canDisplay('\u2714') ? "\u2714" : "D");        
     //protected final DefaultButton moveSubtasksButton = new DefaultButton(moveupIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
@@ -182,6 +183,15 @@ public abstract class AbstractTitlePanel extends JPanel {
                 refreshButton.setEnabled(true);
             }
         });
+        doneButton.setMargin(buttonInsets);
+        //doneButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 1 : 0)));
+        doneButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 
+            }
+        });
     }
 
     class ExpandMouseAdapter extends MouseAdapter {
@@ -276,6 +286,10 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     public void showExternalButton() {
         buttonPanel.add(externalButton);
+    }
+    
+    public void showDoneButton() {
+        buttonPanel.add(doneButton);
     }
 
     /*public void showMoveSubtasksButton() {

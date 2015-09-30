@@ -35,9 +35,10 @@ import org.mypomodoro.util.WaitCursor;
 // TODO Merge. move, complete: problem refresh priorities after reordering priorities
 public class CompleteToDoButton extends TabPanelButton {
 
-    public CompleteToDoButton(final String title, final String message, final ToDoPanel panel) {
-        super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
-        setToolTipText(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete") + " (SHIFT + >)");
+    public CompleteToDoButton(String label, final ToDoPanel panel) {
+        //super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
+        super(label);
+        setToolTipText(Labels.getString("ToDoListPanel.Complete") + " (SHIFT + >)");
         addActionListener(new ActionListener() {
 
             @Override
@@ -47,6 +48,8 @@ public class CompleteToDoButton extends TabPanelButton {
                     new Thread() { // This new thread is necessary for updating the progress bar
                         @Override
                         public void run() {
+                            String title = Labels.getString("ToDoListPanel.Complete ToDo"); 
+                            String message = Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?");
                             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
                             if (reply == JOptionPane.YES_OPTION) {
                                 if (!WaitCursor.isStarted()) {

@@ -17,6 +17,7 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.text.DecimalFormat;
 import javax.swing.DropMode;
 import javax.swing.JTable;
@@ -317,6 +318,8 @@ public class ToDoTable extends AbstractTable {
 
     @Override
     public void setTitle() {
+        //getTitlePanel().setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() - 3));
+        //getTitlePanel().setFont(getTitlePanel().getFont().deriveFont(Font.BOLD, getTitlePanel().getFont().getSize() - 3));
         String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List");
         int rowCount = getModel().getRowCount(); // get row count on the model not the view !
         if (rowCount > 0) {
@@ -419,6 +422,7 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }
+        getTitlePanel().showDoneButton();
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
         }
@@ -644,7 +648,7 @@ public class ToDoTable extends AbstractTable {
     @Override
     public void moveRightTasks() {
         if (canMoveTasks()) {
-            CompleteToDoButton completeToDoButton = new CompleteToDoButton(Labels.getString("ToDoListPanel.Complete ToDo"), Labels.getString("ToDoListPanel.Are you sure to complete those ToDo?"), (ToDoPanel) panel);
+            CompleteToDoButton completeToDoButton = new CompleteToDoButton("", (ToDoPanel) panel);
             completeToDoButton.doClick();
         }
     }

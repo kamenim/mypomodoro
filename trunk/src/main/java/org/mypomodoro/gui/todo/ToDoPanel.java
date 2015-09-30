@@ -324,7 +324,6 @@ public class ToDoPanel extends AbstractPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        //gbc.fill = GridBagConstraints.BOTH;
         backgroundPanel.add(timerPanel, gbc);
         // Set background image (timer) in a button to be able to add an action to it
         final DefaultButton tinyTimerButton = new DefaultButton(tinyTimerIcon, true);
@@ -340,8 +339,6 @@ public class ToDoPanel extends AbstractPanel {
          timerPanel.switchPomodoroCompliance();
          }
          });*/
-        //gbc.fill = GridBagConstraints.BOTH;// this is very important to center the component (otherwise won't work with some themes such as Metal)        
-        //gbc.anchor = GridBagConstraints.WEST; // this is very important to center the component (otherwise won't work with some themes such as Metal)
         backgroundPanel.add(tinyTimerButton, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;

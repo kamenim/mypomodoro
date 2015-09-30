@@ -131,6 +131,10 @@ public class Activity implements Cloneable {
      * Parent Id
      */
     private int parentId = -1;
+    /**
+     * state of activity. Done default is not Done
+     */
+    private boolean isDone = false;
 
     /**
      * Default Constructor
@@ -276,8 +280,11 @@ public class Activity implements Cloneable {
             this.storyPoints = rs.getFloat("story_points");
             this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
+            this.isDone = rs.getInt("is_done") == 1;
         } catch (SQLException ex) {
-            Main.logger.error("", ex);
+            // Upgrade to version 4.2
+            Main.logger.error("Fixing following issue... Done", ex);
+            Main.database.update("ALTER TABLE activities ADD is_done BOOLEAN DEFAULT 0;");
         }
     }
 
@@ -360,6 +367,10 @@ public class Activity implements Cloneable {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public boolean isDone() {
+        return isDone;
     }
 
     // SETTERS
@@ -447,6 +458,10 @@ public class Activity implements Cloneable {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public void setIsDone(boolean isDone) {
+        this.isDone = isDone;
     }
 
     /**
