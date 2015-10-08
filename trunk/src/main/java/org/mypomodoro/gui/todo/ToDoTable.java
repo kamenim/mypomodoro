@@ -17,7 +17,6 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.text.DecimalFormat;
 import javax.swing.DropMode;
 import javax.swing.JTable;
@@ -422,7 +421,6 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }
-        getTitlePanel().showDoneButton();
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
         }

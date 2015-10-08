@@ -320,6 +320,7 @@ public class ReportsTable extends AbstractTable {
                     toolTipText += " > " + Labels.getString("Agile.Common.Productivity") + ": " + df.format(new Float(real) / datesCompleted.size());
                 }
                 getTitlePanel().setToolTipText(toolTipText);
+                getTitlePanel().hideDoneDoneButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -349,6 +350,12 @@ public class ReportsTable extends AbstractTable {
             }
         } else {
             getTitlePanel().hideSelectedButton();
+            getTitlePanel().hideDoneDoneButton();
+        }        
+        if (Main.preferences.getAgileMode() && getSelectedRowCount() == 1) {
+            getTitlePanel().showDoneDoneButton();
+        } else {
+            getTitlePanel().hideDoneDoneButton();
         }
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line

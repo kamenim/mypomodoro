@@ -55,6 +55,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     private final ImageIcon overestimationIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "plusone.png"));
     protected final ImageIcon runningIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "running.png"));
     protected final ImageIcon moveupIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "moveup.png"));
+    protected final ImageIcon doneIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "done.png"));
     protected final DefaultButton unplannedButton = new DefaultButton(unplannedIcon);
     protected final DefaultButton internalButton = new DefaultButton(internalIcon);
     protected final DefaultButton externalButton = new DefaultButton(externalIcon);
@@ -63,7 +64,8 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected final DefaultButton createButton = new DefaultButton(createIcon);
     protected final DefaultButton duplicateButton = new DefaultButton(duplicateIcon);
     protected final DefaultButton selectedButton = new DefaultButton(selectedIcon);
-    protected final DefaultButton doneButton = new DefaultButton(getFont().canDisplay('\u2714') ? "\u2714" : "D");        
+    protected final DefaultButton doneButton = new DefaultButton(doneIcon);
+    protected final DefaultButton doneDoneButton = new DefaultButton(doneIcon);
     //protected final DefaultButton moveSubtasksButton = new DefaultButton(moveupIcon);
     protected final Insets buttonInsets = new Insets(0, 10, 0, 10);
     // left and rigth 'small' arrows
@@ -184,14 +186,23 @@ public abstract class AbstractTitlePanel extends JPanel {
             }
         });
         doneButton.setMargin(buttonInsets);
-        //doneButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 1 : 0)));
         doneButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 
+                setTaskDone();
             }
         });
+        doneButton.setToolTipText(Labels.getString("Common.Done"));
+        doneDoneButton.setMargin(buttonInsets);
+        doneDoneButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setTaskDone(); // same as done button
+            }
+        });
+        doneDoneButton.setToolTipText(Labels.getString("Agile.ReportListPanel.Done-Done"));        
     }
 
     class ExpandMouseAdapter extends MouseAdapter {
@@ -291,6 +302,10 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showDoneButton() {
         buttonPanel.add(doneButton);
     }
+    
+    public void showDoneDoneButton() {
+        buttonPanel.add(doneDoneButton);
+    }
 
     /*public void showMoveSubtasksButton() {
      buttonPanel.add(moveSubtasksButton);
@@ -326,6 +341,14 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
+    
+    public void hideDoneButton() {
+        buttonPanel.remove(doneButton);
+    }
+    
+    public void hideDoneDoneButton() {
+        buttonPanel.remove(doneDoneButton);
+    }
 
     /*public void hideMoveSubtasksButton() {
      buttonPanel.remove(moveSubtasksButton);
@@ -356,6 +379,8 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void createExternalInterruption();
 
     protected abstract void overestimateTask(int poms);
+    
+    protected abstract void setTaskDone();
 
     protected abstract void refreshTable(boolean fromDatabase);
 

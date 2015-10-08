@@ -63,7 +63,6 @@ public class ReportsSubTable extends ReportsTable {
     // no story points and no refresh button for subtasks
     @Override
     public void setTitle() {
-        getTitlePanel().hideExpandButton(); // no quick buttons
         String title = Labels.getString("Common.Subtasks");
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
@@ -118,10 +117,14 @@ public class ReportsSubTable extends ReportsTable {
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
                 getTitlePanel().setToolTipText(toolTipText);
             }
-        } /*else {
-         //title += " (0)";
-         }*/
-
+        } else {
+            getTitlePanel().hideDoneButton();
+        }
+        if (getSelectedRowCount() == 1) {
+            getTitlePanel().showDoneButton();
+        } else {
+            getTitlePanel().hideDoneButton();
+        }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");
         getTitlePanel().repaint(); // this is necessary to force stretching of panel

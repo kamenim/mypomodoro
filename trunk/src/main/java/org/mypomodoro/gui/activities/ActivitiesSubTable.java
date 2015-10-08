@@ -73,6 +73,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
+                getTitlePanel().hideDoneButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -98,11 +99,17 @@ public class ActivitiesSubTable extends ActivitiesTable {
         } else {
             //title += " (0)";
             getTitlePanel().hideDuplicateButton();
+            getTitlePanel().hideDoneButton();
         }
         if (canCreateNewTask()) {
             getTitlePanel().showCreateButton();
         } else {
             getTitlePanel().hideCreateButton(); // this happens when main table is empty
+        }
+        if (getSelectedRowCount() == 1) {
+            getTitlePanel().showDoneButton();
+        } else {
+            getTitlePanel().hideDoneButton();
         }
         /*if (canMoveSubtasks()) {
          getTitlePanel().showMoveSubtasksButton();
