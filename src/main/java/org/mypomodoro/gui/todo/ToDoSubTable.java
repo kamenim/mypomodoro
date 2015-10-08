@@ -99,6 +99,7 @@ public class ToDoSubTable extends ToDoTable {
                 getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideExternalButton();
                 getTitlePanel().hideInternalButton();
+                getTitlePanel().hideDoneButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > " + Labels.getString("Common.Done") + ": ";
@@ -142,6 +143,7 @@ public class ToDoSubTable extends ToDoTable {
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
+            getTitlePanel().hideDoneButton();
         }
         if (canCreateNewTask()) {
             getTitlePanel().showCreateButton();
@@ -159,6 +161,11 @@ public class ToDoSubTable extends ToDoTable {
         } else {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
+        }        
+        if (getSelectedRowCount() == 1) {
+            getTitlePanel().showDoneButton();
+        } else {
+            getTitlePanel().hideDoneButton();
         }
         // Update title
         getTitlePanel().setText("<html>" + title + "</html>");

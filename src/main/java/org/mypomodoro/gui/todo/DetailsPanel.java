@@ -120,9 +120,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.1;
         gbc.gridheight = 2;
-        String rightArrow = getFont().canDisplay('\u226b') ? "\u226b" : ">>>";
+        String rightArrow = Labels.getString(Main.preferences.getAgileMode() ? "Common.Done" : "ToDoListPanel.Complete");
         completeButton = new CompleteToDoButton(rightArrow, todoPanel);
-        completeButton.setFont(getFont().deriveFont(Font.PLAIN, getFont().getSize() + (getFont().canDisplay('\u226b') ? 30 : 6)));
         add(completeButton, gbc);
     }
 

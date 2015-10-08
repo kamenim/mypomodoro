@@ -16,6 +16,7 @@
  */
 package org.mypomodoro.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -472,10 +473,12 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                if (!activity.isDone()) {
+                if (activity.isDone()) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                    //map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
+                    //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                    renderer.setFont(getFont().deriveFont(map));
                     
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
                     //renderer.setBackground(ColorUtil.GRAY);
@@ -722,7 +725,12 @@ public abstract class AbstractTable extends JXTable {
     public void overestimateTask(int poms) {
         // do nothing by default
     }
-
+    public void setTaskDone() {
+        Activity act = getActivityFromSelectedRow();
+        act.setIsDone(!getActivityFromSelectedRow().isDone());
+        getList().update(act);
+    }
+    
     public void deleteTasks() {
         // do nothing by default
     }

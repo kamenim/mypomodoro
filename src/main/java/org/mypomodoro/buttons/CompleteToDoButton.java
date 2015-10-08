@@ -36,9 +36,8 @@ import org.mypomodoro.util.WaitCursor;
 public class CompleteToDoButton extends TabPanelButton {
 
     public CompleteToDoButton(String label, final ToDoPanel panel) {
-        //super(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.Complete"));
         super(label);
-        setToolTipText(Labels.getString("ToDoListPanel.Complete") + " (SHIFT + >)");
+        setToolTipText(Labels.getString(Main.preferences.getAgileMode() ? "Common.Done" : "ToDoListPanel.Complete") + " (SHIFT + >)");
         addActionListener(new ActionListener() {
 
             @Override
