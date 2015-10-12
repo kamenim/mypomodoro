@@ -52,6 +52,7 @@ import javax.swing.text.JTextComponent;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -473,17 +474,16 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                if (activity.isDone()) {
-                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    //map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
-                    //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                if (!activity.isDone()) {
+                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();                    
+                    map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);                    
                     renderer.setFont(getFont().deriveFont(map));
                     
+                    //map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                    
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
-                    //renderer.setBackground(ColorUtil.GRAY);
-                    //renderer.setOpaque(false);
-                    //renderer.setBackground(ColorUtil.GRAY);
+                    //renderer.setBackground(Color.LIGHT_GRAY);
                     //renderer.setOpaque(true);
                 }
             }
@@ -729,6 +729,8 @@ public abstract class AbstractTable extends JXTable {
         Activity act = getActivityFromSelectedRow();
         act.setIsDone(!getActivityFromSelectedRow().isDone());
         getList().update(act);
+        ActivitiesDAO.getInstance().updateDone(act);
+        repaint();
     }
     
     public void deleteTasks() {
@@ -814,7 +816,6 @@ public abstract class AbstractTable extends JXTable {
                 }
             }
         });
-
     }
 
     // This method does not need to be abstract as it's implemented by the TODO table and sub-tables only

@@ -80,7 +80,7 @@ public class ReportsSubTable extends ReportsTable {
                     real += selectedActivity.getActualPoms();
                 }
                 title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
-                title += " > " + Labels.getString("Common.Done") + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
+                title += " > E: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     title += " + " + overestimated;
                 }
@@ -88,7 +88,7 @@ public class ReportsSubTable extends ReportsTable {
                 int accuracy = real == 0 || estimated + overestimated == 0 ? 0 : Math.round(((float) real / ((float) estimated + overestimated)) * 100); // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + accuracy + "%" + "&nbsp;</span>";
                 // Tool tip
-                String toolTipText = Labels.getString("Common.Done") + ": ";
+                String toolTipText = Labels.getString("Common.Estimated") + ": ";
                 toolTipText += TimeConverter.getLength(real) + " / ";
                 toolTipText += TimeConverter.getLength(estimated + overestimated);
                 /*if (overestimated > 0) {
@@ -98,7 +98,7 @@ public class ReportsSubTable extends ReportsTable {
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (" + rowCount + ")";
-                title += " > " + Labels.getString("Common.Done") + ": ";
+                title += " > E: ";
                 title += tableList.getNbRealPom();
                 title += " / " + tableList.getNbEstimatedPom();
                 if (tableList.getNbOverestimatedPom() > 0) {
@@ -108,7 +108,7 @@ public class ReportsSubTable extends ReportsTable {
                 title += " > " + (Main.preferences.getAgileMode() ? "A" : Labels.getString("ReportListPanel.Accuracy")) + ": ";
                 title += accuracy + "%";
                 // Tool tip
-                String toolTipText = Labels.getString("Common.Done") + ": ";
+                String toolTipText = Labels.getString("Common.Estimated") + ": ";
                 toolTipText += TimeConverter.getLength(tableList.getNbRealPom()) + " / ";
                 toolTipText += TimeConverter.getLength(tableList.getNbEstimatedPom() + tableList.getNbOverestimatedPom());
                 /*if (tableList.getNbOverestimatedPom() > 0) {
