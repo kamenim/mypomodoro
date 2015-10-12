@@ -133,7 +133,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void updateDone(Activity activity) {
         String updateSQL = "UPDATE activities SET "
                 + "is_done = " + (activity.isDone() ? 1 : 0)
