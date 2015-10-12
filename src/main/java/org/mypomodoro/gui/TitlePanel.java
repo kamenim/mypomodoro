@@ -65,7 +65,7 @@ public class TitlePanel extends AbstractTitlePanel {
     protected void overestimateTask(int poms) {
         table.overestimateTask(poms);
     }
-    
+
     @Override
     protected void setTaskDone() {
         table.setTaskDone();

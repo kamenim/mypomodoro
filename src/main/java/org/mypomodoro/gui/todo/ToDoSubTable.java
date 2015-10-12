@@ -161,7 +161,7 @@ public class ToDoSubTable extends ToDoTable {
         } else {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
-        }        
+        }
         if (getSelectedRowCount() == 1) {
             getTitlePanel().showDoneButton();
         } else {

@@ -351,7 +351,7 @@ public class ReportsTable extends AbstractTable {
         } else {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDoneDoneButton();
-        }        
+        }
         if (Main.preferences.getAgileMode() && getSelectedRowCount() == 1) {
             getTitlePanel().showDoneDoneButton();
         } else {

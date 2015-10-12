@@ -202,7 +202,7 @@ public abstract class AbstractTitlePanel extends JPanel {
                 setTaskDone(); // same as done button
             }
         });
-        doneDoneButton.setToolTipText(Labels.getString("Agile.ReportListPanel.Done-Done"));        
+        doneDoneButton.setToolTipText(Labels.getString("Agile.ReportListPanel.Done-Done"));
     }
 
     class ExpandMouseAdapter extends MouseAdapter {
@@ -298,11 +298,11 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void showExternalButton() {
         buttonPanel.add(externalButton);
     }
-    
+
     public void showDoneButton() {
         buttonPanel.add(doneButton);
     }
-    
+
     public void showDoneDoneButton() {
         buttonPanel.add(doneDoneButton);
     }
@@ -341,11 +341,11 @@ public abstract class AbstractTitlePanel extends JPanel {
     public void hideExternalButton() {
         buttonPanel.remove(externalButton);
     }
-    
+
     public void hideDoneButton() {
         buttonPanel.remove(doneButton);
     }
-    
+
     public void hideDoneDoneButton() {
         buttonPanel.remove(doneDoneButton);
     }
@@ -379,7 +379,7 @@ public abstract class AbstractTitlePanel extends JPanel {
     protected abstract void createExternalInterruption();
 
     protected abstract void overestimateTask(int poms);
-    
+
     protected abstract void setTaskDone();
 
     protected abstract void refreshTable(boolean fromDatabase);
