@@ -60,8 +60,7 @@ public class ActivitiesDAO {
                 + newActivity.getNumInternalInterruptions() + ", "
                 + newActivity.getStoryPoints() + ", "
                 + newActivity.getIteration() + ", "
-                + newActivity.getParentId() + ", "
-                + (newActivity.isDone() ? 1 : 0) + ");";
+                + newActivity.getParentId() + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -100,15 +99,14 @@ public class ActivitiesDAO {
                 + "estimated_poms = " + activity.getEstimatedPoms() + ", "
                 + "actual_poms = " + activity.getActualPoms() + ", "
                 + "overestimated_poms = " + activity.getOverestimatedPoms() + ", "
-                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "', "
+                + "is_complete = '" + (activity.isDoneDone() ? "donedone" : String.valueOf(activity.isCompleted())) + "', "
                 + "is_unplanned = '" + String.valueOf(activity.isUnplanned()) + "', "
                 + "num_interruptions = " + activity.getNumInterruptions() + ", "
                 + "priority = " + activity.getPriority() + ", "
                 + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
                 + "story_points = " + activity.getStoryPoints() + ", "
                 + "iteration = " + activity.getIteration() + ", "
-                + "parent_id = " + activity.getParentId() + ", "
-                + "is_done = " + (activity.isDone() ? 1 : 0)
+                + "parent_id = " + activity.getParentId()
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -134,9 +132,26 @@ public class ActivitiesDAO {
         }
     }
 
-    public void updateDone(Activity activity) {
+    // subtask completed --> date completed updated
+    public void updateSubtaskCompleted(Activity activity) {
         String updateSQL = "UPDATE activities SET "
-                + "is_done = " + (activity.isDone() ? 1 : 0)
+                + "is_complete = '" + activity.isCompleted() + "',"
+                + "date_completed = " + activity.getDateCompleted().getTime()
+                + " WHERE id = " + activity.getId() + ";";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+            database.update("commit;");
+        } finally {
+            database.unlock();
+        }
+    }
+
+    // task done-done --> date completed NOT updated
+    public void updateDoneDone(Activity activity) {
+        String updateSQL = "UPDATE activities SET "
+                + "is_complete = " + (activity.isDoneDone() ? "'donedone'" : "'" + activity.isCompleted() + "'")
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();

@@ -190,16 +190,16 @@ public abstract class AbstractTitlePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setTaskDone();
+                setSubtaskCompleted();
             }
         });
-        doneButton.setToolTipText(Labels.getString("Common.Done"));
+        doneButton.setToolTipText(Labels.getString(Main.preferences.getAgileMode() ? "Common.Done" : "ToDoListPanel.Complete"));
         doneDoneButton.setMargin(buttonInsets);
         doneDoneButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setTaskDone(); // same as done button
+                setTaskDoneDone();
             }
         });
         doneDoneButton.setToolTipText(Labels.getString("Agile.ReportListPanel.Done-Done"));
@@ -300,11 +300,11 @@ public abstract class AbstractTitlePanel extends JPanel {
     }
 
     public void showDoneButton() {
-        buttonPanel.add(doneButton);
+        //buttonPanel.add(doneButton);
     }
 
     public void showDoneDoneButton() {
-        buttonPanel.add(doneDoneButton);
+        //buttonPanel.add(doneDoneButton);
     }
 
     /*public void showMoveSubtasksButton() {
@@ -380,7 +380,9 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected abstract void overestimateTask(int poms);
 
-    protected abstract void setTaskDone();
+    protected abstract void setSubtaskCompleted();
+
+    protected abstract void setTaskDoneDone();
 
     protected abstract void refreshTable(boolean fromDatabase);
 

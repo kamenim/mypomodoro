@@ -19,7 +19,6 @@ package org.mypomodoro.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.create.list.AuthorList;
 import org.mypomodoro.gui.create.list.PlaceList;
@@ -132,9 +131,9 @@ public class Activity implements Cloneable {
      */
     private int parentId = -1;
     /**
-     * state of activity. Done default is not Done
+     * state of activity. default is NOT DoneDone
      */
-    private boolean isDone = false;
+    private boolean isDoneDone = false;
 
     /**
      * Default Constructor
@@ -272,7 +271,7 @@ public class Activity implements Cloneable {
             this.estimatedPoms = rs.getInt("estimated_poms");
             this.actualPoms = rs.getInt("actual_poms");
             this.overestimatedPoms = rs.getInt("overestimated_poms");
-            this.isCompleted = Boolean.valueOf(rs.getString("is_complete"));
+            this.isCompleted = rs.getString("is_complete").equalsIgnoreCase("donedone") ? true : Boolean.valueOf(rs.getString("is_complete"));
             this.isUnplanned = Boolean.valueOf(rs.getString("is_unplanned"));
             this.numInterruptions = rs.getInt("num_interruptions");
             this.priority = rs.getInt("priority");
@@ -280,11 +279,8 @@ public class Activity implements Cloneable {
             this.storyPoints = rs.getFloat("story_points");
             this.iteration = rs.getInt("iteration");
             this.parentId = rs.getInt("parent_id");
-            this.isDone = rs.getInt("is_done") == 1;
+            this.isDoneDone = rs.getString("is_complete").equalsIgnoreCase("donedone");
         } catch (SQLException ex) {
-            // Upgrade to version 4.2
-            Main.logger.error("Fixing following issue... Done", ex);
-            Main.database.update("ALTER TABLE activities ADD is_done BOOLEAN DEFAULT 0;");
         }
     }
 
@@ -369,8 +365,8 @@ public class Activity implements Cloneable {
         return parentId;
     }
 
-    public boolean isDone() {
-        return isDone;
+    public boolean isDoneDone() {
+        return isDoneDone;
     }
 
     // SETTERS
@@ -460,8 +456,8 @@ public class Activity implements Cloneable {
         this.parentId = parentId;
     }
 
-    public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+    public void setIsDoneDone(boolean isDoneDone) {
+        this.isDoneDone = isDoneDone;
     }
 
     /**
