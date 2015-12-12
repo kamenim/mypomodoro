@@ -497,7 +497,9 @@ public class Pomodoro {
                         }
                     }
                 });
-                clip.open(ain);
+                if (!clip.isOpen()) { // ticket #80: problem with LineUnavailableException (see http://stackoverflow.com/questions/11915469/java-sound-format-not-supported)
+                    clip.open(ain);
+                }
                 clip.loop(continuously ? Clip.LOOP_CONTINUOUSLY : 0);
                 clip.start();
             } finally {

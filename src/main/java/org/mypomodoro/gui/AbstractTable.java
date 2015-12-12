@@ -474,7 +474,8 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                if (activity.isDone()) {
+                /*if ((activity.isSubTask() && activity.isCompleted())
+                        || activity.isDoneDone()) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                     map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
                     renderer.setFont(getFont().deriveFont(map));
@@ -484,7 +485,7 @@ public abstract class AbstractTable extends JXTable {
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
                     //renderer.setBackground(Color.LIGHT_GRAY);
                     //renderer.setOpaque(true);
-                }
+                }*/
             }
             return renderer;
         }
@@ -725,11 +726,20 @@ public abstract class AbstractTable extends JXTable {
         // do nothing by default
     }
 
-    public void setTaskDone() {
+    public void setSubtaskCompleted() {
         Activity act = getActivityFromSelectedRow();
-        act.setIsDone(!getActivityFromSelectedRow().isDone());
+        act.setIsCompleted(!act.isCompleted());
+        act.setDateCompleted(!act.isCompleted() ? new Date() : new Date(0));
         getList().update(act);
-        ActivitiesDAO.getInstance().updateDone(act);
+        ActivitiesDAO.getInstance().updateSubtaskCompleted(act);
+        repaint();
+    }
+
+    public void setTaskDoneDone() {
+        Activity act = getActivityFromSelectedRow();
+        act.setIsDoneDone(!act.isDoneDone());
+        getList().update(act);
+        ActivitiesDAO.getInstance().updateDoneDone(act);
         repaint();
     }
 

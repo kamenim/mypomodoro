@@ -144,8 +144,7 @@ public class Database {
                 + "num_internal_interruptions INTEGER, "
                 + "story_points FLOAT, "
                 + "iteration INTEGER, "
-                + "parent_id INTEGER, "
-                + "is_done BOOLEAN DEFAULT 0" + ");";
+                + "parent_id INTEGER " + ");";
         update(createTableSQL);
     }
 

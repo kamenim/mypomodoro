@@ -150,7 +150,9 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
             textMap.remove("storypoints");
             textMap.remove("iteration");
         }
-        textMap.remove("date_completed");
+        if (activity.isTask()) {
+            textMap.remove("date_completed");
+        }
     }
 
     public JPanel getIconPanel() {

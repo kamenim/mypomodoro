@@ -145,9 +145,9 @@ public class PreferencesInputForm extends JPanel {
                 updatePomodoroSlidersText();
             }
         });
-        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 3, 5,
+        nbPomPerSetSlider = new TimerValueSlider(controlPanel, 2, 5,
                 Main.preferences.getNbPomPerSet(),
-                4, 4,
+                3, 4,
                 Labels.getString("PreferencesPanel.pomodoros"),
                 true, false);
         nbPomPerSetSlider.getSlider().addChangeListener(new ChangeListener() {

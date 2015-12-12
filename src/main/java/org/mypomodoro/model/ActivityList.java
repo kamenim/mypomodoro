@@ -96,9 +96,7 @@ public class ActivityList extends AbstractActivities {
         act.setIsCompleted(false);
         act.setDate(date);
         act.setDateCompleted(dateReopen);
-        if (act.isTask()) {
-            act.setIsDone(false); // tasks cannot be done in activity list --> make sure we remove done-done status of imported and reopened tasks
-        }
+        act.setIsDoneDone(false); // tasks cannot be done-done in activity list --> this makes sure we remove done-done status of imported and reopened tasks        
         if (act.getId() == -1) { // add to the database (new activity)
             act.setId(act.databaseInsert());
         } else { // update in database (modified activity or moved from todo list / reopened from report list)
