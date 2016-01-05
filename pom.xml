@@ -6,7 +6,7 @@
   <groupId>org.mypomodoro</groupId>
   <artifactId>myAgilePomodoro</artifactId>
   <packaging>jar</packaging>
-  <version>4.1.1</version>
+  <version>4.2.0</version>
   <name>myAgilePomodoro</name>
   <url>http://sourceforge.net/projects/mypomodoro/</url>
     
@@ -322,9 +322,15 @@
         <!-- Launch4j plugin -->
         <plugins>
           <plugin>
-            <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+            <!-- Initial plugin that may not create proper .exe wrapper for Windows 10 (ticket #10) -->
+            <!--groupId>org.bluestemsoftware.open.maven.plugin</groupId>
             <artifactId>launch4j-plugin</artifactId>
-            <version>1.5.0.0</version>
+            <version>1.5.0.0</version-->
+            <!-- The following is a newer and up to date plugin based on launch4j -->
+            <groupId>com.akathist.maven.plugins.launch4j</groupId>
+            <artifactId>launch4j-maven-plugin</artifactId>
+            <!-- Not using version 1.7.x as build won't compile on Java 6 (some dependencies were initially compiled on Java 7u51) -->
+            <version>1.6</version>
             <executions>
               <execution>
                 <id>launch4j</id>

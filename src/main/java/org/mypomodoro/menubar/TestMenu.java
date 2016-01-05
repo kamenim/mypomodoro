@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import static java.lang.Thread.sleep;
 import java.util.Date;
 import java.util.Random;
 import javax.swing.JMenu;
@@ -49,6 +50,7 @@ public class TestMenu extends JMenu {
         add(new TestDataMenu(100));
         add(new TestDataMenu(500));
         add(new TestDataMenu(1000));
+        //add(new TemplateDataMenu());
         add(new JSeparator());
         add(new ResetDataItem());
         addFocusListener(new FocusListener() {
@@ -67,12 +69,20 @@ public class TestMenu extends JMenu {
     class TestDataMenu extends JMenu {
 
         public TestDataMenu(final int nbTask) {
-            super(Labels.getString("DataMenu.Generate Test Data") + " (" + nbTask + ")");
+            super(Labels.getString("DataMenu.Test Data") + " (" + nbTask + ")");
             add(new TestDataItem(nbTask, true));
             add(new TestDataItem(nbTask, false));
         }
     }
+    
+    class TemplateDataMenu extends JMenu {
 
+        public TemplateDataMenu() {
+            super(Labels.getString("DataMenu.Template Data"));
+            add(new YCombinatorDataItem());
+        }
+    }
+    
     // create test data
     class TestDataItem extends JMenuItem {
 
@@ -353,7 +363,121 @@ public class TestMenu extends JMenu {
             return nbSubTask;
         }
     }
+    
+    // create Y Combinator model data: 3 major tasks, 30 minor tasks a day
+    class YCombinatorDataItem extends JMenuItem {
 
+        public YCombinatorDataItem() {
+            super("Y Combinator");
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    createYCombinatorData();
+                }
+            });
+        }
+
+        private void createYCombinatorData() {
+            new Thread() { // This new thread is necessary for updating the progress bar
+                @Override
+                public void run() {
+                    if (!WaitCursor.isStarted()) {
+                        // Start wait cursor
+                        WaitCursor.startWaitCursor();
+                        // Disable item menu
+                        setEnabled(false);
+                        // Set progress bar
+                        MainPanel.progressBar.setVisible(true);
+                        MainPanel.progressBar.getBar().setValue(0);
+                        MainPanel.progressBar.getBar().setMaximum(4);                        
+                        int todoListValue = 0;
+                        boolean withSubtask  = false;
+                        final StringBuilder progressText = new StringBuilder();
+                        for (int i = 1; i <= 4; i++) {
+                            if (!MainPanel.progressBar.isStopped()) {
+                                final Activity a = new Activity(
+                                        "", // place
+                                        "", // author
+                                        (i==4 ? "Minor Tasks" : "Major Task " + i), // name
+                                        "", // description
+                                        "", // type
+                                        0, // up to the user to set the estimation
+                                        new Date()); // today
+                                if (i == 4) {
+                                    withSubtask = true;
+                                }
+                                // Tasks for the ToDo list
+                                ToDoList.getList().add(a);
+                                if (withSubtask) { // Adding subtasks                                            
+                                    addYCombinatorSubTasks(a);
+                                }
+                                Main.gui.getToDoPanel().getMainTable().insertRow(a); // main table !
+                                todoListValue++;                                
+                                final int progressValue = i;
+                                progressText.setLength(0); // reset string builder
+                                progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
+                                progressText.append(Integer.toString(todoListValue));
+                                if (withSubtask) {
+                                    progressText.append(" (" + Integer.toString(30) + ")");
+                                }
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainPanel.progressBar.getBar().setValue(progressValue); // % - required to see the progress                                
+                                        MainPanel.progressBar.getBar().setString(progressText.toString()); // task
+                                    }
+                                });
+                            }
+                        }
+                        // Close progress bar
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainPanel.progressBar.getBar().setString(Labels.getString("ProgressBar.Done") + " (" + progressText + ")");
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000); // wait one second before hiding the progress bar
+                                        } catch (InterruptedException ex) {
+                                            Main.logger.error("", ex);
+                                        }
+                                        // hide progress bar
+                                        MainPanel.progressBar.getBar().setString(null);
+                                        MainPanel.progressBar.setVisible(false);
+                                        MainPanel.progressBar.setStopped(false);
+                                    }
+                                }.start();
+                            }
+                        });
+                        // Enable item menu
+                        setEnabled(true);
+                        // Stop wait cursor
+                        WaitCursor.stopWaitCursor();
+                    }
+                }
+            }.start();                       
+        }
+        
+        // 30 sutasks representing 30 minor tasks a day
+        private void addYCombinatorSubTasks(Activity a) {                    
+            for (int j = 1; j <= 30; j++) {
+                Activity sub = new Activity(
+                    "", // place
+                    "", // author
+                    "Minor Task " + j, // name
+                    "", // description
+                    "", // type
+                    0, // estimation
+                    new Date()); // today
+                sub.setParentId(a.getId());
+                sub.setType(Labels.getString("Common.Subtask"));                    
+                ToDoList.getList().add(sub);             
+            }            
+        }
+    }
+    
     // delete all data
     class ResetDataItem extends JMenuItem {
 
