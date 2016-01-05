@@ -322,7 +322,7 @@
         <!-- Launch4j plugin -->
         <plugins>
           <plugin>
-            <!-- Initial plugin that may not create proper .exe wrapper for Windows 10 (ticket #10) -->
+            <!-- Initial plugin that may not create proper .exe wrapper for Windows 10 (ticket #82) -->
             <!--groupId>org.bluestemsoftware.open.maven.plugin</groupId>
             <artifactId>launch4j-plugin</artifactId>
             <version>1.5.0.0</version-->
