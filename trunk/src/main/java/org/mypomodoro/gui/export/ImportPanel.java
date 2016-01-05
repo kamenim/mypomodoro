@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import static java.lang.Thread.sleep;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -431,7 +432,7 @@ public class ImportPanel extends JPanel {
 
     private Activity getActivity(String[] line) throws Exception {
         Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
-                org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
+                line[1].isEmpty() ? new Date() : org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
                 !line[0].equals("0"), panel instanceof ReportsPanel);
         try {
@@ -451,7 +452,7 @@ public class ImportPanel extends JPanel {
         }
         // the dates must be preserved
         if (!line[2].isEmpty()) { // date complete field not empty
-            newActivity.setDate(org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
+            newActivity.setDate(line[1].isEmpty() ? new Date() : org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()));
             newActivity.setDateCompleted(org.mypomodoro.util.DateUtil.getDate(line[2], importInputForm.getDatePattern()));
         }
         return newActivity;

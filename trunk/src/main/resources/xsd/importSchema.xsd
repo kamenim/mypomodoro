@@ -8,7 +8,7 @@
   <xs:group name="data">
     <xs:sequence>
       <xs:element name="u" type="xs:boolean"/><!-- 0 (false) or 1 (true - unplanned or interrruption) -->
-      <xs:element name="date" type="xs:string"/><!-- date of creation (Agile mode) or schedule date (Pomodoro mode) -->
+      <xs:element name="date" type="xs:string"/><!-- date of creation (Agile + Pomodoro mode) or schedule date (Pomodoro mode) -->
       <xs:element name="datecompleted" type="xs:string"/>
       <xs:element name="title" type="xs:string"/>
       <xs:element name="estimate" type="xs:nonNegativeInteger"/><!-- 0, 1, 2... -->
@@ -22,10 +22,10 @@
       <xs:element name="author" type="xs:string"/>
       <xs:element name="place" type="xs:string"/>
       <xs:element name="description" type="xs:string"/>
-      <xs:element name="comment" type="xs:string"/><!-- story (Agile mode) or comment (Pomodoro mode) -->
-      <xs:element name="storypoints" type="xs:decimal"/><!-- 0.0, 0.5, 1.0... -->
-      <xs:element name="iteration" type="xs:integer"/><!-- -1, 0, 1... (Agile mode) or -1 (Pomodoro mode) -->
-      <xs:element name="priority" type="xs:integer"/><!-- -1, 0, 1... (Agile mode) or -1 (Pomodoro mode) -->
+      <xs:element name="comment" type="xs:string"/><!-- story (Agile + Pomodoro mode) or comment (Pomodoro mode) -->
+      <xs:element name="storypoints" type="xs:decimal"/><!-- 0.0, 0.5, 1.0... (Agile + Pomodoro mode) or 0.0 (Pomodoro mode) -->
+      <xs:element name="iteration" type="xs:integer"/><!-- -1, 0, 1... (Agile + Pomodoro mode) or -1 (Pomodoro mode) -->
+      <xs:element name="priority" type="xs:integer"/><!-- -1, 0, 1... -->
     </xs:sequence>
   </xs:group>
 
