@@ -551,9 +551,14 @@ public abstract class AbstractTable extends JXTable {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text = (String) value;
-            renderer.setToolTipText(text);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity activity = getList().getById(id);
+            if (activity != null
+                    && activity.getRecordedTime() > 0) {
+                value = "*" + value; // pomodoro of task not finished (recorded time)                
+            }
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);                        
+            renderer.setToolTipText((String) value);
             return renderer;
         }
     }

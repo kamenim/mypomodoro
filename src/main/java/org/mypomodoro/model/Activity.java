@@ -130,11 +130,17 @@ public class Activity implements Cloneable {
      * Parent Id
      */
     private int parentId = -1;
+    
     /**
      * state of activity. default is NOT DoneDone
      */
     private boolean isDoneDone = false;
-
+    
+    /**
+     * recorded time as display on the timer when voiding pomodoro
+     */
+    private long recordedTime = -1; 
+            
     /**
      * Default Constructor
      */
@@ -582,5 +588,13 @@ public class Activity implements Cloneable {
 
     public boolean isSubTask() {
         return !isTask();
+    }
+    
+    public void recordTime(long time){
+        recordedTime = time;
+    }
+    
+    public long getRecordedTime() {
+        return recordedTime;
     }
 }
