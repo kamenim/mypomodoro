@@ -111,6 +111,8 @@ public class ToDoTable extends AbstractTable {
                         scrollRectToVisible(getCellRect(getSelectedRow(), 0, true)); // when sorting columns, focus on selected row
                         // Display details                           
                         showInfoForSelectedRow();
+                        // Set recorded time onto the timer                           
+                        showRecordedTimeForSelectedRow();
                         // populate subtable
                         populateSubTable();
                         // the start button may have been hidden by a multiple selection
@@ -191,6 +193,16 @@ public class ToDoTable extends AbstractTable {
                 }
             }
         });
+    }
+       
+    protected void showRecordedTimeForSelectedRow() {
+        Activity activity = getActivityFromSelectedRow();
+        // Activity may be null when hovering the cursor over the tasks while deleting/moving it
+        if (activity != null
+            && !panel.getPomodoro().inPomodoro() 
+            && !panel.getPomodoro().getTimer().isRunning()) {            
+            panel.getPomodoro().initTimer(activity.getRecordedTime());
+        }
     }
 
     @Override

@@ -96,11 +96,22 @@ public class Pomodoro {
         pomodoroTime.setText(sdf.format(pomodoroLength));
         pomodoroTimer = new Timer(SECOND, new UpdateAction());
     }
+    
+    public void initTimer(long aTime) {
+        if(aTime > 0) {
+            pomodoroLength = aTime;
+        }  else {
+            pomodoroLength = POMODORO_LENGTH;
+        }
+        time = pomodoroLength;
+        tmpPomodoroLength = pomodoroLength;
+        pomodoroTime.setText(sdf.format(pomodoroLength));
+    }
 
     public void start() {
         // the user may want to star a new Set (eg : stopping the timer during a short break (or voiding a pomodoro) before lunch time and then starting a pomodoro after)
         if (!strictPomodoro
-                && pomSetNumber > 0) {
+                && pomSetNumber > 0) { // no starting from a recorded time
             String title = Labels.getString("ToDoListPanel.New Set");
             int pomSetNumberRemaining = Main.preferences.getNbPomPerSet() - pomSetNumber;
             int shortBreakSetNumberRemaining = pomSetNumberRemaining - 1;
@@ -118,6 +129,8 @@ public class Pomodoro {
                 pomSetNumber = 0;
             }
         }
+        // in case time was recorded, the length must be reset to it's normal until next record or stop
+        initTime();
         // Start timer
         pomodoroTimer.start();
         if (Main.preferences.getTicking() && !isMute) {
@@ -129,7 +142,7 @@ public class Pomodoro {
             }
             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
         }
-        inpomodoro = true;
+        inpomodoro = true;        
         // Tooltip                        
         setTooltipOnImage();
         Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
@@ -196,13 +209,31 @@ public class Pomodoro {
             refreshTitlesAndTables();
         }
     }
+    
+    //time : time displayed on the timer
+    public void recordTime() {        
+        getCurrentToDo().recordTime(time);
+        pomodoroLength = time;
+    }
+    
+    public void initTime() {
+        getCurrentToDo().recordTime(-1);        
+        pomodoroLength = POMODORO_LENGTH;
+    }
 
     public boolean stopWithWarning() {
         if (inpomodoro) { // in pomodoro only, not during breaks            
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
-            String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");
-            int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
+            String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");            
+            Object[] options = {UIManager.getString("OptionPane.yesButtonText", Labels.getLocale()), Labels.getString("Common.Record"), UIManager.getString("OptionPane.noButtonText", Labels.getLocale())};
+            if (strictPomodoro) {
+                options = new Object[] {UIManager.getString("OptionPane.yesButtonText", Labels.getLocale()), UIManager.getString("OptionPane.noButtonText", Labels.getLocale())};
+            }
+            int reply = JOptionPane.showOptionDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON, options, options[0]);
             if (reply == JOptionPane.YES_OPTION) {
+                stop();
+            } else if (!strictPomodoro && reply == 1) { // record                
+                recordTime();
                 stop();
             }
         } else { // breaks
