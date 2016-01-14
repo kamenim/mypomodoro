@@ -67,8 +67,8 @@ public class TitlePanel extends AbstractTitlePanel {
     }
 
     @Override
-    protected void setSubtaskCompleted() {
-        table.setSubtaskCompleted();
+    protected void setSubtaskDoneDone() {
+        table.setSubtaskDoneDone();
     }
 
     @Override

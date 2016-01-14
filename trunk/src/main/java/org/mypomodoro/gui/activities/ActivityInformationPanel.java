@@ -48,8 +48,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                     + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
                     + (activity.isUnplanned() ? "]" : "") + "<br>");
         }
-        //if (activity.isCompleted() || activity.isDoneDone()) { // task / subtask completed OR task done-done
-        if (activity.isTask() && activity.isCompleted()) {
+        if ((activity.isCompleted() && activity.isTask()) || activity.isDoneDone()) {        
             textMap.put("date_completed", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + ":</b> "
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())

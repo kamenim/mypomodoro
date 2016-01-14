@@ -75,8 +75,8 @@ public class PreferencesDAO {
                     Main.preferences.setTheme(rs.getString("theme"));
                 }
             } catch (SQLException ex) {
-                // Upgrade from version 3.0, 3.1, 3.2 to 3.3, 3.4, 4.0, 4.1 or 4.2
-                Main.logger.error("Fixing following issue... Done", ex);
+                // Upgrade from 3.0, 3.1 or 3.2 TO 3.3, 3.4, 4.0, 4.1, 4.1.1
+                /*Main.logger.error("Fixing following issue... Done", ex);
                 database.update("ALTER TABLE preferences ADD bring_to_front BOOLEAN DEFAULT 0;");
                 String mAPLookAndFeel = MAPLookAndFeel.class.getPackage().getName() + ".MAPLookAndFeel";
                 if (MySQLConfigLoader.isValid()) {
@@ -85,7 +85,7 @@ public class PreferencesDAO {
                     database.update("ALTER TABLE preferences ADD theme TEXT DEFAULT '" + mAPLookAndFeel + "';");
                 }
                 Main.preferences.setBringToFront(false);
-                Main.preferences.setTheme(mAPLookAndFeel);
+                Main.preferences.setTheme(mAPLookAndFeel);*/
             } finally {
                 try {
                     rs.close();

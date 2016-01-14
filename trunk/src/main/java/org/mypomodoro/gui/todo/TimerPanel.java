@@ -99,17 +99,25 @@ public class TimerPanel extends JPanel {
                         pomodoro.resume();
                         if (pomodoro.inPomodoro()) {
                             pauseButton.setIcon(pauseRedIcon);
+                            startButton.setIcon(stopRedIcon);
+                            timePlus.setTimePlusRedIcon(true); // turn time plus button red
+                            timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
+                            pomodoroTime.setForeground(Main.taskRunningColor);
                         } else {
                             pauseButton.setIcon(pauseIcon);
                         }
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     } else { // pause
                         pomodoro.pause();
-                        if (pomodoro.inPomodoro()) {
+                        /*if (pomodoro.inPomodoro()) {
                             pauseButton.setIcon(resumeRedIcon);
-                        } else {
+                        } else {*/
                             pauseButton.setIcon(resumeIcon);
-                        }
+                            startButton.setIcon(stopIcon);
+                            timePlus.setTimePlusRedIcon(false); // turn time plus button black
+                            timeMinus.setTimeMinusRedIcon(false); // turn time minus button black
+                            pomodoroTime.setForeground(ColorUtil.BLACK);
+                        //}
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
                     }
                 }
@@ -294,6 +302,19 @@ public class TimerPanel extends JPanel {
         timePlus.setTimePlusRedIcon(true);
         timeMinus.setTimeMinusRedIcon(true);
         pomodoroTime.setForeground(Main.taskRunningColor);
+    }
+    
+    // turn icons red + resume icon
+    public void setPauseEnv() {
+        startButton.setStarted(true);
+        startButton.setIcon(stopIcon);
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+        pauseButton.setVisible(true);
+        pauseButton.setIcon(resumeIcon);
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
+        timePlus.setTimePlusRedIcon(false);
+        timeMinus.setTimeMinusRedIcon(false);
+        pomodoroTime.setForeground(ColorUtil.BLACK);
     }
 
     public void switchPomodoroCompliance() {
