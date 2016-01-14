@@ -122,7 +122,7 @@ public class Database {
         createPreferencesTable();
     }
 
-    // note: is_complete and is_unplanned should be boolean...
+    // note: is_complete, is_unplanned, is_donedone should, one day, be made boolean
     public void createActivitiesTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS activities ( "
                 + "id INTEGER PRIMARY KEY " + autoIncrementKeyword + ", "
@@ -144,7 +144,8 @@ public class Database {
                 + "num_internal_interruptions INTEGER, "
                 + "story_points FLOAT, "
                 + "iteration INTEGER, "
-                + "parent_id INTEGER " + ");";
+                + "parent_id INTEGER, "
+                + "is_donedone TEXT " + ");";
         update(createTableSQL);
     }
 

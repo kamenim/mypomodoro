@@ -52,9 +52,10 @@ public class ToDoIconPanel {
 
         // Add label component
         JLabel iconLabel = new JLabel();
-        iconLabel.setToolTipText(activity.getName());
+        String activityName = (activity.getRecordedTime() > 0 ? "*" : "") + activity.getName();
+        iconLabel.setToolTipText(activityName);
         if (showName) {
-            iconLabel.setText(activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." + " " : activity.getName() + " ");
+            iconLabel.setText(activityName.length() > 25 ? activityName.substring(0, 25) + "..." + " " : activityName + " ");
             iconLabel.setForeground(color);
             iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));
         }

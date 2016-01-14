@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.mypomodoro.Main;
+import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.util.DateUtil;
 
@@ -60,7 +61,8 @@ public class ActivitiesDAO {
                 + newActivity.getNumInternalInterruptions() + ", "
                 + newActivity.getStoryPoints() + ", "
                 + newActivity.getIteration() + ", "
-                + newActivity.getParentId() + ");";
+                + newActivity.getParentId() + ", " 
+                + "'" + String.valueOf(newActivity.isDoneDone()) + "'" + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -99,14 +101,15 @@ public class ActivitiesDAO {
                 + "estimated_poms = " + activity.getEstimatedPoms() + ", "
                 + "actual_poms = " + activity.getActualPoms() + ", "
                 + "overestimated_poms = " + activity.getOverestimatedPoms() + ", "
-                + "is_complete = '" + (activity.isDoneDone() ? "donedone" : String.valueOf(activity.isCompleted())) + "', "
+                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "', "
                 + "is_unplanned = '" + String.valueOf(activity.isUnplanned()) + "', "
                 + "num_interruptions = " + activity.getNumInterruptions() + ", "
                 + "priority = " + activity.getPriority() + ", "
                 + "num_internal_interruptions = " + activity.getNumInternalInterruptions() + ", "
                 + "story_points = " + activity.getStoryPoints() + ", "
                 + "iteration = " + activity.getIteration() + ", "
-                + "parent_id = " + activity.getParentId()
+                + "parent_id = " + activity.getParentId() + ", "
+                + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'"
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -132,27 +135,15 @@ public class ActivitiesDAO {
         }
     }
 
-    // subtask completed --> date completed updated
-    public void updateSubtaskCompleted(Activity activity) {
-        String updateSQL = "UPDATE activities SET "
-                + "is_complete = '" + activity.isCompleted() + "',"
-                + "date_completed = " + activity.getDateCompleted().getTime()
-                + " WHERE id = " + activity.getId() + ";";
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update(updateSQL);
-            database.update("commit;");
-        } finally {
-            database.unlock();
-        }
-    }
-
+    // subtask done/completed --> date completed updated
     // task done-done --> date completed NOT updated
     public void updateDoneDone(Activity activity) {
         String updateSQL = "UPDATE activities SET "
-                + "is_complete = " + (activity.isDoneDone() ? "'donedone'" : "'" + activity.isCompleted() + "'")
-                + " WHERE id = " + activity.getId() + ";";
+                + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'";
+                if (activity.isSubTask()) {
+                    updateSQL +=  ", date_completed = " + activity.getDateCompleted().getTime();
+                }
+                updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
             database.update("begin;");
@@ -179,15 +170,31 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities "
+            String query = "SELECT * FROM activities "
                     + "WHERE priority = -1 AND is_complete = 'false' ORDER BY "
-                    + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;"));
+                    + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;");
+            ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {
-                    activities.add(new Activity(rs));
+                    activities.add(new Activity(rs));                
                 }
-            } catch (SQLException ex) {
-                Main.logger.error("", ex);
+            } catch (SQLException ex) {  
+                // Upgrade from 3.3, 3.4, 4.0, 4.1 or 4.1.1 TO 4.2.0
+                Main.logger.error("Fixing following issue... Done", ex);
+                if (MySQLConfigLoader.isValid()) {
+                    database.update("ALTER TABLE activities ADD is_donedone VARCHAR(255) DEFAULT 'false';");
+                } else {
+                    database.update("ALTER TABLE activities ADD is_donedone TEXT DEFAULT 'false';");
+                }                
+                try {
+                    // re-init the result set (rs.first()/beforeFirst() won't suffice)
+                    rs = database.query(query);
+                    while (rs.next()) {                        
+                        activities.add(new Activity(rs));
+                    }
+                } catch (SQLException ex1) {
+                    Main.logger.error("", ex);
+                }
             } finally {
                 try {
                     rs.close();

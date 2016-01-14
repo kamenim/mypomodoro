@@ -130,17 +130,17 @@ public class Activity implements Cloneable {
      * Parent Id
      */
     private int parentId = -1;
-    
+
     /**
      * state of activity. default is NOT DoneDone
      */
     private boolean isDoneDone = false;
-    
+
     /**
      * recorded time as display on the timer when voiding pomodoro
      */
-    private long recordedTime = -1; 
-            
+    private long recordedTime = -1;
+
     /**
      * Default Constructor
      */
@@ -229,23 +229,24 @@ public class Activity implements Cloneable {
      * @param notes (comment)
      * @param unplanned
      * @param completed
+     * @param donedone
      */
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms,
             Date dateActivity, int overestimatedPoms, int actualPoms,
             int internalInterruptions, int externalInterruptions, String notes,
-            boolean unplanned, boolean completed) {
+            boolean unplanned, boolean completed, boolean donedone) {
         this(place, author, name, description, type, estimatedPoms,
                 dateActivity, overestimatedPoms, actualPoms,
                 internalInterruptions, externalInterruptions, notes,
-                unplanned, completed, -1);
+                unplanned, completed, donedone, -1);
     }
 
     public Activity(String place, String author, String name,
             String description, String type, int estimatedPoms,
             Date dateActivity, int overestimatedPoms, int actualPoms,
             int internalInterruptions, int externalInterruptions, String notes,
-            boolean unplanned, boolean completed, int activityId) {
+            boolean unplanned, boolean completed, boolean donedone, int activityId) {
         this.place = place;
         this.author = author;
         this.name = name;
@@ -260,34 +261,32 @@ public class Activity implements Cloneable {
         this.notes = notes;
         this.isUnplanned = unplanned;
         this.isCompleted = completed;
+        this.isDoneDone = donedone;
         this.id = activityId > 0 ? activityId : this.id;
     }
 
-    public Activity(ResultSet rs) {
-        try {
-            this.id = rs.getInt("id");
-            this.name = rs.getString("name");
-            this.type = rs.getString("type");
-            this.description = rs.getString("description");
-            this.notes = rs.getString("notes");
-            this.author = rs.getString("author");
-            this.place = rs.getString("place");
-            this.date = new Date(rs.getLong("date_added"));
-            this.dateCompleted = new Date(rs.getLong("date_completed"));
-            this.estimatedPoms = rs.getInt("estimated_poms");
-            this.actualPoms = rs.getInt("actual_poms");
-            this.overestimatedPoms = rs.getInt("overestimated_poms");
-            this.isCompleted = rs.getString("is_complete").equalsIgnoreCase("donedone") ? true : Boolean.valueOf(rs.getString("is_complete"));
-            this.isUnplanned = Boolean.valueOf(rs.getString("is_unplanned"));
-            this.numInterruptions = rs.getInt("num_interruptions");
-            this.priority = rs.getInt("priority");
-            this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
-            this.storyPoints = rs.getFloat("story_points");
-            this.iteration = rs.getInt("iteration");
-            this.parentId = rs.getInt("parent_id");
-            this.isDoneDone = rs.getString("is_complete").equalsIgnoreCase("donedone");
-        } catch (SQLException ex) {
-        }
+    public Activity(ResultSet rs) throws SQLException {
+        this.id = rs.getInt("id");
+        this.name = rs.getString("name");
+        this.type = rs.getString("type");
+        this.description = rs.getString("description");
+        this.notes = rs.getString("notes");
+        this.author = rs.getString("author");
+        this.place = rs.getString("place");
+        this.date = new Date(rs.getLong("date_added"));
+        this.dateCompleted = new Date(rs.getLong("date_completed"));
+        this.estimatedPoms = rs.getInt("estimated_poms");
+        this.actualPoms = rs.getInt("actual_poms");
+        this.overestimatedPoms = rs.getInt("overestimated_poms");
+        this.isCompleted = Boolean.valueOf(rs.getString("is_complete"));
+        this.isUnplanned = Boolean.valueOf(rs.getString("is_unplanned"));
+        this.numInterruptions = rs.getInt("num_interruptions");
+        this.priority = rs.getInt("priority");
+        this.numInternalInterruptions = rs.getInt("num_internal_interruptions");
+        this.storyPoints = rs.getFloat("story_points");
+        this.iteration = rs.getInt("iteration");
+        this.parentId = rs.getInt("parent_id");
+        this.isDoneDone = Boolean.valueOf(rs.getString("is_donedone"));
     }
 
     // GETTERS
@@ -539,7 +538,7 @@ public class Activity implements Cloneable {
         return DateUtil.inPast(getDate());
     }
 
-    // Activity (not a ToDo nor a Report)
+    // Activity or Sub-actvity (not a ToDo nor a Report)
     public boolean isActivity() {
         return getPriority() == -1 && !isCompleted();
     }
@@ -579,7 +578,8 @@ public class Activity implements Cloneable {
                 && a.getPriority() == getPriority()
                 && a.getNumInternalInterruptions() == getNumInternalInterruptions()
                 && a.getStoryPoints() == getStoryPoints()
-                && a.getIteration() == getIteration();
+                && a.getIteration() == getIteration()
+                && a.isDoneDone() == isDoneDone();
     }
 
     public boolean isTask() {
@@ -589,11 +589,11 @@ public class Activity implements Cloneable {
     public boolean isSubTask() {
         return !isTask();
     }
-    
-    public void recordTime(long time){
+
+    public void recordTime(long time) {
         recordedTime = time;
     }
-    
+
     public long getRecordedTime() {
         return recordedTime;
     }

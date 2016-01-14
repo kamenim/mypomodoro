@@ -16,7 +16,6 @@
  */
 package org.mypomodoro.gui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
@@ -474,18 +473,18 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                /*if ((activity.isSubTask() && activity.isCompleted())
-                        || activity.isDoneDone()) {
+                if (activity.isDoneDone()) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
-                    renderer.setFont(getFont().deriveFont(map));
+                    //map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
+                    //renderer.setFont(getFont().deriveFont(map));
 
-                    //map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                    renderer.setFont(getFont().deriveFont(map));
                     //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
                     //renderer.setBackground(Color.LIGHT_GRAY);
                     //renderer.setOpaque(true);
-                }*/
+                }
             }
             return renderer;
         }
@@ -731,15 +730,18 @@ public abstract class AbstractTable extends JXTable {
         // do nothing by default
     }
 
-    public void setSubtaskCompleted() {
+    // TODO update info detail in tab while changing date completed
+    // This is at the same time a done and a done-done for subtask. Update the date completed
+    public void setSubtaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
-        act.setIsCompleted(!act.isCompleted());
-        act.setDateCompleted(!act.isCompleted() ? new Date() : new Date(0));
+        act.setDateCompleted(!act.isDoneDone() ? new Date() : new Date(0));
+        act.setIsDoneDone(!act.isDoneDone());
         getList().update(act);
-        ActivitiesDAO.getInstance().updateSubtaskCompleted(act);
+        ActivitiesDAO.getInstance().updateDoneDone(act);
         repaint();
     }
 
+    // DON'T update the date completed
     public void setTaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
         act.setIsDoneDone(!act.isDoneDone());
