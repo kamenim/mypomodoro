@@ -162,7 +162,7 @@ public class ToDoSubTable extends ToDoTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }
-        if (getSelectedRowCount() == 1) {
+        if (canBeDone() && getSelectedRowCount() == 1) {
             getTitlePanel().showDoneButton();
         } else {
             getTitlePanel().hideDoneButton();
@@ -343,5 +343,13 @@ public class ToDoSubTable extends ToDoTable {
     @Override
     public void scrollToSelectedRows() {
         scrollToRowIndex(getSelectedRow());
+    }
+    
+    @Override
+    public void setSubtaskDoneDone() {        
+        super.setSubtaskDoneDone();
+        Activity act = getActivityFromSelectedRow();
+        panel.getDetailsPanel().selectInfo(act);
+        panel.getDetailsPanel().showInfo();
     }
 }

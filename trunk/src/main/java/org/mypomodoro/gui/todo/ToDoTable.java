@@ -376,6 +376,7 @@ public class ToDoTable extends AbstractTable {
                 getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideExternalButton();
                 getTitlePanel().hideInternalButton();
+                getTitlePanel().hideDoneDoneButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > E: ";
@@ -421,6 +422,7 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
+            getTitlePanel().hideDoneDoneButton();
         }
         if (canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();
@@ -433,6 +435,11 @@ public class ToDoTable extends AbstractTable {
         } else {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
+        }
+        if (canBeDone() && getSelectedRowCount() == 1) {
+            getTitlePanel().showDoneDoneButton();
+        } else {
+            getTitlePanel().hideDoneDoneButton();
         }
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
@@ -538,6 +545,10 @@ public class ToDoTable extends AbstractTable {
     protected boolean canCreateInterruptions() {
         return panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning(); // no interruptions during pauses
     }
+    
+    protected boolean canBeDone() {
+        return !panel.getPomodoro().inPomodoro(); // no done-done during pomodoros
+    }    
 
     protected boolean canCreateUnplannedTask() {
         return true; // anytime

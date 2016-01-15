@@ -89,6 +89,7 @@ public class ReportList extends AbstractActivities {
         act.setIsCompleted(true);
         act.setDate(date);
         act.setDateCompleted(dateCompleted);
+        act.recordTime(-1); // no recorded time left
         if (act.getId() == -1) { // add to the database (new report)
             act.setId(act.databaseInsert());
         } else { // update in database (modified report or moved from todo list)
