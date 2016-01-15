@@ -235,4 +235,12 @@ public class ActivitiesSubTable extends ActivitiesTable {
     protected boolean canMoveTasks() {
         return false;
     }
+    
+    @Override
+    public void setSubtaskDoneDone() {        
+        super.setSubtaskDoneDone();
+        Activity act = getActivityFromSelectedRow();
+        panel.getDetailsPanel().selectInfo(act);
+        panel.getDetailsPanel().showInfo();
+    }
 }

@@ -188,4 +188,12 @@ public class ReportsSubTable extends ReportsTable {
     protected boolean canMoveTasks() {
         return false;
     }
+    
+    @Override
+    public void setSubtaskDoneDone() {        
+        super.setSubtaskDoneDone();
+        Activity act = getActivityFromSelectedRow();
+        panel.getDetailsPanel().selectInfo(act);
+        panel.getDetailsPanel().showInfo();
+    }
 }

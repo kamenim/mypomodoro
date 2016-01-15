@@ -730,7 +730,6 @@ public abstract class AbstractTable extends JXTable {
         // do nothing by default
     }
 
-    // TODO update info detail in tab while changing date completed
     // This is at the same time a done and a done-done for subtask. Update the date completed
     public void setSubtaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
