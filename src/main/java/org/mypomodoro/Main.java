@@ -155,11 +155,14 @@ public class Main {
                     String theme = preferences.getTheme();
                     UIManager.setLookAndFeel(theme);
                 } catch (Exception ex) {
+                    // OpenJdk: if the console says "Picked up JAVA_TOOL_OPTIONS...", you want to unset that option.
                     logger.error("Using the System Look and Feel library to fix the following issue...", ex);
                     try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } catch (Exception ignored) {
-                        // should never happen
+                    } catch (Exception ex1) {
+                        // Note: Some version OpenJDK 7 & 8 have an issue regarding method getSystemLookAndFeelClassName
+                        // See https://bugs.openjdk.java.net/browse/JDK-8074303
+                        logger.error("This error is a known bug in some versions of OpenJDK 7 and 8...", ex1);
                     }
                 }
                 // Set global font (before intanstiating the components and the gui)

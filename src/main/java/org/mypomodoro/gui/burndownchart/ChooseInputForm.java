@@ -40,6 +40,7 @@ import org.mypomodoro.gui.burndownchart.types.IChartType;
 import org.mypomodoro.gui.burndownchart.types.PlainHourChart;
 import org.mypomodoro.gui.burndownchart.types.PomodoroChart;
 import org.mypomodoro.gui.burndownchart.types.StoryPointChart;
+import org.mypomodoro.gui.burndownchart.types.SubtaskChart;
 import org.mypomodoro.gui.burndownchart.types.TaskChart;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ColorUtil;
@@ -220,6 +221,7 @@ public class ChooseInputForm extends JPanel {
         }
         chartTypesBurndownComboBox.addItem(pomodoroChart);
         chartTypesBurndownComboBox.addItem(new TaskChart());
+        chartTypesBurndownComboBox.addItem(new SubtaskChart());
         chartTypesBurndownComboBox.addItem(new EffectiveHourChart());
         chartTypesBurndownComboBox.addItem(new PlainHourChart());
         chartTypesBurndownComboBox.addActionListener(new ActionListener() {
@@ -343,6 +345,7 @@ public class ChooseInputForm extends JPanel {
         }
         chartTypesBurnupComboBox.addItem(new PomodoroChart());
         chartTypesBurnupComboBox.addItem(new TaskChart());
+        chartTypesBurnupComboBox.addItem(new SubtaskChart());
         chartTypesBurnupComboBox.addItem(new EffectiveHourChart());
         chartTypesBurnupComboBox.addItem(new PlainHourChart());
         chartTypesBurnupComboBox.addActionListener(new ActionListener() {

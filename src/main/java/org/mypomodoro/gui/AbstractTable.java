@@ -473,11 +473,8 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                if (activity.isDoneDone()) {
-                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    //map.put(TextAttribute.BACKGROUND, Color.LIGHT_GRAY);
-                    //renderer.setFont(getFont().deriveFont(map));
-
+                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();                    
                     map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
                     renderer.setFont(getFont().deriveFont(map));
                     //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
@@ -738,6 +735,7 @@ public abstract class AbstractTable extends JXTable {
         getList().update(act);
         ActivitiesDAO.getInstance().updateDoneDone(act);
         repaint();
+        setTitle();
     }
 
     // DON'T update the date completed
@@ -747,6 +745,7 @@ public abstract class AbstractTable extends JXTable {
         getList().update(act);
         ActivitiesDAO.getInstance().updateDoneDone(act);
         repaint();
+        setTitle();
     }
 
     public void deleteTasks() {

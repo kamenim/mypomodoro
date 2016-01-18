@@ -322,7 +322,12 @@ public class ReportsTable extends AbstractTable {
                 getTitlePanel().setToolTipText(toolTipText);
                 getTitlePanel().hideDoneDoneButton();
             } else {
-                title += " (" + rowCount + ")";
+                title += " (";
+                int nbDoneDone = tableList.getNbDoneDone();
+                if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                }
+                title += rowCount + ")";
                 title += " > E: ";
                 title += tableList.getNbRealPom();
                 title += " / " + tableList.getNbEstimatedPom();
