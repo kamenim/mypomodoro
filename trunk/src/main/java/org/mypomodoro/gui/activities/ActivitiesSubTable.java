@@ -74,8 +74,13 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
                 getTitlePanel().hideDoneButton();
-            } else {
-                title += " (" + rowCount + ")";
+            } else {                
+                title += " (";
+                int nbDoneDone = tableList.getNbDoneDone();
+                if (nbDoneDone > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                }
+                title += rowCount + ")";
                 title += " > E: ";
                 title += tableList.getNbRealPom();
                 title += " / " + tableList.getNbEstimatedPom();

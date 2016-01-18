@@ -101,7 +101,12 @@ public class ToDoSubTable extends ToDoTable {
                 getTitlePanel().hideInternalButton();
                 getTitlePanel().hideDoneButton();
             } else {
-                title += " (" + rowCount + ")";
+                title += " (";
+                int nbDoneDone = tableList.getNbDoneDone();
+                if (nbDoneDone > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                }
+                title += rowCount + ")";
                 title += " > E: ";
                 title += tableList.getNbRealPom();
                 title += " / " + tableList.getNbEstimatedPom();
@@ -350,6 +355,6 @@ public class ToDoSubTable extends ToDoTable {
         super.setSubtaskDoneDone();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
-        panel.getDetailsPanel().showInfo();
+        panel.getDetailsPanel().showInfo();        
     }
 }
