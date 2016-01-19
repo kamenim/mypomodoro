@@ -559,8 +559,9 @@ public class ActivitiesDAO {
             try {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
-                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
-                            + "WHERE parent_id > -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities as a "                            
+                            + "INNER JOIN activities as b ON a.parent_id = b.id "
+                            + "WHERE a.parent_id > -1 AND b.date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
                         while (rs.next()) {
                             tasks.add((Float) rs.getFloat("sum"));
@@ -578,7 +579,7 @@ public class ActivitiesDAO {
             } finally {
                 database.unlock();
             }
-        }
+        }        
         return tasks;
     }
 
@@ -587,11 +588,12 @@ public class ActivitiesDAO {
         ArrayList<Float> tasks = new ArrayList<Float>();
         try {
             database.lock();
-            for (int i = startIteration; i <= endIteration; i++) {
-                ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities WHERE parent_id > -1 "
+            for (int i = startIteration; i <= endIteration; i++) {                
+                ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "INNER JOIN "
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        + "ON activities.parent_id = activities.id AND (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0)) "
+                        + "WHERE parent_id > -1");
                 try {
                     while (rs.next()) {
                         Float sumOfPomodoros = (Float) rs.getFloat("sum");

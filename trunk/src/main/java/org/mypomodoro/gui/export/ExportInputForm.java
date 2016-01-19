@@ -88,7 +88,7 @@ public class ExportInputForm extends JPanel {
     private JTextField authorisationCodeTextField = new JTextField();
     private JTextField authorisationUrlTextField = new JTextField("");
     // For import only
-    protected final JCheckBox taskBox = new JCheckBox(Labels.getString("BurndownChartPanel.Tasks"), true);
+    protected final JCheckBox taskBox = new JCheckBox(Labels.getString("Common.Tasks"), true);
     protected final JCheckBox subtaskBox = new JCheckBox(Labels.getString("Common.Subtasks"), false);
 
     public ExportInputForm() {
