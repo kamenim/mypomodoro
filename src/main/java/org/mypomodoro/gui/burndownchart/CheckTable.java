@@ -245,7 +245,12 @@ public class CheckTable extends AbstractTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
-                title += " (" + rowCount + ")";
+                title += " (";
+                int nbDoneDone = tableList.getNbDoneDone();
+                if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                }
+                title += rowCount + ")";
                 title += " > E: ";
                 title += tableList.getNbRealPom();
                 title += " / " + tableList.getNbEstimatedPom();

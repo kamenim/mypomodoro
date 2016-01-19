@@ -99,7 +99,7 @@ public class ConfigureInputForm extends JPanel {
     }
 
     private void addTasksInputFormPanel() {
-        JLabel titleBorderTasks = new JLabel(" " + Labels.getString("BurndownChartPanel.Tasks") + " ");
+        JLabel titleBorderTasks = new JLabel(" " + Labels.getString("Common.Tasks") + " ");
         titleBorderTasks.setOpaque(true);
         ComponentTitledBorder borderTasks = new ComponentTitledBorder(titleBorderTasks, tasksInputFormPanel, new EtchedBorder(), titleBorderTasks.getFont().deriveFont(Font.BOLD));
         GridBagConstraints cChart = new GridBagConstraints();

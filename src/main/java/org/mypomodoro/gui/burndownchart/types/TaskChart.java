@@ -29,7 +29,7 @@ import org.mypomodoro.util.Labels;
  */
 public class TaskChart implements IChartType {
 
-    private final String label = Labels.getString("BurndownChartPanel.Tasks");
+    private final String label = Labels.getString("Common.Tasks");
 
     @Override
     public String getYLegend() {
