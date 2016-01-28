@@ -184,7 +184,7 @@ public class CheckTable extends AbstractTable {
 
     @Override
     protected ChartList getTableList() {
-        return getList();
+        return ChartList.getTaskList();
     }
 
     @Override
@@ -300,7 +300,7 @@ public class CheckTable extends AbstractTable {
     @Override
     public void deleteTask(int rowIndex) { // remove !
         Activity activity = getActivityFromRowIndex(rowIndex);
-        getList().remove(activity); // remove task
+        getList().remove(activity); // remove task // TODO remove subtasks too
         removeRow(rowIndex);
     }
 }

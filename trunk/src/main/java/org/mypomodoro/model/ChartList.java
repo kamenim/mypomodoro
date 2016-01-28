@@ -28,9 +28,9 @@ public class ChartList extends AbstractActivities {
 
     private static final ChartList list = new ChartList();
 
-    private ChartList() {
+    /*private ChartList() {
         // not used
-    }
+    }*/
 
     @Override
     public void refresh() {
@@ -44,7 +44,7 @@ public class ChartList extends AbstractActivities {
 
     public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos)) {
+        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos)) {            
             super.add(act);
         }
     }
@@ -66,6 +66,27 @@ public class ChartList extends AbstractActivities {
     public static ChartList getList() {
         return list;
     }
+    
+    // List of main tasks
+    public static ChartList getTaskList() {
+        ChartList tableList = new ChartList(); // empty !
+        for (Activity a : list) {
+            if (a.isTask()) {
+                tableList.add(a);
+            }
+        }
+        return tableList;
+    }
+    
+    // Remove tasks AND subtasks
+    @Override
+    public void remove(Activity activity) {        
+        ArrayList<Activity> subList = getSubTasks(activity.getId());
+        for (Activity subTask : subList) {
+            super.remove(subTask);
+        }        
+        super.remove(activity);
+    }    
 
     public static int getListSize() {
         return getList().size();

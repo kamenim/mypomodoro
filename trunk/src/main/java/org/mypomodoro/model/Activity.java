@@ -587,7 +587,7 @@ public class Activity implements Cloneable {
     }
 
     public boolean isSubTask() {
-        return !isTask();
+        return parentId > -1;
     }
 
     public void recordTime(long time) {

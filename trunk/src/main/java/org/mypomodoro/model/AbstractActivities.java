@@ -99,15 +99,26 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         return activity;
     }
 
+    // remove task or subtask by ID
     public void removeById(int id) {
         for (Activity activity : activities) {
             if (activity.getId() == id) {
                 remove(activity);
-                break;
+                break; // stop once removed
             }
         }
     }
-
+    
+    // remove task or subtask by ID or subtasks by parentID
+    /*public void removeByIdTasksAndSubtasks(int id) {
+        for (Activity activity : activities) {
+            if (activity.getId() == id
+                    || activity.getParentId() == id) {
+                remove(activity);
+            }
+        }
+    }*/
+    
     public void removeAll() {
         activities.clear();
     }
@@ -221,11 +232,11 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     }
 
     // get all subtasks
-    public ArrayList<Activity> getSubTaskList() {
+    public ArrayList<Activity> getSubTasks() {
         ArrayList subtaskList = new ArrayList<Activity>();
         for (Iterator<Activity> it = iterator(); it.hasNext();) {
             Activity a = it.next();
-            if (a.isSubTask()) {
+            if (a.getParentId() > -1) {
                 subtaskList.add(a);
             }
         }

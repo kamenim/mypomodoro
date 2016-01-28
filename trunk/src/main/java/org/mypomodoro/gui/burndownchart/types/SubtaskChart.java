@@ -43,18 +43,18 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return activity.isCompleted()? 1 : 0; // is_DoneDone?
+        return activity.isDoneDone()? 1 : 0;
     }
 
     @Override
     public float getTotalForBurndown() {
-        return ChartList.getList().getSubTaskList().size();
+        return ChartList.getList().getSubTasks().size();
     }
 
     @Override
     public float getTotalForBurnup() {
         int total = 0;
-        for (Activity activity : ChartList.getList().getSubTaskList()) {
+        for (Activity activity : ChartList.getList().getSubTasks()) {
             if (activity.isDoneDone()) {
                 total++;
             }

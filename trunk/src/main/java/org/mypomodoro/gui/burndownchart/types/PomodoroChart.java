@@ -49,7 +49,7 @@ public class PomodoroChart implements IChartType {
     @Override
     public float getTotalForBurndown() {
         int total = 0;
-        for (Activity activity : ChartList.getList()) {
+        for (Activity activity : ChartList.getList().getTasks()) {
             total += activity.getEstimatedPoms() + activity.getOverestimatedPoms();
         }
         return new Float(total);
@@ -58,7 +58,7 @@ public class PomodoroChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         int total = 0;
-        for (Activity activity : ChartList.getList()) {
+        for (Activity activity : ChartList.getList().getTasks()) {
             if (activity.isCompleted()) {
                 total += activity.getActualPoms();
             }

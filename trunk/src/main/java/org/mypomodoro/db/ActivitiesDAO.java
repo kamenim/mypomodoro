@@ -295,30 +295,38 @@ public class ActivitiesDAO {
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
-                String query = "SELECT * FROM activities WHERE ";
-                query += "parent_id = -1 AND "; // no subtasks
+                String whereCondition = "";
                 if (iteration >= 0) {
-                    query += "iteration = " + iteration + " AND "; // specific iteration
+                    whereCondition += "iteration = " + iteration + " AND "; // specific iteration
                 }
                 if (!excludeToDos) {
-                    query += "(priority > -1 OR (";
+                    whereCondition += "(priority > -1 OR (";
                 }
-                query += "is_complete = 'true' ";
+                whereCondition += "is_complete = 'true' ";
                 int increment = 1;
-                query += "AND (";
+                whereCondition += "AND (";
                 for (Date date : datesToBeIncluded) {
                     if (increment > 1) {
-                        query += " OR ";
+                        whereCondition += " OR ";
                     }
-                    query += "(date_completed >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
-                    query += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
+                    whereCondition += "(date_completed >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
+                    whereCondition += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
                     increment++;
                 }
-                query += ")";
+                whereCondition += ")";
                 if (!excludeToDos) {
-                    query += "))";
+                    whereCondition += "))";
                 }
-                query += " ORDER BY date_completed DESC";  // from newest to oldest
+                String query = "SELECT * FROM activities WHERE ";
+                query += "(parent_id = -1 AND "; // tasks
+                query += whereCondition;
+                query += ") "; // End of tasks
+                query += "OR ";                
+                query += "parent_id IN "; // subtasks
+                query += "(SELECT id FROM activities WHERE "; // starting 'IN' condition on tasks                 
+                query += whereCondition;
+                query += ") "; // ending 'IN' condition on tasks                
+                query += "ORDER BY date_completed DESC";  // from newest to oldest tasks for the checklist
                 ResultSet rs = database.query(query);
                 try {
                     while (rs.next()) {
@@ -344,12 +352,21 @@ public class ActivitiesDAO {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE iteration >= " + startIteration + " "
-                    + "AND iteration <= " + endIteration + " "
-                    + "AND (priority > -1 OR is_complete = 'true') "
-                    + "AND parent_id = -1 " // no subtasks
-                    + "ORDER BY iteration ASC"); // from lowest to highest
+            String whereCondition = "";
+            whereCondition += "iteration >= " + startIteration + " ";
+            whereCondition += "AND iteration <= " + endIteration + " ";
+            whereCondition += "AND (priority > -1 OR is_complete = 'true')";
+            String query = "SELECT * FROM activities WHERE ";
+            query += "(parent_id = -1 AND "; // tasks
+            query += whereCondition;
+            query += ") "; // End of tasks
+            query += "OR ";
+            query += "parent_id IN "; // subtasks
+            query += "(SELECT id FROM activities WHERE "; // starting 'IN' condition on tasks
+            query += whereCondition;
+            query += ") "; // ending 'IN' condition on tasks  
+            query += "ORDER BY iteration ASC"; // from lowest to highest tasks for the checklist            
+            ResultSet rs = database.query(query);            
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
