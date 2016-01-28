@@ -65,7 +65,6 @@ public class ReportsTable extends AbstractTable {
                 if (selectedRowCount > 0) {
                     // See AbstractActivitiesTable for reason to set WHEN_FOCUSED here
                     setInputMap(JTable.WHEN_FOCUSED, im);
-
                     if (selectedRowCount > 1) { // multiple selection
                         // diactivate/gray out unused tabs
                         panel.getTabbedPane().disableCommentTab();

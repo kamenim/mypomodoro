@@ -49,7 +49,7 @@ public class StoryPointChart implements IChartType {
     @Override
     public float getTotalForBurndown() {
         float total = 0;
-        for (Activity activity : ChartList.getList()) {
+        for (Activity activity : ChartList.getList().getTasks()) {
             total += activity.getStoryPoints();
         }
         return total;
@@ -58,7 +58,7 @@ public class StoryPointChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         float total = 0;
-        for (Activity activity : ChartList.getList()) {
+        for (Activity activity : ChartList.getList().getTasks()) {
             if (activity.isCompleted()) {
                 total += activity.getStoryPoints();
             }

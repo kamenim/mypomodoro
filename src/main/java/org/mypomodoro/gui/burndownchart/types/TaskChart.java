@@ -48,13 +48,13 @@ public class TaskChart implements IChartType {
 
     @Override
     public float getTotalForBurndown() {
-        return ChartList.getList().size();
+        return ChartList.getList().getTasks().size();
     }
 
     @Override
     public float getTotalForBurnup() {
         int total = 0;
-        for (Activity activity : ChartList.getList()) {
+        for (Activity activity : ChartList.getList().getTasks()) {
             if (activity.isCompleted()) {
                 total++;
             }
