@@ -62,13 +62,9 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTE = 60 * SECOND;
-    /*private final long POMODORO_LENGTH = Main.preferences.getPomodoroLength() * MINUTE;
+    private final long POMODORO_LENGTH = Main.preferences.getPomodoroLength() * MINUTE;
     private final long POMODORO_BREAK_LENGTH = Main.preferences.getShortBreakLength() * MINUTE;
-    private final long POMODORO_LONG_LENGTH = Main.preferences.getLongBreakLength() * MINUTE;*/
-    
-    private final long POMODORO_LENGTH = 10 * SECOND;
-     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
-     private final long POMODORO_LONG_LENGTH = 10 * SECOND;
+    private final long POMODORO_LONG_LENGTH = Main.preferences.getLongBreakLength() * MINUTE;
     /*Test
      private final long POMODORO_LENGTH = 10 * SECOND;
      private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
