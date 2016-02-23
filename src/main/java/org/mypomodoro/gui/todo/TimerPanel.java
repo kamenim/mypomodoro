@@ -50,7 +50,7 @@ public class TimerPanel extends JPanel {
     private final ImageIcon pauseIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pause.png"));
     private final ImageIcon pauseRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pausered.png"));
     private final ImageIcon resumeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resume.png"));
-    private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resumered.png"));
+    //private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resumered.png"));
     private final TransparentButton pauseButton = new TransparentButton(pauseRedIcon);
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
@@ -98,26 +98,20 @@ public class TimerPanel extends JPanel {
                     if (!pomodoro.getTimer().isRunning()) { // resume 
                         pomodoro.resume();
                         if (pomodoro.inPomodoro()) {
-                            pauseButton.setIcon(pauseRedIcon);
-                            startButton.setIcon(stopRedIcon);
-                            timePlus.setTimePlusRedIcon(true); // turn time plus button red
-                            timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
-                            pomodoroTime.setForeground(Main.taskRunningColor);
+                            setPomodoroEnv();
                         } else {
                             pauseButton.setIcon(pauseIcon);
                         }
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     } else { // pause
                         pomodoro.pause();
-                        /*if (pomodoro.inPomodoro()) {
-                            pauseButton.setIcon(resumeRedIcon);
-                        } else {*/
-                            pauseButton.setIcon(resumeIcon);
-                            startButton.setIcon(stopIcon);
-                            timePlus.setTimePlusRedIcon(false); // turn time plus button black
-                            timeMinus.setTimeMinusRedIcon(false); // turn time minus button black
-                            pomodoroTime.setForeground(ColorUtil.BLACK);
-                        //}
+                        // The current selected ToDo might not be the running on. The env must be reset.
+                        if (!pomodoro.inBreak() && panel.getCurrentTable().getSelectedRowCount() == 1 
+                                && pomodoro.getCurrentToDo().getId() != panel.getCurrentTable().getActivityIdFromSelectedRow()) {                
+                                pomodoro.initTimer(panel.getCurrentTable().getActivityFromSelectedRow().getRecordedTime());                                                            
+                        } else {
+                            setPauseEnv();
+                        }
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
                     }
                 }
@@ -170,18 +164,8 @@ public class TimerPanel extends JPanel {
                             }
                         }
                     }
-                } else if (pomodoro.stopWithWarning()) {
-                    panel.getCurrentTable().scrollToSelectedRows(); // in any case
-                    startButton.setStarted(false);
-                    startButton.setIcon(startIcon);
-                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Start"));
-                    pomodoroTime.setForeground(ColorUtil.BLACK);
-                    timePlus.setTimePlusRedIcon(false);
-                    timeMinus.setTimeMinusRedIcon(false);
-                    pauseButton.setIcon(pauseRedIcon); // set the icon before setting the visibility to false so it doesn't flicker on Win7 aero
-                    pauseButton.setVisible(false);
-                    pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
-                    setToolTipText(null);
+                } else {
+                    pomodoro.stopWithWarning();
                 }
             }
         });
@@ -345,5 +329,29 @@ public class TimerPanel extends JPanel {
 
     public void showStartButton() {
         startButton.setVisible(true);
+    }
+    
+    public void hideTimeMinusButton() {
+        timeMinus.setVisible(false);
+    }
+
+    public void showTimeMinusButton() {
+        timeMinus.setVisible(true);
+    }
+    
+    public void hideTimePlusButton() {
+        timePlus.setVisible(false);
+    }
+
+    public void showTimePlusButton() {
+        timePlus.setVisible(true);
+    }
+    
+    public void hidePauseButton() {
+        pauseButton.setVisible(false);
+    }
+
+    public void showPauseButton() {
+        pauseButton.setVisible(true);
     }
 }

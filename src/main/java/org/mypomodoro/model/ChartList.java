@@ -28,10 +28,6 @@ public class ChartList extends AbstractActivities {
 
     private static final ChartList list = new ChartList();
 
-    /*private ChartList() {
-        // not used
-    }*/
-
     @Override
     public void refresh() {
         removeAll();
@@ -69,7 +65,7 @@ public class ChartList extends AbstractActivities {
     
     // List of main tasks
     public static ChartList getTaskList() {
-        ChartList tableList = new ChartList(); // empty !
+        ChartList tableList = new ChartList();
         for (Activity a : list) {
             if (a.isTask()) {
                 tableList.add(a);
