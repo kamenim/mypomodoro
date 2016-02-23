@@ -62,9 +62,13 @@ public class Pomodoro {
 
     private final int SECOND = 1000;
     private final int MINUTE = 60 * SECOND;
-    private final long POMODORO_LENGTH = Main.preferences.getPomodoroLength() * MINUTE;
+    /*private final long POMODORO_LENGTH = Main.preferences.getPomodoroLength() * MINUTE;
     private final long POMODORO_BREAK_LENGTH = Main.preferences.getShortBreakLength() * MINUTE;
-    private final long POMODORO_LONG_LENGTH = Main.preferences.getLongBreakLength() * MINUTE;
+    private final long POMODORO_LONG_LENGTH = Main.preferences.getLongBreakLength() * MINUTE;*/
+    
+    private final long POMODORO_LENGTH = 10 * SECOND;
+     private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
+     private final long POMODORO_LONG_LENGTH = 10 * SECOND;
     /*Test
      private final long POMODORO_LENGTH = 10 * SECOND;
      private final long POMODORO_BREAK_LENGTH = 10 * SECOND;
@@ -165,17 +169,17 @@ public class Pomodoro {
         refreshTitlesAndTables();
     }
 
-    public void pause() {
+    public void pause() {                
         pomodoroTimer.stop();
-        stopSound();
-        if (inPomodoro() && isSystemTray()) {
-            if (isSystemTrayMessage()) {
-                MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Paused"), TrayIcon.MessageType.NONE);
-            }
-            MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Paused"));
-            MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
-        }        
+        stopSound();                
         if (inpomodoro) { // in pomodoro only, not during breaks
+            if (isSystemTray()) {
+                if (isSystemTrayMessage()) {
+                    MainPanel.trayIcon.displayMessage("", Labels.getString("ToDoListPanel.Paused"), TrayIcon.MessageType.NONE);
+                }
+                MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Paused"));
+                MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
+            }
             inpomodoro = false;
             recordTime(); // record time
             Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
@@ -184,33 +188,9 @@ public class Pomodoro {
             panel.getDetailsPanel().enableAllButtons();            
         }        
         setTooltipOnImage();
-        refreshTitlesAndTables(); 
+        refreshTitlesAndTables();        
     }
     
-    //time : time displayed on the timer
-    public void recordTime() {        
-        getCurrentToDo().recordTime(time);
-        pomodoroLength = time;
-    }
-    
-    public void initTime() {
-        getCurrentToDo().recordTime(-1);        
-        pomodoroLength = POMODORO_LENGTH;
-    }
-
-    public void initTimer(long aTime) {
-        if(aTime > 0) {
-            pomodoroLength = aTime;
-            panel.getTimerPanel().setPauseEnv();
-        }  else {
-            pomodoroLength = POMODORO_LENGTH;
-            panel.getTimerPanel().setStartEnv();
-        }
-        time = pomodoroLength;
-        tmpPomodoroLength = pomodoroLength;
-        pomodoroTime.setText(sdf.format(pomodoroLength));
-    }
-
     public void resume() {
         pomodoroTimer.start();
         if (inPomodoro() && isSystemTray()) {
@@ -225,7 +205,7 @@ public class Pomodoro {
             currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
         }
         // Show quick interruption button and items in combo box        
-        if (getCurrentToDo().getRecordedTime() > 0) { // when pomodoro is paused; not during breaks            
+        if (!inbreak && getCurrentToDo().getRecordedTime() > 0) { // when pomodoro is paused            
             if (Main.preferences.getTicking() && !isMute) {
                 tick();
             }
@@ -241,27 +221,59 @@ public class Pomodoro {
         // Tooltip
         setTooltipOnImage();        
     }
+    
+    //time : time displayed on the timer
+    public void recordTime() {        
+        getCurrentToDo().recordTime(time);
+        pomodoroLength = time;
+    }
+    
+    public void initTime() {
+        getCurrentToDo().recordTime(-1);        
+        pomodoroLength = POMODORO_LENGTH;
+    }
+
+    public void initTimer(long aTime) {
+        if(aTime > 0) { // Pause env
+            pomodoroLength = aTime;
+            panel.getTimerPanel().setPauseEnv();
+        }  else { // Start env
+            pomodoroLength = POMODORO_LENGTH;
+            panel.getTimerPanel().setStartEnv();
+        }
+        time = pomodoroLength;
+        tmpPomodoroLength = pomodoroLength;
+        pomodoroTime.setText(sdf.format(pomodoroLength));
+    }
 
     public boolean stopWithWarning() {
         boolean stop = false;        
-        // change of current ToDo        
-        if (panel.getCurrentTable().getSelectedRowCount() == 1) {
-            currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
-        }
-        if (inpomodoro
-                || getCurrentToDo().getRecordedTime() > 0) { // in pomodoro or paused during pomodoro only; not during breaks
+        if (inpomodoro) { // in pomodoro or paused during pomodoro)                        
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");            
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
             if (reply == JOptionPane.YES_OPTION) {
-                //initTime(); // init time in case there was a pause                
-                initTimer(getCurrentToDo().getRecordedTime());                                
+                // in case the time of the current ToDo was recorded, the length must be reset
+                initTime();
                 stop();
                 stop = true;
+                // the selected ToDo might not be the current one
+                if (panel.getCurrentTable().getSelectedRowCount() == 1) {
+                    currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
+                }
+                initTimer(getCurrentToDo().getRecordedTime());                
             }
-        } else { // breaks
+        } else { // breaks or paused ToDo
+            // the selected ToDo might not be the current one
+            if (panel.getCurrentTable().getSelectedRowCount() == 1) {
+                currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
+            }
+            if (!inbreak) {
+                initTime();                
+            }
+            initTimer(getCurrentToDo().getRecordedTime());            
             stop();
-            stop = true;
+            stop = true;            
         }
         return stop;
     }
@@ -314,15 +326,18 @@ public class Pomodoro {
                     if (isDiscontinuous) { // stop timer
                         pomSetNumber = 0; // reset Set to 0 (in case the workflow is discontinued when a Set is already started: pomSetNumber > 0)
                         stop();
-                        timerPanel.setStartEnv();
+                        // the selected ToDo might not be the current one
+                        if (panel.getCurrentTable().getSelectedRowCount() == 1) {
+                            currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
+                        }
+                        initTimer(getCurrentToDo().getRecordedTime());
                         if (isSystemTray()) {
                             String message = Labels.getString("ToDoListPanel.Stopped");
                             if (isSystemTrayMessage()) {
                                 MainPanel.trayIcon.displayMessage("", message, TrayIcon.MessageType.NONE);
                             }
                             MainPanel.trayIcon.setToolTip(message);
-                        }
-                        timerPanel.setStartEnv();
+                        }                        
                     } else { // break time
                         inbreak = true;
                         pomSetNumber++;
@@ -355,7 +370,7 @@ public class Pomodoro {
                 } else { // pomodoro time 
                     inbreak = false;
                     // change of current ToDo
-                    // This addresses the case when a task is selected during the pomodoro of another task or subtask
+                    // the selected ToDo might not be the current one
                     if (panel.getCurrentTable().getSelectedRowCount() == 1) {
                         currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
                     }
@@ -372,14 +387,18 @@ public class Pomodoro {
                             MainPanel.trayIcon.setToolTip(message);
                         }
                     } else {
+                        if(getCurrentToDo().getRecordedTime() > 0) {
+                            pomodoroLength = getCurrentToDo().getRecordedTime();
+                        }  else {
+                            pomodoroLength = POMODORO_LENGTH;
+                        }
+                        timerPanel.setPomodoroEnv();
+                        goInPomodoro();
+                        pomodoroTime.setText(sdf.format(pomodoroLength));                        
+                        initTime(); // erase record
                         if (Main.preferences.getTicking() && !isMute) {
                             tick();
                         }
-                        if (getCurrentToDo().getRecordedTime() > 0) { // paused task = recorded time
-                            initTimer(getCurrentToDo().getRecordedTime());
-                            initTime(); // erase record; init time length
-                        }
-                        timerPanel.setPomodoroEnv();
                         inpomodoro = true;                        
                         Main.gui.getIconBar().getIcon(2).setForeground(Main.taskRunningColor);
                         Main.gui.getIconBar().getIcon(2).highlight();
@@ -389,7 +408,6 @@ public class Pomodoro {
                             }
                             MainPanel.trayIcon.setToolTip(Labels.getString("ToDoListPanel.Started"));
                         }
-                        goInPomodoro();
                         // Tooltip                        
                         // If the name is modified during the pomodoro, it won't be updated, which is acceptable
                         setTooltipOnImage();

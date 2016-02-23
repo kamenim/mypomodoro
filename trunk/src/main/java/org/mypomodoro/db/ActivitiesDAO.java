@@ -768,11 +768,12 @@ public class ActivitiesDAO {
         return types;
     }
 
+    // Not used
     public ArrayList<String> getSubTaskTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id != -1 ORDER BY type ASC");
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id > -1 ORDER BY type ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("type");

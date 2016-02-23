@@ -81,9 +81,6 @@ public class ToDoTable extends AbstractTable {
                                 || panel.getTabbedPane().getSelectedIndex() == panel.getTabbedPane().getEditTabIndex()) {
                             panel.getTabbedPane().setSelectedIndex(0); // switch to details panel
                         }
-                        if (!panel.getPomodoro().getTimer().isRunning()) {
-                            panel.getPomodoro().setCurrentToDoId(-1); // this will disable the start button
-                        }
                         // Display info (list of selected tasks)                            
                         showDetailsForSelectedRows();
                         // empty subtable
@@ -91,6 +88,13 @@ public class ToDoTable extends AbstractTable {
                         // hide start button unless timer is running
                         if (!panel.getPomodoro().getTimer().isRunning()) {
                             panel.getTimerPanel().hideStartButton();
+                            panel.getTimerPanel().hideTimeMinusButton();
+                            panel.getTimerPanel().hideTimePlusButton();
+                            if (!panel.getPomodoro().inBreak()
+                                && panel.getPomodoro().getCurrentToDo() != null    
+                                && panel.getPomodoro().getCurrentToDo().getRecordedTime() > 0) {
+                                panel.getTimerPanel().hidePauseButton();
+                            }
                         }
                     } else if (selectedRowCount == 1) {
                         // activate all panels
@@ -117,6 +121,11 @@ public class ToDoTable extends AbstractTable {
                         populateSubTable();
                         // the start button may have been hidden by a multiple selection
                         panel.getTimerPanel().showStartButton();
+                        panel.getTimerPanel().showTimeMinusButton();
+                        panel.getTimerPanel().showTimePlusButton();
+                        if (panel.getPomodoro().getTimer().isRunning()) {
+                            panel.getTimerPanel().showPauseButton();          
+                        }
                     }
                     setIconLabels();
                 }
