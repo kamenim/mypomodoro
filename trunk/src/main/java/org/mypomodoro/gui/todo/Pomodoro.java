@@ -232,7 +232,7 @@ public class Pomodoro {
     public void initTimer(long aTime) {
         if(aTime > 0) { // Pause env
             pomodoroLength = aTime;
-            panel.getTimerPanel().setPauseEnv();
+            panel.getTimerPanel().setPausedPomodoroEnv();
         }  else { // Start env
             pomodoroLength = POMODORO_LENGTH;
             panel.getTimerPanel().setStartEnv();
