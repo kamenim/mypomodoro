@@ -50,7 +50,7 @@ public class TimerPanel extends JPanel {
     private final ImageIcon pauseIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pause.png"));
     private final ImageIcon pauseRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "pausered.png"));
     private final ImageIcon resumeIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resume.png"));
-    //private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resumered.png"));
+    private final ImageIcon resumeRedIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "resumered.png"));
     private final TransparentButton pauseButton = new TransparentButton(pauseRedIcon);
     private final JLabel pomodoroTime;
     private final ToDoPanel panel;
@@ -93,6 +93,9 @@ public class TimerPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (panel.getCurrentTable().getSelectedRowCount() == 1) {                
+                    pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());                                
+                }
                 Activity currentToDo = pomodoro.getCurrentToDo();
                 if (currentToDo != null) {
                     if (!pomodoro.getTimer().isRunning()) { // resume 
@@ -105,12 +108,11 @@ public class TimerPanel extends JPanel {
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                     } else { // pause
                         pomodoro.pause();
-                        // The current selected ToDo might not be the running on. The env must be reset.
-                        if (!pomodoro.inBreak() && panel.getCurrentTable().getSelectedRowCount() == 1 
-                                && pomodoro.getCurrentToDo().getId() != panel.getCurrentTable().getActivityIdFromSelectedRow()) {                
-                                pomodoro.initTimer(panel.getCurrentTable().getActivityFromSelectedRow().getRecordedTime());                                                            
+                        // The current selected ToDo might not be the running on. The env must be reset.                        
+                        if (currentToDo.getRecordedTime() > 0) {                
+                            pomodoro.initTimer(currentToDo.getRecordedTime());                                                            
                         } else {
-                            setPauseEnv();
+                            setPausedBreakEnv();
                         }
                         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
                     }
@@ -150,7 +152,7 @@ public class TimerPanel extends JPanel {
                                     pomodoro.start();
                                     startButton.setStarted(true);
                                     startButton.setIcon(stopRedIcon);
-                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Void"));
                                     if (strictPomodoro) {
                                         startButton.setVisible(false);
                                     }
@@ -280,16 +282,15 @@ public class TimerPanel extends JPanel {
     public void setPomodoroEnv() {
         startButton.setStarted(true);
         startButton.setIcon(stopRedIcon);
-        startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Void"));
         pauseButton.setIcon(pauseRedIcon);
         pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
         timePlus.setTimePlusRedIcon(true);
         timeMinus.setTimeMinusRedIcon(true);
         pomodoroTime.setForeground(Main.taskRunningColor);
     }
-    
-    // turn icons red + resume icon
-    public void setPauseEnv() {
+        
+    public void setPausedBreakEnv() {
         startButton.setStarted(true);
         startButton.setIcon(stopIcon);
         startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
@@ -300,6 +301,19 @@ public class TimerPanel extends JPanel {
         timeMinus.setTimeMinusRedIcon(false);
         pomodoroTime.setForeground(ColorUtil.BLACK);
     }
+    
+    // turn icons red
+    public void setPausedPomodoroEnv() {
+        startButton.setStarted(true);
+        startButton.setIcon(stopRedIcon);
+        startButton.setToolTipText(Labels.getString("ToDoListPanel.Void"));
+        pauseButton.setVisible(true);
+        pauseButton.setIcon(resumeRedIcon);
+        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
+        timePlus.setTimePlusRedIcon(true);
+        timeMinus.setTimeMinusRedIcon(true);
+        pomodoroTime.setForeground(Main.taskRunningColor);
+    }    
 
     public void switchPomodoroCompliance() {
         if (!strictPomodoro) { // make it strict pomodoro
