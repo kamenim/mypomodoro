@@ -92,30 +92,23 @@ public class TimerPanel extends JPanel {
         pauseButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (panel.getCurrentTable().getSelectedRowCount() == 1) {                
-                    pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());                                
-                }
-                Activity currentToDo = pomodoro.getCurrentToDo();
-                if (currentToDo != null) {
-                    if (!pomodoro.getTimer().isRunning()) { // resume 
-                        pomodoro.resume();
-                        if (pomodoro.inPomodoro()) {
-                            setPomodoroEnv();
-                        } else {
-                            pauseButton.setIcon(pauseIcon);
-                        }
-                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
-                    } else { // pause
-                        pomodoro.pause();
-                        // The current selected ToDo might not be the running on. The env must be reset.                        
-                        if (currentToDo.getRecordedTime() > 0) {                
-                            pomodoro.initTimer(currentToDo.getRecordedTime());                                                            
-                        } else {
-                            setPausedBreakEnv();
-                        }
-                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
+            public void actionPerformed(ActionEvent e) {                
+                if (pomodoro.getTimer().isRunning()) { // pause the current ToDo
+                    pomodoro.pause();
+                    // The current selected ToDo might not be the running on.
+                    if (panel.getCurrentTable().getSelectedRowCount() == 1) {                
+                        pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());                                
                     }
+                    pomodoro.initTimer(pomodoro.getCurrentToDo().getRecordedTime());                        
+                    pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
+                } else { // resume 
+                    pomodoro.resume();
+                    if (pomodoro.inPomodoro()) {
+                        setPomodoroEnv();
+                    } else {
+                        pauseButton.setIcon(pauseIcon);
+                    }
+                    pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                 }
             }
         });
@@ -161,6 +154,7 @@ public class TimerPanel extends JPanel {
                                     timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
                                     if (!strictPomodoro) {
                                         pauseButton.setVisible(true);
+                                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                                     }
                                 }
                             }
