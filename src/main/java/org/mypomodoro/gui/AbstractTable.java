@@ -547,13 +547,14 @@ public abstract class AbstractTable extends JXTable {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);                        
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             Activity activity = getList().getById(id);
             if (activity != null
                     && activity.getRecordedTime() > 0) {
-                value = "*" + value; // pomodoro of task not finished (recorded time)                
+                renderer.setText("<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" + value + "</html>"); // pomodoro of task not finished (recorded time)                
+                // Font size increased : renderer.setText("<html><span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" + value + "</html>");                
             }
-            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);                        
             renderer.setToolTipText((String) value);
             return renderer;
         }

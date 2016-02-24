@@ -177,7 +177,7 @@ public class Pomodoro {
                 MainPanel.trayIcon.setImage(ImageIcons.MAIN_ICON.getImage());
             }
             inpomodoro = false;
-            recordTime(); // record time
+            recordTime(); // record time of the current ToDo
             Main.gui.getIconBar().getIcon(2).setForeground(new JLabel().getForeground()); // use of getForeground is important to keep the default color of the theme (especially with JTatto Moire theme)
             Main.gui.getIconBar().getIcon(2).highlight();
             panel.getCurrentTable().setIconLabels();
@@ -244,7 +244,7 @@ public class Pomodoro {
 
     public boolean stopWithWarning() {
         boolean stop = false;        
-        if (inpomodoro) { // in pomodoro or paused during pomodoro)                        
+        if (inpomodoro || getCurrentToDo().getRecordedTime() > 0) { // in pomodoro or paused during pomodoro                        
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");            
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
