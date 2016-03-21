@@ -74,11 +74,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 // Hide buttons of the quick bar
                 getTitlePanel().hideDuplicateButton();
                 getTitlePanel().hideDoneButton();
-            } else {                
+            } else {
                 title += " (";
                 int nbDoneDone = tableList.getNbDoneDone();
                 if (nbDoneDone > 0) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";
@@ -240,9 +240,9 @@ public class ActivitiesSubTable extends ActivitiesTable {
     protected boolean canMoveTasks() {
         return false;
     }
-    
+
     @Override
-    public void setSubtaskDoneDone() {        
+    public void setSubtaskDoneDone() {
         super.setSubtaskDoneDone();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);

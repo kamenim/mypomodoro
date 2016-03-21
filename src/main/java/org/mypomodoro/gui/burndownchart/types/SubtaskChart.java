@@ -43,7 +43,7 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getValue(Activity activity) {
-        return activity.isDoneDone()? 1 : 0;
+        return activity.isDoneDone() ? 1 : 0;
     }
 
     @Override
