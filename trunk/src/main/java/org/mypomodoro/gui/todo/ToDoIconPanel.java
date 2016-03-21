@@ -55,10 +55,10 @@ public class ToDoIconPanel {
         iconPanel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
 
         // Add label component
-        JLabel iconLabel = new JLabel();        
+        JLabel iconLabel = new JLabel();
         if (showName) {
             String activityName = activity.getName();
-            String donedoneValue = activityName.length() > 25 ? activityName.substring(0, 25) + "..." : activityName;            
+            String donedoneValue = activityName.length() > 25 ? activityName.substring(0, 25) + "..." : activityName;
             String donedoneValueForTooltip = activity.getName(); // full lenght
             if (activity.isSubTask() && activity.isDoneDone()) {
                 donedoneValue = "<strike> " + donedoneValue + " </strike>";
@@ -66,16 +66,16 @@ public class ToDoIconPanel {
             }
             if (activity.getRecordedTime() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" ;                                
+                String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
                 iconLabel.setText(text + donedoneValue + "</html>"); // pomodoro of task not finished (recorded time)
-                text += donedoneValueForTooltip + " (" +  "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
+                text += donedoneValueForTooltip + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
                 iconLabel.setToolTipText(text + "</html>");
             } else {
                 iconLabel.setText("<html>" + donedoneValue + "</html>");
                 iconLabel.setToolTipText("<html>" + donedoneValueForTooltip + "</html>");
             }
             iconLabel.setForeground(color);
-            iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));            
+            iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));
         }
         iconPanel.add(iconLabel);
 

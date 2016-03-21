@@ -74,7 +74,7 @@ public class TestMenu extends JMenu {
             add(new TestDataItem(nbTask, false));
         }
     }
-    
+
     class TemplateDataMenu extends JMenu {
 
         public TemplateDataMenu() {
@@ -82,7 +82,7 @@ public class TestMenu extends JMenu {
             add(new YCombinatorDataItem());
         }
     }
-    
+
     // create test data
     class TestDataItem extends JMenuItem {
 
@@ -363,7 +363,7 @@ public class TestMenu extends JMenu {
             return nbSubTask;
         }
     }
-    
+
     // create Y Combinator model data: 3 major tasks, 30 minor tasks a day
     class YCombinatorDataItem extends JMenuItem {
 
@@ -390,16 +390,16 @@ public class TestMenu extends JMenu {
                         // Set progress bar
                         MainPanel.progressBar.setVisible(true);
                         MainPanel.progressBar.getBar().setValue(0);
-                        MainPanel.progressBar.getBar().setMaximum(4);                        
+                        MainPanel.progressBar.getBar().setMaximum(4);
                         int todoListValue = 0;
-                        boolean withSubtask  = false;
+                        boolean withSubtask = false;
                         final StringBuilder progressText = new StringBuilder();
                         for (int i = 1; i <= 4; i++) {
                             if (!MainPanel.progressBar.isStopped()) {
                                 final Activity a = new Activity(
                                         "", // place
                                         "", // author
-                                        (i==4 ? "Minor Tasks" : "Major Task " + i), // name
+                                        (i == 4 ? "Minor Tasks" : "Major Task " + i), // name
                                         "", // description
                                         "", // type
                                         0, // up to the user to set the estimation
@@ -413,7 +413,7 @@ public class TestMenu extends JMenu {
                                     addYCombinatorSubTasks(a);
                                 }
                                 Main.gui.getToDoPanel().getMainTable().insertRow(a); // main table !
-                                todoListValue++;                                
+                                todoListValue++;
                                 final int progressValue = i;
                                 progressText.setLength(0); // reset string builder
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ToDoListPanel.ToDo List") + " : ");
@@ -457,27 +457,27 @@ public class TestMenu extends JMenu {
                         WaitCursor.stopWaitCursor();
                     }
                 }
-            }.start();                       
+            }.start();
         }
-        
+
         // 30 sutasks representing 30 minor tasks a day
-        private void addYCombinatorSubTasks(Activity a) {                    
+        private void addYCombinatorSubTasks(Activity a) {
             for (int j = 1; j <= 30; j++) {
                 Activity sub = new Activity(
-                    "", // place
-                    "", // author
-                    "Minor Task " + j, // name
-                    "", // description
-                    "", // type
-                    0, // estimation
-                    new Date()); // today
+                        "", // place
+                        "", // author
+                        "Minor Task " + j, // name
+                        "", // description
+                        "", // type
+                        0, // estimation
+                        new Date()); // today
                 sub.setParentId(a.getId());
-                sub.setType(Labels.getString("Common.Subtask"));                    
-                ToDoList.getList().add(sub);             
-            }            
+                sub.setType(Labels.getString("Common.Subtask"));
+                ToDoList.getList().add(sub);
+            }
         }
     }
-    
+
     // delete all data
     class ResetDataItem extends JMenuItem {
 

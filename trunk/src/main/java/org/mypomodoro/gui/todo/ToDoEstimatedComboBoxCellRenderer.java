@@ -50,10 +50,10 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
                 /*if (activity.isSubTask() && activity.isDoneDone()) {
-                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    labelBefore.setFont(labelBefore.getFont().deriveFont(map));
-                    labelAfter.setFont(labelAfter.getFont().deriveFont(map));
-                }*/
+                 map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                 labelBefore.setFont(labelBefore.getFont().deriveFont(map));
+                 labelAfter.setFont(labelAfter.getFont().deriveFont(map));
+                 }*/
             } else if (realpoms == 0) { // no real poms & not in pomodoro --> estimated may be changed
                 labelBefore.setText(realpoms + " /");
                 comboBox.setVisible(true);

@@ -104,7 +104,7 @@ public class ToDoSubTable extends ToDoTable {
                 title += " (";
                 int nbDoneDone = tableList.getNbDoneDone();
                 if (nbDoneDone > 0) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";
@@ -349,12 +349,12 @@ public class ToDoSubTable extends ToDoTable {
     public void scrollToSelectedRows() {
         scrollToRowIndex(getSelectedRow());
     }
-    
+
     @Override
-    public void setSubtaskDoneDone() {        
+    public void setSubtaskDoneDone() {
         super.setSubtaskDoneDone();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
-        panel.getDetailsPanel().showInfo();        
+        panel.getDetailsPanel().showInfo();
     }
 }

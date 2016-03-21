@@ -100,7 +100,7 @@ public class ReportsSubTable extends ReportsTable {
                 title += " (";
                 int nbDoneDone = tableList.getNbDoneDone();
                 if (nbDoneDone > 0) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";
@@ -193,9 +193,9 @@ public class ReportsSubTable extends ReportsTable {
     protected boolean canMoveTasks() {
         return false;
     }
-    
+
     @Override
-    public void setSubtaskDoneDone() {        
+    public void setSubtaskDoneDone() {
         super.setSubtaskDoneDone();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);

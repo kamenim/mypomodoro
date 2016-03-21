@@ -324,7 +324,7 @@ public class ReportsTable extends AbstractTable {
                 title += " (";
                 int nbDoneDone = tableList.getNbDoneDone();
                 if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";    
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";

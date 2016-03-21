@@ -90,10 +90,10 @@ public class ToDoList extends AbstractActivities {
         }
         act.setIsCompleted(false);
         act.setDate(date);
-        act.setDateCompleted(dateCompleted);        
+        act.setDateCompleted(dateCompleted);
         if (act.isTask()) {
             act.setIsDoneDone(false); // tasks cannot be done-done in todo list --> this makes sure we remove done-done status of imported tasks
-        }        
+        }
         if (act.getId() == -1) { // add to the database (new todo)
             act.setId(act.databaseInsert());
         } else { // update in database (modified todo or moved from activity list)

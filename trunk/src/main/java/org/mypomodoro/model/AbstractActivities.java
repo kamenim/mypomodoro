@@ -108,17 +108,16 @@ public abstract class AbstractActivities implements Iterable<Activity> {
             }
         }
     }
-    
+
     // remove task or subtask by ID or subtasks by parentID
     /*public void removeByIdTasksAndSubtasks(int id) {
-        for (Activity activity : activities) {
-            if (activity.getId() == id
-                    || activity.getParentId() == id) {
-                remove(activity);
-            }
-        }
-    }*/
-    
+     for (Activity activity : activities) {
+     if (activity.getId() == id
+     || activity.getParentId() == id) {
+     remove(activity);
+     }
+     }
+     }*/
     public void removeAll() {
         activities.clear();
     }

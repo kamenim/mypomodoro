@@ -321,7 +321,7 @@ public class ActivitiesDAO {
                 query += "(parent_id = -1 AND "; // tasks
                 query += whereCondition;
                 query += ") "; // End of tasks
-                query += "OR ";                
+                query += "OR ";
                 query += "parent_id IN "; // subtasks
                 query += "(SELECT id FROM activities WHERE "; // starting 'IN' condition on tasks                 
                 query += whereCondition;
@@ -366,7 +366,7 @@ public class ActivitiesDAO {
             query += whereCondition;
             query += ") "; // ending 'IN' condition on tasks  
             query += "ORDER BY iteration ASC"; // from lowest to highest tasks for the checklist            
-            ResultSet rs = database.query(query);            
+            ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -576,7 +576,7 @@ public class ActivitiesDAO {
             try {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
-                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities as a "                            
+                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities as a "
                             + "INNER JOIN activities as b ON a.parent_id = b.id "
                             + "WHERE a.parent_id > -1 AND b.date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
@@ -596,7 +596,7 @@ public class ActivitiesDAO {
             } finally {
                 database.unlock();
             }
-        }        
+        }
         return tasks;
     }
 
@@ -605,7 +605,7 @@ public class ActivitiesDAO {
         ArrayList<Float> tasks = new ArrayList<Float>();
         try {
             database.lock();
-            for (int i = startIteration; i <= endIteration; i++) {                
+            for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "INNER JOIN "
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "

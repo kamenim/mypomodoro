@@ -91,8 +91,8 @@ public class ToDoTable extends AbstractTable {
                             panel.getTimerPanel().hideTimeMinusButton();
                             panel.getTimerPanel().hideTimePlusButton();
                             if (!panel.getPomodoro().inBreak()
-                                && panel.getPomodoro().getCurrentToDo() != null    
-                                && panel.getPomodoro().getCurrentToDo().getRecordedTime() > 0) {
+                                    && panel.getPomodoro().getCurrentToDo() != null
+                                    && panel.getPomodoro().getCurrentToDo().getRecordedTime() > 0) {
                                 panel.getTimerPanel().hidePauseButton();
                             }
                         }
@@ -124,7 +124,7 @@ public class ToDoTable extends AbstractTable {
                         panel.getTimerPanel().showTimeMinusButton();
                         panel.getTimerPanel().showTimePlusButton();
                         if (panel.getPomodoro().getTimer().isRunning()) {
-                            panel.getTimerPanel().showPauseButton();          
+                            panel.getTimerPanel().showPauseButton();
                         }
                     }
                     setIconLabels();
@@ -385,7 +385,7 @@ public class ToDoTable extends AbstractTable {
                 getTitlePanel().hideOverestimationButton();
                 getTitlePanel().hideExternalButton();
                 getTitlePanel().hideInternalButton();
-                getTitlePanel().hideDoneDoneButton();
+                //getTitlePanel().hideDoneDoneButton();
             } else {
                 title += " (" + rowCount + ")";
                 title += " > E: ";
@@ -431,7 +431,7 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideOverestimationButton();
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
-            getTitlePanel().hideDoneDoneButton();
+            //getTitlePanel().hideDoneDoneButton();
         }
         if (canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();
@@ -445,11 +445,11 @@ public class ToDoTable extends AbstractTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
         }
-        if (canBeDone() && getSelectedRowCount() == 1) {
-            getTitlePanel().showDoneDoneButton();
-        } else {
-            getTitlePanel().hideDoneDoneButton();
-        }
+        /*if (canBeDone() && getSelectedRowCount() == 1) {
+         getTitlePanel().showDoneDoneButton();
+         } else {
+         getTitlePanel().hideDoneDoneButton();
+         }*/
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
         }
@@ -554,10 +554,10 @@ public class ToDoTable extends AbstractTable {
     protected boolean canCreateInterruptions() {
         return panel.getPomodoro().inPomodoro() && panel.getPomodoro().getTimer().isRunning(); // no interruptions during pauses
     }
-    
+
     protected boolean canBeDone() {
         return !panel.getPomodoro().inPomodoro(); // no done-done during pomodoros
-    }    
+    }
 
     protected boolean canCreateUnplannedTask() {
         return true; // anytime
