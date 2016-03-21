@@ -40,7 +40,6 @@ import org.mypomodoro.util.TimeConverter;
  * Table for activities
  *
  */
-// TODO when selecting a subtask, title panel isn't refreshed (same with Report)
 public class ActivitiesTable extends AbstractTable {
 
     protected final ActivitiesPanel panel;
