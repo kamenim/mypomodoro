@@ -41,14 +41,12 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
 
     @Override
     public void selectInfo(Activity activity) {
-        textMap = new LinkedHashMap<String, String>();
-        if (activity.isTask()) {
-            textMap.put("date", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
-                    + (activity.isUnplanned() ? "U [" : "")
-                    + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
-                    + (activity.isUnplanned() ? "]" : "") + "<br>");
-        }
-        if ((activity.isCompleted() && activity.isTask()) || activity.isDoneDone()) {        
+        textMap = new LinkedHashMap<String, String>();        
+        textMap.put("date", "<b>" + (Main.preferences.getAgileMode() || activity.isSubTask() ? Labels.getString("Common.Date created") : Labels.getString("Common.Date scheduled")) + ":</b> "
+                + (activity.isUnplanned() ? "U [" : "")
+                + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
+                + (activity.isUnplanned() ? "]" : "") + "<br>");
+        if ((activity.isCompleted() && activity.isTask()) || (activity.isDoneDone() && activity.isSubTask())) {        
             textMap.put("date_completed", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + ":</b> "
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
