@@ -19,6 +19,10 @@ package org.mypomodoro.gui.todo;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.font.TextAttribute;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,13 +55,27 @@ public class ToDoIconPanel {
         iconPanel.setFont(new JLabel().getFont().deriveFont(Font.BOLD));
 
         // Add label component
-        JLabel iconLabel = new JLabel();
-        String activityName = (activity.getRecordedTime() > 0 ? "*" : "") + activity.getName();
-        iconLabel.setToolTipText(activityName);
+        JLabel iconLabel = new JLabel();        
         if (showName) {
-            iconLabel.setText(activityName.length() > 25 ? activityName.substring(0, 25) + "..." + " " : activityName + " ");
+            String activityName = activity.getName();
+            String donedoneValue = activityName.length() > 25 ? activityName.substring(0, 25) + "..." : activityName;            
+            String donedoneValueForTooltip = activity.getName(); // full lenght
+            if (activity.isSubTask() && activity.isDoneDone()) {
+                donedoneValue = "<strike> " + donedoneValue + " </strike>";
+                donedoneValueForTooltip = "<strike> " + donedoneValueForTooltip + " </strike>";
+            }
+            if (activity.getRecordedTime() > 0) {
+                SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+                String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" ;                                
+                iconLabel.setText(text + donedoneValue + "</html>"); // pomodoro of task not finished (recorded time)
+                text += donedoneValueForTooltip + " (" +  "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
+                iconLabel.setToolTipText(text + "</html>");
+            } else {
+                iconLabel.setText("<html>" + donedoneValue + "</html>");
+                iconLabel.setToolTipText("<html>" + donedoneValueForTooltip + "</html>");
+            }
             iconLabel.setForeground(color);
-            iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));
+            iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));            
         }
         iconPanel.add(iconLabel);
 

@@ -94,12 +94,19 @@ public class TimerPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {                
                 if (pomodoro.getTimer().isRunning()) { // pause the current ToDo
+                    if (pomodoro.inPomodoro()) {
+                        setPausedPomodoroEnv();
+                    } else {
+                        pauseButton.setIcon(resumeIcon);
+                    }    
                     pomodoro.pause();
-                    // The current selected ToDo might not be the running on.
-                    if (panel.getCurrentTable().getSelectedRowCount() == 1) {                
-                        pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());                                
+                    if (pomodoro.inPomodoro()) {
+                        // The current selected ToDo might not be the running on.
+                        if (panel.getCurrentTable().getSelectedRowCount() == 1) {                
+                            pomodoro.setCurrentToDoId(panel.getCurrentTable().getActivityIdFromSelectedRow());                                
+                        }
+                        pomodoro.initTimer(pomodoro.getCurrentToDo().getRecordedTime());                                                
                     }
-                    pomodoro.initTimer(pomodoro.getCurrentToDo().getRecordedTime());                        
                     pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Resume"));
                 } else { // resume 
                     pomodoro.resume();
@@ -284,7 +291,7 @@ public class TimerPanel extends JPanel {
         pomodoroTime.setForeground(Main.taskRunningColor);
     }
         
-    public void setPausedBreakEnv() {
+    /*public void setPausedBreakEnv() {
         startButton.setStarted(true);
         startButton.setIcon(stopIcon);
         startButton.setToolTipText(Labels.getString("ToDoListPanel.Stop"));
@@ -294,7 +301,7 @@ public class TimerPanel extends JPanel {
         timePlus.setTimePlusRedIcon(false);
         timeMinus.setTimeMinusRedIcon(false);
         pomodoroTime.setForeground(ColorUtil.BLACK);
-    }
+    }*/
     
     // turn icons red
     public void setPausedPomodoroEnv() {
