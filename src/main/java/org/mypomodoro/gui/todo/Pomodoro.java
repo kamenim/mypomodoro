@@ -244,30 +244,27 @@ public class Pomodoro {
 
     public boolean stopWithWarning() {
         boolean stop = false;        
-        if (inpomodoro || getCurrentToDo().getRecordedTime() > 0) { // in pomodoro or paused during pomodoro                        
+        if (!inbreak) { // in pomodoro or paused                         
             String title = Labels.getString("ToDoListPanel.Void pomodoro");
             String message = Labels.getString("ToDoListPanel.Are you sure to void this pomodoro?");            
             int reply = JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ImageIcons.DIALOG_ICON);
             if (reply == JOptionPane.YES_OPTION) {
                 // in case the time of the current ToDo was recorded, the length must be reset
                 initTime();
-                stop();
-                stop = true;
                 // the selected ToDo might not be the current one
                 if (panel.getCurrentTable().getSelectedRowCount() == 1) {
                     currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
                 }
-                initTimer(getCurrentToDo().getRecordedTime());                
+                initTimer(getCurrentToDo().getRecordedTime());
+                stop();
+                stop = true;         
             }
-        } else { // breaks or paused ToDo
+        } else { // breaks
             // the selected ToDo might not be the current one
             if (panel.getCurrentTable().getSelectedRowCount() == 1) {
                 currentToDoId = panel.getCurrentTable().getActivityIdFromSelectedRow();
-            }
-            if (!inbreak) {
-                initTime();                
-            }
-            initTimer(getCurrentToDo().getRecordedTime());            
+            }                             
+            initTimer(getCurrentToDo().getRecordedTime());
             stop();
             stop = true;            
         }

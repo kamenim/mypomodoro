@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.font.TextAttribute;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -549,13 +550,26 @@ public abstract class AbstractTable extends JXTable {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);                        
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            Activity activity = getList().getById(id);
-            if (activity != null
-                    && activity.getRecordedTime() > 0) {
-                renderer.setText("<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" + value + "</html>"); // pomodoro of task not finished (recorded time)                
-                // Font size increased : renderer.setText("<html><span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" + value + "</html>");                
+            Activity activity = getList().getById(id);            
+            if (activity != null) {
+                String donedoneValue = (String) value;
+                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                    donedoneValue = "<strike> " + value + " </strike>";
+                }
+                if (activity.getRecordedTime() > 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+                    String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>" ;                
+                    text += donedoneValue;
+                    renderer.setText(text + "</html>"); // pomodoro of task not finished (recorded time)
+                    // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
+                    text += " (" +  "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
+                    renderer.setToolTipText(text + "</html>");
+                } else {
+                    renderer.setToolTipText("<html>" + donedoneValue + "</html>");
+                }
+            } else {
+                renderer.setToolTipText((String) value);
             }
-            renderer.setToolTipText((String) value);
             return renderer;
         }
     }
