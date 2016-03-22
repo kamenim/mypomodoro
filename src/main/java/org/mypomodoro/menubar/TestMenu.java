@@ -166,12 +166,15 @@ public class TestMenu extends JMenu {
                                         dateCompleted = (new DateTime(new Date()).minusDays(rand.nextInt(5) + ((iterations[iterations.length - 1] - iteration) * 5))).toDate(); // int = 0 --> older by 24 to 20 days; int = 1 --> minus 19 to 15 days, etc.
                                     }
                                     Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
+                                    if (Main.preferences.getAgileMode()) { // set 1 out of 2 reports as done-done
+                                        a.setIsDoneDone(rand.nextBoolean());
+                                    }
                                     ReportList.getList().add(a, dateAdded, dateCompleted);
                                     if (rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
                                         ReportList.getList().reopenToActivtyList(a);
                                         if (withSubtask) {
                                             // Adding subtasks
-                                            subreportListValue += addSubTasks(a, ActivityList.getList());
+                                            subactivityListValue += addSubTasks(a, ActivityList.getList());
                                         }
                                         Main.gui.getActivityListPanel().getMainTable().insertRow(a); // main table !
                                         activityListValue++;
@@ -332,7 +335,20 @@ public class TestMenu extends JMenu {
                     aClone.setActualPoms(real);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
-                    aClone.setType(Labels.getString("Common.Subtask"));
+                    aClone.setType(Labels.getString("Common.Subtask"));                    
+                    if (list instanceof ToDoList || list instanceof ReportList) {
+                        aClone.setIsDoneDone(rand.nextBoolean()); // set 1 out of 2 subtasks as done
+                        if (list instanceof ReportList) {
+                            if (a.isDoneDone()) {
+                                aClone.setIsDoneDone(true); // surely all the subtasks of reports done-done are done
+                            } else if (!aClone.isDoneDone()) { // set most of subtasks as done
+                                aClone.setIsDoneDone(rand.nextBoolean());
+                                if (!aClone.isDoneDone()) {
+                                    aClone.setIsDoneDone(rand.nextBoolean());
+                                }
+                            }
+                        }
+                    }
                     if (list instanceof ToDoList) {
                         ToDoList.getList().add(aClone);
                     } else if (list instanceof ActivityList) {
