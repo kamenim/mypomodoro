@@ -41,9 +41,10 @@ public class TaskChart implements IChartType {
         return label;
     }
 
+    // A task must be completed/done (= release backlog)
     @Override
     public float getValue(Activity activity) {
-        return activity.isCompleted() ? 1 : 0;
+        return activity.isCompleted() && activity.isTask() ?  1 : 0;
     }
 
     @Override
@@ -53,13 +54,14 @@ public class TaskChart implements IChartType {
 
     @Override
     public float getTotalForBurnup() {
-        int total = 0;
+        /*int total = 0;
         for (Activity activity : ChartList.getList().getTasks()) {
             if (activity.isCompleted()) {
                 total++;
             }
         }
-        return new Float(total);
+        return new Float(total);*/
+        return getTotalForBurndown();
     }
 
     @Override

@@ -41,9 +41,10 @@ public class PomodoroChart implements IChartType {
         return label;
     }
 
+    // A task DOESN'T NEED to be completed/done (= iteration backlog) for its actual poms to be accounted as actual / done
     @Override
     public float getValue(Activity activity) {
-        return activity.getActualPoms();
+        return activity.isTask() ? activity.getActualPoms() : 0;
     }
 
     @Override
@@ -57,13 +58,14 @@ public class PomodoroChart implements IChartType {
 
     @Override
     public float getTotalForBurnup() {
-        int total = 0;
+        /*int total = 0;
         for (Activity activity : ChartList.getList().getTasks()) {
             if (activity.isCompleted()) {
                 total += activity.getActualPoms();
             }
         }
-        return new Float(total);
+        return new Float(total);*/
+        return getTotalForBurndown();
     }
 
     @Override
