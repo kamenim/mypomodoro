@@ -41,9 +41,10 @@ public class SubtaskChart implements IChartType {
         return label;
     }
 
+    // A subtask DOESN'T NEED to be the subtask of completed/done task (= release backlog) as long as it is done
     @Override
     public float getValue(Activity activity) {
-        return activity.isDoneDone() ? 1 : 0;
+        return activity.isSubTask() && activity.isDoneDone() ? 1 : 0;
     }
 
     @Override
@@ -53,13 +54,14 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getTotalForBurnup() {
-        int total = 0;
+        /*int total = 0;
         for (Activity activity : ChartList.getList().getSubTasks()) {
             if (activity.isDoneDone()) {
                 total++;
             }
         }
-        return new Float(total);
+        return new Float(total);*/
+        return getTotalForBurndown();
     }
 
     @Override
