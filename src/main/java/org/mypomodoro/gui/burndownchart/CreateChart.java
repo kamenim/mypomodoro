@@ -37,7 +37,6 @@ import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.LayeredBarRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
@@ -52,6 +51,9 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
+
+// TODO fix tooltip on burnup guide + round the values on burdown target and burnup guide
+// TODO fix scope lines
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -69,7 +71,7 @@ public class CreateChart extends JPanel {
     private IChartType burnupchartType;
     private boolean burndownChartPercentage = false;
     private boolean burnupChartPercentage = false;
-    private ArrayList<Float> sumForScope;
+    private ArrayList<Float> sumForScope;    
 
     public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
         this.chooseInputForm = chooseInputForm;
@@ -123,6 +125,7 @@ public class CreateChart extends JPanel {
         if (configureInputForm.getChartWidth() != 0 && configureInputForm.getChartHeight() != 0) {
             chartPanel.setPreferredSize(new Dimension(configureInputForm.getChartWidth(), configureInputForm.getChartHeight()));
         }
+        chartPanel.addChartMouseListener(new CustomLayeredBarChartMouseListener(charts));        
         add(chartPanel);
     }
 
@@ -169,13 +172,13 @@ public class CreateChart extends JPanel {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
-                // use double to make the values more accurate (tooltip disable - see renderer)
+                // use double to make the values more accurate
                 dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
             for (int i = 0; i < size; i++) {
-                // use double to make the values more accurate (tooltip disable - see renderer)
+                // use double to make the values more accurate
                 dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (size - 1))), label, i + configureInputForm.getStartIteration());
             }
         }
@@ -196,7 +199,7 @@ public class CreateChart extends JPanel {
             }
             if (size > 0) {
                 for (int i = 0; i < XAxisDateValues.size(); i++) {
-                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    // use double to make the values more accurate
                     if (burnupChartPercentage) {
                         dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, getXAxisDateValue(i));
                     } else {
@@ -208,7 +211,7 @@ public class CreateChart extends JPanel {
             int size = configureInputForm.getEndIteration() + 1;
             if (size > 0) {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
-                    // use double to make the values more accurate (tooltip disable - see renderer)
+                    // use double to make the values more accurate
                     if (burnupChartPercentage) {
                         dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, i);
                     } else {
@@ -405,12 +408,13 @@ public class CreateChart extends JPanel {
             burndownRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // left-y-axis font
             // Add the custom bar layered renderer to plot
             CategoryDataset burndownDataset = createBurndownChartDataset();
-            plot.setDataset(4, burndownDataset);
-            plot.mapDatasetToRangeAxis(4, 0);
-            LayeredBarRenderer burndownRenderer = new LayeredBarRenderer();
+            plot.setDataset(4, burndownDataset);            
+            plot.mapDatasetToRangeAxis(4, 0);                        
+            CustomLayeredBarRenderer burndownRenderer = new CustomLayeredBarRenderer();
+            burndownRenderer.setDrawBarOutline(true);
             burndownRenderer.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());
-            burndownRenderer.setSeriesBarWidth(0, 1.0);
-            plot.setRenderer(4, burndownRenderer);
+            burndownRenderer.setSeriesBarWidth(0, 1.0);            
+            plot.setRenderer(4, burndownRenderer); // 4 = renderer index in the plot            
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             burndownRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burndownChartPercentage ? "%" : ""), NumberFormat.getInstance()));
             burndownRenderer.setBaseSeriesVisibleInLegend(!chooseInputForm.getPrimaryYAxisLegend().isEmpty());
@@ -424,7 +428,8 @@ public class CreateChart extends JPanel {
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
                 burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
                 // Disable tooltip
-                burndownTargetrenderer.setBaseToolTipGenerator(null);
+                //burndownTargetrenderer.setBaseToolTipGenerator(null); // disable tooltip
+                burndownTargetrenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burndownChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 burndownTargetrenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getTargetCheckBox().isSelected() && !chooseInputForm.getTargetLegend().isEmpty());
                 plot.setRenderer(0, burndownTargetrenderer);
             }
@@ -485,7 +490,8 @@ public class CreateChart extends JPanel {
                 plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             }
             // Add the custom bar layered renderer to plot
-            LayeredBarRenderer burnupRenderer = new LayeredBarRenderer();
+            CustomLayeredBarRenderer burnupRenderer = new CustomLayeredBarRenderer();
+            burnupRenderer.setDrawBarOutline(true);  
             burnupRenderer.setSeriesPaint(0, chooseInputForm.getSecondaryYAxisColor());
             burnupRenderer.setSeriesBarWidth(0, 0.7);
             plot.setRenderer(3, burnupRenderer);
@@ -501,7 +507,8 @@ public class CreateChart extends JPanel {
                 } else { // no burndown, range axis for the target on the left
                     plot.mapDatasetToRangeAxis(2, 0);
                 }
-                LineAndShapeRenderer burnupGuideRenderer = new LineAndShapeRenderer(true, false);
+                //LineAndShapeRenderer burnupGuideRenderer = new LineAndShapeRenderer(true, false);
+                LineAndShapeRenderer burnupGuideRenderer = (LineAndShapeRenderer) plot.getRenderer();
                 burnupGuideRenderer.setDrawOutlines(false);
                 burnupGuideRenderer.setSeriesStroke(
                         0, new BasicStroke(
@@ -510,7 +517,8 @@ public class CreateChart extends JPanel {
                 burnupGuideRenderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
                 burnupGuideRenderer.setSeriesPaint(0, chooseInputForm.getBurnupGuideColor());
                 // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
-                burnupGuideRenderer.setToolTipGenerator(null);
+                //burnupGuideRenderer.setToolTipGenerator(null);
+                burnupGuideRenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burnupChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 burnupGuideRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getBurnupGuideCheckBox().isSelected() && !chooseInputForm.getBurnupGuideLegend().isEmpty());
                 plot.setRenderer(2, burnupGuideRenderer);
             }
@@ -536,7 +544,8 @@ public class CreateChart extends JPanel {
                 scopeRenderer.setBaseItemLabelsVisible(true);
                 scopeRenderer.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new ScopeCategoryItemLabelGenerator(XAxisDateValues));
                 // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
-                scopeRenderer.setToolTipGenerator(null);
+                //scopeRenderer.setToolTipGenerator(null);
+                scopeRenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burnupChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 scopeRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getScopeCheckBox().isSelected() && !chooseInputForm.getScopeLegend().isEmpty());
                 //scopeRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burnupChartPercentage ? "%" : ""), NumberFormat.getInstance()));
                 plot.setRenderer(1, scopeRenderer);
