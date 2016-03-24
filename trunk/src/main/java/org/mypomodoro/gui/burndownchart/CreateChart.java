@@ -51,9 +51,8 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
-
-// TODO fix tooltip on burnup guide + round the values on burdown target and burnup guide
-// TODO fix scope lines
+// TODO make burnup guide with percentage starts at 0% and arrive at 100%
+// TODO fix scope lines with iteration
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -188,34 +187,26 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupGuideDataset() {
         String label = chooseInputForm.getBurnupGuideLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
-            int size = XAxisDateValues.size() - 1;
+        if (configureInputForm.getDatesCheckBox().isSelected()) {            
             for (int i = 0; i < XAxisDateValues.size(); i++) {
-                Date date = XAxisDateValues.get(i);
-                if (DateUtil.inFuture(date)) {
-                    break;
+                // use double to make the values more accurate
+                if (burnupChartPercentage) {
+                    // TODO here
+                    dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / XAxisDateValues.size()) / totalForBurnupInPercentage) * 100)), label, getXAxisDateValue(i));
+                } else {
+                    dataset.addValue((Number) new Double(i * (totalForBurnup / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
                 }
-                size = i + 1;
-            }
-            if (size > 0) {
-                for (int i = 0; i < XAxisDateValues.size(); i++) {
-                    // use double to make the values more accurate
-                    if (burnupChartPercentage) {
-                        dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, getXAxisDateValue(i));
-                    } else {
-                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, getXAxisDateValue(i));
-                    }
-                }
-            }
+            }            
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             int size = configureInputForm.getEndIteration() + 1;
             if (size > 0) {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                     // use double to make the values more accurate
                     if (burnupChartPercentage) {
+                        // TODO here
                         dataset.addValue((Number) new Double((i + 1) * (((initialTotalForBurnup / size) / totalForBurnupInPercentage) * 100)), label, i);
                     } else {
-                        dataset.addValue((Number) new Double((i + 1) * (totalForBurnup / size)), label, i);
+                        dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);
                     }
                 }
             }
@@ -420,17 +411,18 @@ public class CreateChart extends JPanel {
             burndownRenderer.setBaseSeriesVisibleInLegend(!chooseInputForm.getPrimaryYAxisLegend().isEmpty());
             // Target
             if (chooseInputForm.getTargetCheckBox().isSelected()) {
-                LineAndShapeRenderer burndownTargetrenderer = (LineAndShapeRenderer) plot.getRenderer();
+                LineAndShapeRenderer burndownTargetrenderer = new LineAndShapeRenderer(); // do not use (LineAndShapeRenderer) plot.getRenderer(); it may mess up with the burnupGuideRenderer
+                burndownTargetrenderer.setShapesVisible(true);
                 burndownTargetrenderer.setDrawOutlines(false);
                 burndownTargetrenderer.setSeriesStroke(
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
-                // Disable tooltip
-                //burndownTargetrenderer.setBaseToolTipGenerator(null); // disable tooltip
+                burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());                
                 burndownTargetrenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burndownChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 burndownTargetrenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getTargetCheckBox().isSelected() && !chooseInputForm.getTargetLegend().isEmpty());
+                // Disable tooltip
+                //burndownTargetrenderer.setBaseToolTipGenerator(null); // disable tooltip
                 plot.setRenderer(0, burndownTargetrenderer);
             }
         } else {
@@ -507,19 +499,18 @@ public class CreateChart extends JPanel {
                 } else { // no burndown, range axis for the target on the left
                     plot.mapDatasetToRangeAxis(2, 0);
                 }
-                //LineAndShapeRenderer burnupGuideRenderer = new LineAndShapeRenderer(true, false);
-                LineAndShapeRenderer burnupGuideRenderer = (LineAndShapeRenderer) plot.getRenderer();
+                LineAndShapeRenderer burnupGuideRenderer = new LineAndShapeRenderer(); // do not use (LineAndShapeRenderer) plot.getRenderer(); it may mess up with the burndownGuideRenderer
+                burnupGuideRenderer.setShapesVisible(true);
                 burnupGuideRenderer.setDrawOutlines(false);
                 burnupGuideRenderer.setSeriesStroke(
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                burnupGuideRenderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
                 burnupGuideRenderer.setSeriesPaint(0, chooseInputForm.getBurnupGuideColor());
-                // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
-                //burnupGuideRenderer.setToolTipGenerator(null);
                 burnupGuideRenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burnupChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 burnupGuideRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getBurnupGuideCheckBox().isSelected() && !chooseInputForm.getBurnupGuideLegend().isEmpty());
+                // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
+                //burnupGuideRenderer.setToolTipGenerator(null);
                 plot.setRenderer(2, burnupGuideRenderer);
             }
             // SCOPE
