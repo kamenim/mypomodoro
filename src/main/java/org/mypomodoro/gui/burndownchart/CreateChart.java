@@ -51,7 +51,9 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
-// TODO fix scope lines with iteration
+// TODO error scope lines with iteration f: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+// TODO subtasks scope SQL request doesn't work
+// TODO fix burnup of subtasks
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -249,7 +251,7 @@ public class CreateChart extends JPanel {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float total = totalForBurndown;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
-            for (int i = 0; i < XAxisDateValues.size(); i++) {
+            for (int i = 0; i < XAxisDateValues.size(); i++) {                
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
