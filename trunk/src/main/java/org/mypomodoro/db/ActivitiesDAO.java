@@ -546,12 +546,13 @@ public class ActivitiesDAO {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "INNER JOIN "
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        //+ "ON (SubQuery.maxDateCompleted > 0 AND parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        + "ON (parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                 try {
                     while (rs.next()) {
-                        Float sumOfPomodoros = (Float) rs.getFloat("sum");
-                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? tasks.get(tasks.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
-                        tasks.add(sumOfPomodoros);
+                        Float sum = (Float) rs.getFloat("sum");
+                        sum = i > startIteration && sum == 0 ? tasks.get(tasks.size() - 1) : sum; // iteration no yet started : using sum of the previous iteration
+                        tasks.add(sum);
                     }
                 } catch (SQLException ex) {
                     Main.logger.error("", ex);
@@ -609,13 +610,14 @@ public class ActivitiesDAO {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "INNER JOIN "
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        + "ON activities.parent_id = activities.id AND (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0)) "
-                        + "WHERE parent_id > -1");
+                        //+ "ON activities.parent_id = activities.id AND (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0)) "
+                        + "ON (activities.parent_id = activities.id AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        //+ "WHERE parent_id > -1");
                 try {
                     while (rs.next()) {
-                        Float sumOfPomodoros = (Float) rs.getFloat("sum");
-                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? tasks.get(tasks.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
-                        tasks.add(sumOfPomodoros);
+                        Float sum = (Float) rs.getFloat("sum");
+                        sum = i > startIteration && sum == 0 ? tasks.get(tasks.size() - 1) : sum; // iteration no yet started : using sum of the previous iteration
+                        tasks.add(sum);
                     }
                 } catch (SQLException ex) {
                     Main.logger.error("", ex);
