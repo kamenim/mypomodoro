@@ -145,7 +145,8 @@ public class Database {
                 + "story_points FLOAT, "
                 + "iteration INTEGER, "
                 + "parent_id INTEGER, "
-                + "is_donedone TEXT " + ");";
+                + "is_donedone TEXT, "
+                + "date_donedone " + longInteger+ ");";
         update(createTableSQL);
     }
 
@@ -201,5 +202,9 @@ public class Database {
 
     public void unlock() {
         lock.unlock();
+    }
+    
+    public String getLongIntegerVarName() {
+        return longInteger;
     }
 }

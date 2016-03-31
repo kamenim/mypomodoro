@@ -30,7 +30,7 @@ public interface IChartType {
 
     String getXLegend();
 
-    float getValue(Activity activity);
+    float getValue(Activity activity, Date date);
 
     float getTotalForBurndown();
 

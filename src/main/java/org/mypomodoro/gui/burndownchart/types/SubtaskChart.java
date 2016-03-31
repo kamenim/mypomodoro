@@ -21,11 +21,14 @@ import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
- * Tasks chart type
+ * Subtasks chart type#
  *
+ * Chart based on done subtasks (subtasks isDoneDone)
+ * 
  */
 public class SubtaskChart implements IChartType {
 
@@ -43,8 +46,8 @@ public class SubtaskChart implements IChartType {
 
     // A subtask DOESN'T NEED to be the subtask of completed/done task (= release backlog) as long as it is done
     @Override
-    public float getValue(Activity activity) {
-        return activity.isSubTask() && activity.isDoneDone() ? 1 : 0;
+    public float getValue(Activity activity, Date date) {
+        return activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone() ? 1 : 0;
     }
 
     @Override

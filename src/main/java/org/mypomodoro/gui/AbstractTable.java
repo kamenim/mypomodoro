@@ -745,7 +745,7 @@ public abstract class AbstractTable extends JXTable {
     // This is at the same time a done and a done-done for subtask. Update the date completed
     public void setSubtaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
-        act.setDateCompleted(!act.isDoneDone() ? new Date() : new Date(0));
+        act.setDateDoneDone(!act.isDoneDone() ? new Date() : new Date(0));
         act.setIsDoneDone(!act.isDoneDone());
         getList().update(act);
         ActivitiesDAO.getInstance().updateDoneDone(act);
@@ -756,6 +756,7 @@ public abstract class AbstractTable extends JXTable {
     // DON'T update the date completed
     public void setTaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
+        act.setDateDoneDone(!act.isDoneDone() ? new Date() : new Date(0));
         act.setIsDoneDone(!act.isDoneDone());
         getList().update(act);
         ActivitiesDAO.getInstance().updateDoneDone(act);

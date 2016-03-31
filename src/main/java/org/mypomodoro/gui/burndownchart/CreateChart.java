@@ -51,9 +51,10 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
-// TODO error scope lines with iteration f: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
-// TODO subtasks scope SQL request doesn't work
-// TODO fix burnup of subtasks
+// TODO error scope lines with iterations : java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+// TODO subtasks scope with iterations SQL request doesn't work
+// TODO fix burnup of subtasks with iterations
+// TODO test database upgrade with MySQL
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -255,9 +256,7 @@ public class CreateChart extends JPanel {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        if (DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            total -= getBurndownValue(activity);
-                        }
+                        total -= getBurndownValue(activity, date);                        
                     }
                     total = burndownChartPercentage ? Math.round(total) : total;  // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
@@ -268,7 +267,7 @@ public class CreateChart extends JPanel {
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.getIteration() == i && activity.isCompleted()) {
+                    if (activity.getIteration() == i) {
                         total -= getBurndownValue(activity);
                     }
                 }
@@ -293,9 +292,7 @@ public class CreateChart extends JPanel {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        if (DateUtil.isEquals(activity.getDateCompleted(), date)) {
-                            total += getBurnupValue(activity);
-                        }
+                        total += getBurnupValue(activity, date);                        
                     }
                     total = burnupChartPercentage ? Math.round(total) : total; // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
@@ -306,7 +303,7 @@ public class CreateChart extends JPanel {
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
-                    if (activity.getIteration() == i && activity.isCompleted()) {
+                    if (activity.getIteration() == i) {
                         total += getBurnupValue(activity);
                     }
                 }
@@ -547,7 +544,11 @@ public class CreateChart extends JPanel {
     }
 
     private float getBurndownValue(Activity activity) {
-        float value = burndownchartType.getValue(activity);
+        return getBurndownValue(activity, null);
+    }
+    
+    private float getBurndownValue(Activity activity, Date date) {
+        float value = burndownchartType.getValue(activity, date);
         if (burndownChartPercentage) {
             value = (value / totalForBurndownInPercentage) * 100;
         }
@@ -555,7 +556,11 @@ public class CreateChart extends JPanel {
     }
 
     private float getBurnupValue(Activity activity) {
-        float value = burnupchartType.getValue(activity);
+        return getBurnupValue(activity, null);
+    }
+    
+    private float getBurnupValue(Activity activity, Date date) {
+        float value = burnupchartType.getValue(activity, date);
         if (burnupChartPercentage) {
             value = (value / totalForBurnupInPercentage) * 100;
         }

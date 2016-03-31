@@ -19,7 +19,6 @@ package org.mypomodoro.gui.create.list;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.mypomodoro.db.ActivitiesDAO;
 
 /**
  * List of types of activities and reports
@@ -30,7 +29,7 @@ public class SubTaskTypeList extends AbstractList {
     private static ArrayList<String> types = new ArrayList<String>();
 
     public static void refresh() {
-        types = ActivitiesDAO.getInstance().getSubTaskTypes();
+        //types = ActivitiesDAO.getInstance().getSubTaskTypes();
     }
 
     public static List<String> getTypes() {

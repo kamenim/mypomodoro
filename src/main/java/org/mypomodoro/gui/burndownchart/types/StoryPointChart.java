@@ -21,11 +21,16 @@ import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * Story points chart type
  *
+ * Chart based on completed tasks
+ * Story points are 'done' when the task is completed
+ * (similar to Task chart)
+ * 
  */
 public class StoryPointChart implements IChartType {
 
@@ -43,8 +48,8 @@ public class StoryPointChart implements IChartType {
     
     // A task must be completed/done (= release backlog) for its story points to be considered as done
     @Override
-    public float getValue(Activity activity) {
-        return activity.isCompleted() && activity.isTask() ? activity.getStoryPoints() : 0;
+    public float getValue(Activity activity, Date date) {
+        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getStoryPoints() : 0; // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
     }
 
     @Override

@@ -46,10 +46,16 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getFormatedDate(activity.getDate(), "EEE, dd MMM yyyy") + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
-        if ((activity.isCompleted() && activity.isTask()) || (activity.isDoneDone() && activity.isSubTask())) {
+        if (activity.isCompleted() && activity.isTask()) {
             textMap.put("date_completed", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + ":</b> "
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getFormatedDate(activity.getDateCompleted(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
+                    + (activity.isUnplanned() ? "]" : "") + "<br>");
+        }
+        if (activity.isDoneDone() && ((activity.isTask() && Main.preferences.getAgileMode()) || activity.isSubTask())) {
+            textMap.put("date_donedone", "<b>" + (activity.isTask() ? Labels.getString("Agile.ReportListPanel.Done-Done") : (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed"))) + ":</b> "
+                    + (activity.isUnplanned() ? "U [" : "")
+                    + DateUtil.getFormatedDate(activity.getDateDoneDone(), "EEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(activity.getDateDoneDone())
                     + (activity.isUnplanned() ? "]" : "") + "<br>");
         }
         if (activity.isTask()) {
@@ -67,10 +73,10 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + activity.getEstimatedPoms()
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br>");
-        if (Main.preferences.getAgileMode()) {
+        /*if (Main.preferences.getAgileMode()) {
             textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br>");
             textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br>");
-        }
+        }*/
         textMap.put("author", "<b>" + Labels.getString("Common.Author") + ":</b> " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "<br>");
         textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br>");
         textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br>");
