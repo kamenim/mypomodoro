@@ -146,7 +146,7 @@ public class Database {
                 + "iteration INTEGER, "
                 + "parent_id INTEGER, "
                 + "is_donedone TEXT, "
-                + "date_donedone " + longInteger+ ");";
+                + "date_donedone " + longInteger + ");";
         update(createTableSQL);
     }
 
@@ -203,7 +203,7 @@ public class Database {
     public void unlock() {
         lock.unlock();
     }
-    
+
     public String getLongIntegerVarName() {
         return longInteger;
     }

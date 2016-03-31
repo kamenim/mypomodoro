@@ -167,10 +167,10 @@ public class TestMenu extends JMenu {
                                     }
                                     Date dateAdded = (new DateTime(dateCompleted).minusDays(rand.nextInt(iterations.length * 5))).toDate(); // up to 30 days older than date completed
                                     if (Main.preferences.getAgileMode()) { // set 1 out of 2 reports as done-done
-                                        a.setIsDoneDone(rand.nextBoolean());                                        
+                                        a.setIsDoneDone(rand.nextBoolean());
                                         if (a.isDoneDone()) {
                                             a.setDateDoneDone(a.getDateCompleted()); // say we set the task done-done the same day it is completed
-                                        }                                        
+                                        }
                                     }
                                     ReportList.getList().add(a, dateAdded, dateCompleted);
                                     if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // once in a while reopen a task
@@ -338,7 +338,7 @@ public class TestMenu extends JMenu {
                     aClone.setActualPoms(real);
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
-                    aClone.setType(Labels.getString("Common.Subtask"));                    
+                    aClone.setType(Labels.getString("Common.Subtask"));
                     if (list instanceof ToDoList || list instanceof ReportList) {
                         aClone.setIsDoneDone(rand.nextBoolean()); // set 1 out of 2 subtasks as done                        
                         if (list instanceof ReportList) {

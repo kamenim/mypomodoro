@@ -72,7 +72,7 @@ public class CreateChart extends JPanel {
     private IChartType burnupchartType;
     private boolean burndownChartPercentage = false;
     private boolean burnupChartPercentage = false;
-    private ArrayList<Float> sumForScope;    
+    private ArrayList<Float> sumForScope;
 
     public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
         this.chooseInputForm = chooseInputForm;
@@ -116,21 +116,21 @@ public class CreateChart extends JPanel {
             }
         }
         /*if (burnupChartPercentage && totalForBurnup > 0) {
-            totalForBurnupInPercentage = sumForScope.get(sumForScope.size() - 1);
-            if (totalForBurnupInPercentage > 0) {
-                //initialTotalForBurnup = totalForBurnup;
-                totalForBurnup = 100;
-            } else {
-                burnupChartPercentage = false; // we can't show the chart in percentage
-            }
-        }*/
+         totalForBurnupInPercentage = sumForScope.get(sumForScope.size() - 1);
+         if (totalForBurnupInPercentage > 0) {
+         //initialTotalForBurnup = totalForBurnup;
+         totalForBurnup = 100;
+         } else {
+         burnupChartPercentage = false; // we can't show the chart in percentage
+         }
+         }*/
         maxSumForScopeLine = 0;
         charts = createChart();
         chartPanel = new ChartPanel(charts);
         if (configureInputForm.getChartWidth() != 0 && configureInputForm.getChartHeight() != 0) {
             chartPanel.setPreferredSize(new Dimension(configureInputForm.getChartWidth(), configureInputForm.getChartHeight()));
         }
-        chartPanel.addChartMouseListener(new CustomLayeredBarChartMouseListener(charts));        
+        chartPanel.addChartMouseListener(new CustomLayeredBarChartMouseListener(charts));
         add(chartPanel);
     }
 
@@ -195,19 +195,19 @@ public class CreateChart extends JPanel {
     private CategoryDataset createBurnupGuideDataset() {
         String label = chooseInputForm.getBurnupGuideLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {            
+        if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 // use double to make the values more accurate                
                 // OK
-                dataset.addValue((Number) new Double(i * (totalForBurnup / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));                
-            }            
+                dataset.addValue((Number) new Double(i * (totalForBurnup / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
+            }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             int size = configureInputForm.getEndIteration() + 1;
             if (size > 0) {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
                     // use double to make the values more accurate                        
                     // TODO
-                    dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);                    
+                    dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);
                 }
             }
         }
@@ -252,11 +252,11 @@ public class CreateChart extends JPanel {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float total = totalForBurndown;
         if (configureInputForm.getDatesCheckBox().isSelected()) {
-            for (int i = 0; i < XAxisDateValues.size(); i++) {                
+            for (int i = 0; i < XAxisDateValues.size(); i++) {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        total -= getBurndownValue(activity, date);                        
+                        total -= getBurndownValue(activity, date);
                     }
                     total = burndownChartPercentage ? Math.round(total) : total;  // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
@@ -292,7 +292,7 @@ public class CreateChart extends JPanel {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
                     for (Activity activity : ChartList.getList()) {
-                        total += getBurnupValue(activity, date);                        
+                        total += getBurnupValue(activity, date);
                     }
                     total = burnupChartPercentage ? Math.round(total) : total; // ok to use Math.round here (eg: 1.0 --> 1 but 1.6 --> 2)
                     dataset.addValue((Number) total, label, getXAxisDateValue(i));
@@ -395,9 +395,9 @@ public class CreateChart extends JPanel {
             burndownRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // left-y-axis font
             // Add the custom bar layered renderer to plot
             CategoryDataset burndownDataset = createBurndownChartDataset();
-            plot.setDataset(4, burndownDataset);            
-            plot.mapDatasetToRangeAxis(4, 0);                        
-            CustomLayeredBarRenderer burndownRenderer = new CustomLayeredBarRenderer();            
+            plot.setDataset(4, burndownDataset);
+            plot.mapDatasetToRangeAxis(4, 0);
+            CustomLayeredBarRenderer burndownRenderer = new CustomLayeredBarRenderer();
             burndownRenderer.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());
             burndownRenderer.setSeriesBarWidth(0, 1.0);
             burndownRenderer.setDrawBarOutline(true); // this is needed to highlight the bar (see CustomLayerBarRenderer)
@@ -415,7 +415,7 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());                
+                burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
                 burndownTargetrenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burndownChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
                 burndownTargetrenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getTargetCheckBox().isSelected() && !chooseInputForm.getTargetLegend().isEmpty());
                 // Disable tooltip
@@ -479,9 +479,9 @@ public class CreateChart extends JPanel {
                 plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             }
             // Add the custom bar layered renderer to plot
-            CustomLayeredBarRenderer burnupRenderer = new CustomLayeredBarRenderer();              
+            CustomLayeredBarRenderer burnupRenderer = new CustomLayeredBarRenderer();
             burnupRenderer.setSeriesPaint(0, chooseInputForm.getSecondaryYAxisColor());
-            burnupRenderer.setSeriesBarWidth(0, 0.7); 
+            burnupRenderer.setSeriesBarWidth(0, 0.7);
             burnupRenderer.setDrawBarOutline(true); // this is needed to highlight the bar (see CustomLayerBarRenderer)
             burnupRenderer.setSeriesOutlinePaint(0, Color.LIGHT_GRAY); // as the out line cannot be made thicker, it is gray by default and black when highlighted (see CustomLayerBarRenderer)
             plot.setRenderer(3, burnupRenderer);
@@ -546,7 +546,7 @@ public class CreateChart extends JPanel {
     private float getBurndownValue(Activity activity) {
         return getBurndownValue(activity, null);
     }
-    
+
     private float getBurndownValue(Activity activity, Date date) {
         float value = burndownchartType.getValue(activity, date);
         if (burndownChartPercentage) {
@@ -558,7 +558,7 @@ public class CreateChart extends JPanel {
     private float getBurnupValue(Activity activity) {
         return getBurnupValue(activity, null);
     }
-    
+
     private float getBurnupValue(Activity activity, Date date) {
         float value = burnupchartType.getValue(activity, date);
         if (burnupChartPercentage) {

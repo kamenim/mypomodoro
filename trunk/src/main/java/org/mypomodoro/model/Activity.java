@@ -378,7 +378,7 @@ public class Activity implements Cloneable {
     public boolean isDoneDone() {
         return isDoneDone;
     }
-    
+
     public Date getDateDoneDone() {
         return dateDoneDone;
     }
@@ -473,7 +473,7 @@ public class Activity implements Cloneable {
     public void setIsDoneDone(boolean isDoneDone) {
         this.isDoneDone = isDoneDone;
     }
-    
+
     public void setDateDoneDone(Date dateDoneDone) {
         this.dateDoneDone = dateDoneDone;
     }

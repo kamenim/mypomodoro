@@ -36,7 +36,6 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing the Chart List.
@@ -52,12 +51,10 @@ public class CheckPanel extends AbstractPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     // head tabbed pane and side button
     private final JTabbedPane headTabbedPane;
-    private final CreateChart chart;
 
-    public CheckPanel(JTabbedPane headTabbedPane, CreateChart chart) {
+    public CheckPanel(JTabbedPane headTabbedPane) {
 
         this.headTabbedPane = headTabbedPane;
-        this.chart = chart;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -147,18 +144,13 @@ public class CheckPanel extends AbstractPanel {
         gbc.gridy = 0;
         gbc.weighty = 1.0;
         gbc.weightx = 0.1;
-        JButton createButton = new DefaultButton(Labels.getString("BurndownChartPanel.Create"));
+        JButton createButton = new DefaultButton(Labels.getString("BurndownChartPanel.Choose"));
         createButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!WaitCursor.isStarted()) {
-                    if (getList().size() > 0) {
-                        chart.create();
-                        headTabbedPane.setEnabledAt(3, true);
-                        headTabbedPane.setSelectedIndex(3);
-                    }
-                }
+                headTabbedPane.setEnabledAt(2, true);
+                headTabbedPane.setSelectedIndex(2);
             }
         });
         createButton.setMinimumSize(CREATEBUTTON_DIMENSION);
