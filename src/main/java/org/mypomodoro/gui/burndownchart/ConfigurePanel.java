@@ -85,8 +85,8 @@ public class ConfigurePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!WaitCursor.isStarted()) {
-                    tabbedPane.setEnabledAt(2, true);
-                    tabbedPane.setSelectedIndex(2);
+                    tabbedPane.setEnabledAt(1, true);
+                    tabbedPane.setSelectedIndex(1);
                     SwingUtilities.invokeLater(new Runnable() {
 
                         @Override

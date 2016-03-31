@@ -27,7 +27,7 @@ import org.jfree.chart.renderer.category.LayeredBarRenderer;
  * Find at
  * http://juejin-cu.googlecode.com/svn/trunk/shop_total/Dev_lib/02_Resource/jfreechart-1.0.8-demo/source/demo/MouseOverDemo1.java
  * Sorry if the copyright of the demo has been infringed here
- * 
+ *
  * Note: setDrawBarOutline must be set to 'true' for the highlight to work
  *
  */
@@ -50,11 +50,11 @@ public class CustomLayeredBarRenderer extends LayeredBarRenderer {
      * @param c the column index.
      */
     public void setHighlightedItem(int r, int c) {
-        if (this.highlightRow == r && this.highlightColumn == c) {            
+        if (this.highlightRow == r && this.highlightColumn == c) {
             return;  // nothing to do            
         }
         this.highlightRow = r;
-        this.highlightColumn = c;        
+        this.highlightColumn = c;
         notifyListeners(new RendererChangeEvent(this));
     }
 
@@ -68,7 +68,7 @@ public class CustomLayeredBarRenderer extends LayeredBarRenderer {
      */
     @Override
     public Paint getItemOutlinePaint(int row, int column) {
-        if (row == this.highlightRow && column == this.highlightColumn) {            
+        if (row == this.highlightRow && column == this.highlightColumn) {
             return Color.black;
         }
         return super.getItemOutlinePaint(row, column);

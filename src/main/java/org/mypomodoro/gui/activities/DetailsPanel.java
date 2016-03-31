@@ -94,8 +94,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
             textMap.remove("date_donedone");
         }
         /*if (!Main.preferences.getAgileMode()) {
-            textMap.remove("storypoints");
-            textMap.remove("iteration");
-        }*/
+         textMap.remove("storypoints");
+         textMap.remove("iteration");
+         }*/
     }
 }

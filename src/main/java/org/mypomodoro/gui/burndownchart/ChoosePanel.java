@@ -26,7 +26,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import org.mypomodoro.buttons.DefaultButton;
+import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel to generate burndown charts
@@ -40,10 +42,12 @@ public class ChoosePanel extends JPanel {
     private final JTabbedPane tabbedPane;
     private final ChooseInputForm chooseInputForm;
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private final CreateChart chart;
 
-    public ChoosePanel(JTabbedPane tabbedPane, ChooseInputForm chooseInputForm) {
+    public ChoosePanel(JTabbedPane tabbedPane, ChooseInputForm chooseInputForm, CreateChart chart) {
         this.tabbedPane = tabbedPane;
         this.chooseInputForm = chooseInputForm;
+        this.chart = chart;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -71,13 +75,18 @@ public class ChoosePanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.weightx = 0.1;
         JButton configureButton = new DefaultButton(
-                Labels.getString("BurndownChartPanel.Configure"));
+                Labels.getString("BurndownChartPanel.Create"));
         configureButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabbedPane.setEnabledAt(1, true);
-                tabbedPane.setSelectedIndex(1);
+                if (!WaitCursor.isStarted()) {
+                    if (ChartList.getList().size() > 0) {
+                        chart.create();
+                        tabbedPane.setEnabledAt(3, true);
+                        tabbedPane.setSelectedIndex(3);
+                    }
+                }
             }
         });
         configureButton.setMinimumSize(CREATEBUTTON_DIMENSION);

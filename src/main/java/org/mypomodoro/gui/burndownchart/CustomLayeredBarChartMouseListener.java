@@ -65,7 +65,7 @@ public class CustomLayeredBarChartMouseListener implements ChartMouseListener {
             }
             CategoryItemEntity cie = (CategoryItemEntity) entity;
             CategoryDataset dataset = cie.getDataset();
-            burndownRenderer.setHighlightedItem(dataset.getRowIndex(cie.getRowKey()), dataset.getColumnIndex(cie.getColumnKey()));            
+            burndownRenderer.setHighlightedItem(dataset.getRowIndex(cie.getRowKey()), dataset.getColumnIndex(cie.getColumnKey()));
         }
         // Burn-up
         CustomLayeredBarRenderer burnupRenderer = (CustomLayeredBarRenderer) chart.getCategoryPlot().getRenderer(3);  // burnup plot index = 3

@@ -26,9 +26,9 @@ import org.mypomodoro.util.Labels;
 
 /**
  * Pomodoro / Estimate chart type
- * 
+ *
  * Chart based on real pomodoros
- * 
+ *
  */
 public class PomodoroChart implements IChartType {
 
@@ -62,12 +62,12 @@ public class PomodoroChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         /*int total = 0;
-        for (Activity activity : ChartList.getList().getTasks()) {
-            if (activity.isCompleted()) {
-                total += activity.getActualPoms();
-            }
-        }
-        return new Float(total);*/
+         for (Activity activity : ChartList.getList().getTasks()) {
+         if (activity.isCompleted()) {
+         total += activity.getActualPoms();
+         }
+         }
+         return new Float(total);*/
         return getTotalForBurndown();
     }
 

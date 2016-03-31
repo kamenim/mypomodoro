@@ -27,10 +27,9 @@ import org.mypomodoro.util.Labels;
 /**
  * Story points chart type
  *
- * Chart based on completed tasks
- * Story points are 'done' when the task is completed
- * (similar to Task chart)
- * 
+ * Chart based on completed tasks Story points are 'done' when the task is
+ * completed (similar to Task chart)
+ *
  */
 public class StoryPointChart implements IChartType {
 
@@ -45,7 +44,7 @@ public class StoryPointChart implements IChartType {
     public String getXLegend() {
         return label;
     }
-    
+
     // A task must be completed/done (= release backlog) for its story points to be considered as done
     @Override
     public float getValue(Activity activity, Date date) {
@@ -64,12 +63,12 @@ public class StoryPointChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         /*float total = 0;
-        for (Activity activity : ChartList.getList().getTasks()) {
-            if (activity.isCompleted()) {
-                total += activity.getStoryPoints();
-            }
-        }
-        return total;*/
+         for (Activity activity : ChartList.getList().getTasks()) {
+         if (activity.isCompleted()) {
+         total += activity.getStoryPoints();
+         }
+         }
+         return total;*/
         return getTotalForBurndown();
     }
 

@@ -28,7 +28,7 @@ import org.mypomodoro.util.Labels;
  * Subtasks chart type#
  *
  * Chart based on done subtasks (subtasks isDoneDone)
- * 
+ *
  */
 public class SubtaskChart implements IChartType {
 
@@ -58,12 +58,12 @@ public class SubtaskChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         /*int total = 0;
-        for (Activity activity : ChartList.getList().getSubTasks()) {
-            if (activity.isDoneDone()) {
-                total++;
-            }
-        }
-        return new Float(total);*/
+         for (Activity activity : ChartList.getList().getSubTasks()) {
+         if (activity.isDoneDone()) {
+         total++;
+         }
+         }
+         return new Float(total);*/
         return getTotalForBurndown();
     }
 

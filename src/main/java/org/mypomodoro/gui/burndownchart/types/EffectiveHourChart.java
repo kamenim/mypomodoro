@@ -28,9 +28,8 @@ import org.mypomodoro.util.TimeConverter;
 /**
  * Effective Hours chart type
  *
- * Chart based on real pomodoros
- * (similar to Pomodoro chart)
- * 
+ * Chart based on real pomodoros (similar to Pomodoro chart)
+ *
  */
 public class EffectiveHourChart implements IChartType {
 
@@ -64,12 +63,12 @@ public class EffectiveHourChart implements IChartType {
     @Override
     public float getTotalForBurnup() {
         /*int total = 0;
-        for (Activity activity : ChartList.getList().getTasks()) {
-            if (activity.isCompleted()) {
-                total += activity.getActualPoms();
-            }
-        }
-        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(total));*/
+         for (Activity activity : ChartList.getList().getTasks()) {
+         if (activity.isCompleted()) {
+         total += activity.getActualPoms();
+         }
+         }
+         return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(total));*/
         return getTotalForBurndown();
     }
 

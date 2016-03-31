@@ -74,9 +74,9 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + (activity.getOverestimatedPoms() > 0 ? " + " + activity.getOverestimatedPoms() : "")
                 + " (" + TimeConverter.getLength(activity.getActualPoms()) + " / " + TimeConverter.getLength(activity.getEstimatedPoms() + activity.getOverestimatedPoms()) + ")" + "<br>");
         /*if (Main.preferences.getAgileMode()) {
-            textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br>");
-            textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br>");
-        }*/
+         textMap.put("storypoints", "<b>" + Labels.getString("Agile.Common.Story Points") + ":</b> " + displayStoryPoint(activity.getStoryPoints()) + "<br>");
+         textMap.put("iteration", "<b>" + Labels.getString("Agile.Common.Iteration") + ":</b> " + (activity.getIteration() == -1 ? "-" : activity.getIteration()) + "<br>");
+         }*/
         textMap.put("author", "<b>" + Labels.getString("Common.Author") + ":</b> " + (activity.getAuthor().isEmpty() ? "-" : activity.getAuthor()) + "<br>");
         textMap.put("place", "<b>" + Labels.getString("Common.Place") + ":</b> " + (activity.getPlace().isEmpty() ? "-" : activity.getPlace()) + "<br>");
         textMap.put("description", "<b>" + Labels.getString("Common.Description") + ":</b> " + (activity.getDescription().isEmpty() ? "-" : activity.getDescription()) + "<br>");
