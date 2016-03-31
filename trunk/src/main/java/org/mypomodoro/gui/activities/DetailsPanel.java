@@ -89,12 +89,13 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         if (DateUtil.isSameDay(activity.getDateCompleted(), new Date(0))) {
             textMap.remove("date_reopened");
         }
-        if (Main.preferences.getAgileMode()) {
+        textMap.remove("date_completed");
+        if (activity.isTask()) {
+            textMap.remove("date_donedone");
+        }
+        /*if (!Main.preferences.getAgileMode()) {
             textMap.remove("storypoints");
             textMap.remove("iteration");
-        }
-        if (activity.isTask()) {
-            textMap.remove("date_completed");
-        }
+        }*/
     }
 }

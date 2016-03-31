@@ -64,6 +64,5 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         textMap.remove("date_reopened");
-        textMap.remove("date_completed");
     }
 }

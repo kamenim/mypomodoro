@@ -135,7 +135,11 @@ public class Activity implements Cloneable {
      * state of activity. default is NOT DoneDone
      */
     private boolean isDoneDone = false;
-
+    /**
+     * date the the activity is done-done or the sub-activity is completed
+     *
+     */
+    private Date dateDoneDone = new Date(0);
     /**
      * recorded time as display on the timer when voiding pomodoro
      */
@@ -287,6 +291,7 @@ public class Activity implements Cloneable {
         this.iteration = rs.getInt("iteration");
         this.parentId = rs.getInt("parent_id");
         this.isDoneDone = Boolean.valueOf(rs.getString("is_donedone"));
+        this.dateDoneDone = new Date(rs.getLong("date_donedone"));
     }
 
     // GETTERS
@@ -372,6 +377,10 @@ public class Activity implements Cloneable {
 
     public boolean isDoneDone() {
         return isDoneDone;
+    }
+    
+    public Date getDateDoneDone() {
+        return dateDoneDone;
     }
 
     // SETTERS
@@ -463,6 +472,10 @@ public class Activity implements Cloneable {
 
     public void setIsDoneDone(boolean isDoneDone) {
         this.isDoneDone = isDoneDone;
+    }
+    
+    public void setDateDoneDone(Date dateDoneDone) {
+        this.dateDoneDone = dateDoneDone;
     }
 
     /**
@@ -579,7 +592,8 @@ public class Activity implements Cloneable {
                 && a.getNumInternalInterruptions() == getNumInternalInterruptions()
                 && a.getStoryPoints() == getStoryPoints()
                 && a.getIteration() == getIteration()
-                && a.isDoneDone() == isDoneDone();
+                && a.isDoneDone() == isDoneDone()
+                && a.getDateDoneDone().getTime() == getDateDoneDone().getTime();
     }
 
     public boolean isTask() {

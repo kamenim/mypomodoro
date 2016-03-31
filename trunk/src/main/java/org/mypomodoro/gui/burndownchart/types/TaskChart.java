@@ -21,11 +21,14 @@ import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 
 /**
  * Tasks chart type
  *
+ * Chart based on completed tasks
+ * 
  */
 public class TaskChart implements IChartType {
 
@@ -43,8 +46,8 @@ public class TaskChart implements IChartType {
 
     // A task must be completed/done (= release backlog)
     @Override
-    public float getValue(Activity activity) {
-        return activity.isCompleted() && activity.isTask() ?  1 : 0;
+    public float getValue(Activity activity, Date date) {
+        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ?  1 : 0; // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
     }
 
     @Override

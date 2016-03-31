@@ -21,12 +21,16 @@ import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
+import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
 /**
  * Effective Hours chart type
  *
+ * Chart based on real pomodoros
+ * (similar to Pomodoro chart)
+ * 
  */
 public class EffectiveHourChart implements IChartType {
 
@@ -44,8 +48,8 @@ public class EffectiveHourChart implements IChartType {
 
     // A task DOESN'T NEED to be completed/done (= iteration backlog) for its actual poms to be accounted as actual / done
     @Override
-    public float getValue(Activity activity) {
-        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(activity.isTask() ? activity.getActualPoms() : 0));
+    public float getValue(Activity activity, Date date) {
+        return TimeConverter.roundToHours(TimeConverter.convertPomodorosToEffectiveMinutes(activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getActualPoms() : 0)); // real poms of the task = real poms of its subtasks
     }
 
     @Override

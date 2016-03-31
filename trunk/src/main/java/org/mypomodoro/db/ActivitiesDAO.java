@@ -62,7 +62,8 @@ public class ActivitiesDAO {
                 + newActivity.getStoryPoints() + ", "
                 + newActivity.getIteration() + ", "
                 + newActivity.getParentId() + ", "
-                + "'" + String.valueOf(newActivity.isDoneDone()) + "'" + ");";
+                + "'" + String.valueOf(newActivity.isDoneDone()) + "', "
+                + newActivity.getDateDoneDone().getTime() + ");";
         try {
             database.lock();
             database.update("begin;");
@@ -109,7 +110,8 @@ public class ActivitiesDAO {
                 + "story_points = " + activity.getStoryPoints() + ", "
                 + "iteration = " + activity.getIteration() + ", "
                 + "parent_id = " + activity.getParentId() + ", "
-                + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'"
+                + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "',"
+                + "date_donedone = " + activity.getDateDoneDone().getTime()
                 + " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -141,7 +143,7 @@ public class ActivitiesDAO {
         String updateSQL = "UPDATE activities SET "
                 + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'";
         if (activity.isSubTask()) {
-            updateSQL += ", date_completed = " + activity.getDateCompleted().getTime();
+            updateSQL += ", date_donedone = " + activity.getDateDoneDone().getTime();
         }
         updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
@@ -182,9 +184,10 @@ public class ActivitiesDAO {
                 // Upgrade from 3.3, 3.4, 4.0, 4.1 or 4.1.1 TO 4.2.0
                 Main.logger.error("Fixing following issue... Done", ex);
                 if (MySQLConfigLoader.isValid()) {
-                    database.update("ALTER TABLE activities ADD is_donedone VARCHAR(255) DEFAULT 'false';");
+                    database.update("ALTER TABLE activities ADD (is_donedone VARCHAR(255) DEFAULT 'false', date_donedone " + Main.database.getLongIntegerVarName() + ");");
                 } else {
                     database.update("ALTER TABLE activities ADD is_donedone TEXT DEFAULT 'false';");
+                    database.update("ALTER TABLE activities ADD date_donedone " + Main.database.getLongIntegerVarName() + ";");
                 }
                 try {
                     // re-init the result set (rs.first()/beforeFirst() won't suffice)
@@ -612,7 +615,7 @@ public class ActivitiesDAO {
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         //+ "ON activities.parent_id = activities.id AND (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0)) "
                         + "ON (activities.parent_id = activities.id AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
-                        //+ "WHERE parent_id > -1");
+                //+ "WHERE parent_id > -1");
                 try {
                     while (rs.next()) {
                         Float sum = (Float) rs.getFloat("sum");
@@ -771,33 +774,32 @@ public class ActivitiesDAO {
     }
 
     // Not used
-    public ArrayList<String> getSubTaskTypes() {
-        ArrayList<String> types = new ArrayList<String>();
-        try {
-            database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id > -1 ORDER BY type ASC");
-            try {
-                while (rs.next()) {
-                    String type = rs.getString("type");
-                    if (type != null) {
-                        types.add(type);
-                    }
-                }
-            } catch (SQLException ex) {
-                Main.logger.error("", ex);
-            } finally {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Main.logger.error("", ex);
-                }
-            }
-        } finally {
-            database.unlock();
-        }
-        return types;
-    }
-
+    /*public ArrayList<String> getSubTaskTypes() {
+     ArrayList<String> types = new ArrayList<String>();
+     try {
+     database.lock();
+     ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id > -1 ORDER BY type ASC");
+     try {
+     while (rs.next()) {
+     String type = rs.getString("type");
+     if (type != null) {
+     types.add(type);
+     }
+     }
+     } catch (SQLException ex) {
+     Main.logger.error("", ex);
+     } finally {
+     try {
+     rs.close();
+     } catch (SQLException ex) {
+     Main.logger.error("", ex);
+     }
+     }
+     } finally {
+     database.unlock();
+     }
+     return types;
+     }*/
     public ArrayList<String> getAuthors() {
         ArrayList<String> types = new ArrayList<String>();
         try {
