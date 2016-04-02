@@ -54,7 +54,6 @@ import org.mypomodoro.util.DateUtil;
 // TODO error scope lines with iterations : java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
 // TODO subtasks scope with iterations SQL request doesn't work
 // TODO fix burnup of subtasks with iterations
-// TODO test database upgrade with MySQL
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;

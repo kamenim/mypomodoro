@@ -35,7 +35,7 @@ public class ChartTabbedPanel extends JPanel {
     private final ConfigureInputForm configureInputForm = new ConfigureInputForm();
     private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);
     private final JTabbedPane chartTabbedPane = new JTabbedPane();
-    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane);
+    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
 
     public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
@@ -45,11 +45,11 @@ public class ChartTabbedPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
+        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm);
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
         ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, checkPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configureInputPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Check"), checkPanel);
-        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm, chart);
-        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
         CreateChartPanel chartPanel = new CreateChartPanel(chart);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Create"), new JScrollPane(chartPanel));
         chartTabbedPane.setEnabledAt(1, false);

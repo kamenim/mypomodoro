@@ -56,11 +56,11 @@ public class ConfigurePanel extends JPanel {
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        addCreateInputForm();
+        addConfigureInputForm();
         addCheckButton();
     }
 
-    private void addCreateInputForm() {
+    private void addConfigureInputForm() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -85,8 +85,8 @@ public class ConfigurePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!WaitCursor.isStarted()) {
-                    tabbedPane.setEnabledAt(1, true);
-                    tabbedPane.setSelectedIndex(1);
+                    tabbedPane.setEnabledAt(2, true);
+                    tabbedPane.setSelectedIndex(2);
                     SwingUtilities.invokeLater(new Runnable() {
 
                         @Override
