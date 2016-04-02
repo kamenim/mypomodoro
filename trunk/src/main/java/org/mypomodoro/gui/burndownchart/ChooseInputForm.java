@@ -30,6 +30,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
@@ -55,6 +56,10 @@ public class ChooseInputForm extends JPanel {
 
     private static final Dimension COMBO_BOX_DIMENSION = new Dimension(300, 25);
     private static final Dimension COLOR_SIZE_DIMENSION = new Dimension(60, 20);
+    // Data form
+    private final JPanel dataInputFormPanel = new JPanel();
+    private final JCheckBox tasksBox = new JCheckBox(Labels.getString("Common.Tasks"), true);
+    private final JCheckBox subtasksBox = new JCheckBox(Labels.getString("Common.Subtasks"), false);
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private final JPanel burndownChartTypeLegendInputFormPanel = new JPanel();
@@ -109,10 +114,100 @@ public class ChooseInputForm extends JPanel {
     public ChooseInputForm() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        addDataInputFormPanel();
         addBurndownChartInputFormPanel();
         addBurnupChartInputFormPanel();
     }
 
+    /////////////////////////////////////
+    /////// DATA ////////////////////////
+    /////////////////////////////////////
+    private void addDataInputFormPanel() {
+        JLabel titleBorderData = new JLabel(" " + Labels.getString("BurndownChartPanel.Data") + " ");
+        titleBorderData.setOpaque(true);
+        ComponentTitledBorder borderData = new ComponentTitledBorder(titleBorderData, dataInputFormPanel, new EtchedBorder(), titleBorderData.getFont().deriveFont(Font.BOLD));
+        GridBagConstraints cChart = new GridBagConstraints();
+        cChart.weightx = 1;
+        cChart.weighty = 1;
+        cChart.fill = GridBagConstraints.CENTER;
+        cChart.insets = new Insets(0, 5, 2, 5);
+        dataInputFormPanel.setBorder(borderData);
+        dataInputFormPanel.setLayout(new GridBagLayout());
+        addTasksSubtasksFields(cChart);
+        add(dataInputFormPanel, cChart);
+    }
+
+    private void addTasksSubtasksFields(final GridBagConstraints cChart) {
+        cChart.gridx = 0;
+        cChart.gridy = 0;
+        JPanel tasks = new JPanel();
+        tasks.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        tasksBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                subtasksBox.setSelected(false);
+                tasksBox.setSelected(true); // prevetn from being unchecked
+                refreshChartTypesComboBox(true);
+            }
+        });
+        tasks.add(tasksBox, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        subtasksBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                tasksBox.setSelected(false);
+                subtasksBox.setSelected(true); // prevetn from being unchecked
+                refreshChartTypesComboBox(false);
+            }
+        });
+        tasks.add(subtasksBox, gbc);
+        dataInputFormPanel.add(tasks, cChart);
+    }
+
+    private void refreshChartTypesComboBox(boolean tasksOption) {
+        // Burndown
+        refreshBurndownChartTypesComboBox(tasksOption);
+        // Burnup        
+        refreshBurnupChartTypesComboBox(tasksOption);
+    }
+
+    private void refreshBurndownChartTypesComboBox(boolean tasksOption) {
+        int indexSelectedBurndown = chartTypesBurndownComboBox.getSelectedIndex();
+        chartTypesBurndownComboBox.removeAllItems();
+        if (Main.preferences.getAgileMode()) {
+            chartTypesBurndownComboBox.addItem(new StoryPointChart());
+        }
+        chartTypesBurndownComboBox.addItem(new PomodoroChart());
+        chartTypesBurndownComboBox.addItem(tasksOption ? new TaskChart() : new SubtaskChart());
+        chartTypesBurndownComboBox.addItem(new EffectiveHourChart());
+        chartTypesBurndownComboBox.addItem(new PlainHourChart());
+        chartTypesBurndownComboBox.setSelectedIndex(indexSelectedBurndown > -1 ? indexSelectedBurndown : 0);
+    }
+
+    private void refreshBurnupChartTypesComboBox(boolean tasksOption) {
+        int indexSelectedBurnup = chartTypesBurnupComboBox.getSelectedIndex();
+        chartTypesBurnupComboBox.removeAllItems();
+        if (Main.preferences.getAgileMode()) {
+            chartTypesBurnupComboBox.addItem(new StoryPointChart());
+        }
+        chartTypesBurnupComboBox.addItem(new PomodoroChart());
+        chartTypesBurnupComboBox.addItem(tasksOption ? new TaskChart() : new SubtaskChart());
+        chartTypesBurnupComboBox.addItem(new EffectiveHourChart());
+        chartTypesBurnupComboBox.addItem(new PlainHourChart());
+        chartTypesBurnupComboBox.setSelectedIndex(indexSelectedBurnup > -1 ? indexSelectedBurnup : 0);
+    }
+
+    /////////////////////////////////////
+    /////// BURNDOWN //////////////////////
+    /////////////////////////////////////
     private void addBurndownChartInputFormPanel() {
         // Burndown       
         burndownChartCheckBox.setFocusPainted(false);
@@ -146,54 +241,6 @@ public class ChooseInputForm extends JPanel {
         add(burndownChartInputFormPanel);
     }
 
-    private void addBurnupChartInputFormPanel() {
-        // Burnup        
-        burnupChartCheckBox.setFocusPainted(false);
-        burnupChartCheckBox.setSelected(false);
-        burnupChartCheckBox.addActionListener(new ActionListener() { // no burndown and scope line on the same chart as they share the same axis (X-Axis)
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                if (!burndownChartCheckBox.isSelected()) {
-                    burnupChartCheckBox.setSelected(true); // force select at least one
-                }
-            }
-        });
-        burnupChartInputFormPanel.setBorder(borderBurnupChart);
-        burnupChartInputFormPanel.setLayout(new GridBagLayout());
-        GridBagConstraints cChart = new GridBagConstraints();
-        cChart.weightx = 1;
-        cChart.weighty = 1;
-        cChart.fill = GridBagConstraints.CENTER;
-        burnupChartTypeLegendInputFormPanel.setLayout(new GridBagLayout());
-        addBurnupChartFields(cChart);
-        // Guide
-        burnupGuideCheckBox.setFocusPainted(false);
-        burnupGuideCheckBox.setSelected(true);
-        burnupGuideInputFormPanel.setBorder(borderGuide);
-        burnupGuideInputFormPanel.setLayout(new GridBagLayout());
-        addBurnupGuideFields(cChart);
-        // Scope
-        scopeCheckBox.setFocusPainted(false);
-        scopeCheckBox.setSelected(false);
-        scopeCheckBox.addActionListener(new ActionListener() { // no burndown and scope line on the same chart as they share the same axis (X-Axis)
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                burndownChartCheckBox.setSelected(burndownChartCheckBox.isSelected() && !scopeCheckBox.isSelected());
-                if (!burndownChartCheckBox.isSelected()) {
-                    burnupChartCheckBox.setSelected(true); // force select at least one
-                }
-                borderBurndownChart.repaint();
-                borderBurnupChart.repaint();
-            }
-        });
-        scopeInputFormPanel.setBorder(borderScope);
-        scopeInputFormPanel.setLayout(new GridBagLayout());
-        addScopeFields(cChart);
-        add(burnupChartInputFormPanel);
-    }
-
     private void addBurndownChartFields(final GridBagConstraints cChart) {
         cChart.gridx = 0;
         cChart.gridy = 0;
@@ -209,34 +256,33 @@ public class ChooseInputForm extends JPanel {
         // Primary Y axis
         // Types
         chartTypesBurndownComboBox.setRenderer(new AbstractComboBoxRenderer());
-        PomodoroChart pomodoroChart = new PomodoroChart();
+        refreshBurndownChartTypesComboBox(true);
         if (Main.preferences.getAgileMode()) {
             StoryPointChart storyPointChart = new StoryPointChart();
-            chartTypesBurndownComboBox.addItem(storyPointChart);
             defaultPrimaryYAxisName = storyPointChart.getYLegend();
             defaultPrimaryYAxisLegend = storyPointChart.getXLegend();
         } else {
+            PomodoroChart pomodoroChart = new PomodoroChart();
             defaultPrimaryYAxisName = pomodoroChart.getYLegend();
             defaultPrimaryYAxisLegend = pomodoroChart.getXLegend();
         }
-        chartTypesBurndownComboBox.addItem(pomodoroChart);
-        chartTypesBurndownComboBox.addItem(new TaskChart());
-        chartTypesBurndownComboBox.addItem(new SubtaskChart());
-        chartTypesBurndownComboBox.addItem(new EffectiveHourChart());
-        chartTypesBurndownComboBox.addItem(new PlainHourChart());
         chartTypesBurndownComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                primaryYAxisName.setText(((IChartType) chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
-                primaryYAxisLegend.setText(((IChartType) chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
-                if (burndownChartPercentageCheckBox.isSelected()) {
-                    primaryYAxisName.setText(primaryYAxisName.getText().trim() + " %");
-                    primaryYAxisLegend.setText(primaryYAxisLegend.getText().trim() + " %");
+                try {
+                    primaryYAxisName.setText(((IChartType) chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
+                    primaryYAxisLegend.setText(((IChartType) chartTypesBurndownComboBox.getSelectedItem()).getYLegend());
+                    if (burndownChartPercentageCheckBox.isSelected()) {
+                        primaryYAxisName.setText(primaryYAxisName.getText().trim() + " %");
+                        primaryYAxisLegend.setText(primaryYAxisLegend.getText().trim() + " %");
+                    }
+                    burndownChartCheckBox.setSelected(true);
+                    borderBurndownChart.repaint();
+                    scopeCheckBox.setSelected(false);
+                    borderScope.repaint();
+                } catch (NullPointerException ex) {
+                    // Maybe a java bug here: the action listener is triggered on RemoveAllItems() command                    
                 }
-                burndownChartCheckBox.setSelected(true);
-                borderBurndownChart.repaint();
-                scopeCheckBox.setSelected(false);
-                borderScope.repaint();
             }
         });
         burndownChartTypeLegendInputFormPanel.add(chartTypesBurndownComboBox, gbc);
@@ -323,6 +369,57 @@ public class ChooseInputForm extends JPanel {
         burndownChartInputFormPanel.add(burndownChartTypeLegendInputFormPanel, cChart);
     }
 
+    /////////////////////////////////////
+    /////// BURNUP //////////////////////
+    /////////////////////////////////////
+    private void addBurnupChartInputFormPanel() {
+        // Burnup        
+        burnupChartCheckBox.setFocusPainted(false);
+        burnupChartCheckBox.setSelected(false);
+        burnupChartCheckBox.addActionListener(new ActionListener() { // no burndown and scope line on the same chart as they share the same axis (X-Axis)
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                if (!burndownChartCheckBox.isSelected()) {
+                    burnupChartCheckBox.setSelected(true); // force select at least one
+                }
+            }
+        });
+        burnupChartInputFormPanel.setBorder(borderBurnupChart);
+        burnupChartInputFormPanel.setLayout(new GridBagLayout());
+        GridBagConstraints cChart = new GridBagConstraints();
+        cChart.weightx = 1;
+        cChart.weighty = 1;
+        cChart.fill = GridBagConstraints.CENTER;
+        burnupChartTypeLegendInputFormPanel.setLayout(new GridBagLayout());
+        addBurnupChartFields(cChart);
+        // Guide
+        burnupGuideCheckBox.setFocusPainted(false);
+        burnupGuideCheckBox.setSelected(true);
+        burnupGuideInputFormPanel.setBorder(borderGuide);
+        burnupGuideInputFormPanel.setLayout(new GridBagLayout());
+        addBurnupGuideFields(cChart);
+        // Scope
+        scopeCheckBox.setFocusPainted(false);
+        scopeCheckBox.setSelected(false);
+        scopeCheckBox.addActionListener(new ActionListener() { // no burndown and scope line on the same chart as they share the same axis (X-Axis)
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                burndownChartCheckBox.setSelected(burndownChartCheckBox.isSelected() && !scopeCheckBox.isSelected());
+                if (!burndownChartCheckBox.isSelected()) {
+                    burnupChartCheckBox.setSelected(true); // force select at least one
+                }
+                borderBurndownChart.repaint();
+                borderBurnupChart.repaint();
+            }
+        });
+        scopeInputFormPanel.setBorder(borderScope);
+        scopeInputFormPanel.setLayout(new GridBagLayout());
+        addScopeFields(cChart);
+        add(burnupChartInputFormPanel);
+    }
+
     private void addBurnupChartFields(final GridBagConstraints cChart) {
         cChart.gridx = 0;
         cChart.gridy = 0;
@@ -335,30 +432,31 @@ public class ChooseInputForm extends JPanel {
         // Secondary Y axis        
         // Types
         chartTypesBurnupComboBox.setRenderer(new AbstractComboBoxRenderer());
+        refreshBurnupChartTypesComboBox(true);
         if (Main.preferences.getAgileMode()) {
-            chartTypesBurnupComboBox.addItem(new StoryPointChart());
-            defaultSecondaryYAxisName = new StoryPointChart().getYLegend();
-            defaultSecondaryYAxisLegend = new StoryPointChart().getXLegend();
+            StoryPointChart storyPointChart = new StoryPointChart();
+            defaultSecondaryYAxisName = storyPointChart.getYLegend();
+            defaultSecondaryYAxisLegend = storyPointChart.getXLegend();
         } else {
-            defaultSecondaryYAxisName = new PomodoroChart().getYLegend();
-            defaultSecondaryYAxisLegend = new PomodoroChart().getXLegend();
+            PomodoroChart pomodoroChart = new PomodoroChart();
+            defaultSecondaryYAxisName = pomodoroChart.getYLegend();
+            defaultSecondaryYAxisLegend = pomodoroChart.getXLegend();
         }
-        chartTypesBurnupComboBox.addItem(new PomodoroChart());
-        chartTypesBurnupComboBox.addItem(new TaskChart());
-        chartTypesBurnupComboBox.addItem(new SubtaskChart());
-        chartTypesBurnupComboBox.addItem(new EffectiveHourChart());
-        chartTypesBurnupComboBox.addItem(new PlainHourChart());
         chartTypesBurnupComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                secondaryYAxisName.setText(((IChartType) chartTypesBurnupComboBox.getSelectedItem()).getYLegend());
-                secondaryYAxisLegend.setText(((IChartType) chartTypesBurnupComboBox.getSelectedItem()).getYLegend());
-                if (burnupChartPercentageCheckBox.isSelected()) {
-                    secondaryYAxisName.setText(secondaryYAxisName.getText().trim() + " %");
-                    secondaryYAxisLegend.setText(secondaryYAxisLegend.getText().trim() + " %");
+                try {
+                    secondaryYAxisName.setText(((IChartType) chartTypesBurnupComboBox.getSelectedItem()).getYLegend());
+                    secondaryYAxisLegend.setText(((IChartType) chartTypesBurnupComboBox.getSelectedItem()).getYLegend());
+                    if (burnupChartPercentageCheckBox.isSelected()) {
+                        secondaryYAxisName.setText(secondaryYAxisName.getText().trim() + " %");
+                        secondaryYAxisLegend.setText(secondaryYAxisLegend.getText().trim() + " %");
+                    }
+                    burnupChartCheckBox.setSelected(true);
+                    borderBurnupChart.repaint();
+                } catch (NullPointerException ex) {
+                    // Maybe a java bug here: the action listener is triggered on RemoveAllItems() command                    
                 }
-                burnupChartCheckBox.setSelected(true);
-                borderBurnupChart.repaint();
             }
         });
         gbc.gridx = 0;

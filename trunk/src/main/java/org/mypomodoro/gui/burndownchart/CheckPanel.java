@@ -36,6 +36,7 @@ import org.mypomodoro.gui.activities.CommentPanel;
 import org.mypomodoro.gui.export.ExportPanel;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
+import org.mypomodoro.util.WaitCursor;
 
 /**
  * GUI for viewing the Chart List.
@@ -51,10 +52,12 @@ public class CheckPanel extends AbstractPanel {
     private final CommentPanel commentPanel = new CommentPanel(this);
     // head tabbed pane and side button
     private final JTabbedPane headTabbedPane;
+    private final CreateChart chart;
 
-    public CheckPanel(JTabbedPane headTabbedPane) {
+    public CheckPanel(JTabbedPane headTabbedPane, CreateChart chart) {
 
         this.headTabbedPane = headTabbedPane;
+        this.chart = chart;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -149,8 +152,13 @@ public class CheckPanel extends AbstractPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                headTabbedPane.setEnabledAt(2, true);
-                headTabbedPane.setSelectedIndex(2);
+                if (!WaitCursor.isStarted()) {
+                    if (getList().size() > 0) {
+                        chart.create();
+                        headTabbedPane.setEnabledAt(3, true);
+                        headTabbedPane.setSelectedIndex(3);
+                    }
+                }
             }
         });
         createButton.setMinimumSize(CREATEBUTTON_DIMENSION);

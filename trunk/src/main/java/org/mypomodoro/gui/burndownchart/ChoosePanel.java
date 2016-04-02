@@ -42,12 +42,10 @@ public class ChoosePanel extends JPanel {
     private final JTabbedPane tabbedPane;
     private final ChooseInputForm chooseInputForm;
     private final GridBagConstraints gbc = new GridBagConstraints();
-    private final CreateChart chart;
 
-    public ChoosePanel(JTabbedPane tabbedPane, ChooseInputForm chooseInputForm, CreateChart chart) {
+    public ChoosePanel(JTabbedPane tabbedPane, ChooseInputForm chooseInputForm) {
         this.tabbedPane = tabbedPane;
         this.chooseInputForm = chooseInputForm;
-        this.chart = chart;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -80,13 +78,8 @@ public class ChoosePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!WaitCursor.isStarted()) {
-                    if (ChartList.getList().size() > 0) {
-                        chart.create();
-                        tabbedPane.setEnabledAt(3, true);
-                        tabbedPane.setSelectedIndex(3);
-                    }
-                }
+                tabbedPane.setEnabledAt(1, true);
+                tabbedPane.setSelectedIndex(1);
             }
         });
         configureButton.setMinimumSize(CREATEBUTTON_DIMENSION);
