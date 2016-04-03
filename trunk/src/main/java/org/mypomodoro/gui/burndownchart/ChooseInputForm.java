@@ -178,31 +178,47 @@ public class ChooseInputForm extends JPanel {
         // Burnup        
         refreshBurnupChartTypesComboBox(tasksOption);
     }
+    
+    private final IChartType taskChart = new TaskChart();
+    private final IChartType subtaskChart = new SubtaskChart();
+    private final IChartType storyPointChart = new StoryPointChart();
+    private final IChartType pomodoroChart = new PomodoroChart();
+    private final IChartType effectiveHourChart = new EffectiveHourChart();
+    private final IChartType plainHourChart = new PlainHourChart();
+    
 
     private void refreshBurndownChartTypesComboBox(boolean tasksOption) {
-        int indexSelectedBurndown = chartTypesBurndownComboBox.getSelectedIndex();
+        IChartType selectedItemBurndown = (IChartType) chartTypesBurndownComboBox.getSelectedItem();        
         chartTypesBurndownComboBox.removeAllItems();
-        if (Main.preferences.getAgileMode()) {
-            chartTypesBurndownComboBox.addItem(new StoryPointChart());
+        chartTypesBurndownComboBox.addItem(tasksOption ? taskChart : subtaskChart);
+        if (Main.preferences.getAgileMode() && tasksOption) { // story points only for tasks
+            chartTypesBurndownComboBox.addItem(storyPointChart);            
         }
-        chartTypesBurndownComboBox.addItem(new PomodoroChart());
-        chartTypesBurndownComboBox.addItem(tasksOption ? new TaskChart() : new SubtaskChart());
-        chartTypesBurndownComboBox.addItem(new EffectiveHourChart());
-        chartTypesBurndownComboBox.addItem(new PlainHourChart());
-        chartTypesBurndownComboBox.setSelectedIndex(indexSelectedBurndown > -1 ? indexSelectedBurndown : 0);
+        chartTypesBurndownComboBox.addItem(pomodoroChart);
+        chartTypesBurndownComboBox.addItem(effectiveHourChart);
+        chartTypesBurndownComboBox.addItem(plainHourChart);
+        if (selectedItemBurndown != null && !selectedItemBurndown.equals(storyPointChart)) {
+            chartTypesBurndownComboBox.setSelectedItem(selectedItemBurndown);
+        } else {
+            chartTypesBurndownComboBox.setSelectedIndex(0);
+        }
     }
 
     private void refreshBurnupChartTypesComboBox(boolean tasksOption) {
-        int indexSelectedBurnup = chartTypesBurnupComboBox.getSelectedIndex();
+        IChartType selectedItemBurnup = (IChartType) chartTypesBurnupComboBox.getSelectedItem();
         chartTypesBurnupComboBox.removeAllItems();
-        if (Main.preferences.getAgileMode()) {
-            chartTypesBurnupComboBox.addItem(new StoryPointChart());
+        chartTypesBurnupComboBox.addItem(tasksOption ? taskChart : subtaskChart);
+        if (Main.preferences.getAgileMode() && tasksOption) { // story points only for tasks
+            chartTypesBurnupComboBox.addItem(storyPointChart);
         }
-        chartTypesBurnupComboBox.addItem(new PomodoroChart());
-        chartTypesBurnupComboBox.addItem(tasksOption ? new TaskChart() : new SubtaskChart());
-        chartTypesBurnupComboBox.addItem(new EffectiveHourChart());
-        chartTypesBurnupComboBox.addItem(new PlainHourChart());
-        chartTypesBurnupComboBox.setSelectedIndex(indexSelectedBurnup > -1 ? indexSelectedBurnup : 0);
+        chartTypesBurnupComboBox.addItem(pomodoroChart);
+        chartTypesBurnupComboBox.addItem(effectiveHourChart);
+        chartTypesBurnupComboBox.addItem(plainHourChart);
+        if (selectedItemBurnup != null && !selectedItemBurnup.equals(storyPointChart)) {
+            chartTypesBurnupComboBox.setSelectedItem(selectedItemBurnup);
+        } else {
+            chartTypesBurnupComboBox.setSelectedIndex(0);
+        }
     }
 
     /////////////////////////////////////
