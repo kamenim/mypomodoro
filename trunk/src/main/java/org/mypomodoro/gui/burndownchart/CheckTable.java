@@ -32,17 +32,19 @@ import org.mypomodoro.util.Labels;
 import org.mypomodoro.util.TimeConverter;
 
 /**
- * Table for activities
+ * Table for activities or sub-activities
  *
  */
 public class CheckTable extends AbstractTable {
 
     private final CheckPanel panel;
+    private final ChooseInputForm chooseInputForm;
 
-    public CheckTable(final CheckTableModel model, final CheckPanel panel) {
+    public CheckTable(final CheckTableModel model, final CheckPanel panel, ChooseInputForm chooseInputForm) {
         super(model, panel);
 
         this.panel = panel;
+        this.chooseInputForm = chooseInputForm;
 
         setTableHeader();
 
@@ -98,25 +100,29 @@ public class CheckTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // title
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated
-        getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
-        getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
+        if (chooseInputForm.getDataTasksCheckBox().isSelected()) {
+            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
+            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
+        }
 
         // hide story points and iteration in 'classic' mode
-        if (!Main.preferences.getAgileMode()) {
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
-        } else {
-            // Set width of columns story points, iteration
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(40);
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(40);
-            getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(40);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(40);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(40);
-            getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(40);
+        if (chooseInputForm.getDataTasksCheckBox().isSelected()) {
+            if (!Main.preferences.getAgileMode()) {
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(0);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(0);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(0);
+            } else {
+                // Set width of columns story points, iteration
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(40);
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(40);
+                getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(40);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMaxWidth(40);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setMinWidth(40);
+                getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setPreferredWidth(40);
+            }
         }
         // hide unplanned in Agile mode
         if (Main.preferences.getAgileMode()) {
@@ -184,14 +190,14 @@ public class CheckTable extends AbstractTable {
 
     @Override
     protected ChartList getTableList() {
-        return ChartList.getTaskList();
+        return ChartList.getList(); // this is the only 'main' table to have either tasks or subtasks
     }
 
     @Override
     public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
-        columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
-        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
+        columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");        
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");        
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         CheckTableHeader customTableHeader = new CheckTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
@@ -236,12 +242,14 @@ public class CheckTable extends AbstractTable {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
-                if (Main.preferences.getAgileMode()) {
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
-                    title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
-                    // (do not display productivity P in CheckTabel as tasks may not be all completed)
-                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                if (chooseInputForm.getDataTasksCheckBox().isSelected()) {
+                    if (Main.preferences.getAgileMode()) {
+                        DecimalFormat df = new DecimalFormat("0.#");
+                        // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
+                        title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
+                        // (do not display productivity P in CheckTabel as tasks may not be all completed)
+                        toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    }
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
@@ -268,11 +276,13 @@ public class CheckTable extends AbstractTable {
                  toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                  }*/
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
-                if (Main.preferences.getAgileMode()) {
-                    float storypoints = tableList.getStoryPoints();
-                    DecimalFormat df = new DecimalFormat("0.#");
-                    title += " > SP: " + df.format(storypoints);
-                    toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                if (chooseInputForm.getDataTasksCheckBox().isSelected()) {
+                    if (Main.preferences.getAgileMode()) {
+                        float storypoints = tableList.getStoryPoints();
+                        DecimalFormat df = new DecimalFormat("0.#");
+                        title += " > SP: " + df.format(storypoints);
+                        toolTipText += " > " + Labels.getString("Agile.Common.Story Points") + ": " + df.format(storypoints);
+                    }
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             }

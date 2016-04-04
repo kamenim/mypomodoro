@@ -26,9 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import org.mypomodoro.buttons.DefaultButton;
-import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.Labels;
-import org.mypomodoro.util.WaitCursor;
 
 /**
  * Panel to generate burndown charts

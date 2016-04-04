@@ -292,13 +292,18 @@ public class ActivitiesDAO {
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         return getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
     }
+    
+    public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
+        return getSubActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
+    }
 
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
-                String whereCondition = "";
+                // Task condition
+                String whereCondition = "parent_id = -1 AND ";
                 if (iteration >= 0) {
                     whereCondition += "iteration = " + iteration + " AND "; // specific iteration
                 }
@@ -318,18 +323,12 @@ public class ActivitiesDAO {
                 }
                 whereCondition += ")";
                 if (!excludeToDos) {
-                    whereCondition += "))";
+                    whereCondition += ")) ";
                 }
-                String query = "SELECT * FROM activities WHERE ";
-                query += "(parent_id = -1 AND "; // tasks
-                query += whereCondition;
-                query += ") "; // End of tasks
-                query += "OR ";
-                query += "parent_id IN "; // subtasks
-                query += "(SELECT id FROM activities WHERE "; // starting 'IN' condition on tasks                 
-                query += whereCondition;
-                query += ") "; // ending 'IN' condition on tasks                
-                query += "ORDER BY date_completed DESC";  // from newest to oldest tasks for the checklist
+                // Query
+                String query = "SELECT * FROM activities WHERE ";                
+                query += whereCondition;               
+                query += "ORDER BY date_completed DESC";  // from newest to oldest
                 ResultSet rs = database.query(query);
                 try {
                     while (rs.next()) {
@@ -350,25 +349,83 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-
+    
+    public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
+        ArrayList<Activity> activities = new ArrayList<Activity>();
+        if (datesToBeIncluded.size() > 0) {
+            try {
+                database.lock();
+                int increment = 1;
+                // Subtask condition
+                String whereSutaskCondition = "parent_id > -1 AND (";
+                for (Date date : datesToBeIncluded) {
+                    if (increment > 1) {
+                        whereSutaskCondition += " OR ";
+                    }
+                    whereSutaskCondition += "(date_donedone >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
+                    whereSutaskCondition += "AND date_donedone < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
+                    increment++;
+                }
+                whereSutaskCondition += ") ";
+                // Task condition                
+                String whereTaskCondition = "";
+                if (excludeToDos || iteration >= 0) {
+                    whereTaskCondition += "(parent_id IN "; // subtasks
+                    whereTaskCondition += "(SELECT id FROM activities WHERE ";                    
+                    /*if (iteration >= 0) {
+                        whereTaskCondition += "iteration = " + iteration + " AND "; // specific iteration
+                    }*/ 
+                    if (!excludeToDos) {
+                        whereTaskCondition += "(priority > -1 OR ";
+                    } 
+                    whereTaskCondition += "is_complete = 'true' ";
+                    if (!excludeToDos) {
+                        whereTaskCondition += ") ";
+                    } 
+                    whereTaskCondition += ")) ";
+                }
+                // Query
+                String query = "SELECT * FROM activities WHERE ";                
+                query += whereSutaskCondition; // subtasks
+                if (whereTaskCondition.length() > 0) {
+                    query += " AND ";
+                    query += whereTaskCondition; // subtasks
+                }
+                query += "ORDER BY date_donedone DESC";  // from newest to oldest
+                ResultSet rs = database.query(query);
+                try {
+                    while (rs.next()) {
+                        activities.add(new Activity(rs));
+                    }
+                } catch (SQLException ex) {
+                    Main.logger.error("", ex);
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (SQLException ex) {
+                        Main.logger.error("", ex);
+                    }
+                }
+            } finally {
+                database.unlock();
+            }
+        }
+        return activities;
+    }
+    
     public ArrayList<Activity> getActivitiesForChartIterationRange(int startIteration, int endIteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
-            database.lock();
-            String whereCondition = "";
-            whereCondition += "iteration >= " + startIteration + " ";
-            whereCondition += "AND iteration <= " + endIteration + " ";
-            whereCondition += "AND (priority > -1 OR is_complete = 'true')";
-            String query = "SELECT * FROM activities WHERE ";
-            query += "(parent_id = -1 AND "; // tasks
-            query += whereCondition;
-            query += ") "; // End of tasks
-            query += "OR ";
-            query += "parent_id IN "; // subtasks
-            query += "(SELECT id FROM activities WHERE "; // starting 'IN' condition on tasks
-            query += whereCondition;
-            query += ") "; // ending 'IN' condition on tasks  
-            query += "ORDER BY iteration ASC"; // from lowest to highest tasks for the checklist            
+            database.lock();            
+            // Task condition
+            String whereTaskCondition = "parent_id = -1 ";
+            whereTaskCondition += "AND iteration >= " + startIteration + " ";
+            whereTaskCondition += "AND iteration <= " + endIteration + " ";
+            whereTaskCondition += "AND (priority > -1 OR is_complete = 'true') ";            
+            // Query
+            String query = "SELECT * FROM activities WHERE ";            
+            query += whereTaskCondition;
+            query += "ORDER BY iteration ASC"; // from lowest to highest            
             ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {

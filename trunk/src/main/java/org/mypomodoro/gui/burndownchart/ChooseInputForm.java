@@ -60,6 +60,13 @@ public class ChooseInputForm extends JPanel {
     private final JPanel dataInputFormPanel = new JPanel();
     private final JCheckBox tasksBox = new JCheckBox(Labels.getString("Common.Tasks"), true);
     private final JCheckBox subtasksBox = new JCheckBox(Labels.getString("Common.Subtasks"), false);
+    // Units    
+    private final IChartType taskChart = new TaskChart();
+    private final IChartType subtaskChart = new SubtaskChart();
+    private final IChartType storyPointChart = new StoryPointChart();
+    private final IChartType pomodoroChart = new PomodoroChart();
+    private final IChartType effectiveHourChart = new EffectiveHourChart();
+    private final IChartType plainHourChart = new PlainHourChart();
     // Burndown Chart form
     private final JPanel burndownChartInputFormPanel = new JPanel();
     private final JPanel burndownChartTypeLegendInputFormPanel = new JPanel();
@@ -178,21 +185,13 @@ public class ChooseInputForm extends JPanel {
         // Burnup        
         refreshBurnupChartTypesComboBox(tasksOption);
     }
-    
-    private final IChartType taskChart = new TaskChart();
-    private final IChartType subtaskChart = new SubtaskChart();
-    private final IChartType storyPointChart = new StoryPointChart();
-    private final IChartType pomodoroChart = new PomodoroChart();
-    private final IChartType effectiveHourChart = new EffectiveHourChart();
-    private final IChartType plainHourChart = new PlainHourChart();
-    
 
-    private void refreshBurndownChartTypesComboBox(boolean tasksOption) {
-        IChartType selectedItemBurndown = (IChartType) chartTypesBurndownComboBox.getSelectedItem();        
+    private void refreshBurndownChartTypesComboBox(boolean tasksType) {
+        IChartType selectedItemBurndown = (IChartType) chartTypesBurndownComboBox.getSelectedItem();
         chartTypesBurndownComboBox.removeAllItems();
-        chartTypesBurndownComboBox.addItem(tasksOption ? taskChart : subtaskChart);
-        if (Main.preferences.getAgileMode() && tasksOption) { // story points only for tasks
-            chartTypesBurndownComboBox.addItem(storyPointChart);            
+        chartTypesBurndownComboBox.addItem(tasksType ? taskChart : subtaskChart);
+        if (Main.preferences.getAgileMode() && tasksType) { // story points only for tasks
+            chartTypesBurndownComboBox.addItem(storyPointChart);
         }
         chartTypesBurndownComboBox.addItem(pomodoroChart);
         chartTypesBurndownComboBox.addItem(effectiveHourChart);
@@ -204,11 +203,11 @@ public class ChooseInputForm extends JPanel {
         }
     }
 
-    private void refreshBurnupChartTypesComboBox(boolean tasksOption) {
+    private void refreshBurnupChartTypesComboBox(boolean tasksType) {
         IChartType selectedItemBurnup = (IChartType) chartTypesBurnupComboBox.getSelectedItem();
         chartTypesBurnupComboBox.removeAllItems();
-        chartTypesBurnupComboBox.addItem(tasksOption ? taskChart : subtaskChart);
-        if (Main.preferences.getAgileMode() && tasksOption) { // story points only for tasks
+        chartTypesBurnupComboBox.addItem(tasksType ? taskChart : subtaskChart);
+        if (Main.preferences.getAgileMode() && tasksType) { // story points only for tasks
             chartTypesBurnupComboBox.addItem(storyPointChart);
         }
         chartTypesBurnupComboBox.addItem(pomodoroChart);
@@ -736,6 +735,14 @@ public class ChooseInputForm extends JPanel {
         burnupChartInputFormPanel.add(scopeInputFormPanel, cChart);
     }
 
+    public JCheckBox getDataTasksCheckBox() {
+        return tasksBox;
+    }
+    
+    public JCheckBox getDataSubtasksCheckBox() {
+        return subtasksBox;
+    }
+    
     public JCheckBox getBurndownChartCheckBox() {
         return burndownChartCheckBox;
     }
