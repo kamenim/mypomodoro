@@ -31,11 +31,11 @@ import org.mypomodoro.util.Labels;
  */
 public class ChartTabbedPanel extends JPanel {
 
-    private final ChooseInputForm chooseInputForm = new ChooseInputForm();
-    private final ConfigureInputForm configureInputForm = new ConfigureInputForm(chooseInputForm);
-    private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);
+    public static final ChooseInputForm CHOOSEINPUTFORM = new ChooseInputForm();
+    public static ConfigureInputForm CONFIGUREINPUTFORM = new ConfigureInputForm(); // not final; this will change depending on CHOOSEINPUTFORM
+    private final CreateChart chart = new CreateChart();
     private final JTabbedPane chartTabbedPane = new JTabbedPane();
-    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart, chooseInputForm);
+    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
 
     public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
@@ -44,10 +44,10 @@ public class ChartTabbedPanel extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm);
+        gbc.fill = GridBagConstraints.BOTH;        
+        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, checkPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
-        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, chooseInputForm, checkPanel);
+        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, checkPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configureInputPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Check"), checkPanel);
         CreateChartPanel chartPanel = new CreateChartPanel(chart);

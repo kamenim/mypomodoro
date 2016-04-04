@@ -45,6 +45,7 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import org.mypomodoro.Main;
 import org.mypomodoro.gui.activities.AbstractComboBoxRenderer;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.gui.create.FormLabel;
 import org.mypomodoro.util.ComponentTitledBorder;
 import org.mypomodoro.util.DatePicker;
@@ -57,8 +58,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ConfigureInputForm extends JPanel {
 
-    protected static final Dimension LABEL_DIMENSION = new Dimension(400, 100);
-    private final ChooseInputForm chooseInputForm;
+    protected static final Dimension LABEL_DIMENSION = new Dimension(400, 100);    
     // Tasks form
     private final JPanel dataInputFormPanel = new JPanel();
     private final JPanel scopeInputFormPanel = new JPanel();
@@ -87,12 +87,10 @@ public class ConfigureInputForm extends JPanel {
     private final JTextField chartWidth = new JTextField("770");
     private final JTextField chartHeight = new JTextField("410");
 
-    public ConfigureInputForm(ChooseInputForm chooseInputForm) {
-        this.chooseInputForm = chooseInputForm;
-        
+    public ConfigureInputForm() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         datesInputFormPanel.setPreferredSize(new Dimension(500, 140));
-        iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));
+        iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));        
         addDataInputFormPanel();
         addScopeInputFormPanel();               
         addImageInputFormPanel();
@@ -164,7 +162,7 @@ public class ConfigureInputForm extends JPanel {
         gbc.gridy = 0;
         lists.add(releaseonly, gbc); // excludes ToDos/Iteration Backlog tasks
         // Specific iteration        
-        if (Main.preferences.getAgileMode() && chooseInputForm.getDataTasksCheckBox().isSelected()) {
+        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {            
             JPanel iteration = new JPanel();
             iteration.setLayout(new FlowLayout());
             typeIterationOnly.addActionListener(new ActionListener() {
@@ -218,7 +216,7 @@ public class ConfigureInputForm extends JPanel {
         scopeInputFormPanel.setBorder(borderScope);
         scopeInputFormPanel.setLayout(new GridBagLayout());
         addDatesInputFormPanel(cChart);
-        if (Main.preferences.getAgileMode() && chooseInputForm.getDataTasksCheckBox().isSelected()) {                    
+        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {                    
             addIterationsInputFormPanel(cChart);
         }
         add(scopeInputFormPanel, cChart);
