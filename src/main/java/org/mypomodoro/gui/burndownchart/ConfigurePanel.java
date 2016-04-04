@@ -45,12 +45,14 @@ public class ConfigurePanel extends JPanel {
 
     private final JTabbedPane tabbedPane;
     private final ConfigureInputForm configureInputForm;
+    private final ChooseInputForm chooseInputForm;
     private final CheckPanel checkPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public ConfigurePanel(JTabbedPane tabbedPane, ConfigureInputForm configureInputForm, CheckPanel checkPanel) {
+    public ConfigurePanel(JTabbedPane tabbedPane, ConfigureInputForm configureInputForm, ChooseInputForm chooseInputForm, CheckPanel checkPanel) {
         this.tabbedPane = tabbedPane;
         this.configureInputForm = configureInputForm;
+        this.chooseInputForm = chooseInputForm;
         this.checkPanel = checkPanel;
 
         setLayout(new GridBagLayout());
@@ -97,10 +99,10 @@ public class ConfigurePanel extends JPanel {
                                         configureInputForm.getExcludeSaturdays().isSelected(),
                                         configureInputForm.getExcludeSundays().isSelected(),
                                         configureInputForm.getExcludedDates());
-                                if (configureInputForm.getReleaseOnly().isSelected()) {
-                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, true);
+                                if (configureInputForm.getReleaseOnly().isSelected()) {                                    
+                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, true, chooseInputForm.getDataSubtasksCheckBox().isSelected());                                    
                                 } else if (configureInputForm.getReleaseAndIteration().isSelected()) {
-                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, false);
+                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, false, false);
                                 } else if (configureInputForm.getIterationOnly().isSelected()) {
                                     ChartList.getList().refreshDateRangeAndIteration(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getIteration());
                                 }

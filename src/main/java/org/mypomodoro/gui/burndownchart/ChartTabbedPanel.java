@@ -32,10 +32,10 @@ import org.mypomodoro.util.Labels;
 public class ChartTabbedPanel extends JPanel {
 
     private final ChooseInputForm chooseInputForm = new ChooseInputForm();
-    private final ConfigureInputForm configureInputForm = new ConfigureInputForm();
+    private final ConfigureInputForm configureInputForm = new ConfigureInputForm(chooseInputForm);
     private final CreateChart chart = new CreateChart(chooseInputForm, configureInputForm);
     private final JTabbedPane chartTabbedPane = new JTabbedPane();
-    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
+    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart, chooseInputForm);
 
     public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
@@ -47,7 +47,7 @@ public class ChartTabbedPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, chooseInputForm);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
-        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, checkPanel);
+        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, configureInputForm, chooseInputForm, checkPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configureInputPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Check"), checkPanel);
         CreateChartPanel chartPanel = new CreateChartPanel(chart);

@@ -54,7 +54,7 @@ public class CheckPanel extends AbstractPanel {
     private final JTabbedPane headTabbedPane;
     private final CreateChart chart;
 
-    public CheckPanel(JTabbedPane headTabbedPane, CreateChart chart) {
+    public CheckPanel(JTabbedPane headTabbedPane, CreateChart chart, ChooseInputForm chooseInputForm) {
 
         this.headTabbedPane = headTabbedPane;
         this.chart = chart;
@@ -82,7 +82,7 @@ public class CheckPanel extends AbstractPanel {
 
         // Init table (data model and rendering)
         tableModel = new CheckTableModel();
-        table = new CheckTable((CheckTableModel) tableModel, this);
+        table = new CheckTable((CheckTableModel) tableModel, this, chooseInputForm);
 
         // Init scroll panes
         tableScrollPane = new JScrollPane(table);

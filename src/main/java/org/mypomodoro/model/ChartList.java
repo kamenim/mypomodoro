@@ -38,9 +38,15 @@ public class ChartList extends AbstractActivities {
         // not used
     }
 
-    public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
+    public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, boolean subtasks) {
         removeAll();
-        for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos)) {
+        ArrayList<Activity> charList;
+        if (subtasks) {
+            charList = ActivitiesDAO.getInstance().getSubActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos);
+        } else {
+            charList = ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos);
+        }
+        for (Activity act : charList) {
             super.add(act);
         }
     }
@@ -64,7 +70,7 @@ public class ChartList extends AbstractActivities {
     }
 
     // List of main tasks
-    public static ChartList getTaskList() {
+    /*public static ChartList getTaskList() {
         ChartList tableList = new ChartList();
         for (Activity a : list) {
             if (a.isTask()) {
@@ -72,17 +78,17 @@ public class ChartList extends AbstractActivities {
             }
         }
         return tableList;
-    }
+    }*/
 
     // Remove tasks AND subtasks
-    @Override
+    /*@Override
     public void remove(Activity activity) {
         ArrayList<Activity> subList = getSubTasks(activity.getId());
         for (Activity subTask : subList) {
             super.remove(subTask);
         }
         super.remove(activity);
-    }
+    }*/
 
     public static int getListSize() {
         return getList().size();
