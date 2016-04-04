@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import org.mypomodoro.buttons.DefaultButton;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -38,12 +39,12 @@ public class ChoosePanel extends JPanel {
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 
     private final JTabbedPane tabbedPane;
-    private final ChooseInputForm chooseInputForm;
+    private final CheckPanel checkPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
 
-    public ChoosePanel(JTabbedPane tabbedPane, ChooseInputForm chooseInputForm) {
+    public ChoosePanel(JTabbedPane tabbedPane, CheckPanel checkPanel) {
         this.tabbedPane = tabbedPane;
-        this.chooseInputForm = chooseInputForm;
+        this.checkPanel = checkPanel;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -59,7 +60,7 @@ public class ChoosePanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        JScrollPane chooseScrollPane = new JScrollPane(chooseInputForm);
+        JScrollPane chooseScrollPane = new JScrollPane(CHOOSEINPUTFORM);
         chooseScrollPane.setMinimumSize(PANE_DIMENSION);
         chooseScrollPane.setPreferredSize(PANE_DIMENSION);
         add(chooseScrollPane, gbc);
@@ -75,7 +76,8 @@ public class ChoosePanel extends JPanel {
         configureButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {                                
+                tabbedPane.setComponentAt(1, new ConfigurePanel(tabbedPane, checkPanel));
                 tabbedPane.setEnabledAt(1, true);
                 tabbedPane.setSelectedIndex(1);
             }

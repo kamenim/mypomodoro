@@ -29,6 +29,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.buttons.DefaultButton;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CONFIGUREINPUTFORM;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
 import org.mypomodoro.util.Labels;
@@ -44,19 +46,17 @@ public class ConfigurePanel extends JPanel {
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 
     private final JTabbedPane tabbedPane;
-    private final ConfigureInputForm configureInputForm;
-    private final ChooseInputForm chooseInputForm;
     private final CheckPanel checkPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
-
-    public ConfigurePanel(JTabbedPane tabbedPane, ConfigureInputForm configureInputForm, ChooseInputForm chooseInputForm, CheckPanel checkPanel) {
+    
+    public ConfigurePanel(JTabbedPane tabbedPane, CheckPanel checkPanel) {
         this.tabbedPane = tabbedPane;
-        this.configureInputForm = configureInputForm;
-        this.chooseInputForm = chooseInputForm;
         this.checkPanel = checkPanel;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        
+        CONFIGUREINPUTFORM = new ConfigureInputForm(); // re-create object
 
         addConfigureInputForm();
         addCheckButton();
@@ -69,7 +69,7 @@ public class ConfigurePanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        JScrollPane configureScrollPane = new JScrollPane(configureInputForm);
+        JScrollPane configureScrollPane = new JScrollPane(CONFIGUREINPUTFORM);
         configureScrollPane.setMinimumSize(PANE_DIMENSION);
         configureScrollPane.setPreferredSize(PANE_DIMENSION);
         add(configureScrollPane, gbc);
@@ -93,21 +93,21 @@ public class ConfigurePanel extends JPanel {
 
                         @Override
                         public void run() {
-                            if (configureInputForm.getDatesCheckBox().isSelected()) {
-                                ArrayList<Date> datesToBeIncluded = DateUtil.getDatesWithExclusions(configureInputForm.getStartDate(),
-                                        configureInputForm.getEndDate(),
-                                        configureInputForm.getExcludeSaturdays().isSelected(),
-                                        configureInputForm.getExcludeSundays().isSelected(),
-                                        configureInputForm.getExcludedDates());
-                                if (configureInputForm.getReleaseOnly().isSelected()) {                                    
-                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, true, chooseInputForm.getDataSubtasksCheckBox().isSelected());                                    
-                                } else if (configureInputForm.getReleaseAndIteration().isSelected()) {
-                                    ChartList.getList().refreshDateRange(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, false, false);
-                                } else if (configureInputForm.getIterationOnly().isSelected()) {
-                                    ChartList.getList().refreshDateRangeAndIteration(configureInputForm.getStartDate(), configureInputForm.getEndDate(), datesToBeIncluded, configureInputForm.getIteration());
+                            if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
+                                ArrayList<Date> datesToBeIncluded = DateUtil.getDatesWithExclusions(CONFIGUREINPUTFORM.getStartDate(),
+                                        CONFIGUREINPUTFORM.getEndDate(),
+                                        CONFIGUREINPUTFORM.getExcludeSaturdays().isSelected(),
+                                        CONFIGUREINPUTFORM.getExcludeSundays().isSelected(),
+                                        CONFIGUREINPUTFORM.getExcludedDates());
+                                if (CONFIGUREINPUTFORM.getReleaseOnly().isSelected()) {                                    
+                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, true, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());                                    
+                                } else if (CONFIGUREINPUTFORM.getReleaseAndIteration().isSelected()) {
+                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, false, false);
+                                } else if (CONFIGUREINPUTFORM.getIterationOnly().isSelected()) {
+                                    ChartList.getList().refreshDateRangeAndIteration(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, CONFIGUREINPUTFORM.getIteration());
                                 }
-                            } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-                                ChartList.getList().refreshIterationRange(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+                            } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+                                ChartList.getList().refreshIterationRange(CONFIGUREINPUTFORM.getStartIteration(), CONFIGUREINPUTFORM.getEndIteration());
                             }
                         }
                     });

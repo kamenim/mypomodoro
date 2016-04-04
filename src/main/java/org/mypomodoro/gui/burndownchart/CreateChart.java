@@ -41,6 +41,8 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CONFIGUREINPUTFORM;
 import org.mypomodoro.gui.burndownchart.types.IChartType;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -58,14 +60,12 @@ public class CreateChart extends JPanel {
 
     private JFreeChart charts;
     private ArrayList<Date> XAxisDateValues = new ArrayList<Date>();
-    private float totalForBurndown = 0; // this may include ToDo tasks (providing ToDos are included - see configureInputForm)
+    private float totalForBurndown = 0; // this may include ToDo tasks (providing ToDos are included - see CONFIGUREINPUTFORM)
     private float totalForBurndownInPercentage = 0;
     private float totalForBurnup = 0;
     //private float initialTotalForBurnup = 0;
     private float totalForBurnupInPercentage = 0;
     private ChartPanel chartPanel;
-    private final ChooseInputForm chooseInputForm;
-    private final ConfigureInputForm configureInputForm;
     private float maxSumForScopeLine = 0;
     private IChartType burndownchartType;
     private IChartType burnupchartType;
@@ -73,9 +73,7 @@ public class CreateChart extends JPanel {
     private boolean burnupChartPercentage = false;
     private ArrayList<Float> sumForScope;
 
-    public CreateChart(ChooseInputForm chooseInputForm, ConfigureInputForm configureInputForm) {
-        this.chooseInputForm = chooseInputForm;
-        this.configureInputForm = configureInputForm;
+    public CreateChart() {
     }
 
     /**
@@ -85,33 +83,33 @@ public class CreateChart extends JPanel {
     public void create() {
         removeAll();
         // Get dates
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
-            XAxisDateValues = getXAxisDateValues(configureInputForm.getStartDate(), configureInputForm.getEndDate());
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
+            XAxisDateValues = getXAxisDateValues(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate());
         }
         // Get type
-        burndownchartType = chooseInputForm.getBurndownChartType();
-        burnupchartType = chooseInputForm.getBurnupChartType();
+        burndownchartType = CHOOSEINPUTFORM.getBurndownChartType();
+        burnupchartType = CHOOSEINPUTFORM.getBurnupChartType();
         totalForBurndown = burndownchartType.getTotalForBurndown();
         totalForBurnup = burnupchartType.getTotalForBurnup();
         // Burndown chart in percentage
-        burndownChartPercentage = chooseInputForm.getBurndownChartCheckBox().isSelected() && chooseInputForm.getBurndownChartPercentageCheckBox().isSelected();
+        burndownChartPercentage = CHOOSEINPUTFORM.getBurndownChartCheckBox().isSelected() && CHOOSEINPUTFORM.getBurndownChartPercentageCheckBox().isSelected();
         if (burndownChartPercentage && totalForBurndown > 0) {
             totalForBurndownInPercentage = totalForBurndown;
             totalForBurndown = 100;
         }
         // Burn-up chart in percentage
-        burnupChartPercentage = chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getBurnupChartPercentageCheckBox().isSelected();
+        burnupChartPercentage = CHOOSEINPUTFORM.getBurnupChartCheckBox().isSelected() && CHOOSEINPUTFORM.getBurnupChartPercentageCheckBox().isSelected();
         if (burnupChartPercentage && totalForBurnup > 0) {
             totalForBurnupInPercentage = totalForBurnup;
             totalForBurnup = 100;
         }
         // Sum for percentages and scope
-        if ((chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getScopeCheckBox().isSelected())
+        if ((CHOOSEINPUTFORM.getBurnupChartCheckBox().isSelected() && CHOOSEINPUTFORM.getScopeCheckBox().isSelected())
                 || burnupChartPercentage) {
-            if (configureInputForm.getDatesCheckBox().isSelected()) {
+            if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
                 sumForScope = burnupchartType.getSumDateRangeForScope(XAxisDateValues);
-            } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-                sumForScope = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
+            } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+                sumForScope = burnupchartType.getSumIterationRangeForScope(CONFIGUREINPUTFORM.getStartIteration(), CONFIGUREINPUTFORM.getEndIteration());
             }
         }
         /*if (burnupChartPercentage && totalForBurnup > 0) {
@@ -126,8 +124,8 @@ public class CreateChart extends JPanel {
         maxSumForScopeLine = 0;
         charts = createChart();
         chartPanel = new ChartPanel(charts);
-        if (configureInputForm.getChartWidth() != 0 && configureInputForm.getChartHeight() != 0) {
-            chartPanel.setPreferredSize(new Dimension(configureInputForm.getChartWidth(), configureInputForm.getChartHeight()));
+        if (CONFIGUREINPUTFORM.getChartWidth() != 0 && CONFIGUREINPUTFORM.getChartHeight() != 0) {
+            chartPanel.setPreferredSize(new Dimension(CONFIGUREINPUTFORM.getChartWidth(), CONFIGUREINPUTFORM.getChartHeight()));
         }
         chartPanel.addChartMouseListener(new CustomLayeredBarChartMouseListener(charts));
         add(chartPanel);
@@ -140,9 +138,9 @@ public class CreateChart extends JPanel {
      */
     private ArrayList<Date> getXAxisDateValues(Date dateStart, Date dateEnd) {
         ArrayList<Date> dates = DateUtil.getDatesWithExclusions(dateStart, dateEnd,
-                configureInputForm.getExcludeSaturdays().isSelected(),
-                configureInputForm.getExcludeSundays().isSelected(),
-                configureInputForm.getExcludedDates());
+                CONFIGUREINPUTFORM.getExcludeSaturdays().isSelected(),
+                CONFIGUREINPUTFORM.getExcludeSundays().isSelected(),
+                CONFIGUREINPUTFORM.getExcludedDates());
         return dates;
     }
 
@@ -172,38 +170,38 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurndownTargetDataset() {
-        String label = chooseInputForm.getTargetLegend();
+        String label = CHOOSEINPUTFORM.getTargetLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 // use double to make the values more accurate
                 // OK
                 dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
             }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+        } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+            int size = CONFIGUREINPUTFORM.getEndIteration() - CONFIGUREINPUTFORM.getStartIteration() + 1;
             for (int i = 0; i < size; i++) {
                 // use double to make the values more accurate  
                 // TODO
-                dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (size - 1))), label, i + configureInputForm.getStartIteration());
+                dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (size - 1))), label, i + CONFIGUREINPUTFORM.getStartIteration());
             }
         }
         return dataset;
     }
 
     private CategoryDataset createBurnupGuideDataset() {
-        String label = chooseInputForm.getBurnupGuideLegend();
+        String label = CHOOSEINPUTFORM.getBurnupGuideLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 // use double to make the values more accurate                
                 // OK
                 dataset.addValue((Number) new Double(i * (totalForBurnup / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
             }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int size = configureInputForm.getEndIteration() + 1;
+        } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+            int size = CONFIGUREINPUTFORM.getEndIteration() + 1;
             if (size > 0) {
-                for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+                for (int i = CONFIGUREINPUTFORM.getStartIteration(); i <= CONFIGUREINPUTFORM.getEndIteration(); i++) {
                     // use double to make the values more accurate                        
                     // TODO
                     dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);
@@ -219,9 +217,9 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurnupScopeDataset() {
-        String label = chooseInputForm.getScopeLegend();
+        String label = CHOOSEINPUTFORM.getScopeLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             ArrayList<Float> sum = getSumDateRangeForScope();
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 dataset.addValue((Number) sum.get(i), label, getXAxisDateValue(i));
@@ -229,10 +227,10 @@ public class CreateChart extends JPanel {
             if (sum.size() > 0) {
                 maxSumForScopeLine = sum.get(sum.size() - 1);
             }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
+        } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
             ArrayList<Float> sum = getSumIterationRangeForScope();
             for (int i = 0; i < sum.size(); i++) {
-                dataset.addValue((Number) sum.get(i), label, i + configureInputForm.getStartIteration());
+                dataset.addValue((Number) sum.get(i), label, i + CONFIGUREINPUTFORM.getStartIteration());
             }
             if (sum.size() > 0) {
                 maxSumForScopeLine = sum.get(sum.size() - 1);
@@ -247,10 +245,10 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurndownChartDataset() {
-        String label = chooseInputForm.getPrimaryYAxisLegend();
+        String label = CHOOSEINPUTFORM.getPrimaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float total = totalForBurndown;
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
@@ -263,8 +261,8 @@ public class CreateChart extends JPanel {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
                 }
             }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+        } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+            for (int i = CONFIGUREINPUTFORM.getStartIteration(); i <= CONFIGUREINPUTFORM.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
                     if (activity.getIteration() == i) {
                         total -= getBurndownValue(activity);
@@ -283,10 +281,10 @@ public class CreateChart extends JPanel {
      * @return dataset
      */
     private CategoryDataset createBurnupChartDataset() {
-        String label = chooseInputForm.getSecondaryYAxisLegend();
+        String label = CHOOSEINPUTFORM.getSecondaryYAxisLegend();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         float total = 0;
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 Date date = XAxisDateValues.get(i);
                 if (!DateUtil.inFuture(date)) {
@@ -299,8 +297,8 @@ public class CreateChart extends JPanel {
                     dataset.addValue((Number) 0, label, getXAxisDateValue(i));
                 }
             }
-        } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
+        } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+            for (int i = CONFIGUREINPUTFORM.getStartIteration(); i <= CONFIGUREINPUTFORM.getEndIteration(); i++) {
                 for (Activity activity : ChartList.getList()) {
                     if (activity.getIteration() == i) {
                         total += getBurnupValue(activity);
@@ -326,8 +324,8 @@ public class CreateChart extends JPanel {
      */
     private JFreeChart createChart() {
         CategoryDataset burndownTargetDataset = null;
-        if (chooseInputForm.getBurndownChartCheckBox().isSelected()
-                && chooseInputForm.getTargetCheckBox().isSelected()
+        if (CHOOSEINPUTFORM.getBurndownChartCheckBox().isSelected()
+                && CHOOSEINPUTFORM.getTargetCheckBox().isSelected()
                 && totalForBurndown > 0) {
             burndownTargetDataset = createBurndownTargetDataset();
         }
@@ -357,20 +355,20 @@ public class CreateChart extends JPanel {
         CategoryAxis categoryAxis = (CategoryAxis) plot.getDomainAxis();
         categoryAxis.setAxisLineVisible(false);
         categoryAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 1)); // x-axis font
-        if (configureInputForm.getDatesCheckBox().isSelected()) {
+        if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
             categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45); // display diagonally
         }
 
         //////////////////// Y-AXIS //////////////////////////
         // BURNDOWN
         NumberAxis burndownRangeAxis = (NumberAxis) plot.getRangeAxis();
-        if (chooseInputForm.getBurndownChartCheckBox().isSelected() && totalForBurndown > 0) { // BURNDOWN            
+        if (CHOOSEINPUTFORM.getBurndownChartCheckBox().isSelected() && totalForBurndown > 0) { // BURNDOWN            
             // Horizontal/Grid lines for burndown
             plot.setRangeGridlinesVisible(true);
             plot.setRangeGridlineStroke(new BasicStroke((float) 1.5)); // plain stroke
             plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
             // Customise the primary Y/Range axis
-            burndownRangeAxis.setLabel(chooseInputForm.getPrimaryYAxisName());
+            burndownRangeAxis.setLabel(CHOOSEINPUTFORM.getPrimaryYAxisName());
             burndownRangeAxis.setLabelFont(getFont().deriveFont(Font.BOLD));
             burndownRangeAxis.setAutoRangeIncludesZero(true);
             burndownRangeAxis.setAxisLineVisible(false);
@@ -397,16 +395,16 @@ public class CreateChart extends JPanel {
             plot.setDataset(4, burndownDataset);
             plot.mapDatasetToRangeAxis(4, 0);
             CustomLayeredBarRenderer burndownRenderer = new CustomLayeredBarRenderer();
-            burndownRenderer.setSeriesPaint(0, chooseInputForm.getPrimaryYAxisColor());
+            burndownRenderer.setSeriesPaint(0, CHOOSEINPUTFORM.getPrimaryYAxisColor());
             burndownRenderer.setSeriesBarWidth(0, 1.0);
             burndownRenderer.setDrawBarOutline(true); // this is needed to highlight the bar (see CustomLayerBarRenderer)
             burndownRenderer.setSeriesOutlinePaint(0, Color.LIGHT_GRAY); // as the out line cannot be made thicker, it is gray by default and black when highlighted (see CustomLayerBarRenderer)
             plot.setRenderer(4, burndownRenderer); // 4 = renderer index in the plot            
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             burndownRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burndownChartPercentage ? "%" : ""), NumberFormat.getInstance()));
-            burndownRenderer.setBaseSeriesVisibleInLegend(!chooseInputForm.getPrimaryYAxisLegend().isEmpty());
+            burndownRenderer.setBaseSeriesVisibleInLegend(!CHOOSEINPUTFORM.getPrimaryYAxisLegend().isEmpty());
             // Target
-            if (chooseInputForm.getTargetCheckBox().isSelected()) {
+            if (CHOOSEINPUTFORM.getTargetCheckBox().isSelected()) {
                 LineAndShapeRenderer burndownTargetrenderer = new LineAndShapeRenderer(); // do not use (LineAndShapeRenderer) plot.getRenderer(); it may mess up with the burnupGuideRenderer
                 burndownTargetrenderer.setShapesVisible(true);
                 burndownTargetrenderer.setDrawOutlines(false);
@@ -414,9 +412,9 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                burndownTargetrenderer.setSeriesPaint(0, chooseInputForm.getTargetColor());
+                burndownTargetrenderer.setSeriesPaint(0, CHOOSEINPUTFORM.getTargetColor());
                 burndownTargetrenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burndownChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
-                burndownTargetrenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getTargetCheckBox().isSelected() && !chooseInputForm.getTargetLegend().isEmpty());
+                burndownTargetrenderer.setBaseSeriesVisibleInLegend(CHOOSEINPUTFORM.getTargetCheckBox().isSelected() && !CHOOSEINPUTFORM.getTargetLegend().isEmpty());
                 // Disable tooltip
                 //burndownTargetrenderer.setBaseToolTipGenerator(null); // disable tooltip
                 plot.setRenderer(0, burndownTargetrenderer);
@@ -426,9 +424,9 @@ public class CreateChart extends JPanel {
         }
 
         // BURN-UP
-        if (chooseInputForm.getBurnupChartCheckBox().isSelected() && totalForBurnup > 0) {
+        if (CHOOSEINPUTFORM.getBurnupChartCheckBox().isSelected() && totalForBurnup > 0) {
             NumberAxis burnupRangeAxis = new NumberAxis();
-            burnupRangeAxis.setLabel(chooseInputForm.getSecondaryYAxisName());
+            burnupRangeAxis.setLabel(CHOOSEINPUTFORM.getSecondaryYAxisName());
             burnupRangeAxis.setLabelFont(getFont().deriveFont(Font.BOLD));
             burnupRangeAxis.setAutoRangeIncludesZero(true);
             burnupRangeAxis.setAxisLineVisible(false);
@@ -436,10 +434,10 @@ public class CreateChart extends JPanel {
             // If scope is displayed the highest range between burnup and scope wins
             CategoryDataset scopeDataset = null;
             float scopeRange = 0;
-            if (chooseInputForm.getScopeCheckBox().isSelected()) {
+            if (CHOOSEINPUTFORM.getScopeCheckBox().isSelected()) {
                 scopeDataset = createBurnupScopeDataset();
-                burnupRange = chooseInputForm.getScopeCheckBox().isSelected() && maxSumForScopeLine > totalForBurnup ? maxSumForScopeLine : totalForBurnup;
-                if (chooseInputForm.getScopeCheckBox().isSelected()) {
+                burnupRange = CHOOSEINPUTFORM.getScopeCheckBox().isSelected() && maxSumForScopeLine > totalForBurnup ? maxSumForScopeLine : totalForBurnup;
+                if (CHOOSEINPUTFORM.getScopeCheckBox().isSelected()) {
                     burnupRange += burnupRange / 10; // add 10% to see the values on the scope line
                 }
                 scopeRange = burnupRange;
@@ -464,7 +462,7 @@ public class CreateChart extends JPanel {
             burnupRangeAxis.setTickLabelFont(getFont().deriveFont(Font.BOLD, getFont().getSize() - 3)); // right-y-axis font
             // when burndown, add the secondary Y axis to plot for burnup
             CategoryDataset burnupDataset = createBurnupChartDataset();
-            if (chooseInputForm.getBurndownChartCheckBox().isSelected()) {
+            if (CHOOSEINPUTFORM.getBurndownChartCheckBox().isSelected()) {
                 plot.setRangeAxis(1, burnupRangeAxis);
                 plot.setDataset(3, burnupDataset);
                 plot.mapDatasetToRangeAxis(3, 1);
@@ -479,19 +477,19 @@ public class CreateChart extends JPanel {
             }
             // Add the custom bar layered renderer to plot
             CustomLayeredBarRenderer burnupRenderer = new CustomLayeredBarRenderer();
-            burnupRenderer.setSeriesPaint(0, chooseInputForm.getSecondaryYAxisColor());
+            burnupRenderer.setSeriesPaint(0, CHOOSEINPUTFORM.getSecondaryYAxisColor());
             burnupRenderer.setSeriesBarWidth(0, 0.7);
             burnupRenderer.setDrawBarOutline(true); // this is needed to highlight the bar (see CustomLayerBarRenderer)
             burnupRenderer.setSeriesOutlinePaint(0, Color.LIGHT_GRAY); // as the out line cannot be made thicker, it is gray by default and black when highlighted (see CustomLayerBarRenderer)
             plot.setRenderer(3, burnupRenderer);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             burnupRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burnupChartPercentage ? "%" : ""), NumberFormat.getInstance()));
-            burnupRenderer.setBaseSeriesVisibleInLegend(!chooseInputForm.getSecondaryYAxisLegend().isEmpty());
+            burnupRenderer.setBaseSeriesVisibleInLegend(!CHOOSEINPUTFORM.getSecondaryYAxisLegend().isEmpty());
             // GUIDE
-            if (chooseInputForm.getBurnupGuideCheckBox().isSelected()) {
+            if (CHOOSEINPUTFORM.getBurnupGuideCheckBox().isSelected()) {
                 CategoryDataset burnupGuideDataset = createBurnupGuideDataset();
                 plot.setDataset(2, burnupGuideDataset);
-                if (chooseInputForm.getBurndownChartCheckBox().isSelected()) { // when burndown, range axis for the target on the right
+                if (CHOOSEINPUTFORM.getBurndownChartCheckBox().isSelected()) { // when burndown, range axis for the target on the right
                     plot.mapDatasetToRangeAxis(2, 1);
                 } else { // no burndown, range axis for the target on the left
                     plot.mapDatasetToRangeAxis(2, 0);
@@ -503,15 +501,15 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                burnupGuideRenderer.setSeriesPaint(0, chooseInputForm.getBurnupGuideColor());
+                burnupGuideRenderer.setSeriesPaint(0, CHOOSEINPUTFORM.getBurnupGuideColor());
                 burnupGuideRenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burnupChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
-                burnupGuideRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getBurnupGuideCheckBox().isSelected() && !chooseInputForm.getBurnupGuideLegend().isEmpty());
+                burnupGuideRenderer.setBaseSeriesVisibleInLegend(CHOOSEINPUTFORM.getBurnupGuideCheckBox().isSelected() && !CHOOSEINPUTFORM.getBurnupGuideLegend().isEmpty());
                 // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
                 //burnupGuideRenderer.setToolTipGenerator(null);
                 plot.setRenderer(2, burnupGuideRenderer);
             }
             // SCOPE
-            if (chooseInputForm.getScopeCheckBox().isSelected()) {
+            if (CHOOSEINPUTFORM.getScopeCheckBox().isSelected()) {
                 NumberAxis scopeRangeAxis = new NumberAxis();
                 scopeRangeAxis.setAutoRangeIncludesZero(true);
                 scopeRangeAxis.setAxisLineVisible(false);
@@ -527,14 +525,14 @@ public class CreateChart extends JPanel {
                         0, new BasicStroke(
                                 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
                                 1.0f, new float[]{10.0f, 6.0f}, 0.0f));
-                scopeRenderer.setSeriesPaint(0, chooseInputForm.getScopeColor());
+                scopeRenderer.setSeriesPaint(0, CHOOSEINPUTFORM.getScopeColor());
                 // the following two lines make values being displayed onto the chart along the scope line
                 scopeRenderer.setBaseItemLabelsVisible(true);
                 scopeRenderer.setBaseItemLabelGenerator((CategoryItemLabelGenerator) new ScopeCategoryItemLabelGenerator(XAxisDateValues));
                 // Disable tooltip (also deprecated setToolTipGenerator(null) removes the tool tip here; setBaseToolTipGenerator(null) doesn't)
                 //scopeRenderer.setToolTipGenerator(null);
                 scopeRenderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator("<html><b>{2}" + (burnupChartPercentage ? "%" : "") + "</b></html>", NumberFormat.getInstance()));
-                scopeRenderer.setBaseSeriesVisibleInLegend(chooseInputForm.getScopeCheckBox().isSelected() && !chooseInputForm.getScopeLegend().isEmpty());
+                scopeRenderer.setBaseSeriesVisibleInLegend(CHOOSEINPUTFORM.getScopeCheckBox().isSelected() && !CHOOSEINPUTFORM.getScopeLegend().isEmpty());
                 //scopeRenderer.setSeriesToolTipGenerator(0, new StandardCategoryToolTipGenerator("{2}" + (burnupChartPercentage ? "%" : ""), NumberFormat.getInstance()));
                 plot.setRenderer(1, scopeRenderer);
             }
