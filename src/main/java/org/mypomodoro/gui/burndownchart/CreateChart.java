@@ -54,8 +54,8 @@ import org.mypomodoro.util.DateUtil;
  *
  */
 // TODO error scope lines with iterations : java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
-// TODO subtasks scope with iterations SQL request doesn't work
-// TODO fix burnup of subtasks with iterations
+// No SP and IT columns for subtasks
+// rendering of SP and IT are not good
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -107,7 +107,7 @@ public class CreateChart extends JPanel {
         if ((CHOOSEINPUTFORM.getBurnupChartCheckBox().isSelected() && CHOOSEINPUTFORM.getScopeCheckBox().isSelected())
                 || burnupChartPercentage) {
             if (CONFIGUREINPUTFORM.getDatesCheckBox().isSelected()) {
-                sumForScope = burnupchartType.getSumDateRangeForScope(XAxisDateValues);
+                sumForScope = burnupchartType.getSumDateRangeForScope(XAxisDateValues, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());
             } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
                 sumForScope = burnupchartType.getSumIterationRangeForScope(CONFIGUREINPUTFORM.getStartIteration(), CONFIGUREINPUTFORM.getEndIteration());
             }

@@ -45,10 +45,12 @@ public class StoryPointChart implements IChartType {
         return label;
     }
 
-    // A task must be completed/done (= release backlog) for its story points to be considered as done
+    // A task MUST be completed/done (= release backlog) for its story points to be considered as done
+    // Subtasks don't have story points
     @Override
     public float getValue(Activity activity, Date date) {
-        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getStoryPoints() : 0; // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
+        // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
+        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getStoryPoints() : 0;
     }
 
     @Override
@@ -62,18 +64,11 @@ public class StoryPointChart implements IChartType {
 
     @Override
     public float getTotalForBurnup() {
-        /*float total = 0;
-         for (Activity activity : ChartList.getList().getTasks()) {
-         if (activity.isCompleted()) {
-         total += activity.getStoryPoints();
-         }
-         }
-         return total;*/
         return getTotalForBurndown();
     }
 
     @Override
-    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
+    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates, boolean subtasks) {
         return ActivitiesDAO.getInstance().getSumOfStoryPointsOfActivitiesDateRange(dates);
     }
 

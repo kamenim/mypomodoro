@@ -72,7 +72,7 @@ public class ChoosePanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.weightx = 0.1;
         JButton configureButton = new DefaultButton(
-                Labels.getString("BurndownChartPanel.Create"));
+                Labels.getString("BurndownChartPanel.Configure"));
         configureButton.addActionListener(new ActionListener() {
 
             @Override

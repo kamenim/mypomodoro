@@ -52,24 +52,17 @@ public class TaskChart implements IChartType {
 
     @Override
     public float getTotalForBurndown() {
-        return ChartList.getList().getTasks().size();
+        return ChartList.getList().size();
     }
 
     @Override
     public float getTotalForBurnup() {
-        /*int total = 0;
-         for (Activity activity : ChartList.getList().getTasks()) {
-         if (activity.isCompleted()) {
-         total++;
-         }
-         }
-         return new Float(total);*/
         return getTotalForBurndown();
     }
 
     @Override
-    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
-        return ActivitiesDAO.getInstance().getSumOfTasksOfActivitiesDateRange(dates);
+    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates, boolean subtasks) {
+        return ActivitiesDAO.getInstance().getSumOfTasksOfActivitiesDateRange(dates, false);
     }
 
     @Override

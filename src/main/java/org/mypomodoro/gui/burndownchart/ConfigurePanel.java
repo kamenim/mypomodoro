@@ -99,14 +99,14 @@ public class ConfigurePanel extends JPanel {
                                         CONFIGUREINPUTFORM.getExcludeSaturdays().isSelected(),
                                         CONFIGUREINPUTFORM.getExcludeSundays().isSelected(),
                                         CONFIGUREINPUTFORM.getExcludedDates());
-                                if (CONFIGUREINPUTFORM.getReleaseOnly().isSelected()) {                                    
+                                if (CONFIGUREINPUTFORM.getReleaseOnly().isSelected()) { // Tasks and subtasks                                    
                                     ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, true, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());                                    
-                                } else if (CONFIGUREINPUTFORM.getReleaseAndIteration().isSelected()) {
-                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, false, false);
-                                } else if (CONFIGUREINPUTFORM.getIterationOnly().isSelected()) {
+                                } else if (CONFIGUREINPUTFORM.getReleaseAndIteration().isSelected()) { // Tasks and subtasks
+                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, false, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());
+                                } else if (CONFIGUREINPUTFORM.getIterationOnly().isSelected()) { // Tasks only
                                     ChartList.getList().refreshDateRangeAndIteration(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, CONFIGUREINPUTFORM.getIteration());
                                 }
-                            } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) {
+                            } else if (CONFIGUREINPUTFORM.getIterationsCheckBox().isSelected()) { // Tasks only
                                 ChartList.getList().refreshIterationRange(CONFIGUREINPUTFORM.getStartIteration(), CONFIGUREINPUTFORM.getEndIteration());
                             }
                         }

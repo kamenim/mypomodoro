@@ -43,8 +43,7 @@ public class SubtaskChart implements IChartType {
     public String getXLegend() {
         return label;
     }
-
-    // A subtask DOESN'T NEED to be the subtask of completed/done task (= release backlog) as long as it is done
+    
     @Override
     public float getValue(Activity activity, Date date) {
         return activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone() ? 1 : 0;
@@ -52,29 +51,22 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getTotalForBurndown() {
-        return ChartList.getList().getSubTasks().size();
+        return ChartList.getList().size();
     }
 
     @Override
     public float getTotalForBurnup() {
-        /*int total = 0;
-         for (Activity activity : ChartList.getList().getSubTasks()) {
-         if (activity.isDoneDone()) {
-         total++;
-         }
-         }
-         return new Float(total);*/
         return getTotalForBurndown();
     }
 
     @Override
-    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
-        return ActivitiesDAO.getInstance().getSumOfSubtasksOfActivitiesDateRange(dates);
+    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates, boolean subtasks) {
+        return ActivitiesDAO.getInstance().getSumOfTasksOfActivitiesDateRange(dates, true);
     }
 
     @Override
     public ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration) {
-        return ActivitiesDAO.getInstance().getSumOfSubtasksOfActivitiesIterationRange(startIteration, endIteration);
+        return null;
     }
 
     @Override
