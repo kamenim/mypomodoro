@@ -19,6 +19,7 @@ package org.mypomodoro.gui.burndownchart.types;
 import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
+import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;
@@ -44,10 +45,11 @@ public class PomodoroChart implements IChartType {
         return label;
     }
 
-    // A task DOESN'T NEED to be completed/done (= iteration backlog) for its actual poms to be accounted as actual / done
     @Override
     public float getValue(Activity activity, Date date) {
-        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getActualPoms() : 0; // real poms of the task = real poms of its subtasks
+        boolean isComplete = (activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted()) ||
+                (activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone());
+        return isComplete ? activity.getActualPoms() : 0;
     }
 
     @Override
@@ -61,19 +63,12 @@ public class PomodoroChart implements IChartType {
 
     @Override
     public float getTotalForBurnup() {
-        /*int total = 0;
-         for (Activity activity : ChartList.getList().getTasks()) {
-         if (activity.isCompleted()) {
-         total += activity.getActualPoms();
-         }
-         }
-         return new Float(total);*/
         return getTotalForBurndown();
     }
 
     @Override
-    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates) {
-        return ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates);
+    public ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates, boolean subtasks) {
+        return ActivitiesDAO.getInstance().getSumOfPomodorosOfActivitiesDateRange(dates, subtasks);
     }
 
     @Override

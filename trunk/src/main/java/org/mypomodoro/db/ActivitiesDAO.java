@@ -289,12 +289,10 @@ public class ActivitiesDAO {
     //////////////////////
     /// CHARTS
     //////////////////////
+    
+    // Tasks (Dates)
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         return getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
-    }
-    
-    public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
-        return getSubActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
     }
 
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
@@ -321,7 +319,7 @@ public class ActivitiesDAO {
                     whereCondition += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
                     increment++;
                 }
-                whereCondition += ")";
+                whereCondition += ") ";
                 if (!excludeToDos) {
                     whereCondition += ")) ";
                 }
@@ -350,14 +348,20 @@ public class ActivitiesDAO {
         return activities;
     }
     
-    public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
+    // Subtasks (Dates)
+    public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
                 int increment = 1;
                 // Subtask condition
-                String whereSutaskCondition = "parent_id > -1 AND (";
+                String whereSutaskCondition = "parent_id > -1 AND ";                
+                if (!excludeToDos) {
+                    whereSutaskCondition += "(priority > -1 OR (";
+                }
+                whereSutaskCondition += "is_donedone = 'true' ";
+                whereSutaskCondition += "AND (";
                 for (Date date : datesToBeIncluded) {
                     if (increment > 1) {
                         whereSutaskCondition += " OR ";
@@ -367,31 +371,23 @@ public class ActivitiesDAO {
                     increment++;
                 }
                 whereSutaskCondition += ") ";
+                if (!excludeToDos) {
+                    whereSutaskCondition += ")) ";
+                }
                 // Task condition                
                 String whereTaskCondition = "";
-                if (excludeToDos || iteration >= 0) {
-                    whereTaskCondition += "(parent_id IN "; // subtasks
+                /*if (iteration >= 0) {
+                    whereTaskCondition += "AND (parent_id IN "; // subtasks
                     whereTaskCondition += "(SELECT id FROM activities WHERE ";                    
-                    /*if (iteration >= 0) {
-                        whereTaskCondition += "iteration = " + iteration + " AND "; // specific iteration
-                    }*/ 
-                    if (!excludeToDos) {
-                        whereTaskCondition += "(priority > -1 OR ";
-                    } 
-                    whereTaskCondition += "is_complete = 'true' ";
-                    if (!excludeToDos) {
-                        whereTaskCondition += ") ";
-                    } 
+                    whereTaskCondition += "iteration = " + iteration + ") "; // specific iteration
+                     
                     whereTaskCondition += ")) ";
-                }
+                }*/
                 // Query
                 String query = "SELECT * FROM activities WHERE ";                
                 query += whereSutaskCondition; // subtasks
-                if (whereTaskCondition.length() > 0) {
-                    query += " AND ";
-                    query += whereTaskCondition; // subtasks
-                }
-                query += "ORDER BY date_donedone DESC";  // from newest to oldest
+                query += whereTaskCondition; // tasks                
+                query += "ORDER BY date_donedone DESC";  // from newest to oldest                
                 ResultSet rs = database.query(query);
                 try {
                     while (rs.next()) {
@@ -412,7 +408,8 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-    
+        
+    // Tasks (Iterations)
     public ArrayList<Activity> getActivitiesForChartIterationRange(int startIteration, int endIteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
@@ -445,7 +442,8 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-
+    
+    // Scope: tasks and story points (Dates)
     public ArrayList<Float> getSumOfStoryPointsOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
         ArrayList<Float> storyPoints = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
@@ -476,6 +474,7 @@ public class ActivitiesDAO {
         return storyPoints;
     }
 
+    // Scope: tasks and story points (Iterations)
     public ArrayList<Float> getSumOfStoryPointsOfActivitiesIterationRange(int startIteration, int endIteration) {
         ArrayList<Float> storyPoints = new ArrayList<Float>();
         try {
@@ -507,15 +506,22 @@ public class ActivitiesDAO {
         return storyPoints;
     }
 
-    public ArrayList<Float> getSumOfPomodorosOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
+    // Scope: tasks or subtasks and pomodoros (Dates)
+    public ArrayList<Float> getSumOfPomodorosOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded, boolean subtasks) {
         ArrayList<Float> pomodoros = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
+                    String query = "SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities WHERE ";
+                    if (subtasks) {
+                        query += "parent_id > -1 ";
+                    } else {
+                        query += "parent_id = -1 ";
+                    }
+                    query += "AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis();
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
-                    ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
-                            + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                    ResultSet rs = database.query(query);
                     try {
                         while (rs.next()) {
                             pomodoros.add((Float) rs.getFloat("sum"));
@@ -537,6 +543,7 @@ public class ActivitiesDAO {
         return pomodoros;
     }
 
+    // Scope: tasks and pomodoros (Iterations)
     public ArrayList<Float> getSumOfPomodorosOfActivitiesIterationRange(int startIteration, int endIteration) {
         ArrayList<Float> pomodoros = new ArrayList<Float>();
         try {
@@ -568,15 +575,22 @@ public class ActivitiesDAO {
         return pomodoros;
     }
 
-    public ArrayList<Float> getSumOfTasksOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
+    // Scope: tasks or subtasks (Dates)
+    public ArrayList<Float> getSumOfTasksOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded, boolean subtasks) {
         ArrayList<Float> tasks = new ArrayList<Float>();
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
+                    String query = "SELECT COUNT(*) as sum FROM activities WHERE ";
+                    if (subtasks) {
+                        query += "parent_id > -1 ";
+                    } else {
+                        query += "parent_id = -1 ";
+                    }
+                    query += "AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis();
                     // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
-                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
-                            + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
+                    ResultSet rs = database.query(query);
                     try {
                         while (rs.next()) {
                             tasks.add((Float) rs.getFloat("sum"));
@@ -598,6 +612,7 @@ public class ActivitiesDAO {
         return tasks;
     }
 
+    // Scope: tasks (Iterations)
     public ArrayList<Float> getSumOfTasksOfActivitiesIterationRange(int startIteration, int endIteration) {
         ArrayList<Float> tasks = new ArrayList<Float>();
         try {
@@ -608,71 +623,6 @@ public class ActivitiesDAO {
                         + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
                         //+ "ON (SubQuery.maxDateCompleted > 0 AND parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
                         + "ON (parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
-                try {
-                    while (rs.next()) {
-                        Float sum = (Float) rs.getFloat("sum");
-                        sum = i > startIteration && sum == 0 ? tasks.get(tasks.size() - 1) : sum; // iteration no yet started : using sum of the previous iteration
-                        tasks.add(sum);
-                    }
-                } catch (SQLException ex) {
-                    Main.logger.error("", ex);
-                } finally {
-                    try {
-                        rs.close();
-                    } catch (SQLException ex) {
-                        Main.logger.error("", ex);
-                    }
-                }
-            }
-        } finally {
-            database.unlock();
-        }
-        return tasks;
-    }
-
-    // Subtasks
-    public ArrayList<Float> getSumOfSubtasksOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
-        ArrayList<Float> tasks = new ArrayList<Float>();
-        if (datesToBeIncluded.size() > 0) {
-            try {
-                database.lock();
-                for (Date date : datesToBeIncluded) {
-                    ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities as a "
-                            + "INNER JOIN activities as b ON a.parent_id = b.id "
-                            + "WHERE a.parent_id > -1 AND b.date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
-                    try {
-                        while (rs.next()) {
-                            tasks.add((Float) rs.getFloat("sum"));
-                        }
-                    } catch (SQLException ex) {
-                        Main.logger.error("", ex);
-                    } finally {
-                        try {
-                            rs.close();
-                        } catch (SQLException ex) {
-                            Main.logger.error("", ex);
-                        }
-                    }
-                }
-            } finally {
-                database.unlock();
-            }
-        }
-        return tasks;
-    }
-
-    // subtasks
-    public ArrayList<Float> getSumOfSubtasksOfActivitiesIterationRange(int startIteration, int endIteration) {
-        ArrayList<Float> tasks = new ArrayList<Float>();
-        try {
-            database.lock();
-            for (int i = startIteration; i <= endIteration; i++) {
-                ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
-                        + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        //+ "ON activities.parent_id = activities.id AND (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0)) "
-                        + "ON (activities.parent_id = activities.id AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
-                //+ "WHERE parent_id > -1");
                 try {
                     while (rs.next()) {
                         Float sum = (Float) rs.getFloat("sum");

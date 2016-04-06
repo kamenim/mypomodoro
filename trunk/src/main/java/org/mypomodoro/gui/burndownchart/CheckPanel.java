@@ -147,7 +147,7 @@ public class CheckPanel extends AbstractPanel {
         gbc.gridy = 0;
         gbc.weighty = 1.0;
         gbc.weightx = 0.1;
-        JButton createButton = new DefaultButton(Labels.getString("BurndownChartPanel.Choose"));
+        JButton createButton = new DefaultButton(Labels.getString("BurndownChartPanel.Create"));
         createButton.addActionListener(new ActionListener() {
 
             @Override

@@ -36,7 +36,7 @@ public interface IChartType {
 
     float getTotalForBurnup();
 
-    ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates);
+    ArrayList<Float> getSumDateRangeForScope(ArrayList<Date> dates, boolean subtasks);
 
     ArrayList<Float> getSumIterationRangeForScope(int startIteration, int endIteration);
 

@@ -18,6 +18,7 @@ package org.mypomodoro.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -38,6 +39,7 @@ public class ChartList extends AbstractActivities {
         // not used
     }
 
+    // Tasks and subtasks
     public void refreshDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, boolean subtasks) {
         removeAll();
         ArrayList<Activity> charList;
@@ -51,6 +53,7 @@ public class ChartList extends AbstractActivities {
         }
     }
 
+    // Tasks only
     public void refreshDateRangeAndIteration(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, int iteration) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, false, iteration)) {
@@ -58,6 +61,7 @@ public class ChartList extends AbstractActivities {
         }
     }
 
+    // Tasks only
     public void refreshIterationRange(int startIteration, int endIteration) {
         removeAll();
         for (Activity act : ActivitiesDAO.getInstance().getActivitiesForChartIterationRange(startIteration, endIteration)) {
@@ -69,26 +73,16 @@ public class ChartList extends AbstractActivities {
         return list;
     }
 
-    // List of main tasks
-    /*public static ChartList getTaskList() {
-        ChartList tableList = new ChartList();
-        for (Activity a : list) {
-            if (a.isTask()) {
-                tableList.add(a);
-            }
+    // It could be either tasks or subtasks
+    @Override
+    public ArrayList<Activity> getTasks() {
+        ArrayList taskList = new ArrayList<Activity>();
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            Activity a = it.next();
+            taskList.add(a);
         }
-        return tableList;
-    }*/
-
-    // Remove tasks AND subtasks
-    /*@Override
-    public void remove(Activity activity) {
-        ArrayList<Activity> subList = getSubTasks(activity.getId());
-        for (Activity subTask : subList) {
-            super.remove(subTask);
-        }
-        super.remove(activity);
-    }*/
+        return taskList;
+    }
 
     public static int getListSize() {
         return getList().size();
