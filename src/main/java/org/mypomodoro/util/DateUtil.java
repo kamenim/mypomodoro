@@ -34,7 +34,7 @@ public class DateUtil {
 
     public static final Locale US_LOCALE = new Locale("en", "US");
     private static Locale locale = US_LOCALE;
-    private static final String US_datePattern = "MMM dd yyyy";
+    private static final String US_datePattern = "MMMM dd yyyy";
     private static final String US_shortDatePattern = "MM/dd/yyyy";
     private static final String US_shortDatePatternNoYear = "MM/dd";
     private static final String EN_timePattern = "hh:mm a"; // AM/PM
@@ -48,7 +48,12 @@ public class DateUtil {
     }
 
     public static String getFormatedDate(Date date) {
-        String pattern = locale.equals(US_LOCALE) ? US_datePattern : "dd MMM yyyy";
+        String pattern = locale.equals(US_LOCALE) ? US_datePattern : "dd MMMM yyyy";
+        return getFormatedDate(date, pattern);
+    }
+
+    public static String getLongFormatedDate(Date date) {
+        String pattern = "EEEE, " + (locale.equals(US_LOCALE) ? US_datePattern : "dd MMMM yyyy");
         return getFormatedDate(date, pattern);
     }
 

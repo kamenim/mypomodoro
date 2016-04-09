@@ -179,7 +179,7 @@ public class CompoundIcon implements Icon {
      * @exception IndexOutOfBoundsException if the index is out of range
      */
     public Icon getIcon(int index) {
-        return icons[ index];
+        return icons[index];
     }
 
     /**

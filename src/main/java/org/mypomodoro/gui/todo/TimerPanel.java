@@ -142,28 +142,24 @@ public class TimerPanel extends JPanel {
                             String title = Labels.getString("ToDoListPanel.ToDo changed");
                             String message = Labels.getString("ToDoListPanel.The ToDo has changed");
                             JOptionPane.showConfirmDialog(Main.gui, message, title, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, ImageIcons.DIALOG_ICON);
-                        } else {
-                            if (currentToDo.isFinished()) {
-                                String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
-                                message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
-                                JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
-                            } else {
-                                if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
-                                    pomodoro.start();
-                                    startButton.setStarted(true);
-                                    startButton.setIcon(stopRedIcon);
-                                    startButton.setToolTipText(Labels.getString("ToDoListPanel.Void"));
-                                    if (strictPomodoro) {
-                                        startButton.setVisible(false);
-                                    }
-                                    pomodoroTime.setForeground(Main.taskRunningColor);
-                                    timePlus.setTimePlusRedIcon(true); // turn time plus button red
-                                    timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
-                                    if (!strictPomodoro) {
-                                        pauseButton.setVisible(true);
-                                        pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
-                                    }
-                                }
+                        } else if (currentToDo.isFinished()) {
+                            String message = Labels.getString("ToDoListPanel.All pomodoros of this ToDo are already done");
+                            message += System.getProperty("line.separator") + "(" + Labels.getString("ToDoListPanel.please complete this ToDo to make a report or make an overestimation to extend it") + ")";
+                            JOptionPane.showConfirmDialog(Main.gui, message, null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
+                        } else if (!strictPomodoro || (strictPomodoro && currentToDo.getEstimatedPoms() > 0)) { // strict pomodoro mode doesn't allow starting task with no estimate
+                            pomodoro.start();
+                            startButton.setStarted(true);
+                            startButton.setIcon(stopRedIcon);
+                            startButton.setToolTipText(Labels.getString("ToDoListPanel.Void"));
+                            if (strictPomodoro) {
+                                startButton.setVisible(false);
+                            }
+                            pomodoroTime.setForeground(Main.taskRunningColor);
+                            timePlus.setTimePlusRedIcon(true); // turn time plus button red
+                            timeMinus.setTimeMinusRedIcon(true); // turn time minus button red
+                            if (!strictPomodoro) {
+                                pauseButton.setVisible(true);
+                                pauseButton.setToolTipText(Labels.getString("ToDoListPanel.Pause"));
                             }
                         }
                     }

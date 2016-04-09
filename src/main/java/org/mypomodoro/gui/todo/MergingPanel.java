@@ -225,8 +225,9 @@ public class MergingPanel extends CreatePanel {
                             String message = Labels.getString("ToDoListPanel.Task added to Activity List");
                             JOptionPane.showConfirmDialog(Main.gui, message, title,
                                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, ImageIcons.DIALOG_ICON);
-                        } else { // add new activity to ToDo list
-                            // the following condition addresses the issue where all subtasks are merged and for that reason the subtasks is populated which makes the insertion of row redondant
+                        } else // add new activity to ToDo list
+                        // the following condition addresses the issue where all subtasks are merged and for that reason the subtasks is populated which makes the insertion of row redondant
+                        {
                             if (newActivity.isTask()
                                     || rowCount != selectedRowCount) {
                                 panel.getCurrentTable().insertRow(newActivity);

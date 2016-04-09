@@ -61,7 +61,7 @@ public class MoveToDoButton extends TabPanelButton {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
-                    /*if (!panel.getPomodoro().inPomodoro()
+                        /*if (!panel.getPomodoro().inPomodoro()
                          && panel.getCurrentTable().getSelectedRowCount() == panel.getCurrentTable().getRowCount()) { // complete all at once                       
                          panel.moveAll();
                          panel.refresh();

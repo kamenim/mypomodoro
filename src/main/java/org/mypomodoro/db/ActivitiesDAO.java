@@ -289,7 +289,6 @@ public class ActivitiesDAO {
     //////////////////////
     /// CHARTS
     //////////////////////
-    
     // Tasks (Dates)
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         return getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
@@ -324,8 +323,8 @@ public class ActivitiesDAO {
                     whereCondition += ")) ";
                 }
                 // Query
-                String query = "SELECT * FROM activities WHERE ";                
-                query += whereCondition;               
+                String query = "SELECT * FROM activities WHERE ";
+                query += whereCondition;
                 query += "ORDER BY date_completed DESC";  // from newest to oldest
                 ResultSet rs = database.query(query);
                 try {
@@ -347,7 +346,7 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-    
+
     // Subtasks (Dates)
     public ArrayList<Activity> getSubActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
@@ -356,7 +355,7 @@ public class ActivitiesDAO {
                 database.lock();
                 int increment = 1;
                 // Subtask condition
-                String whereSutaskCondition = "parent_id > -1 AND ";                
+                String whereSutaskCondition = "parent_id > -1 AND ";
                 if (!excludeToDos) {
                     whereSutaskCondition += "(priority > -1 OR (";
                 }
@@ -384,7 +383,7 @@ public class ActivitiesDAO {
                     whereTaskCondition += ")) ";
                 }*/
                 // Query
-                String query = "SELECT * FROM activities WHERE ";                
+                String query = "SELECT * FROM activities WHERE ";
                 query += whereSutaskCondition; // subtasks
                 query += whereTaskCondition; // tasks                
                 query += "ORDER BY date_donedone DESC";  // from newest to oldest                
@@ -408,19 +407,19 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-        
+
     // Tasks (Iterations)
     public ArrayList<Activity> getActivitiesForChartIterationRange(int startIteration, int endIteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         try {
-            database.lock();            
+            database.lock();
             // Task condition
             String whereTaskCondition = "parent_id = -1 ";
             whereTaskCondition += "AND iteration >= " + startIteration + " ";
             whereTaskCondition += "AND iteration <= " + endIteration + " ";
-            whereTaskCondition += "AND (priority > -1 OR is_complete = 'true') ";            
+            whereTaskCondition += "AND (priority > -1 OR is_complete = 'true') ";
             // Query
-            String query = "SELECT * FROM activities WHERE ";            
+            String query = "SELECT * FROM activities WHERE ";
             query += whereTaskCondition;
             query += "ORDER BY iteration ASC"; // from lowest to highest            
             ResultSet rs = database.query(query);
@@ -442,7 +441,7 @@ public class ActivitiesDAO {
         }
         return activities;
     }
-    
+
     // Scope: tasks and story points (Dates)
     public ArrayList<Float> getSumOfStoryPointsOfActivitiesDateRange(ArrayList<Date> datesToBeIncluded) {
         ArrayList<Float> storyPoints = new ArrayList<Float>();

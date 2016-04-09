@@ -70,7 +70,7 @@ public class MoveButton extends TabPanelButton {
                         MainPanel.progressBar.getBar().setValue(0);
                         MainPanel.progressBar.getBar().setMaximum(selectedRowCount);
                         // SKIP optimisation -move all tasks at once- to take benefice of the progress bar; slower but better for the user)
-                    /*if (selectedRowCount == panel.getCurrentTable().getRowCount()
+                        /*if (selectedRowCount == panel.getCurrentTable().getRowCount()
                          && panel instanceof ReportsPanel) { // reopen all at once                
                          panel.moveAll();
                          panel.refresh();

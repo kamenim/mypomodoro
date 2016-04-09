@@ -76,7 +76,7 @@ public class ChoosePanel extends JPanel {
         configureButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {                                
+            public void actionPerformed(ActionEvent e) {
                 tabbedPane.setComponentAt(1, new ConfigurePanel(tabbedPane, checkPanel));
                 tabbedPane.setEnabledAt(1, true);
                 tabbedPane.setSelectedIndex(1);

@@ -44,7 +44,7 @@ public class ChartTabbedPanel extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;        
+        gbc.fill = GridBagConstraints.BOTH;
         ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, checkPanel);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
         ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, checkPanel);
