@@ -3,9 +3,9 @@
  * Utility class to open a web page from a Swing application in the user's
  * default browser.<br>
  * Supports: Mac OS X, GNU/Linux, Unix, Windows XP/Vista/7<br>
- * Example Usage:<code><br> &nbsp; &nbsp;
- *    String url = "http://www.google.com/";<br> &nbsp; &nbsp;
- *    BareBonesBrowserLaunch.openURL(url);<br></code> Latest Version: <a
+ * Example Usage:<code><br> &nbsp; &nbsp; String url =
+ * "http://www.google.com/";<br> &nbsp; &nbsp;
+ * BareBonesBrowserLaunch.openURL(url);<br></code> Latest Version: <a
  * href="http://www.centerkey.com/java/browser/">www.centerkey.com/java/browser</a><br>
  * Author: Dem Pilafian<br>
  * Public Domain Software -- Free to Use as You Like

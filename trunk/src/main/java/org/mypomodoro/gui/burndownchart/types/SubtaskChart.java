@@ -43,7 +43,7 @@ public class SubtaskChart implements IChartType {
     public String getXLegend() {
         return label;
     }
-    
+
     @Override
     public float getValue(Activity activity, Date date) {
         return activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone() ? 1 : 0;

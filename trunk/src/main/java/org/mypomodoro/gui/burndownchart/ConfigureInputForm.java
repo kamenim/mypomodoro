@@ -58,7 +58,7 @@ import org.mypomodoro.util.Labels;
  */
 public class ConfigureInputForm extends JPanel {
 
-    protected static final Dimension LABEL_DIMENSION = new Dimension(400, 100);    
+    protected static final Dimension LABEL_DIMENSION = new Dimension(400, 100);
     // Tasks form
     private final JPanel dataInputFormPanel = new JPanel();
     private final JPanel scopeInputFormPanel = new JPanel();
@@ -90,9 +90,9 @@ public class ConfigureInputForm extends JPanel {
     public ConfigureInputForm() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         datesInputFormPanel.setPreferredSize(new Dimension(500, 140));
-        iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));        
+        iterationsInputFormPanel.setPreferredSize(new Dimension(500, 80));
         addDataInputFormPanel();
-        addScopeInputFormPanel();               
+        addScopeInputFormPanel();
         addImageInputFormPanel();
     }
 
@@ -162,7 +162,7 @@ public class ConfigureInputForm extends JPanel {
         gbc.gridy = 0;
         lists.add(releaseonly, gbc); // excludes ToDos/Iteration Backlog tasks
         // Specific iteration        
-        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {            
+        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {
             JPanel iteration = new JPanel();
             iteration.setLayout(new FlowLayout());
             typeIterationOnly.addActionListener(new ActionListener() {
@@ -216,7 +216,7 @@ public class ConfigureInputForm extends JPanel {
         scopeInputFormPanel.setBorder(borderScope);
         scopeInputFormPanel.setLayout(new GridBagLayout());
         addDatesInputFormPanel(cChart);
-        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {                    
+        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {
             addIterationsInputFormPanel(cChart);
         }
         add(scopeInputFormPanel, cChart);

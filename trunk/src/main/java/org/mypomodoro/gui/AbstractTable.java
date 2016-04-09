@@ -474,6 +474,7 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
+                // Done-done tasks or done subtasks
                 if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                     map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -482,6 +483,7 @@ public abstract class AbstractTable extends JXTable {
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
                     //renderer.setBackground(Color.LIGHT_GRAY);
                     //renderer.setOpaque(true);
+
                 }
             }
             return renderer;
@@ -513,15 +515,20 @@ public abstract class AbstractTable extends JXTable {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (!DateUtil.isSameDay((Date) value, new Date(0))) {
                 renderer.setText(DateUtil.getShortFormatedDate((Date) value));
-                renderer.setToolTipText(DateUtil.getFormatedDate((Date) value, "EEE, dd MMM yyyy"));
+                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+                Activity activity = getList().getById(id);
                 if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                    int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                    Activity activity = getList().getById(id);
                     if (activity != null && activity.isOverdue() && getList() instanceof ActivityList) { // activity list only
                         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                         map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
                         renderer.setFont(getFont().deriveFont(map));
                     }
+                }
+                String tooltipValue = DateUtil.getLongFormatedDate((Date) value);
+                if (activity != null && activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                    renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
+                } else {
+                    renderer.setToolTipText(tooltipValue);
                 }
             } else {
                 renderer.setText(null);
@@ -536,9 +543,14 @@ public abstract class AbstractTable extends JXTable {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            String text = (String) value;
-            if (!text.isEmpty()) {
-                renderer.setToolTipText(text);
+            String tooltipValue = (String) value;
+            if (!tooltipValue.isEmpty()) {
+                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+                Activity activity = getList().getById(id);
+                if (activity != null && activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                    tooltipValue = "<html><strike> " + tooltipValue + " </strike></html>";
+                }
+                renderer.setToolTipText(tooltipValue);
             }
             return renderer;
         }
@@ -552,23 +564,25 @@ public abstract class AbstractTable extends JXTable {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             Activity activity = getList().getById(id);
             if (activity != null) {
-                String donedoneValue = (String) value;
+                String textValue = "<html>";
+                String tooltipValue = "<html>";
+                if (activity.getRecordedTime() > 0) {
+                    textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
+                    // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
+                }
                 if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
-                    donedoneValue = "<strike> " + value + " </strike>";
+                    textValue += "<strike> " + (String) value + " </strike>";
+                } else {
+                    textValue += (String) value;
                 }
                 if (activity.getRecordedTime() > 0) {
                     SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                    String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
-                    text += donedoneValue;
-                    renderer.setText(text + "</html>"); // pomodoro of task not finished (recorded time)
-                    // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
-                    text += " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
-                    renderer.setToolTipText(text + "</html>");
+                    tooltipValue += textValue + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";
                 } else {
-                    renderer.setToolTipText("<html>" + donedoneValue + "</html>");
+                    tooltipValue = textValue;
                 }
-            } else {
-                renderer.setToolTipText((String) value);
+                renderer.setText(textValue + "</html>");
+                renderer.setToolTipText(tooltipValue + "</html>");
             }
             return renderer;
         }
@@ -587,7 +601,12 @@ public abstract class AbstractTable extends JXTable {
                 int overestimatedpoms = activity.getOverestimatedPoms();
                 String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
                 renderer.setText(text);
-                renderer.setToolTipText(getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms));
+                String tooltipValue = getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms);
+                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                    renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
+                } else {
+                    renderer.setToolTipText(tooltipValue);
+                }
             }
             return renderer;
         }

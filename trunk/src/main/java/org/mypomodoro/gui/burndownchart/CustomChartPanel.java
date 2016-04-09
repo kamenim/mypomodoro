@@ -34,7 +34,7 @@ public class CustomChartPanel extends ChartPanel {
      public void setPreferredSize(Dimension dimension) {
      this.dimension = dimension;
      }*/
-    /*@Override
+ /*@Override
      public Dimension getPreferredSize() {
      return dimension;
      }*/

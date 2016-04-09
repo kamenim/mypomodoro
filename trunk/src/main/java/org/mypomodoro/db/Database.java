@@ -47,6 +47,7 @@ public class Database {
     public String selectStatementSeqId = "SELECT seq FROM sqlite_sequence WHERE name = 'activities'";
     public String sequenceIdName = "seq";
     public static boolean firstTime = false;
+
     /*
      // Postgresql database specific
      autoIncrementKeyword = "???";
@@ -54,7 +55,6 @@ public class Database {
      selectStatementSeqId = "SELECT CURRVAL(pg_get_serial_sequence('activities','id'))";
      sequenceIdName = "pg_get_serial_sequence";
      */
-
     public Database() {
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             driverClassName = "com.mysql.jdbc.Driver";

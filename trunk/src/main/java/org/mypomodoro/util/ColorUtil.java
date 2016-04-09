@@ -37,6 +37,7 @@ public class ColorUtil {
     public static final Color GRAY = Color.gray;
     public static final Color YELLOW_HIGHLIGHT = new Color(255, 255, 102);
     public static final Color DARK_GRAY_TIMER = Color.DARK_GRAY;
+    public static final Color GREEN_TIMER = new Color(156, 234, 156);
 
     /**
      * Returns a web browser-friendly HEX value representing the colour in the

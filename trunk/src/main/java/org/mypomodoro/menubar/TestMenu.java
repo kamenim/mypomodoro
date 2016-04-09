@@ -189,7 +189,8 @@ public class TestMenu extends JMenu {
                                         Main.gui.getReportListPanel().getMainTable().insertRow(a); // main table !
                                         reportListValue++;
                                     }
-                                } else { // Tasks for the Activity and ToDo list
+                                } else // Tasks for the Activity and ToDo list
+                                {
                                     if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
                                         if (a.getIteration() >= 0) {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog

@@ -738,11 +738,11 @@ public class ChooseInputForm extends JPanel {
     public JCheckBox getDataTasksCheckBox() {
         return tasksBox;
     }
-    
+
     public JCheckBox getDataSubtasksCheckBox() {
         return subtasksBox;
     }
-    
+
     public JCheckBox getBurndownChartCheckBox() {
         return burndownChartCheckBox;
     }

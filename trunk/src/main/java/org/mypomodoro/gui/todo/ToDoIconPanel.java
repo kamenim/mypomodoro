@@ -57,23 +57,26 @@ public class ToDoIconPanel {
         // Add label component
         JLabel iconLabel = new JLabel();
         if (showName) {
-            String activityName = activity.getName();
-            String donedoneValue = activityName.length() > 25 ? activityName.substring(0, 25) + "..." : activityName;
-            String donedoneValueForTooltip = activity.getName(); // full lenght
-            if (activity.isSubTask() && activity.isDoneDone()) {
-                donedoneValue = "<strike> " + donedoneValue + " </strike>";
-                donedoneValueForTooltip = "<strike> " + donedoneValueForTooltip + " </strike>";
+            String activityName = activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName();
+            String textValue = "<html>";
+            String tooltipValue = "<html>";
+            if (activity.getRecordedTime() > 0) {
+                textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
+                // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
+            }
+            if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                textValue += "<strike> " + activityName + " </strike>";
+            } else {
+                textValue += activityName;
             }
             if (activity.getRecordedTime() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                String text = "<html><span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
-                iconLabel.setText(text + donedoneValue + "</html>"); // pomodoro of task not finished (recorded time)
-                text += donedoneValueForTooltip + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">" + sdf.format(activity.getRecordedTime()) + "</span>" + ")";
-                iconLabel.setToolTipText(text + "</html>");
+                tooltipValue += textValue + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";
             } else {
-                iconLabel.setText("<html>" + donedoneValue + "</html>");
-                iconLabel.setToolTipText("<html>" + donedoneValueForTooltip + "</html>");
+                tooltipValue = textValue;
             }
+            iconLabel.setText(textValue + "</html>");
+            iconLabel.setToolTipText(tooltipValue + "</html>");
             iconLabel.setForeground(color);
             iconLabel.setFont(iconPanel.getFont().deriveFont(Font.BOLD));
         }

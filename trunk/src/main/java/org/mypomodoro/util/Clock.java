@@ -59,6 +59,6 @@ public class Clock extends JPanel {
         } else {
             clock.setFont(getFont());
         }
-        clock.setText(DateUtil.getFormatedDate(now, "EEEE, dd MMM yyyy") + ", " + DateUtil.getFormatedTime(now) + " ");
+        clock.setText(DateUtil.getLongFormatedDate(now) + ", " + DateUtil.getFormatedTime(now) + " ");
     }
 }

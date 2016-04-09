@@ -48,18 +48,22 @@ public class ConfigurePanel extends JPanel {
     private final JTabbedPane tabbedPane;
     private final CheckPanel checkPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
-    
+
     public ConfigurePanel(JTabbedPane tabbedPane, CheckPanel checkPanel) {
         this.tabbedPane = tabbedPane;
         this.checkPanel = checkPanel;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        
+
         CONFIGUREINPUTFORM = new ConfigureInputForm(); // re-create object
 
         addConfigureInputForm();
         addCheckButton();
+    }
+
+    public void refresh() {
+        //CONFIGUREINPUTFORM.refresh();
     }
 
     private void addConfigureInputForm() {
@@ -100,7 +104,7 @@ public class ConfigurePanel extends JPanel {
                                         CONFIGUREINPUTFORM.getExcludeSundays().isSelected(),
                                         CONFIGUREINPUTFORM.getExcludedDates());
                                 if (CONFIGUREINPUTFORM.getReleaseOnly().isSelected()) { // Tasks and subtasks                                    
-                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, true, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());                                    
+                                    ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, true, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());
                                 } else if (CONFIGUREINPUTFORM.getReleaseAndIteration().isSelected()) { // Tasks and subtasks
                                     ChartList.getList().refreshDateRange(CONFIGUREINPUTFORM.getStartDate(), CONFIGUREINPUTFORM.getEndDate(), datesToBeIncluded, false, CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected());
                                 } else if (CONFIGUREINPUTFORM.getIterationOnly().isSelected()) { // Tasks only
