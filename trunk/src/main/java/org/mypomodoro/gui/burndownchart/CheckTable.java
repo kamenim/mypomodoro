@@ -23,7 +23,6 @@ import org.mypomodoro.Main;
 import org.mypomodoro.db.mysql.MySQLConfigLoader;
 import org.mypomodoro.gui.AbstractTable;
 import org.mypomodoro.gui.AbstractTableModel;
-import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
@@ -99,13 +98,13 @@ public class CheckTable extends AbstractTable {
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // title
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated
-        if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {
+        if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
             getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setCellRenderer(new StoryPointsCellRenderer()); // story points
             getColumnModel().getColumn(AbstractTableModel.ITERATION_COLUMN_INDEX).setCellRenderer(new IterationCellRenderer()); // iteration        
         }
 
         // hide story points and iteration in 'classic' mode or if list of subtasks
-        if (!Main.preferences.getAgileMode() || CHOOSEINPUTFORM.getDataSubtasksCheckBox().isSelected()) {
+        if (!Main.preferences.getAgileMode() || panel.getChooseInputForm().getDataSubtasksCheckBox().isSelected()) {
             getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
             getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
             getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setPreferredWidth(0);
@@ -240,7 +239,7 @@ public class CheckTable extends AbstractTable {
                  toolTipText += " + " + TimeConverter.getLength(overestimated);
                  }*/
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
-                if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {
+                if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
                     DecimalFormat df = new DecimalFormat("0.#");
                     // Story points (do not use velocity V term in CheckTabel as tasks may not be all completed)
                     title += " > SP: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + df.format(storypoints) + "&nbsp;</span>";
@@ -272,7 +271,7 @@ public class CheckTable extends AbstractTable {
                  toolTipText += " + " + TimeConverter.getLength(tableList.getNbOverestimatedPom());
                  }*/
                 toolTipText += " > " + Labels.getString("ReportListPanel.Accuracy") + ": " + accuracy + "%";
-                if (Main.preferences.getAgileMode() && CHOOSEINPUTFORM.getDataTasksCheckBox().isSelected()) {
+                if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
                     float storypoints = tableList.getStoryPoints();
                     DecimalFormat df = new DecimalFormat("0.#");
                     title += " > SP: " + df.format(storypoints);

@@ -138,6 +138,7 @@ public class TestMenu extends JMenu {
                                         Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                         iteration,
                                         (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
+                                a.setType(a.getType().equals("Subtask")?  "Task" : a.getType()); // Subtask is part of the list of types but this is a task
                                 a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
                                 int real = rand.nextInt(a.getEstimatedPoms() + 1); // 0 to getEstimatedPoms()
                                 if (rand.nextBoolean() && (a.isCompleted() || rand.nextBoolean())) { // once in a while all poms done
@@ -340,12 +341,14 @@ public class TestMenu extends JMenu {
                     aClone.setStoryPoints(0);
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));
-                    if (list instanceof ToDoList || list instanceof ReportList) {
+                    if (list instanceof ToDoList || list instanceof ReportList || a.isReopen()) {
                         aClone.setIsDoneDone(rand.nextBoolean()); // set 1 out of 2 subtasks as done                        
-                        if (list instanceof ReportList) {
-                            aClone.setIsDoneDone(true); // subtasks are usually done in the report list
+                        if (list instanceof ReportList || a.isReopen()) {
+                            // activity not done-done yet: some subtasks may be done
                             if (!a.isDoneDone()) {
-                                aClone.setIsDoneDone(rand.nextBoolean()); // some subtasks may not be done also the task is completed but not done-done                                
+                                aClone.setIsDoneDone(rand.nextBoolean());
+                            } else {
+                                aClone.setIsDoneDone(true); // subtasks are usually done in the report list
                             }
                         }
                         if (aClone.isDoneDone()) {
@@ -357,7 +360,7 @@ public class TestMenu extends JMenu {
                     } else if (list instanceof ActivityList) {
                         ActivityList.getList().add(aClone, a.getDate());
                     } else if (list instanceof ReportList) {
-                        ReportList.getList().add(aClone, a.getDate(), a.getDateCompleted());
+                        ReportList.getList().add(aClone, a.getDate(), new Date(0)); // date completed is not use with subtasks; date donedone is used
                     }
                     totalEstimated += estimated;
                     totalReal += real;

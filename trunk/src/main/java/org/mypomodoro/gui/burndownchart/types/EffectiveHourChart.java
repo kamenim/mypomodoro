@@ -19,7 +19,6 @@ package org.mypomodoro.gui.burndownchart.types;
 import java.util.ArrayList;
 import java.util.Date;
 import org.mypomodoro.db.ActivitiesDAO;
-import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ChartList;
 import org.mypomodoro.util.DateUtil;

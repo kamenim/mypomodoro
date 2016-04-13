@@ -25,7 +25,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import org.mypomodoro.Main;
 import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.gui.AbstractPanel;
@@ -51,13 +50,13 @@ public class CheckPanel extends AbstractPanel {
     private final DetailsPanel detailsPanel = new DetailsPanel(this);
     private final CommentPanel commentPanel = new CommentPanel(this);
     // head tabbed pane and side button
-    private final JTabbedPane headTabbedPane;
-    private final CreateChart chart;
+    private final ChartTabbedPanel chartTabbedPanel;
+    private final ChoosePanel choosePanel;
 
-    public CheckPanel(JTabbedPane headTabbedPane, CreateChart chart) {
+    public CheckPanel(ChartTabbedPanel chartTabbedPanel, ChoosePanel choosePanel) {
 
-        this.headTabbedPane = headTabbedPane;
-        this.chart = chart;
+        this.chartTabbedPanel = chartTabbedPanel;
+        this.choosePanel = choosePanel;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -104,6 +103,10 @@ public class CheckPanel extends AbstractPanel {
 
         // Create button
         addCreateButton();
+    }
+    
+    public ChooseInputForm getChooseInputForm() {
+        return choosePanel.getForm();
     }
 
     ////////////////////////////////////////////////
@@ -154,9 +157,7 @@ public class CheckPanel extends AbstractPanel {
             public void actionPerformed(ActionEvent e) {
                 if (!WaitCursor.isStarted()) {
                     if (getList().size() > 0) {
-                        chart.create();
-                        headTabbedPane.setEnabledAt(3, true);
-                        headTabbedPane.setSelectedIndex(3);
+                        chartTabbedPanel.goToStep4();
                     }
                 }
             }

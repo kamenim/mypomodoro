@@ -611,4 +611,9 @@ public class Activity implements Cloneable {
     public long getRecordedTime() {
         return recordedTime;
     }
+    
+    // task reopen = task in activity list with date completed but not completed (= not in Report list)
+    public boolean isReopen() {
+        return isTask() && !DateUtil.isEquals(dateCompleted, new Date(0)) && priority == -1 && !isCompleted;
+    }
 }
