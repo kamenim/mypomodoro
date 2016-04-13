@@ -98,9 +98,9 @@ public class ReportsSubTable extends ReportsTable {
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
                 title += " (";
-                int nbDoneDone = tableList.getNbDoneDone();
-                if (nbDoneDone > 0) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
+                int nbCompleted = tableList.getNbSubtasksCompleted();
+                if (nbCompleted > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";
@@ -138,10 +138,6 @@ public class ReportsSubTable extends ReportsTable {
     @Override
     public void setColumnModel() {
         super.setColumnModel();
-        // hide date of completion column
-        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setMaxWidth(0);
-        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setMinWidth(0);
-        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setPreferredWidth(0);
         // hide Story Points and Iteration columns
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMaxWidth(0);
         getColumnModel().getColumn(AbstractTableModel.STORYPOINTS_COLUMN_INDEX).setMinWidth(0);
@@ -195,8 +191,8 @@ public class ReportsSubTable extends ReportsTable {
     }
 
     @Override
-    public void setSubtaskDoneDone() {
-        super.setSubtaskDoneDone();
+    public void setSubtaskComplete() {
+        super.setSubtaskComplete();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
         panel.getDetailsPanel().showInfo();

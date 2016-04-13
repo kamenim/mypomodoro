@@ -46,19 +46,19 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                 + (activity.isUnplanned() ? "U [" : "")
                 + DateUtil.getLongFormatedDate(activity.getDate()) + (Main.preferences.getAgileMode() ? ", " + DateUtil.getFormatedTime(activity.getDate()) : "")
                 + (activity.isUnplanned() ? "]" : "") + "<br>");
-        if (activity.isCompleted() && activity.isTask()) {
+        if (activity.isCompleted()) {
             textMap.put("date_completed", "<b>" + (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + ":</b> "
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getLongFormatedDate(activity.getDateCompleted()) + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                     + (activity.isUnplanned() ? "]" : "") + "<br>");
-        }
-        if (activity.isDoneDone() && ((activity.isTask() && Main.preferences.getAgileMode()) || activity.isSubTask())) {
-            textMap.put("date_donedone", "<b>" + (activity.isTask() ? Labels.getString("Agile.ReportListPanel.Done-Done") : (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed"))) + ":</b> "
-                    + (activity.isUnplanned() ? "U [" : "")
-                    + DateUtil.getLongFormatedDate(activity.getDateDoneDone()) + ", " + DateUtil.getFormatedTime(activity.getDateDoneDone())
-                    + (activity.isUnplanned() ? "]" : "") + "<br>");
-        }
+        }        
         if (activity.isTask()) {
+            if (activity.isDoneDone() && Main.preferences.getAgileMode()) {
+                textMap.put("date_donedone", "<b>" + Labels.getString("Agile.ReportListPanel.Done-Done") + ":</b> "
+                        + (activity.isUnplanned() ? "U [" : "")
+                        + DateUtil.getLongFormatedDate(activity.getDateDoneDone()) + ", " + DateUtil.getFormatedTime(activity.getDateDoneDone())
+                        + (activity.isUnplanned() ? "]" : "") + "<br>");
+            }
             // Date reopened
             // Foreground set to black in anycase (important for theme such as Noire which default color is white)        
             textMap.put("date_reopened", "<span style=\"color:black; background-color:#FFFF66\"><b>" + Labels.getString("Common.Date reopened") + ":</b> "

@@ -64,5 +64,8 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
     public void selectInfo(Activity activity) {
         super.selectInfo(activity);
         textMap.remove("date_reopened");
+        if (activity.isSubTask()) {
+            textMap.remove("date_donedone"); // subtasks can't be done-done
+        }
     }
 }

@@ -83,9 +83,7 @@ public class ReportList extends AbstractActivities {
     }
 
     public void add(Activity act, Date date, Date dateCompleted) {
-        if (act.isTask()) { // don't reset the priority of subtasks so the subtasks can be sorted by priority in the ReportList
-            act.setPriority(-1);
-        }
+        act.setPriority(-1); // this is very important to filter acivities, ToDos and reports        
         act.setIsCompleted(true);
         act.setDate(date);
         act.setDateCompleted(dateCompleted);
@@ -110,25 +108,23 @@ public class ReportList extends AbstractActivities {
         activity.databaseDelete(); // delete tasks and subtasks
     }
 
-    public void deleteAll() {
+    /*public void deleteAll() {
         ActivitiesDAO.getInstance().deleteAllReports();
         removeAll();
-    }
+    }*/
 
     // Reopen a task and its subtasks to ActivityList
     public void reopenToActivtyList(Activity activity) {
         if (activity.isTask()) {
             ArrayList<Activity> subList = getSubTasks(activity.getId());
             for (Activity subTask : subList) {
-                subTask.setDateCompleted(new Date(0));
-                //subTask.setIteration(-1); // not really necessary
                 ActivityList.getList().add(subTask);
                 remove(subTask);
             }
-        }
-        activity.setDateCompleted(new Date());
-        activity.setIteration(-1); // reset iteration
-        activity.setName("(R) " + activity.getName());
+            activity.setDateCompleted(new Date()); // do not change the date complete of subtasks !
+            activity.setName("(R) " + activity.getName());
+            activity.setIteration(-1); // reset iteration
+        }        
         ActivityList.getList().add(activity);
         remove(activity);
     }

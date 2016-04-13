@@ -102,9 +102,9 @@ public class ToDoSubTable extends ToDoTable {
                 getTitlePanel().hideDoneButton();
             } else {
                 title += " (";
-                int nbDoneDone = tableList.getNbDoneDone();
-                if (nbDoneDone > 0) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
+                int nbCompleted = tableList.getNbSubtasksCompleted();
+                if (nbCompleted > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + "/";
                 }
                 title += rowCount + ")";
                 title += " > E: ";
@@ -351,8 +351,8 @@ public class ToDoSubTable extends ToDoTable {
     }
 
     @Override
-    public void setSubtaskDoneDone() {
-        super.setSubtaskDoneDone();
+    public void setSubtaskComplete() {
+        super.setSubtaskComplete();
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
         panel.getDetailsPanel().showInfo();        
