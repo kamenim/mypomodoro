@@ -30,10 +30,10 @@ import org.mypomodoro.util.DateUtil;
 public class ActivitiesDAO {
 
     private final Database database = Main.database;
-    private static final ActivitiesDAO instance = new ActivitiesDAO();
+    private static final ActivitiesDAO INSTANCE = new ActivitiesDAO();
 
     public static ActivitiesDAO getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     ActivitiesDAO() {
@@ -139,8 +139,8 @@ public class ActivitiesDAO {
     
     public void updateComplete(Activity activity) {
         String updateSQL = "UPDATE activities SET "
-                + "is_complete = '" + String.valueOf(activity.isDoneDone()) + "'";
-        updateSQL += ", date_completed = " + activity.getDateDoneDone().getTime();        
+                + "is_complete = '" + String.valueOf(activity.isCompleted()) + "'";
+        updateSQL += ", date_completed = " + activity.getDateCompleted().getTime();        
         updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
