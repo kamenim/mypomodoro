@@ -64,7 +64,7 @@ public class ToDoIconPanel {
                 textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
                 // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
             }
-            if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+            if (activity.isCompleted() && activity.isSubTask()) { // tasks can't be done-done at this point
                 textValue += "<strike> " + activityName + " </strike>";
             } else {
                 textValue += activityName;

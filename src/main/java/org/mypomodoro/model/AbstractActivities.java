@@ -159,8 +159,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
 
     public int getNbTotalEstimatedPom() {
         int nbEstimatedPom = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) { // can also be written this way: for (Iterator<Activity> it = iterator(); it.hasNext();) {
             nbEstimatedPom += a.getEstimatedPoms() + a.getOverestimatedPoms();
         }
         return nbEstimatedPom;
@@ -177,8 +176,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     public int getAccuracy() {
         int estover = 0;
         int real = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             estover += a.getEstimatedPoms() + a.getOverestimatedPoms();
             real += a.getActualPoms();
         }
@@ -191,8 +189,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     // http://stackoverflow.com/questions/122105/what-is-the-best-way-to-filter-a-java-collection
     public ArrayList<Activity> getTasks() {
         ArrayList taskList = new ArrayList<Activity>();
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             if (a.getParentId() == -1) {
                 taskList.add(a);
             }
@@ -210,8 +207,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
 
     public ArrayList<Activity> getSubTasks(int parentId) {
         ArrayList subtaskList = new ArrayList<Activity>();
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             if (a.getParentId() == parentId) {
                 subtaskList.add(a);
             }
@@ -233,8 +229,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     // get all subtasks
     public ArrayList<Activity> getSubTasks() {
         ArrayList subtaskList = new ArrayList<Activity>();
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) { // can also be written this way: for (Iterator<Activity> it = iterator(); it.hasNext();) {
             if (a.getParentId() > -1) {
                 subtaskList.add(a);
             }
@@ -244,8 +239,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
 
     public int getNbTasksDoneDone() {
         int nbDoneDone = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             if (a.isTask() && a.isDoneDone()) {
                 nbDoneDone++;
             }
@@ -255,8 +249,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
     
     public int getNbSubtasksCompleted() {
         int nbCompleted = 0;
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             if (a.isSubTask() && a.isCompleted()) {
                 nbCompleted++;
             }

@@ -93,9 +93,9 @@ public class ActivityList extends AbstractActivities {
     // Create or update
     public void add(Activity act, Date date, Date dateReopen) {
         act.setPriority(-1);
-        act.setIsCompleted(false);
         act.setDate(date);
         if (act.isTask()) {
+            act.setIsCompleted(false);
             act.setDateCompleted(dateReopen);
             act.setIsDoneDone(false); // tasks cannot be done-done in activity list --> this makes sure we remove done-done status of imported and reopened tasks        
         }

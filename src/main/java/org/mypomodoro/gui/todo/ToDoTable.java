@@ -122,7 +122,7 @@ public class ToDoTable extends AbstractTable {
                         // the start button may have been hidden by a multiple selection
                         // hide start button unless timer is running
                         Activity activity = getActivityFromSelectedRow();
-                        if (activity.isSubTask() && activity.isDoneDone()) { // hide timer buttons if subtask done
+                        if (activity.isSubTask() && activity.isCompleted()) { // hide timer buttons if subtask done
                             panel.getTimerPanel().hideStartButton();
                             panel.getTimerPanel().hideTimeMinusButton();
                             panel.getTimerPanel().hideTimePlusButton();

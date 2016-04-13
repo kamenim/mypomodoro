@@ -356,7 +356,7 @@ public class ToDoSubTable extends ToDoTable {
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
         panel.getDetailsPanel().showInfo();        
-        if (act.isDoneDone()) {  // hide timer buttons if subtask done (see ToDoTable for list selection listener)
+        if (act.isCompleted()) {  // hide timer buttons if subtask done (see ToDoTable for list selection listener)
             panel.getTimerPanel().hideStartButton();
             panel.getTimerPanel().hideTimeMinusButton();
             panel.getTimerPanel().hideTimePlusButton();

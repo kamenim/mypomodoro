@@ -47,8 +47,7 @@ public class PlainHourChart implements IChartType {
 
     @Override
     public float getValue(Activity activity, Date date) {
-        boolean isComplete = (activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted())
-                || (activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone());
+        boolean isComplete = DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted();
         return TimeConverter.roundToHours(TimeConverter.convertPomodorosToPlainMinutes(isComplete ? activity.getActualPoms() : 0)); // real poms of the task = real poms of its subtasks
     }
 
