@@ -29,13 +29,19 @@ import org.mypomodoro.util.Labels;
  * Burndown tabbed Panel
  *
  */
-public class ChartTabbedPanel extends JPanel {
-
-    public static final ChooseInputForm CHOOSEINPUTFORM = new ChooseInputForm();
-    public static ConfigureInputForm CONFIGUREINPUTFORM = new ConfigureInputForm(); // not final; this will change depending on CHOOSEINPUTFORM
-    private final CreateChart chart = new CreateChart();
+public class ChartTabbedPanel extends JPanel {    
+    
+    // Tabbed pane
     private final JTabbedPane chartTabbedPane = new JTabbedPane();
-    private final CheckPanel checkPanel = new CheckPanel(chartTabbedPane, chart);
+    // Choose
+    private  final ChoosePanel choosePanel = new ChoosePanel(this);
+    // Configure
+    private final ConfigurePanel configurePanel = new ConfigurePanel(this, choosePanel);
+    // Check
+    private final CheckPanel checkPanel = new CheckPanel(this, choosePanel);
+    // Create
+    private final CreateChart chart = new CreateChart(choosePanel, configurePanel);    
+    
 
     public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
@@ -45,11 +51,13 @@ public class ChartTabbedPanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        ChoosePanel chooseInputPanel = new ChoosePanel(chartTabbedPane, checkPanel);
-        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), chooseInputPanel);
-        ConfigurePanel configureInputPanel = new ConfigurePanel(chartTabbedPane, checkPanel);
-        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configureInputPanel);
+        // Choose tab
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Choose"), choosePanel);
+        // Configure tab
+        chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Configure"), configurePanel);
+        // Check tab
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Check"), checkPanel);
+        // Create tab
         CreateChartPanel chartPanel = new CreateChartPanel(chart);
         chartTabbedPane.addTab(Labels.getString("BurndownChartPanel.Create"), new JScrollPane(chartPanel));
         chartTabbedPane.setEnabledAt(1, false);
@@ -74,5 +82,26 @@ public class ChartTabbedPanel extends JPanel {
 
     public CheckPanel getCheckPanel() {
         return checkPanel;
+    }
+    
+    // Go to Configure tab
+    public void goToStep2() {
+        configurePanel.refresh(); // refresh form depending on Choose options (tasks or subtasks)
+        chartTabbedPane.setEnabledAt(1, true);
+        chartTabbedPane.setSelectedIndex(1);
+    }
+    
+    // Go to Check tab
+    public void goToStep3() {
+        checkPanel.refresh(); // refresh table
+        chartTabbedPane.setEnabledAt(2, true);
+        chartTabbedPane.setSelectedIndex(2);
+    }
+    
+    // Go to Create tab
+    public void goToStep4() {
+        chart.create();
+        chartTabbedPane.setEnabledAt(3, true);
+        chartTabbedPane.setSelectedIndex(3);
     }
 }

@@ -24,9 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import org.mypomodoro.buttons.DefaultButton;
-import static org.mypomodoro.gui.burndownchart.ChartTabbedPanel.CHOOSEINPUTFORM;
 import org.mypomodoro.util.Labels;
 
 /**
@@ -38,29 +36,32 @@ public class ChoosePanel extends JPanel {
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 
-    private final JTabbedPane tabbedPane;
-    private final CheckPanel checkPanel;
+    private final ChartTabbedPanel chartTabbedPanel;    
     private final GridBagConstraints gbc = new GridBagConstraints();
+    private final ChooseInputForm chooseInputForm = new ChooseInputForm();
 
-    public ChoosePanel(JTabbedPane tabbedPane, CheckPanel checkPanel) {
-        this.tabbedPane = tabbedPane;
-        this.checkPanel = checkPanel;
+    public ChoosePanel(ChartTabbedPanel chartTabbedPanel) {
+        this.chartTabbedPanel = chartTabbedPanel;
 
         setLayout(new GridBagLayout());
         //setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 
-        addCreateInputForm();
+        addChooseInputForm();
         addConfigureButton();
     }
+    
+    public ChooseInputForm getForm() {
+        return chooseInputForm;
+    }
 
-    private void addCreateInputForm() {
+    private void addChooseInputForm() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
         gbc.gridheight = GridBagConstraints.REMAINDER;
-        JScrollPane chooseScrollPane = new JScrollPane(CHOOSEINPUTFORM);
+        JScrollPane chooseScrollPane = new JScrollPane(chooseInputForm);
         chooseScrollPane.setMinimumSize(PANE_DIMENSION);
         chooseScrollPane.setPreferredSize(PANE_DIMENSION);
         add(chooseScrollPane, gbc);
@@ -77,9 +78,7 @@ public class ChoosePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabbedPane.setComponentAt(1, new ConfigurePanel(tabbedPane, checkPanel));
-                tabbedPane.setEnabledAt(1, true);
-                tabbedPane.setSelectedIndex(1);
+                chartTabbedPanel.goToStep2();                
             }
         });
         configureButton.setMinimumSize(CREATEBUTTON_DIMENSION);

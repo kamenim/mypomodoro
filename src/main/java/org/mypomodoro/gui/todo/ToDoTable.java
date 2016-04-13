@@ -120,11 +120,20 @@ public class ToDoTable extends AbstractTable {
                         // populate subtable
                         populateSubTable();
                         // the start button may have been hidden by a multiple selection
-                        panel.getTimerPanel().showStartButton();
-                        panel.getTimerPanel().showTimeMinusButton();
-                        panel.getTimerPanel().showTimePlusButton();
-                        if (panel.getPomodoro().getTimer().isRunning()) {
-                            panel.getTimerPanel().showPauseButton();
+                        // hide start button unless timer is running
+                        Activity activity = getActivityFromSelectedRow();
+                        if (activity.isSubTask() && activity.isDoneDone()) { // hide timer buttons if subtask done
+                            panel.getTimerPanel().hideStartButton();
+                            panel.getTimerPanel().hideTimeMinusButton();
+                            panel.getTimerPanel().hideTimePlusButton();
+                            panel.getTimerPanel().hidePauseButton();                            
+                        } else {                        
+                            panel.getTimerPanel().showStartButton();
+                            panel.getTimerPanel().showTimeMinusButton();
+                            panel.getTimerPanel().showTimePlusButton();
+                            if (panel.getPomodoro().getTimer().isRunning()) {
+                                panel.getTimerPanel().showPauseButton();
+                            }
                         }
                     }
                     setIconLabels();
