@@ -190,7 +190,7 @@ public abstract class AbstractTitlePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setSubtaskDoneDone();
+                setSubtaskComplete();
             }
         });
         doneButton.setToolTipText(Labels.getString(Main.preferences.getAgileMode() ? "Common.Done" : "ToDoListPanel.Complete"));
@@ -380,7 +380,7 @@ public abstract class AbstractTitlePanel extends JPanel {
 
     protected abstract void overestimateTask(int poms);
 
-    protected abstract void setSubtaskDoneDone();
+    protected abstract void setSubtaskComplete();
 
     protected abstract void setTaskDoneDone();
 

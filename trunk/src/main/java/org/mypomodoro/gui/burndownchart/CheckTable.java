@@ -248,10 +248,17 @@ public class CheckTable extends AbstractTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
-                title += " (";
-                int nbDoneDone = tableList.getNbDoneDone();
-                if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
-                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
+                title += " (";                
+                if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
+                    int nbDoneDone = tableList.getNbTasksDoneDone();
+                    if (nbDoneDone > 0) {
+                        title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
+                    }
+                } else if (panel.getChooseInputForm().getDataSubtasksCheckBox().isSelected()) {
+                    int nbCompleted = tableList.getNbSubtasksCompleted();
+                    if (nbCompleted > 0) {
+                        title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + "/";
+                    }
                 }
                 title += rowCount + ")";
                 title += " > E: ";

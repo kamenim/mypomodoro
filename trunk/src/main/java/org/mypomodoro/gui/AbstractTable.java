@@ -473,9 +473,8 @@ public abstract class AbstractTable extends JXTable {
                 }
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
-                }
-                // Done-done tasks or done subtasks
-                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                }                
+                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                     map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
                     renderer.setFont(getFont().deriveFont(map));
@@ -525,7 +524,7 @@ public abstract class AbstractTable extends JXTable {
                     }
                 }
                 String tooltipValue = DateUtil.getLongFormatedDate((Date) value);
-                if (activity != null && activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                if (activity != null && ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode()))) {
                     renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
                 } else {
                     renderer.setToolTipText(tooltipValue);
@@ -547,7 +546,7 @@ public abstract class AbstractTable extends JXTable {
             if (!tooltipValue.isEmpty()) {
                 int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
                 Activity activity = getList().getById(id);
-                if (activity != null && activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                if (activity != null && ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode()))) {
                     tooltipValue = "<html><strike> " + tooltipValue + " </strike></html>";
                 }
                 renderer.setToolTipText(tooltipValue);
@@ -570,7 +569,7 @@ public abstract class AbstractTable extends JXTable {
                     textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
                     // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
                 }
-                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                     textValue += "<strike> " + (String) value + " </strike>";
                 } else {
                     textValue += (String) value;
@@ -602,7 +601,7 @@ public abstract class AbstractTable extends JXTable {
                 String text = activity.getActualPoms() + " / " + activity.getEstimatedPoms() + (overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
                 renderer.setText(text);
                 String tooltipValue = getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms);
-                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                     renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
                 } else {
                     renderer.setToolTipText(tooltipValue);
@@ -760,19 +759,17 @@ public abstract class AbstractTable extends JXTable {
     public void overestimateTask(int poms) {
         // do nothing by default
     }
-
-    // This is at the same time a done and a done-done for subtask. Update the date completed
-    public void setSubtaskDoneDone() {
+    
+    public void setSubtaskComplete() {
         Activity act = getActivityFromSelectedRow();
-        act.setDateDoneDone(!act.isDoneDone() ? new Date() : new Date(0));
-        act.setIsDoneDone(!act.isDoneDone());
+        act.setDateCompleted(!act.isCompleted() ? new Date() : new Date(0));
+        act.setIsCompleted(!act.isCompleted());
         getList().update(act);
-        ActivitiesDAO.getInstance().updateDoneDone(act);
+        ActivitiesDAO.getInstance().updateComplete(act);
         repaint();
         setTitle();
     }
 
-    // DON'T update the date completed
     public void setTaskDoneDone() {
         Activity act = getActivityFromSelectedRow();
         act.setDateDoneDone(!act.isDoneDone() ? new Date() : new Date(0));

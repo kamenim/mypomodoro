@@ -27,7 +27,7 @@ import org.mypomodoro.util.Labels;
 /**
  * Subtasks chart type#
  *
- * Chart based on done subtasks (subtasks isDoneDone)
+ * Chart based on done subtasks
  *
  */
 public class SubtaskChart implements IChartType {
@@ -46,7 +46,7 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getValue(Activity activity, Date date) {
-        return activity.isSubTask() && DateUtil.isEquals(activity.getDateDoneDone(), date) && activity.isDoneDone() ? 1 : 0;
+        return activity.isSubTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? 1 : 0;
     }
 
     @Override

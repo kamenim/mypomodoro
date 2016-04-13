@@ -142,10 +142,10 @@ public class ActivityList extends AbstractActivities {
         activity.databaseDelete(); // delete tasks and subtasks
     }
 
-    public void deleteAll() {
+    /*public void deleteAll() {
         ActivitiesDAO.getInstance().deleteAllActivities();
         removeAll();
-    }
+    }*/
 
     // Move a task and its subtasks to ToDoList
     public void moveToTODOList(Activity activity) {

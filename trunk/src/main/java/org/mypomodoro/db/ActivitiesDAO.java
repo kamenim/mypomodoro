@@ -136,15 +136,26 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
+    
+    public void updateComplete(Activity activity) {
+        String updateSQL = "UPDATE activities SET "
+                + "is_complete = '" + String.valueOf(activity.isDoneDone()) + "'";
+        updateSQL += ", date_completed = " + activity.getDateDoneDone().getTime();        
+        updateSQL += " WHERE id = " + activity.getId() + ";";
+        try {
+            database.lock();
+            database.update("begin;");
+            database.update(updateSQL);
+            database.update("commit;");
+        } finally {
+            database.unlock();
+        }
+    }
 
-    // subtask done/completed --> date completed updated
-    // task done-done --> date completed NOT updated
     public void updateDoneDone(Activity activity) {
         String updateSQL = "UPDATE activities SET "
                 + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'";
-        if (activity.isSubTask()) {
-            updateSQL += ", date_donedone = " + activity.getDateDoneDone().getTime();
-        }
+        updateSQL += ", date_donedone = " + activity.getDateDoneDone().getTime();        
         updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -170,11 +181,12 @@ public class ActivitiesDAO {
 
     public Iterable<Activity> getActivities() {
         List<Activity> activities = new ArrayList<Activity>();
-        try {
-            database.lock();
+        try {            
+            database.lock();            
             String query = "SELECT * FROM activities "
-                    + "WHERE priority = -1 AND is_complete = 'false' ORDER BY "
-                    + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;");
+                    + "WHERE priority = -1 AND ((parent_id = -1 AND is_complete = 'false') " // tasks
+                    + "OR (parent_id > -1 AND parent_id IN (SELECT id FROM activities WHERE priority = -1 AND parent_id = -1 AND is_complete = 'false'))) " // subtasks                                        
+                    + "ORDER BY " + (Main.preferences.getAgileMode() ? "iteration, name ASC;" : "date_added ASC;");
             ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {
@@ -215,7 +227,11 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT * FROM activities WHERE priority > -1 AND is_complete = 'false' ORDER BY priority ASC;");
+            String query = "SELECT * FROM activities "
+                    + "WHERE priority > -1 AND ((parent_id = -1 AND is_complete = 'false') " // tasks
+                    + "OR (parent_id > -1 AND parent_id IN (SELECT id FROM activities WHERE priority > -1 AND parent_id = -1 AND is_complete = 'false'))) " // subtasks                                        
+                    + "ORDER BY priority ASC;";
+            ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -239,8 +255,11 @@ public class ActivitiesDAO {
         List<Activity> activities = new ArrayList<Activity>();
         try {
             database.lock();
-            ResultSet rs;
-            rs = database.query("SELECT * FROM activities WHERE is_complete = 'true' ORDER BY date_completed DESC;");
+            String query = "SELECT * FROM activities "
+                    + "WHERE priority = -1 AND ((parent_id = -1 AND is_complete = 'true') " // tasks
+                    + "OR (parent_id > -1 AND parent_id IN (SELECT id FROM activities WHERE priority = -1 AND parent_id = -1 AND is_complete = 'true'))) " // subtasks                                        
+                    + "ORDER BY priority ASC;";
+            ResultSet rs = database.query(query);
             try {
                 while (rs.next()) {
                     activities.add(new Activity(rs));
@@ -265,7 +284,7 @@ public class ActivitiesDAO {
         try {
             database.lock();
             ResultSet rs = database.query("SELECT * FROM activities "
-                    + "WHERE priority = -1 AND is_complete = 'false' "
+                    + "WHERE parent_id = -1 AND priority = -1 AND is_complete = 'false' "
                     + "AND name = '" + newActivity.getName().replace("'", "''") + "';");
             try {
                 while (rs.next()) {
@@ -294,6 +313,7 @@ public class ActivitiesDAO {
         return getActivitiesForChartDateRange(startDate, endDate, datesToBeIncluded, excludeToDos, -1);
     }
 
+    // Tasks (Dates)
     public ArrayList<Activity> getActivitiesForChartDateRange(Date startDate, Date endDate, ArrayList<Date> datesToBeIncluded, boolean excludeToDos, int iteration) {
         ArrayList<Activity> activities = new ArrayList<Activity>();
         if (datesToBeIncluded.size() > 0) {
@@ -359,14 +379,14 @@ public class ActivitiesDAO {
                 if (!excludeToDos) {
                     whereSutaskCondition += "(priority > -1 OR (";
                 }
-                whereSutaskCondition += "is_donedone = 'true' ";
+                whereSutaskCondition += "is_complete = 'true' ";
                 whereSutaskCondition += "AND (";
                 for (Date date : datesToBeIncluded) {
                     if (increment > 1) {
                         whereSutaskCondition += " OR ";
                     }
-                    whereSutaskCondition += "(date_donedone >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
-                    whereSutaskCondition += "AND date_donedone < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
+                    whereSutaskCondition += "(date_completed >= " + DateUtil.getDateAtStartOfDay(date).getTime() + " ";
+                    whereSutaskCondition += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
                     increment++;
                 }
                 whereSutaskCondition += ") ";
@@ -386,7 +406,7 @@ public class ActivitiesDAO {
                 String query = "SELECT * FROM activities WHERE ";
                 query += whereSutaskCondition; // subtasks
                 query += whereTaskCondition; // tasks                
-                query += "ORDER BY date_donedone DESC";  // from newest to oldest                
+                query += "ORDER BY date_completed DESC";  // from newest to oldest                
                 ResultSet rs = database.query(query);
                 try {
                     while (rs.next()) {
@@ -644,11 +664,11 @@ public class ActivitiesDAO {
         return tasks;
     }
 
-    public void deleteAllReports() {
+    /*public void deleteAllReports() {
         try {
             database.lock();
             database.update("begin;");
-            database.update("DELETE FROM activities WHERE is_complete = 'true';");
+            database.update("DELETE FROM activities WHERE is_complete = 'true';"); // TODO remove subtasks too
         } finally {
             database.update("Commit;");
             database.unlock();
@@ -659,12 +679,12 @@ public class ActivitiesDAO {
         try {
             database.lock();
             database.update("begin;");
-            database.update("DELETE FROM activities WHERE priority = -1 AND is_complete = 'false';");
+            database.update("DELETE FROM activities WHERE priority = -1 AND is_complete = 'false';"); // TODO remove subtasks too
         } finally {
             database.update("Commit;");
             database.unlock();
         }
-    }
+    }*/
 
     public void deleteAll() {
         try {
@@ -676,8 +696,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-
-    // Activities, TODOs and Reports
+    
     public Activity getActivity(int id) {
         Activity activity = null;
         try {
@@ -752,11 +771,11 @@ public class ActivitiesDAO {
      }
      }
      */
-    public ArrayList<String> getTaskTypes() {
+    public ArrayList<String> getTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {
             database.lock();
-            ResultSet rs = database.query("SELECT DISTINCT type FROM activities WHERE parent_id = -1 ORDER BY type ASC");
+            ResultSet rs = database.query("SELECT DISTINCT type FROM activities ORDER BY type ASC");
             try {
                 while (rs.next()) {
                     String type = rs.getString("type");

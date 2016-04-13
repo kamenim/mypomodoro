@@ -242,14 +242,26 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         return subtaskList;
     }
 
-    public int getNbDoneDone() {
+    public int getNbTasksDoneDone() {
         int nbDoneDone = 0;
         for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            if (it.next().isDoneDone()) {
+            Activity a = it.next();
+            if (a.isTask() && a.isDoneDone()) {
                 nbDoneDone++;
             }
         }
         return nbDoneDone;
+    }
+    
+    public int getNbSubtasksCompleted() {
+        int nbCompleted = 0;
+        for (Iterator<Activity> it = iterator(); it.hasNext();) {
+            Activity a = it.next();
+            if (a.isSubTask() && a.isCompleted()) {
+                nbCompleted++;
+            }
+        }
+        return nbCompleted;
     }
 
     /*public boolean hasSubTasks(int activityId) {

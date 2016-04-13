@@ -342,17 +342,13 @@ public class TestMenu extends JMenu {
                     aClone.setIteration(-1);
                     aClone.setType(Labels.getString("Common.Subtask"));
                     if (list instanceof ToDoList || list instanceof ReportList || a.isReopen()) {
-                        aClone.setIsDoneDone(rand.nextBoolean()); // set 1 out of 2 subtasks as done                        
+                        aClone.setIsCompleted(rand.nextBoolean()); // set 1 out of 2 subtasks as done                        
                         if (list instanceof ReportList || a.isReopen()) {
-                            // activity not done-done yet: some subtasks may be done
-                            if (!a.isDoneDone()) {
-                                aClone.setIsDoneDone(rand.nextBoolean());
-                            } else {
-                                aClone.setIsDoneDone(true); // subtasks are usually done in the report list
-                            }
+                            // activity done-done: set subtasks to be completed
+                            aClone.setIsCompleted(a.isDoneDone() ? true : rand.nextBoolean());                            
                         }
-                        if (aClone.isDoneDone()) {
-                            aClone.setDateDoneDone(aClone.getDate()); // subtask done the same day it is created
+                        if (aClone.isCompleted()) {
+                            aClone.setDateCompleted(aClone.getDate()); // subtask done the same day it is created
                         }
                     }
                     if (list instanceof ToDoList) {
@@ -360,7 +356,7 @@ public class TestMenu extends JMenu {
                     } else if (list instanceof ActivityList) {
                         ActivityList.getList().add(aClone, a.getDate());
                     } else if (list instanceof ReportList) {
-                        ReportList.getList().add(aClone, a.getDate(), new Date(0)); // date completed is not use with subtasks; date donedone is used
+                        ReportList.getList().add(aClone, a.getDate(), aClone.getDateCompleted());
                     }
                     totalEstimated += estimated;
                     totalReal += real;

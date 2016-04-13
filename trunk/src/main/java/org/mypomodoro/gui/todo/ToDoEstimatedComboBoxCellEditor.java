@@ -49,7 +49,8 @@ class ToDoEstimatedComboBoxCellEditor extends ToDoComboBoxCellEditor {
                     && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
                     && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                     && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())
-                    || (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode())))) {
+                    || (activity.isCompleted() && activity.isSubTask()) 
+                    || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                 comboBox.setVisible(false);
             } else if (realpoms == 0) { // can't edit when task already started (real > 0)
                 int minimum = 0; // no matter overestimation

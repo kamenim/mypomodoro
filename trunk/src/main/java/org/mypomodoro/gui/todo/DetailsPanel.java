@@ -146,10 +146,10 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
             enableAllButtons();
         }
         textMap.remove("date_reopened");
-        textMap.remove("date_completed");
         if (activity.isTask()) {
-            textMap.remove("date_donedone");
+            textMap.remove("date_completed"); // subtasks may be done
         }
+        textMap.remove("date_donedone");
         /*if (!Main.preferences.getAgileMode()) {
          textMap.remove("storypoints");
          textMap.remove("iteration");

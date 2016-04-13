@@ -17,9 +17,6 @@
 package org.mypomodoro.gui.todo;
 
 import java.awt.Component;
-import java.awt.font.TextAttribute;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
@@ -49,11 +46,12 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                     && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
                     && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                     && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())
-                    || (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode())))) { // || (activity.isSubTask() && activity.isDoneDone())
+                    || (activity.isCompleted() && activity.isSubTask()) 
+                    || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
-                if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {                    
                     labelBefore.setText("<html><strike> " + labelBefore.getText() + " </strike></html>");
                     labelAfter.setText("<html><strike> " + labelAfter.getText() + " </strike></html>");
                 }
@@ -65,7 +63,7 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                 labelAfter.setText(overestimatedpoms > 0 ? " + " + overestimatedpoms : "");
             }
             String tooltipValue = getLength(realpoms) + " / " + getLength(estimatedpoms + overestimatedpoms);
-            if (activity.isDoneDone() && (activity.isSubTask() || (activity.isTask() && Main.preferences.getAgileMode()))) {
+            if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                 tooltipValue = "<html><strike> " + tooltipValue + " </strike></html>";
             }
             setToolTipText(tooltipValue);

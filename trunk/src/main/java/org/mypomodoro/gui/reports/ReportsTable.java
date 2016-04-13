@@ -251,7 +251,7 @@ public class ReportsTable extends AbstractTable {
     public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
-        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + (Main.preferences.getAgileMode() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "");
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         columnToolTips[AbstractTableModel.DIFFI_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff I") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated");
         columnToolTips[AbstractTableModel.DIFFII_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff II") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated") + " - " + Labels.getString("Common.Overestimated");
@@ -322,7 +322,7 @@ public class ReportsTable extends AbstractTable {
                 getTitlePanel().hideDoneDoneButton();
             } else {
                 title += " (";
-                int nbDoneDone = tableList.getNbDoneDone();
+                int nbDoneDone = tableList.getNbTasksDoneDone();
                 if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
                     title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + "/";
                 }
