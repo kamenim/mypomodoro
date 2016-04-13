@@ -444,9 +444,11 @@ public abstract class AbstractTable extends JXTable {
         if (selectedRows.length > 0) {
             panel.getMainTable().scrollToRowIndex(selectedRows[selectedRows.length - 1]);
         }
-        int[] selectedRowsSubTable = panel.getSubTable().getSelectedRows();
-        if (selectedRowsSubTable.length > 0) {
-            panel.getSubTable().scrollToRowIndex(selectedRowsSubTable[selectedRowsSubTable.length - 1]);
+        if (panel.getSubTable() != null) { // check panel doesn't have a sub table
+            int[] selectedRowsSubTable = panel.getSubTable().getSelectedRows();
+            if (selectedRowsSubTable.length > 0) {
+                panel.getSubTable().scrollToRowIndex(selectedRowsSubTable[selectedRowsSubTable.length - 1]);
+            }
         }
     }
 

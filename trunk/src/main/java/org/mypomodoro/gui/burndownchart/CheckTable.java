@@ -190,11 +190,12 @@ public class CheckTable extends AbstractTable {
         return ChartList.getList(); // this is the only 'main' table to have either tasks or subtasks
     }
 
+    // TODO change of date tooltip header doesn't change when refreshed
     @Override
     public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
-        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Labels.getString("Common.Date completed");
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "");
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         CheckTableHeader customTableHeader = new CheckTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
