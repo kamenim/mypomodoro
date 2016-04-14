@@ -349,9 +349,9 @@ public class TestMenu extends JMenu {
                         }
                     }
                     if (list instanceof ToDoList) {
-                        ToDoList.getList().add(aClone);
+                        ToDoList.getList().add(aClone, a.getDate(), aClone.getDateCompleted());
                     } else if (list instanceof ActivityList) {
-                        ActivityList.getList().add(aClone, a.getDate());
+                        ActivityList.getList().add(aClone, a.getDate(), aClone.getDateCompleted());
                     } else if (list instanceof ReportList) {
                         ReportList.getList().add(aClone, a.getDate(), aClone.getDateCompleted());
                     }

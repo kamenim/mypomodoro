@@ -113,7 +113,8 @@ public class ToDoList extends AbstractActivities {
         clonedActivity.setName("(D) " + clonedActivity.getName());
         if (activity.isSubTask()) {
             clonedActivity.setParentId(parentId);
-            getList().add(clonedActivity, new Date(), new Date(0));
+            clonedActivity.setIsCompleted(false);
+            getList().add(clonedActivity, new Date());
         } else {
             getList().add(clonedActivity, new Date(), new Date(0)); // add task here to get the new Id to be the parentId of the subtasks
             ArrayList<Activity> subList = getSubTasks(activity.getId());
