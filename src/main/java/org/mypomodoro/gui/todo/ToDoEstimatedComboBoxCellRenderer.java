@@ -46,12 +46,12 @@ class ToDoEstimatedComboBoxCellRenderer extends ToDoComboBoxCellRenderer {
                     && Main.gui.getToDoPanel().getPomodoro().inPomodoro()
                     && Main.gui.getToDoPanel().getPomodoro().getCurrentToDo() != null
                     && activity.getId() == Main.gui.getToDoPanel().getPomodoro().getCurrentToDo().getId())
-                    || (activity.isCompleted() && activity.isSubTask()) 
+                    || (activity.isCompleted() && activity.isSubTask())
                     || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
-                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {                    
+                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                     labelBefore.setText("<html><strike> " + labelBefore.getText() + " </strike></html>");
                     labelAfter.setText("<html><strike> " + labelAfter.getText() + " </strike></html>");
                 }

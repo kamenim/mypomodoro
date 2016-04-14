@@ -51,7 +51,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
                     + (activity.isUnplanned() ? "U [" : "")
                     + DateUtil.getLongFormatedDate(activity.getDateCompleted()) + ", " + DateUtil.getFormatedTime(activity.getDateCompleted())
                     + (activity.isUnplanned() ? "]" : "") + "<br>");
-        }        
+        }
         if (activity.isTask()) {
             if (activity.isDoneDone() && Main.preferences.getAgileMode()) {
                 textMap.put("date_donedone", "<b>" + Labels.getString("Agile.ReportListPanel.Done-Done") + ":</b> "
@@ -113,7 +113,7 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
         }
     }
 
-    private String displayStoryPoint(float points) {
+    /*private String displayStoryPoint(float points) {
         String text;
         if (points / 0.5 == 1) {
             text = "1/2";
@@ -121,5 +121,5 @@ public class ActivityInformationPanel extends JPanel implements IActivityInforma
             text = Math.round(points) + ""; // used Math.round to display SP as integer (eg: 1.0 --> 1)
         }
         return text;
-    }
+    }*/
 }

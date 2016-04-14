@@ -136,11 +136,11 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public void updateComplete(Activity activity) {
         String updateSQL = "UPDATE activities SET "
                 + "is_complete = '" + String.valueOf(activity.isCompleted()) + "'";
-        updateSQL += ", date_completed = " + activity.getDateCompleted().getTime();        
+        updateSQL += ", date_completed = " + activity.getDateCompleted().getTime();
         updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -155,7 +155,7 @@ public class ActivitiesDAO {
     public void updateDoneDone(Activity activity) {
         String updateSQL = "UPDATE activities SET "
                 + "is_donedone = '" + String.valueOf(activity.isDoneDone()) + "'";
-        updateSQL += ", date_donedone = " + activity.getDateDoneDone().getTime();        
+        updateSQL += ", date_donedone = " + activity.getDateDoneDone().getTime();
         updateSQL += " WHERE id = " + activity.getId() + ";";
         try {
             database.lock();
@@ -181,8 +181,8 @@ public class ActivitiesDAO {
 
     public Iterable<Activity> getActivities() {
         List<Activity> activities = new ArrayList<Activity>();
-        try {            
-            database.lock();            
+        try {
+            database.lock();
             String query = "SELECT * FROM activities "
                     + "WHERE priority = -1 AND ((parent_id = -1 AND is_complete = 'false') " // tasks
                     + "OR (parent_id > -1 AND parent_id IN (SELECT id FROM activities WHERE priority = -1 AND parent_id = -1 AND is_complete = 'false'))) " // subtasks                                        
@@ -664,28 +664,6 @@ public class ActivitiesDAO {
         return tasks;
     }
 
-    /*public void deleteAllReports() {
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update("DELETE FROM activities WHERE is_complete = 'true';"); // TODO remove subtasks too
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }
-
-    public void deleteAllActivities() {
-        try {
-            database.lock();
-            database.update("begin;");
-            database.update("DELETE FROM activities WHERE priority = -1 AND is_complete = 'false';"); // TODO remove subtasks too
-        } finally {
-            database.update("Commit;");
-            database.unlock();
-        }
-    }*/
-
     public void deleteAll() {
         try {
             database.lock();
@@ -696,7 +674,7 @@ public class ActivitiesDAO {
             database.unlock();
         }
     }
-    
+
     public Activity getActivity(int id) {
         Activity activity = null;
         try {

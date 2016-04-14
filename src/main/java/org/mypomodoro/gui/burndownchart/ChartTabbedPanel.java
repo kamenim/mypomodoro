@@ -29,19 +29,18 @@ import org.mypomodoro.util.Labels;
  * Burndown tabbed Panel
  *
  */
-public class ChartTabbedPanel extends JPanel {    
-    
+public class ChartTabbedPanel extends JPanel {
+
     // Tabbed pane
     private final JTabbedPane chartTabbedPane = new JTabbedPane();
     // Choose
-    private  final ChoosePanel choosePanel = new ChoosePanel(this);
+    private final ChoosePanel choosePanel = new ChoosePanel(this);
     // Configure
     private final ConfigurePanel configurePanel = new ConfigurePanel(this, choosePanel);
     // Check
     private final CheckPanel checkPanel = new CheckPanel(this, choosePanel);
     // Create
-    private final CreateChart chart = new CreateChart(choosePanel, configurePanel);    
-    
+    private final CreateChart chart = new CreateChart(choosePanel, configurePanel);
 
     public ChartTabbedPanel() {
         setLayout(new GridBagLayout());
@@ -83,21 +82,21 @@ public class ChartTabbedPanel extends JPanel {
     public CheckPanel getCheckPanel() {
         return checkPanel;
     }
-    
+
     // Go to Configure tab
     public void goToStep2() {
         configurePanel.refresh(); // refresh form depending on Choose options (tasks or subtasks)
         chartTabbedPane.setEnabledAt(1, true);
         chartTabbedPane.setSelectedIndex(1);
     }
-    
+
     // Go to Check tab
     public void goToStep3() {
         checkPanel.refresh(); // refresh table
         chartTabbedPane.setEnabledAt(2, true);
         chartTabbedPane.setSelectedIndex(2);
     }
-    
+
     // Go to Create tab
     public void goToStep4() {
         chart.create();

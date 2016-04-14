@@ -146,7 +146,6 @@ public class ActivityList extends AbstractActivities {
         ActivitiesDAO.getInstance().deleteAllActivities();
         removeAll();
     }*/
-
     // Move a task and its subtasks to ToDoList
     public void moveToTODOList(Activity activity) {
         ArrayList<Activity> subList = getSubTasks(activity.getId());

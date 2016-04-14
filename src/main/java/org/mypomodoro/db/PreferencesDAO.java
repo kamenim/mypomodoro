@@ -22,8 +22,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.mypomodoro.Main;
-import org.mypomodoro.db.mysql.MySQLConfigLoader;
-import org.mypomodoro.gui.preferences.plaf.MAPLookAndFeel;
 
 public class PreferencesDAO {
 

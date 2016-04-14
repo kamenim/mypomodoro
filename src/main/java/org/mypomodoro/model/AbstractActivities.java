@@ -246,7 +246,7 @@ public abstract class AbstractActivities implements Iterable<Activity> {
         }
         return nbDoneDone;
     }
-    
+
     public int getNbSubtasksCompleted() {
         int nbCompleted = 0;
         for (Activity a : this) {

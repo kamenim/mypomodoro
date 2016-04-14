@@ -75,14 +75,13 @@ public class TestMenu extends JMenu {
         }
     }
 
-    class TemplateDataMenu extends JMenu {
+    /*class TemplateDataMenu extends JMenu {
 
         public TemplateDataMenu() {
             super(Labels.getString("DataMenu.Template Data"));
             add(new YCombinatorDataItem());
         }
-    }
-
+    }*/
     // create test data
     class TestDataItem extends JMenuItem {
 
@@ -138,7 +137,7 @@ public class TestMenu extends JMenu {
                                         Main.preferences.getAgileMode() ? storypoint[rand.nextInt(storypoint.length)] : 0,
                                         iteration,
                                         (new DateTime(new Date()).minusDays(rand.nextInt(iterations[iterations.length - 1] + 1 * 5))).toDate());
-                                a.setType(a.getType().equals("Subtask")?  "Task" : a.getType()); // Subtask is part of the list of types but this is a task
+                                a.setType(a.getType().equals("Subtask") ? "Task" : a.getType()); // Subtask is part of the list of types but this is a task
                                 a.setIsCompleted(rand.nextBoolean() && rand.nextBoolean()); // less than Activity List but more than ToDo list
                                 int real = rand.nextInt(a.getEstimatedPoms() + 1); // 0 to getEstimatedPoms()
                                 if (rand.nextBoolean() && (a.isCompleted() || rand.nextBoolean())) { // once in a while all poms done
@@ -170,7 +169,7 @@ public class TestMenu extends JMenu {
                                     if (Main.preferences.getAgileMode()) { // set 1 out of 2 reports as done-done
                                         a.setIsDoneDone(rand.nextBoolean());
                                         if (a.isDoneDone()) {
-                                            a.setDateDoneDone(a.getDateCompleted()); // say we set the task done-done the same day it is completed
+                                            a.setDateDoneDone(dateCompleted); // say we set the task done-done the same day it is completed
                                         }
                                     }
                                     ReportList.getList().add(a, dateAdded, dateCompleted);
@@ -191,8 +190,7 @@ public class TestMenu extends JMenu {
                                         reportListValue++;
                                     }
                                 } else // Tasks for the Activity and ToDo list
-                                {
-                                    if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
+                                 if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
                                         if (a.getIteration() >= 0) {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                         }
@@ -234,7 +232,6 @@ public class TestMenu extends JMenu {
                                             }
                                         }
                                     }
-                                }
                                 final int progressValue = i + 1;
                                 progressText.setLength(0); // reset string builder
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
@@ -343,9 +340,9 @@ public class TestMenu extends JMenu {
                     aClone.setType(Labels.getString("Common.Subtask"));
                     if (list instanceof ToDoList || list instanceof ReportList || a.isReopen()) {
                         aClone.setIsCompleted(rand.nextBoolean()); // set 1 out of 2 subtasks as done                        
-                        if (list instanceof ReportList || a.isReopen()) {
+                        if (list instanceof ReportList) {
                             // activity done-done: set subtasks to be completed
-                            aClone.setIsCompleted(a.isDoneDone() ? true : rand.nextBoolean());                            
+                            aClone.setIsCompleted(a.isDoneDone() ? a.isDoneDone() : rand.nextBoolean());
                         }
                         if (aClone.isCompleted()) {
                             aClone.setDateCompleted(aClone.getDate()); // subtask done the same day it is created
@@ -383,7 +380,7 @@ public class TestMenu extends JMenu {
     }
 
     // create Y Combinator model data: 3 major tasks, 30 minor tasks a day
-    class YCombinatorDataItem extends JMenuItem {
+    /*class YCombinatorDataItem extends JMenuItem {
 
         public YCombinatorDataItem() {
             super("Y Combinator");
@@ -494,8 +491,7 @@ public class TestMenu extends JMenu {
                 ToDoList.getList().add(sub);
             }
         }
-    }
-
+    }*/
     // delete all data
     class ResetDataItem extends JMenuItem {
 

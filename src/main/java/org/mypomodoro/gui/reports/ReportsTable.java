@@ -126,11 +126,11 @@ public class ReportsTable extends AbstractTable {
                         }
                     } else if (column == AbstractTableModel.ESTIMATED_COLUMN_INDEX) { // This may happen when importing subtasks
                         // Update Diff 1 and 2 cells
-                        Integer diffIPoms = new Integer(act.getActualPoms() - act.getEstimatedPoms());
+                        Integer diffIPoms = act.getActualPoms() - act.getEstimatedPoms();
                         sourceModel.setValueAt(diffIPoms, row, AbstractTableModel.DIFFI_COLUMN_INDEX);
-                        Integer diffIIPoms = new Integer(act.getActualPoms()
+                        Integer diffIIPoms = act.getActualPoms()
                                 - act.getEstimatedPoms()
-                                - act.getOverestimatedPoms());
+                                - act.getOverestimatedPoms();
                         sourceModel.setValueAt(diffIIPoms, row, AbstractTableModel.DIFFII_COLUMN_INDEX);
                     }
                     getList().update(act);
@@ -151,7 +151,7 @@ public class ReportsTable extends AbstractTable {
     public void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new ReportDateRenderer()); // date (custom report renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new TitleRenderer()); // title
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated        
@@ -251,7 +251,7 @@ public class ReportsTable extends AbstractTable {
     public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
-        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + (Main.preferences.getAgileMode() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "");
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed"); //  + (Main.preferences.getAgileMode() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "")
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         columnToolTips[AbstractTableModel.DIFFI_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff I") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated");
         columnToolTips[AbstractTableModel.DIFFII_COLUMN_INDEX] = Labels.getString("ReportListPanel.Diff II") + " = " + Labels.getString("Common.Real") + " - " + Labels.getString("Common.Estimated") + " - " + Labels.getString("Common.Overestimated");

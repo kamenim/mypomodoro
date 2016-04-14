@@ -112,7 +112,6 @@ public class ReportList extends AbstractActivities {
         ActivitiesDAO.getInstance().deleteAllReports();
         removeAll();
     }*/
-
     // Reopen a task and its subtasks to ActivityList
     public void reopenToActivtyList(Activity activity) {
         if (activity.isTask()) {
@@ -124,7 +123,7 @@ public class ReportList extends AbstractActivities {
             activity.setDateCompleted(new Date()); // do not change the date complete of subtasks !
             activity.setName("(R) " + activity.getName());
             activity.setIteration(-1); // reset iteration
-        }        
+        }
         ActivityList.getList().add(activity);
         remove(activity);
     }
