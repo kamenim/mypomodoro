@@ -104,7 +104,7 @@ public class CheckPanel extends AbstractPanel {
         // Create button
         addCreateButton();
     }
-    
+
     public ChooseInputForm getChooseInputForm() {
         return choosePanel.getForm();
     }

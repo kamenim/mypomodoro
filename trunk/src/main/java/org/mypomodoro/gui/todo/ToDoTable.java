@@ -126,8 +126,8 @@ public class ToDoTable extends AbstractTable {
                             panel.getTimerPanel().hideStartButton();
                             panel.getTimerPanel().hideTimeMinusButton();
                             panel.getTimerPanel().hideTimePlusButton();
-                            panel.getTimerPanel().hidePauseButton();                            
-                        } else {                        
+                            panel.getTimerPanel().hidePauseButton();
+                        } else {
                             panel.getTimerPanel().showStartButton();
                             panel.getTimerPanel().showTimeMinusButton();
                             panel.getTimerPanel().showTimePlusButton();

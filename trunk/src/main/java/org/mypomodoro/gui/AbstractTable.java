@@ -56,7 +56,6 @@ import org.mypomodoro.db.ActivitiesDAO;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
-import org.mypomodoro.model.ActivityList;
 import org.mypomodoro.util.ColorUtil;
 import org.mypomodoro.util.DateUtil;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -475,7 +474,7 @@ public abstract class AbstractTable extends JXTable {
                 }
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
-                }                
+                }
                 if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
                     Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                     map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -516,24 +515,68 @@ public abstract class AbstractTable extends JXTable {
             JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (!DateUtil.isSameDay((Date) value, new Date(0))) {
                 renderer.setText(DateUtil.getShortFormatedDate((Date) value));
-                int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
-                Activity activity = getList().getById(id);
+                String tooltipValue = DateUtil.getLongFormatedDate((Date) value);
+                renderer.setToolTipText(tooltipValue);
+            } else {
+                renderer.setText(""); // empty text
+                renderer.setToolTipText(null); // remove tooltip
+            }
+            return renderer;
+        }
+    }
+
+    public class ActivityDateRenderer extends DateRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity activity = getList().getById(id);
+            if (activity != null) {
+                if (activity.isSubTask()) {
+                    if (activity.isCompleted()) {
+                        value = activity.getDateCompleted();
+                    } else {
+                        value = new Date(0); // subtasks have no schedule date (only create date)
+                    }
+                }
+            }
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (activity != null) {
                 if (!Main.preferences.getAgileMode()) { // Pomodoro mode only
-                    if (activity != null && activity.isOverdue() && getList() instanceof ActivityList) { // activity list only
+                    if (activity.isTask() && activity.isOverdue()) {
                         Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
                         map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
                         renderer.setFont(getFont().deriveFont(map));
                     }
                 }
                 String tooltipValue = DateUtil.getLongFormatedDate((Date) value);
-                if (activity != null && ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode()))) {
+                if (activity.isCompleted() && activity.isSubTask()) {
                     renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
-                } else {
-                    renderer.setToolTipText(tooltipValue);
                 }
-            } else {
-                renderer.setText(null);
-                renderer.setToolTipText(null);
+            }
+            return renderer;
+        }
+    }
+
+    public class ReportDateRenderer extends DateRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), AbstractTableModel.ACTIVITYID_COLUMN_INDEX);
+            Activity activity = getList().getById(id);
+            if (activity != null) {
+                if (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode()) {
+                    value = activity.getDateDoneDone();
+                } else if (activity.isCompleted()) {
+                    value = activity.getDateCompleted();
+                } else {
+                    value = new Date(0);
+                }
+            }
+            JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            String tooltipValue = DateUtil.getLongFormatedDate((Date) value);
+            if (activity != null && ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode()))) {
+                renderer.setToolTipText("<html><strike> " + tooltipValue + " </strike></html>");
             }
             return renderer;
         }
@@ -761,7 +804,7 @@ public abstract class AbstractTable extends JXTable {
     public void overestimateTask(int poms) {
         // do nothing by default
     }
-    
+
     public void setSubtaskComplete() {
         Activity act = getActivityFromSelectedRow();
         act.setDateCompleted(!act.isCompleted() ? new Date() : new Date(0));
@@ -867,7 +910,7 @@ public abstract class AbstractTable extends JXTable {
         });
     }
 
-    // This method does not need to be abstract as it's implemented by the TODO table and sub-tables only
+    // This method does not need to be abstract as it's implemented by the Todo table and sub-tables only
     public void reorderByPriority() {
     }
 

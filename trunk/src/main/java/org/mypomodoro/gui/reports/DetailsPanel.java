@@ -87,7 +87,7 @@ public class DetailsPanel extends ActivityInformationPanel implements IActivityI
         textMap.remove("date_reopened");
         if (activity.isSubTask()) {
             textMap.remove("date_donedone"); // tasks may be done-done
-        }        
+        }
         // add additional info
         textMap.put("diffi", "<b>" + Labels.getString("ReportListPanel.Diff I") + ":</b> " + (activity.getActualPoms() - activity.getEstimatedPoms()) + "<br>");
         textMap.put("diffii", "<b>" + Labels.getString("ReportListPanel.Diff II") + ":</b> " + (activity.getOverestimatedPoms() > 0 ? activity.getActualPoms() - activity.getEstimatedPoms() - activity.getOverestimatedPoms() : "") + "<br />");

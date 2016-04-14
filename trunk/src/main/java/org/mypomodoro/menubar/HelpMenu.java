@@ -26,7 +26,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.MenuSelectionManager;
 import org.mypomodoro.Main;
-import org.mypomodoro.gui.MainPanel;
 import static org.mypomodoro.gui.MainPanel.MYPOMODORO_VERSION;
 import org.mypomodoro.menubar.help.AboutPanel;
 import org.mypomodoro.util.BareBonesBrowserLaunch;
@@ -70,7 +69,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JTextField urlField = new JTextField(
-                        "http://sourceforge.net/projects/mypomodoro/files/myAgilePomodoro%20" + MainPanel.MYPOMODORO_VERSION);
+                        "http://sourceforge.net/projects/mypomodoro/files/myAgilePomodoro%20" + MYPOMODORO_VERSION);
                 BareBonesBrowserLaunch.openURL(urlField.getText().trim());
             }
         }

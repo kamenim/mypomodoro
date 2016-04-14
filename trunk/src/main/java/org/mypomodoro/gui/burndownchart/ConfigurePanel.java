@@ -26,7 +26,6 @@ import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.mypomodoro.buttons.DefaultButton;
 import org.mypomodoro.model.ChartList;
@@ -62,7 +61,7 @@ public class ConfigurePanel extends JPanel {
     public void refresh() {
         configureInputForm.refresh(chooseInputForm);
     }
-    
+
     public ConfigureInputForm getForm() {
         return configureInputForm;
     }
@@ -121,7 +120,7 @@ public class ConfigurePanel extends JPanel {
                         @Override
                         public void run() {
                             //checkPanel.refresh();
-                            chartTabbedPanel.goToStep3(); 
+                            chartTabbedPanel.goToStep3();
                         }
                     });
                 }

@@ -39,7 +39,7 @@ public class MySQLConfigLoader {
         }
     }
 
-    public static void loadProperties() throws IOException {
+    private void loadProperties() throws IOException {
         String path = Main.configPath + "mysql.properties";
         FileInputStream file = new FileInputStream(path);
         properties.load(file);

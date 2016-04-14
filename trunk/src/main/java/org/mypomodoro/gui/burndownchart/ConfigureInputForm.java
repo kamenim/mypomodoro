@@ -85,7 +85,7 @@ public class ConfigureInputForm extends JPanel {
     private final JPanel dimensionInputFormPanel = new JPanel();
     private final JTextField chartWidth = new JTextField("770");
     private final JTextField chartHeight = new JTextField("410");
-    
+
     private ChooseInputForm chooseInputForm;
     private final JPanel iteration = new JPanel();
 
@@ -97,12 +97,12 @@ public class ConfigureInputForm extends JPanel {
         addScopeInputFormPanel();
         addImageInputFormPanel();
     }
-    
+
     public void refresh(ChooseInputForm chooseInputForm) {
         this.chooseInputForm = chooseInputForm;
         // Refresh form depending on Choose opions (tasks or subtasks)
         if (chooseInputForm.getDataSubtasksCheckBox().isSelected()) {
-            iteration.setVisible(false);            
+            iteration.setVisible(false);
             if (typeIterationOnly.isSelected()) {
                 typeIterationOnly.setSelected(false);
                 typeReleaseAndIteration.setSelected(true);
@@ -116,7 +116,7 @@ public class ConfigureInputForm extends JPanel {
             if (typeReleaseAndIteration.isSelected()) {
                 iterationsInputFormPanel.setVisible(true);
             }
-        }        
+        }
     }
 
     /////////////////////////////////////
@@ -185,7 +185,7 @@ public class ConfigureInputForm extends JPanel {
         gbc.gridy = 0;
         lists.add(releaseonly, gbc); // excludes ToDos/Iteration Backlog tasks
         // Specific iteration                   
-        if (Main.preferences.getAgileMode()) {            
+        if (Main.preferences.getAgileMode()) {
             iteration.setLayout(new FlowLayout());
             typeIterationOnly.addActionListener(new ActionListener() {
 

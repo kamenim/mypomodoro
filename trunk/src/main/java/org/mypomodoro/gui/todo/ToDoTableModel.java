@@ -47,11 +47,11 @@ public class ToDoTableModel extends AbstractTableModel {
         rowData[UNPLANNED_COLUMN_INDEX] = activity.isUnplanned();
         rowData[TITLE_COLUMN_INDEX] = activity.getName();
         // sorting done on estimated pom (model). This is very important for tableChanged to manage estimation changes
-        Integer poms = new Integer(activity.getEstimatedPoms()); // Estimated poms !        
+        Integer poms = activity.getEstimatedPoms(); // Estimated poms !        
         rowData[ESTIMATED_COLUMN_INDEX] = poms;
-        Float points = new Float(activity.getStoryPoints());
+        Float points = activity.getStoryPoints();
         rowData[STORYPOINTS_COLUMN_INDEX] = points;
-        Integer iteration = new Integer(activity.getIteration());
+        Integer iteration = activity.getIteration();
         rowData[ITERATION_COLUMN_INDEX] = iteration;
         rowData[ACTIVITYID_COLUMN_INDEX] = activity.getId();
         return rowData;

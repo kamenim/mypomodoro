@@ -190,12 +190,11 @@ public class CheckTable extends AbstractTable {
         return ChartList.getList(); // this is the only 'main' table to have either tasks or subtasks
     }
 
-    // TODO change of date tooltip header doesn't change when refreshed
     @Override
     public void setTableHeader() {
         String[] columnToolTips = AbstractTableModel.COLUMN_NAMES.clone();
         columnToolTips[AbstractTableModel.UNPLANNED_COLUMN_INDEX] = Labels.getString("Common.Unplanned");
-        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = (Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed")) + (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "");
+        columnToolTips[AbstractTableModel.DATE_COLUMN_INDEX] = Main.preferences.getAgileMode() ? Labels.getString("Common.Done") : Labels.getString("Common.Date completed"); // + (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected() ? " / " + Labels.getString("Agile.ReportListPanel.Done-Done") : "")
         columnToolTips[AbstractTableModel.ESTIMATED_COLUMN_INDEX] = Labels.getString("Common.Real") + " / " + Labels.getString("Common.Estimated") + " (+ " + Labels.getString("Common.Overestimated") + ")";
         CheckTableHeader customTableHeader = new CheckTableHeader(this, columnToolTips);
         setTableHeader(customTableHeader);
@@ -249,7 +248,7 @@ public class CheckTable extends AbstractTable {
                 }
                 getTitlePanel().setToolTipText(toolTipText);
             } else {
-                title += " (";                
+                title += " (";
                 if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
                     int nbDoneDone = tableList.getNbTasksDoneDone();
                     if (nbDoneDone > 0) {
@@ -311,7 +310,7 @@ public class CheckTable extends AbstractTable {
     @Override
     public void deleteTask(int rowIndex) { // remove !
         Activity activity = getActivityFromRowIndex(rowIndex);
-        getList().remove(activity); // remove task // TODO remove subtasks too
+        getList().remove(activity);
         removeRow(rowIndex);
     }
 }

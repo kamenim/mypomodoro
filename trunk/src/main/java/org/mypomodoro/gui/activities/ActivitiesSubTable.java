@@ -129,6 +129,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void setColumnModel() {
         super.setColumnModel();
+        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new ActivityDateRenderer());
         // sub types
         /*String[] types = (String[]) SubTaskTypeList.getTypes().toArray(new String[0]);
          getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ActivitiesTypeComboBoxCellRenderer(types, true));

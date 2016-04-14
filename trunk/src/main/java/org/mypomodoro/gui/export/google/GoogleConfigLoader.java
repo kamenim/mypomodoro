@@ -39,7 +39,7 @@ public class GoogleConfigLoader {
         }
     }
 
-    public static void loadProperties() throws IOException {
+    private void loadProperties() throws IOException {
         String path = Main.configPath + "google.properties";
         FileInputStream file = new FileInputStream(path);
         properties.load(file);

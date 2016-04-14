@@ -38,11 +38,11 @@ public class ActivitiesTableModel extends AbstractTableModel {
         rowData[DATE_COLUMN_INDEX] = activity.getDate();
         rowData[TITLE_COLUMN_INDEX] = activity.getName();
         rowData[TYPE_COLUMN_INDEX] = activity.getType();
-        Integer poms = new Integer(activity.getEstimatedPoms());
+        Integer poms = activity.getEstimatedPoms();
         rowData[ESTIMATED_COLUMN_INDEX] = poms;
-        Float points = new Float(activity.getStoryPoints());
+        Float points = activity.getStoryPoints();
         rowData[STORYPOINTS_COLUMN_INDEX] = points;
-        Integer iteration = new Integer(activity.getIteration());
+        Integer iteration = activity.getIteration();
         rowData[ITERATION_COLUMN_INDEX] = iteration;
         rowData[ACTIVITYID_COLUMN_INDEX] = activity.getId();
         return rowData;

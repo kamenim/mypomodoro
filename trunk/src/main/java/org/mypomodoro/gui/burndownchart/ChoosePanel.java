@@ -36,7 +36,7 @@ public class ChoosePanel extends JPanel {
     private static final Dimension PANE_DIMENSION = new Dimension(700, 200);
     private static final Dimension CREATEBUTTON_DIMENSION = new Dimension(100, 250);
 
-    private final ChartTabbedPanel chartTabbedPanel;    
+    private final ChartTabbedPanel chartTabbedPanel;
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final ChooseInputForm chooseInputForm = new ChooseInputForm();
 
@@ -49,7 +49,7 @@ public class ChoosePanel extends JPanel {
         addChooseInputForm();
         addConfigureButton();
     }
-    
+
     public ChooseInputForm getForm() {
         return chooseInputForm;
     }
@@ -78,7 +78,7 @@ public class ChoosePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                chartTabbedPanel.goToStep2();                
+                chartTabbedPanel.goToStep2();
             }
         });
         configureButton.setMinimumSize(CREATEBUTTON_DIMENSION);

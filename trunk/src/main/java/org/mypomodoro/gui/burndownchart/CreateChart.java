@@ -51,9 +51,6 @@ import org.mypomodoro.util.DateUtil;
  * Creates Burndown, burnup, target and scope line charts
  *
  */
-// TODO error scope lines with iterations : java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
-// No SP and IT columns for subtasks
-// rendering of SP and IT are not good
 public class CreateChart extends JPanel {
 
     private JFreeChart charts;
@@ -70,7 +67,7 @@ public class CreateChart extends JPanel {
     private boolean burndownChartPercentage = false;
     private boolean burnupChartPercentage = false;
     private ArrayList<Float> sumForScope;
-    
+
     private final ConfigureInputForm configureInputForm;
     private final ChooseInputForm chooseInputForm;
 
@@ -184,8 +181,7 @@ public class CreateChart extends JPanel {
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
             int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
             for (int i = 0; i < size; i++) {
-                // use double to make the values more accurate  
-                // TODO
+                // use double to make the values more accurate                
                 dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (size - 1))), label, i + configureInputForm.getStartIteration());
             }
         }
@@ -205,8 +201,7 @@ public class CreateChart extends JPanel {
             int size = configureInputForm.getEndIteration() + 1;
             if (size > 0) {
                 for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
-                    // use double to make the values more accurate                        
-                    // TODO
+                    // use double to make the values more accurate                                            
                     dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);
                 }
             }

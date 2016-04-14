@@ -35,20 +35,20 @@ public class ReportsTableModel extends AbstractTableModel {
         int colIndex = COLUMN_NAMES.length;
         Object[] rowData = new Object[colIndex];
         rowData[UNPLANNED_COLUMN_INDEX] = activity.isUnplanned();
-        rowData[DATE_COLUMN_INDEX] = activity.getDateCompleted();
+        rowData[DATE_COLUMN_INDEX] = activity.isTask() && activity.isDoneDone() ? activity.getDateDoneDone() : activity.getDateCompleted();
         rowData[TITLE_COLUMN_INDEX] = activity.getName();
         rowData[TYPE_COLUMN_INDEX] = activity.getType();
-        Integer poms = new Integer(activity.getActualPoms()); // Real poms !
+        Integer poms = activity.getActualPoms(); // Real poms !
         rowData[ESTIMATED_COLUMN_INDEX] = poms;
-        Integer diffIPoms = new Integer(activity.getActualPoms() - activity.getEstimatedPoms());
+        Integer diffIPoms = activity.getActualPoms() - activity.getEstimatedPoms();
         rowData[DIFFI_COLUMN_INDEX] = diffIPoms;
-        Integer diffIIPoms = new Integer(activity.getActualPoms()
+        Integer diffIIPoms = activity.getActualPoms()
                 - activity.getEstimatedPoms()
-                - activity.getOverestimatedPoms());
+                - activity.getOverestimatedPoms();
         rowData[DIFFII_COLUMN_INDEX] = diffIIPoms;
-        Float points = new Float(activity.getStoryPoints());
+        Float points = activity.getStoryPoints();
         rowData[STORYPOINTS_COLUMN_INDEX] = points;
-        Integer iteration = new Integer(activity.getIteration());
+        Integer iteration = activity.getIteration();
         rowData[ITERATION_COLUMN_INDEX] = iteration;
         rowData[ACTIVITYID_COLUMN_INDEX] = activity.getId();
         return rowData;
