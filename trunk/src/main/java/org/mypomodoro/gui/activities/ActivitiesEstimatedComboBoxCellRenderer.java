@@ -18,6 +18,7 @@ package org.mypomodoro.gui.activities;
 
 import java.awt.Component;
 import javax.swing.JTable;
+import org.mypomodoro.Main;
 import org.mypomodoro.model.Activity;
 import org.mypomodoro.model.ActivityList;
 import static org.mypomodoro.util.TimeConverter.getLength;
@@ -42,10 +43,15 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
             int estimatedpoms = activity.getEstimatedPoms();
             int overestimatedpoms = activity.getOverestimatedPoms();
             // real poms > 0 --> estimated cannot be changed
-            if (realpoms > 0) {
+            if (realpoms > 0
+                || (activity.isCompleted() && activity.isSubTask())) {
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));
+                if (activity.isCompleted() && activity.isSubTask()) {
+                    labelBefore.setText("<html><strike> " + labelBefore.getText() + " </strike></html>");
+                    labelAfter.setText("<html><strike> " + labelAfter.getText() + " </strike></html>");
+                }
             } else { // no real poms --> estimated may be changed
                 labelBefore.setText("");
                 comboBox.setVisible(true);
@@ -53,7 +59,11 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
                 comboBox.addItem(estimatedpoms);
                 labelAfter.setText(overestimatedpoms > 0 ? "+ " + overestimatedpoms : "");
             }
-            setToolTipText((realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms + overestimatedpoms));
+            String tooltipValue = (realpoms > 0 ? getLength(realpoms) + " / " : "") + getLength(estimatedpoms + overestimatedpoms);
+            if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
+                tooltipValue = "<html><strike> " + tooltipValue + " </strike></html>";
+            }
+            setToolTipText(tooltipValue);
         }
         return this;
     }

@@ -275,20 +275,26 @@ public class ReportsTable extends AbstractTable {
                 int overestimated = 0;
                 int real = 0;
                 float storypoints = 0;
+                int nbDoneDone = 0;                
                 ArrayList<Date> datesCompleted = new ArrayList<Date>();
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
-                    storypoints += selectedActivity.getStoryPoints();
                     real += selectedActivity.getActualPoms();
+                    storypoints += selectedActivity.getStoryPoints();
+                    nbDoneDone += Main.preferences.getAgileMode() && selectedActivity.isDoneDone() ? 1 : 0;
                     // calculate the number of different completed dates for the selection
                     Date dateCompletedAtMidnight = DateUtil.getDateAtMidnight(selectedActivity.getDateCompleted());
                     if (!datesCompleted.contains(dateCompletedAtMidnight)) {
                         datesCompleted.add(dateCompletedAtMidnight);
                     }
                 }
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
+                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;";
+                if (nbDoneDone > 0 && Main.preferences.getAgileMode()) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbDoneDone + "</span>" + " / ";
+                }
+                title += selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
                 title += " > E: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     title += " + " + overestimated;
@@ -413,5 +419,13 @@ public class ReportsTable extends AbstractTable {
     @Override
     public void importActivity(Activity activity) {
         getList().add(activity, activity.getDateCompleted());
+    }
+    
+    @Override
+    public void setTaskDoneDone() {
+        super.setTaskDoneDone();
+        Activity act = getActivityFromSelectedRow();
+        panel.getDetailsPanel().selectInfo(act);
+        panel.getDetailsPanel().showInfo();
     }
 }

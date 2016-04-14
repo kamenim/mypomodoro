@@ -73,14 +73,20 @@ public class ToDoSubTable extends ToDoTable {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
                 int overestimated = 0;
-                int real = 0;
+                int real = 0;                
+                int nbCompleted = 0;
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     real += selectedActivity.getActualPoms();
+                    nbCompleted += selectedActivity.isCompleted() ? 1 : 0;
                 }
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
+                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;";
+                if (nbCompleted > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + " / ";
+                }
+                title += selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
                 title += " > E: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     title += " + " + overestimated;
@@ -356,6 +362,7 @@ public class ToDoSubTable extends ToDoTable {
         Activity act = getActivityFromSelectedRow();
         panel.getDetailsPanel().selectInfo(act);
         panel.getDetailsPanel().showInfo();
+        setIconLabels(act);
         if (act.isCompleted()) {  // hide timer buttons if subtask done (see ToDoTable for list selection listener)
             panel.getTimerPanel().hideStartButton();
             panel.getTimerPanel().hideTimeMinusButton();
