@@ -483,7 +483,6 @@ public abstract class AbstractTable extends JXTable {
                     //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
                     //renderer.setBackground(Color.LIGHT_GRAY);
                     //renderer.setOpaque(true);
-
                 }
             }
             return renderer;

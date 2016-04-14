@@ -39,6 +39,11 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
         super.getTableCellEditorComponent(table, value, isSelected, row, column);
         int id = (Integer) table.getModel().getValueAt(table.convertRowIndexToModel(row), table.getModel().getColumnCount() - 1);
         Activity activity = ActivityList.getList().getById(id);
+        if (activity != null && activity.isCompleted() && activity.isSubTask()) {
+            comboBox.setVisible(false);
+        } else {
+            comboBox.setVisible(true);
+        }            
         if (activity != null && activity.isFinished()) {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
             comboBox.setForeground(Main.taskFinishedColor);

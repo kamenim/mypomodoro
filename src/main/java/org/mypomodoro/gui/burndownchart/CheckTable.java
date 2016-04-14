@@ -94,7 +94,7 @@ public class CheckTable extends AbstractTable {
     public void setColumnModel() {
         // set custom render for dates
         getColumnModel().getColumn(AbstractTableModel.UNPLANNED_COLUMN_INDEX).setCellRenderer(new UnplannedRenderer()); // unplanned (custom renderer)
-        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new DateRenderer()); // date (custom renderer)
+        getColumnModel().getColumn(AbstractTableModel.DATE_COLUMN_INDEX).setCellRenderer(new ReportDateRenderer()); // date (custom renderer)
         getColumnModel().getColumn(AbstractTableModel.TITLE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // title
         getColumnModel().getColumn(AbstractTableModel.TYPE_COLUMN_INDEX).setCellRenderer(new ToolTipRenderer()); // type
         getColumnModel().getColumn(AbstractTableModel.ESTIMATED_COLUMN_INDEX).setCellRenderer(new EstimatedCellRenderer()); // estimated
@@ -215,15 +215,25 @@ public class CheckTable extends AbstractTable {
                 int estimated = 0;
                 int overestimated = 0;
                 int real = 0;
-                float storypoints = 0;
+                float storypoints = 0;                
+                int nbCompleted = 0; // tasks done-done subtasks completed
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     storypoints += selectedActivity.getStoryPoints();
                     real += selectedActivity.getActualPoms();
+                    if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
+                         nbCompleted += selectedActivity.isDoneDone() ? 1 : 0;
+                    } else if (panel.getChooseInputForm().getDataSubtasksCheckBox().isSelected()) {
+                        nbCompleted += selectedActivity.isCompleted() ? 1 : 0;
+                    }
                 }
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
+                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;";
+                if (nbCompleted > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + " / ";
+                }
+                title += selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
                 title += " > E: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     title += " + " + overestimated;

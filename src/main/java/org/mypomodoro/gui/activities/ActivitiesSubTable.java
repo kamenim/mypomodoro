@@ -51,13 +51,19 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 int estimated = 0;
                 int overestimated = 0;
                 int real = 0;
+                int nbCompleted = 0;
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
                     estimated += selectedActivity.getEstimatedPoms();
                     overestimated += selectedActivity.getOverestimatedPoms();
                     real += selectedActivity.getActualPoms();
+                    nbCompleted += selectedActivity.isCompleted() ? 1 : 0;
                 }
-                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
+                title += " (" + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;";
+                if (nbCompleted > 0) {
+                    title += "<span style=\"text-decoration:line-through\">" + nbCompleted + "</span>" + " / ";
+                }
+                title += selectedRowCount + "&nbsp;</span>" + "/" + rowCount + ")";
                 title += " > E: " + "<span style=\"color:black; background-color:" + ColorUtil.toHex(Main.selectedRowColor) + "\">&nbsp;" + real + " / " + estimated;
                 if (overestimated > 0) {
                     title += " + " + overestimated;

@@ -34,10 +34,10 @@ import org.mypomodoro.util.ColorUtil;
  */
 public class ToDoIconPanel {
 
-    private final static ImageIcon squareCrossIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "squareCross.png"));
-    private final static ImageIcon squareIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "square.png"));
-    private final static ImageIcon quoteIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "quote.png"));
-    private final static ImageIcon dashIcon = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "dash.png"));
+    private final static ImageIcon SQUARECROSSICON = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "squareCross.png"));
+    private final static ImageIcon SQUAREICON = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "square.png"));
+    private final static ImageIcon QUOTEICON = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "quote.png"));
+    private final static ImageIcon DASHICON = new ImageIcon(Main.class.getResource(Main.iconsSetPath + "dash.png"));
 
     static public void showIconPanel(JPanel iconPanel, Activity activity, Color color) {
         showIconPanel(iconPanel, activity, color, true);
@@ -92,9 +92,9 @@ public class ToDoIconPanel {
                 // We can disable the button but it won't look nice on JTattoo Noire themes
                 //squareCrossButton.setEnabled(false);
                 //squareCrossButton.setDisabledIcon(squareCrossIcon); // icon used when button is disable                                
-                iconPanel.add(new DefaultButton(squareCrossIcon, true));
+                iconPanel.add(new DefaultButton(SQUARECROSSICON, true));
             } else {
-                iconPanel.add(new DefaultButton(squareIcon, true));
+                iconPanel.add(new DefaultButton(SQUAREICON, true));
             }
         }
         // Overestimated pomodoros
@@ -107,20 +107,20 @@ public class ToDoIconPanel {
             // Overestimated pomodoros
             for (int i = 0; i < overestimatedPoms; i++) {
                 if (realPoms >= estimatedPoms + i + 1) {
-                    iconPanel.add(new DefaultButton(squareCrossIcon, true));
+                    iconPanel.add(new DefaultButton(SQUARECROSSICON, true));
                 } else {
-                    iconPanel.add(new DefaultButton(squareIcon, true));
+                    iconPanel.add(new DefaultButton(SQUAREICON, true));
                 }
             }
         }
         // Internal interruption
         for (int i = 0; i < numInternalInterruptions; i++) {
-            DefaultButton quoteButton = new DefaultButton(quoteIcon, true);
+            DefaultButton quoteButton = new DefaultButton(QUOTEICON, true);
             iconPanel.add(quoteButton);
         }
         // External interruption        
         for (int i = 0; i < numExternalInterruptions; i++) {
-            DefaultButton dashButton = new DefaultButton(dashIcon, true);
+            DefaultButton dashButton = new DefaultButton(DASHICON, true);
             iconPanel.add(dashButton);
         }
     }
