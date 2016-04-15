@@ -608,7 +608,6 @@ public abstract class AbstractTable extends JXTable {
             Activity activity = getList().getById(id);
             if (activity != null) {
                 String textValue = "<html>";
-                String tooltipValue = "<html>";
                 if (activity.getRecordedTime() > 0) {
                     textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
                     // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
@@ -618,7 +617,7 @@ public abstract class AbstractTable extends JXTable {
                 } else {
                     textValue += (String) value;
                 }
-                tooltipValue += textValue;
+                String tooltipValue = textValue;
                 renderer.setText(textValue + "</html>");
                 renderer.setToolTipText(tooltipValue + "</html>");
             }
