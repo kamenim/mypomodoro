@@ -66,11 +66,11 @@ public class ToDoIconPanel {
             } else {
                 textValue += activityName;
             }
+            tooltipValue += textValue;
             if (activity.getRecordedTime() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                tooltipValue += textValue + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";
-            } else {
-                tooltipValue = textValue;
+                String time =  " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";                
+                textValue += time;
             }
             iconLabel.setText(textValue + "</html>");
             iconLabel.setToolTipText(tooltipValue + "</html>");

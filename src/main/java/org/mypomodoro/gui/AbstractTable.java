@@ -618,12 +618,7 @@ public abstract class AbstractTable extends JXTable {
                 } else {
                     textValue += (String) value;
                 }
-                if (activity.getRecordedTime() > 0) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                    tooltipValue += textValue + " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";
-                } else {
-                    tooltipValue = textValue;
-                }
+                tooltipValue += textValue;
                 renderer.setText(textValue + "</html>");
                 renderer.setToolTipText(tooltipValue + "</html>");
             }
