@@ -381,7 +381,6 @@ public class ActivitiesDAO {
                 }
                 whereSutaskCondition += "is_complete = 'true') "; // Report list
                 whereSutaskCondition += "AND (is_complete = 'false' "; // subtasks no completed
-
                 int increment = 1;
                 whereSutaskCondition += "OR (";
                 for (Date date : datesToBeIncluded) {
