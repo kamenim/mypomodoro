@@ -46,7 +46,8 @@ public class SubtaskChart implements IChartType {
 
     @Override
     public float getValue(Activity activity, Date date) {
-        return activity.isSubTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? 1 : 0;
+        boolean isComplete = DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted();
+        return activity.isSubTask() && isComplete ? 1 : 0;
     }
 
     @Override

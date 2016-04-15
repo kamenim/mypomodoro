@@ -72,7 +72,7 @@ public class ReportsSubTable extends ReportsTable {
                 int[] rows = getSelectedRows();
                 int estimated = 0;
                 int overestimated = 0;
-                int real = 0;                
+                int real = 0;
                 int nbCompleted = 0;
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);

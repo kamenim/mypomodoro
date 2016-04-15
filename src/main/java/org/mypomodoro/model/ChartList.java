@@ -18,7 +18,6 @@ package org.mypomodoro.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import org.mypomodoro.db.ActivitiesDAO;
 
 /**
@@ -77,8 +76,7 @@ public class ChartList extends AbstractActivities {
     @Override
     public ArrayList<Activity> getTasks() {
         ArrayList taskList = new ArrayList<Activity>();
-        for (Iterator<Activity> it = iterator(); it.hasNext();) {
-            Activity a = it.next();
+        for (Activity a : this) {
             taskList.add(a);
         }
         return taskList;

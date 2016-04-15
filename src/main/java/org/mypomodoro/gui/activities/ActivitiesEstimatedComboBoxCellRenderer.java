@@ -44,7 +44,7 @@ class ActivitiesEstimatedComboBoxCellRenderer extends ActivitiesComboBoxCellRend
             int overestimatedpoms = activity.getOverestimatedPoms();
             // real poms > 0 --> estimated cannot be changed
             if (realpoms > 0
-                || (activity.isCompleted() && activity.isSubTask())) {
+                    || (activity.isCompleted() && activity.isSubTask())) {
                 labelBefore.setText(realpoms + " / ");
                 comboBox.setVisible(false);
                 labelAfter.setText(estimatedpoms + (overestimatedpoms > 0 ? " + " + overestimatedpoms : ""));

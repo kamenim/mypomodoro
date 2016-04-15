@@ -43,7 +43,7 @@ class ActivitiesComboBoxCellEditor extends ComboBoxCellEditor {
             comboBox.setVisible(false);
         } else {
             comboBox.setVisible(true);
-        }            
+        }
         if (activity != null && activity.isFinished()) {
             comboBox.getEditor().getEditorComponent().setForeground(Main.taskFinishedColor); // editable combo box
             comboBox.setForeground(Main.taskFinishedColor);

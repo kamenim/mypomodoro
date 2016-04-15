@@ -275,7 +275,7 @@ public class ReportsTable extends AbstractTable {
                 int overestimated = 0;
                 int real = 0;
                 float storypoints = 0;
-                int nbDoneDone = 0;                
+                int nbDoneDone = 0;
                 ArrayList<Date> datesCompleted = new ArrayList<Date>();
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
@@ -420,7 +420,7 @@ public class ReportsTable extends AbstractTable {
     public void importActivity(Activity activity) {
         getList().add(activity, activity.getDateCompleted());
     }
-    
+
     @Override
     public void setTaskDoneDone() {
         super.setTaskDoneDone();
