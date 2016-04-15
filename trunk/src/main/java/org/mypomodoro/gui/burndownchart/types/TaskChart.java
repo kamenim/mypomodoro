@@ -45,9 +45,11 @@ public class TaskChart implements IChartType {
     }
 
     // A task must be completed/done (= release backlog)
+    // Date = null --> iteration
     @Override
     public float getValue(Activity activity, Date date) {
-        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? 1 : 0; // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
+        boolean isComplete = (DateUtil.isEquals(activity.getDateCompleted(), date) || (!DateUtil.isEquals(activity.getDateCompleted(), new Date(0)) && date == null)) && activity.isCompleted();
+        return activity.isTask() && isComplete ? 1 : 0;
     }
 
     @Override

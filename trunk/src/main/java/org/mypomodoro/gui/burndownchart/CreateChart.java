@@ -175,7 +175,6 @@ public class CreateChart extends JPanel {
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 // use double to make the values more accurate
-                // OK
                 dataset.addValue((Number) new Double(totalForBurndown - i * (totalForBurndown / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
@@ -194,16 +193,13 @@ public class CreateChart extends JPanel {
         if (configureInputForm.getDatesCheckBox().isSelected()) {
             for (int i = 0; i < XAxisDateValues.size(); i++) {
                 // use double to make the values more accurate                
-                // OK
                 dataset.addValue((Number) new Double(i * (totalForBurnup / (XAxisDateValues.size() - 1))), label, getXAxisDateValue(i));
             }
         } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
-            int size = configureInputForm.getEndIteration() + 1;
-            if (size > 0) {
-                for (int i = configureInputForm.getStartIteration(); i <= configureInputForm.getEndIteration(); i++) {
-                    // use double to make the values more accurate                                            
-                    dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i);
-                }
+            int size = configureInputForm.getEndIteration() - configureInputForm.getStartIteration() + 1;
+            for (int i = 0; i < size; i++) {
+                // use double to make the values more accurate                                            
+                dataset.addValue((Number) new Double(i * (totalForBurnup / (size - 1))), label, i + configureInputForm.getStartIteration());
             }
         }
         return dataset;

@@ -43,8 +43,8 @@ class ActivitiesEstimatedComboBoxCellEditor extends ActivitiesComboBoxCellEditor
         Activity activity = ActivityList.getList().getById(id);
         if (activity != null) {
             int realPoms = activity.getActualPoms();
-            if (realPoms > 0                    
-                || (activity.isCompleted() && activity.isSubTask())) {
+            if (realPoms > 0
+                    || (activity.isCompleted() && activity.isSubTask())) {
                 comboBox.setVisible(false);
             } else {
                 int overestimatedPoms = activity.getOverestimatedPoms();

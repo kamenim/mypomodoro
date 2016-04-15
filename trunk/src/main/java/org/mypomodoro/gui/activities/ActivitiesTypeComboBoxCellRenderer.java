@@ -42,7 +42,7 @@ class ActivitiesTypeComboBoxCellRenderer extends ActivitiesComboBoxCellRenderer 
         } else {
             comboBox.setVisible(true);
             labelBefore.setText("");
-        }        
+        }
         if (!((String) value).trim().isEmpty()) {
             if (activity != null && activity.isCompleted() && activity.isSubTask()) {
                 setToolTipText("<html><strike> " + (String) value + " </strike></html>");

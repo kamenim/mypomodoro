@@ -215,7 +215,7 @@ public class CheckTable extends AbstractTable {
                 int estimated = 0;
                 int overestimated = 0;
                 int real = 0;
-                float storypoints = 0;                
+                float storypoints = 0;
                 int nbCompleted = 0; // tasks done-done subtasks completed
                 for (int row : rows) {
                     Activity selectedActivity = getActivityFromRowIndex(row);
@@ -224,7 +224,7 @@ public class CheckTable extends AbstractTable {
                     storypoints += selectedActivity.getStoryPoints();
                     real += selectedActivity.getActualPoms();
                     if (Main.preferences.getAgileMode() && panel.getChooseInputForm().getDataTasksCheckBox().isSelected()) {
-                         nbCompleted += selectedActivity.isDoneDone() ? 1 : 0;
+                        nbCompleted += selectedActivity.isDoneDone() ? 1 : 0;
                     } else if (panel.getChooseInputForm().getDataSubtasksCheckBox().isSelected()) {
                         nbCompleted += selectedActivity.isCompleted() ? 1 : 0;
                     }

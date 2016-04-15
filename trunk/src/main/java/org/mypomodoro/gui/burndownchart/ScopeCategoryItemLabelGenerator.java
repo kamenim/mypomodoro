@@ -38,17 +38,19 @@ public class ScopeCategoryItemLabelGenerator extends StandardCategoryItemLabelGe
     @Override
     public String generateLabel(CategoryDataset dataset, int row, int column) {
         String label = super.generateLabel(dataset, row, column);
-        Date date = XAxisDateValues.get(column);
         boolean displayDate = true;
-        if (column != 0
-                && column + 1 != XAxisDateValues.size()) { // first date always displayed            
-            if (XAxisDateValues.size() > 100
-                    && !DateUtil.isFirstDayOfMonth(date)) { // first condition
-                displayDate = false;
-            } else if (XAxisDateValues.size() <= 100
-                    && XAxisDateValues.size() > 10
-                    && !DateUtil.isMonday(date)) { // second condition (cannot be mixed up with the first condition)
-                displayDate = false;
+        if (XAxisDateValues.size() > 0) {
+            Date date = XAxisDateValues.get(column);
+            if (column != 0
+                    && column + 1 != XAxisDateValues.size()) { // first date always displayed            
+                if (XAxisDateValues.size() > 100
+                        && !DateUtil.isFirstDayOfMonth(date)) { // first condition
+                    displayDate = false;
+                } else if (XAxisDateValues.size() <= 100
+                        && XAxisDateValues.size() > 10
+                        && !DateUtil.isMonday(date)) { // second condition (cannot be mixed up with the first condition)
+                    displayDate = false;
+                }
             }
         }
         return displayDate ? label : "";

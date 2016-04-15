@@ -373,14 +373,17 @@ public class ActivitiesDAO {
         if (datesToBeIncluded.size() > 0) {
             try {
                 database.lock();
-                int increment = 1;
                 // Subtask condition
                 String whereSutaskCondition = "parent_id > -1 AND ";
+                whereSutaskCondition += "parent_id IN (SELECT id FROM activities WHERE ";
                 if (!excludeToDos) {
-                    whereSutaskCondition += "(priority > -1 OR (";
+                    whereSutaskCondition += "priority > -1 OR "; // ToDo list
                 }
-                whereSutaskCondition += "is_complete = 'true' ";
-                whereSutaskCondition += "AND (";
+                whereSutaskCondition += "is_complete = 'true') "; // Report list
+                whereSutaskCondition += "AND (is_complete = 'false' "; // subtasks no completed
+
+                int increment = 1;
+                whereSutaskCondition += "OR (";
                 for (Date date : datesToBeIncluded) {
                     if (increment > 1) {
                         whereSutaskCondition += " OR ";
@@ -389,23 +392,10 @@ public class ActivitiesDAO {
                     whereSutaskCondition += "AND date_completed < " + DateUtil.getDateAtMidnight(date).getTime() + ")";
                     increment++;
                 }
-                whereSutaskCondition += ") ";
-                if (!excludeToDos) {
-                    whereSutaskCondition += ")) ";
-                }
-                // Task condition                
-                String whereTaskCondition = "";
-                /*if (iteration >= 0) {
-                    whereTaskCondition += "AND (parent_id IN "; // subtasks
-                    whereTaskCondition += "(SELECT id FROM activities WHERE ";                    
-                    whereTaskCondition += "iteration = " + iteration + ") "; // specific iteration
-                     
-                    whereTaskCondition += ")) ";
-                }*/
+                whereSutaskCondition += ")) ";
                 // Query
                 String query = "SELECT * FROM activities WHERE ";
                 query += whereSutaskCondition; // subtasks
-                query += whereTaskCondition; // tasks                
                 query += "ORDER BY date_completed DESC";  // from newest to oldest                
                 ResultSet rs = database.query(query);
                 try {
@@ -469,7 +459,6 @@ public class ActivitiesDAO {
             try {
                 database.lock();
                 for (Date date : datesToBeIncluded) {
-                    // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
                             + "WHERE parent_id = -1 AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis());
                     try {
@@ -500,14 +489,10 @@ public class ActivitiesDAO {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
-                        + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        + "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
-                        Float sumOfStoryPoints = (Float) rs.getFloat("sum");
-                        sumOfStoryPoints = i > startIteration && sumOfStoryPoints == 0 ? storyPoints.get(storyPoints.size() - 1) : sumOfStoryPoints; // iteration no yet started : using sum of the previous iteration
-                        storyPoints.add(sumOfStoryPoints);
+                        storyPoints.add((Float) rs.getFloat("sum"));
                     }
                 } catch (SQLException ex) {
                     Main.logger.error("", ex);
@@ -539,7 +524,6 @@ public class ActivitiesDAO {
                         query += "parent_id = -1 ";
                     }
                     query += "AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis();
-                    // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query(query);
                     try {
                         while (rs.next()) {
@@ -569,14 +553,10 @@ public class ActivitiesDAO {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
-                        + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        + "ON (SubQuery.maxDateCompleted > 0 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        + "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
-                        Float sumOfPomodoros = (Float) rs.getFloat("sum");
-                        sumOfPomodoros = i > startIteration && sumOfPomodoros == 0 ? pomodoros.get(pomodoros.size() - 1) : sumOfPomodoros; // iteration no yet started : using sum of the previous iteration
-                        pomodoros.add(sumOfPomodoros);
+                        pomodoros.add((Float) rs.getFloat("sum"));
                     }
                 } catch (SQLException ex) {
                     Main.logger.error("", ex);
@@ -608,7 +588,6 @@ public class ActivitiesDAO {
                         query += "parent_id = -1 ";
                     }
                     query += "AND date_added < " + (new DateTime(DateUtil.getDateAtMidnight(date))).getMillis();
-                    // Date reopen not to be taken into account as it is merely an existing activity rescheduled at a later date                    
                     ResultSet rs = database.query(query);
                     try {
                         while (rs.next()) {
@@ -638,15 +617,10 @@ public class ActivitiesDAO {
             database.lock();
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
-                        + "INNER JOIN "
-                        + "(SELECT MAX(date_completed) as maxDateCompleted FROM activities WHERE parent_id = -1 AND is_complete = 'true' AND iteration = " + i + ") SubQuery "
-                        //+ "ON (SubQuery.maxDateCompleted > 0 AND parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
-                        + "ON (parent_id = -1 AND (activities.date_added <= SubQuery.maxDateCompleted OR activities.date_completed = 0))");
+                        + "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
-                        Float sum = (Float) rs.getFloat("sum");
-                        sum = i > startIteration && sum == 0 ? tasks.get(tasks.size() - 1) : sum; // iteration no yet started : using sum of the previous iteration
-                        tasks.add(sum);
+                        tasks.add((Float) rs.getFloat("sum"));
                     }
                 } catch (SQLException ex) {
                     Main.logger.error("", ex);
@@ -700,55 +674,6 @@ public class ActivitiesDAO {
         return activity;
     }
 
-    /*
-     // move all ToDos back to Activity list
-     public void moveAllTODOs() {
-     String updateSQL = "UPDATE activities SET "
-     + "priority = -1 "
-     + "WHERE priority > -1 AND is_complete = 'false';";
-     try {
-     database.lock();
-     database.update("begin;");
-     database.update(updateSQL);
-     } finally {
-     database.update("Commit;");
-     database.unlock();
-     }
-     }
-
-     // move all ToDos to Report list
-     public void completeAllTODOs() {
-     String updateSQL = "UPDATE activities SET "
-     + "is_complete = 'true',"
-     + "priority = -1,"
-     + "date_completed = " + new Date().getTime()
-     + " WHERE priority > -1 AND is_complete = 'false';";
-     try {
-     database.lock();
-     database.update("begin;");
-     database.update(updateSQL);
-     } finally {
-     database.update("Commit;");
-     database.unlock();
-     }
-     }
-
-     // move all Reports back to Activity list
-     public void reopenAllReports() {
-     String updateSQL = "UPDATE activities SET "
-     + "is_complete = 'false',"
-     + "date_completed = " + new Date().getTime()
-     + " WHERE priority = -1 AND is_complete = 'true';";
-     try {
-     database.lock();
-     database.update("begin;");
-     database.update(updateSQL);
-     } finally {
-     database.update("Commit;");
-     database.unlock();
-     }
-     }
-     */
     public ArrayList<String> getTypes() {
         ArrayList<String> types = new ArrayList<String>();
         try {

@@ -47,10 +47,11 @@ public class StoryPointChart implements IChartType {
 
     // A task MUST be completed/done (= release backlog) for its story points to be considered as done
     // Subtasks don't have story points
+    // Date = null --> iteration
     @Override
     public float getValue(Activity activity, Date date) {
-        // checking isCompleted() is necessary as Date Completed is also used with reopened tasks
-        return activity.isTask() && DateUtil.isEquals(activity.getDateCompleted(), date) && activity.isCompleted() ? activity.getStoryPoints() : 0;
+        boolean isComplete = (DateUtil.isEquals(activity.getDateCompleted(), date) || (!DateUtil.isEquals(activity.getDateCompleted(), new Date(0)) && date == null)) && activity.isCompleted();
+        return activity.isTask() && isComplete ? activity.getStoryPoints() : 0;
     }
 
     @Override
