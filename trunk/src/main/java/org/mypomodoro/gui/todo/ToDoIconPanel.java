@@ -56,7 +56,6 @@ public class ToDoIconPanel {
         if (showName) {
             String activityName = activity.getName().length() > 25 ? activity.getName().substring(0, 25) + "..." : activity.getName();
             String textValue = "<html>";
-            String tooltipValue = "<html>";
             if (activity.getRecordedTime() > 0) {
                 textValue += "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";
                 // Font size increased : "<span style=\"font-size:" + (renderer.getFont().getSize() + 10) + "pt;color:" + ColorUtil.toHex(Main.taskRunningColor) + "\">*</span>";                
@@ -66,7 +65,7 @@ public class ToDoIconPanel {
             } else {
                 textValue += activityName;
             }
-            tooltipValue += textValue;
+            String tooltipValue = textValue;
             if (activity.getRecordedTime() > 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
                 String time =  " (" + "<span style=\"color:" + ColorUtil.toHex(Main.taskRunningColor) + ";background-color:" + ColorUtil.toHex(ColorUtil.GREEN_TIMER) + "\"><b> " + sdf.format(activity.getRecordedTime()) + " </b></span>" + ")";                
