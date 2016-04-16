@@ -110,6 +110,7 @@ public class ConfigureInputForm extends JPanel {
             iterationsInputFormPanel.setVisible(false);
             if (iterationsCheckBox.isSelected()) {
                 datesCheckBox.setSelected(true);
+                iterationsCheckBox.setSelected(false);
             }
         } else {
             iteration.setVisible(true);
