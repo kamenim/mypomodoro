@@ -159,7 +159,7 @@ public class ChooseInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 subtasksBox.setSelected(false);
-                tasksBox.setSelected(true); // prevetn from being unchecked
+                tasksBox.setSelected(true); // prevent from being unchecked
                 refreshChartTypesComboBox(true);
             }
         });
@@ -171,7 +171,7 @@ public class ChooseInputForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 tasksBox.setSelected(false);
-                subtasksBox.setSelected(true); // prevetn from being unchecked
+                subtasksBox.setSelected(true); // prevent from being unchecked
                 refreshChartTypesComboBox(false);
             }
         });
@@ -187,6 +187,8 @@ public class ChooseInputForm extends JPanel {
     }
 
     private void refreshBurndownChartTypesComboBox(boolean tasksType) {
+        boolean isBurndownSelected = burndownChartCheckBox.isSelected();
+        boolean isScopeSelected = scopeCheckBox.isSelected();
         IChartType selectedItemBurndown = (IChartType) chartTypesBurndownComboBox.getSelectedItem();
         chartTypesBurndownComboBox.removeAllItems();
         chartTypesBurndownComboBox.addItem(tasksType ? taskChart : subtaskChart);
@@ -201,9 +203,12 @@ public class ChooseInputForm extends JPanel {
         } else {
             chartTypesBurndownComboBox.setSelectedIndex(0);
         }
+        burndownChartCheckBox.setSelected(isBurndownSelected); // make sure selection is preserved
+        scopeCheckBox.setSelected(isScopeSelected); // make sure selection is preserved as selecting the burndown check box unchecks the scope check box
     }
 
     private void refreshBurnupChartTypesComboBox(boolean tasksType) {
+        boolean isBurnupSelected = burnupChartCheckBox.isSelected();
         IChartType selectedItemBurnup = (IChartType) chartTypesBurnupComboBox.getSelectedItem();
         chartTypesBurnupComboBox.removeAllItems();
         chartTypesBurnupComboBox.addItem(tasksType ? taskChart : subtaskChart);
@@ -218,6 +223,7 @@ public class ChooseInputForm extends JPanel {
         } else {
             chartTypesBurnupComboBox.setSelectedIndex(0);
         }
+        burnupChartCheckBox.setSelected(isBurnupSelected); // make sure selection is preserved
     }
 
     /////////////////////////////////////
