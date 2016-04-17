@@ -489,7 +489,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(story_points) as sum FROM activities "
                         + "WHERE parent_id = -1 AND iteration <= " + i); // including tasks with no iteration yet
-                        //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
+                //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
                         storyPoints.add((Float) rs.getFloat("sum"));
@@ -554,7 +554,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT SUM(estimated_poms) + SUM(overestimated_poms) as sum FROM activities "
                         + "WHERE parent_id = -1 AND iteration <= " + i); // including tasks with no iteration yet
-                        //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
+                //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
                         pomodoros.add((Float) rs.getFloat("sum"));
@@ -619,7 +619,7 @@ public class ActivitiesDAO {
             for (int i = startIteration; i <= endIteration; i++) {
                 ResultSet rs = database.query("SELECT COUNT(*) as sum FROM activities "
                         + "WHERE parent_id = -1 AND iteration <= " + i); // including tasks with no iteration yet
-                        //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
+                //+ "WHERE parent_id = -1 AND iteration <= " + i + " AND iteration > -1"); // excluding tasks with no iteration yet
                 try {
                     while (rs.next()) {
                         tasks.add((Float) rs.getFloat("sum"));

@@ -278,15 +278,8 @@ public class ChooseInputForm extends JPanel {
         // Types
         chartTypesBurndownComboBox.setRenderer(new AbstractComboBoxRenderer());
         refreshBurndownChartTypesComboBox(true);
-        if (Main.preferences.getAgileMode()) {
-            StoryPointChart storyPointChart = new StoryPointChart();
-            defaultPrimaryYAxisName = storyPointChart.getYLegend();
-            defaultPrimaryYAxisLegend = storyPointChart.getXLegend();
-        } else {
-            PomodoroChart pomodoroChart = new PomodoroChart();
-            defaultPrimaryYAxisName = pomodoroChart.getYLegend();
-            defaultPrimaryYAxisLegend = pomodoroChart.getXLegend();
-        }
+        defaultPrimaryYAxisName = taskChart.getYLegend();
+        defaultPrimaryYAxisLegend = taskChart.getXLegend();        
         chartTypesBurndownComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -454,15 +447,8 @@ public class ChooseInputForm extends JPanel {
         // Types
         chartTypesBurnupComboBox.setRenderer(new AbstractComboBoxRenderer());
         refreshBurnupChartTypesComboBox(true);
-        if (Main.preferences.getAgileMode()) {
-            StoryPointChart storyPointChart = new StoryPointChart();
-            defaultSecondaryYAxisName = storyPointChart.getYLegend();
-            defaultSecondaryYAxisLegend = storyPointChart.getXLegend();
-        } else {
-            PomodoroChart pomodoroChart = new PomodoroChart();
-            defaultSecondaryYAxisName = pomodoroChart.getYLegend();
-            defaultSecondaryYAxisLegend = pomodoroChart.getXLegend();
-        }
+        defaultSecondaryYAxisName = taskChart.getYLegend();
+        defaultSecondaryYAxisLegend = taskChart.getXLegend();
         chartTypesBurnupComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

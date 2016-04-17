@@ -25,7 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.font.TextAttribute;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -796,6 +796,15 @@ public abstract class AbstractTable extends JXTable {
 
     public void overestimateTask(int poms) {
         // do nothing by default
+    }
+
+    private ArrayList<Activity> getActivitiesFromSelectedRows() {
+        ArrayList<Activity> selectedActivities = new ArrayList<Activity>();
+        int[] selectedRows = getSelectedRows();
+        for (int id : selectedRows) {
+            selectedActivities.add(getActivityById(id));
+        }
+        return selectedActivities;
     }
 
     public void setSubtaskComplete() {

@@ -99,28 +99,22 @@ public class CreateChart extends JPanel {
         }
         // Burn-up chart in percentage
         burnupChartPercentage = chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getBurnupChartPercentageCheckBox().isSelected();
-        if (burnupChartPercentage && totalForBurnup > 0) {
-            totalForBurnupInPercentage = totalForBurnup;
-            totalForBurnup = 100;
-        }
-        // Sum for percentages and scope
-        if ((chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getScopeCheckBox().isSelected())
-                || burnupChartPercentage) {
+        // Scope
+        if (chooseInputForm.getBurnupChartCheckBox().isSelected() && chooseInputForm.getScopeCheckBox().isSelected()) {
             if (configureInputForm.getDatesCheckBox().isSelected()) {
                 sumForScope = burnupchartType.getSumDateRangeForScope(XAxisDateValues, chooseInputForm.getDataSubtasksCheckBox().isSelected());
             } else if (configureInputForm.getIterationsCheckBox().isSelected()) {
                 sumForScope = burnupchartType.getSumIterationRangeForScope(configureInputForm.getStartIteration(), configureInputForm.getEndIteration());
             }
+            // Scope in percentage
+            if (burnupChartPercentage && totalForBurnup > 0) {
+                totalForBurnupInPercentage = sumForScope.get(sumForScope.size() - 1); // last and higher scope value ==> 100 %
+                totalForBurnup = (totalForBurnup / sumForScope.get(sumForScope.size() - 1)) * 100; // fraction of higher scope value ==> fraction of 100% 
+            }
+        } else if (burnupChartPercentage && totalForBurnup > 0) {
+            totalForBurnupInPercentage = totalForBurnup;
+            totalForBurnup = 100;
         }
-        /*if (burnupChartPercentage && totalForBurnup > 0) {
-         totalForBurnupInPercentage = sumForScope.get(sumForScope.size() - 1);
-         if (totalForBurnupInPercentage > 0) {
-         //initialTotalForBurnup = totalForBurnup;
-         totalForBurnup = 100;
-         } else {
-         burnupChartPercentage = false; // we can't show the chart in percentage
-         }
-         }*/
         maxSumForScopeLine = 0;
         charts = createChart();
         chartPanel = new ChartPanel(charts);

@@ -434,7 +434,7 @@ public class ImportPanel extends JPanel {
         Activity newActivity = new Activity(line[13], line[12], line[3], line[14], line[11], Integer.parseInt(line[4]),
                 line[1].isEmpty() ? new Date() : org.mypomodoro.util.DateUtil.getDate(line[1], importInputForm.getDatePattern()), Integer.parseInt(line[5]), Integer.parseInt(line[6]),
                 Integer.parseInt(line[9]), Integer.parseInt(line[10]), line[15],
-                !line[0].equals("0"), panel instanceof ReportsPanel, false); // TODO add donedone to Export / Import
+                !line[0].equals("0"), panel instanceof ReportsPanel, false);
         try {
             newActivity.setStoryPoints(Float.parseFloat(line[16]));
             newActivity.setIteration(Integer.parseInt(line[17]));
