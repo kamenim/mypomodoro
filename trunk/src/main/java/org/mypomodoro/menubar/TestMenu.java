@@ -190,7 +190,8 @@ public class TestMenu extends JMenu {
                                         reportListValue++;
                                     }
                                 } else // Tasks for the Activity and ToDo list
-                                 if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
+                                {
+                                    if (rand.nextBoolean() && rand.nextBoolean() && rand.nextBoolean()) { // less than Activity List and Report List                                                                                                                                                        
                                         if (a.getIteration() >= 0) {
                                             a.setIteration(iterations[iterations.length - 1]); // use highest iteration number for tasks in the Iteration backlog
                                         }
@@ -232,6 +233,7 @@ public class TestMenu extends JMenu {
                                             }
                                         }
                                     }
+                                }
                                 final int progressValue = i + 1;
                                 progressText.setLength(0); // reset string builder
                                 progressText.append(Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List") + " : ");
