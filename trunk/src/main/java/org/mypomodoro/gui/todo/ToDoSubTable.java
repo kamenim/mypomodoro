@@ -65,6 +65,11 @@ public class ToDoSubTable extends ToDoTable {
     @Override
     public void setTitle() {
         String title = Labels.getString("Common.Subtasks");
+        if (canCreateNewTask()) {
+            getTitlePanel().showCreateButton();
+        } else {
+            getTitlePanel().hideCreateButton(); // this happens when main table is empty
+        }
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -155,11 +160,6 @@ public class ToDoSubTable extends ToDoTable {
             getTitlePanel().hideExternalButton();
             getTitlePanel().hideInternalButton();
             getTitlePanel().hideDoneButton();
-        }
-        if (canCreateNewTask()) {
-            getTitlePanel().showCreateButton();
-        } else {
-            getTitlePanel().hideCreateButton(); // this happens when main table is empty
         }
         if (canCreateUnplannedTask()) {
             getTitlePanel().showUnplannedButton();

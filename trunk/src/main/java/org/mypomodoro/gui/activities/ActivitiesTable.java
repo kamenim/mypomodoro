@@ -315,6 +315,7 @@ public class ActivitiesTable extends AbstractTable {
     @Override
     public void setTitle() {
         String title = Labels.getString((Main.preferences.getAgileMode() ? "Agile." : "") + "ActivityListPanel.Activity List");
+        getTitlePanel().showCreateButton();
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -385,7 +386,6 @@ public class ActivitiesTable extends AbstractTable {
             getTitlePanel().hideSelectedButton();
             getTitlePanel().hideDuplicateButton();
         }
-        getTitlePanel().showCreateButton();
         if (MySQLConfigLoader.isValid()) { // Remote mode (using MySQL database)
             getTitlePanel().showRefreshButton(); // end of the line
         }

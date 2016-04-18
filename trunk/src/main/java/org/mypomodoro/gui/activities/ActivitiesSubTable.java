@@ -42,6 +42,11 @@ public class ActivitiesSubTable extends ActivitiesTable {
     @Override
     public void setTitle() {
         String title = Labels.getString("Common.Subtasks");
+        if (canCreateNewTask()) {
+            getTitlePanel().showCreateButton();
+        } else {
+            getTitlePanel().hideCreateButton(); // this happens when main table is empty
+        }
         int rowCount = getModel().getRowCount();
         if (rowCount > 0) {
             int selectedRowCount = getSelectedRowCount();
@@ -106,20 +111,15 @@ public class ActivitiesSubTable extends ActivitiesTable {
                 } else {
                     getTitlePanel().hideDuplicateButton();
                 }
+                if (getSelectedRowCount() == 1) {
+                    getTitlePanel().showDoneButton();
+                } else {
+                    getTitlePanel().hideDoneButton();
+                }
             }
         } else {
             //title += " (0)";
             getTitlePanel().hideDuplicateButton();
-            getTitlePanel().hideDoneButton();
-        }
-        if (canCreateNewTask()) {
-            getTitlePanel().showCreateButton();
-        } else {
-            getTitlePanel().hideCreateButton(); // this happens when main table is empty
-        }
-        if (getSelectedRowCount() == 1) {
-            getTitlePanel().showDoneButton();
-        } else {
             getTitlePanel().hideDoneButton();
         }
         /*if (canMoveSubtasks()) {
@@ -239,7 +239,7 @@ public class ActivitiesSubTable extends ActivitiesTable {
     }
 
     private boolean canCreateNewTask() {
-        return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selettion
+        return panel.getMainTable().getSelectedRowCount() == 1; // no multiple selection in main table to create subtask
     }
 
     // can't send subtasks to ToDo list
