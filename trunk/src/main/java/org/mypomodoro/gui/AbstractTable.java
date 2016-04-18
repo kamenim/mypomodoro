@@ -53,6 +53,10 @@ import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTable;
 import org.mypomodoro.Main;
 import org.mypomodoro.db.ActivitiesDAO;
+import org.mypomodoro.gui.activities.ActivitiesSubTable;
+import org.mypomodoro.gui.reports.ReportsSubTable;
+import org.mypomodoro.gui.reports.ReportsTable;
+import org.mypomodoro.gui.todo.ToDoSubTable;
 import org.mypomodoro.gui.todo.ToDoTable;
 import org.mypomodoro.model.AbstractActivities;
 import org.mypomodoro.model.Activity;
@@ -475,14 +479,21 @@ public abstract class AbstractTable extends JXTable {
                 if (activity.isFinished()) {
                     renderer.setForeground(Main.taskFinishedColor);
                 }
-                if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
-                    Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
-                    map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                    renderer.setFont(getFont().deriveFont(map));
-                    //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
-                    //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
-                    //renderer.setBackground(Color.LIGHT_GRAY);
-                    //renderer.setOpaque(true);
+                // This way we prevent strike through in check panel table
+                if (Main.gui != null && (
+                        table instanceof ActivitiesSubTable
+                        || table instanceof ToDoSubTable
+                        || table instanceof ReportsSubTable
+                        || table instanceof ReportsTable)) {
+                    if ((activity.isCompleted() && activity.isSubTask()) || (activity.isDoneDone() && activity.isTask() && Main.preferences.getAgileMode())) {
+                        Map<TextAttribute, Object> map = new HashMap<TextAttribute, Object>();
+                        map.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                        renderer.setFont(getFont().deriveFont(map));
+                        //renderer.setFont(getFont().deriveFont(map).deriveFont(Font.BOLD));
+                        //renderer.setBorder(new MatteBorder(1, 1, 1, 1, ColorUtil.RED));
+                        //renderer.setBackground(Color.LIGHT_GRAY);
+                        //renderer.setOpaque(true);
+                    }
                 }
             }
             return renderer;
