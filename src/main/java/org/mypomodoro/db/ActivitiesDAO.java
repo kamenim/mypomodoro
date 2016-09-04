@@ -193,7 +193,7 @@ public class ActivitiesDAO {
                     activities.add(new Activity(rs));
                 }
             } catch (SQLException ex) {
-                // Upgrade from 3.3, 3.4, 4.0, 4.1 or 4.1.1 TO 4.2.0
+                // Upgrade from 3.3, 3.4, 4.0, 4.1 or 4.1.1 TO 4.2.1
                 Main.logger.error("Fixing following issue... Done", ex);
                 if (MySQLConfigLoader.isValid()) {
                     database.update("ALTER TABLE activities ADD (is_donedone VARCHAR(255) DEFAULT 'false', date_donedone " + Main.database.getLongIntegerVarName() + ");");
